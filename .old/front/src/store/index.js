@@ -1,0 +1,19 @@
+import Vue from 'vue'
+import Vuex from 'vuex'
+import modules_map  from './modules/modules_map'
+
+Vue.use(Vuex)
+
+export default new Vuex.Store({
+  // state: {
+  // },
+  // getters: {
+  // },
+  // mutations: {
+  // },
+  // actions: {
+  // },
+  modules: {
+    modules_map,
+  }
+})

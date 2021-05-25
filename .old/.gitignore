@@ -1,0 +1,24 @@
+# Byte-compiled / optimized / DLL files
+*__pycache__/*
+*.py[cod]
+*$py.class
+
+#__init__.py
+*.log.*
+*.log
+*.pid
+*.pyc
+
+# pyenv
+.python-version
+
+# Environments
+.env
+.venv
+.pytest_cache
+log/
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
