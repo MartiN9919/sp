@@ -1,0 +1,6 @@
+@import "/static/lib-internal/ini/ini-set.css";
+@import "/static/lib-external/font/fontello/css/fontello.css";
+
+#header        { background-image: linear-gradient(var(--color-main-light), var(--color-main)); }
+#site-name a   { color: var(--color-logo)!important; font-weight: bold; text-shadow: 1px 4px 4px rgb(11, 204, 159); }
+#site-name a i { margin-right: 0.5em; }

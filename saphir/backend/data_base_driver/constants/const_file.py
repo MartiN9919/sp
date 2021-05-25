@@ -1,0 +1,1 @@
+BASE_SYSTEM_FILE_PATH = '/home/pushkin/files/'

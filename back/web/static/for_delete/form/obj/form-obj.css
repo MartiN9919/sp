@@ -1,0 +1,39 @@
+.mForm-obj {
+    width: 90%;
+    max-width: 100em;
+    min-width: 70em;
+}
+
+.mForm .panel_btn {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    padding-top: 1em;
+}
+
+.mForm .panel_btn button {
+    width: 20em;
+    float: right;
+}
+
+.mForm .btn_ok     { margin: 0 1em 0 0!important; }
+.mForm .btn_cancel { margin: 0 0 0 1em!important; }
+
+
+
+
+.mForm .panel_main > * {
+    /* height: 100%; */
+    overflow: hidden;
+}
+
+.mForm .panel_val  { border-right  : 1px solid var(--color-main); float: left;  /*width: 50em;*/ }
+.mForm .panel_tool { border-left   : 1px solid var(--color-main); float: right; height: 100%; /*width: calc( 100% - 50em );*/ }
+.mForm .panel_key  { border-bottom : 1px solid var(--color-main); overflow: hidden; }
+.mForm .panel_find { border-top    : 1px solid var(--color-main); }
+
+.mForm .panel_key .panel_tree { overflow: auto; }
+.mForm .panel_tree { width: 100%;   height: 100%; }
+
+.mForm .attr_top_need { color: red; }
+.mForm .attr_obj_top  { font-weight: bold; }

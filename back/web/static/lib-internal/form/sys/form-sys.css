@@ -1,0 +1,83 @@
+/* classTopScroll **********************************************************/
+.classTopScroll {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    opacity: 0.1;
+
+    color: #6BA4FF;
+    background-color: #eee;
+    line-height: 30px !important;
+
+    -webkit-transition: 1s;
+    -moz-transition: 1s;
+    transition: 1s;
+}
+
+.classTopScroll:hover {
+    opacity: 0.7;
+    cursor: pointer;
+}
+
+
+/* classLoader **********************************************************/
+.classLoader {
+    position: absolute;
+
+    left: 50%;
+    width: 40px;
+    margin-left: -20px; /* половина от ширины */
+
+    top: 40%;
+    height: 40px;
+    margin-top: -20px; /* половина от высоты */
+
+    border: 8px solid #f3f3f3;
+    -webkit-animation: spin 1s linear infinite;
+    animation: spin 1.0s linear infinite;
+    border-top: 8px solid #555;
+    border-radius: 50%;
+    opacity: .5;
+}
+
+
+/* classErr *************************************************************/
+.classErr {
+  position: absolute;
+
+  left: 50%;
+  width: 200px;
+  margin-left: -100px; /* половина от ширины */
+
+  top: 50%;
+  height: 15px;
+  margin-top: -7.5px; /* половина от высоты */
+
+  text-align: center;
+  color: red;
+  font-size: 11px;
+}
+
+
+/* стрелка влево *************************************************************/
+.classArr {
+  position: fixed;
+  top: 80px;
+  left: 40px;
+  font-size: 20px;
+  line-height: 20px;
+  color: #f00;
+  opacity: .4;
+  -webkit-animation: arrow_left_bounce 2s infinite ease-in-out;
+}
+
+@-webkit-keyframes arrow_left_bounce {
+  0%, 20%, 60%, 100%  { -webkit-transform: translateX(0); }
+  40% { -webkit-transform: translateX(-30px); }
+  80% { -webkit-transform: translateX(-10px); }
+}
+
+.classArr span {
+    margin-left: 10px;
+}

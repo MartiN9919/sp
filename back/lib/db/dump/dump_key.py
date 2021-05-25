@@ -1,0 +1,105 @@
+
+import time
+
+from   lib.sys                      import tuple_to_dict_many, dict_filter
+from   lib.db.const.const_connect   import CONNECT
+from   lib.db.const.const_dat       import DAT_SYS_OBJ, DAT_SYS_KEY
+from   lib.db.connect.connect_mysql import DB_sql
+
+
+
+##################################################################################
+# DAT_SYS_KEY.DUMP
+# если name==None -> name=str(id) - только dop
+##################################################################################
+class DUMP_KEY:
+    def __init__(self, refreshDelay = 60*30):    # refreshDelay - время хранения кэша, в секундах
+        self.dump         = None
+        self.owners       = None
+        self.refreshDelay = refreshDelay
+        self.refreshTime  = time.time()-1
+        self._refresh_()
+
+    def _refresh_(self, force=False):
+        if not force and (self.refreshTime > time.time()): return
+        db  = DB_sql(database=CONNECT.DATA)
+        dat = db.execute(
+            sql=
+                "SELECT "+
+                    DAT_SYS_KEY.ID       +","+
+                    DAT_SYS_KEY.OBJ_ID   +","+
+                    DAT_SYS_KEY.COL      +","+
+                    DAT_SYS_KEY.NEED     +","+
+                    DAT_SYS_KEY.TYPE_VAL +","+
+                    DAT_SYS_KEY.LIST_ID  +","+
+                    DAT_SYS_KEY.NAME     +","+
+                    DAT_SYS_KEY.TITLE    +","+
+                    DAT_SYS_KEY.HINT     +" "+
+                "FROM "+
+                    DAT_SYS_KEY.TABLE+" "+
+                "ORDER BY "+
+                    DAT_SYS_KEY.COL      +" DESC, "+
+                    DAT_SYS_KEY.NEED     +" DESC;",
+            wait=True,
+            read=True
+        )
+        self.dump = tuple_to_dict_many(dat, [
+            DAT_SYS_KEY.ID,
+            DAT_SYS_KEY.OBJ_ID,
+            DAT_SYS_KEY.COL,
+            DAT_SYS_KEY.NEED,
+            DAT_SYS_KEY.TYPE_VAL,
+            DAT_SYS_KEY.LIST_ID,
+            DAT_SYS_KEY.NAME,
+            DAT_SYS_KEY.TITLE,
+            DAT_SYS_KEY.HINT,
+        ])
+        # если name==None -> name=str(id) - только dop
+        for ind, item in enumerate(self.dump):
+            if item[DAT_SYS_KEY.COL]==b'\x01': continue
+            if item[DAT_SYS_KEY.NAME] in (None, ''): self.dump[ind][DAT_SYS_KEY.NAME] = str(item[DAT_SYS_KEY.ID])
+
+        # словарь индексов групп-владельцев owner_id
+        self.owners = {}
+        def find_element_in_list(list_element, element):
+            try:               return list_element.index(element)
+            except ValueError: return -1
+        for item in self.dump:
+            ind = find_element_in_list(list_element=DAT_SYS_KEY.NAME_OWNER_LIST, element=item[DAT_SYS_KEY.NAME])
+            if ind < 0: continue
+
+            val = self.owners.get(item[DAT_SYS_KEY.OBJ_ID], [-1, -1, -1, -1])
+            val[ind] = item[DAT_SYS_KEY.ID]
+            self.owners[item[DAT_SYS_KEY.OBJ_ID]] = val
+
+        # актуальность дампа
+        self.refreshTime = time.time()+self.refreshDelay
+
+
+    # и/или id, и/или name, и/или val (val может быть id или name), и/или col
+    def get_rec(self, obj_id=None, id=None, name=None, val=None, col=None, only_first=True):
+        self._refresh_()
+        list_key_val = []
+        if obj_id !=None:        list_key_val.append((DAT_SYS_KEY.OBJ_ID, obj_id))
+        if id     !=None:        list_key_val.append((DAT_SYS_KEY.ID,     id))
+        if name   !=None:        list_key_val.append((DAT_SYS_KEY.NAME,   name))
+        if isinstance(val, str): list_key_val.append((DAT_SYS_KEY.NAME,   val))
+        if isinstance(val, int): list_key_val.append((DAT_SYS_KEY.ID,     val))
+        if col    !=None:        list_key_val.append((DAT_SYS_KEY.COL,    col))
+        rec = dict_filter(list_dict=self.dump, list_key_val=list_key_val, only_first=only_first)
+
+        if only_first:
+            if len(rec)!=1: raise Exception('Unknow key: '+(str(id) if id else '')+(str(name) if name else '')+(str(val) if val else ''))
+            return rec[0]
+        else:
+            return rec
+
+    # val: DAT_SYS_KEY.ID или DAT_SYS_KEY.NAME (str или int)   например: 'ngg_migrate', 121
+    # Error - ничего не найдено
+    def to_id  (self, obj_id, val): return self.get_rec(obj_id=obj_id, name=val)[DAT_SYS_KEY.ID  ] if isinstance(val, str) else val
+    def to_name(self, obj_id, val): return self.get_rec(obj_id=obj_id, id  =val)[DAT_SYS_KEY.NAME] if isinstance(val, int) else val
+
+
+    # val: rel.key_id   str или int   например: 'ngg_migrate', 121
+    def rel_to_id  (self, val): return self.to_id  (obj_id=DAT_SYS_OBJ.ID_REL, val=val)
+    def rel_to_name(self, val): return self.to_name(obj_id=DAT_SYS_OBJ.ID_REL, val=val)

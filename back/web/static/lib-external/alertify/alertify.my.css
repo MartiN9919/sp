@@ -1,0 +1,20 @@
+.alertify p {
+	margin: 0 0 20px;
+}
+
+.alertify-button,
+.alertify-log {
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    -khtml-user-select: none;
+    user-select: none;
+}
+
+.alertify-log-warn {
+    background: rgba(175, 177, 8, 0.9);
+}
+
+.alertify-logs {
+    z-index: 999999999;
+}

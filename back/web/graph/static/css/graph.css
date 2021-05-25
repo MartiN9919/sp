@@ -1,0 +1,23 @@
+body {
+    margin: 0;
+    overflow: hidden;
+}
+
+#layout_center_svg .node .label {
+    text-anchor: middle;
+    opacity: .8;
+    /* fill: #585858; */
+    /* text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #fff; */
+    /* font-weight: bold; */
+}
+
+#layout_center_svg .node .mark {
+    opacity: .8;
+    fill: #f5ff00;
+    stroke: #ff5858;
+    stroke-width: 2px;
+}
+
+#layout_center_svg .link {
+    stroke-width: 2;
+}

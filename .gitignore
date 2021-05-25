@@ -1,0 +1,28 @@
+# Byte-compiled / optimized / DLL files
+*__pycache__/*
+*.py[cod]
+*$py.class
+
+#__init__.py
+*.log.*
+*.log
+*.pid
+*.pyc
+
+# pyenv
+.python-version
+
+# Environments
+.env
+.venv
+.pytest_cache
+.idea
+log/
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+/saphir/script/user_scripts/
+/saphir/data_base_driver/constants/connect_db.py
+saphir/frontend/webpack-stats.json
