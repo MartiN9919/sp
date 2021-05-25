@@ -25,7 +25,7 @@
       <template v-slot:activator="{ on, attrs }">
         <v-btn plain v-bind="attrs" v-on="on">
           {{ userInformation.first_name }} {{ userInformation.last_name }}
-          <v-icon right>mdi-format-list-bulleted-square</v-icon>
+          <v-icon medium right>mdi-account</v-icon>
         </v-btn>
       </template>
 

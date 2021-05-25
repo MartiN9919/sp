@@ -462,7 +462,6 @@ export default {
 
 </script>
 
-
 <style scoped lang="scss">
   @import "~@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css";
 
@@ -472,4 +471,8 @@ export default {
   .control_sel > i {
     color: red!important;
   }
+  .leaflet-bar.leaflet-control .v-icon {
+    line-height: inherit;
+  }
+
 </style>

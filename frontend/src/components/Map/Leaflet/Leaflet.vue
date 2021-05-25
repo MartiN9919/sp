@@ -496,6 +496,14 @@ export default {
     color: #060;
     font-style: normal!important;
   }
+
+  /*** кнопка ***/
+  .polyline-measure-unicode-icon {
+    color: rgba(0, 0, 0, 0.54)!important;
+  }
+  .polyline-measure-controlOnBgColor {
+    color: red!important;
+  }
 </style>
 <style scoped lang="scss">
   @import "~leaflet/dist/leaflet.css";

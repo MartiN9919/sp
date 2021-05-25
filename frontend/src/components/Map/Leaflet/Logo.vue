@@ -4,7 +4,7 @@
     class="map-logo select_off"
     :position="'bottomleft'"
   >
-    <v-icon>mdi-diamond-stone</v-icon>САПФИР
+    <v-icon medium>mdi-diamond-stone</v-icon>САПФИР
   </l-control>
 </template>
 
@@ -41,7 +41,7 @@ export default {
 <style scoped lang="scss">
 
   .map-logo {
-    font-size: 2em;
+    font-size: 1.6em;
     font-weight: bolder;
     color: #aaa;
     opacity: 0.8;

@@ -99,7 +99,7 @@ export default {
       get: function () { return this.selectedTemplate.title },
       set: function (title) { this.$emit('changeTitle', title) }
     },
-    inputLabel: function () { return this.analystsListLength ? 'Введите название шаблона' : 'Меню шаблонов' },
+    inputLabel: function () { return this.analystsListLength ? 'Введите название шаблона' : 'Шаблон' },
     analystsListLength: function () {
       return this.selectedTemplate.activeAnalysts.concat(
         this.selectedTemplate.passiveAnalysts).length
