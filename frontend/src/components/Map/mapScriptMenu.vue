@@ -189,7 +189,7 @@ export default {
 }
 </script>
 
-<style >
+<style scoped>
   .tree-view {
     max-height: 95%;
   }

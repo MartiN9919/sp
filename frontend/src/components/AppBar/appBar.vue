@@ -23,9 +23,9 @@
 
     <v-menu offset-y z-index="10001">
       <template v-slot:activator="{ on, attrs }">
-        <v-btn plain v-bind="attrs" v-on="on">
+        <v-btn large plain v-bind="attrs" v-on="on">
           {{ userInformation.first_name }} {{ userInformation.last_name }}
-          <v-icon medium right>mdi-account</v-icon>
+          <v-icon right size="24">mdi-account</v-icon>
         </v-btn>
       </template>
 
