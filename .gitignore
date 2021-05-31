@@ -23,6 +23,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
-/saphir/script/user_scripts/
-/saphir/data_base_driver/constants/connect_db.py
-saphir/frontend/webpack-stats.json
+
+frontend/webpack-stats.json
+frontend/package-lock.json
+*migrations/*

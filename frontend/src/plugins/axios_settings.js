@@ -20,8 +20,9 @@ export async function getResponseAxios (url, config = {}) {
       return response.data
     })
     .catch(error => {
+      console.log(error)
       store.commit('changeProgressLinearStatus', false)
-      store.dispatch('appendErrorAlert', error.response)
+      //store.dispatch('appendErrorAlert', error.response)
       return Promise.reject()
     })
 }

@@ -1,23 +1,39 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
-import authentication from './modules/authentication'
+import Vue      from 'vue'
+import Vuex     from 'vuex'
+import auth     from './modules/auth'
 import treeview from './modules/treeview'
-import modules_map from './modules/map/modules_map'
-import alerts from './modules/alerts'
-import socket from './modules/socket'
-import report from './modules/report'
-import map from './modules/map'
+import map      from './modules/map/index'
+import alerts   from './modules/alerts'
+import socket   from './modules/socket'
+import report   from './modules/report'
+import script   from './modules/script/index'
 
 Vue.use(Vuex)
 
-export default new Vuex.Store({
+const store = new Vuex.Store({
   modules: {
-    authentication,
+    auth,
     treeview,
-    map,
+    script,
     report,
     alerts,
     socket,
-    modules_map,
+    map,
   }
 })
+
+export default store
+
+// export default {
+//   store: new Vuex.Store({
+//     modules: {
+//       auth,
+//       treeview,
+//       script,
+//       report,
+//       alerts,
+//       socket,
+//       modules_map,
+//     },
+//   }),
+// }
