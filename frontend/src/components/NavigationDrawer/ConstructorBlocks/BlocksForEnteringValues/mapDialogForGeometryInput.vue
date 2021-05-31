@@ -1,9 +1,10 @@
 <template>
   <v-dialog v-model="dialog" persistent>
     <template v-slot:activator="{ on, attrs }">
-      <v-btn color="teal" v-bind="attrs" v-on="on" plain
-        class="pb-2 text-decoration-underline"
-      >Выбрать объект на карте</v-btn>
+      <v-icon
+          v-bind="attrs" v-on="on"
+          :color="attrs['aria-expanded'] === 'true' ? 'teal' : ''"
+      >mdi-map-marker-outline</v-icon>
     </template>
 
     <v-card>
@@ -22,7 +23,7 @@
 
 <script>
 export default {
-  name: "mapDialog",
+  name: "mapDialogForGeometryInput",
   props: { value: Array, },
   data: () => ({ dialog: false, }),
   computed: {
@@ -33,7 +34,7 @@ export default {
   },
   methods: {
     acceptGeometry() {
-      this.valueGeometry = [] // тут объекты future collection с карты после нажатия кнопки подтверждения
+      this.valueGeometry = [1, 2] // тут объекты future collection с карты после нажатия кнопки подтверждения
       this.dialog = false
     },
   },

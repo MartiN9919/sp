@@ -30,9 +30,9 @@
       </template>
 
       <v-list oncontextmenu="return false" rounded>
-        <v-list-item link>
+        <v-list-item @click="deauthenticateUser({})" link>
           <v-list-item-icon><v-icon left>mdi-logout</v-icon></v-list-item-icon>
-          <v-list-item-title @click="deauthenticateUser({})">Выйти из системы</v-list-item-title>
+          <v-list-item-title>Выйти из системы</v-list-item-title>
         </v-list-item>
       </v-list>
     </v-menu>

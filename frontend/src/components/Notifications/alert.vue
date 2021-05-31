@@ -1,18 +1,17 @@
 <template>
     <v-alert
-    :color="status"
-    @click="$emit('removeAlert', alert)"
-    :icon="this.icon"
-    border="left" dark
-    style="cursor: default"
-    elevation="20"
+      :color="status"
+      @click="$emit('removeAlert', alert)"
+      :icon="this.icon"
+      border="left" dark
+      style="cursor: default"
+      elevation="20"
     >
       <v-row no-gutters class="noselect">
-        <h3 v-if="[404].indexOf(alert.status) !== -1">
-          Ошибка получения данных
-        </h3>
-        <div class="title"  v-else-if="[500].indexOf(alert.status) !== -1">
-          Неизвестная ошибка сервера
+        <div v-if="alert.status in alertText">
+          <div class="text-uppercase">Ошибка выполнения запроса</div>
+          <v-divider light></v-divider>
+          <div>{{alertText[alert.status]}}</div>
         </div>
         <v-col v-else-if="[501, 502, 503].indexOf(alert.status) !== -1">
           <v-row no-gutters>
@@ -25,9 +24,6 @@
           <div>Сообщение - {{alert.content}}</div>
 
         </v-col>
-        <div v-else>
-          {{alert.data.status}}
-        </div>
       </v-row>
     </v-alert>
 </template>
@@ -38,6 +34,15 @@ import '@/assets/css/noselect.css'
 export default {
   name: 'alert',
   data: () => ({
+    alertText: {
+      400: 'Запрос не был выполнен из-за некоректно предоставленных данных',
+      401: 'Запрос не был выполнен из-за ошибки подтверждения персональных данных',
+      403: 'Вы не обладаете правами, для выполнения данного запроса',
+      404: 'По вашему запросу ничего не было найдено. Возможно ресурс был удален',
+      405: 'Некорректный запрос',
+      408: 'Истекло время ожидания ответа от сервера',
+      500: 'Произошла внутренняя ошибка сервера',
+    },
     alertType: {
       '501': 'green darken-1',
       '502': 'blue darken-1',
