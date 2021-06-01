@@ -16,6 +16,23 @@ const http = axios.create({
   }
 })
 
+export function checkErrorStatusCode(statusCode){
+  const CRITICAL_STATUS_CODE = [401, ]
+  return CRITICAL_STATUS_CODE.includes(statusCode)
+}
+
+function processingErrorResponse(error){
+  store.commit('changeProgressLinearStatus', false)
+  if(!checkErrorStatusCode(error.response.status))
+    store.dispatch('appendErrorAlert', error.response)
+  return Promise.reject(error)
+}
+
+function processingSuccessResponse(response){
+  store.commit('changeProgressLinearStatus', false)
+  return response.data
+}
+
 export async function getResponseAxios (url, config = {}) {
   store.commit('changeProgressLinearStatus', true)
   return await http.get(url, config)
