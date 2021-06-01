@@ -43,12 +43,12 @@ def aj_script_execute_map(request):
         my_module = importlib.import_module('script.user_scripts.' + method_name)
         result = getattr(my_module, method_name)(data.get('variables'))
         if result == 'error':
-            return JsonResponse({'status': 'Ошибка выполнения скрипта. Проверьте введенные данные'}, status=406)
+            return JsonResponse({}, status=405)
         else:
             return JsonResponse({'data': result}, status=200)
 
     except:
-        return JsonResponse({'status': 'Данный скрипт отсутствует в базе данных'}, status=405)
+        return JsonResponse({}, status=404)
 
 
 @login_check
@@ -83,7 +83,7 @@ def aj_script_execute_report(request):
                                           'date': date_time.replace(microsecond=0, tzinfo=None).isoformat(sep=' '),
                                           'status': 'in_progress', 'params': data}}, status=200)
     except:
-        return JsonResponse({'status': 'Данный скрипт отсутствует в базе данных'}, status=405)
+        return JsonResponse({}, status=404)
 
 
 @login_check
@@ -111,7 +111,7 @@ def aj_template(request):
             return JsonResponse({'data': get_template(request.GET['template_id'], request.user.id)},
                                 status=200)
         except:
-            return JsonResponse({'status': 'Нет доступа к данному шаблону'}, status=403)
+            return JsonResponse({}, status=401)
     elif request.method == 'POST':
         group_id = DAT_OWNER.DUMP.get_group(user_id=request.user.id)
         data = json.loads(request.body)
@@ -126,13 +126,13 @@ def aj_template(request):
                             data.get('passiveAnalysts', ''))
             return JsonResponse({}, status=200)
         except:
-            return JsonResponse({'data': 'шаблон не найден'}, status=404)
+            return JsonResponse({}, status=404)
 
     elif request.method == 'DELETE':
         try:
             remove_template(request.user.id, request.GET['template_id'])
             return JsonResponse({}, status=200)
         except:
-            return JsonResponse({'data': 'шаблон не найден'}, status=404)
+            return JsonResponse({}, status=404)
     else:
-        return JsonResponse({'status': 'Данный запрос не обработан'}, status=404)
+        return JsonResponse({}, status=405)

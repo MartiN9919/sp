@@ -15,7 +15,7 @@ function deleteVerifiedAlert (index) {
 function addVerifiedAlert (idAlert) {
   const verifiedAlert = findArrayVerifiedAlerts()
   verifiedAlert.push(idAlert)
-  document.cookie = 'verified_alerts=' + JSON.stringify(verifiedAlert)
+  document.cookie = 'verified_alerts=' + JSON.stringify(verifiedAlert) + '; SameSite="Secure";'
 }
 
 export default {
