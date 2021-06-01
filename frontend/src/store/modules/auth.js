@@ -1,4 +1,5 @@
 import { getResponseAxios, postResponseAxios, getResponseAxiosForCloseProblemWithAlertInLoginPage } from '@/plugins/axios_settings'
+
 import router from '@/router'
 
 export default {
@@ -51,7 +52,9 @@ export default {
           }
           return Promise.resolve()
         })
+
         .catch(error => { return Promise.reject(error) })
+
     }
   }
 }
