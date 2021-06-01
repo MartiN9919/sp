@@ -28,3 +28,7 @@ venv.bak/
 frontend/webpack-stats.json
 frontend/package-lock.json
 *migrations/*
+
+# git rm --cached -r *migrations/*
+
+
