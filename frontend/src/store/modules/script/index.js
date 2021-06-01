@@ -1,18 +1,56 @@
-import { postResponseAxios, getResponseAxios, deleteResponseAxios, putResponseAxios } from '@/plugins/axios_settings'
+import {
+  postResponseAxios,
+  getResponseAxios,
+  deleteResponseAxios,
+  putResponseAxios,
+} from '@/plugins/axios_settings'
+
+import {
+  MAP_ITEM,
+} from '@/components/Map/Leaflet/L.Const';
 
 export default {
+  /*
+   * state.selectedTemplate.activeAnalysts[ind]
+   *   id     (int)                                  - id скрипта (НЕ УНИКАЛЬНЫЙ)
+   *   marker (str) ['pulse']                        - тип маркера,  см. MAP_ITEM.MARKER. ...
+   *   line   (str) ['']                             - тип линии,    см. MAP_ITEM.LINE. ...
+   *   polygon(str) ['']                             - тип полигона, см. MAP_ITEM.POLYGON. ...
+   *   color  (str) ['red']                          - цвет маркера или фигуры, любой способ, в т.ч. прозрачность
+   *   icon   (str) ['mdi-star']                     - иконка (для маркера MARKER.FONT)
+   *   fc                                            - FeatureCollection
+   *   fc.id     (str, int)                          - уникальный идентификатор слоя, ПОКА НЕ НУЖЕН - НЕ УДАЛЯЛ
+   *   fc.features[i].properties.hint (str) ['']     - всплывающая подсказка, НЕТ РЕАКТИВНОСТИ
+   *   fc.features[i].color_fill (str) ['']          - цвет заливки фигуры
+   */
+
   state: {
     templatesList: [],
     selectedTemplate: {
       title: '',
       activeAnalysts: [],
-      passiveAnalysts: []
+      passiveAnalysts: [],
     }
   },
   getters: {
-    templatesList: state => state.templatesList,
-    selectedTemplate: state => state.selectedTemplate
+    templatesList:                state =>        state.templatesList,
+    selectedTemplate:             state =>        state.selectedTemplate,
+
+    SCRIPT_GET:                   state =>        state.selectedTemplate.activeAnalysts,
+    SCRIPT_GET_ITEM:              state => ind => state.selectedTemplate.activeAnalysts[ind],
+
+    SCRIPT_GET_ITEM_MARKER:       state => ind => state.selectedTemplate.activeAnalysts[ind].marker       || MAP_ITEM.MARKER.DEFAULT,
+    SCRIPT_GET_ITEM_LINE:         state => ind => state.selectedTemplate.activeAnalysts[ind].line         || MAP_ITEM.LINE.DEFAULT,
+    SCRIPT_GET_ITEM_COLOR:        state => ind => state.selectedTemplate.activeAnalysts[ind].color        || 'red',
+    SCRIPT_GET_ITEM_COLOR_LEGEND: state => ind => state.selectedTemplate.activeAnalysts[ind].color_legend || [],
+    SCRIPT_GET_ITEM_ICON:         state => ind => state.selectedTemplate.activeAnalysts[ind].icon         || 'mdi-star',
+
+    // работает, но не используется
+    // SCRIPT_GET_ITEM_ID:        state => ind => state.selectedTemplate.activeAnalysts[ind].id           || '',
+    // SCRIPT_GET_ITEM_POLYGON:   state => ind => state.selectedTemplate.activeAnalysts[ind].polygon      || MAP_ITEM.POLYGON.DEFAULT,
+    // SCRIPT_GET_ITEM_FC:        state => ind => state.selectedTemplate.activeAnalysts[ind].fc           || {},
   },
+
   mutations: {
     changeSelectedTemplateTitle: (state, title) => state.selectedTemplate.title = title,
     addPassiveAnalysts: (state, analytics) => state.selectedTemplate.passiveAnalysts.push(analytics),
@@ -52,8 +90,19 @@ export default {
       state.templatesList.splice(state.templatesList.findIndex(
         template => template.id === parseInt(templateId)), 1)
     },
-    createNewTemplate: (state) => state.selectedTemplate = { title: '', activeAnalysts: [], passiveAnalysts: [] }
+    createNewTemplate: (state) => state.selectedTemplate = { title: '', activeAnalysts: [], passiveAnalysts: [] },
+
+
+    SCRIPT_MUT_ITEM_ADD: (state, item) => {
+      if (item.marker===undefined) item.marker = '';
+      if (item.color ===undefined) item.color  = '';
+      let item_copy = JSON.parse(JSON.stringify(item));        // deep copy
+      state.selectedTemplate.activeAnalysts.push(item_copy);
+    },
+    SCRIPT_MUT_ITEM_DEL:   (state, id)      => state.selectedTemplate.activeAnalysts.splice(id, 1),
+    SCRIPT_MUT_ITEM_COLOR: (state, param)   => state.selectedTemplate.activeAnalysts[param.ind].color = param.color,
   },
+
   actions: {
     addPassiveAnalysts: ({ commit }, analytics = {}) => commit('addPassiveAnalysts', analytics),
 

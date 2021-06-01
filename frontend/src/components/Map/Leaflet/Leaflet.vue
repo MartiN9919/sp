@@ -19,11 +19,11 @@
 
       <!-- ФИГУРЫ ИЗ state.map -->
       <l-layer-group
-        v-for="(map_item, map_ind) in MAP_GET"
-        v-bind:key="MAP_GET_ITEM_KEY(map_ind)"
+        v-for="(map_item, map_ind) in SCRIPT_GET"
+        v-bind:key="MAP_GET_KEY(map_ind)"
       >
         <l-marker-cluster
-          :key="MAP_GET_ITEM_KEY(map_ind)"
+          :key="MAP_GET_KEY(map_ind)"
           :options="cluster_options(map_ind)"
         >
           <l-geo-json
@@ -199,6 +199,7 @@ export default {
 
   computed: {
     ...mapGetters([
+      'MAP_GET_KEY',
       'MAP_GET_RANGE_SEL',
       'MAP_GET_TILES',
       'MAP_GET_TILE',
@@ -207,13 +208,12 @@ export default {
       'MAP_GET_CLUSTER',
       'MAP_GET_HINT',
 
-      'MAP_GET',
-      'MAP_GET_ITEM_KEY',
-      'MAP_GET_ITEM_COLOR',
-      'MAP_GET_ITEM_MARKER',
-      'MAP_GET_ITEM_LINE',
-      'MAP_GET_ITEM_POLYGON',
-      'MAP_GET_ITEM_ICON',
+      'SCRIPT_GET',
+      'SCRIPT_GET_ITEM_COLOR',
+      'SCRIPT_GET_ITEM_MARKER',
+      'SCRIPT_GET_ITEM_LINE',
+      'SCRIPT_GET_ITEM_POLYGON',
+      'SCRIPT_GET_ITEM_ICON',
     ]),
     //form: vm => vm,
   },
@@ -305,7 +305,7 @@ export default {
       this.data_normalize_color(map_ind);
 
       // deep copy
-      let item = this.MAP_GET_ITEM(map_ind);
+      let item = this.SCRIPT_GET_ITEM(map_ind);
       let fc   = item[MAP_ITEM.FC];
       fc = JSON.parse(JSON.stringify(fc));
 
@@ -331,10 +331,10 @@ export default {
       return {
         // область при наведении курсора на кластер
         showCoverageOnHover: true,
-        polygonOptions: { color: this.MAP_GET_ITEM_COLOR(map_ind), },
+        polygonOptions: { color: this.SCRIPT_GET_ITEM_COLOR(map_ind), },
 
         // для последующей коррекции цвета маркеров
-        cluster_color: this.MAP_GET_ITEM_COLOR(map_ind),
+        cluster_color: this.SCRIPT_GET_ITEM_COLOR(map_ind),
 
         // увеличение, при котором создавать кластеры
         disableClusteringAtZoom: this.MAP_GET_CLUSTER?17:0,
@@ -378,7 +378,7 @@ export default {
           );
 
           // тип линии: бегущая пунктирная
-          let line = self.MAP_GET_ITEM_LINE(map_ind);
+          let line = self.SCRIPT_GET_ITEM_LINE(map_ind);
           if ((['LineString', ].indexOf(feature.geometry.type)>-1) && (line!=MAP_ITEM.LINE.DEFAULT)) {   // 'Polygon'
             layer.setStyle({'className': line, });
           }
@@ -387,7 +387,7 @@ export default {
           if (layer.pm) { delete layer.pm; }
 
           // тип полигона: color
-          // let polygon = self.MAP_GET_ITEM_POLYGON(map_ind);
+          // let polygon = self.SCRIPT_GET_ITEM_POLYGON(map_ind);
           // if ((['Polygon', ].indexOf(feature.geometry.type)>-1) && (polygon!=POLYGON.DEFAULT)) {
           // }
         }.bind(this),
@@ -396,10 +396,10 @@ export default {
         // стиль маркеров
         pointToLayer: function(feature, latlng) {
           return marker_get(latlng, {
-            name:  self.MAP_GET_ITEM_MARKER(map_ind),
-            color: self.MAP_GET_ITEM_COLOR (map_ind),
-            icon:  self.MAP_GET_ITEM_ICON  (map_ind),
-            // size:  self.MAP_GET_ITEM_ICON(map_ind), не реализовано за ненадобностью
+            name:  self.SCRIPT_GET_ITEM_MARKER(map_ind),
+            color: self.SCRIPT_GET_ITEM_COLOR (map_ind),
+            icon:  self.SCRIPT_GET_ITEM_ICON  (map_ind),
+            // size:  self.SCRIPT_GET_ITEM_ICON(map_ind), не реализовано за ненадобностью
           });
         },
 
@@ -410,7 +410,7 @@ export default {
             weight:      2,
             opacity:     .5,
             fillOpacity: .3,
-            color:       self.MAP_GET_ITEM_COLOR(map_ind),
+            color:       self.SCRIPT_GET_ITEM_COLOR(map_ind),
             fillColor:   feature.color, // set in mixin
           };
         },
