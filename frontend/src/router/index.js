@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import store from '../store/index'
+import {checkErrorStatusCode} from '@/plugins/axios_settings'
 
 Vue.use(VueRouter)
 
@@ -30,8 +31,8 @@ const routes = [
     meta: { isAuth: true }
   },
   {
-    path: '*', redirect: 'map'
-  }
+    path: '*', redirect: 'login'
+  },
 ]
 
 const router = new VueRouter({
@@ -43,7 +44,7 @@ router.beforeResolve((to, from, next) => {
   if (to.matched.some(record => record.meta.isAuth)) {
     store.dispatch('identifyUser', {})
       .then(() => { next() })
-      .catch(() => { next({ name: 'Login' }) })
+      .catch(error => { if(checkErrorStatusCode(error.response.status)) next({ name: 'Login' }) })
   } else {
     store.dispatch('identifyUser', {})
       .then(() => { next({ name: 'Map' }) })

@@ -132,5 +132,5 @@ def login_check(function):
         if request.user.is_authenticated:
             return function(request)
         else:
-            return JsonResponse({'data': 'пользователь не аунтефицирован'}, status=404)
+            return JsonResponse({}, status=401)
     return is_auth

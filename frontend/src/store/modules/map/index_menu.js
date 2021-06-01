@@ -15,6 +15,7 @@ export const MAP_DATA_MENU_TILES = [
     attr:     '',
     tms:      false,
   },
+
   // {
   //   title:    'OSM',
   //   subtitle: 'Схема (Локальная сеть)',
@@ -24,6 +25,17 @@ export const MAP_DATA_MENU_TILES = [
   //   tms:      false,
   //   enabled:  false,
   // },
+
+  {
+    title:    'Yandex',
+    subtitle: 'Интернет',
+    url:      'https://core-sat.maps.yandex.net/tiles?l=sat&v=3.786.0&x={x}&y={y}&z={z}&scale=2&lang=ru_UA',
+    icon:     'mdi-map-outline',
+    attr:     '',
+    tms:      false,
+    enabled:  false,
+  },
+
   {
     title:    'ESRI',
     subtitle: 'Спутник (Интернет)',

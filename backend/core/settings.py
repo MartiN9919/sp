@@ -1,5 +1,5 @@
 from pathlib import Path
-from data_base_driver.constants.connect_db import VEC_DATA, VEC_DJANGO
+from data_base_driver.constants.connect_db import VEC_DATA
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -7,7 +7,7 @@ SECRET_KEY = '^7t+b0=(7#x)$7hqca+=9h1q+n40bwf*70gnxh$h#r($p!b=2e'
 
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -18,7 +18,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'channels',
-    'webpack_loader',  # приложение для интеграции фронтенда
 
     'authentication',
     'script',
@@ -38,6 +37,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+
 
 ROOT_URLCONF = 'core.urls'
 
@@ -95,15 +96,10 @@ USE_L10N = True
 USE_TZ = True
 
 STATIC_URL = '/static/'
+STATIC_ROOT = 'var/static_root'
+STATICFILES_DIRS = [
+    "static",
+]
 
 """Настройка для рендеринга фронтенда. Будет только во время разработки"""
-WEBPACK_LOADER = {
-    'DEFAULT': {
-        'CACHE': not DEBUG,
-        'BUNDLE_DIR_NAME': 'webpack_bundles/',
-        'STATS_FILE': str(BASE_DIR.parent) + '/frontend/webpack-stats.json',
-        'POLL_INTERVAL': 0.1,
-        'TIMEOUT': None,
-        'IGNORE': [r'.+\.hot-update.js', r'.+\.map'],
-    }
-}
+

@@ -1,4 +1,5 @@
 import { findArrayVerifiedAlerts } from './alerts'
+import { WS_SERVER_IP } from '@/plugins/axios_settings'
 
 export default {
   state: {
@@ -14,7 +15,7 @@ export default {
   actions: {
     connectSocket: ({ commit }) => {
       return new Promise((resolve, reject) => {
-        const socket = new WebSocket('ws:' + '127.0.0.1:8000/channel/')
+        const socket = new WebSocket(WS_SERVER_IP + 'channel/')
         socket.onopen = () => {
           commit('connectSocket', socket)
           resolve()

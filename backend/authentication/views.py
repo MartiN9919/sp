@@ -13,7 +13,7 @@ def login_user(request):
     """
     # если пользователь уже залогинен, чего не может быть, но всеже возвращаем положительный результат аутентификации
     if request.user.is_authenticated:
-        return JsonResponse({'status': 'Пользователь уже авторизирован'}, status=200)
+        return JsonResponse({}, status=200)
 
     body_unicode = request.body.decode('utf-8')
     body = json.loads(body_unicode)
@@ -31,9 +31,9 @@ def login_user(request):
                 'last_name': user.last_name,
             }}, status=200)
         else:
-            return JsonResponse({'status': 'Проверьте введенные данные'}, status=400)
+            return JsonResponse({}, status=400)
     else:
-        return JsonResponse({'status': 'its not POST request'}, status=403)
+        return JsonResponse({}, status=405)
 
 
 @login_check

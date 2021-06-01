@@ -65,16 +65,12 @@
           <div class="text-center">
             <v-btn
               @click="executeScript(selectedItem)"
-              outlined
-              color="teal"
-              class="mx-2 mb-2"
+              outlined color="teal" class="mx-2 mb-2"
             >Выполнить</v-btn>
             <v-btn
               :disabled="selectedTemplate.passiveAnalysts.indexOf(selectedItem) !== -1"
               @click="disabledActiveAnalysts()"
-              outlined
-              color="teal"
-              class="mx-2 mb-2"
+              outlined color="teal" class="mx-2 mb-2"
             >Отключить</v-btn>
           </div>
         </div>
@@ -191,7 +187,7 @@ export default {
 }
 </script>
 
-<style >
+<style scoped>
   .tree-view {
     max-height: 95%;
   }

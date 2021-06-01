@@ -1,8 +1,13 @@
 const BundleTracker = require('webpack-bundle-tracker')
 
 module.exports = {
-  publicPath: 'http://127.0.0.1:8080',
-  outputDir: './dist/',
+  publicPath: '/static/src/vue/dist/', // Should be STATIC_URL + path/to/build
+  outputDir: '../backend/static/src/vue/dist/', // Output to a directory in STATICFILES_DIRS
+  filenameHashing: false,
+  runtimeCompiler: true,
+  devServer: {
+        writeToDisk: true,
+  },
   transpileDependencies: [
     'vuetify'
   ],
