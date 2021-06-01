@@ -23,7 +23,7 @@
 
 <script>
 export default {
-  name: "mapDialogForGeometryInput",
+  name: "geometryInputDialog",
   props: { value: Array, },
   data: () => ({ dialog: false, }),
   computed: {

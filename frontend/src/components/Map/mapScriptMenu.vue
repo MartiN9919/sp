@@ -22,7 +22,6 @@
 
     <v-col slot="secondPane" class="column-settings overflow-hidden pa-0">
       <block-header :text-header="'Выбранные скрипты'"></block-header>
-        <v-btn>Map edit</v-btn>
 
       <v-divider></v-divider>
       <menuTemplate

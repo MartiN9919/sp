@@ -30,7 +30,7 @@
 
 <script>
 import '@/assets/css/noselect.css'
-import './BlocksForEnteringValues/mapDialogForGeometryInput'
+// import './BlocksForEnteringValues/geometryInputDialog'
 import geometryInput from "./BlocksForEnteringValues/geometryInput";
 import booleanInput from "./BlocksForEnteringValues/booleanInput";
 import dateInput from "./BlocksForEnteringValues/dateInput";

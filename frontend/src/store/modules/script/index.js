@@ -10,7 +10,7 @@ import {
 } from '@/components/Map/Leaflet/L.Const';
 
 export default {
-  /*
+  /**
    * state.selectedTemplate.activeAnalysts[ind]
    *   id     (int)                                  - id скрипта (НЕ УНИКАЛЬНЫЙ)
    *   marker (str) ['pulse']                        - тип маркера,  см. MAP_ITEM.MARKER. ...

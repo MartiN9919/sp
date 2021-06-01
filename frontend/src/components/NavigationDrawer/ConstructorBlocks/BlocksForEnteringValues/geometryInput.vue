@@ -14,10 +14,10 @@
 </template>
 
 <script>
-import mapDialogForGeometryInput from "./mapDialogForGeometryInput";
+import geometryInputDialog from "./geometryInputDialog";
 export default {
   name: "geometryInput",
-  components: {mapDialogForGeometryInput, },
+  components: {geometryInputDialog, },
   props: {
     variable: Object,
   }
