@@ -72,7 +72,7 @@ export const MAP_DATA_MENU_TILES = [
     icon:     'mdi-map-outline',
     attr:     '',
     tms:      false,
-    crs:      L.CRS.EPSG3395, //+L.CRS.EPSG3857,  -L.CRS.EPSG4326
+    crs:      L.CRS.EPSG4326, //+L.CRS.EPSG3857,  -L.CRS.EPSG4326 -L.CRS.EPSG3395, -L.CRS.Simple,
     enabled:  false,
   },
 ];
