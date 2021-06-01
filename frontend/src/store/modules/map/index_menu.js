@@ -1,3 +1,6 @@
+import { CRS, } from 'proj4leaflet';
+
+
 export const MAP_DATA_MENU_TILES = [
   {
     title:    'OSM',
@@ -6,6 +9,7 @@ export const MAP_DATA_MENU_TILES = [
     url:      'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
     attr:     '',
     tms:      false,
+    //crs:      L.CRS.EPSG3857,
   },
   {
     title:    'OSM',
@@ -33,6 +37,7 @@ export const MAP_DATA_MENU_TILES = [
     icon:     'mdi-map-outline',
     attr:     '',
     tms:      false,
+    crs:      L.CRS.EPSG3395,
     enabled:  false,
   },
 
@@ -67,6 +72,7 @@ export const MAP_DATA_MENU_TILES = [
     icon:     'mdi-map-outline',
     attr:     '',
     tms:      false,
+    crs:      L.CRS.EPSG3395, //+L.CRS.EPSG3857,  -L.CRS.EPSG4326
     enabled:  false,
   },
 ];
