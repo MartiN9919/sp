@@ -2,12 +2,12 @@
   <div style="height: 100%; width: 100%;">
     <l-map
       ref="map"
-      :options="mapOptions"
       style="height: 100%; z-index: 0;"
+      :options="mapOptions"
+      :crs="MAP_GET_TILES[MAP_GET_TILE].crs"
       @ready="onMapReady"
       @click="onClick"
       @contextmenu="menu_show"
-      :crs="MAP_GET_TILES[MAP_GET_TILE].crs"
     >
 
 <!--
@@ -90,28 +90,20 @@
 
 <script>
 
-import {
-  mapGetters,
-  //mapActions,
-} from 'vuex';
-
-import {
-  //L,
-  Icon,
-  latLng,
-} from 'leaflet';
+import { mapGetters } from 'vuex';
+import { Icon       } from 'leaflet';
 
 import {
   LMap,
   LTileLayer,
   LMarker,
+  LPolyline,
+  LPolygon,
   LPopup,
   LTooltip,
   LFeatureGroup,
   LLayerGroup,
   LGeoJson,
-  LPolyline,
-  LPolygon,
   LControlScale,
   LControl,
   LIcon,
@@ -196,7 +188,7 @@ export default {
       mapOptions: {
         zoomControl: false,
         zoomSnap: 0.5,
-        crs: this.ttt(),
+        //crs: this.ttt(),
       },
     };
   },
@@ -229,27 +221,27 @@ export default {
     //   'MAP_ACT_RANGE_TS',
     // ]),
 
-    ttt(e) {
-      console.log(e)
-      //return;
-      return L.CRS.EPSG3395;
-      // return new L.Proj.CRS(
-      //   'EPSG:3006',
-      //   '+proj=utm +zone=33 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs',
-      //   {
-      //     resolutions: [ 8192, 4096, 2048, 1024, 512, 256, 128, ],
-      //     origin:      [ 0, 0 ],
-      //   }
-      // );
-      // return new L.Proj.CRS(
-      //   'EPSG:2400',
-      //   '+lon_0=15.808277777799999 +lat_0=0.0 +k=1.0 +x_0=1500000.0 +y_0=0.0 +proj=tmerc +ellps=bessel +units=m +towgs84=414.1,41.3,603.1,-0.855,2.141,-7.023,0 +no_def',
-      //   {
-      //     resolutions: [ 8192, 4096, 2048, 1024, 512, 256, 128, 64, 32, 16, 8, 4, 2, 1, 0.5, ],
-      //     origin:      [ 0, 0 ],
-      //   }
-      // );
-    },
+    // ttt(e) {
+    //   console.log(e)
+    //   //return;
+    //   return L.CRS.EPSG3395;
+    //   // return new L.Proj.CRS(
+    //   //   'EPSG:3006',
+    //   //   '+proj=utm +zone=33 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs',
+    //   //   {
+    //   //     resolutions: [ 8192, 4096, 2048, 1024, 512, 256, 128, ],
+    //   //     origin:      [ 0, 0 ],
+    //   //   }
+    //   // );
+    //   // return new L.Proj.CRS(
+    //   //   'EPSG:2400',
+    //   //   '+lon_0=15.808277777799999 +lat_0=0.0 +k=1.0 +x_0=1500000.0 +y_0=0.0 +proj=tmerc +ellps=bessel +units=m +towgs84=414.1,41.3,603.1,-0.855,2.141,-7.023,0 +no_def',
+    //   //   {
+    //   //     resolutions: [ 8192, 4096, 2048, 1024, 512, 256, 128, 64, 32, 16, 8, 4, 2, 1, 0.5, ],
+    //   //     origin:      [ 0, 0 ],
+    //   //   }
+    //   // );
+    // },
 
     // ===============
     // MENU

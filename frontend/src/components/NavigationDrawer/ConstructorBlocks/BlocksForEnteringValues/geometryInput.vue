@@ -5,10 +5,10 @@
     placeholder="Выберете объект на карте"
     hide-details color="teal" readonly class="pt-0 mt-0" type="text">
     <template v-slot:append>
-      <map-dialog-for-geometry-input
+      <geometry-input-dialog
         :value="variable.value !== null ? variable.value : []"
         @changeValueGeometry="variable.value = $event"
-      ></map-dialog-for-geometry-input>
+      ></geometry-input-dialog>
     </template>
   </v-text-field>
 </template>
@@ -17,7 +17,7 @@
 import geometryInputDialog from "./geometryInputDialog";
 export default {
   name: "geometryInput",
-  components: {geometryInputDialog, },
+  components: { geometryInputDialog, },
   props: {
     variable: Object,
   }

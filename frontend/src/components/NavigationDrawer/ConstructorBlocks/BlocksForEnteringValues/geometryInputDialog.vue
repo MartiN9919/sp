@@ -9,7 +9,64 @@
 
     <v-card>
 
-      <!--   Тут ставится карта   -->
+      <div style="height: 100%; width: 100%;">
+
+    <l-map
+      ref="map_edit"
+      style="height: 100%; z-index: 0;"
+      :options="mapOptions"
+      :crs="MAP_GET_TILES[MAP_GET_TILE].crs"
+      @ready="onMapReady"
+    >
+
+      <!--
+      @click="onClick"
+      @contextmenu="menu_show"
+      -->
+
+      <!-- ПОДЛОЖКА -->
+      <l-tile-layer
+        :url="MAP_GET_TILES[MAP_GET_TILE].url"
+        :attribution="MAP_GET_TILES[MAP_GET_TILE].attr"
+        :tms="MAP_GET_TILES[MAP_GET_TILE].tms"
+      />
+
+
+      <!-- РЕДАКТОР -->
+      <!--
+      <Edit/>
+      -->
+
+      <!-- МАСШТАБ -->
+      <!--
+      <l-control-scale
+        v-if="MAP_GET_SCALE"
+        position="bottomright"
+        :imperial="false"
+        :metric="true"
+      />
+      -->
+
+
+      <!-- ТЕСТ -->
+      <!--
+      <l-control
+        v-if="true"
+        position="topleft"
+      >
+        <v-btn class="button-container leaflet-buttons-control-button" @click="editor_on">Test 1</v-btn>
+        <v-btn class="button-container leaflet-buttons-control-button" @click="onTest2">Test 2</v-btn>
+      </l-control>
+      -->
+
+    </l-map>
+    </div>
+
+
+
+
+
+
 
       <v-divider></v-divider>
       <v-card-actions>
@@ -22,11 +79,51 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+import 'leaflet';
+import {
+  LMap,
+  LTileLayer,
+  // LFeatureGroup,
+  // LLayerGroup,
+  // LGeoJson,
+  // LMarker,
+  // LPolyline,
+  // LPolygon,
+  // LIcon,
+} from 'vue2-leaflet';
+
 export default {
-  name: "geometryInputDialog",
+  name: 'geometry-input-dialog',
+
   props: { value: Array, },
-  data: () => ({ dialog: false, }),
+
+  components: { LMap, LTileLayer, },
+
+  data: () => ({
+    dialog: false,
+
+    mapOptions: {
+      zoomControl: false,
+      zoomSnap: 0.5,
+      //crs: this.ttt(),
+    },
+  }),
+
   computed: {
+    ...mapGetters([
+      'MAP_GET_TILES',
+      'MAP_GET_TILE',
+      'MAP_GET_SCALE',
+
+      'SCRIPT_GET',
+      'SCRIPT_GET_ITEM_COLOR',
+      'SCRIPT_GET_ITEM_MARKER',
+      'SCRIPT_GET_ITEM_LINE',
+      'SCRIPT_GET_ITEM_POLYGON',
+      'SCRIPT_GET_ITEM_ICON',
+    ]),
+
     valueGeometry: {
       get: function() { return this.value },
       set: function(value) { this.$emit('changeValueGeometry', value) },
@@ -37,10 +134,22 @@ export default {
       this.valueGeometry = [1, 2] // тут объекты future collection с карты после нажатия кнопки подтверждения
       this.dialog = false
     },
+
+    // ===============
+    // СОБЫТИЯ
+    // ===============
+    onMapReady() {
+      console.log(11)
+      this.map = this.$refs.map_edit.mapObject;
+      //this.onEditReady();
+    },
+
   },
+
 }
 </script>
 
-<style scoped>
-
+<style scoped lang="scss">
+  @import "~leaflet/dist/leaflet.css";
+  @import "~@/components/Map/Leaflet/L.css";
 </style>
