@@ -26,5 +26,5 @@ venv.bak/
 
 frontend/webpack-stats.json
 frontend/package-lock.json
-.backend/static
+.backend/static/*
 *migrations/*
