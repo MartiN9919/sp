@@ -54,13 +54,13 @@ export default {
   getters: {
     MAP_GET_KEY: (state, getters) => (ind) =>
       ind+'-'+
-      getters.MAP_GET_RANGE_SEL        +'-'+
+      getters.MAP_GET_RANGE_SEL           +'-'+
       getters.SCRIPT_GET_ITEM_MARKER (ind)+'-'+
       getters.SCRIPT_GET_ITEM_LINE   (ind)+'-'+
       // getters.SCRIPT_GET_ITEM_POLYGON(ind)+'-'+
       getters.SCRIPT_GET_ITEM_COLOR  (ind)+'-'+
       getters.SCRIPT_GET_ITEM_ICON   (ind)+'-'+
-      getters.MAP_GET_CLUSTER          +'-'+
+      getters.MAP_GET_CLUSTER             +'-'+
       getters.MAP_GET_HINT,
 
     MAP_GET_RANGE_SHOW:        (state) =>  state.range.show,
@@ -87,7 +87,7 @@ export default {
 
 
   mutations: {
-    MAP_MUT_RANGE_SHOW:        (state, on)  => state.range.show = on,
+    MAP_MUT_RANGE_SHOW:        (state, on)  =>   state.range.show      = on,
     MAP_MUT_RANGE_LIMIT:       (state, lst) => { state.range.limit_min = lst[0]; state.range.limit_max = lst[1]; },
     MAP_MUT_RANGE_SEL:         (state, lst) => { state.range.sel_min   = lst[0]; state.range.sel_max   = lst[1]; },
 
