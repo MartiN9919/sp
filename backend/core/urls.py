@@ -6,7 +6,7 @@ from django.views.generic import TemplateView
 from core import settings
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('admin', admin.site.urls),
     path('api/auth/', include('authentication.urls')),
     path('api/script/', include('script.urls')),
     path('api/reports/', include('official_documents.urls')),
