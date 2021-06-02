@@ -1,5 +1,8 @@
 <template>
-  <v-dialog v-model="dialog" persistent>
+  <v-dialog
+    v-model="dialog"
+    persistent
+  >
     <template v-slot:activator="{ on, attrs }">
       <v-icon
           v-bind="attrs" v-on="on"
@@ -7,73 +10,73 @@
       >mdi-map-marker-outline</v-icon>
     </template>
 
+
     <v-card>
 
-      <div style="height: 100%; width: 100%;">
+      <!-- ЗАГОЛОВОК -->
+      <v-card-title class="headline">Отметки на карте</v-card-title>
 
-    <l-map
-      ref="map_edit"
-      style="height: 100%; z-index: 0;"
-      :options="mapOptions"
-      :crs="MAP_GET_TILES[MAP_GET_TILE].crs"
-      @ready="onMapReady"
-    >
+      <!-- КАРТА -->
+      <template>
+        <l-map
+          ref="map_edit"
+          style="height: 70vh; z-index: 0;"
+          :options="mapOptions"
+          :crs="MAP_GET_TILES[MAP_GET_TILE].crs"
+          @ready="onMapReady"
+        >
 
-      <!--
-      @click="onClick"
-      @contextmenu="menu_show"
-      -->
+          <!--
+          @click="onClick"
+          @contextmenu="menu_show"
+          -->
 
-      <!-- ПОДЛОЖКА -->
-      <l-tile-layer
-        :url="MAP_GET_TILES[MAP_GET_TILE].url"
-        :attribution="MAP_GET_TILES[MAP_GET_TILE].attr"
-        :tms="MAP_GET_TILES[MAP_GET_TILE].tms"
-      />
-
-
-      <!-- РЕДАКТОР -->
-      <!--
-      <Edit/>
-      -->
-
-      <!-- МАСШТАБ -->
-      <!--
-      <l-control-scale
-        v-if="MAP_GET_SCALE"
-        position="bottomright"
-        :imperial="false"
-        :metric="true"
-      />
-      -->
+          <!-- ПОДЛОЖКА -->
+          <l-tile-layer
+            :url="MAP_GET_TILES[MAP_GET_TILE].url"
+            :attribution="MAP_GET_TILES[MAP_GET_TILE].attr"
+            :tms="MAP_GET_TILES[MAP_GET_TILE].tms"
+          />
 
 
-      <!-- ТЕСТ -->
-      <!--
-      <l-control
-        v-if="true"
-        position="topleft"
-      >
-        <v-btn class="button-container leaflet-buttons-control-button" @click="editor_on">Test 1</v-btn>
-        <v-btn class="button-container leaflet-buttons-control-button" @click="onTest2">Test 2</v-btn>
-      </l-control>
-      -->
+          <!-- РЕДАКТОР -->
+          <!--
+          <Edit/>
+          -->
 
-    </l-map>
-    </div>
-
-
-
+          <!-- МАСШТАБ -->
+          <!--
+          <l-control-scale
+            v-if="MAP_GET_SCALE"
+            position="bottomright"
+            :imperial="false"
+            :metric="true"
+          />
+          -->
 
 
+          <!-- ТЕСТ -->
+          <!--
+          <l-control
+            v-if="true"
+            position="topleft"
+          >
+            <v-btn class="button-container leaflet-buttons-control-button" @click="editor_on">Test 1</v-btn>
+            <v-btn class="button-container leaflet-buttons-control-button" @click="onTest2">Test 2</v-btn>
+          </l-control>
+          -->
 
+        </l-map>
+      </template>
 
       <v-divider></v-divider>
+
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn color="teal" text @click="dialog = false">Отменить</v-btn>
         <v-btn color="teal" text @click="acceptGeometry">Подтвердить</v-btn>
       </v-card-actions>
+
     </v-card>
   </v-dialog>
 </template>
