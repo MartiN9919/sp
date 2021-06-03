@@ -11,25 +11,24 @@
     </template>
 
 
-    <v-card>
+    <v-card
+      class="select_off"
+    >
 
       <!-- ЗАГОЛОВОК -->
-      <v-card-title class="headline">Отметки на карте</v-card-title>
+      <v-card-title class="headline">Объект на карте</v-card-title>
 
       <!-- КАРТА -->
       <template>
         <l-map
-          ref="map_edit"
+          ref="map"
           style="height: 70vh; z-index: 0;"
           :options="mapOptions"
           :crs="MAP_GET_TILES[MAP_GET_TILE].crs"
           @ready="onMapReady"
-        >
-
-          <!--
+          @contextmenu=""
           @click="onClick"
-          @contextmenu="menu_show"
-          -->
+        >
 
           <!-- ПОДЛОЖКА -->
           <l-tile-layer
@@ -38,33 +37,22 @@
             :tms="MAP_GET_TILES[MAP_GET_TILE].tms"
           />
 
-
           <!-- РЕДАКТОР -->
-          <!--
           <Edit/>
-          -->
 
           <!-- МАСШТАБ -->
-          <!--
           <l-control-scale
             v-if="MAP_GET_SCALE"
             position="bottomright"
             :imperial="false"
             :metric="true"
           />
-          -->
 
-
-          <!-- ТЕСТ -->
-          <!--
-          <l-control
-            v-if="true"
-            position="topleft"
-          >
-            <v-btn class="button-container leaflet-buttons-control-button" @click="editor_on">Test 1</v-btn>
-            <v-btn class="button-container leaflet-buttons-control-button" @click="onTest2">Test 2</v-btn>
-          </l-control>
-          -->
+          <!-- ЛИНЕЙКА -->
+          <l-control-polyline-measure
+            v-if="MAP_GET_MEASURE"
+            :options="measure_options()"
+          />
 
         </l-map>
       </template>
@@ -84,24 +72,22 @@
 <script>
 import { mapGetters } from 'vuex';
 import 'leaflet';
-import {
-  LMap,
-  LTileLayer,
-  // LFeatureGroup,
-  // LLayerGroup,
-  // LGeoJson,
-  // LMarker,
-  // LPolyline,
-  // LPolygon,
-  // LIcon,
-} from 'vue2-leaflet';
+import { LMap, LTileLayer, LControlScale, } from 'vue2-leaflet';
+import LControlPolylineMeasure from 'vue2-leaflet-polyline-measure';
+
+import Edit from '@/components/Map/Leaflet/Edit';
+import MixKey from '@/components/Map/Leaflet/L.Mix.Key';
+import MixMeasure from '@/components/Map/Leaflet/L.Mix.Measure';
+
 
 export default {
   name: 'geometry-input-dialog',
 
   props: { value: Array, },
 
-  components: { LMap, LTileLayer, },
+  mixins: [ MixKey, MixMeasure, ],
+
+  components: { LMap, LTileLayer, LControlScale, LControlPolylineMeasure, Edit, },
 
   data: () => ({
     dialog: false,
@@ -109,15 +95,18 @@ export default {
     mapOptions: {
       zoomControl: false,
       zoomSnap: 0.5,
-      //crs: this.ttt(),
     },
   }),
+
+  mounted: function() {
+  },
 
   computed: {
     ...mapGetters([
       'MAP_GET_TILES',
       'MAP_GET_TILE',
       'MAP_GET_SCALE',
+      'MAP_GET_MEASURE',
 
       'SCRIPT_GET',
       'SCRIPT_GET_ITEM_COLOR',
@@ -134,17 +123,18 @@ export default {
   },
   methods: {
     acceptGeometry() {
-      this.valueGeometry = [1, 2] // тут объекты future collection с карты после нажатия кнопки подтверждения
+      this.valueGeometry = [1, 2] // тут объекты fc с карты после нажатия кнопки подтверждения
       this.dialog = false
     },
 
-    // ===============
-    // СОБЫТИЯ
-    // ===============
     onMapReady() {
-      console.log(11)
-      this.map = this.$refs.map_edit.mapObject;
-      //this.onEditReady();
+      this.map = this.$refs.map.mapObject;
+      this.map.invalidateSize();
+      this.key_mounted_after();
+    },
+
+    onClick(event) {
+      console.log(event.latlng);
     },
 
   },

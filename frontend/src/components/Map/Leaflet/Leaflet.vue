@@ -127,6 +127,7 @@ import Logo            from '@/components/Map/Leaflet/Logo';
 import MixKey          from '@/components/Map/Leaflet/L.Mix.Key';
 import MixFeatureColor from '@/components/Map/Leaflet/L.Mix.FeatureColor';
 import MixControl      from '@/components/Map/Leaflet/L.Mix.Control';
+import MixMeasure      from '@/components/Map/Leaflet/L.Mix.Measure';
 
 
 // устранение бага с путями
@@ -146,6 +147,7 @@ export default {
     MixKey,
     MixFeatureColor,
     MixControl,
+    MixMeasure,
   ],
 
 
@@ -187,10 +189,16 @@ export default {
 
       mapOptions: {
         zoomControl: false,
-        zoomSnap: 0.5,
-        //crs: this.ttt(),
+        zoomSnap:    0.5,
+        //crs:       this.ttt(),
       },
     };
+  },
+
+
+  mounted: function() {
+    this.map = this.$refs.map.mapObject;
+    this.key_mounted_after();
   },
 
 
@@ -212,7 +220,6 @@ export default {
       'SCRIPT_GET_ITEM_POLYGON',
       'SCRIPT_GET_ITEM_ICON',
     ]),
-    //form: vm => vm,
   },
 
 
@@ -263,33 +270,6 @@ export default {
       }
     },
 
-
-    // ===============
-    // MEASURE
-    // ===============
-    measure_options() {
-      let COLOR = '#494';   // цвет маркеров и линий
-      return {
-          position:                'topleft',
-          unit:                    'metres',
-          measureControlClasses:   ['select_off'],
-          clearMeasurementsOnStop: true,
-          measureControlTitleOn:   'Рулетка: включить',
-          measureControlTitleOff:  'Рулетка: выключить',
-          tooltipTextDelete:       'Нажмите  SHIFT и кликните мышкой для <b>удаления точки</b>',
-          tooltipTextResume:       '<br>Нажмите CTRL и кликните мышкой для <b>продолжения линии</b>',
-          tooltipTextAdd:          'Нажмите CTRL и кликните мышкой для <b>добавления точки</b>',
-          tooltipTextFinish:       '',
-          tooltipTextMove:         '',
-          backgroundColor:         '#dfd',
-          tempLine:                { color: COLOR, weight: 2, },
-          fixedLine:               { color: COLOR, weight: 2, },
-          startCircle:             { color: COLOR, weight: 1, fillColor: '#0f0', fillOpacity: 1, radius: 5, },
-          intermedCircle:          { color: COLOR, weight: 1, fillColor: '#ff0', fillOpacity: 1, radius: 5, },
-          currentCircle:           { color: COLOR, weight: 1, fillColor: '#f0f', fillOpacity: 1, radius: 5, },
-          endCircle:               { color: COLOR, weight: 1, fillColor: '#f00', fillOpacity: 1, radius: 5, },
-      }
-    },
 
     // ===============
     // RANGE
@@ -442,7 +422,6 @@ export default {
     // СОБЫТИЯ
     // ===============
     onMapReady() {
-      this.map = this.$refs.map.mapObject;
       //this.onEditReady();
     },
 
