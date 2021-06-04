@@ -1,8 +1,9 @@
 <template>
   <div
-    v-if="MAP_GET_EDIT_ACTIVE"
+    v-if="if_active"
   >
 
+    <!--
     <l-control
       position="topleft"
       class="leaflet-bar leaflet-control"
@@ -13,6 +14,7 @@
         @click="data_ok"
       >OK</a>
     </l-control>
+    -->
 
     <l-control
       position="topleft"
@@ -21,16 +23,8 @@
       <a
         class="leaflet-buttons-control-button"
         role="button"
-        title="Сохранить"
-        @click="data_save"
-      >
-        <v-icon>mdi-content-save mdi-18px</v-icon>
-      </a>
-      <a
-        class="leaflet-buttons-control-button"
-        role="button"
         title="Восстановить"
-        @click="data_load"
+        @click="on_click_restore"
       >
         <v-icon>mdi-restore mdi-18px</v-icon>
       </a>
@@ -38,7 +32,7 @@
         class="leaflet-buttons-control-button"
         role="button"
         title="Очистить"
-        @click="data_clear"
+        @click="on_click_clear"
       >
         <v-icon>mdi-delete mdi-18px</v-icon>
       </a>
@@ -51,7 +45,7 @@
       <a
         v-if="mode_if_marker()"
         class="leaflet-buttons-control-button"
-        :class="{ control_sel: editor_mode.marker }"
+        :class="{ control_sel: mode_enabled.marker }"
         role="button"
         title="Добавить маркер"
         @click="mode_trigger_marker"
@@ -61,7 +55,7 @@
       <a
         v-if="mode_if_line()"
         class="leaflet-buttons-control-button"
-        :class="{ control_sel: editor_mode.line }"
+        :class="{ control_sel: mode_enabled.line }"
         role="button"
         title="Добавить кривую"
         @click="mode_trigger_line"
@@ -71,7 +65,7 @@
       <a
         v-if="mode_if_polygon()"
         class="leaflet-buttons-control-button"
-        :class="{ control_sel: editor_mode.polygon }"
+        :class="{ control_sel: mode_enabled.polygon }"
         role="button"
         title="Добавить полигон"
         @click="mode_trigger_polygon"
@@ -81,7 +75,7 @@
       <a
         v-if="mode_if_cut()"
         class="leaflet-buttons-control-button"
-        :class="{ control_sel: editor_mode.cut }"
+        :class="{ control_sel: mode_enabled.cut }"
         role="button"
         title="Обрезать"
         @click="mode_trigger_cut"
@@ -116,43 +110,58 @@ import {
 
 import '@geoman-io/leaflet-geoman-free';
 
-
 const COLOR_ORIGIN = 'black';   // цвет маркеров и фигур ДО    ИЗМЕНЕНИЯ
 const COLOR_MODIFY = '#f00';    // цвет маркеров и фигур ПОСЛЕ ИЗМЕНЕНИЯ
 
+const options = {
+  type: Object,
+  default() { return {}; },
+};
 
 export default {
   name: 'Edit',
-
+  model: {
+    prop:  ['fc_prop'],
+    event: 'fc_change',
+  },
+  props: ['fc_prop', 'options'],
   components: {
     LControl,
   },
-
   data() {
     return {
-      editor_mode: {
-        marker:  false,
-        line:    false,
-        polygon: false,
-        cut:     false,
+      if_active: true,          // активация режима - не изменять в MAP_ACT_EDIT_ON
+      mode_enabled: {           // доступные фигуры, если не выбрано - доступно всё
+        marker:    false,
+        line:      false,
+        polygon:   false,
+        cut:       false,       // устанавливается автоматически при наличии line или polygon
       },
+      select:    '',            // выбранный по умолчанию режим
+      fc_copy:   undefined,     // копия исходных данных fc
     };
   },
 
-
   computed: {
-    ...mapGetters([
-      'MAP_GET_EDIT_ACTIVE',
-      'MAP_GET_EDIT_MODE_MARKER',
-      'MAP_GET_EDIT_MODE_LINE',
-      'MAP_GET_EDIT_MODE_POLYGON',
-      'MAP_GET_EDIT_SELECT',
-      'MAP_GET_EDIT_DATA',
-    ]),
+    // FeatureCollection РЕДАКТИРУЕМЫХ объектов
+    fc: {
+      get()    { return this.fc_prop; },
+      set(val) { this.$emit('fc_change', val); },
+    },
   },
 
+  created() {
+  },
 
   mounted() {
+    // скопировать исходные данные
+    this.fc_copy = this.fc?JSON.parse(JSON.stringify(this.fc)):undefined;
+
+    let mode_enabled2 = this.options.mode_enabled     || {};
+    this.mode_enabled.marker  = mode_enabled2.marker  || false;
+    this.mode_enabled.line    = mode_enabled2.line    || false;
+    this.mode_enabled.polygon = mode_enabled2.polygon || false;
+
     this.map = this.$parent.mapObject;    // в основном модуле: this.$refs.map.mapObject;
     this.map.pm.setLang('ru');
     // this.map.pm.addControls({
@@ -203,8 +212,8 @@ export default {
     // разрешить режим редактирования для создаваемых пользователем фигур
     this.map.on('pm:drawend', this.on_pm_drawend);
 
-    // загрузить данные
-    this.data_load();
+    // загрузить данные на карту
+    this.map_load();
 
      // обработчики событий
     this.map.addEventListener('keydown', this.on_key_down);
@@ -217,27 +226,13 @@ export default {
   },
 
 
-  watch: {
-    MAP_GET_EDIT_DATA: {
-      handler() { this.data_load(); },
-      deep: true,
-    },
-  },
-
-
   methods: {
-    ...mapActions([
-      'MAP_ACT_EDIT_OFF',
-      'MAP_ACT_EDIT_DATA',
-    ]),
-
-
     // ======================================
     // РЕЖИМЫ
     // ======================================
 
     // разрешить режим редактирования для каждой редактируемой фигуры
-    mode_enable() {
+    mode_on() {
       this.map.eachLayer( function(layer) {
         if (
         (layer instanceof L.Path || layer instanceof L.Marker) &&
@@ -252,47 +247,41 @@ export default {
     },
 
     // доступность режимов редактирования
-    mode_if_marker()  { return  this.MAP_GET_EDIT_MODE_MARKER;  },
-    mode_if_line()    { return  this.MAP_GET_EDIT_MODE_LINE;    },
-    mode_if_polygon() { return  this.MAP_GET_EDIT_MODE_POLYGON; },
-    mode_if_cut()     { return (this.MAP_GET_EDIT_MODE_LINE || this.MAP_GET_EDIT_MODE_POLYGON); },
+    mode_if_marker()  {
+      console.log(this.mode_enabled.marker); return  true;
+      }, //this.mode_enabled.marker;  },
+    mode_if_line()    { return  this.mode_enabled.line;    },
+    mode_if_polygon() { return  this.mode_enabled.polygon; },
+    mode_if_cut()     { return (this.mode_enabled.line || this.mode_enabled.polygon); },
 
     // включение режимов редактирования
-    mode_on_marker()  { if (this.mode_if_marker())  { this.map.pm.enableDraw('Marker',  {}); this.editor_mode.marker  = true; }},
-    mode_on_line()    { if (this.mode_if_line())    { this.map.pm.enableDraw('Line',    {}); this.editor_mode.line    = true; }},
-    mode_on_polygon() { if (this.mode_if_polygon()) { this.map.pm.enableDraw('Polygon', {}); this.editor_mode.polygon = true; }},
-    mode_on_cut()     { if (this.mode_if_cut())     { this.map.pm.enableDraw('Cut',     {}); this.editor_mode.cut     = true; }},
+    mode_on_marker()  { if (this.mode_if_marker())  { this.map.pm.enableDraw('Marker',  {}); this.mode_enabled.marker  = true; }},
+    mode_on_line()    { if (this.mode_if_line())    { this.map.pm.enableDraw('Line',    {}); this.mode_enabled.line    = true; }},
+    mode_on_polygon() { if (this.mode_if_polygon()) { this.map.pm.enableDraw('Polygon', {}); this.mode_enabled.polygon = true; }},
+    mode_on_cut()     { if (this.mode_if_cut())     { this.map.pm.enableDraw('Cut',     {}); this.mode_enabled.cut     = true; }},
 
     // перелючение режимов редактирования
-    mode_trigger_marker()  { if (!this.editor_mode.marker ) { this.mode_on_marker();  } else { this.mode_off(); }},
-    mode_trigger_line()    { if (!this.editor_mode.line   ) { this.mode_on_line();    } else { this.mode_off(); }},
-    mode_trigger_polygon() { if (!this.editor_mode.polygon) { this.mode_on_polygon(); } else { this.mode_off(); }},
-    mode_trigger_cut()     { if (!this.editor_mode.cut    ) { this.mode_on_cut();     } else { this.mode_off(); }},
+    mode_trigger_marker()  { if (!this.mode_enabled.marker ) { this.mode_on_marker();  } else { this.mode_off(); }},
+    mode_trigger_line()    { if (!this.mode_enabled.line   ) { this.mode_on_line();    } else { this.mode_off(); }},
+    mode_trigger_polygon() { if (!this.mode_enabled.polygon) { this.mode_on_polygon(); } else { this.mode_off(); }},
+    mode_trigger_cut()     { if (!this.mode_enabled.cut    ) { this.mode_on_cut();     } else { this.mode_off(); }},
 
-    // отключить режим редактирования если он включен
+    // отключить режим редактирования и скрыть кнопки
     mode_off() {
       this.map.pm.disableDraw();
-      this.editor_mode.marker  = false;
-      this.editor_mode.line    = false;
-      this.editor_mode.polygon = false;
-      this.editor_mode.cut     = false;
+      this.mode_enabled.marker  = false;
+      this.mode_enabled.line    = false;
+      this.mode_enabled.polygon = false;
+      this.mode_enabled.cut     = false;
     },
 
 
     // ======================================
-    // ДАННЫЕ
+    // ДАННЫЕ НА КАРТЕ
     // ======================================
 
-    // при нажатии на ОК
-    data_ok() {
-      this.data_save();      // 1 - сохранить данные в state.data
-      this.data_clear();     // 2 - очистить карту, state.data не чистим
-      this.MAP_ACT_EDIT_OFF();      // 3 - выключить режим редактирования, state.data не чистим
-    },
-
-
-    // записать данные на шину из карты
-    data_save() {
+    // записать в fc
+    map_save() {
       this.mode_off();
       let fg = L.featureGroup();
       this.map.pm.getGeomanLayers().forEach(function(layer) {
@@ -306,58 +295,54 @@ export default {
           fg.addLayer(layer);
         }
       });
-      fg = fg.toGeoJSON();
-      this.MAP_ACT_EDIT_DATA({data: fg});
+      this.fc = fg.toGeoJSON();
     },
 
 
-    // загрузить данные из шины на карту
-    data_load() {
+    // загрузить из fc
+    map_load() {
       // на неактивном компоненте загрузка отключена
-      if (!this.MAP_GET_EDIT_ACTIVE) return;
+      if (!this.if_active) return;
 
-      this.data_clear();
-
-      let self  = this;
-      let data  = this.MAP_GET_EDIT_DATA;
+      // очистить карту
+      this.map_clear();
 
       // стили исходные
+      let self  = this;
       let style = {
         onEachFeature: function(feature, layer)  { layer.options.editor =true;               },
         pointToLayer:  function(feature, latlng) { return self.marker_origin(latlng); },
         style:         function(feature)         { return self.path_origin();         },
       };
-      let layer = (data.type=='FeatureCollection')?L.geoJSON(data, style):L.GeoJSON.geometryToLayer(data, style);
+      let layer = (this.fc.type=='FeatureCollection')?L.geoJSON(this.fc, style):L.GeoJSON.geometryToLayer(this.fc, style);
 
       // стили после редактирования
-      layer.on('pm:edit',          this.style_modify, this);
-      layer.on('pm:cut',           this.style_modify, this);
-      layer.on('pm:vertexremoved', this.style_modify, this);
+      layer.on('pm:edit',          this.on_modify, this);
+      layer.on('pm:cut',           this.on_modify, this);
+      layer.on('pm:vertexremoved', this.on_modify, this);
 
       // добавить слой на карту
       layer.addTo(this.map);
 
       // разрешить режим редактирования
-      this.mode_enable();
-
-      // включить редактирование
-      //ddddd
+      this.mode_on();
     },
 
 
-    // очистить данные на карте (шину не трогаем)
-    data_clear() {
+    // очистить на карте
+    map_clear() {
       let self = this;
       this.mode_off();
       this.map.pm.getGeomanLayers().forEach(function(layer) {
         if (layer.options.editor) {
-          layer.off('pm:edit',          self.style_modify);
-          layer.off('pm:cut',           self.style_modify);
-          layer.off('pm:vertexremoved', self.style_modify);
+          layer.off('pm:edit',          self.on_modify);
+          layer.off('pm:cut',           self.on_modify);
+          layer.off('pm:vertexremoved', self.on_modify);
           self.map.removeLayer(layer);
         }
       });
     },
+
 
 
 
@@ -367,15 +352,7 @@ export default {
     // ======================================
     // признак редактирования
     edit_property() {
-      return {
-        editor: true,
-      }
-    },
-
-    // стили после редактирования
-    style_modify(e) {
-      if (e.layer.setIcon)  e.layer.setIcon (this.icon_modify());
-      if (e.layer.setStyle) e.layer.setStyle(this.path_modify());
+      return { editor: true, }
     },
 
     // иконки
@@ -426,8 +403,34 @@ export default {
     // ======================================
     // СОБЫТИЯ
     // ======================================
+
+    // очистить
+    on_click_clear() {
+      this.fc = L.featureGroup().toGeoJSON();
+      this.$nextTick(() => { this.map_load(); })
+    },
+
+    // восстановить
+    on_click_restore() {
+      this.fc = this.fc_copy?JSON.parse(JSON.stringify(this.fc_copy)):undefined;
+      this.$nextTick(() => { this.map_load(); })
+    },
+
+    // изменение на карте
+    on_modify(e) {
+      // сохранить данные из карты в fc
+      this.map_save();
+
+      // изменить стили после редактирования
+      if (e.layer.setIcon)  e.layer.setIcon (this.icon_modify());
+      if (e.layer.setStyle) e.layer.setStyle(this.path_modify());
+    },
+
+    // операции с фигурами
     on_pm_create () { this.mode_off(); },
-    on_pm_drawend() { this.mode_off(); this.mode_enable(); },
+    on_pm_drawend() { this.mode_off(); this.mode_on(); },
+
+    // нажатие клавиши
     on_key_down(e)  {
       switch (e.originalEvent.key) {
       case 'Escape':

@@ -38,7 +38,13 @@
           />
 
           <!-- РЕДАКТОР -->
-          <Edit/>
+          <!--
+            :mode="edit_options()"
+          -->
+          <Edit
+            v-model="fc"
+            :options="edit_options()"
+          />
 
           <!-- МАСШТАБ -->
           <l-control-scale
@@ -70,7 +76,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 import 'leaflet';
 import { LMap, LTileLayer, LControlScale, } from 'vue2-leaflet';
 import LControlPolylineMeasure from 'vue2-leaflet-polyline-measure';
@@ -78,6 +84,14 @@ import LControlPolylineMeasure from 'vue2-leaflet-polyline-measure';
 import Edit from '@/components/Map/Leaflet/Edit';
 import MixKey from '@/components/Map/Leaflet/L.Mix.Key';
 import MixMeasure from '@/components/Map/Leaflet/L.Mix.Measure';
+
+import {
+  MAP_TEST_EDIT_1,
+  MAP_TEST_EDIT_2,
+  MAP_TEST_EDIT_3,
+  MAP_TEST_EDIT_4,
+  MAP_TEST_EDIT_5,
+} from '@/components/Map/Leaflet/Menu.test';
 
 
 export default {
@@ -91,6 +105,38 @@ export default {
 
   data: () => ({
     dialog: false,
+    fc: {
+      "type": "FeatureCollection",
+      "features": [
+        {
+          "type": "Feature",
+          "properties": {
+            "hint": "Edit 1",
+          },
+          "geometry": {
+            "type": "Polygon",
+            "coordinates": [
+              [
+                [30.212402343750004,55.19141243527065],
+                [30.443115234375004,54.50832650029076],
+                [31.014404296875004,54.718275018302315],
+                [30.212402343750004,55.19141243527065],
+              ]
+            ]
+          }
+        },
+        {
+          "type": "Feature",
+          "properties": {
+            "hint": "Edit 2",
+          },
+          "geometry": {
+            "type":        "Point",
+            "coordinates": [24.071044921875004,55.86914706303444]
+          },
+        },
+      ],
+    },
 
     mapOptions: {
       zoomControl: false,
@@ -98,7 +144,19 @@ export default {
     },
   }),
 
+
+
+  watch: {
+    fc: {
+      handler() {
+        console.log(1111111, this.fc);
+      },
+      deep: true,
+    },
+  },
+
   mounted: function() {
+    this.MAP_ACT_EDIT_ON(MAP_TEST_EDIT_1);
   },
 
   computed: {
@@ -122,9 +180,27 @@ export default {
     },
   },
   methods: {
+    ...mapActions([
+      'MAP_ACT_EDIT_ON',
+      'MAP_ACT_EDIT_OFF',
+    ]),
+
+    edit_options() {
+      return {
+        mode_enabled: {
+          marker:  true,
+          polygon: true,
+        },
+      }
+    },
+
+    onChangeFC(e, val) {
+      console.log(2, e, val)
+    },
+
     acceptGeometry() {
-      this.valueGeometry = [1, 2] // тут объекты fc с карты после нажатия кнопки подтверждения
-      this.dialog = false
+      this.valueGeometry = [1, 2]; // тут объекты fc с карты после нажатия кнопки подтверждения
+      this.dialog = false;
     },
 
     onMapReady() {
@@ -134,7 +210,7 @@ export default {
     },
 
     onClick(event) {
-      console.log(event.latlng);
+      console.log(event.latlng, this.fc);
     },
 
   },

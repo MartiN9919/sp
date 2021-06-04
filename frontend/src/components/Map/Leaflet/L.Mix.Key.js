@@ -14,8 +14,10 @@ export default {
   },
 
   beforeDestroy: function() {
-    this.map.removeEventListener('keydown', this.key_down);
-    this.map.removeEventListener('keyup',   this.key_up);
+    if (this.map) {
+      this.map.removeEventListener('keydown', this.key_down);
+      this.map.removeEventListener('keyup',   this.key_up);
+    };
   },
 
   methods: {
