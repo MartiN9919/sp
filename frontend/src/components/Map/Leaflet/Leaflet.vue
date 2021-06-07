@@ -10,10 +10,6 @@
       @contextmenu="menu_show"
     >
 
-<!--
-      :crs="MAP_GET_TILES[MAP_GET_TILE].crs"
- -->
-
       <!-- ПОДЛОЖКА -->
       <l-tile-layer
         :url="MAP_GET_TILES[MAP_GET_TILE].url"
@@ -40,7 +36,10 @@
 
 
       <!-- РЕДАКТОР -->
-      <Edit/>
+      <Edit
+        v-model="fc_edit"
+        @ok="on_edit_ok"
+      />
 
       <!-- МАСШТАБ -->
       <l-control-scale
@@ -90,7 +89,7 @@
 
 <script>
 
-import { mapGetters } from 'vuex';
+import { mapGetters, mapActions, } from 'vuex';
 import { Icon       } from 'leaflet';
 
 import {
@@ -184,6 +183,9 @@ export default {
         y:       0,
       },
 
+      // // FeatureCollection РЕДАКТИРУЕМЫХ объектов
+      // fc_edit: this.MAP_GET_EDIT_DATA,
+
       hover_map_ind:     -1,      // MAP_ITEM[hover_map_ind]                   - блок, над которым находится курсор
       hover_feature_ind: -1,      // MAP_ITEM[].FC.features[hover_feature_ind] - фигура, над которой находится курсор
 
@@ -202,6 +204,20 @@ export default {
   },
 
 
+  watch: {
+    fc_edit: {
+      handler() {
+        console.log('watch changed fc_edit', this.fc_edit);
+      },
+      deep: true,
+    },
+    MAP_GET_EDIT_DATA: {
+      handler() {
+        this.fc_edit = this.MAP_GET_EDIT_DATA;
+      },
+    }
+  },
+
   computed: {
     ...mapGetters([
       'MAP_GET_KEY',
@@ -213,6 +229,8 @@ export default {
       'MAP_GET_CLUSTER',
       'MAP_GET_HINT',
 
+      'MAP_GET_EDIT_DATA',
+
       'SCRIPT_GET',
       'SCRIPT_GET_ITEM_COLOR',
       'SCRIPT_GET_ITEM_MARKER',
@@ -220,35 +238,22 @@ export default {
       'SCRIPT_GET_ITEM_POLYGON',
       'SCRIPT_GET_ITEM_ICON',
     ]),
+
+    // FeatureCollection РЕДАКТИРУЕМЫХ объектов
+    fc_edit: {
+      get()    { return this.MAP_GET_EDIT_DATA; },
+      set(val) {
+        // console.log(11111)
+        // this.MAP_ACT_EDIT_DATA({data: val});
+      },
+    },
   },
 
 
   methods: {
-    // ...mapActions([
-    //   'MAP_ACT_RANGE_TS',
-    // ]),
-
-    // ttt(e) {
-    //   console.log(e)
-    //   //return;
-    //   return L.CRS.EPSG3395;
-    //   // return new L.Proj.CRS(
-    //   //   'EPSG:3006',
-    //   //   '+proj=utm +zone=33 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs',
-    //   //   {
-    //   //     resolutions: [ 8192, 4096, 2048, 1024, 512, 256, 128, ],
-    //   //     origin:      [ 0, 0 ],
-    //   //   }
-    //   // );
-    //   // return new L.Proj.CRS(
-    //   //   'EPSG:2400',
-    //   //   '+lon_0=15.808277777799999 +lat_0=0.0 +k=1.0 +x_0=1500000.0 +y_0=0.0 +proj=tmerc +ellps=bessel +units=m +towgs84=414.1,41.3,603.1,-0.855,2.141,-7.023,0 +no_def',
-    //   //   {
-    //   //     resolutions: [ 8192, 4096, 2048, 1024, 512, 256, 128, 64, 32, 16, 8, 4, 2, 1, 0.5, ],
-    //   //     origin:      [ 0, 0 ],
-    //   //   }
-    //   // );
-    // },
+    ...mapActions([
+      'MAP_ACT_EDIT_DATA',
+    ]),
 
     // ===============
     // MENU
@@ -448,6 +453,10 @@ export default {
       this.editor_data_set();
     },
 
+    on_edit_ok(event, dat) {
+      console.log(111, event, dat);
+      this.fc_edit = dat;
+    },
 
 
 

@@ -5,11 +5,10 @@
   >
     <template v-slot:activator="{ on, attrs }">
       <v-icon
-          v-bind="attrs" v-on="on"
-          :color="attrs['aria-expanded'] === 'true' ? 'teal' : ''"
+        v-bind="attrs" v-on="on"
+        :color="attrs['aria-expanded'] === 'true' ? 'teal' : ''"
       >mdi-map-marker-outline</v-icon>
     </template>
-
 
     <v-card
       class="select_off"
@@ -23,11 +22,11 @@
         <l-map
           ref="map"
           style="height: 70vh; z-index: 0;"
-          :options="mapOptions"
+          :options="map_options"
           :crs="MAP_GET_TILES[MAP_GET_TILE].crs"
-          @ready="onMapReady"
+          @ready="on_map_ready"
           @contextmenu=""
-          @click="onClick"
+          @click="on_map_click"
         >
 
           <!-- ПОДЛОЖКА -->
@@ -38,11 +37,8 @@
           />
 
           <!-- РЕДАКТОР -->
-          <!--
-            :mode="edit_options()"
-          -->
           <Edit
-            v-model="fc"
+            v-model="fc_edit"
             :options="edit_options()"
           />
 
@@ -105,7 +101,8 @@ export default {
 
   data: () => ({
     dialog: false,
-    fc: {
+    fc_edit:     // { "type": "FeatureCollection", "features": [], }, //L.featureGroup().toGeoJSON(),
+    {
       "type": "FeatureCollection",
       "features": [
         {
@@ -138,7 +135,7 @@ export default {
       ],
     },
 
-    mapOptions: {
+    map_options: {
       zoomControl: false,
       zoomSnap: 0.5,
     },
@@ -147,9 +144,9 @@ export default {
 
 
   watch: {
-    fc: {
+    fc_edit: {
       handler() {
-        console.log(1111111, this.fc);
+        console.log('watch changed fc_edit 2', this.fc_edit);
       },
       deep: true,
     },
@@ -191,11 +188,8 @@ export default {
           marker:  true,
           polygon: true,
         },
+        mode_selected: 'Polygon',
       }
-    },
-
-    onChangeFC(e, val) {
-      console.log(2, e, val)
     },
 
     acceptGeometry() {
@@ -203,14 +197,14 @@ export default {
       this.dialog = false;
     },
 
-    onMapReady() {
+    on_map_ready() {
       this.map = this.$refs.map.mapObject;
       this.map.invalidateSize();
       this.key_mounted_after();
     },
 
-    onClick(event) {
-      console.log(event.latlng, this.fc);
+    on_map_click(event) {
+      console.log(event.latlng);
     },
 
   },

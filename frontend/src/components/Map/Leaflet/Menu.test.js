@@ -377,15 +377,3 @@ export const MAP_TEST_EDIT_2 = {
     ],
   },
 };
-
-export const MAP_TEST_EDIT_3 = {
-  mode_marker: true,
-};
-
-export const MAP_TEST_EDIT_4 = {
-  mode_marker: true,
-};
-
-export const MAP_TEST_EDIT_5 = {
-  mode_polygon: true,
-};

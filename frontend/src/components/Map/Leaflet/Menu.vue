@@ -79,6 +79,7 @@
           <v-list-item
             class="map-menu-tile-radio"
             @click.prevent="form[group_item.click](ind)"
+            :disabled="item.disabled"
           >
             <v-list-item-icon>
               <v-icon large v-text="item.icon"/>
@@ -117,9 +118,6 @@ import {
   MAP_TEST_ITEM_3,
   MAP_TEST_EDIT_1,
   MAP_TEST_EDIT_2,
-  MAP_TEST_EDIT_3,
-  MAP_TEST_EDIT_4,
-  MAP_TEST_EDIT_5,
 } from '@/components/Map/Leaflet/Menu.test';
 
 const props = {
@@ -270,24 +268,6 @@ export default {
             subtitle:    'Изменение элементов карты',
             click:       'test_edit_2',
           },
-          {
-            icon:        'mdi-vector-polyline-edit',
-            title:       'Данные 3',
-            subtitle:    'Изменение элементов карты (пусто)',
-            click:       'test_edit_3',
-          },
-          {
-            icon:        'mdi-vector-polyline-edit',
-            title:       'Данные 4',
-            subtitle:    'Изменение элементов карты лайт 1 (пусто)',
-            click:       'test_edit_4',
-          },
-          {
-            icon:        'mdi-vector-polyline-edit',
-            title:       'Данные 5',
-            subtitle:    'Изменение элементов карты лайт 2 (пусто)',
-            click:       'test_edit_5',
-          },
         ],
       },
     ],
@@ -373,9 +353,6 @@ export default {
 
     test_edit_1()             { this.MAP_ACT_EDIT_ON(MAP_TEST_EDIT_1); },
     test_edit_2()             { this.MAP_ACT_EDIT_ON(MAP_TEST_EDIT_2); },
-    test_edit_3()             { this.MAP_ACT_EDIT_ON(MAP_TEST_EDIT_3); },
-    test_edit_4()             { this.MAP_ACT_EDIT_ON(MAP_TEST_EDIT_4); },
-    test_edit_5()             { this.MAP_ACT_EDIT_ON(MAP_TEST_EDIT_5); },
   },
 }
 
