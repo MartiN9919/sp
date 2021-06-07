@@ -1,3 +1,6 @@
+import { CRS, } from 'proj4leaflet';
+
+
 export const MAP_DATA_MENU_TILES = [
   {
     title:    'OSM',
@@ -6,6 +9,7 @@ export const MAP_DATA_MENU_TILES = [
     url:      'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
     attr:     '',
     tms:      false,
+    //crs:      L.CRS.EPSG3857,
   },
   {
     title:    'OSM',
@@ -15,6 +19,7 @@ export const MAP_DATA_MENU_TILES = [
     attr:     '',
     tms:      false,
   },
+
   // {
   //   title:    'OSM',
   //   subtitle: 'Схема (Локальная сеть)',
@@ -24,6 +29,18 @@ export const MAP_DATA_MENU_TILES = [
   //   tms:      false,
   //   enabled:  false,
   // },
+
+  {
+    title:    'Yandex',
+    subtitle: 'Интернет',
+    url:      'https://core-sat.maps.yandex.net/tiles?l=sat&v=3.786.0&x={x}&y={y}&z={z}&scale=2&lang=ru_UA',
+    icon:     'mdi-map-outline',
+    attr:     '',
+    tms:      false,
+    crs:      L.CRS.EPSG3395,
+    enabled:  false,
+  },
+
   {
     title:    'ESRI',
     subtitle: 'Спутник (Интернет)',
@@ -51,10 +68,11 @@ export const MAP_DATA_MENU_TILES = [
   {
     title:    'Yandex',
     subtitle: 'Спутник (Локальная сеть)',
-    url:      'http://200.200.200.232/{z}/{x}/{-y}.jpg',
+    url:      'http://200.200.200.232/{z}/{x}/{y}.jpg',
     icon:     'mdi-map-outline',
     attr:     '',
     tms:      false,
+    crs:      L.CRS.EPSG3395, //+L.CRS.EPSG3857,  -L.CRS.EPSG4326
     enabled:  false,
   },
 ];

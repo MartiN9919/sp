@@ -28,7 +28,7 @@ export default {
 
   computed: {
     ...mapGetters([
-      'MAP_GET_ITEM',
+      'SCRIPT_GET_ITEM',
     ]),
   },
 
@@ -36,7 +36,7 @@ export default {
     // ЗАПОЛНИТЬ MAP_ITEM.FC.features[i][MAP_ITEM.FC_COLOR]
     data_normalize_color(map_ind) {
       // данные на шине
-      let map_item = this.MAP_GET_ITEM(map_ind);
+      let map_item = this.SCRIPT_GET_ITEM(map_ind);
       let fc       = map_item[MAP_ITEM.FC];
 
       // если установлена опция раскраски полигона от value
@@ -100,7 +100,7 @@ export default {
 
     // является ли слой разноцветным (раскраска зависит от value )
     color_dif_valid(map_ind) {
-      let map_item = this.MAP_GET_ITEM(map_ind);
+      let map_item = this.SCRIPT_GET_ITEM(map_ind);
       return ([MAP_ITEM.POLYGON.GREEN_MIN, MAP_ITEM.POLYGON.GREEN_MAX].indexOf(map_item[MAP_ITEM.POLYGON.NAME])>-1);
     },
 

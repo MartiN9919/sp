@@ -3,6 +3,7 @@ import json
 from django.http import JsonResponse
 from core.projectSettings.decoraters import login_check, decor_log_request
 from data_base_driver.constants.const_dat import DAT_OWNER
+from data_base_driver.input_output.io import io_set
 from data_base_driver.record.add_record import add_record
 from data_base_driver.record.get_record import get_record_by_id, get_records_by_object
 from data_base_driver.sys_key.get_key_dump import get_keys_by_object
@@ -60,3 +61,21 @@ def aj_object(request):
             return JsonResponse({'data': 'ошибка добавления'}, status=403)
     else:
         return JsonResponse({'data': 'неизвестный тип запроса'}, status=404)
+
+
+@login_check
+@decor_log_request
+def aj_set_geometry(request):
+    group_id = DAT_OWNER.DUMP.get_group(user_id=request.user.id)
+    data = json.loads(request.body)
+    try:
+        for geometry_object in data['data']['features']:
+            io_set(group_id=group_id, obj='geometry', data=[['id', geometry_object['id']],
+                                                            ['location', geometry_object['geometry']]])
+        return JsonResponse({'data':'изменено'}, status=200)
+    except:
+        return JsonResponse({'data': 'ошибка добавления'}, status=403)
+
+
+
+

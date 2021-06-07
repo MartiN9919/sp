@@ -77,6 +77,16 @@ class DAT_SYS_OBJ:
     NAME_VAL = 'val'  # ?????
 
 
+class DAT_SYS_KEY_GROUP:
+    TABLE_SHORT = 'sys_key_group'
+    TABLE = VEC_DATA['NAME'] + '.' + TABLE_SHORT
+    ID = 'id'
+    OBJ = 'obj'
+    OBJ_ID = 'obj_id'
+    NAME = 'name'
+    POS = 'pos'
+
+
 ##################################################################################
 # DAT_SYS_KEY
 ##################################################################################
@@ -104,6 +114,9 @@ class DAT_SYS_KEY:
     LIST = 'list'
     IND_REL_OBJ_1 = 'ind_rel_obj_1'
     IND_REL_OBJ_2 = 'ind_rel_obj_2'
+    GROUP = 'group'
+    GROUP_ID = 'group_id'
+    PATH = 'path'
 
     TYPE_STR = 'text'
     TYPE_INT = 'number'
