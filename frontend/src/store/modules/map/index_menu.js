@@ -68,7 +68,7 @@ export const MAP_DATA_MENU_TILES = [
   {
     title:    'Yandex',
     subtitle: 'Спутник (Локальная сеть)',
-    url:      'http://200.200.200.232/{z}/{x}/{-y}.jpg',
+    url:      'http://200.200.200.232/{z}/{x}/{y}.jpg',
     icon:     'mdi-map-outline',
     attr:     '',
     tms:      false,

@@ -1,6 +1,7 @@
 from django.core.exceptions import ValidationError
 from django.db import models
-from data_base_driver.constants.const_dat import DAT_SYS_OBJ, DAT_SYS_LIST_TOP, DAT_SYS_KEY, DAT_SYS_LIST_DOP
+from data_base_driver.constants.const_dat import DAT_SYS_OBJ, DAT_SYS_LIST_TOP, DAT_SYS_KEY, DAT_SYS_LIST_DOP, \
+    DAT_SYS_KEY_GROUP
 
 
 class ModelObject(models.Model):
@@ -80,6 +81,7 @@ class ModelListDop(models.Model):
     )
 
     def clean(self):
+        self.fl = 0  # костыль, потом изменить
         if self.id == None:
             try:
                 self.save()
@@ -87,16 +89,50 @@ class ModelListDop(models.Model):
                 raise e
 
     def save(self, *args, **kwargs):
-        if len(ModelListDop.objects.filter(list=self.list).filter(val=self.val)) > 0:
+        if len(ModelListDop.objects.filter(list=self.list).filter(val=self.val)) > 0 and self.fl == 0:
             raise ValidationError('в данном списке уже есть такой элемент')
         else:
+            self.fl = 1
             super().save(*args, **kwargs)
+
 
     class Meta:
         managed = False
         verbose_name = "Поле списка"
         verbose_name_plural = "Поля списков"
         db_table = DAT_SYS_LIST_DOP.TABLE_SHORT
+
+
+class ModelKeyGroup(models.Model):
+    obj = models.ForeignKey(
+        ModelObject,
+        verbose_name='Объект',
+        related_name='ind_obj_пкщгз',
+        on_delete=models.CASCADE,
+        help_text='К какому объекту относится данная группа',
+    )
+    name = models.CharField(
+        max_length=255,
+        verbose_name='Название группы',
+        help_text='Название группы',
+        blank=True,
+        null=True,
+    )
+    pos = models.IntegerField(
+        verbose_name='Приоритет группы',
+        help_text='Необходим для сортировки',
+        blank=True,
+        null=True,
+    )
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        managed = False
+        db_table = DAT_SYS_KEY_GROUP.TABLE_SHORT
+        verbose_name = "Группа классификатора"
+        verbose_name_plural = "Группа классификатора"
 
 
 class ModelKey(models.Model):
@@ -178,9 +214,25 @@ class ModelKey(models.Model):
         blank=True,
         null=True,
     )
+    path = models.CharField(
+        max_length=255,
+        verbose_name='Путь',
+        help_text='Путь',
+        blank=True,
+        null=True,
+    )
 
     def __str__(self):
         return self.title
+
+    def save(self, *args, **kwargs):
+        if self.obj_id == 1:
+            if self.rel_obj_1_id > self.rel_obj_2_id:
+                temp_id = self.rel_obj_1_id
+                self.rel_obj_1_id = self.rel_obj_2_id
+                self.rel_obj_2_id = temp_id
+        super().save(*args, **kwargs)
+
 
     class Meta:
         managed = False
