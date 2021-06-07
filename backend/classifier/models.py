@@ -58,6 +58,12 @@ class ModelList(models.Model):
     def __str__(self):
         return self.title
 
+    def save(self, *args, **kwargs):
+        if ModelList.objects.filter(name=self.name):
+            return
+        else:
+            super().save(*args, **kwargs)
+
     class Meta:
         managed = False
         verbose_name = "Список"
@@ -81,6 +87,8 @@ class ModelListDop(models.Model):
     )
 
     def clean(self):
+        if not self.list_id:
+            ModelList.save(self.list)
         self.fl = 0  # костыль, потом изменить
         if self.id == None:
             try:
@@ -146,6 +154,7 @@ class ModelKey(models.Model):
         related_name='ind_obj',
         on_delete=models.CASCADE,
         help_text='К какому объекту относится данный классификатор',
+        # default=1,
     )
     col = models.BooleanField(
         default=False,
@@ -235,6 +244,8 @@ class ModelKey(models.Model):
 
 
     class Meta:
+        unique_together = (DAT_SYS_KEY.TITLE, DAT_SYS_KEY.OBJ, DAT_SYS_KEY.COL, DAT_SYS_KEY.REL_OBJ_1_ID,
+                           DAT_SYS_KEY.REL_OBJ_2_ID, DAT_SYS_KEY.TYPE_VAL, DAT_SYS_KEY.LIST_ID)
         managed = False
         db_table = DAT_SYS_KEY.TABLE_SHORT
         verbose_name = "Классификатор"
