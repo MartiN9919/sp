@@ -104,24 +104,9 @@
  *                 при нажатии на кнопку вызывается событие (возвращается копия fc) и редактирование завершается
  */
 
-import {
-  mapGetters,
-  mapActions,
-} from 'vuex';
-
-import {
-  LControl,
-} from "vue2-leaflet";
-
-import {
-  MAP_ITEM,
-} from '@/components/Map/Leaflet/Lib/Const';
-
-import {
-  icon_get,
-  icon_2_marker,
-} from '@/components/Map/Leaflet/Markers/Fun';
-
+import { LControl, } from "vue2-leaflet";
+import { MAP_ITEM, } from '@/components/Map/Leaflet/Lib/Const';
+import { icon_get, icon_2_marker, } from '@/components/Map/Leaflet/Markers/Fun';
 import '@geoman-io/leaflet-geoman-free';
 
 const COLOR_ORIGIN = 'black';             // цвет маркеров и фигур ДО    ИЗМЕНЕНИЯ
@@ -143,7 +128,16 @@ export default {
     },
     options: {
       type: Object,
-      default() { return {}; },
+      default() {
+        return {
+        // mode_enabled: {
+        //   marker:  true,
+        //   line:    true,
+        //   polygon: true,
+        // },
+        // mode_selected: 'Polygon',
+        };
+      },
     },
   },
   components: { LControl, },
@@ -331,7 +325,7 @@ export default {
       } else {
         this.mode_ok_set();
         this.mode_enabled_set();
-        if (!first) { this.mode_selected_set(); }
+        if (first) { this.mode_selected_set(); }
         this.show_if = true;
       }
     },

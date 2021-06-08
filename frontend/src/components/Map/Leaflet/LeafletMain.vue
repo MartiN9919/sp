@@ -137,7 +137,7 @@ Icon.Default.mergeOptions({
 
 
 export default {
-  name: "Leaflet",
+  name: 'LeafletMain',
 
 
   mixins: [
