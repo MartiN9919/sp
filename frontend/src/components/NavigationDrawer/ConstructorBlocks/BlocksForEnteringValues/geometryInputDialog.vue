@@ -206,5 +206,5 @@ export default {
 
 <style scoped lang="scss">
   @import "~leaflet/dist/leaflet.css";
-  @import "~@/components/Map/Leaflet/Lib.css";
+  @import "~@/components/Map/Leaflet/Lib/Lib.css";
 </style>

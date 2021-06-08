@@ -1,6 +1,6 @@
 // инициализация маркеров
 
-import { MAP_ITEM } from '@/components/Map/Leaflet/Const';
+import { MAP_ITEM } from '@/components/Map/Leaflet/Lib/Const';
 
 
 export function marker_get(latlng, options={}) {
