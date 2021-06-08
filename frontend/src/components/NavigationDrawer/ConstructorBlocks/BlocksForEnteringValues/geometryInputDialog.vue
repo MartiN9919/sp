@@ -77,17 +77,14 @@ import 'leaflet';
 import { LMap, LTileLayer, LControlScale, } from 'vue2-leaflet';
 import LControlPolylineMeasure from 'vue2-leaflet-polyline-measure';
 
-import Edit from '@/components/Map/Leaflet/Edit';
-import MixKey from '@/components/Map/Leaflet/L.Mix.Key';
-import MixMeasure from '@/components/Map/Leaflet/L.Mix.Measure';
+import Edit       from '@/components/Map/Leaflet/Components/Edit';
+import MixKey     from '@/components/Map/Leaflet/Mixins/Key';
+import MixMeasure from '@/components/Map/Leaflet/Mixins/Measure';
 
-import {
-  MAP_TEST_EDIT_1,
-  MAP_TEST_EDIT_2,
-  MAP_TEST_EDIT_3,
-  MAP_TEST_EDIT_4,
-  MAP_TEST_EDIT_5,
-} from '@/components/Map/Leaflet/Menu.test';
+// import {
+//   MAP_TEST_EDIT_1,
+//   MAP_TEST_EDIT_2,
+// } from '@/components/Map/Leaflet/Menu.test';
 
 
 export default {
@@ -101,39 +98,39 @@ export default {
 
   data: () => ({
     dialog: false,
-    fc_edit:     // { "type": "FeatureCollection", "features": [], }, //L.featureGroup().toGeoJSON(),
-    {
-      "type": "FeatureCollection",
-      "features": [
-        {
-          "type": "Feature",
-          "properties": {
-            "hint": "Edit 1",
-          },
-          "geometry": {
-            "type": "Polygon",
-            "coordinates": [
-              [
-                [30.212402343750004,55.19141243527065],
-                [30.443115234375004,54.50832650029076],
-                [31.014404296875004,54.718275018302315],
-                [30.212402343750004,55.19141243527065],
-              ]
-            ]
-          }
-        },
-        {
-          "type": "Feature",
-          "properties": {
-            "hint": "Edit 2",
-          },
-          "geometry": {
-            "type":        "Point",
-            "coordinates": [24.071044921875004,55.86914706303444]
-          },
-        },
-      ],
-    },
+    fc_edit: L.featureGroup().toGeoJSON(),    // { "type": "FeatureCollection", "features": [], }, //L.featureGroup().toGeoJSON(),
+    // {
+    //   "type": "FeatureCollection",
+    //   "features": [
+    //     {
+    //       "type": "Feature",
+    //       "properties": {
+    //         "hint": "Edit 1",
+    //       },
+    //       "geometry": {
+    //         "type": "Polygon",
+    //         "coordinates": [
+    //           [
+    //             [30.212402343750004,55.19141243527065],
+    //             [30.443115234375004,54.50832650029076],
+    //             [31.014404296875004,54.718275018302315],
+    //             [30.212402343750004,55.19141243527065],
+    //           ]
+    //         ]
+    //       }
+    //     },
+    //     {
+    //       "type": "Feature",
+    //       "properties": {
+    //         "hint": "Edit 2",
+    //       },
+    //       "geometry": {
+    //         "type":        "Point",
+    //         "coordinates": [24.071044921875004,55.86914706303444]
+    //       },
+    //     },
+    //   ],
+    // },
 
     map_options: {
       zoomControl: false,
@@ -150,10 +147,6 @@ export default {
       },
       deep: true,
     },
-  },
-
-  mounted: function() {
-    this.MAP_ACT_EDIT_ON(MAP_TEST_EDIT_1);
   },
 
   computed: {
@@ -177,10 +170,9 @@ export default {
     },
   },
   methods: {
-    ...mapActions([
-      'MAP_ACT_EDIT_ON',
-      'MAP_ACT_EDIT_OFF',
-    ]),
+    // ...mapActions([
+    //   'MAP_ACT_EDIT',
+    // ]),
 
     edit_options() {
       return {
@@ -214,5 +206,5 @@ export default {
 
 <style scoped lang="scss">
   @import "~leaflet/dist/leaflet.css";
-  @import "~@/components/Map/Leaflet/L.css";
+  @import "~@/components/Map/Leaflet/Lib.css";
 </style>

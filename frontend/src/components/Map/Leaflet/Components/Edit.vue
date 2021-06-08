@@ -96,6 +96,7 @@
  *
  * v-model       - fc с двунаправленной связью, куда складываются данные
  *                 пустая область - { "type": "FeatureCollection", "features": [], } или L.featureGroup().toGeoJSON()
+ *                 undedined      - режим редактирования выключается
  * mode_enabled  - доступные режимы редактирования (marker, line, polygon)
  * mode_selected - активизированный по умолчанию режим ('Marker', 'Line', 'Polygon')
  * @ok           - если задан - активна кнопка ОК
@@ -114,12 +115,12 @@ import {
 
 import {
   MAP_ITEM,
-} from '@/components/Map/Leaflet/L.Const';
+} from '@/components/Map/Leaflet/Const';
 
 import {
   icon_get,
   icon_2_marker,
-} from '@/components/Map/Leaflet/L.Marker';
+} from '@/components/Map/Leaflet/Markers/Fun';
 
 import '@geoman-io/leaflet-geoman-free';
 
@@ -181,6 +182,7 @@ export default {
     fc_prop: {
       handler(val) {
         if (this.fc !== val) {
+          this.fc_copy = val?JSON.parse(JSON.stringify(val)):undefined;
           this.map_load(val);
           this.mode_set(false);
         }
@@ -188,6 +190,7 @@ export default {
       deep: true,
     },
   },
+
 
   mounted() {
     this.map = this.$parent.mapObject;    // в основном модуле: this.$refs.map.mapObject;
@@ -249,6 +252,73 @@ export default {
 
 
   methods: {
+    // ======================================
+    // ДАННЫЕ НА КАРТЕ
+    // ======================================
+
+    // записать в fc
+    map_save() {
+      this.mode_selected_off();
+      let fg = L.featureGroup();
+      this.map.pm.getGeomanLayers().forEach(function(layer) {
+        if (
+          (layer.options.editor) &&
+          (layer instanceof L.Path || layer instanceof L.Marker)) {
+          // bug fix: удалить удаленные части фигур
+          if (layer instanceof L.Path) {
+            layer._latlngs = layer._latlngs.filter( x => (!(x instanceof Array) || (x.length > 0)));
+          }
+          fg.addLayer(layer);
+        }
+      });
+      this.fc = fg.toGeoJSON();
+    },
+
+
+    // загрузить из fc
+    map_load(fc_new) {
+      // очистить карту
+      this.map_clear();
+
+      // новые данные
+      if (this.fc != fc_new) { this.fc = fc_new; }
+
+      // при отсутствии данных отбой
+      if (fc_new == undefined) return;
+
+      // стили исходные
+      let self  = this;
+      let style = {
+        onEachFeature: function(feature, layer)  { layer.options.editor = true;       },
+        pointToLayer:  function(feature, latlng) { return self.marker_origin(latlng); },
+        style:         function(feature)         { return self.path_origin();         },
+      };
+      let layer = (this.fc.type=='FeatureCollection')?L.geoJSON(this.fc, style):L.GeoJSON.geometryToLayer(this.fc, style);
+
+      // события: установить
+      this.events_layer_on(layer);
+
+      // добавить слой на карту
+      layer.addTo(this.map);
+
+      // разрешить режим редактирования
+      this.mode_pm_on();
+    },
+
+
+    // очистить на карте
+    map_clear() {
+      let self = this;
+      this.mode_selected_off();
+      this.map.pm.getGeomanLayers().forEach(function(layer) {
+        if (layer.options.editor) {
+          self.events_layer_off(layer);
+          self.map.removeLayer(layer);
+        }
+      });
+    },
+
+
 
     // ======================================
     // РЕЖИМЫ
@@ -372,82 +442,6 @@ export default {
 
 
 
-
-    // ======================================
-    // ДАННЫЕ НА КАРТЕ
-    // ======================================
-
-    // записать в fc
-    map_save() {
-      this.mode_selected_off();
-      let fg = L.featureGroup();
-      this.map.pm.getGeomanLayers().forEach(function(layer) {
-        if (
-          (layer.options.editor) &&
-          (layer instanceof L.Path || layer instanceof L.Marker)) {
-          // bug fix: удалить удаленные части фигур
-          if (layer instanceof L.Path) {
-            layer._latlngs = layer._latlngs.filter( x => (!(x instanceof Array) || (x.length > 0)));
-          }
-          fg.addLayer(layer);
-        }
-      });
-      this.fc = fg.toGeoJSON();
-    },
-
-
-    // загрузить из fc
-    map_load(fc_new) {
-      // очистить карту
-      this.map_clear();
-
-      if (this.fc_copy == undefined) {
-        this.fc_copy  = fc_new?JSON.parse(JSON.stringify(fc_new)):undefined;
-        // this.fc_proxy = fc_new;
-      }
-
-      // новые данные
-      if (this.fc != fc_new) { this.fc = fc_new; }
-
-      // при отсутствии данных отбой
-      if (fc_new == undefined) return;
-
-      // стили исходные
-      let self  = this;
-      let style = {
-        onEachFeature: function(feature, layer)  { layer.options.editor = true;       },
-        pointToLayer:  function(feature, latlng) { return self.marker_origin(latlng); },
-        style:         function(feature)         { return self.path_origin();         },
-      };
-      let layer = (this.fc.type=='FeatureCollection')?L.geoJSON(this.fc, style):L.GeoJSON.geometryToLayer(this.fc, style);
-
-      // события: установить
-      this.events_layer_on(layer);
-
-      // добавить слой на карту
-      layer.addTo(this.map);
-
-      // разрешить режим редактирования
-      this.mode_pm_on();
-    },
-
-
-    // очистить на карте
-    map_clear() {
-      let self = this;
-      this.mode_selected_off();
-      this.map.pm.getGeomanLayers().forEach(function(layer) {
-        if (layer.options.editor) {
-          self.events_layer_off(layer);
-          self.map.removeLayer(layer);
-        }
-      });
-    },
-
-
-
-
-
     // ======================================
     // СТИЛИ
     // ======================================
@@ -525,7 +519,7 @@ export default {
 
     // восстановить
     on_click_restore() {
-      this.map_load(this.fc_copy) //this.fc_copy?JSON.parse(JSON.stringify(this.fc_copy)):undefined)
+      this.map_load(this.fc_copy)
     },
 
     // изменение на карте

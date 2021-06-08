@@ -7,7 +7,7 @@ import {
 
 import {
   MAP_ITEM,
-} from '@/components/Map/Leaflet/L.Const';
+} from '@/components/Map/Leaflet/Const';
 
 export default {
   /**

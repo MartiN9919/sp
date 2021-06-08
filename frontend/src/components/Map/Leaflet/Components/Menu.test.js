@@ -1,6 +1,6 @@
 import {
   MAP_ITEM,
-} from '@/components/Map/Leaflet/L.Const';
+} from '@/components/Map/Leaflet/Const';
 
 export const MAP_TEST_ITEM_1 = {
   //"id": 5,

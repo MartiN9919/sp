@@ -108,26 +108,24 @@ import {
   LIcon,
 } from 'vue2-leaflet';
 
-import { MAP_ITEM }                 from '@/components/Map/Leaflet/L.Const';
-import { marker_get }               from '@/components/Map/Leaflet/L.Marker';
-
 import Vue2LeafletMarkerCluster     from 'vue2-leaflet-markercluster';
 import LControlPolylineMeasure      from 'vue2-leaflet-polyline-measure';
 
-import '@/components/Map/Leaflet/L.Marker.Pulse';
+import { MAP_ITEM }                 from '@/components/Map/Leaflet/Const';
+import { marker_get }               from '@/components/Map/Leaflet/Markers/Fun';
+
+import                      '@/components/Map/Leaflet/Markers/Pulse';
+import Edit            from '@/components/Map/Leaflet/Components/Edit';
+import Menu            from '@/components/Map/Leaflet/Components/Menu';
+import Range           from '@/components/Map/Leaflet/Components/Range';
+import Legend          from '@/components/Map/Leaflet/Components/Legend';
+import Logo            from '@/components/Map/Leaflet/Components/Logo';
+import MixKey          from '@/components/Map/Leaflet/Mixins/Key';
+import MixFeatureColor from '@/components/Map/Leaflet/Mixins/FeatureColor';
+import MixControl      from '@/components/Map/Leaflet/Mixins/Control';
+import MixMeasure      from '@/components/Map/Leaflet/Mixins/Measure';
 
 import { datesql_to_ts, } from '@/plugins/sys';
-
-import Edit            from '@/components/Map/Leaflet/Edit';
-import Menu            from '@/components/Map/Leaflet/Menu';
-import Range           from '@/components/Map/Leaflet/Range';
-import Legend          from '@/components/Map/Leaflet/Legend';
-import Logo            from '@/components/Map/Leaflet/Logo';
-import MixKey          from '@/components/Map/Leaflet/L.Mix.Key';
-import MixFeatureColor from '@/components/Map/Leaflet/L.Mix.FeatureColor';
-import MixControl      from '@/components/Map/Leaflet/L.Mix.Control';
-import MixMeasure      from '@/components/Map/Leaflet/L.Mix.Measure';
-
 
 // устранение бага с путями
 delete Icon.Default.prototype._getIconUrl;
@@ -183,8 +181,8 @@ export default {
         y:       0,
       },
 
-      // // FeatureCollection РЕДАКТИРУЕМЫХ объектов
-      // fc_edit: this.MAP_GET_EDIT_DATA,
+      // FeatureCollection РЕДАКТИРУЕМЫХ объектов
+      // fc_edit: this.MAP_GET_EDIT,
 
       hover_map_ind:     -1,      // MAP_ITEM[hover_map_ind]                   - блок, над которым находится курсор
       hover_feature_ind: -1,      // MAP_ITEM[].FC.features[hover_feature_ind] - фигура, над которой находится курсор
@@ -204,19 +202,19 @@ export default {
   },
 
 
-  watch: {
-    fc_edit: {
-      handler() {
-        console.log('watch changed fc_edit', this.fc_edit);
-      },
-      deep: true,
-    },
-    MAP_GET_EDIT_DATA: {
-      handler() {
-        this.fc_edit = this.MAP_GET_EDIT_DATA;
-      },
-    }
-  },
+  // watch: {
+  //   // fc_edit: {
+  //   //   handler() {
+  //   //     console.log('watch changed fc_edit', this.fc_edit);
+  //   //   },
+  //   //   deep: true,
+  //   // },
+  //   // MAP_GET_EDIT: {
+  //   //   handler() {
+  //   //     this.fc_edit = this.MAP_GET_EDIT;
+  //   //   },
+  //   // }
+  // },
 
   computed: {
     ...mapGetters([
@@ -229,7 +227,7 @@ export default {
       'MAP_GET_CLUSTER',
       'MAP_GET_HINT',
 
-      'MAP_GET_EDIT_DATA',
+      'MAP_GET_EDIT',
 
       'SCRIPT_GET',
       'SCRIPT_GET_ITEM_COLOR',
@@ -241,18 +239,15 @@ export default {
 
     // FeatureCollection РЕДАКТИРУЕМЫХ объектов
     fc_edit: {
-      get()    { return this.MAP_GET_EDIT_DATA; },
-      set(val) {
-        // console.log(11111)
-        // this.MAP_ACT_EDIT_DATA({data: val});
-      },
+      get()    { return this.MAP_GET_EDIT; },
+      set(val) { /* this.MAP_ACT_EDIT({data: val}); */ },
     },
   },
 
 
   methods: {
     ...mapActions([
-      'MAP_ACT_EDIT_DATA',
+      'MAP_ACT_EDIT',
     ]),
 
     // ===============
@@ -454,8 +449,8 @@ export default {
     },
 
     on_edit_ok(event, dat) {
-      console.log(111, event, dat);
-      this.fc_edit = dat;
+      console.log('on_edit_ok', event, dat);
+      //this.fc_edit = dat;
     },
 
 
@@ -517,11 +512,11 @@ export default {
   @import "~leaflet.markercluster/dist/MarkerCluster.css";
   @import "~leaflet.markercluster/dist/MarkerCluster.Default.css";
 
-  @import "~@/components/Map/Leaflet/L.css";
+  @import "~@/components/Map/Leaflet/Lib.css";
 
-  @import "~@/components/Map/Leaflet/L.Marker.Cluster.css";
-  @import "~@/components/Map/Leaflet/L.Marker.Pulse.css";
-  @import "~@/components/Map/Leaflet/L.Marker.Font.css";
+  @import "~@/components/Map/Leaflet/Markers/Cluster.css";
+  @import "~@/components/Map/Leaflet/Markers/Pulse.css";
+  @import "~@/components/Map/Leaflet/Markers/Font.css";
 
-  @import "~@/components/Map/Leaflet/L.Mix.Control.css";
+  @import "~@/components/Map/Leaflet/Mixins/Control.css";
 </style>

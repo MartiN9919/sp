@@ -118,7 +118,7 @@ import {
   MAP_TEST_ITEM_3,
   MAP_TEST_EDIT_1,
   MAP_TEST_EDIT_2,
-} from '@/components/Map/Leaflet/Menu.test';
+} from '@/components/Map/Leaflet/Components/Menu.test';
 
 const props = {
   options: {
@@ -336,10 +336,9 @@ export default {
       'MAP_ACT_LOGO',
 
       'MAP_ACT_ITEM_ADD',
-
-      'MAP_ACT_EDIT_ON',
       'MAP_ACT_ITEM_DEL',
       'MAP_ACT_ITEM_COLOR',
+      'MAP_ACT_EDIT',
     ]),
     click_tile (ind)          { this.prop_tile=ind; },
     click_prop_invert(val)    { this.form[val] = !this.form[val]; },
@@ -351,8 +350,8 @@ export default {
     test_item_del()           { this.$emit('legend_hide'); this.MAP_ACT_ITEM_DEL({id: 0}); },
     test_item_get()           { this.$emit('event_get', 'Получить результат'); },
 
-    test_edit_1()             { this.MAP_ACT_EDIT_ON(MAP_TEST_EDIT_1); },
-    test_edit_2()             { this.MAP_ACT_EDIT_ON(MAP_TEST_EDIT_2); },
+    test_edit_1()             { this.MAP_ACT_EDIT(MAP_TEST_EDIT_1); },
+    test_edit_2()             { this.MAP_ACT_EDIT(MAP_TEST_EDIT_2); },
   },
 }
 
