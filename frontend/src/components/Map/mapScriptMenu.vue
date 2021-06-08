@@ -41,8 +41,9 @@
 
       <v-row no-gutters class="overflow-y-auto pa-3">
         <chipAnalytics
-          v-for="analytics in selectedTemplate.activeAnalysts.concat(selectedTemplate.passiveAnalysts)"
+          v-for="(analytics, id) in selectedTemplate.activeAnalysts.concat(selectedTemplate.passiveAnalysts)"
           :analytics="analytics"
+          :key="id"
           :selectedTreeViewItem="selectedItem"
           @returnSelectAnalytics="setCurrentAnalytics"
           @changeColor="changeColorActiveAnalysts"
@@ -60,6 +61,7 @@
           <settingsAnalytics
             v-for="variable in selectedItem.variables"
             :variable="variable"
+            :key="variable.id"
           ></settingsAnalytics>
 
           <div class="text-center">

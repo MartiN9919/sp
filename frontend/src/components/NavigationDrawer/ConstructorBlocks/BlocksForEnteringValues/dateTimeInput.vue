@@ -1,88 +1,75 @@
 <template>
-  <v-text-field
-    v-model="variable.value"
-    :label="variable.title"
-    placeholder="Выберете необходимую дату значение"
-    hide-details readonly class="pt-0 mt-0" color="teal" type="text"
-  >
-    <template v-slot:append>
-      <v-menu offset-x z-index="10001" left :close-on-content-click="false" transition="slide-x-reverse-transition">
-        <template v-slot:activator="{ on, attrs }">
-          <v-icon
-            v-bind="attrs" v-on="on"
-            :color="attrs['aria-expanded'] === 'true' ? 'teal' : ''"
-          >mdi-timetable</v-icon>
+  <v-row>
+    <v-col>
+      <v-menu
+        :close-on-content-click="false"
+        offset-x offset-y z-index="10001" bottom right
+        nudge-left="290"
+        transition="slide-x-reverse-transition"
+        min-width="auto" fixed>
+        <template v-slot:activator="{ on }">
+          <v-text-field
+            autocomplete="off"
+            append-icon="mdi-calendar"
+            v-model="variable.value.date"
+            :label="'Дата - ' + variable.title"
+            placeholder="Выберете дату"
+            hide-details readonly class="pt-0 mt-0" color="teal" type="text"
+            v-on="on"
+          ></v-text-field>
         </template>
-        <v-container fluid>
-          <v-row no-gutters>
-            <v-col>
-              <v-card>
-                <v-date-picker
-                  no-title
-                  v-model="variable.value"
-                  show-adjacent-months
-                  first-day-of-week="1"
-                  color="teal" locale="ru"
-                  style="border-radius: 0"
-                ></v-date-picker>
-              </v-card>
-            </v-col>
-            <v-divider vertical></v-divider>
-            <v-col>
-              <v-row no-gutters>
-                <v-virtual-scroll
-                  :items="items"
-                  item-height="40"
-                  width="50"
-                  height="300"
-                >
-                  <template v-slot:default="{ item }">
-                    <v-list-item :key="item" link>
-                      {{item}}
-                    </v-list-item>
-                  </template>
-                </v-virtual-scroll>
-                <v-virtual-scroll
-                  :items="items"
-                  item-height="40"
-                  width="50"
-                  height="300"
-                >
-                  <template v-slot:default="{ item }">
-                    <v-list-item :key="item" light>
-                      {{item}}
-                    </v-list-item>
-                  </template>
-                </v-virtual-scroll>
-              </v-row>
-            </v-col>
-          </v-row>
-        </v-container>
+        <v-date-picker
+          v-model="variable.value.date"
+          show-adjacent-months
+          first-day-of-week="1"
+          color="teal" locale="ru"
+        ></v-date-picker>
       </v-menu>
-    </template>
-  </v-text-field>
+    </v-col>
+    <v-col>
+      <v-menu
+        :close-on-content-click="false"
+        offset-x offset-y z-index="10001" bottom right
+        nudge-left="290"
+        transition="slide-x-reverse-transition"
+        min-width="auto" fixed>
+        <template v-slot:activator="{ on }">
+          <v-text-field
+            autocomplete="off"
+            append-icon="mdi-clock-outline"
+            v-model="variable.value.time"
+            :label="'Время - ' + variable.title"
+            placeholder="Выберете время"
+            hide-details readonly class="pt-0 mt-0" color="teal" type="text"
+            v-on="on"
+          ></v-text-field>
+        </template>
+        <v-time-picker
+          v-model="variable.value.time"
+          scrollable
+          color="teal" format="24hr"
+        ></v-time-picker>
+      </v-menu>
+    </v-col>
+  </v-row>
+
 </template>
 
 <script>
 export default {
   name: "dateTimeInput",
-  data: () => ({
-    datePicker: true,
-  }),
-  props: {
-    variable: Object,
-  },
-  computed: {
-    items () {
-      return Array.from({ length: this.length }, (k, v) => v + 1)
-    },
-    length () {
-      return 7000
-    },
+  props: { variable: Object, },
+  created() {
+    this.variable.value = {
+      date: '',
+      time: '',
+    }
   },
 }
 </script>
 
 <style scoped>
-
+.v-picker__title {
+  height: 50px;
+}
 </style>

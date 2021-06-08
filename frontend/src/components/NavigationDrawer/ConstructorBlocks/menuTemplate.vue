@@ -3,6 +3,7 @@
     <template v-slot:activator="{ on, attrs }">
       <v-row dense no-gutters class="pa-4 pr-2 pb-2 pt-2 noselect">
         <v-text-field
+          autocomplete="off"
           ref="form"
           v-model="templateTitle"
           :label="inputLabel"
@@ -72,6 +73,7 @@
         v-for="temp in templates"
         :disabled="temp.id === parseInt(selectedTemplate.id)"
         @click="getTemplate(temp.id)"
+        :key="temp.id"
         link
       >
         <v-list-item-title>{{temp.title}}</v-list-item-title>

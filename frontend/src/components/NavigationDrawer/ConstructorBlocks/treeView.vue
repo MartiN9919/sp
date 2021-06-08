@@ -14,7 +14,7 @@
     dense>
 
     <template v-slot:label="{ item, open }">
-      <v-tooltip bottom open-delay="1000" style="z-index: 10001">
+      <v-tooltip bottom open-delay="1000" color="teal" style="z-index: 10001">
         <template v-slot:activator="{ on, attrs }">
           <div v-bind="attrs" v-on="on">
             <v-icon

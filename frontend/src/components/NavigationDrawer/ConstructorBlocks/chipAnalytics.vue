@@ -1,5 +1,5 @@
 <template>
-  <v-tooltip bottom transition="false"  style="z-index: 10001">
+  <v-tooltip bottom transition="false" color="teal" z-index="10001">
     <template v-slot:activator="{ on, attrs }">
       <v-chip
         @click:close="$emit('deleteActiveAnalytics', analytics)"
@@ -35,7 +35,10 @@
 
       </v-chip>
     </template>
-    <div>Введенные значения:</div>
+    <div v-if="analytics.hint"><h4>Описание скрипта: </h4>{{analytics.hint}}</div>
+    <h4 v-else>Описание скрипта отсутствует</h4>
+    <v-divider dark></v-divider>
+    <h4>Введенные значения:</h4>
     <div v-for="variable in analytics.variables">&ndash; {{variable.title}}: {{variable.value}}</div>
   </v-tooltip>
 </template>

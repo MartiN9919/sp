@@ -12,7 +12,7 @@ export default {
           type: variable.type,
         } // формирование словаря с переменными
       }
-      return { id: script.id, name: script.name, variables: variables }
+      return { id: script.id, name: script.name, variables: variables, hint: script.hint }
     }
   }
 }
