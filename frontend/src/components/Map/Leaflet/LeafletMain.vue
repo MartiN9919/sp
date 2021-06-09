@@ -195,6 +195,12 @@ export default {
     };
   },
 
+  watch: {
+    fc_edit: function(val) {
+      console.log('update ', this.fc_edit, val);
+    },
+  },
+
 
   mounted: function() {
     this.map = this.$refs.map.mapObject;
@@ -240,7 +246,7 @@ export default {
     // FeatureCollection РЕДАКТИРУЕМЫХ объектов
     fc_edit: {
       get()    { return this.MAP_GET_EDIT; },
-      set(val) { /* this.MAP_ACT_EDIT({data: val}); */ },
+      set(val) { console.log(111, val) /* this.MAP_ACT_EDIT({data: val}); */ },
     },
   },
 

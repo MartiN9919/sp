@@ -81,40 +81,6 @@ export default {
 
   data() {
     return {
-      fc_edit: L.featureGroup().toGeoJSON(),    // { "type": "FeatureCollection", "features": [], }, //L.featureGroup().toGeoJSON(),
-      // {
-      //   "type": "FeatureCollection",
-      //   "features": [
-      //     {
-      //       "type": "Feature",
-      //       "properties": {
-      //         "hint": "Edit 1",
-      //       },
-      //       "geometry": {
-      //         "type": "Polygon",
-      //         "coordinates": [
-      //           [
-      //             [30.212402343750004,55.19141243527065],
-      //             [30.443115234375004,54.50832650029076],
-      //             [31.014404296875004,54.718275018302315],
-      //             [30.212402343750004,55.19141243527065],
-      //           ]
-      //         ]
-      //       }
-      //     },
-      //     {
-      //       "type": "Feature",
-      //       "properties": {
-      //         "hint": "Edit 2",
-      //       },
-      //       "geometry": {
-      //         "type":        "Point",
-      //         "coordinates": [24.071044921875004,55.86914706303444]
-      //       },
-      //     },
-      //   ],
-      // },
-
       map_options: {
         zoomControl: false,
         zoomSnap: 0.5,
@@ -123,12 +89,20 @@ export default {
   },
 
   watch: {
-    fc_edit: {
-      handler() {
-        console.log('watch changed fc_edit 2', this.fc_edit);
-      },
-      deep: true,
+    // fc_edit: {
+    //   handler() {
+    //     console.log('watch changed fc_edit 2', this.fc_edit);
+    //   },
+    //   deep: true,
+    // },
+
+    fc_edit: function(val) {
+      console.log('update 2', this.fc_edit, val);
     },
+  },
+
+  mounted() {
+    this.fc_edit = '1'
   },
 
   computed: {
@@ -145,6 +119,45 @@ export default {
       'SCRIPT_GET_ITEM_POLYGON',
       'SCRIPT_GET_ITEM_ICON',
     ]),
+
+    // FeatureCollection РЕДАКТИРУЕМЫХ объектов
+    fc_edit: {
+      get()    {     // { "type": "FeatureCollection", "features": [], }, //L.featureGroup().toGeoJSON(),
+        return {
+          "type": "FeatureCollection",
+        "features": [
+          {
+            "type": "Feature",
+            "properties": {
+              "hint": "Edit 1",
+            },
+            "geometry": {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [30.212402343750004,55.19141243527065],
+                  [30.443115234375004,54.50832650029076],
+                  [31.014404296875004,54.718275018302315],
+                  [30.212402343750004,55.19141243527065],
+                ]
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "hint": "Edit 2",
+            },
+            "geometry": {
+              "type":        "Point",
+              "coordinates": [24.071044921875004,55.86914706303444]
+            },
+          },
+        ],
+      }
+      },
+      set(val) { console.log(111, val) /* this.MAP_ACT_EDIT({data: val}); */ },
+    },
 
   },
 
