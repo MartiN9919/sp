@@ -11,7 +11,7 @@
         v-on="on"
       ></v-text-field>
     </template>
-    <v-card>
+    <v-card oncontextmenu="return false">
 
       <!--   Тут ставится карта   -->
 

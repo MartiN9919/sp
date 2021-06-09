@@ -28,7 +28,7 @@
         ></text-input>
       </v-row>
     </template>
-    <span>Описание: {{variable.hint}}</span>
+    <span>{{variable.hint}}</span>
   </v-tooltip>
 </template>
 

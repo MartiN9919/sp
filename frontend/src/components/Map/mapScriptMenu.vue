@@ -39,7 +39,7 @@
           v-if="selectedTemplate.activeAnalysts.length || selectedTemplate.passiveAnalysts.length"
       ></v-divider>
 
-      <v-row no-gutters class="overflow-y-auto pa-3">
+      <v-row no-gutters class="overflow-y-auto py-3 px-2">
         <chipAnalytics
           v-for="(analytics, id) in selectedTemplate.activeAnalysts.concat(selectedTemplate.passiveAnalysts)"
           :analytics="analytics"
@@ -57,14 +57,14 @@
 
       <v-scroll-y-transition mode="out-in">
         <div v-if="'id' in selectedItem" :key="selectedItem.id" class="pa-4 py-1">
-          <block-header :text-header="'Настройки ' + selectedItem.name"></block-header>
+          <block-header :text-header="'Настройки ' + selectedItem.name" class="pb-3"></block-header>
           <settingsAnalytics
             v-for="variable in selectedItem.variables"
             :variable="variable"
             :key="variable.id"
           ></settingsAnalytics>
 
-          <div class="text-center">
+          <div class="text-center pt-2">
             <v-btn
               @click="executeScript(selectedItem)"
               outlined color="teal" class="mx-2 mb-2"

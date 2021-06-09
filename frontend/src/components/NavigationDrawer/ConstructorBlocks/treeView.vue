@@ -14,7 +14,7 @@
     dense>
 
     <template v-slot:label="{ item, open }">
-      <v-tooltip bottom open-delay="1000" color="teal" style="z-index: 10001">
+      <v-tooltip bottom open-delay="1000" color="teal" style="z-index: 10001" max-width="20%">
         <template v-slot:activator="{ on, attrs }">
           <div v-bind="attrs" v-on="on">
             <v-icon
@@ -31,7 +31,7 @@
                 :style="selectedTreeViewItem.id === item.id ? {color: 'teal'} : {}">{{ item.name }}</span>
           </div>
         </template>
-        <span>{{ item.hint ? item.hint : 'Описание отсутствует' }}</span>
+        <p class="text-justify ma-0">{{ item.hint ? item.hint : 'Описание отсутствует' }}</p>
       </v-tooltip>
     </template>
 

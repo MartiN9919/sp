@@ -16,7 +16,7 @@
         v-on="on"
       ></v-text-field>
     </template>
-    <v-card>
+    <v-card oncontextmenu="return false">
       <v-date-picker
         v-model="variable.value"
         show-adjacent-months
@@ -32,7 +32,7 @@ export default {
   name: "dateInput",
   props: {
     variable: Object,
-  }
+  },
 }
 </script>
 

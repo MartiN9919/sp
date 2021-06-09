@@ -17,7 +17,7 @@
         v-on="on"
       ></v-text-field>
     </template>
-    <v-card>
+    <v-card oncontextmenu="return false">
       <v-list link>
         <v-list-item
           v-for="item in [{text: 'ДА', value: true}, {text: 'НЕТ', value: false}]"
