@@ -1,3 +1,4 @@
+from django import forms
 from django.core.exceptions import ValidationError
 from django.db import models
 from data_base_driver.constants.const_dat import DAT_SYS_OBJ, DAT_SYS_LIST_TOP, DAT_SYS_KEY, DAT_SYS_LIST_DOP, \
@@ -200,7 +201,7 @@ class ModelKey(models.Model):
         blank=True,
         null=True,
     )
-    descript = models.CharField(
+    descript = models.TextField(
         max_length=255,
         verbose_name='Дополнительные пометки',
         help_text='Дополнительная информация о классификаторе для администраторов',

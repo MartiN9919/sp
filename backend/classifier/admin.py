@@ -1,3 +1,4 @@
+from django import forms
 from django.contrib import admin
 from django.contrib.admin import RelatedFieldListFilter
 from django.core.exceptions import ValidationError
@@ -43,58 +44,6 @@ class ModelListAdmin(admin.ModelAdmin):
     inlines = [ModelListDopAdmin]
 
 
-class SpeciesFilterRelObject(RelatedFieldListFilter):
-    def __init__(self, field, request, *args, **kwargs):
-        """Get the species you want to limit it to.
-        This could be determined by the request,
-        But in this example we'll just specify an
-        arbitrary species"""
-
-        if len(args) == 3:
-            self.value = args[0].get('rel_obj_1__id__exact', None)
-            if not self.value:
-                self.value = args[0].get('rel_obj_2__id__exact', None)
-        super(SpeciesFilterRelObject, self).__init__(field, request, *args, **kwargs)
-
-    def queryset(self, request, queryset):
-        if self.value:
-            return queryset.filter(Q(rel_obj_1_id=int(self.value)) | Q(rel_obj_2_id=int(self.value)))
-        else:
-            return queryset.filter()
-
-
-@admin.register(ModelKey)
-class ModelKeyAdmin(admin.ModelAdmin):
-    list_display = (
-        DAT_SYS_KEY.TITLE,
-        DAT_SYS_KEY.PATH,
-        DAT_SYS_KEY.OBJ,
-        DAT_SYS_KEY.TYPE_VAL,
-        DAT_SYS_KEY.REL_OBJ_1,
-        DAT_SYS_KEY.REL_OBJ_2,
-        DAT_SYS_KEY.COL,
-        DAT_SYS_KEY.NEED,
-
-    )
-
-    ordering = (DAT_SYS_KEY.OBJ, DAT_SYS_KEY.PATH, DAT_SYS_KEY.TITLE,)
-
-    autocomplete_fields = (DAT_SYS_KEY.LIST,)
-
-    fieldsets = (
-        ("Название классификатора", {'fields': ((DAT_SYS_KEY.TITLE, DAT_SYS_KEY.NAME,), (DAT_SYS_KEY.PATH,),)}),
-        ("Основные настройки классификатора", {'fields': (DAT_SYS_KEY.OBJ, DAT_SYS_KEY.TYPE_VAL, DAT_SYS_KEY.LIST,), }),
-        ("Описания для классификатора", {'fields': ((DAT_SYS_KEY.HINT, DAT_SYS_KEY.DESCRIPT,),), }),
-
-        ("Поля для связи между объектами", {'fields': ((DAT_SYS_KEY.REL_OBJ_1, DAT_SYS_KEY.REL_OBJ_2,),), }),
-        (None, {'fields': ((DAT_SYS_KEY.COL, DAT_SYS_KEY.NEED,),), }),
-    )
-
-    list_filter = (DAT_SYS_KEY.OBJ + '__title', (DAT_SYS_KEY.REL_OBJ_1, SpeciesFilterRelObject),
-                   (DAT_SYS_KEY.REL_OBJ_2, SpeciesFilterRelObject))
-    list_per_page = 20
-
-
 class SpeciesFilterRel(RelatedFieldListFilter):
     def __init__(self, field, request, *args, **kwargs):
         """Get the species you want to limit it to.
@@ -131,30 +80,44 @@ class ModelKeyAdminRel(admin.ModelAdmin):
     list_display = (
         DAT_SYS_KEY.TITLE,
         DAT_SYS_KEY.PATH,
-        DAT_SYS_KEY.TYPE_VAL,
         DAT_SYS_KEY.REL_OBJ_1,
         DAT_SYS_KEY.REL_OBJ_2,
         DAT_SYS_KEY.COL,
         DAT_SYS_KEY.NEED,
-
+        DAT_SYS_KEY.DESCRIPT,
     )
-
+    search_fields = [DAT_SYS_KEY.TITLE, ]
     ordering = (DAT_SYS_KEY.OBJ, DAT_SYS_KEY.PATH, DAT_SYS_KEY.TITLE,)
 
     autocomplete_fields = (DAT_SYS_KEY.LIST,)
 
     fieldsets = (
         ("Название связи", {'fields': ((DAT_SYS_KEY.TITLE, DAT_SYS_KEY.NAME,), (DAT_SYS_KEY.PATH,),)}),
-        ("Основные настройки связи", {'fields': (DAT_SYS_KEY.TYPE_VAL, DAT_SYS_KEY.LIST,), }),
-        ("Описания для связи", {'fields': ((DAT_SYS_KEY.HINT, DAT_SYS_KEY.DESCRIPT,),), }),
-
+        ("Основные настройки связи", {'fields': (DAT_SYS_KEY.LIST,), }),
+        ("Описания для связи", {'fields': ((DAT_SYS_KEY.HINT,),), }),
         ("Поля для связи между объектами", {'fields': ((DAT_SYS_KEY.REL_OBJ_1, DAT_SYS_KEY.REL_OBJ_2,),), }),
         (None, {'fields': ((DAT_SYS_KEY.COL, DAT_SYS_KEY.NEED,),), }),
+        ("Дополнительная информация", {'fields': (DAT_SYS_KEY.DESCRIPT,), }),
     )
 
     list_filter = ((DAT_SYS_KEY.REL_OBJ_1, SpeciesFilterRel),
                    (DAT_SYS_KEY.REL_OBJ_2, SpeciesFilterRel))
     list_per_page = 20
+
+    def get_form(self, request, obj=None, change=False, **kwargs):
+        form = super().get_form(request, obj, **kwargs)
+        if not obj:
+            filter_str = request.GET.get('_changelist_filters', '0=0&0=0').split('&')
+            if len(filter_str) == 1:
+                obj_id_1 = int(filter_str[0].split('=')[1])
+                form.base_fields['rel_obj_1'].initial = int(obj_id_1)
+                return form
+            else:
+                obj_id_1 = int(filter_str[0].split('=')[1])
+                obj_id_2 = int(filter_str[1].split('=')[1])
+                form.base_fields['rel_obj_1'].initial = int(obj_id_1)
+                form.base_fields['rel_obj_2'].initial = int(obj_id_2)
+                return form
 
 
 class SpeciesFilterClassifier(RelatedFieldListFilter):
@@ -202,8 +165,9 @@ class ModelKeyAdminObject(admin.ModelAdmin):
         DAT_SYS_KEY.TYPE_VAL,
         DAT_SYS_KEY.COL,
         DAT_SYS_KEY.NEED,
-
+        DAT_SYS_KEY.DESCRIPT,
     )
+    search_fields = [DAT_SYS_KEY.TITLE, ]
 
     ordering = (DAT_SYS_KEY.OBJ, DAT_SYS_KEY.PATH, DAT_SYS_KEY.TITLE,)
 
@@ -212,10 +176,17 @@ class ModelKeyAdminObject(admin.ModelAdmin):
     fieldsets = (
         ("Название классификатора", {'fields': ((DAT_SYS_KEY.TITLE, DAT_SYS_KEY.NAME,), (DAT_SYS_KEY.PATH,),)}),
         ("Основные настройки классификатора", {'fields': (DAT_SYS_KEY.OBJ, DAT_SYS_KEY.TYPE_VAL, DAT_SYS_KEY.LIST,), }),
-        ("Описания для классификатора", {'fields': ((DAT_SYS_KEY.HINT, DAT_SYS_KEY.DESCRIPT,),), }),
-
+        ("Описания для классификатора", {'fields': ((DAT_SYS_KEY.HINT,),), }),
         (None, {'fields': ((DAT_SYS_KEY.COL, DAT_SYS_KEY.NEED,),), }),
+        ("Дополнительная информация", {'fields': (DAT_SYS_KEY.DESCRIPT,), }),
     )
 
     list_filter = ((DAT_SYS_KEY.OBJ, SpeciesFilterClassifier),)
     list_per_page = 20
+
+    def get_form(self, request, obj=None, change=False, **kwargs):
+        form = super().get_form(request, obj, **kwargs)
+        if not obj:
+            obj_id = request.GET.get('_changelist_filters', '0=0').split('=')[1]
+            form.base_fields['obj'].initial = int(obj_id)
+        return form

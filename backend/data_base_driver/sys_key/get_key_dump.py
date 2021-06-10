@@ -1,4 +1,5 @@
 from data_base_driver.constants.const_dat import DAT_SYS_KEY, DAT_SYS_OBJ
+from data_base_driver.sys_key.get_list import get_list_by_top_id
 
 
 def get_obj_id(name):
@@ -48,8 +49,13 @@ def get_keys_by_object(object):
     """
     if isinstance(object, str) and not (object.isdigit()):
         object = get_obj_id(object)
-    return DAT_SYS_KEY.DUMP.get_rec(obj_id=int(object), only_first=False)
-
+    keys = DAT_SYS_KEY.DUMP.get_rec(obj_id=int(object), only_first=False)
+    for key in keys:
+        if key.get('list_id'):
+            list_item = get_list_by_top_id(int(key.get('list_id')))
+            list_item = {key.get('list_id'): list_item}
+            key['list_id'] = list_item
+    return keys
 
 def get_key_by_id(id):
     """
@@ -70,3 +76,8 @@ def get_key_by_name(name):
     @return: словарь содержащий информацию о ключе классификатора
     """
     return DAT_SYS_KEY.DUMP.get_rec(name=name)
+
+
+keys = get_keys_by_object(35)
+
+

@@ -227,6 +227,7 @@ class DAT_SYS_LIST_DOP:
     TABLE = VEC_DATA['NAME'] + '.' + TABLE_SHORT
     ID = 'id'
     KEY_ID = 'key_id'
+    LIST_ID = 'list_id'
     VAL = 'val'
 
 
