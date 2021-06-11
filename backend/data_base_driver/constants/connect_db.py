@@ -2,11 +2,11 @@
 Настройки для подключения к базе данных vec_data
 """
 VEC_DATA = {
-    'HOST': '200.200.200.233',
+    'HOST': '127.0.0.1',
     'PORT': '3306',
     'NAME': 'vec_data',
-    'USER': 'dev',
-    'PASSWORD': '1',
+    'USER': 'pushkin',
+    'PASSWORD': '1111',
     'CHARSET': 'utf8',
 }
 
@@ -29,6 +29,12 @@ OSM = {
     'USER': 'pushkin',
     'PASSWORD': '1111',
     'CHARSET': 'utf8',
+}
+
+MANTICORE = {
+    'HOST': '127.0.0.1',
+    'PORT': '9306',
+    'NAME': 'Manticore'
 }
 
 TEST_DATA = {
