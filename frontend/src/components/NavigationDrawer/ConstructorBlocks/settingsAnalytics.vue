@@ -1,7 +1,7 @@
 <template>
   <v-tooltip bottom color="teal" z-index="10001" open-delay="1000">
     <template v-slot:activator="{ on }">
-      <v-row no-gutters class="align-center noselect pb-4" v-on="on">
+      <v-row no-gutters class="align-center select_off pb-4" v-on="on">
         <geometry-input
           v-if="variable.type === 'geometry'"
           :variable="variable">
@@ -33,7 +33,6 @@
 </template>
 
 <script>
-import '@/assets/css/noselect.css'
 import geometryInput from "./BlocksForEnteringValues/geometryInput";
 import booleanInput from "./BlocksForEnteringValues/booleanInput";
 import dateInput from "./BlocksForEnteringValues/dateInput";

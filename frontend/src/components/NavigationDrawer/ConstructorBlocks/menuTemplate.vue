@@ -1,7 +1,7 @@
 <template>
   <v-menu offset-y :disabled="!templates.length" max-height="50%" z-index="10001">
-    <template v-slot:activator="{ on, attrs }">
-      <v-row dense no-gutters class="pa-4 pr-2 pb-2 pt-2 noselect">
+    <template v-slot:activator="{ on, value }">
+      <v-row dense no-gutters class="pa-4 pr-2 pb-2 pt-2 select_off">
         <v-text-field
           autocomplete="off"
           ref="form"
@@ -15,16 +15,16 @@
           class="pa-0 mt-0"
         >
           <template slot="append-outer">
-            <v-btn icon v-bind="attrs" v-on="on">
-              <v-icon :color="attrs['aria-expanded'] === 'true' ? 'teal' : ''">mdi-menu-down-outline</v-icon>
+            <v-btn icon v-on="on">
+              <v-icon :color="value ? 'teal' : ''">mdi-menu-down-outline</v-icon>
             </v-btn>
             <v-menu offset-x z-index="10001" max-height="50%">
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn icon v-bind="attrs" v-on="on">
-                  <v-icon :color="attrs['aria-expanded'] === 'true' ? 'teal' : ''">mdi-cog-outline</v-icon>
+              <template v-slot:activator="{ on, value }">
+                <v-btn icon v-on="on">
+                  <v-icon :color="value ? 'teal' : ''">mdi-cog-outline</v-icon>
                 </v-btn>
               </template>
-              <v-list oncontextmenu="return false" rounded>
+              <v-list rounded>
                 <v-list-item @click="createNewTemplate()">
                   <v-list-item-icon>
                     <v-icon>mdi-filter-variant-plus</v-icon>
@@ -47,7 +47,7 @@
                     </v-list-item>
                   </template>
                   <v-card>
-                    <v-card-title class="headline noselect">
+                    <v-card-title class="headline select_off">
                       Вы согласны с удалением шаблона?
                     </v-card-title>
                     <v-card-actions>
@@ -68,7 +68,7 @@
       </v-row>
     </template>
 
-    <v-list oncontextmenu="return false" rounded>
+    <v-list rounded>
       <v-list-item
         v-for="temp in templates"
         :disabled="temp.id === parseInt(selectedTemplate.id)"
@@ -84,8 +84,6 @@
 </template>
 
 <script>
-import '@/assets/css/noselect.css'
-
 export default {
   name: 'menuTemplate',
   data: () => ({

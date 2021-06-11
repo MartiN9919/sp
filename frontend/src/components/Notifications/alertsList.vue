@@ -1,5 +1,5 @@
 <template>
-  <v-col class="alert-list" oncontextmenu="return false">
+  <v-col class="alert-list">
     <v-slide-x-reverse-transition group>
       <alert v-for="alert in alertsList" :key="alert.id" :alert="alert" @removeAlert="removeAlertFromList"></alert>
     </v-slide-x-reverse-transition>

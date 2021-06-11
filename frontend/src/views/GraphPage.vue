@@ -8,10 +8,11 @@
     :resizerBorderThickness="1" :resizerThickness="1"
     resizer-border-thickness="" units="percents">
     <v-col class="pa-0" slot="firstPane">
-      <h1>Hello world!</h1>
+      <graph-menu></graph-menu>
     </v-col>
     <v-col class="pa-0" slot="secondPane">
-      <h1>Hello world!</h1>
+      <d3-field :drawer="drawer"></d3-field>
+
     </v-col>
   </ResSplitPane>
 </template>
@@ -19,10 +20,12 @@
 <script>
 import ResSplitPane from "vue-resize-split-pane";
 import NavigationDrawer from "../components/NavigationDrawer/Mixins/NavigationDrawer";
+import d3Field from "../components/Graph/d3Field";
+import graphMenu from "../components/Graph/graphMenu";
 
 export default {
   name: 'GraphPage',
-  components: { ResSplitPane },
+  components: { ResSplitPane, d3Field, graphMenu,},
   mixins: [NavigationDrawer],
 }
 </script>

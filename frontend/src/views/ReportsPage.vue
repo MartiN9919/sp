@@ -13,7 +13,7 @@
     <v-col class="pa-0" slot="firstPane">
       <reportScriptMenu></reportScriptMenu>
     </v-col>
-    <v-col class="pa-0" slot="secondPane">
+    <v-col class="pa-0 select_off" slot="secondPane">
       <reportsList :drawer="drawer"></reportsList>
     </v-col>
   </ResSplitPane>

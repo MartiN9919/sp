@@ -3,8 +3,7 @@
     app dense flat
     color="teal"
     dark
-    v-if="userInformation"
-    oncontextmenu="return false">
+    v-if="userInformation">
     <v-app-bar-nav-icon
       @click="changeNavigationDrawerStatus($router.currentRoute.name)"
     ></v-app-bar-nav-icon>
@@ -29,7 +28,7 @@
         </v-btn>
       </template>
 
-      <v-list oncontextmenu="return false" rounded>
+      <v-list rounded>
         <v-list-item @click="deauthenticateUser({})" link>
           <v-list-item-icon><v-icon left>mdi-logout</v-icon></v-list-item-icon>
           <v-list-item-title>Выйти из системы</v-list-item-title>

@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <v-app oncontextmenu="return false" class="select_off">
     <appBar></appBar>  <!--  Меню навигации  -->
     <v-main>
       <v-progress-linear
@@ -37,5 +37,14 @@ export default {
     -khtml-user-select: none;
     user-select: none;
     cursor: default;
+  }
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #FFFFFF;
+  }
+  ::-webkit-scrollbar-thumb {
+    background : rgba(0, 0, 0, .1);
   }
 </style>

@@ -9,7 +9,6 @@
     :resizerThickness="1"
     v-on:update:size="sizeMenuColumn = $event"
     units="percents"
-    oncontextmenu="return false"
   >
     <v-col slot="firstPane" class="column-settings pa-0">
       <treeView
@@ -197,14 +196,5 @@ export default {
     max-height:100%;
     display: flex;
     flex-direction: column;
-  }
-  ::-webkit-scrollbar {
-    width: 10px;
-  }
-  ::-webkit-scrollbar-track {
-    background: #FFFFFF;
-  }
-  ::-webkit-scrollbar-thumb {
-    background : rgba(0, 0, 0, .1);
   }
 </style>

@@ -23,7 +23,6 @@
           show-adjacent-months
           first-day-of-week="1"
           color="teal" locale="ru"
-          oncontextmenu="return false"
         ></v-date-picker>
       </v-menu>
     </v-col>
@@ -49,7 +48,6 @@
           v-model="variable.value.time"
           scrollable
           color="teal" format="24hr"
-          oncontextmenu="return false"
         ></v-time-picker>
       </v-menu>
     </v-col>

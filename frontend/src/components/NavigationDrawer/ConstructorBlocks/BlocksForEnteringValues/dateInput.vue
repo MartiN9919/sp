@@ -16,7 +16,7 @@
         v-on="on"
       ></v-text-field>
     </template>
-    <v-card oncontextmenu="return false">
+    <v-card>
       <v-date-picker
         v-model="variable.value"
         show-adjacent-months

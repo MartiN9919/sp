@@ -6,6 +6,7 @@ import map      from './modules/map/index'
 import alerts   from './modules/alerts'
 import socket   from './modules/socket'
 import report   from './modules/report'
+import graph   from './modules/graph'
 import script   from './modules/script/index'
 
 Vue.use(Vuex)
@@ -13,6 +14,7 @@ Vue.use(Vuex)
 const store = new Vuex.Store({
   modules: {
     auth,
+    graph,
     treeview,
     script,
     report,
