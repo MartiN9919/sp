@@ -118,6 +118,8 @@ class ModelKeyAdminRel(admin.ModelAdmin):
                 form.base_fields['rel_obj_1'].initial = int(obj_id_1)
                 form.base_fields['rel_obj_2'].initial = int(obj_id_2)
                 return form
+        else:
+            return form
 
 
 class SpeciesFilterClassifier(RelatedFieldListFilter):

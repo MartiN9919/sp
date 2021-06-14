@@ -167,7 +167,7 @@ class ModelKey(models.Model):
         verbose_name='Основное поле',
         help_text='Является ли данный классификатор обязательным для объекта',
     )
-    type_val = models.CharField(
+    type = models.CharField(
         max_length=10,
         verbose_name='Формат',
         choices=DAT_SYS_KEY.TYPE_LIST,
