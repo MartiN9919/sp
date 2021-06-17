@@ -37,8 +37,22 @@ def get_keys_by_rel(object1, object2):
         object1 = get_obj_id(object1)
     if isinstance(object2, str) and not (object2.isdigit()):
         object2 = get_obj_id(object2)
+    if object1 > object2:
+        tmp = object1
+        object1 = object2
+        object2 = tmp
     return [item for item in DAT_SYS_KEY.DUMP.get_rec(obj_id=1, only_first=False) if
             filter_rel(item, int(object1), int(object2))]
+
+
+def get_rels_list(object1, object2):
+    """
+    Функция для получения списка возможных связей по типу связываемых объектов
+    @param object1: имя или id первого объекта
+    @param object2: имя или id второго объекта
+    @return: список в формате [{id,title},...,{}]
+    """
+    return [{'id': item['id'], 'title': item['title']} for item in get_keys_by_rel(object1, object2)]
 
 
 def get_keys_by_object(object):
@@ -56,6 +70,7 @@ def get_keys_by_object(object):
             list_item = {key.get('list_id'): list_item}
             key['list_id'] = list_item
     return keys
+
 
 def get_key_by_id(id):
     """
@@ -79,5 +94,3 @@ def get_key_by_name(name):
 
 
 keys = get_keys_by_object(35)
-
-

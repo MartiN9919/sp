@@ -23,8 +23,8 @@ class ModelObject(models.Model):
         max_length=25,
         verbose_name='Имя латиницей',
     )
-    descript = models.CharField(
-        max_length=255,
+    descript = models.TextField(
+        max_length=1024,
         verbose_name='Дополнительные пометки',
         help_text='Дополнительная информация о объекте',
         blank=True,
@@ -202,7 +202,7 @@ class ModelKey(models.Model):
         null=True,
     )
     descript = models.TextField(
-        max_length=255,
+        max_length=1024,
         verbose_name='Дополнительные пометки',
         help_text='Дополнительная информация о классификаторе для администраторов',
         blank=True,
