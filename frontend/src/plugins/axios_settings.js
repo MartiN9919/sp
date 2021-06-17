@@ -1,7 +1,7 @@
 import axios from 'axios'
 import store from '../store/index'
 
-const SERVER_IP = '200.200.200.236:80/'
+const SERVER_IP = '127.0.0.1:8000/'
 export const WS_SERVER_IP = 'ws://' + SERVER_IP
 export const HTTP_SERVER_IP = 'http://' + SERVER_IP
 

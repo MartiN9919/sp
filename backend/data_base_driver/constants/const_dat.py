@@ -100,7 +100,7 @@ class DAT_SYS_KEY:
     OBJ_ID = 'obj_id'
     COL = 'col'
     NEED = 'need'
-    TYPE_VAL = 'type_val'
+    TYPE_VAL = 'type'
     LIST_ID = 'list_id'
     NAME = 'name'
     TITLE = 'title'
@@ -227,6 +227,7 @@ class DAT_SYS_LIST_DOP:
     TABLE = VEC_DATA['NAME'] + '.' + TABLE_SHORT
     ID = 'id'
     KEY_ID = 'key_id'
+    LIST_ID = 'list_id'
     VAL = 'val'
 
 

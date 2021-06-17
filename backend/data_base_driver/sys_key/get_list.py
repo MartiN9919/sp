@@ -11,5 +11,5 @@ def get_list_by_top_id(id):
     sql = 'SELECT ' + DAT_SYS_LIST_DOP.ID + ', ' \
           + DAT_SYS_LIST_DOP.VAL + ' FROM ' \
           + DAT_SYS_LIST_DOP.TABLE + ' WHERE ' \
-          + DAT_SYS_LIST_DOP.KEY_ID + ' = ' + str(id)
+          + DAT_SYS_LIST_DOP.LIST_ID + ' = ' + str(id)
     return [{'id': item[0], 'value': item[1]} for item in db_sql(sql)]
