@@ -32,9 +32,15 @@ OSM = {
 }
 
 MANTICORE = {
-    'HOST': '127.0.0.1',
+    'HOST': '200.200.200.235',
     'PORT': '9306',
     'NAME': 'Manticore'
+}
+
+SPHINX = {
+    'HOST': '200.200.200.235',
+    'PORT': '9306',
+    'NAME': ''
 }
 
 TEST_DATA = {
