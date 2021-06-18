@@ -82,14 +82,14 @@ class ModelListDop(models.Model):
         max_length=255,
         verbose_name="Значение",
     )
-    list = models.ForeignKey(
+    key = models.ForeignKey(
         ModelList,
         on_delete=models.CASCADE,
     )
 
     def clean(self):
-        if not self.list_id:
-            ModelList.save(self.list)
+        if not self.key_id:
+            ModelList.save(self.key)
         self.fl = 0  # костыль, потом изменить
         if self.id == None:
             try:
@@ -98,7 +98,7 @@ class ModelListDop(models.Model):
                 raise e
 
     def save(self, *args, **kwargs):
-        if len(ModelListDop.objects.filter(list=self.list).filter(val=self.val)) > 0 and self.fl == 0:
+        if len(ModelListDop.objects.filter(key=self.key).filter(val=self.val)) > 0 and self.fl == 0:
             raise ValidationError('в данном списке уже есть такой элемент')
         else:
             self.fl = 1

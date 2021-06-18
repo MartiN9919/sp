@@ -1,6 +1,6 @@
 from data_base_driver.connect.connect_manticore import db_shinxql
 from data_base_driver.constants.full_text_search import Full_text_search
-from data_base_driver.full_text_search.search_rel import search_rel, search_rel_with_key
+from data_base_driver.full_text_search.search_rel import search_rel_with_key
 
 
 def get_sorted_list(items):
@@ -26,7 +26,6 @@ def find_reliable(object_type, request):
     @param request: искомые параметры
     @return: список id объектов с искомыми параметрами, если не найдено, то пустой список
     """
-
     request = request.split(' ')
     result = None
     for word in request:
@@ -70,7 +69,7 @@ def find_with_rel_unreliable(object_type, request):
         for item_next in iter_res:
             for rec_id in item[1]:
                 for rec_id_second in item_next[1]:
-                    res = search_rel(item[0], rec_id, item_next[0], rec_id_second)
+                    res = search_rel_with_key(0, item[0], rec_id, item_next[0], rec_id_second)
                     if len(res) != 0:
                         result.append(rec_id)
     if len(result) != 0:
@@ -81,44 +80,6 @@ def find_with_rel_unreliable(object_type, request):
             return result
         else:
             return find_unreliable(Full_text_search.TABLES[object_type], request)
-
-
-def find_with_rel_reliable(object_1_type, request_1, object_2_type, request_2):
-    """
-    Функция для поиска записей с учетом связей, проводит надежную сверку по двум запросам
-    @param object_1_type: тип главного объекта для связи
-    @param request_1: запрос по главному объекту
-    @param object_2_type: тип второстепенного объекта для связи
-    @param request_2: запрос по второстепенному объекту
-    @return: список с идентификаторами подходящих записей
-    """
-    result = []
-    result1 = find_reliable(Full_text_search.TABLES[object_1_type], request_1)
-    result2 = find_reliable(Full_text_search.TABLES[object_2_type], request_2)
-    for item in result1:
-        for item_next in result2:
-            res = search_rel(object_1_type, item, object_2_type, item_next)
-            if len(res) != 0:
-                result.append(item)
-    return result
-
-
-def find_recursive(object_type, request, object_type_list, request_list):
-    """
-    Функция для поиска записей с учетом большого количества связей
-    @param object_type: тип главного объекта
-    @param request: запрос к таблице главного объекта
-    @param object_type_list: список с типами второстепенных объектов
-    @param request_list: список с запросами ко второстепенным объектам
-    @return: список с идентификаторами подходящих записей
-    """
-    temp_result = []
-    for num, object in enumerate(object_type_list):
-        temp_result.append(find_with_rel_reliable(object_type, request, object_type_list[num], request_list[num]))
-    result = []
-    for item in temp_result:
-        result += item
-    return get_sorted_list(result)
 
 
 def find_with_rel_reliable_key(object_1_type, request_1, object_2_type, request_2, rel_key):
@@ -132,8 +93,14 @@ def find_with_rel_reliable_key(object_1_type, request_1, object_2_type, request_
     @return: список с идентификаторами подходящих записей
     """
     result = []
-    result1 = find_reliable(Full_text_search.TABLES[object_1_type], request_1)
-    result2 = find_reliable(Full_text_search.TABLES[object_2_type], request_2)
+    if len(request_1) == 0:
+        result1 = [0]
+    else:
+        result1 = find_reliable(Full_text_search.TABLES[object_1_type], request_1)
+    if len(request_2) == 0:
+        result2 = [0]
+    else:
+        result2 = find_reliable(Full_text_search.TABLES[object_2_type], request_2)
     for item in result1:
         for item_next in result2:
             res = search_rel_with_key(rel_key, object_1_type, item, object_2_type, item_next)
@@ -161,12 +128,65 @@ def find_recursive_key(object_type, request, object_type_list, request_list, rel
         result += item
     return get_sorted_list(result)
 
-# print(find_recursive(45, 'Описание 3', [15, 10], ['tv1', 'val 3']))
-# print(find_with_rel_reliable_key(45, 'Описание 3', 15, 'tv1', 507))
 
-# tmp = []
-# test_list = [[1,2,5],[3,5,7],[1,5],[]]
-# for t in test_list:
-#     tmp += t
-#
-# print(get_sorted_list(tmp))
+test = {'object_id':45, 'request': 'Описание 3', 'rel_id': 0, 'rels':
+    [{'object_id':15, 'request': 'tv1', 'rel_id': 0, 'rels':
+        [{'object_id':10, 'request': 'val 4', 'rel_id': 0, 'rels': [
+            {'object_id':45, 'request': 'Описание 2', 'rel_id': 0, 'rels':[]}
+        ]}]},
+     {'object_id':10, 'request': 'val 3', 'rel_id': 508, 'rels': []}]}
+
+test_object = {'object_id': 45, 'rec_id': 34, 'params': [{'id': 45001, 'val': 'val1'}, {'id': 45002, 'val': 'val2'}]}
+
+
+def get_object_by_id(object_type, rec_id):
+    sql = 'SELECT key_id, val FROM obj_' + Full_text_search.TABLES[object_type] + '_row WHERE id = ' + \
+                str(rec_id) + ';'
+    params = [{'id': item[0],'val': item[1]} for item in db_shinxql(sql)]
+    return {'object_id': object_type, 'rec_id': rec_id, 'params': params}
+
+
+def search(request):
+    result = []
+    for rel in request.get('rels', None):
+        if len(rel.get('rels', None)) == 0:
+            result.append({'object_id': request.get('object_id', None), 'rels':
+                find_with_rel_reliable_key(request.get('object_id', None), request.get('request', None),
+                               rel.get('object_id', None), rel.get('request', None), rel.get('rel_id', None))})
+        else:
+            if len(request.get('request', None)) == 0:
+                main_object_ids = [0]
+            else:
+                main_object_ids = find_reliable(Full_text_search.TABLES[request.get('object_id', None)],
+                                            request.get('request', None))
+            temp = search(rel)
+            temp_result = []
+            for item in temp:
+                for rec_id in item.get('rels'):
+                    for id in main_object_ids:
+                        if len(search_rel_with_key(request.get('object_id', None), id,
+                                                     item.get('object_id'), rec_id, rel.get('rel_id'))) != 0:
+                            temp_result.append(id)
+            result.append({'object_id':request.get('object_id', None), 'rels': temp_result})
+    return result
+
+
+def search_top(request):
+    result = []
+    if len(request.get('rels', None)) != 0:
+        temp = search(request)
+        for item in temp:
+            result.append(item.get('rels'))
+        res = None
+        for item in result:
+            if not res:
+                res = set(item)
+            else:
+                res.intersection_update(set(item))
+        return [get_object_by_id(request.get('object_id', None), item) for item in list(res)]
+    else:
+        pass
+
+print(search_top(test))
+
+

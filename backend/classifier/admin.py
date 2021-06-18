@@ -96,7 +96,6 @@ class ModelKeyAdminRel(admin.ModelAdmin):
         ("Основные настройки связи", {'fields': (DAT_SYS_KEY.LIST,), }),
         ("Описания для связи", {'fields': ((DAT_SYS_KEY.HINT,),), }),
         ("Поля для связи между объектами", {'fields': ((DAT_SYS_KEY.REL_OBJ_1, DAT_SYS_KEY.REL_OBJ_2,),), }),
-        (None, {'fields': ((DAT_SYS_KEY.COL, DAT_SYS_KEY.NEED,),), }),
         ("Дополнительная информация", {'fields': (DAT_SYS_KEY.DESCRIPT,), }),
     )
 
