@@ -4,7 +4,7 @@ import time
 import MySQLdb
 
 from data_base_driver.connect.connect_mysql import SingletonMeta, BaseConnection
-from data_base_driver.constants.connect_db import MANTICORE
+from data_base_driver.constants.connect_db import MANTICORE, SPHINX
 
 AUTOCOMMIT = True
 
@@ -22,7 +22,6 @@ class ManticoreConnection(BaseConnection):
         self.connection = MySQLdb.connect(
             host=database['HOST'],
             port=int(database['PORT']),
-            db=database['NAME'],
         )
         self.busy = False
 

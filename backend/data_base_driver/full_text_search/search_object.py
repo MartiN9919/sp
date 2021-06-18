@@ -140,6 +140,12 @@ test_object = {'object_id': 45, 'rec_id': 34, 'params': [{'id': 45001, 'val': 'v
 
 
 def get_object_by_id(object_type, rec_id):
+    """
+    Функция для получения информации о объекте по его типу и идентификатору записи
+    @param object_type: тип объекта
+    @param rec_id: идентификатору записи
+    @return: словарь в формате {object_id, rec_id, params:[{id,val},...,{}]}
+    """
     sql = 'SELECT key_id, val FROM obj_' + Full_text_search.TABLES[object_type] + '_row WHERE id = ' + \
                 str(rec_id) + ';'
     params = [{'id': item[0],'val': item[1]} for item in db_shinxql(sql)]
@@ -147,10 +153,15 @@ def get_object_by_id(object_type, rec_id):
 
 
 def search(request):
+    """
+    Вспомогательная функция для рекурсивного поиска объекта по древовидному запросу
+    @param request: древовидный запрос
+    @return: список словарей формате [{object_id, rec_ids},...,{}]
+    """
     result = []
     for rel in request.get('rels', None):
         if len(rel.get('rels', None)) == 0:
-            result.append({'object_id': request.get('object_id', None), 'rels':
+            result.append({'object_id': request.get('object_id', None), 'rec_ids':
                 find_with_rel_reliable_key(request.get('object_id', None), request.get('request', None),
                                rel.get('object_id', None), rel.get('request', None), rel.get('rel_id', None))})
         else:
@@ -162,30 +173,40 @@ def search(request):
             temp = search(rel)
             temp_result = []
             for item in temp:
-                for rec_id in item.get('rels'):
+                for rec_id in item.get('rec_ids'):
                     for id in main_object_ids:
-                        if len(search_rel_with_key(request.get('object_id', None), id,
-                                                     item.get('object_id'), rec_id, rel.get('rel_id'))) != 0:
+                        if len(search_rel_with_key(rel.get('rel_id'), request.get('object_id', None), id,
+                                                     item.get('object_id'), rec_id)) != 0:
                             temp_result.append(id)
-            result.append({'object_id':request.get('object_id', None), 'rels': temp_result})
+            result.append({'object_id':request.get('object_id', None), 'rec_ids': temp_result})
     return result
 
 
 def search_top(request):
+    """
+    Функция точка входа для рекурсивного поиска объекта по древовидному запросу
+    @param request: древовидный запрос
+    @return: список найденных объектов в формате [{object_id, rec_id, params:[{id,val},...,{}]},...,{}]
+    """
     result = []
     if len(request.get('rels', None)) != 0:
         temp = search(request)
         for item in temp:
-            result.append(item.get('rels'))
+            result.append(item.get('rec_ids'))
         res = None
         for item in result:
+            if len(item) == 0:
+                res = set()
+                break
             if not res:
                 res = set(item)
             else:
                 res.intersection_update(set(item))
         return [get_object_by_id(request.get('object_id', None), item) for item in list(res)]
     else:
-        pass
+        return [get_object_by_id(item) for item in
+                find_reliable(request.get('object_id', None), request.get('request', None))]
+
 
 print(search_top(test))
 
