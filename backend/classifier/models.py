@@ -59,10 +59,18 @@ class ModelList(models.Model):
     def __str__(self):
         return self.title
 
+    def clean(self):
+        self.fl = 0  # костыль, потом изменить
+        try:
+            self.save()
+        except Exception as e:
+            raise e
+
     def save(self, *args, **kwargs):
-        if ModelList.objects.filter(name=self.name):
-            return
+        if len(ModelList.objects.filter(title=self.title)) != 0 and self.fl == 0 and not self.id:
+            raise ValidationError('список с таким именем уже существует')
         else:
+            self.fl = 1
             super().save(*args, **kwargs)
 
     class Meta:
