@@ -1,5 +1,5 @@
 <template>
-  <v-app oncontextmenu="return false" class="select_off">
+  <v-app class="select_off"> <!--  oncontextmenu="return false" -->
     <appBar></appBar>  <!--  Меню навигации  -->
     <v-main>
       <v-progress-linear
