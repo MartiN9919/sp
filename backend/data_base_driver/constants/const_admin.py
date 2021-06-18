@@ -14,12 +14,3 @@ class RET_ERROR:
 
 
 
-##################################################################################
-# class CHR:
-#     RUS_ = 'абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ'
-#     BEL  = 'іўІ'
-#     RUS  = RUS_+BEL
-#     ENG  = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
-#     ANY  = ' !"#$€%&~^*_+-|/\№;:?,.()<>=[]{}'+chr(10)+chr(13)
-#     NUM  = '0123456789'
-#     ALL  = RUS+ENG+ANY+NUM

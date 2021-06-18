@@ -1,3 +1,4 @@
+from django import forms
 from django.core.exceptions import ValidationError
 from django.db import models
 from data_base_driver.constants.const_dat import DAT_SYS_OBJ, DAT_SYS_LIST_TOP, DAT_SYS_KEY, DAT_SYS_LIST_DOP, \
@@ -22,8 +23,8 @@ class ModelObject(models.Model):
         max_length=25,
         verbose_name='Имя латиницей',
     )
-    descript = models.CharField(
-        max_length=255,
+    descript = models.TextField(
+        max_length=1024,
         verbose_name='Дополнительные пометки',
         help_text='Дополнительная информация о объекте',
         blank=True,
@@ -58,6 +59,20 @@ class ModelList(models.Model):
     def __str__(self):
         return self.title
 
+    def clean(self):
+        self.fl = 0  # костыль, потом изменить
+        try:
+            self.save()
+        except Exception as e:
+            raise e
+
+    def save(self, *args, **kwargs):
+        if len(ModelList.objects.filter(title=self.title)) != 0 and self.fl == 0 and not self.id:
+            raise ValidationError('список с таким именем уже существует')
+        else:
+            self.fl = 1
+            super().save(*args, **kwargs)
+
     class Meta:
         managed = False
         verbose_name = "Список"
@@ -75,12 +90,14 @@ class ModelListDop(models.Model):
         max_length=255,
         verbose_name="Значение",
     )
-    list = models.ForeignKey(
+    key = models.ForeignKey(
         ModelList,
         on_delete=models.CASCADE,
     )
 
     def clean(self):
+        if not self.key_id:
+            ModelList.save(self.key)
         self.fl = 0  # костыль, потом изменить
         if self.id == None:
             try:
@@ -89,7 +106,7 @@ class ModelListDop(models.Model):
                 raise e
 
     def save(self, *args, **kwargs):
-        if len(ModelListDop.objects.filter(list=self.list).filter(val=self.val)) > 0 and self.fl == 0:
+        if len(ModelListDop.objects.filter(key=self.key).filter(val=self.val)) > 0 and self.fl == 0:
             raise ValidationError('в данном списке уже есть такой элемент')
         else:
             self.fl = 1
@@ -146,6 +163,7 @@ class ModelKey(models.Model):
         related_name='ind_obj',
         on_delete=models.CASCADE,
         help_text='К какому объекту относится данный классификатор',
+        # default=1,
     )
     col = models.BooleanField(
         default=False,
@@ -191,8 +209,8 @@ class ModelKey(models.Model):
         blank=True,
         null=True,
     )
-    descript = models.CharField(
-        max_length=255,
+    descript = models.TextField(
+        max_length=1024,
         verbose_name='Дополнительные пометки',
         help_text='Дополнительная информация о классификаторе для администраторов',
         blank=True,
@@ -235,6 +253,8 @@ class ModelKey(models.Model):
 
 
     class Meta:
+        unique_together = (DAT_SYS_KEY.TITLE, DAT_SYS_KEY.OBJ, DAT_SYS_KEY.COL, DAT_SYS_KEY.REL_OBJ_1_ID,
+                           DAT_SYS_KEY.REL_OBJ_2_ID, DAT_SYS_KEY.TYPE_VAL, DAT_SYS_KEY.LIST_ID)
         managed = False
         db_table = DAT_SYS_KEY.TABLE_SHORT
         verbose_name = "Классификатор"

@@ -4,21 +4,9 @@
 VEC_DATA = {
     'HOST': '200.200.200.233',
     'PORT': '3306',
-    'NAME': 'vec_data',
+    'NAME': 'vec_data_dev',
     'USER': 'dev',
     'PASSWORD': '1',
-    'CHARSET': 'utf8',
-}
-
-"""
-Настройки для подключения к базе данных vec_django
-"""
-VEC_DJANGO = {
-    'HOST': '127.0.0.1',
-    'PORT': '3306',
-    'NAME': 'vec_django',
-    'USER': 'evgestrogan',
-    'PASSWORD': '0990qweasd',
     'CHARSET': 'utf8',
 }
 
@@ -31,6 +19,23 @@ OSM = {
     'CHARSET': 'utf8',
 }
 
-TEST_DATA = {
+MANTICORE = {
+    'HOST': '200.200.200.235',
+    'PORT': '9306',
+    'NAME': 'Manticore'
+}
 
+SPHINX = {
+    'HOST': '200.200.200.235',
+    'PORT': '9306',
+    'NAME': ''
+}
+
+TEST_DATA = {
+    'HOST': '127.0.0.1',
+    'PORT': '3306',
+    'NAME': 'test_data',
+    'USER': 'pushkin',
+    'PASSWORD': '1111',
+    'CHARSET': 'utf8',
 }

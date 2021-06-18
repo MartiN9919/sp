@@ -32,7 +32,7 @@ def get_record_by_id(group_id, object_type, record_id):
     """
     object = io_get_obj(group_id=group_id, obj=object_type, keys=[], ids=[record_id], where_dop_row=[])
     return {record[1]: {'value': record[2], 'title': get_key_by_id(record[1])['title'],
-                        'type': get_key_by_id(record[1])['type_val']} for record in object}
+                        'type': get_key_by_id(record[1])['type']} for record in object}
 
 
 def get_records_by_object(group_id, object_type):
