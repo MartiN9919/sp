@@ -19,13 +19,12 @@
 <script>
 import ResSplitPane from "vue-resize-split-pane";
 import NavigationDrawer from "../components/NavigationDrawer/Mixins/NavigationDrawer";
-import d3Field from "../components/Graph/d3Field";
+import d3Field from "../components/Graph/Workspace/d3Field";
 import graphMenu from "../components/Graph/graphMenu";
-import rightClickMenu from "../components/RightClickMenu/rightClickMenu";
 
 export default {
   name: 'GraphPage',
-  components: { ResSplitPane, d3Field, graphMenu, rightClickMenu, },
+  components: { ResSplitPane, d3Field, graphMenu,},
   mixins: [NavigationDrawer],
 }
 </script>

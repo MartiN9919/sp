@@ -17,18 +17,9 @@ export default {
         addListObjects: (state, objects) => { state.listObjects = objects },
         addObjectInWorkPlace: (state, objects) => { state.workPlace.push(objects) },
         addClassifier: (state, {objectId, classifiers}) => { state.classifiers[objectId] = classifiers },
-        addClassifiersToObject: (state, { index, objectId }) => {
-            console.log(index, objectId)
-            for (let classifier of state.classifiers[objectId])
-                if (classifier.need === 1)
-                    state.workPlace[index].classifiers.push(classifier)
-        },
+        addRelations: (state, relations) => { state.relations = relations }
     },
     actions: {
-        createNewObject({ commit, state }, object) {
-            let index = state.workPlace.findIndex(obj => obj === object)
-            index !== -1 ? commit('addClassifiersToObject', { index: index, objectId: object.objectId}) :  console.log('error')
-        },
         activateObject ({ commit, state }, config = {}) {
             if (!(config.params.object_id in state.classifiers))
                 return getResponseAxios('objects/list_classifier/', config)
@@ -40,9 +31,15 @@ export default {
             else
                 commit('addObjectInWorkPlace', { objectId: config.params.object_id, classifiers: [], })
         },
-        addListObjects ({ commit }, config = {}) {
-            return getResponseAxios('objects/list_type/', config)
-                .then(response => { commit('addListObjects', response.data); return response.data })
+        addListObjects ({ commit, state }, config = {}) {
+            if (!state.listObjects.length)
+                return getResponseAxios('objects/list_type/', config)
+                    .then(response => { commit('addListObjects', response.data); return response.data })
+                    .catch(() => {})
+        },
+        addRelations ({ commit }, config = {}) {
+            return getResponseAxios('objects/reletions/', config)
+                .then(response => { commit('addRelations', response.data) })
                 .catch(() => {})
         },
     }

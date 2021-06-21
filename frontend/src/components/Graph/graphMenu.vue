@@ -4,8 +4,8 @@
       :work-place="workPlace"
       v-model="activeObject"
     ></custom-app-bar>
-    <v-row v-for="(object, key) in workPlace" :key="key" v-show="key === activeObject" no-gutters>
-      <search-tree-view></search-tree-view>
+    <v-row v-for="(object, key) in workPlace" :key="key" v-if="key === activeObject" no-gutters>
+      <search-tree-view :active-object="object"></search-tree-view>
       <speed-dial-of-tools></speed-dial-of-tools>
     </v-row>
   </v-container>

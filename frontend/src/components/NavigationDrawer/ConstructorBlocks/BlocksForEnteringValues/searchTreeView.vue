@@ -1,10 +1,10 @@
 <template>
   <v-container class="pa-0">
-    <v-treeview :items="items" :open="open">
+    <v-treeview :items="items" :open="openObject" return-object>
       <template v-slot:label="{ item, open }">
         <v-text-field
-          @contextmenu="clickMenuItem(contextMenus.rightClickMenuObject, $event, item)"
-          outlined dense color="teal" hide-details label="asdasd"
+          @contextmenu.stop="openContextMenu($event, 'searchTreeView', item)"
+          outlined dense color="teal" hide-details
           :background-color="item.id !== 0 ? 'teal lighten-5' : ''" class="mt-2"
         ></v-text-field>
       </template>
@@ -14,75 +14,45 @@
         </v-btn>
       </template>
     </v-treeview>
-    <right-click-menu
-        v-if="showContextMenu"
-        @selectedItem="selectedMenuItem($event)"
-    ></right-click-menu>
+    <context-menu v-if="['searchTreeView', ].includes(typeContextMenu)">
+      <graph-menu_cm :active-object="activeObject"></graph-menu_cm>
+    </context-menu>
   </v-container>
 </template>
 
 <script>
-import { mapGetters } from "vuex";
-import rightClickMenu from "@/components/RightClickMenu/rightClickMenu";
-import ActivatorContextMenu from "@/components/RightClickMenu/Mixins/ActivatorContextMenu";
+import { mapActions } from "vuex";
+import contextMenu from "@/components/ContextMenu/contextMenu";
+import toolsContextMenu from "@/components/ContextMenu/Mixins/toolsContextMenu";
+import graphMenu_cm from "../../../ContextMenu/BodysContextMenu/graphMenu_cm";
 
 export default {
   name: "searchTreeView",
-  components: { rightClickMenu, },
-  mixins: [ActivatorContextMenu, ],
-  data: () => ({
-    open: [],
-    idItem: 0,
-    selectedItem: {},
-    items: [{ id: 0, children: [], label: 'Найти объект'}],
-  }),
-  computed: {
-    ...mapGetters(['listObjects', ]),
-    contextMenus: function () {
-      return {
-        rightClickMenuObject: [
-          {
-            type: 'actions1',
-            body: [
-              {type: 'action', title: 'Добавить объект для связи', icon: 'mdi-plus', next: 'lists1',},
-              {type: 'action', title: 'Удалить объект', icon: 'mdi-delete-outline',},
-            ],
-          },
-          {
-            type: 'lists1',
-            title: 'Выберете объект',
-            body: [
-              {type: 'list', title: 'Выберете объект', list: this.listObjects, next: "lists2"},
-            ],
-          },
-          {
-            type: 'lists2',
-            title: 'Выберете связь между объектами',
-            body: [
-              {type: 'list', title: 'Выберете объект', list: this.listObjects,},
-            ],
-          },
-        ],
-      }
-    },
+  components: {contextMenu, graphMenu_cm, },
+  mixins: [ toolsContextMenu, ],
+  props: {
+    activeObject: Object,
   },
-  methods: {
-    clickMenuItem(menu, event, item) {
-      this.selectedItem = item
-      this.activateMenu(menu, event)
+  data: () => ({
+    selectedItem: null,
+    openObject: [],
+    items: [{ id: 0, children: [], label: 'Найти объект'}],
+    contextMenu: {
+      event: null,
+      position: 'searchTreeView',
     },
-    selectedMenuItem(event) {
-      if (this.contextMenus.rightClickMenuObject.body.findIndex(e => e === event) === 1) {
-        this.appendRelation()
-      }
+  }),
+  methods: {
+    ...mapActions(['addRelations', ]),
+    openContextMenu (event, typeMenu, selectedItem) {
+      this.contextMenu = { event: event, typeMenu: typeMenu }
+      this.selectedItem = selectedItem
     },
     appendRelation() {
-      this.idItem ++
-      this.selectedItem.children.unshift({ id: this.idItem, children: [], })
-      this.open.push(this.selectedItem.id)
+      this.selectedItem.children.unshift({ children: [], })
+      this.openObject.push(this.selectedItem)
     },
-  }
-
+  },
 }
 </script>
 

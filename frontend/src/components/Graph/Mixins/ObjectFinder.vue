@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import {mapGetters} from "vuex";
+import { mapActions, mapGetters } from "vuex";
 
 export default {
   name: "ObjectFinder",
@@ -11,10 +11,14 @@ export default {
     ...mapGetters(['listObjects', ])
   },
   methods: {
+    ...mapActions(['addListObjects', ]),
     titleObject (objectId) {
       return this.listObjects.find(object => object.id === objectId)
     },
-  }
+  },
+  created() {
+    this.addListObjects({})
+  },
 }
 </script>
 
