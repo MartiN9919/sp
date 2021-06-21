@@ -71,12 +71,15 @@ def get_keys_by_object(object):
     if isinstance(object, str) and not (object.isdigit()):
         object = get_obj_id(object)
     keys = DAT_SYS_KEY.DUMP.get_rec(obj_id=int(object), only_first=False)
+    result = []
     for key in keys:
-        if key.get('list_id'):
-            list_item = get_list_by_top_id(int(key.get('list_id')))
-            list_item = {key.get('list_id'): list_item}
-            key['list_id'] = list_item
-    return keys
+        temp = dict(key)
+        if temp.get('list_id'):
+            list_item = get_list_by_top_id(int(temp.get('list_id')))
+            list_item = {temp.get('list_id'): list_item}
+            temp['list_id'] = list_item
+        result.append(temp)
+    return result
 
 
 def get_key_by_id(id):
