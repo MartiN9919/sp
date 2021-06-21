@@ -3,9 +3,11 @@ import json
 from django.http import JsonResponse
 from core.projectSettings.decoraters import login_check, decor_log_request
 from data_base_driver.constants.const_dat import DAT_OWNER
+from data_base_driver.full_text_search.search_object import search_top
 from data_base_driver.input_output.io import io_set
-from data_base_driver.record.add_record import add_record
+from data_base_driver.record.add_record import add_data
 from data_base_driver.record.get_record import get_record_by_id, get_records_by_object
+from data_base_driver.relations.add_rel import add_rel
 from data_base_driver.sys_key.get_key_dump import get_keys_by_object, get_rels_list
 from data_base_driver.sys_key.get_object_info import obj_list
 
@@ -58,20 +60,48 @@ def aj_object(request):
     group_id = DAT_OWNER.DUMP.get_group(user_id=request.user.id)
     if request.method == 'GET':
         try:
-            JsonResponse({'data': get_record_by_id(group_id=group_id, object_type=request.GET['object_id'],
+            return JsonResponse({'data': get_record_by_id(group_id=group_id, object_type=request.GET['object_id'],
                                                    record_id=request.GET['record_id'])}, status=200)
         except:
             return JsonResponse({'status': 'неверный номер объекта'}, status=404)
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
-            result = add_record(group_id=group_id, object_id=data.get('object', 0), object_info=data.get('info', []))
+            result = add_data(group_id=group_id, object=data)
             if result != -1:
                 return JsonResponse({'data': result}, status=200)
             else:
                 return JsonResponse({'data': 'ошибка добавления'}, status=403)
         except:
             return JsonResponse({'data': 'ошибка добавления'}, status=403)
+    else:
+        return JsonResponse({'data': 'неизвестный тип запроса'}, status=404)
+
+
+@login_check
+@decor_log_request
+def aj_relation(request):
+    group_id = DAT_OWNER.DUMP.get_group(user_id=request.user.id)
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        try:
+            add_rel(group_id=group_id, key_id=data.get('key_id'), object_1_id=data.get('object_1_id'),
+                    rec_1_id=data.get('rec_1_id'), object_2_id=data.get('object_2_id'), rec_2_id=data.get('rec_2_id'))
+        except:
+            return JsonResponse({'data': 'ошибка добавления'}, status=403)
+    else:
+        return JsonResponse({'data': 'неизвестный тип запроса'}, status=404)
+
+
+@login_check
+@decor_log_request
+def aj_search_objects(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            return JsonResponse({'data': search_top(data)}, status=200)
+        except:
+            return JsonResponse({'status': ' ошибочный запрос'}, status=404)
     else:
         return JsonResponse({'data': 'неизвестный тип запроса'}, status=404)
 
