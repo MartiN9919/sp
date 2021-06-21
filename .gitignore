@@ -17,8 +17,9 @@
 .venv
 .pytest_cache
 .idea
-log/
-env/
+backend/log/
+backend/env/
+backend/static/
 venv/
 ENV/
 env.bak/
@@ -28,3 +29,7 @@ frontend/webpack-stats.json
 frontend/package-lock.json
 backend/static
 *migrations/*
+
+# git rm --cached -r *migrations/*
+
+

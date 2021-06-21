@@ -13,18 +13,23 @@ export default {
       // });
   },
 
-  mounted: function() {
-    this.$refs.map.mapObject.addEventListener('keydown', this.key_down);
-    this.$refs.map.mapObject.addEventListener('keyup',   this.key_up);
-    this.key_pos_load(1);
-  },
-
   beforeDestroy: function() {
-    this.$refs.map.mapObject.removeEventListener('keydown', this.key_down);
-    this.$refs.map.mapObject.removeEventListener('keyup',   this.key_up);
+    if (this.map) {
+      this.map.removeEventListener('keydown', this.key_down);
+      this.map.removeEventListener('keyup',   this.key_up);
+    };
   },
 
   methods: {
+    // ВАЖНО
+    // вызывать из родительского mounted или method.onMapReady
+    // должна быть установлена переменная this.map
+    key_mounted_after() {
+      this.map.addEventListener('keydown', this.key_down);
+      this.map.addEventListener('keyup',   this.key_up);
+      this.key_pos_load(1);
+    },
+
     // событие: нажатие клавиши
     key_down(e) {
       // запонить нажатую клавишу
@@ -57,8 +62,8 @@ export default {
 
     // cookies: сохранить позицию
     key_pos_save: function(ind) {
-      let center = this.$refs.map.mapObject.getCenter();
-      let zoom   = this.$refs.map.mapObject.getZoom();
+      let center = this.map.getCenter();
+      let zoom   = this.map.getZoom();
       let s = center.lng.toString()+KEY_SEPARATOR+center.lat.toString()+KEY_SEPARATOR+zoom.toString();
       cook_set(KEY_POS_COOK+ind.toString(), s);
     },
@@ -66,7 +71,7 @@ export default {
     // cookies: загрузить позицию
     key_pos_load: function(ind) {
       let s = cook_get_str(KEY_POS_COOK+ind.toString(), KEY_POS_DEFAULT).split(KEY_SEPARATOR);
-      this.$refs.map.mapObject.setView([parseFloat(s[1]), parseFloat(s[0])], parseFloat(s[2]));
+      this.map.setView([parseFloat(s[1]), parseFloat(s[0])], parseFloat(s[2]));
     },
   },
 };

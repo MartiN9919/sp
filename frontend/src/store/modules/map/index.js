@@ -6,7 +6,7 @@ import {
 
 import {
   MAP_ITEM,
-} from '@/components/Map/Leaflet/L.Const';
+} from '@/components/Map/Leaflet/Lib/Const';
 
 import {
   cook_set,
@@ -39,16 +39,7 @@ export default {
     measure:    cook_get_bool('MAP_MEASURE', false), // (bool) отображать ли рулетку
     logo:       cook_get_bool('MAP_LOGO',    false), // (bool) показывать ли логотип
 
-    edit: {                                          // режим редактирования
-      active: false,                                 // активация режима - не изменять в MAP_ACT_EDIT_ON
-      mode:   {                                      // доступные фигуры, если не выбрано - доступно всё
-        marker:  false,
-        line:    false,
-        polygon: false,
-      },
-      select: '',                                    // выбранный по умолчанию режим
-      data:   undefined,                             // FeatureCollection РЕДАКТИРУЕМЫХ фигур и маркеров
-    },
+    edit:       undefined,                           // FeatureCollection РЕДАКТИРУЕМЫХ фигур и маркеров
   },
 
   getters: {
@@ -77,55 +68,28 @@ export default {
     MAP_GET_MEASURE:           (state) =>  state.measure,
     MAP_GET_LOGO:              (state) =>  state.logo,
 
-    MAP_GET_EDIT_ACTIVE:       (state) =>  state.edit.active,
-    MAP_GET_EDIT_MODE_MARKER:  (state) => (state.edit.mode.marker  || !(state.edit.mode.line   || state.edit.mode.polygon)),
-    MAP_GET_EDIT_MODE_LINE:    (state) => (state.edit.mode.line    || !(state.edit.mode.marker || state.edit.mode.polygon)),
-    MAP_GET_EDIT_MODE_POLYGON: (state) => (state.edit.mode.polygon || !(state.edit.mode.marker || state.edit.mode.line   )),
-    MAP_GET_EDIT_SELECT:       (state) =>  state.edit.select,
-    MAP_GET_EDIT_DATA:         (state) =>  state.edit.data,
+    MAP_GET_EDIT:              (state) =>  state.edit,
   },
 
 
   mutations: {
-    MAP_MUT_RANGE_SHOW:        (state, on)  =>   state.range.show      = on,
-    MAP_MUT_RANGE_LIMIT:       (state, lst) => { state.range.limit_min = lst[0]; state.range.limit_max = lst[1]; },
-    MAP_MUT_RANGE_SEL:         (state, lst) => { state.range.sel_min   = lst[0]; state.range.sel_max   = lst[1]; },
+    MAP_MUT_RANGE_SHOW:        (state, on)   =>   state.range.show      = on,
+    MAP_MUT_RANGE_LIMIT:       (state, lst)  => { state.range.limit_min = lst[0]; state.range.limit_max = lst[1]; },
+    MAP_MUT_RANGE_SEL:         (state, lst)  => { state.range.sel_min   = lst[0]; state.range.sel_max   = lst[1]; },
 
-    MAP_MUT_TILE:              (state, ind) => state.tile       = ind,
-    MAP_MUT_CLUSTER:           (state, on)  => state.cluster    = on,
-    MAP_MUT_HINT:              (state, on)  => state.hint       = on,
-    MAP_MUT_LEGEND:            (state, on)  => state.legend     = on,
-    MAP_MUT_SCALE:             (state, on)  => state.scale      = on,
-    MAP_MUT_MEASURE:           (state, on)  => state.measure    = on,
-    MAP_MUT_LOGO:              (state, on)  => state.logo       = on,
-    MAP_MUT_EDIT:              (state, on)  => state.edit       = on,
+    MAP_MUT_TILE:              (state, ind)  => state.tile       = ind,
+    MAP_MUT_CLUSTER:           (state, on)   => state.cluster    = on,
+    MAP_MUT_HINT:              (state, on)   => state.hint       = on,
+    MAP_MUT_LEGEND:            (state, on)   => state.legend     = on,
+    MAP_MUT_SCALE:             (state, on)   => state.scale      = on,
+    MAP_MUT_MEASURE:           (state, on)   => state.measure    = on,
+    MAP_MUT_LOGO:              (state, on)   => state.logo       = on,
 
-    MAP_MUT_CENTER_X:          (state, val) => state.center_x   = val,
-    MAP_MUT_CENTER_Y:          (state, val) => state.center_y   = val,
-    MAP_MUT_ZOOM:              (state, val) => state.zoom       = val,
+    MAP_MUT_CENTER_X:          (state, val)  => state.center_x   = val,
+    MAP_MUT_CENTER_Y:          (state, val)  => state.center_y   = val,
+    MAP_MUT_ZOOM:              (state, val)  => state.zoom       = val,
 
-    MAP_MUT_EDIT_ON: (state, param={}) => {
-      state.edit.active        = true;
-      state.edit.mode.marker   = param.mode_marker  || false;
-      state.edit.mode.line     = param.mode_line    || false;
-      state.edit.mode.polygon  = param.mode_polygon || false;
-      state.edit.select        = param.select       || '';
-      state.edit.data          = param.data         || { "type": "FeatureCollection", "features": [], };
-    },
-    MAP_MUT_EDIT_DATA: (state, param={}) => {
-      state.edit.data          = param.data         || { "type": "FeatureCollection", "features": [], };
-    },
-    MAP_MUT_EDIT_OFF: (state) => {
-      state.edit.active        = false;
-      state.edit.mode.marker   = false;
-      state.edit.mode.line     = false;
-      state.edit.mode.polygon  = false;
-      state.edit.select        = '';
-      // данные не удалять
-      // state.edit.data          = undefined;
-      // state.edit.data.features = {};
-      // state.edit.data.type     = '';
-    },
+    MAP_MUT_EDIT:              (state, data) => { state.edit = data || { "type": "FeatureCollection", "features": [], }; },
   },
 
 
@@ -169,8 +133,6 @@ export default {
       commit('MAP_MUT_RANGE_SEL', [sel_min, sel_max]);
     },
 
-    MAP_ACT_EDIT_ON:        ({commit}, param={}) =>   commit('MAP_MUT_EDIT_ON',    param),
-    MAP_ACT_EDIT_OFF:       ({commit})           =>   commit('MAP_MUT_EDIT_OFF'),
-    MAP_ACT_EDIT_DATA:      ({commit}, param={}) =>   commit('MAP_MUT_EDIT_DATA',  { data: param.data, } ),
+    MAP_ACT_EDIT:       ({commit}, param={}) => commit('MAP_MUT_EDIT', param.data),
   },
 }

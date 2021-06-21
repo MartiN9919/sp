@@ -2,17 +2,13 @@
   <div style="height: 100%; width: 100%;">
     <l-map
       ref="map"
-      :options="mapOptions"
       style="height: 100%; z-index: 0;"
+      :options="mapOptions"
+      :crs="MAP_GET_TILES[MAP_GET_TILE].crs"
       @ready="onMapReady"
       @click="onClick"
       @contextmenu="menu_show"
-      :crs="MAP_GET_TILES[MAP_GET_TILE].crs"
     >
-
-<!--
-      :crs="MAP_GET_TILES[MAP_GET_TILE].crs"
- -->
 
       <!-- ПОДЛОЖКА -->
       <l-tile-layer
@@ -40,7 +36,10 @@
 
 
       <!-- РЕДАКТОР -->
-      <Edit/>
+      <Edit
+        v-model="fc_edit"
+        @ok="on_edit_ok"
+      />
 
       <!-- МАСШТАБ -->
       <l-control-scale
@@ -90,52 +89,43 @@
 
 <script>
 
-import {
-  mapGetters,
-  //mapActions,
-} from 'vuex';
-
-import {
-  //L,
-  Icon,
-  latLng,
-} from 'leaflet';
+import { mapGetters, mapActions, } from 'vuex';
+import { Icon       } from 'leaflet';
 
 import {
   LMap,
   LTileLayer,
   LMarker,
+  LPolyline,
+  LPolygon,
   LPopup,
   LTooltip,
   LFeatureGroup,
   LLayerGroup,
   LGeoJson,
-  LPolyline,
-  LPolygon,
   LControlScale,
   LControl,
   LIcon,
 } from 'vue2-leaflet';
 
-import { MAP_ITEM }                 from '@/components/Map/Leaflet/L.Const';
-import { marker_get }               from '@/components/Map/Leaflet/L.Marker';
-
 import Vue2LeafletMarkerCluster     from 'vue2-leaflet-markercluster';
 import LControlPolylineMeasure      from 'vue2-leaflet-polyline-measure';
 
-import '@/components/Map/Leaflet/L.Marker.Pulse';
+import { MAP_ITEM }                 from '@/components/Map/Leaflet/Lib/Const';
+import { marker_get }               from '@/components/Map/Leaflet/Markers/Fun';
+
+import                      '@/components/Map/Leaflet/Markers/Pulse';
+import Edit            from '@/components/Map/Leaflet/Components/Edit';
+import Menu            from '@/components/Map/Leaflet/Components/Menu';
+import Range           from '@/components/Map/Leaflet/Components/Range';
+import Legend          from '@/components/Map/Leaflet/Components/Legend';
+import Logo            from '@/components/Map/Leaflet/Components/Logo';
+import MixKey          from '@/components/Map/Leaflet/Mixins/Key';
+import MixFeatureColor from '@/components/Map/Leaflet/Mixins/FeatureColor';
+import MixControl      from '@/components/Map/Leaflet/Mixins/Control';
+import MixMeasure      from '@/components/Map/Leaflet/Mixins/Measure';
 
 import { datesql_to_ts, } from '@/plugins/sys';
-
-import Edit            from '@/components/Map/Leaflet/Edit';
-import Menu            from '@/components/Map/Leaflet/Menu';
-import Range           from '@/components/Map/Leaflet/Range';
-import Legend          from '@/components/Map/Leaflet/Legend';
-import Logo            from '@/components/Map/Leaflet/Logo';
-import MixKey          from '@/components/Map/Leaflet/L.Mix.Key';
-import MixFeatureColor from '@/components/Map/Leaflet/L.Mix.FeatureColor';
-import MixControl      from '@/components/Map/Leaflet/L.Mix.Control';
-
 
 // устранение бага с путями
 delete Icon.Default.prototype._getIconUrl;
@@ -147,13 +137,14 @@ Icon.Default.mergeOptions({
 
 
 export default {
-  name: "Leaflet",
+  name: 'LeafletMain',
 
 
   mixins: [
     MixKey,
     MixFeatureColor,
     MixControl,
+    MixMeasure,
   ],
 
 
@@ -190,17 +181,46 @@ export default {
         y:       0,
       },
 
+      // FeatureCollection РЕДАКТИРУЕМЫХ объектов
+      // fc_edit: this.MAP_GET_EDIT,
+
       hover_map_ind:     -1,      // MAP_ITEM[hover_map_ind]                   - блок, над которым находится курсор
       hover_feature_ind: -1,      // MAP_ITEM[].FC.features[hover_feature_ind] - фигура, над которой находится курсор
 
       mapOptions: {
         zoomControl: false,
-        zoomSnap: 0.5,
-        crs: this.ttt(),
+        zoomSnap:    0.5,
+        //crs:       this.ttt(),
       },
     };
   },
 
+  watch: {
+    fc_edit: function(val) {
+      console.log('update ', this.fc_edit, val);
+    },
+  },
+
+
+  mounted: function() {
+    this.map = this.$refs.map.mapObject;
+    this.key_mounted_after();
+  },
+
+
+  // watch: {
+  //   // fc_edit: {
+  //   //   handler() {
+  //   //     console.log('watch changed fc_edit', this.fc_edit);
+  //   //   },
+  //   //   deep: true,
+  //   // },
+  //   // MAP_GET_EDIT: {
+  //   //   handler() {
+  //   //     this.fc_edit = this.MAP_GET_EDIT;
+  //   //   },
+  //   // }
+  // },
 
   computed: {
     ...mapGetters([
@@ -213,6 +233,8 @@ export default {
       'MAP_GET_CLUSTER',
       'MAP_GET_HINT',
 
+      'MAP_GET_EDIT',
+
       'SCRIPT_GET',
       'SCRIPT_GET_ITEM_COLOR',
       'SCRIPT_GET_ITEM_MARKER',
@@ -220,36 +242,19 @@ export default {
       'SCRIPT_GET_ITEM_POLYGON',
       'SCRIPT_GET_ITEM_ICON',
     ]),
-    //form: vm => vm,
+
+    // FeatureCollection РЕДАКТИРУЕМЫХ объектов
+    fc_edit: {
+      get()    { return this.MAP_GET_EDIT; },
+      set(val) { console.log(111, val) /* this.MAP_ACT_EDIT({data: val}); */ },
+    },
   },
 
 
   methods: {
-    // ...mapActions([
-    //   'MAP_ACT_RANGE_TS',
-    // ]),
-
-    ttt(e) {
-      console.log(e)
-      //return;
-      return L.CRS.EPSG3395;
-      // return new L.Proj.CRS(
-      //   'EPSG:3006',
-      //   '+proj=utm +zone=33 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs',
-      //   {
-      //     resolutions: [ 8192, 4096, 2048, 1024, 512, 256, 128, ],
-      //     origin:      [ 0, 0 ],
-      //   }
-      // );
-      // return new L.Proj.CRS(
-      //   'EPSG:2400',
-      //   '+lon_0=15.808277777799999 +lat_0=0.0 +k=1.0 +x_0=1500000.0 +y_0=0.0 +proj=tmerc +ellps=bessel +units=m +towgs84=414.1,41.3,603.1,-0.855,2.141,-7.023,0 +no_def',
-      //   {
-      //     resolutions: [ 8192, 4096, 2048, 1024, 512, 256, 128, 64, 32, 16, 8, 4, 2, 1, 0.5, ],
-      //     origin:      [ 0, 0 ],
-      //   }
-      // );
-    },
+    ...mapActions([
+      'MAP_ACT_EDIT',
+    ]),
 
     // ===============
     // MENU
@@ -271,33 +276,6 @@ export default {
       }
     },
 
-
-    // ===============
-    // MEASURE
-    // ===============
-    measure_options() {
-      let COLOR = '#494';   // цвет маркеров и линий
-      return {
-          position:                'topleft',
-          unit:                    'metres',
-          measureControlClasses:   ['select_off'],
-          clearMeasurementsOnStop: true,
-          measureControlTitleOn:   'Рулетка: включить',
-          measureControlTitleOff:  'Рулетка: выключить',
-          tooltipTextDelete:       'Нажмите  SHIFT и кликните мышкой для <b>удаления точки</b>',
-          tooltipTextResume:       '<br>Нажмите CTRL и кликните мышкой для <b>продолжения линии</b>',
-          tooltipTextAdd:          'Нажмите CTRL и кликните мышкой для <b>добавления точки</b>',
-          tooltipTextFinish:       '',
-          tooltipTextMove:         '',
-          backgroundColor:         '#dfd',
-          tempLine:                { color: COLOR, weight: 2, },
-          fixedLine:               { color: COLOR, weight: 2, },
-          startCircle:             { color: COLOR, weight: 1, fillColor: '#0f0', fillOpacity: 1, radius: 5, },
-          intermedCircle:          { color: COLOR, weight: 1, fillColor: '#ff0', fillOpacity: 1, radius: 5, },
-          currentCircle:           { color: COLOR, weight: 1, fillColor: '#f0f', fillOpacity: 1, radius: 5, },
-          endCircle:               { color: COLOR, weight: 1, fillColor: '#f00', fillOpacity: 1, radius: 5, },
-      }
-    },
 
     // ===============
     // RANGE
@@ -450,7 +428,6 @@ export default {
     // СОБЫТИЯ
     // ===============
     onMapReady() {
-      this.map = this.$refs.map.mapObject;
       //this.onEditReady();
     },
 
@@ -477,6 +454,10 @@ export default {
       this.editor_data_set();
     },
 
+    on_edit_ok(event, dat) {
+      console.log('on_edit_ok', event, dat);
+      //this.fc_edit = dat;
+    },
 
 
 
@@ -537,11 +518,11 @@ export default {
   @import "~leaflet.markercluster/dist/MarkerCluster.css";
   @import "~leaflet.markercluster/dist/MarkerCluster.Default.css";
 
-  @import "~@/components/Map/Leaflet/L.css";
+  @import "~@/components/Map/Leaflet/Lib/Lib.css";
 
-  @import "~@/components/Map/Leaflet/L.Marker.Cluster.css";
-  @import "~@/components/Map/Leaflet/L.Marker.Pulse.css";
-  @import "~@/components/Map/Leaflet/L.Marker.Font.css";
+  @import "~@/components/Map/Leaflet/Markers/Cluster.css";
+  @import "~@/components/Map/Leaflet/Markers/Pulse.css";
+  @import "~@/components/Map/Leaflet/Markers/Font.css";
 
-  @import "~@/components/Map/Leaflet/L.Mix.Control.css";
+  @import "~@/components/Map/Leaflet/Mixins/Control.css";
 </style>

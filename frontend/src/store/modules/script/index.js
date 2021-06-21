@@ -7,10 +7,10 @@ import {
 
 import {
   MAP_ITEM,
-} from '@/components/Map/Leaflet/L.Const';
+} from '@/components/Map/Leaflet/Lib/Const';
 
 export default {
-  /*
+  /**
    * state.selectedTemplate.activeAnalysts[ind]
    *   id     (int)                                  - id скрипта (НЕ УНИКАЛЬНЫЙ)
    *   marker (str) ['pulse']                        - тип маркера,  см. MAP_ITEM.MARKER. ...
