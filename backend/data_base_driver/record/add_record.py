@@ -23,7 +23,7 @@ def add_data(group_id, object):
     Функция для добавления информации в базу данных
     @param group_id: идентификационный номер группы пользователя
     @param object: вносимая информация
-    @return:
+    @return: идентификатор нового/измененного объекта в базе данных
     """
     data = [[param['id'], param['val']] for param in object['params']]
     if object.get('rec_id', 0) != 0:
