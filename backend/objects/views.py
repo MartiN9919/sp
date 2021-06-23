@@ -15,23 +15,24 @@ from data_base_driver.sys_key.get_object_info import obj_list
 @login_check
 @decor_log_request
 def aj_object_type_list(request):
+    """
+    Функция API для получения списка типов объектов с информацией о них
+    @param request: запрос на получение списка
+    @return: json содержащих информации по ключу data в формате:
+    [{id, name, title, title_single, icon, descript},...{}]
+    """
     return JsonResponse({'data': obj_list()}, status=200)
 
 
 @login_check
 @decor_log_request
-def aj_object_list(request):
-    if request.method == 'GET':
-        group_id = DAT_OWNER.DUMP.get_group(user_id=request.user.id)
-        return JsonResponse({'data': get_records_by_object(group_id=group_id, object_type=request.GET['object_id'])},
-                            status=200)
-    else:
-        return JsonResponse({'status': 'неверный тип запроса'}, status=400)
-
-
-@login_check
-@decor_log_request
 def aj_list_classifier(request):
+    """
+    Функция API для получения списка классификаторов для отдельного объекта
+    @param request: запрос на получение списка, может быть только GET и должен содержать в url object_id
+    @return: json содержащих информации по ключу data в формате:
+    [{id,obj_id,col,need,type,list_id:{name,val:[]},name,title,hint,descript},...,{}]
+    """
     if request.method == 'GET':
         try:
             return JsonResponse({'data': get_keys_by_object(request.GET['object_id'])}, status=200)
@@ -44,6 +45,12 @@ def aj_list_classifier(request):
 @login_check
 @decor_log_request
 def aj_list_rels(request):
+    """
+    Функция API для получения списка связей между двумя объектами
+    @param request: запрос на получение списка, может быть только GET и должен содержать в url object_1_id и object_2_id
+    @return: json содержащих информации по ключу data в формате:
+    [{id,title,hint,list:{}},...,{}]
+    """
     if request.method == 'GET':
         try:
             return JsonResponse({'data': get_rels_list(request.GET['object_1_id'], request.GET['object_2_id'])},
@@ -57,6 +64,12 @@ def aj_list_rels(request):
 @login_check
 @decor_log_request
 def aj_object(request):
+    """
+    Функция API для работы с объектами
+    @param request: http запрос от клиента
+    @return: статус выполнения или результат при запросе на получение
+    GET получение объекта по его идентификатору
+    """
     group_id = DAT_OWNER.DUMP.get_group(user_id=request.user.id)
     if request.method == 'GET':
         try:

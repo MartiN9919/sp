@@ -1,6 +1,9 @@
+import datetime
+
 from data_base_driver.connect.connect_manticore import db_shinxql
 from data_base_driver.constants.fulltextsearch import FullTextSearch
 from data_base_driver.full_text_search.search_rel import search_rel_with_key
+from data_base_driver.input_output.io import io_set
 
 
 def get_sorted_list(items):
@@ -149,7 +152,7 @@ def get_object_by_id(object_type, rec_id):
     """
     sql = 'SELECT key_id, val FROM obj_' + FullTextSearch.TABLES[object_type] + '_row WHERE id = ' + \
           str(rec_id) + ';'
-    params = [{'id': item[0],'val': item[1]} for item in db_shinxql(sql)]
+    params = [{'id': int(item[0]),'val': item[1]} for item in db_shinxql(sql)]
     return {'object_id': object_type, 'rec_id': rec_id, 'params': params}
 
 
@@ -210,6 +213,16 @@ def search_top(request):
                 find_reliable(request.get('object_id', None), request.get('request', None))]
 
 
-print(search_top(test))
+# print(search_top(test))
+
+# io_set(group_id=0, obj=45, data=[[45501, 'УД', datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")]])#,
+                                 # [45505, 'Описание 5', datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")]])
+
+# io_set(group_id=0, obj=1, data=[['key_id',   10], [10, 45], [15, 78], ['dat', datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")]])
+
+# dt = datetime.datetime.strptime(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"), "%Y-%m-%d %H:%M:%S")
+#
+# print(dt.date().toordinal())
+# print(dt.time().second + dt.time().minute * 60 + dt.time().hour * 3600)
 
 
