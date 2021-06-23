@@ -7,7 +7,8 @@ from data_base_driver.constants.const_dat import DAT_SYS_OBJ
 # СПИСОК ОБЪЕКТОВ
 ###########################################
 def obj_list():
-    return sorted(copy.deepcopy(DAT_SYS_OBJ.DUMP.get_all()), key=lambda x: x[DAT_SYS_OBJ.TITLE])
+    return [item for item in sorted(copy.deepcopy(DAT_SYS_OBJ.DUMP.get_all()), key=lambda x: x[DAT_SYS_OBJ.TITLE])
+            if item.get('id') != 1]
 
 
 # из rel-записей получить множество obj_id/rec_id: {(25, 34), (20, 1), (25, 33)}
