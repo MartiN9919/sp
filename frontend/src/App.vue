@@ -19,8 +19,8 @@
 </template>
 
 <script>
-import alertsList from './components/Notifications/alertsList'
-import appBar from './components/AppBar/appBar'
+import alertsList from './components/WebsiteShell/Notifications/alertsList'
+import appBar from './components/WebsiteShell/AppBar/appBar'
 
 export default {
   name: 'App',

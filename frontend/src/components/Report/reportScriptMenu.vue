@@ -43,12 +43,12 @@
 
 <script>
 import { mapActions } from 'vuex'
-import treeView from '../NavigationDrawer/ConstructorBlocks/treeView'
-import settingsAnalytics from '../NavigationDrawer/ConstructorBlocks/settingsAnalytics'
-import blockHeader from '../NavigationDrawer/ConstructorBlocks/blockHeader'
-import CreatorTreeView from '../NavigationDrawer/Mixins/CreatorTreeView'
-import ExecutorScripts from '../NavigationDrawer/Mixins/ExecutorScripts'
-import SelectedScriptFormatter from '../NavigationDrawer/Mixins/SelectedScriptFormatter'
+import treeView from '../WebsiteShell/NavigationDrawer/ConstructorBlocks/treeView'
+import settingsAnalytics from '../WebsiteShell/NavigationDrawer/ConstructorBlocks/settingsAnalytics'
+import blockHeader from '../WebsiteShell/NavigationDrawer/ConstructorBlocks/blockHeader'
+import CreatorTreeView from '../WebsiteShell/NavigationDrawer/Mixins/CreatorTreeView'
+import ExecutorScripts from '../WebsiteShell/NavigationDrawer/Mixins/ExecutorScripts'
+import SelectedScriptFormatter from '../WebsiteShell/NavigationDrawer/Mixins/SelectedScriptFormatter'
 import ResSplitPane from 'vue-resize-split-pane'
 
 export default {

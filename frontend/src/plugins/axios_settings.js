@@ -23,7 +23,9 @@ export function checkErrorStatusCode(statusCode){
 
 function processingErrorResponse(error){
   store.commit('changeProgressLinearStatus', false)
-  if(!checkErrorStatusCode(error.response.status))
+  if(error.response === undefined)
+    store.dispatch('appendErrorAlert', { status: 'no connect' })
+  else if(!checkErrorStatusCode(error.response.status))
     store.dispatch('appendErrorAlert', error.response)
   return Promise.reject(error)
 }

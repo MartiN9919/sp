@@ -82,14 +82,14 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import ResSplitPane from 'vue-resize-split-pane'
-import treeView from '../NavigationDrawer/ConstructorBlocks/treeView'
-import chipAnalytics from '../NavigationDrawer/ConstructorBlocks/chipAnalytics'
-import settingsAnalytics from '../NavigationDrawer/ConstructorBlocks/settingsAnalytics'
-import menuTemplate from '../NavigationDrawer/ConstructorBlocks/menuTemplate'
-import blockHeader from '../NavigationDrawer/ConstructorBlocks/blockHeader'
-import CreatorTreeView from '../NavigationDrawer/Mixins/CreatorTreeView'
-import ExecutorScripts from '../NavigationDrawer/Mixins/ExecutorScripts'
-import SelectedScriptFormatter from '../NavigationDrawer/Mixins/SelectedScriptFormatter'
+import treeView from '../WebsiteShell/NavigationDrawer/ConstructorBlocks/treeView'
+import chipAnalytics from '../WebsiteShell/NavigationDrawer/ConstructorBlocks/chipAnalytics'
+import settingsAnalytics from '../WebsiteShell/NavigationDrawer/ConstructorBlocks/settingsAnalytics'
+import menuTemplate from '../WebsiteShell/NavigationDrawer/ConstructorBlocks/menuTemplate'
+import blockHeader from '../WebsiteShell/NavigationDrawer/ConstructorBlocks/blockHeader'
+import CreatorTreeView from '../WebsiteShell/NavigationDrawer/Mixins/CreatorTreeView'
+import ExecutorScripts from '../WebsiteShell/NavigationDrawer/Mixins/ExecutorScripts'
+import SelectedScriptFormatter from '../WebsiteShell/NavigationDrawer/Mixins/SelectedScriptFormatter'
 
 export default {
   name: 'mapScriptMenu',

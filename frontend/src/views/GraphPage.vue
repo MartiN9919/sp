@@ -17,15 +17,22 @@
 </template>
 
 <script>
-import ResSplitPane from "vue-resize-split-pane";
-import NavigationDrawer from "../components/NavigationDrawer/Mixins/NavigationDrawer";
-import d3Field from "../components/Graph/Workspace/d3Field";
-import graphMenu from "../components/Graph/graphMenu";
+import d3Field from '../components/Graph/D3/d3Field'
+import graphMenu from '../components/Graph/GraphMenu/graphMenu'
+import NavigationDrawer from '../components/WebsiteShell/NavigationDrawer/Mixins/NavigationDrawer'
+import ResSplitPane from 'vue-resize-split-pane'
+import {mapActions} from "vuex";
 
 export default {
   name: 'GraphPage',
   components: { ResSplitPane, d3Field, graphMenu,},
-  mixins: [NavigationDrawer],
+  mixins: [ NavigationDrawer, ],
+  methods: {
+    ...mapActions(['getListObjectTemplates', ]),
+  },
+  created() {
+    this.getListObjectTemplates({})
+  },
 }
 </script>
 

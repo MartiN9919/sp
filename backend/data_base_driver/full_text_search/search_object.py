@@ -204,10 +204,10 @@ def search_top(request):
                 res.intersection_update(set(item))
         return [get_object_by_id(request.get('object_id', None), item) for item in list(res)]
     else:
-        return [get_object_by_id(item) for item in
-                find_reliable(request.get('object_id', None), request.get('request', None))]
+        return [get_object_by_id(request.get('object_id', None), item) for item in
+                find_reliable(Full_text_search.TABLES[request.get('object_id', None)], request.get('request', None))]
 
 
-print(search_top(test))
+# print(search_top(test))
 
 

@@ -31,7 +31,6 @@ export default {
         setCoordinatesContextMenu ({ commit }, event) {
             event.preventDefault()
             commit('setCoordinatesContextMenu', event)
-            commit('activateContextMenu')
         },
         setTypeContextMenu ({ commit }, type) {
             commit('setTypeContextMenu', type)

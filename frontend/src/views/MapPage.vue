@@ -22,7 +22,7 @@
 import LeafletMain from '../components/Map/Leaflet/LeafletMain'
 import mapScriptMenu from '../components/Map/mapScriptMenu'
 import ResSplitPane from 'vue-resize-split-pane'
-import NavigationDrawer from '../components/NavigationDrawer/Mixins/NavigationDrawer'
+import NavigationDrawer from '../components/WebsiteShell/NavigationDrawer/Mixins/NavigationDrawer'
 
 export default {
   name: 'MapPage',

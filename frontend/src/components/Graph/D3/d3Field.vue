@@ -6,36 +6,36 @@
         @contextmenu.stop="contextMenu = { event: $event, typeMenu: 'circle' }"/>
     </svg>
     <context-menu v-if="['workSpace', 'circle'].includes(typeContextMenu)">
-      <graph-work-space_cm @selectObject="confirmFillingSelectors" v-if="typeContextMenu === 'workSpace'"/>
-      <v-card v-if="typeContextMenu === 'circle'">
-        <v-card-title class="justify-center pa-0">
-          Пустое меню
-        </v-card-title>
-      </v-card>
+      <context-d3-work-space v-if="typeContextMenu === 'workSpace'" @selectObject="confirmFillingSelectors"/>
+      <context-d3-object v-if="typeContextMenu === 'circle'"></context-d3-object>
     </context-menu>
   </v-container>
 </template>
 
 <script>
 import { mapActions } from "vuex";
-import contextMenu from "../../ContextMenu/contextMenu";
-import graphWorkSpace_cm from "../../ContextMenu/BodysContextMenu/graphWorkSpace_cm";
-import toolsContextMenu from "../../ContextMenu/Mixins/toolsContextMenu";
+import contextD3WorkSpace from "../ContextMenus/contextD3WorkSpace"
+import contextD3Object from "../ContextMenus/contextD3Object";
+import contextMenu from "../../WebsiteShell/ContextMenu/contextMenu"
+import toolsContextMenu from "../../WebsiteShell/ContextMenu/Mixins/toolsContextMenu"
 
 export default {
   name: "d3Field",
-  components: { contextMenu, graphWorkSpace_cm, },
+  components: { contextMenu, contextD3WorkSpace, contextD3Object, },
   mixins: [ toolsContextMenu, ],
   props: { drawer: Boolean, },
   methods: {
-    ...mapActions(['addListObjects', 'activateObject', 'changeNavigationDrawerStatus',]),
+    ...mapActions(['getClassifiersForObject', 'changeNavigationDrawerStatus', 'addObjectInWorkAreaAboveObjects', ]),
     confirmFillingSelectors(object) {
-      this.activateObject({params: {object_id: object.id}})
-        .then(() => { if (!this.drawer) this.changeNavigationDrawerStatus() })
+      this.getClassifiersForObject({ params: { object_id: object.id } })
+        .then(() => {
+          if (!this.drawer)
+            this.changeNavigationDrawerStatus()
+          this.addObjectInWorkAreaAboveObjects(object.id)
+        })
       this.deactivateContextMenu()
     },
   },
-
 }
 </script>
 
