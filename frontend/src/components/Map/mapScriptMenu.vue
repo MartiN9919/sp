@@ -9,7 +9,6 @@
     :resizerThickness="1"
     v-on:update:size="sizeMenuColumn = $event"
     units="percents"
-    oncontextmenu="return false"
   >
     <v-col slot="firstPane" class="column-settings pa-0">
       <treeView
@@ -22,7 +21,6 @@
 
     <v-col slot="secondPane" class="column-settings overflow-hidden pa-0">
       <block-header :text-header="'Выбранные скрипты'"></block-header>
-        <v-btn>Map edit</v-btn>
 
       <v-divider></v-divider>
       <menuTemplate
@@ -39,10 +37,11 @@
           v-if="selectedTemplate.activeAnalysts.length || selectedTemplate.passiveAnalysts.length"
       ></v-divider>
 
-      <v-row no-gutters class="overflow-y-auto pa-3">
+      <v-row no-gutters class="overflow-y-auto py-3 px-2">
         <chipAnalytics
-          v-for="analytics in selectedTemplate.activeAnalysts.concat(selectedTemplate.passiveAnalysts)"
+          v-for="(analytics, id) in selectedTemplate.activeAnalysts.concat(selectedTemplate.passiveAnalysts)"
           :analytics="analytics"
+          :key="id"
           :selectedTreeViewItem="selectedItem"
           @returnSelectAnalytics="setCurrentAnalytics"
           @changeColor="changeColorActiveAnalysts"
@@ -56,13 +55,14 @@
 
       <v-scroll-y-transition mode="out-in">
         <div v-if="'id' in selectedItem" :key="selectedItem.id" class="pa-4 py-1">
-          <block-header :text-header="'Настройки ' + selectedItem.name"></block-header>
+          <block-header :text-header="'Настройки ' + selectedItem.name" class="pb-3"></block-header>
           <settingsAnalytics
             v-for="variable in selectedItem.variables"
             :variable="variable"
+            :key="variable.id"
           ></settingsAnalytics>
 
-          <div class="text-center">
+          <div class="text-center pt-2">
             <v-btn
               @click="executeScript(selectedItem)"
               outlined color="teal" class="mx-2 mb-2"
@@ -82,14 +82,14 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import ResSplitPane from 'vue-resize-split-pane'
-import treeView from '../NavigationDrawer/ConstructorBlocks/treeView'
-import chipAnalytics from '../NavigationDrawer/ConstructorBlocks/chipAnalytics'
-import settingsAnalytics from '../NavigationDrawer/ConstructorBlocks/settingsAnalytics'
-import menuTemplate from '../NavigationDrawer/ConstructorBlocks/menuTemplate'
-import blockHeader from '../NavigationDrawer/ConstructorBlocks/blockHeader'
-import CreatorTreeView from '../NavigationDrawer/Mixins/CreatorTreeView'
-import ExecutorScripts from '../NavigationDrawer/Mixins/ExecutorScripts'
-import SelectedScriptFormatter from '../NavigationDrawer/Mixins/SelectedScriptFormatter'
+import treeView from '../WebsiteShell/NavigationDrawer/ConstructorBlocks/treeView'
+import chipAnalytics from '../WebsiteShell/NavigationDrawer/ConstructorBlocks/chipAnalytics'
+import settingsAnalytics from '../WebsiteShell/NavigationDrawer/ConstructorBlocks/settingsAnalytics'
+import menuTemplate from '../WebsiteShell/NavigationDrawer/ConstructorBlocks/menuTemplate'
+import blockHeader from '../WebsiteShell/NavigationDrawer/ConstructorBlocks/blockHeader'
+import CreatorTreeView from '../WebsiteShell/NavigationDrawer/Mixins/CreatorTreeView'
+import ExecutorScripts from '../WebsiteShell/NavigationDrawer/Mixins/ExecutorScripts'
+import SelectedScriptFormatter from '../WebsiteShell/NavigationDrawer/Mixins/SelectedScriptFormatter'
 
 export default {
   name: 'mapScriptMenu',
@@ -195,14 +195,5 @@ export default {
     max-height:100%;
     display: flex;
     flex-direction: column;
-  }
-  ::-webkit-scrollbar {
-    width: 10px;
-  }
-  ::-webkit-scrollbar-track {
-    background: #FFFFFF;
-  }
-  ::-webkit-scrollbar-thumb {
-    background : rgba(0, 0, 0, .1);
   }
 </style>

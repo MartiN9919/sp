@@ -13,7 +13,7 @@
     <v-col class="pa-0" slot="firstPane">
       <reportScriptMenu></reportScriptMenu>
     </v-col>
-    <v-col class="pa-0" slot="secondPane">
+    <v-col class="pa-0 select_off" slot="secondPane">
       <reportsList :drawer="drawer"></reportsList>
     </v-col>
   </ResSplitPane>
@@ -23,7 +23,7 @@
 import reportScriptMenu from '../components/Report/reportScriptMenu'
 import reportsList from '../components/Report/reportsList'
 import ResSplitPane from "vue-resize-split-pane";
-import NavigationDrawer from "../components/NavigationDrawer/Mixins/NavigationDrawer";
+import NavigationDrawer from "../components/WebsiteShell/NavigationDrawer/Mixins/NavigationDrawer";
 
 export default {
   name: 'ReportsPage',
