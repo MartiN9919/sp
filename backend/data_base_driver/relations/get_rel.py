@@ -1,10 +1,10 @@
-from ..input_output.io import io_get_rel
-from ..sys_key.get_object_dump import get_object_by_id
-from ..sys_key.get_object_dump import get_object_by_name
-from ..sys_key.get_key_dump import get_key_by_id
+from data_base_driver.input_output.io import io_get_rel
+from data_base_driver.sys_key.get_object_dump import get_object_by_id
+from data_base_driver.sys_key.get_object_dump import get_object_by_name
+from data_base_driver.sys_key.get_key_dump import get_key_by_id
 
 
-def get_rel_by_object(group_id, object, id, parents=[]):
+def get_rel_by_object(group_id, object, id, parents):
     """
     вспомогательная функция получения связей с определенной записью таблицы событий-связей,
     точка входа get_rel_cascade
@@ -17,15 +17,18 @@ def get_rel_by_object(group_id, object, id, parents=[]):
         object = get_object_by_name(object)['id']
     rels = io_get_rel(group_id=group_id, keys=[], obj_rel_1=None, obj_rel_2=[int(object), id], where_dop=[],
                       is_unique=False)
-    firstData = [[get_object_by_id(rel[2])['name'], get_key_by_id(rel[0])['name'], rel[3]] for rel in rels if
+    firstData = [{'object_type': get_object_by_id(rel[2])['id'], 'rel_type': get_key_by_id(rel[0])['id'],
+                  'rec_id': rel[3]} for rel in rels if
                  (rel[4] == object and rel[5] == id)
                  and len([temp for temp in parents if
-                          int(get_object_by_name(temp[0])['id']) == rel[2] and temp[1] == rel[3]]) == 0]
-    secondData = [[get_object_by_id(rel[4])['name'], get_key_by_id(rel[0])['name'], rel[5]] for rel in rels if
+                          int(temp[0]) == rel[2] and temp[1] == rel[3]]) == 0]
+    secondData = [{'object_type': get_object_by_id(rel[4])['id'], 'rel_type': get_key_by_id(rel[0])['id'],
+                   'rec_id': rel[5]} for rel in rels if
                   (rel[2] == object and rel[3] == id)
                   and len([temp for temp in parents if
-                           int(get_object_by_name(temp[0])['id']) == rel[4] and temp[1] == rel[5]]) == 0]
-    sumData = [get_object_by_id(object)['name'], 'parent', id, firstData + secondData]
+                           int(temp[0]) == rel[4] and temp[1] == rel[5]]) == 0]
+    sumData = {'object_type': get_object_by_id(object)['id'], 'rel_type':
+            'parent', 'rec_id': id, 'rels': firstData + secondData}
     return sumData
 
 
@@ -40,10 +43,13 @@ def get_rel_rec(group_id, rels, depth, parents):
     if depth == 0 or len(rels) == 0: return rels
     for rel in rels:
         newParents = parents.copy()
-        newRels = get_rel_by_object(group_id, rel[0], rel[2], newParents)
-        newParents.append([newRels[0], newRels[2]])
-        get_rel_rec(group_id, newRels[3], depth - 1, newParents)
-        rel.append(newRels[3])
+        newRels = get_rel_by_object(group_id, rel['object_type'], rel['rec_id'], newParents)
+        newParents.append([newRels['object_type'], newRels['rec_id']])
+        get_rel_rec(group_id, newRels['rels'], depth - 1, newParents)
+        if rel.get('rels'):
+            rel['rels'].append(newRels['rels'])
+        else:
+            rel['rels'] = newRels['rels']
 
 
 def get_rel_cascade(group_id, object, id, depth):
@@ -55,8 +61,8 @@ def get_rel_cascade(group_id, object, id, depth):
     :return: список связей в формате [record,id [o,i[]...[]],[],..,[] ]
     """
     if depth <= 0: return []
-    rels = get_rel_by_object(group_id, object, id)
-    get_rel_rec(group_id, rels[3], depth - 1, parents=[[rels[0], rels[2]]])
+    rels = get_rel_by_object(group_id, object, id, parents=[])
+    get_rel_rec(group_id, rels['rels'], depth - 1, parents=[[rels['object_type'], rels['rec_id']]])
     return rels
 
 
