@@ -1,5 +1,4 @@
 from data_base_driver.connect.connect_manticore import db_shinxql
-from data_base_driver.constants.full_text_search import Full_text_search
 from data_base_driver.full_text_search.search_rel import search_rel_with_key
 
 
