@@ -9,6 +9,7 @@ from data_base_driver.constants.const_dat import DAT_SYS_OBJ
 def obj_list():
     return sorted(copy.deepcopy(DAT_SYS_OBJ.DUMP.get_all()), key=lambda x: x[DAT_SYS_OBJ.TITLE])
 
+
 # из rel-записей получить множество obj_id/rec_id: {(25, 34), (20, 1), (25, 33)}
 # rel_recs - список rel-записей, можно генератор
 def rel_rec_to_el(rel_recs):
