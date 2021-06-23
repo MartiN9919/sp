@@ -1,4 +1,5 @@
 from data_base_driver.connect.connect_manticore import db_shinxql
+from data_base_driver.constants.fulltextsearch import FullTextSearch
 from data_base_driver.full_text_search.search_rel import search_rel_with_key
 
 
@@ -57,11 +58,11 @@ def find_with_rel_unreliable(object_type, request):
     """
     temp_result = []
     result = []
-    temp_result.append([object_type, find_unreliable(Full_text_search.TABLES[object_type], request)])
-    for table in Full_text_search.TABLES:
+    temp_result.append([object_type, find_unreliable(FullTextSearch.TABLES[object_type], request)])
+    for table in FullTextSearch.TABLES:
         if table == object_type:
             continue
-        temp_result.append([table, find_unreliable(Full_text_search.TABLES[table], request)])
+        temp_result.append([table, find_unreliable(FullTextSearch.TABLES[table], request)])
 
     iter_res = iter(temp_result)
     for item in iter_res:
@@ -74,11 +75,11 @@ def find_with_rel_unreliable(object_type, request):
     if len(result) != 0:
         return get_sorted_list(result)
     else:
-        result = find_reliable(Full_text_search.TABLES[object_type], request)
+        result = find_reliable(FullTextSearch.TABLES[object_type], request)
         if len(result) != 0:
             return result
         else:
-            return find_unreliable(Full_text_search.TABLES[object_type], request)
+            return find_unreliable(FullTextSearch.TABLES[object_type], request)
 
 
 def find_with_rel_reliable_key(object_1_type, request_1, object_2_type, request_2, rel_key):
@@ -95,11 +96,11 @@ def find_with_rel_reliable_key(object_1_type, request_1, object_2_type, request_
     if len(request_1) == 0:
         result1 = [0]
     else:
-        result1 = find_reliable(Full_text_search.TABLES[object_1_type], request_1)
+        result1 = find_reliable(FullTextSearch.TABLES[object_1_type], request_1)
     if len(request_2) == 0:
         result2 = [0]
     else:
-        result2 = find_reliable(Full_text_search.TABLES[object_2_type], request_2)
+        result2 = find_reliable(FullTextSearch.TABLES[object_2_type], request_2)
     for item in result1:
         for item_next in result2:
             res = search_rel_with_key(rel_key, object_1_type, item, object_2_type, item_next)
@@ -145,9 +146,9 @@ def get_object_by_id(object_type, rec_id):
     @param rec_id: идентификатору записи
     @return: словарь в формате {object_id, rec_id, params:[{id,val},...,{}]}
     """
-    sql = 'SELECT key_id, val FROM obj_' + Full_text_search.TABLES[object_type] + '_row WHERE id = ' + \
+    sql = 'SELECT key_id, val FROM obj_' + FullTextSearch.TABLES[object_type] + '_row WHERE id = ' + \
                 str(rec_id) + ';'
-    params = [{'id': item[0],'val': item[1]} for item in db_shinxql(sql)]
+    params = [{'id': int(item[0]), 'val': item[1]} for item in db_shinxql(sql)]
     return {'object_id': object_type, 'rec_id': rec_id, 'params': params}
 
 
@@ -167,7 +168,7 @@ def search(request):
             if len(request.get('request', None)) == 0:
                 main_object_ids = [0]
             else:
-                main_object_ids = find_reliable(Full_text_search.TABLES[request.get('object_id', None)],
+                main_object_ids = find_reliable(FullTextSearch.TABLES[request.get('object_id', None)],
                                             request.get('request', None))
             temp = search(rel)
             temp_result = []
@@ -203,8 +204,8 @@ def search_top(request):
                 res.intersection_update(set(item))
         return [get_object_by_id(request.get('object_id', None), item) for item in list(res)]
     else:
-        return [get_object_by_id(item) for item in
-                find_reliable(request.get('object_id', None), request.get('request', None))]
+        return [get_object_by_id(request.get('object_id', None), item) for item in
+                find_reliable(FullTextSearch.TABLES[request.get('object_id', None)], request.get('request', None))]
 
 
 
