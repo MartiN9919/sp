@@ -49,7 +49,7 @@ export default {
   methods: {
     checkClassifierForNeeded (valueForCheck, classifierId) {
       for (let value of valueForCheck)
-        if (Number(value.id) === classifierId) return value.val
+        if (value.id === classifierId) return value.val
       return '-'
     },
   },
