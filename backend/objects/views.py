@@ -6,7 +6,7 @@ from data_base_driver.constants.const_dat import DAT_OWNER
 from data_base_driver.full_text_search.search_object import search_top
 from data_base_driver.input_output.io import io_set
 from data_base_driver.record.add_record import add_data
-from data_base_driver.record.get_record import get_record_by_id, get_records_by_object
+from data_base_driver.full_text_search.search_object import get_object_by_id
 from data_base_driver.relations.add_rel import add_rel
 from data_base_driver.sys_key.get_key_dump import get_keys_by_object, get_rels_list
 from data_base_driver.sys_key.get_object_info import obj_list
@@ -68,13 +68,15 @@ def aj_object(request):
     Функция API для работы с объектами
     @param request: http запрос от клиента
     @return: статус выполнения или результат при запросе на получение
-    GET получение объекта по его идентификатору
+    GET получение объекта по его идентификатору в формате {rec_id, obj_id, params:[{id,val},...,{}]}
+    POST  добавление нового объекта или информации о старом, запрос имеет данные по ключу data в формате:\
+    {rec_id, obj_id, params:[{id,val},...,{}]} если объект новый rec_id не задается
     """
     group_id = DAT_OWNER.DUMP.get_group(user_id=request.user.id)
     if request.method == 'GET':
         try:
-            return JsonResponse({'data': get_record_by_id(group_id=group_id, object_type=request.GET['object_id'],
-                                                   record_id=request.GET['record_id'])}, status=200)
+            return JsonResponse({'data': get_object_by_id(object_type=request.GET['object_id'],
+                                                   rec_id=request.GET['record_id'])}, status=200)
         except:
             return JsonResponse({'status': 'неверный номер объекта'}, status=404)
     if request.method == 'POST':
@@ -94,6 +96,13 @@ def aj_object(request):
 @login_check
 @decor_log_request
 def aj_relation(request):
+    """
+    Функция API для работы со связями
+    @param request: запрос на действие со связями
+    @return: статус выполнения или результат в зависимости от типа запроса
+    POST запрос на добавление связи между двумя объектами, должен содержать в url key_id, object_1_id, rec_1_id,
+        object_2_id, rec_2_id
+    """
     group_id = DAT_OWNER.DUMP.get_group(user_id=request.user.id)
     if request.method == 'POST':
         data = json.loads(request.body)
@@ -109,6 +118,12 @@ def aj_relation(request):
 @login_check
 @decor_log_request
 def aj_search_objects(request):
+    """
+    Функция API для поиска объектов в базе данных
+    @param request: POST запрос содержащий по ключу data древовидный json следующего формата:
+    {obj_id, request, key_id, list_id, rels:[{obj_id, request, key_id, list_id, rels},...,{}]}
+    @return: json с информацией о объекте в формате [{rec_id, obj_id, params:[{id,val},...,{}]},...,{}]
+    """
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
@@ -122,6 +137,11 @@ def aj_search_objects(request):
 @login_check
 @decor_log_request
 def aj_set_geometry(request):
+    """
+
+    @param request:
+    @return:
+    """
     group_id = DAT_OWNER.DUMP.get_group(user_id=request.user.id)
     data = json.loads(request.body)
     try:
