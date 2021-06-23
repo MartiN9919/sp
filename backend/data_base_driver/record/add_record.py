@@ -1,3 +1,5 @@
+import datetime
+
 from data_base_driver.input_output.io import io_set
 
 
@@ -18,9 +20,15 @@ def add_record(group_id, object_id, object_info):
         return -1
 
 
-# test_object = {'object_id': 45, 'rec_id': 34, 'params': [{'id': 45001, 'val': 'val1'}, {'id': 45002, 'val': 'val2'}]}
 def add_data(group_id, object):
-    data = [[param['id'], param['val']] for param in object['params']]
-    if object.get('rec_id'):
+    """
+    Функция для добавления информации в базу данных
+    @param group_id: идентификационный номер группы пользователя
+    @param object: вносимая информация
+    @return: идентификатор нового/измененного объекта в базе данных
+    """
+    data = [[param['id'], param['val'], datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")]
+            for param in object['params']]
+    if object.get('rec_id', 0) != 0:
         data.append(['id', object.get('rec_id')])
     return add_record(group_id=group_id, object_id=object.get('object_id'), object_info=data)

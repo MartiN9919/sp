@@ -1,3 +1,5 @@
+import datetime
+
 from ..connect.connect_mysql import db_sql, db_connect
 from data_base_driver.constants.const_dat import DAT_SYS_ID, DAT_OBJ_ROW
 
@@ -38,7 +40,7 @@ class IO_LIB_SQL():
         self.__sql_exec__(sql, read=False)
 
     # + запись ОДНОГО row-ключа ОДНОЙ sql-операцией => ОДНА запись
-    obj_insert_row_one = lambda self, data_pars, ind: self.rec_insert_one(
+    obj_insert_row_one = lambda self, data_pars, ind: self.insert_one_rec( #возможны проблемы из-за замены стандартной функции
         table=data_pars.row_table,
         equ=['id=' + data_pars.rec_id, ] + data_pars.equ_item(item_dic=data_pars.row_dic[ind], is_null=False)
     )
@@ -47,8 +49,9 @@ class IO_LIB_SQL():
     def obj_insert_row_all(self, data_pars):
         if not data_pars.rec_id: raise Exception('Unknow rec_id: data_pars = ' + str(data_pars))
         val_list = []
+        val_list_manticore = []
         for item in data_pars.row_dic:
-            val_list.append( \
+            val_list.append(
                 "(" + \
                 data_pars.rec_id + ", " + \
                 item[DAT_OBJ_ROW.KEY_ID] + ", " + \
@@ -56,6 +59,22 @@ class IO_LIB_SQL():
                 item.get(DAT_OBJ_ROW.DAT, 'null') + \
                 ")"
             )
+            ############################################################################################################
+            date_time_str = item.get(DAT_OBJ_ROW.DAT, datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+            date_time_str = date_time_str.replace('\'', '')
+            date_time = datetime.datetime.strptime(date_time_str, "%Y-%m-%d %H:%M:%S")
+            days_str = str(date_time.date().toordinal())
+            seconds_str = str(date_time.time().second + date_time.time().minute * 60 + date_time.time().hour * 3600)
+            val_list_manticore.append(
+                "(" + \
+                data_pars.rec_id + ", " + \
+                item[DAT_OBJ_ROW.KEY_ID] + ", " + \
+                item[DAT_OBJ_ROW.VAL] + ", " + \
+                days_str + ", " + \
+                seconds_str + \
+                ")"
+            )
+            ############################################################################################################
         sql = \
             "INSERT IGNORE " + data_pars.row_table + " (" + \
             DAT_OBJ_ROW.ID + ", " + \
@@ -63,11 +82,20 @@ class IO_LIB_SQL():
             DAT_OBJ_ROW.VAL + ", " + \
             DAT_OBJ_ROW.DAT + \
             ") VALUES " + ", ".join(val_list)
+        ################################################################################################################
+        sphinx_ql = "INSERT INTO " + data_pars.row_table + " (" + \
+            DAT_OBJ_ROW.ID + ", " + \
+            DAT_OBJ_ROW.KEY_ID + ", " + \
+            DAT_OBJ_ROW.VAL + ", " + \
+            'date , sec' + \
+            ") VALUES " + ", ".join(val_list_manticore)
+        ################################################################################################################
+        # довести до конца
         self.__sql_exec__(sql=sql, read=False)
         return self.connection.get_connection().affected_rows()
 
     # + запись ОДНОЙ связи => ОДНА запись
-    rel_insert_one = lambda self, data_pars: self.rec_insert_one(
+    rel_insert_one = lambda self, data_pars: self.insert_one_rec(
         table=data_pars.row_table,
         equ=data_pars.row_equ_flat(is_null=False)
     )
@@ -76,6 +104,35 @@ class IO_LIB_SQL():
     rec_insert_one = lambda self, table, equ: self.__sql_exec__(
         sql="INSERT IGNORE INTO " + table + " SET " + ', '.join(equ), read=False)
 
+
+    ####################################################################################################################
+    def insert_one_rec(self, table, equ):
+        sql = "INSERT IGNORE INTO " + table + " SET " + ', '.join(equ)
+        tables_str = '('
+        values_str = '('
+        for index, item in enumerate(equ):
+            if item.split('=')[0] == 'dat':
+                date_time_str = item.split('=')[1]
+                date_time_str = date_time_str.replace('\'', '')
+                date_time = datetime.datetime.strptime(date_time_str, "%Y-%m-%d %H:%M:%S")
+                days_str = str(date_time.date().toordinal())
+                seconds_str = str(date_time.time().second + date_time.time().minute * 60 + date_time.time().hour * 3600)
+                if index != len(equ) - 1:
+                    tables_str += 'date, sec, '
+                    values_str += days_str + ', ' + seconds_str + ', '
+                else:
+                    tables_str += 'date, sec)'
+                    values_str += days_str + ', ' + seconds_str + ')'
+                continue
+            if index != len(equ) - 1:
+                tables_str += item.split('=')[0] + ', '
+                values_str += item.split('=')[1] + ', '
+            else:
+                tables_str += item.split('=')[0] + ')'
+                values_str += item.split('=')[1] + ')'
+        sphinx_ql = 'INSERT INTO '+ table + tables_str + ' VALUES' + values_str + ';' # довести до конца
+        self.__sql_exec__(sql=sql, read=False)
+    ####################################################################################################################
     ###########################################
     # UPDATE
     ###########################################

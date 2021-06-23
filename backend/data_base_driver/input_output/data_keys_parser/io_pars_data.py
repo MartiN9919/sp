@@ -156,7 +156,7 @@ class IO_PARS_DATA(dict):
                 self.row_dic.append({
                     DAT_OBJ_ROW.KEY_ID: str(key_id),
                     DAT_OBJ_ROW.VAL: val,
-                    DAT_OBJ_ROW.DAT: "'" + data_item[DATA_DAT] + "'" if len(data_item) > 2 else 'null'
+                    DAT_OBJ_ROW.DAT: '\'' + data_item[DATA_DAT] + '\'' if len(data_item) > 2 else 'null'
                 })
 
         if self.valid:

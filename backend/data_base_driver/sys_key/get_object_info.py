@@ -1,17 +1,14 @@
-from data_base_driver.constants.const_dat import DAT_SYS_OBJ, DAT_SYS_KEY
+import copy
+
+from data_base_driver.constants.const_dat import DAT_SYS_OBJ
 
 
 ###########################################
 # СПИСОК ОБЪЕКТОВ
 ###########################################
 def obj_list():
-    return [{
-        DAT_SYS_OBJ.ID: x[DAT_SYS_OBJ.ID],
-        DAT_SYS_OBJ.NAME: x[DAT_SYS_OBJ.NAME],
-        DAT_SYS_OBJ.TITLE: x[DAT_SYS_OBJ.TITLE],
-        DAT_SYS_OBJ.TITLE_SINGLE: x[DAT_SYS_OBJ.TITLE_SINGLE],
-        DAT_SYS_OBJ.ICON: x[DAT_SYS_OBJ.ICON],
-    } for x in DAT_SYS_OBJ.DUMP.get_all()]
+    return [item for item in sorted(copy.deepcopy(DAT_SYS_OBJ.DUMP.get_all()), key=lambda x: x[DAT_SYS_OBJ.TITLE])
+            if item.get('id') != 1]
 
 
 # из rel-записей получить множество obj_id/rec_id: {(25, 34), (20, 1), (25, 33)}

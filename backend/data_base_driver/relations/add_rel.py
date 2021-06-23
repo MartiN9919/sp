@@ -1,3 +1,6 @@
+import datetime
+
+from data_base_driver.constants.const_dat import DAT_REL
 from data_base_driver.input_output.io import io_set
 from data_base_driver.sys_key.get_key_dump import get_key_by_id
 
@@ -23,6 +26,7 @@ def add_rel(group_id, key_id, object_1_id, rec_1_id, object_2_id, rec_2_id):
     if key['rel_obj_1_id'] != object_1_id or key['rel_obj_2_id'] != object_2_id:
         print('error 2')
         raise (2, 'Не верный тип связи')
-    data = [['key_id', key_id], [object_1_id, rec_1_id], [object_2_id, rec_2_id]]
-    io_set(group_id=group_id, obj=1,data=data)
+    data = [['key_id', key_id], [object_1_id, rec_1_id], [object_2_id, rec_2_id],
+            [DAT_REL.DAT, datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")]]
+    io_set(group_id=group_id, obj=1, data=data)
 

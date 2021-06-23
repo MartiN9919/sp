@@ -74,6 +74,8 @@ def get_keys_by_object(object):
     result = []
     for key in keys:
         temp = dict(key)
+        temp.pop('rel_obj_1_id')
+        temp.pop('rel_obj_2_id')
         if temp.get('list_id'):
             list_item = get_list_by_top_id(int(temp.get('list_id')))
             list_item = {temp.get('list_id'): list_item}
@@ -81,6 +83,7 @@ def get_keys_by_object(object):
         result.append(temp)
     return result
 
+# print(get_keys_by_object(10))
 
 def get_key_by_id(id):
     """
