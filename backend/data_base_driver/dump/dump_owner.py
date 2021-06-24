@@ -37,7 +37,7 @@ class DUMP_OWNER:
                 DAT_OWNER_USERS.ID + "," +
                 DAT_OWNER_USERS.OWNER_GROUPS_ID + " " +
                 "FROM " +
-                DAT_OWNER_USERS.TABLE + " " +
+                DAT_OWNER_USERS.TABLE_SHORT + " " +
                 "WHERE " +
                 DAT_OWNER_USERS.ENABLED + "=1",
                 wait=True,

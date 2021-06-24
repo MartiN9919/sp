@@ -1,3 +1,5 @@
+import datetime
+
 from data_base_driver.constants.const_dat import DAT_SYS_OBJ, DAT_SYS_KEY, DAT_OBJ_ROW, DAT_OBJ_COL, DAT_REL
 
 DEBUG = False
@@ -156,7 +158,8 @@ class IO_PARS_DATA(dict):
                 self.row_dic.append({
                     DAT_OBJ_ROW.KEY_ID: str(key_id),
                     DAT_OBJ_ROW.VAL: val,
-                    DAT_OBJ_ROW.DAT: '\'' + data_item[DATA_DAT] + '\'' if len(data_item) > 2 else 'null'
+                    DAT_OBJ_ROW.DAT: '\'' + data_item[DATA_DAT] + '\'' if len(
+                        data_item) > 2 else '\'' + datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + '\''
                 })
 
         if self.valid:
@@ -231,7 +234,7 @@ class IO_PARS_DATA(dict):
 
         # dat is null
         if not is_dat:
-            vals[DAT_REL.DAT] = 'null'
+            vals[DAT_REL.DAT] = '\'' + datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + '\''
 
         self.row_dic.append(vals)
 

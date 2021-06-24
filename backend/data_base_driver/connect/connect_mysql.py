@@ -4,6 +4,7 @@ import MySQLdb, MySQLdb.cursors
 import time
 
 from data_base_driver.constants.connect_db import VEC_DATA
+from data_base_driver.constants.const_dat import DAT_SYS_OBJ, DAT_SYS_KEY, DAT_OWNER
 
 AUTOCOMMIT = True
 
@@ -209,6 +210,9 @@ def db_reconnect(database):
     @param database: словарь с информацией о соединении
     """
     Singleton(n=10, database=database).reconnect(database=database)
+    DAT_SYS_OBJ.DUMP._refresh_(force=True)
+    DAT_SYS_KEY.DUMP._refresh_(force=True)
+    DAT_OWNER.DUMP._refresh_(force=True)
 
 
 def db_disconnect(connection):

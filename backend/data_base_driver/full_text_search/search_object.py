@@ -137,51 +137,57 @@ def get_object_record_by_id(object_type, rec_id):
     @return: словарь в формате {object_id, rec_id, params:[{id,val},...,{}]}
     """
     sql = 'SELECT key_id, val FROM obj_' + FullTextSearch.TABLES[object_type] + '_row WHERE id = ' + \
-                str(rec_id) + ';'
+          str(rec_id) + ';'
     params = [{'id': int(item[0]), 'val': item[1]} for item in db_shinxql(sql)]
     return {'object_id': object_type, 'rec_id': rec_id, 'params': params}
 
 
-def search(request):
+def recursion_search(request):
     """
     Вспомогательная функция для рекурсивного поиска объекта по древовидному запросу
     @param request: древовидный запрос
     @return: список словарей формате [{object_id, rec_ids},...,{}]
     """
     result = []
-    for rel in request.get('rels', None):
-        if len(rel.get('rels', None)) == 0:
-            result.append({'object_id': request.get('object_id', None), 'rec_ids':
-                find_with_rel_reliable_key(request.get('object_id', None), request.get('request', None),
-                               rel.get('object_id', None), rel.get('request', None), rel.get('rel_id', None),
-                                           rel.get('list_id', 0))})
+    for rel in request.get(FullTextSearch.RELATIONS, None):
+        if len(rel.get(FullTextSearch.RELATIONS, None)) == 0:
+            result.append({FullTextSearch.OBJECT_ID: request.get(FullTextSearch.OBJECT_ID, None),
+                           'rec_ids': find_with_rel_reliable_key(request.get(FullTextSearch.OBJECT_ID, None),
+                                                                 request.get(FullTextSearch.REQUEST, None),
+                                                                 rel.get(FullTextSearch.OBJECT_ID, None),
+                                                                 rel.get(FullTextSearch.REQUEST, None),
+                                                                 rel.get(FullTextSearch.RELATION_ID, None),
+                                                                 rel.get(FullTextSearch.LIST_ID, 0))})
         else:
-            if len(request.get('request', None)) == 0:
+            if len(request.get(FullTextSearch.REQUEST, None)) == 0:
                 main_object_ids = [0]
             else:
-                main_object_ids = find_reliable(FullTextSearch.TABLES[request.get('object_id', None)],
-                                            request.get('request', None))
-            temp = search(rel)
+                main_object_ids = find_reliable(FullTextSearch.TABLES[request.get(FullTextSearch.OBJECT_ID, None)],
+                                                request.get(FullTextSearch.REQUEST, None))
+            temp = recursion_search(rel)
             temp_result = []
             for item in temp:
                 for rec_id in item.get('rec_ids'):
-                    for id in main_object_ids:
-                        if len(search_rel_with_key(rel.get('rel_id'), request.get('object_id', None), id,
-                                                     item.get('object_id'), rec_id, rel.get('list_id', 0))) != 0:
-                            temp_result.append(id)
-            result.append({'object_id':request.get('object_id', None), 'rec_ids': temp_result})
+                    for rec_id_main in main_object_ids:
+                        if len(search_rel_with_key(rel.get(FullTextSearch.RELATION_ID),
+                                                   request.get(FullTextSearch.OBJECT_ID, None), rec_id_main,
+                                                   item.get(FullTextSearch.OBJECT_ID), rec_id,
+                                                   rel.get(FullTextSearch.LIST_ID, 0))) != 0:
+                            temp_result.append(rec_id_main)
+            result.append(
+                {FullTextSearch.OBJECT_ID: request.get(FullTextSearch.OBJECT_ID, None), 'rec_ids': temp_result})
     return result
 
 
-def search_top(request):
+def search(request):
     """
     Функция точка входа для рекурсивного поиска объекта по древовидному запросу
     @param request: древовидный запрос
     @return: список найденных объектов в формате [{object_id, rec_id, params:[{id,val},...,{}]},...,{}]
     """
     result = []
-    if len(request.get('rels', None)) != 0:
-        temp = search(request)
+    if len(request.get(FullTextSearch.RELATIONS, None)) != 0:
+        temp = recursion_search(request)
         for item in temp:
             result.append(item.get('rec_ids'))
         temp_set = None
@@ -193,12 +199,8 @@ def search_top(request):
                 temp_set = set(item)
             else:
                 temp_set.intersection_update(set(item))
-        return [get_object_record_by_id(request.get('object_id', None), item) for item in temp_set]
+        return [get_object_record_by_id(request.get(FullTextSearch.OBJECT_ID, None), item) for item in temp_set]
     else:
-        return [get_object_record_by_id(request.get('object_id', None), item) for item in
-                find_reliable(FullTextSearch.TABLES[request.get('object_id', None)], request.get('request', None))]
-
-
-
-
-
+        return [get_object_record_by_id(request.get(FullTextSearch.OBJECT_ID, None), item) for item in
+                find_reliable(FullTextSearch.TABLES[request.get(FullTextSearch.OBJECT_ID, None)],
+                              request.get(FullTextSearch.REQUEST, None))]

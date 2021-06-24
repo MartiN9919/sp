@@ -52,14 +52,14 @@ class TestGetRel(TestInputOutputBase):
     def setUp(self):
         io_set(group_id=0, obj='rel', data=[['key_id', 31], ['geometry', 100], ['file', 200]])
         io_set(group_id=0, obj='rel', data=[['key_id', 'ngg_opg'], ['point', 45], ['case', 398]])
-        io_set(group_id=0, obj=1, data=[['key_id', 506], ['transport', 12], ['geometry', 74]])
+        io_set(group_id=0, obj=1, data=[['key_id', 1301], ['transport', 12], ['geometry', 74]])
 
     def test_get_rel(self):
         rel = io_get_rel(group_id=0, keys=[], where_dop=[])
         self.assertEqual(200, rel[0][3])
 
     def test_get_rel_2(self):
-        rel = io_get_rel(group_id=0, keys=[506], where_dop=[])
+        rel = io_get_rel(group_id=0, keys=[1301], where_dop=[])
         sleep(0.01)
         rel_2 = io_get_rel(group_id=0, keys=['ngg_opg'], where_dop=[])
         self.assertEqual(74, rel[0][3])
@@ -89,7 +89,7 @@ class TestSetCase(TestInputOutputBase):
     databases = {}
 
     def setUp(self):
-        io_set(group_id=0, obj='case', data=[['type', 'ДОУ'], [45505, 'пример описания дела'], [45515, '20-12-2019']])
+        io_set(group_id=0, obj='case', data=[['type', 'ДОУ'], [45505, 'пример описания дела'], [45520, '20-12-2019']])
         io_set(group_id=0, obj=25, data=[[25204, 5]])
         io_set(group_id=0, obj='transport', data=[['color', 'красный'], [50005, '9']])
 

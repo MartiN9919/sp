@@ -3,12 +3,12 @@ import json
 from django.http import JsonResponse
 from core.projectSettings.decoraters import login_check, decor_log_request
 from data_base_driver.constants.const_dat import DAT_OWNER
-from data_base_driver.full_text_search.search_object import search_top
+from data_base_driver.full_text_search.search_object import search
 from data_base_driver.input_output.io import io_set
 from data_base_driver.record.add_record import add_data
 from data_base_driver.full_text_search.search_object import get_object_record_by_id
 from data_base_driver.relations.add_rel import add_rel
-from data_base_driver.sys_key.get_key_dump import get_keys_by_object, get_rels_list
+from data_base_driver.sys_key.get_key_dump import get_keys_by_object, get_relations_list
 from data_base_driver.sys_key.get_object_info import obj_list
 
 
@@ -53,7 +53,7 @@ def aj_list_rels(request):
     """
     if request.method == 'GET':
         try:
-            return JsonResponse({'data': get_rels_list(request.GET['object_1_id'], request.GET['object_2_id'])},
+            return JsonResponse({'data': get_relations_list(request.GET['object_1_id'], request.GET['object_2_id'])},
                                 status=200)
         except:
             return JsonResponse({'status': 'некорректные id объектов'}, status=404)
@@ -83,7 +83,7 @@ def aj_object(request):
         try:
             data = json.loads(request.body)
             result = add_data(group_id=group_id, object=data)
-            if result != -1:
+            if result.get('status', -1) != -1:
                 return JsonResponse({'data': result}, status=200)
             else:
                 return JsonResponse({'data': 'ошибка добавления'}, status=403)
@@ -127,7 +127,7 @@ def aj_search_objects(request):
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
-            return JsonResponse({'data': search_top(data)}, status=200)
+            return JsonResponse({'data': search(data)}, status=200)
         except:
             return JsonResponse({'status': ' ошибочный запрос'}, status=404)
     else:

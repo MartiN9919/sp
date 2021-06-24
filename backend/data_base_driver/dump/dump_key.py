@@ -37,7 +37,7 @@ class DUMP_KEY:
                   DAT_SYS_KEY.REL_OBJ_1_ID + ", " + \
                   DAT_SYS_KEY.REL_OBJ_2_ID + " " + \
                   "FROM " + \
-                  DAT_SYS_KEY.TABLE + " " + \
+                  DAT_SYS_KEY.TABLE_SHORT + " " + \
                   "ORDER BY " + \
                   DAT_SYS_KEY.COL + " DESC, " + \
                   DAT_SYS_KEY.NEED + " DESC;"
