@@ -6,7 +6,7 @@ from data_base_driver.constants.const_dat import DAT_OWNER
 from data_base_driver.full_text_search.search_object import search_top
 from data_base_driver.input_output.io import io_set
 from data_base_driver.record.add_record import add_data
-from data_base_driver.full_text_search.search_object import get_object_by_id
+from data_base_driver.full_text_search.search_object import get_object_record_by_id
 from data_base_driver.relations.add_rel import add_rel
 from data_base_driver.sys_key.get_key_dump import get_keys_by_object, get_rels_list
 from data_base_driver.sys_key.get_object_info import obj_list
@@ -75,8 +75,8 @@ def aj_object(request):
     group_id = DAT_OWNER.DUMP.get_group(user_id=request.user.id)
     if request.method == 'GET':
         try:
-            return JsonResponse({'data': get_object_by_id(object_type=request.GET['object_id'],
-                                                   rec_id=request.GET['record_id'])}, status=200)
+            return JsonResponse({'data': get_object_record_by_id(object_type=request.GET['object_id'],
+                                                                 rec_id=request.GET['record_id'])}, status=200)
         except:
             return JsonResponse({'status': 'неверный номер объекта'}, status=404)
     if request.method == 'POST':

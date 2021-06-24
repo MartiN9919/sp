@@ -129,7 +129,7 @@ def find_recursive_key(object_type, request, object_type_list, request_list, rel
     return get_sorted_list(result)
 
 
-def get_object_by_id(object_type, rec_id):
+def get_object_record_by_id(object_type, rec_id):
     """
     Функция для получения информации о объекте по его типу и идентификатору записи
     @param object_type: тип объекта
@@ -184,18 +184,18 @@ def search_top(request):
         temp = search(request)
         for item in temp:
             result.append(item.get('rec_ids'))
-        res = None
+        temp_set = None
         for item in result:
             if len(item) == 0:
-                res = set()
+                temp_set = set()
                 break
-            if not res:
-                res = set(item)
+            if not temp_set:
+                temp_set = set(item)
             else:
-                res.intersection_update(set(item))
-        return [get_object_by_id(request.get('object_id', None), item) for item in list(res)]
+                temp_set.intersection_update(set(item))
+        return [get_object_record_by_id(request.get('object_id', None), item) for item in temp_set]
     else:
-        return [get_object_by_id(request.get('object_id', None), item) for item in
+        return [get_object_record_by_id(request.get('object_id', None), item) for item in
                 find_reliable(FullTextSearch.TABLES[request.get('object_id', None)], request.get('request', None))]
 
 
