@@ -31,7 +31,7 @@ export default {
       return state.relationsBetweenTwoObjects.find(object =>
         ((object.objectId1 === objectsId.objectId1 && object.objectId2 === objectsId.objectId2) ||
         (object.objectId1 === objectsId.objectId2 && object.objectId2 === objectsId.objectId1))
-      )
+      )?.relations
     },
     relationObject: state => id => {
       for (let object of state.relationsBetweenTwoObjects) {
@@ -57,7 +57,7 @@ export default {
     },
     setWindowForActiveObject: (state, window) => {
       let findActiveObject = state.workAreaAboveObjects.find(object => object.tempId === state.activeObjectId)
-      findActiveObject.activeWindow = window
+      if (findActiveObject) findActiveObject.activeWindow = window
     },
     addClassifier: (state, { objectId, classifiers }) => {
       state.templatesClassifiersForObjects[objectId] = classifiers

@@ -1,15 +1,15 @@
 <template>
-  <v-card class="pa-4">
-    <v-expansion-panels disabled>
+  <div>
+    <v-expansion-panels disabled tile>
       <v-expansion-panel>
-        <v-expansion-panel-header hide-actions color="teal" style="color: white">
-          <v-row no-gutters class="text-center">
-            <v-col cols="1">id</v-col>
+        <v-expansion-panel-header hide-actions color="teal" style="color: white" class="pa-0">
+          <v-row no-gutters class="text-center ma-0 pa-0">
+            <v-col cols="1"><span class="text-uppercase">id</span></v-col>
             <v-col
               v-for="classifier in templatesClassifiersForObjects(object.objectId)"
               v-if="classifier.need === 1" :key="classifier.name"
             >
-              {{classifier.title}}
+              <span class="text-uppercase">{{classifier.title}}</span>
             </v-col>
           </v-row>
         </v-expansion-panel-header>
@@ -17,7 +17,7 @@
     </v-expansion-panels>
     <v-expansion-panels focusable multiple>
       <v-expansion-panel v-for="findObject in foundObjects(object.tempId)" :key="findObject.rec_id">
-        <v-expansion-panel-header hide-actions>
+        <v-expansion-panel-header hide-actions class="pa-0">
           <v-row no-gutters class="text-center">
             <v-col cols="1">{{findObject.rec_id}}</v-col>
             <v-col
@@ -32,7 +32,7 @@
         </v-expansion-panel-content>
       </v-expansion-panel>
     </v-expansion-panels>
-  </v-card>
+  </div>
 </template>
 
 <script>

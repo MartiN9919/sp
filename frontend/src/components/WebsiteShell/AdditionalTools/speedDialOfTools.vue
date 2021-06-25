@@ -1,5 +1,5 @@
 <template>
-  <v-speed-dial absolute right bottom direction="top" open-on-hover transition="slide-y-reverse-transition">
+  <v-speed-dial absolute right bottom direction="top" transition="slide-y-reverse-transition">
     <template v-slot:activator>
       <v-btn icon color="teal" large><v-icon>mdi-pencil</v-icon></v-btn>
     </template>
