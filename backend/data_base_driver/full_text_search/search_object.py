@@ -170,11 +170,11 @@ def recursion_search(request):
             for item in temp:
                 for rec_id in item.get('rec_ids'):
                     for rec_id_main in main_object_ids:
-                        if len(search_rel_with_key(rel.get(FullTextSearch.RELATION_ID),
-                                                   request.get(FullTextSearch.OBJECT_ID, None), rec_id_main,
-                                                   item.get(FullTextSearch.OBJECT_ID), rec_id,
-                                                   rel.get(FullTextSearch.LIST_ID, 0))) != 0:
-                            temp_result.append(rec_id_main)
+                        temp_result.extend(search_rel_with_key(rel.get(FullTextSearch.RELATION_ID),
+                                                               request.get(FullTextSearch.OBJECT_ID, None), rec_id_main,
+                                                               item.get(FullTextSearch.OBJECT_ID), rec_id,
+                                                               rel.get(FullTextSearch.LIST_ID, 0)))
+
             result.append(
                 {FullTextSearch.OBJECT_ID: request.get(FullTextSearch.OBJECT_ID, None), 'rec_ids': temp_result})
     return result
@@ -205,4 +205,3 @@ def search(request):
         return [get_object_record_by_id(request.get(FullTextSearch.OBJECT_ID, None), item) for item in
                 find_reliable(FullTextSearch.TABLES[request.get(FullTextSearch.OBJECT_ID, None)],
                               request.get(FullTextSearch.REQUEST, None))]
-

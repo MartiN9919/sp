@@ -120,10 +120,10 @@ class IO_LIB_SQL():
                 seconds_str = str(date_time.time().second + date_time.time().minute * 60 + date_time.time().hour * 3600)
                 if index != len(equ) - 1:
                     tables_str += 'date, sec, '
-                    values_str += days_str + ', ' + seconds_str + ', '
+                    values_str += '\'' + days_str + '\', \'' + seconds_str + '\', '
                 else:
                     tables_str += 'date, sec)'
-                    values_str += days_str + ', ' + seconds_str + ')'
+                    values_str += '\'' + days_str + '\', \'' + seconds_str + '\')'
                 continue
             if index != len(equ) - 1:
                 tables_str += item.split('=')[0] + ', '
