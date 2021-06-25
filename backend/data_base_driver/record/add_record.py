@@ -27,7 +27,7 @@ def add_data(group_id, object):
     """
     Функция для добавления информации в базу данных
     @param group_id: идентификационный номер группы пользователя
-    @param object: вносимая информация
+    @param object: вносимая информация в формате {object_id, rec_id, params:[{id,val},...,{}]}
     @return: идентификатор нового/измененного объекта в базе данных
     """
     data = [[param['id'], param['val'], datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")]
@@ -37,7 +37,7 @@ def add_data(group_id, object):
     else:
         temp_set = None
         for item in data:
-            if get_key_by_id(int(item[0]).get('need', 0)) == 1:
+            if get_key_by_id(int(item[0])).get('need', 0) == 1:
                 if temp_set:
                     temp_set.intersection_update(set(find_key_value(object.get('object_id'), item[0], item[1])))
                 else:
@@ -50,5 +50,6 @@ def add_data(group_id, object):
                 'rec_id': result}
     else:
         return {'status': -1}
+
 
 

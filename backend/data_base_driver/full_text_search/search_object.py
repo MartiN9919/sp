@@ -90,6 +90,7 @@ def find_with_rel_reliable_key(object_1_type, request_1, object_2_type, request_
     @param object_2_type: тип второстепенного объекта для связи
     @param request_2: запрос по второстепенному объекту
     @param rel_key: тип связи
+    @param list_id: идентификатор значения списка если есть
     @return: список с идентификаторами подходящих записей
     """
     result = []
@@ -204,3 +205,4 @@ def search(request):
         return [get_object_record_by_id(request.get(FullTextSearch.OBJECT_ID, None), item) for item in
                 find_reliable(FullTextSearch.TABLES[request.get(FullTextSearch.OBJECT_ID, None)],
                               request.get(FullTextSearch.REQUEST, None))]
+

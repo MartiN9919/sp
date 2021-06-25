@@ -1,4 +1,6 @@
 from django.test import TestCase
+
+from data_base_driver.connect.connect_manticore import on_test_mode, off_test_mode
 from data_base_driver.connect.connect_mysql import db_connect, db_reconnect, set_autocommit_off, set_autocommit_on, \
     roll_back
 from data_base_driver.constants.connect_db import VEC_DATA
@@ -12,10 +14,12 @@ class TestGetGeoBase(TestCase):
     def setUpTestData(cls):
         db_reconnect(VEC_DATA)
         set_autocommit_off()
+        on_test_mode()
 
     @classmethod
     def tearDownClass(cls) -> None:
         set_autocommit_on()
+        off_test_mode()
 
 
 class TestGetGeoIdToFC(TestGetGeoBase):
