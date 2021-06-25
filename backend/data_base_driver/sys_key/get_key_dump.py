@@ -45,7 +45,7 @@ def get_keys_by_rel(object1, object2):
             filter_rel(item, int(object1), int(object2))]
 
 
-def get_rels_list(object1, object2):
+def get_relations_list(object1, object2):
     """
     Функция для получения списка возможных связей по типу связываемых объектов
     @param object1: имя или id первого объекта
@@ -104,6 +104,3 @@ def get_key_by_name(name):
     @return: словарь содержащий информацию о ключе классификатора
     """
     return DAT_SYS_KEY.DUMP.get_rec(name=name)
-
-
-keys = get_keys_by_object(35)

@@ -12,3 +12,9 @@ class FullTextSearch:
         52: 'telefon'
     }
     REL_TABLE = 'rel'
+
+    OBJECT_ID = 'object_id'
+    REQUEST = 'request'
+    RELATIONS = 'rels'
+    RELATION_ID = 'rel_id'
+    LIST_ID = 'list_id'

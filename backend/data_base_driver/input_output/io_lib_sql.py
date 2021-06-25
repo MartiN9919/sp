@@ -1,5 +1,6 @@
 import datetime
 
+from ..connect.connect_manticore import db_shinxql
 from ..connect.connect_mysql import db_sql, db_connect
 from data_base_driver.constants.const_dat import DAT_SYS_ID, DAT_OBJ_ROW
 
@@ -68,11 +69,10 @@ class IO_LIB_SQL():
             val_list_manticore.append(
                 "(" + \
                 data_pars.rec_id + ", " + \
-                item[DAT_OBJ_ROW.KEY_ID] + ", " + \
-                item[DAT_OBJ_ROW.VAL] + ", " + \
                 days_str + ", " + \
-                seconds_str + \
-                ")"
+                seconds_str + ", \'" + \
+                item[DAT_OBJ_ROW.KEY_ID] + "\', \'" + \
+                item[DAT_OBJ_ROW.VAL] + "\')"
             )
             ############################################################################################################
         sql = \
@@ -85,13 +85,14 @@ class IO_LIB_SQL():
         ################################################################################################################
         sphinx_ql = "INSERT INTO " + data_pars.row_table + " (" + \
             DAT_OBJ_ROW.ID + ", " + \
+            'date , sec, ' + \
             DAT_OBJ_ROW.KEY_ID + ", " + \
-            DAT_OBJ_ROW.VAL + ", " + \
-            'date , sec' + \
+            DAT_OBJ_ROW.VAL + "" + \
             ") VALUES " + ", ".join(val_list_manticore)
         ################################################################################################################
         # довести до конца
         self.__sql_exec__(sql=sql, read=False)
+        self.__shinxql_exec__(sql=sphinx_ql, read=False)
         return self.connection.get_connection().affected_rows()
 
     # + запись ОДНОЙ связи => ОДНА запись
@@ -126,12 +127,13 @@ class IO_LIB_SQL():
                 continue
             if index != len(equ) - 1:
                 tables_str += item.split('=')[0] + ', '
-                values_str += item.split('=')[1] + ', '
+                values_str += '\'' + item.split('=')[1] + '\', '
             else:
                 tables_str += item.split('=')[0] + ')'
-                values_str += item.split('=')[1] + ')'
+                values_str += '\'' + item.split('=')[1] + '\')'
         sphinx_ql = 'INSERT INTO '+ table + tables_str + ' VALUES' + values_str + ';' # довести до конца
         self.__sql_exec__(sql=sql, read=False)
+        self.__shinxql_exec__(sql=sphinx_ql, read=False)
     ####################################################################################################################
     ###########################################
     # UPDATE
@@ -170,3 +172,8 @@ class IO_LIB_SQL():
     def __sql_exec__(self, sql, read):
         if DEBUG: print('\n' + sql)
         return db_sql(sql=sql, wait=not DEBUG, read=read, connection=self.connection)
+
+
+    def __shinxql_exec__(self, sql, read):
+        if DEBUG: print('\n' + sql)
+        return db_shinxql(sql=sql, wait=not DEBUG, read=read)

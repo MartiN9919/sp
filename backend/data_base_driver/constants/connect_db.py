@@ -32,10 +32,10 @@ SPHINX = {
 }
 
 TEST_DATA = {
-    'HOST': '127.0.0.1',
+    'HOST': '200.200.200.233',
     'PORT': '3306',
     'NAME': 'test_data',
-    'USER': 'pushkin',
-    'PASSWORD': '1111',
+    'USER': 'dev',
+    'PASSWORD': '1',
     'CHARSET': 'utf8',
 }
