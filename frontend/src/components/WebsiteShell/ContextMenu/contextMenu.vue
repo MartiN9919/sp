@@ -1,7 +1,7 @@
 <template>
   <v-menu
     :close-on-content-click="false"
-    max-height="50%" min-width="20%" max-width="20%"
+    max-height="50%" min-width="20em" max-width="25em"
     offset-x offset-y z-index="10001"
     transition="slide-x-reverse-transition"
     v-model="showMenu"

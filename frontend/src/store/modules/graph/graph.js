@@ -31,7 +31,7 @@ export default {
       return state.relationsBetweenTwoObjects.find(object =>
         ((object.objectId1 === objectsId.objectId1 && object.objectId2 === objectsId.objectId2) ||
         (object.objectId1 === objectsId.objectId2 && object.objectId2 === objectsId.objectId1))
-      )
+      )?.relations
     },
     relationObject: state => id => {
       for (let object of state.relationsBetweenTwoObjects) {
@@ -57,7 +57,7 @@ export default {
     },
     setWindowForActiveObject: (state, window) => {
       let findActiveObject = state.workAreaAboveObjects.find(object => object.tempId === state.activeObjectId)
-      findActiveObject.activeWindow = window
+      if (findActiveObject) findActiveObject.activeWindow = window
     },
     addClassifier: (state, { objectId, classifiers }) => {
       state.templatesClassifiersForObjects[objectId] = classifiers
@@ -107,14 +107,18 @@ export default {
           })
           .catch(error => { return Promise.reject(error) })
     },
-    getRelationsForObjects ({ commit }, config = {}) {
-      return getResponseAxios('objects/relations/', config)
-        .then(response => { commit('addRelations', {
-          objectId1: config.params.object_1_id,
-          objectId2: config.params.object_2_id,
-          relations: response.data
-        }) })
-        .catch(() => {})
+    getRelationsForObjects ({ commit, state, getters }, config = {}) {
+      if(!getters.relationsBetweenTwoObjects({
+        objectId1: config.params.object_1_id,
+        objectId2: config.params.object_2_id,
+      }))
+        return getResponseAxios('objects/relations/', config)
+          .then(response => { commit('addRelations', {
+            objectId1: config.params.object_1_id,
+            objectId2: config.params.object_2_id,
+            relations: response.data
+          }) })
+          .catch(() => {})
     },
     findObjectOnServer({ commit, state }, config = {}) {
       let searchTree = state.workAreaAboveObjects.find(object => object.tempId === state.activeObjectId)

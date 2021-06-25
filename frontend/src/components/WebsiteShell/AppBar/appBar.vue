@@ -1,7 +1,7 @@
 <template>
   <v-app-bar
     app dense flat
-    color="teal"
+    color="#004D40"
     dark
     v-if="userInformation">
     <v-app-bar-nav-icon

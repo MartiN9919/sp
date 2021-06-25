@@ -1,10 +1,10 @@
 <template>
-  <v-row no-gutters class="flex-nowrap justify-space-between tabs-row">
+  <v-row no-gutters class="flex-nowrap justify-space-between custom-app-bar">
     <v-card @click="scrollTabs('left')" class="right-board-card"
             width="fit-content" color="#00897B" dark flat rounded="0">
       <v-card-actions><v-icon>mdi-arrow-left</v-icon></v-card-actions>
     </v-card>
-    <v-row no-gutters class="overflow-x-auto flex-nowrap" id="row-tabs">
+    <v-row no-gutters class="overflow-x-auto flex-nowrap tabs-row" id="row-tabs">
       <v-card
         v-for="object in workPlace" :key="object.tempId"
         @click="activeTab === object.tempId ? activateTab(null) : activateTab(object.tempId)"
@@ -87,5 +87,11 @@ export default {
 
 .tabs-row {
   background-color: #00897B;
+}
+
+.custom-app-bar {
+  border-top-style: solid;
+  border-top-color:#FFFFFF;
+  border-top-width: 1px
 }
 </style>

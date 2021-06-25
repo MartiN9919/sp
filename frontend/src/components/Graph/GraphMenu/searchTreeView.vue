@@ -1,8 +1,13 @@
 <template>
   <v-container class="pa-0">
-    <v-treeview :items="[object.searchTree]" :open="openObject" return-object item-children="rels">
+    <v-treeview
+      :items="[object.searchTree]" item-children="rels"
+      :open="openObject" open-all  return-object expand-icon=""
+      style="margin-left: -1.2em"
+    >
       <template v-slot:label="{ item, open }">
         <v-text-field
+          autocomplete="off"
           @contextmenu.stop="contextMenu = { event: $event, typeMenu: item, }"
           outlined dense color="teal" hide-details v-model="item.request"
           :background-color="item !== object.searchTree ? 'teal lighten-5' : ''" class="mt-2"
@@ -17,8 +22,10 @@
     </v-treeview>
     <context-menu v-if="contextMenu.typeMenu === typeContextMenu">
       <context-search-tree-view
+        :parent-object="contextMenu.typeMenu === object.searchTree ? null : findParentObject()"
         :object="contextMenu.typeMenu"
         @createNewRelation="createNewRelation"
+        @selectMenuItemTreeView="selectMenuItem"
       ></context-search-tree-view>
     </context-menu>
   </v-container>
@@ -27,14 +34,14 @@
 <script>
 import contextMenu from "../../WebsiteShell/ContextMenu/contextMenu"
 import toolsContextMenu from "../../WebsiteShell/ContextMenu/Mixins/toolsContextMenu"
-import contextSearchTreeView from "../ContextMenus/contextSearchTreeView"
-import { mapGetters } from "vuex";
+import contextSearchTreeView from "../ContextMenus/contextSearchTreeView/contextSearchTreeView"
+import { mapGetters } from "vuex"
 
 export default {
   name: "searchTreeView",
   components: {contextMenu, contextSearchTreeView, },
   mixins: [ toolsContextMenu, ],
-  props: { object: Object, searchTree: Object},
+  props: { object: Object, },
   data: () => ({
     openObject: [],
     contextMenu: { event: null, typeMenu: null,},
@@ -63,6 +70,28 @@ export default {
       this.openObject.push(this.contextMenu.typeMenu)
       this.deactivateContextMenu()
     },
+    selectMenuItem (item) {
+      if (item.id === 2)
+        if (this.contextMenu.typeMenu !== this.object.searchTree)
+          this.deleteSearchTreeItem(this.object.searchTree)
+      this.deactivateContextMenu()
+    },
+    deleteSearchTreeItem (body) {
+      let findIndexObject = body.rels.findIndex(object => object === this.contextMenu.typeMenu)
+      if (findIndexObject === -1)
+        for (let object of body.rels)
+          this.deleteSearchTreeItem(object)
+      else body.rels.splice(findIndexObject, 1)
+    },
+    findParentObject (body=this.object.searchTree) {
+      if (!body.rels.find(object => object === this.contextMenu.typeMenu)) {
+        for (let object of body.rels) {
+          let findParent = this.findParentObject(object)
+          if (findParent) return findParent
+        }
+        return null
+      } else return body
+    }
   },
 }
 </script>
