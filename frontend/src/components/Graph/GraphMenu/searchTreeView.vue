@@ -25,7 +25,7 @@
         :parent-object="contextMenu.typeMenu === object.searchTree ? null : findParentObject()"
         :object="contextMenu.typeMenu"
         @createNewRelation="createNewRelation"
-        @selectMenuItem="selectMenuItem"
+        @selectMenuItemTreeView="selectMenuItem"
       ></context-search-tree-view>
     </context-menu>
   </v-container>
@@ -35,7 +35,7 @@
 import contextMenu from "../../WebsiteShell/ContextMenu/contextMenu"
 import toolsContextMenu from "../../WebsiteShell/ContextMenu/Mixins/toolsContextMenu"
 import contextSearchTreeView from "../ContextMenus/contextSearchTreeView/contextSearchTreeView"
-import { mapGetters } from "vuex";
+import { mapGetters } from "vuex"
 
 export default {
   name: "searchTreeView",

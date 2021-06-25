@@ -107,14 +107,18 @@ export default {
           })
           .catch(error => { return Promise.reject(error) })
     },
-    getRelationsForObjects ({ commit }, config = {}) {
-      return getResponseAxios('objects/relations/', config)
-        .then(response => { commit('addRelations', {
-          objectId1: config.params.object_1_id,
-          objectId2: config.params.object_2_id,
-          relations: response.data
-        }) })
-        .catch(() => {})
+    getRelationsForObjects ({ commit, state, getters }, config = {}) {
+      if(!getters.relationsBetweenTwoObjects({
+        objectId1: config.params.object_1_id,
+        objectId2: config.params.object_2_id,
+      }))
+        return getResponseAxios('objects/relations/', config)
+          .then(response => { commit('addRelations', {
+            objectId1: config.params.object_1_id,
+            objectId2: config.params.object_2_id,
+            relations: response.data
+          }) })
+          .catch(() => {})
     },
     findObjectOnServer({ commit, state }, config = {}) {
       let searchTree = state.workAreaAboveObjects.find(object => object.tempId === state.activeObjectId)

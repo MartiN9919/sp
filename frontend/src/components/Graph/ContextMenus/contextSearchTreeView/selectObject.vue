@@ -42,7 +42,7 @@ export default {
   model: {prop: 'selected', event: 'changeSelected'},
   computed: {
     selectedObject: {
-      get: function () { return this.selected ? this.selected : this.listItems[0] },
+      get: function () { return this.selected },
       set: function (value) { this.$emit('changeSelected', value) }
     },
   },

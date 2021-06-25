@@ -4,7 +4,7 @@
       <v-list rounded>
         <v-list-item
             v-for="(item, index) in bodyRightClickMenu" :key="index" dense
-            @click="item.next ? stepWindowStyle = item.next : $emit('selectMenuItem', item)">
+            @click="item.next ? stepWindowStyle = item.next : $emit('selectMenuItemTreeView', item)">
           <v-list-item-title style="font-size: 1em">{{ item.title }}</v-list-item-title>
           <v-list-item-icon>
             <v-icon right color="teal">{{ item.icon }}</v-icon>
@@ -95,7 +95,7 @@ export default {
       })
       if (Array.isArray(relations))
         return [{ id: 0, title: 'Без связи' }].concat(relations)
-      return relations
+      return [{ id: 0, title: 'Без связи' }]
     },
   },
   methods: {
@@ -112,7 +112,7 @@ export default {
       if (this.selectedObject) this.object.object_id = this.selectedObject.id
       this.object.rel_id = this.selectedRelation?.id
       this.closeContextMenu()
-      this.$emit('selectMenuItem', 0)
+      this.$emit('selectMenuItemTreeView', 0)
     },
     createRelatedObject() {
       this.$emit('createNewRelation', {
@@ -140,13 +140,21 @@ export default {
   },
   watch: {
     stepWindowStyle: function (value) {
+      if (value === 'selectObject') this.selectedObject = this.listObjectTemplates[0]
+      if (value === 'selectRelation') this.selectedRelation = this.getRelations[0]
       if (value === 'changeObject') this.selectedObject = this.objectTemplates(this.object.object_id)
       if (value === 'changeRelation') {
         if (!this.selectedObject) {
           this.selectedObject = this.objectTemplates(this.object.object_id)
-          this.selectedRelation = this.relationObject(this.object.rel_id)
-        } else if (this.selectedObject.id === this.object.object_id)
-          this.selectedRelation = this.relationObject(this.object.rel_id)
+          let findRelation = this.relationObject(this.object.rel_id)
+          this.selectedRelation = findRelation ? findRelation : this.getChangeRelations[0]
+        } else {
+          if (this.selectedObject.id === this.object.object_id) {
+            let findRelation = this.relationObject(this.object.rel_id)
+            this.selectedRelation = findRelation ? findRelation : this.getChangeRelations[0]
+          } else this.selectedRelation = this.getChangeRelations[0]
+        }
+
       }
     },
     object: function () {
