@@ -7,17 +7,17 @@ from data_base_driver.constants.const_script import IMPORTS, ENABLED_FUNCTIONS, 
 DEBUG = False
 
 
-def is_function(str):
+def is_function(string):
     """
     Стандартная функция проверки является ли данное слова функцией
     @param str: строка содержащие проверяемое слово
     @return: True если функция, False если нет
     """
-    if str.find('\'') != -1 and str.find('(') != -1 and str.find('(') < str.find('\''):
+    if string.find('\'') != -1 and string.find('(') != -1 and string.find('(') < string.find('\''):
         return True
-    elif str.find('\"') != -1 and str.find('(') != -1 and str.find('(') < str.find('\"'):
+    elif string.find('\"') != -1 and string.find('(') != -1 and string.find('(') < string.find('\"'):
         return True
-    elif str.find('(') != -1:
+    elif string.find('(') != -1:
         return True
 
 

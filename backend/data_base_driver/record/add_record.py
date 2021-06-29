@@ -1,7 +1,7 @@
 import datetime
 
-from data_base_driver.full_text_search.search_key_params import find_key_value
-from data_base_driver.full_text_search.search_object import get_object_record_by_id
+from data_base_driver.full_text_search.sphinxql.find_key_params import find_key_value
+from data_base_driver.full_text_search.sphinxql.find_object import get_object_record_by_id
 from data_base_driver.input_output.io import io_set
 from data_base_driver.sys_key.get_key_dump import get_key_by_id
 

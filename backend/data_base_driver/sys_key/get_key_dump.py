@@ -83,7 +83,6 @@ def get_keys_by_object(object):
         result.append(temp)
     return result
 
-# print(get_keys_by_object(10))
 
 def get_key_by_id(id):
     """

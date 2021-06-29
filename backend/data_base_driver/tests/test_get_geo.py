@@ -1,8 +1,7 @@
 from django.test import TestCase
 
 from data_base_driver.connect.connect_manticore import on_test_mode, off_test_mode
-from data_base_driver.connect.connect_mysql import db_connect, db_reconnect, set_autocommit_off, set_autocommit_on, \
-    roll_back
+from data_base_driver.connect.connect_mysql import db_reconnect, set_autocommit_off, set_autocommit_on, roll_back
 from data_base_driver.constants.connect_db import VEC_DATA
 from data_base_driver.input_output.io_geo import geo_id_to_fc
 

@@ -28,11 +28,11 @@ def get_record_by_id(group_id, object_type, record_id):
     @param group_id: идентификационный номер группы пользователя
     @param object_type: тип объекта, имя или строка
     @param record_id: идентификационный номер объекта
-    @return: словарь в формате {id:{key_id:{title:title,value:value},key_id1:{...},...,key_idN:{...}}}
+    @return: словарь в формате {rec_id, object_id, params:[{id,val},...,{}]}
     """
     object = io_get_obj(group_id=group_id, obj=object_type, keys=[], ids=[record_id], where_dop_row=[])
-    return {record[1]: {'value': record[2], 'title': get_key_by_id(record[1])['title'],
-                        'type': get_key_by_id(record[1])['type']} for record in object}
+    return {'rec_id': record_id, 'object_id': object_type,
+            'params': [{'id': record[1], 'val': record[2]} for record in object]}
 
 
 def get_records_by_object(group_id, object_type):
@@ -48,6 +48,3 @@ def get_records_by_object(group_id, object_type):
                                                                   'value': record[2]} for record in objects}}
               for objects in group_objects]
     return result
-
-
-

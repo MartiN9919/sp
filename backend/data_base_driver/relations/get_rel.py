@@ -1,7 +1,6 @@
-from data_base_driver.input_output.io import io_get_rel
+from data_base_driver.full_text_search.sphinxql.find_rel import get_relations_with_object
 from data_base_driver.sys_key.get_object_dump import get_object_by_id
 from data_base_driver.sys_key.get_object_dump import get_object_by_name
-from data_base_driver.sys_key.get_key_dump import get_key_by_id
 
 
 def get_rel_by_object(group_id, object, id, parents):
@@ -15,21 +14,17 @@ def get_rel_by_object(group_id, object, id, parents):
     """
     if not (isinstance(object, int)) and not (object.isdigit()):
         object = get_object_by_name(object)['id']
-    rels = io_get_rel(group_id=group_id, keys=[], obj_rel_1=None, obj_rel_2=[int(object), id], where_dop=[],
-                      is_unique=False)
-    firstData = [{'object_type': get_object_by_id(rel[2])['id'], 'rel_type': get_key_by_id(rel[0])['id'],
-                  'rec_id': rel[3]} for rel in rels if
-                 (rel[4] == object and rel[5] == id)
-                 and len([temp for temp in parents if
-                          int(temp[0]) == rel[2] and temp[1] == rel[3]]) == 0]
-    secondData = [{'object_type': get_object_by_id(rel[4])['id'], 'rel_type': get_key_by_id(rel[0])['id'],
-                   'rec_id': rel[5]} for rel in rels if
-                  (rel[2] == object and rel[3] == id)
-                  and len([temp for temp in parents if
-                           int(temp[0]) == rel[4] and temp[1] == rel[5]]) == 0]
-    sumData = {'object_type': get_object_by_id(object)['id'], 'rel_type':
-            'parent', 'rec_id': id, 'rels': firstData + secondData}
-    return sumData
+    # rels = io_get_rel(group_id=group_id, keys=[], obj_rel_1=None, obj_rel_2=[int(object), id], where_dop=[],
+    #                   is_unique=False)
+    rels = get_relations_with_object(int(object), id)
+    first_data = [{'object_type': rel[2], 'rel_type': rel[0], 'rec_id': rel[3]} for rel in rels if
+                  (rel[4] == object and rel[5] == id) and len(
+                      [temp for temp in parents if int(temp[0]) == rel[2] and temp[1] == rel[3]]) == 0]
+    second_data = [{'object_type': rel[4], 'rel_type': rel[0], 'rec_id': rel[5]} for rel in rels if
+                   (rel[2] == object and rel[3] == id) and len(
+                       [temp for temp in parents if int(temp[0]) == rel[4] and temp[1] == rel[5]]) == 0]
+    return {'object_type': get_object_by_id(object)['id'], 'rel_type': 'parent', 'rec_id': id,
+            'rels': first_data + second_data}
 
 
 def get_rel_rec(group_id, rels, depth, parents):

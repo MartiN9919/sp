@@ -3,10 +3,10 @@ import json
 from django.http import JsonResponse
 from core.projectSettings.decoraters import login_check, decor_log_request
 from data_base_driver.constants.const_dat import DAT_OWNER
-from data_base_driver.full_text_search.search_object import search
+from data_base_driver.full_text_search.search import search
 from data_base_driver.input_output.io import io_set
 from data_base_driver.record.add_record import add_data
-from data_base_driver.full_text_search.search_object import get_object_record_by_id
+from data_base_driver.full_text_search.sphinxql.find_object import get_object_record_by_id
 from data_base_driver.relations.add_rel import add_rel
 from data_base_driver.sys_key.get_key_dump import get_keys_by_object, get_relations_list
 from data_base_driver.sys_key.get_object_info import obj_list
