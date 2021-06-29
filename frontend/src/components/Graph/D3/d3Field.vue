@@ -13,7 +13,6 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
 import contextD3WorkSpace from "../ContextMenus/contextD3WorkSpace"
 import contextD3Object from "../ContextMenus/contextD3Object";
 import contextMenu from "../../WebsiteShell/ContextMenu/contextMenu"
@@ -21,17 +20,16 @@ import toolsContextMenu from "../../WebsiteShell/ContextMenu/Mixins/toolsContext
 
 export default {
   name: "d3Field",
-  components: { contextMenu, contextD3WorkSpace, contextD3Object, },
   mixins: [ toolsContextMenu, ],
+  components: { contextMenu, contextD3WorkSpace, contextD3Object, },
   props: { drawer: Boolean, },
   methods: {
-    ...mapActions(['getClassifiersForObject', 'changeNavigationDrawerStatus', 'addObjectInWorkAreaAboveObjects', ]),
     confirmFillingSelectors(object) {
-      this.getClassifiersForObject({ params: { object_id: object.id } })
+      this.$store.dispatch('getListOfClassifiersOfObjects', { params: { object_id: object.id } })
         .then(() => {
           if (!this.drawer)
-            this.changeNavigationDrawerStatus()
-          this.addObjectInWorkAreaAboveObjects(object.id)
+            this.$store.dispatch('changeNavigationDrawerStatus')
+          this.$store.dispatch('addObjectInWorkAreaOfObjects', object.id)
         })
       this.deactivateContextMenu()
     },

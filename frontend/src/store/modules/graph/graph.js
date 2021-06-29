@@ -1,133 +1,92 @@
-import { getResponseAxios, postResponseAxios } from '@/plugins/axios_settings'
+import { postResponseAxios } from '@/plugins/axios_settings'
+
 
 export default {
   state: {
-    listObjectTemplates: [],
-    workAreaAboveObjects: [],
+    workAreaOfObjects: [],
     activeObjectId: null,
-    templatesClassifiersForObjects: {},
-    relationsBetweenTwoObjects: [],
   },
   getters: {
-    listObjectTemplates: state => {
-      return state.listObjectTemplates
-    },
-    objectTemplates: state => id => {
-      return state.listObjectTemplates.find(object => object.id === id)
-    },
-    workAreaAboveObjects: state => {
-      return state.workAreaAboveObjects
+    workAreaOfObjects: state => {
+      return state.workAreaOfObjects
     },
     activeObject: state => {
-      return state.workAreaAboveObjects.find(object => object.tempId === state.activeObjectId)
+      return state.workAreaOfObjects.find(object => object.tempId === state.activeObjectId)
     },
-    templatesClassifiersForObjects: state => id => {
-      return state.templatesClassifiersForObjects[id]
+    windowActiveObject: state => {
+      return state.workAreaOfObjects.find(object => object.tempId === state.activeObjectId)?.activeWindow
     },
     foundObjects: state => id => {
-      return state.workAreaAboveObjects.find(object => object.tempId === id).foundObjects
+      return state.workAreaOfObjects.find(object => object.tempId === id).foundObjects
     },
-    relationsBetweenTwoObjects: state => objectsId => {
-      return state.relationsBetweenTwoObjects.find(object =>
-        ((object.objectId1 === objectsId.objectId1 && object.objectId2 === objectsId.objectId2) ||
-        (object.objectId1 === objectsId.objectId2 && object.objectId2 === objectsId.objectId1))
-      )?.relations
-    },
-    relationObject: state => id => {
-      for (let object of state.relationsBetweenTwoObjects) {
-        let findRelation = object.relations.find(relation => relation.id === id)
-        if (findRelation) return findRelation
-      }
-      return null
-    }
   },
   mutations: {
-    addListObjectTemplates: (state, listObjectTemplates) => {
-      state.listObjectTemplates = listObjectTemplates
-    },
-    addObjectInWorkAreaAboveObjects: (state, object) => {
-      state.workAreaAboveObjects.push(object)
+    addObjectInWorkAreaOfObjects: (state, object) => {
+      state.workAreaOfObjects.push(object)
     },
     removeObjectInWorkAreaAboveObjects: (state, id) => {
-      let objectIndex = state.workAreaAboveObjects.findIndex(object => object.tempId === id)
-      state.workAreaAboveObjects.splice(objectIndex, 1)
+      let objectIndex = state.workAreaOfObjects.findIndex(object => object.tempId === id)
+      state.workAreaOfObjects.splice(objectIndex, 1)
     },
     setActiveObjectId: (state, id) => {
       state.activeObjectId = id
     },
-    setWindowForActiveObject: (state, window) => {
-      let findActiveObject = state.workAreaAboveObjects.find(object => object.tempId === state.activeObjectId)
-      if (findActiveObject) findActiveObject.activeWindow = window
-    },
-    addClassifier: (state, { objectId, classifiers }) => {
-      state.templatesClassifiersForObjects[objectId] = classifiers
-    },
     findObjectOnServer: (state, objects) => {
-      state.workAreaAboveObjects.find(object => object.tempId === state.activeObjectId).foundObjects = objects
+      state.workAreaOfObjects.find(object => object.tempId === state.activeObjectId).foundObjects = objects
     },
-    addRelations: (state, relations) => { state.relationsBetweenTwoObjects.push(relations) },
+    createNewObject(state, props) {
+      let findObject = state.workAreaOfObjects.find(object => object.tempId === props.tempId)
+      findObject.params = props.classifier
+    },
+    addClassifierToObject: (state, props) => {
+      let findObject = state.workAreaOfObjects.find(object => object.tempId === props.tempId)
+      findObject.params.push(props.classifier)
+    }
   },
   actions: {
-    getListObjectTemplates ({ commit }, config = {}) {
-      return getResponseAxios('objects/list_type/', config)
-        .then(response => { commit('addListObjectTemplates', response.data) })
-        .catch(() => {})
-    },
-    addObjectInWorkAreaAboveObjects ({ commit, state }, id) {
-      let tempId = Number(Date.now().toString() + state.workAreaAboveObjects.length.toString())
-      commit('addObjectInWorkAreaAboveObjects', {
+    addObjectInWorkAreaOfObjects ({ commit, state }, id) {
+      let tempId = Number(Date.now().toString() + state.workAreaOfObjects.length.toString())
+      commit('addObjectInWorkAreaOfObjects', {
         tempId: tempId,
-        objectId: id,
+        object_id: id,
+        rec_id: 0,
         activeWindow: 'searchTree',
         searchTree: { object_id: id, rel_id: 0, request: '', rels: [], },
         foundObjects: [],
-        objectConstructor: [],
+        params: [],
       })
       commit('setActiveObjectId', tempId)
     },
     removeObjectInWorkAreaAboveObjects ({ commit, state }, id) {
       commit('removeObjectInWorkAreaAboveObjects', id)
-      if (state.workAreaAboveObjects.length)
-        commit('setActiveObjectId', state.workAreaAboveObjects[state.workAreaAboveObjects.length - 1].tempId)
+      if (state.workAreaOfObjects.length)
+        commit('setActiveObjectId', state.workAreaOfObjects[state.workAreaOfObjects.length - 1].tempId)
       else commit('setActiveObjectId')
     },
     setActiveObjectId ({commit}, id) {
       commit('setActiveObjectId', id)
     },
-    setWindowForActiveObject ({ commit }, window) {
-      commit('setWindowForActiveObject', window)
-    },
-    getClassifiersForObject ({ commit, state }, config = {}) {
-      let objectId = config.params.object_id
-      if (!(objectId in state.templatesClassifiersForObjects))
-        return getResponseAxios('objects/list_classifier/', config)
-          .then(response => {
-            commit('addClassifier', { objectId: objectId, classifiers: response.data, })
-            return Promise.resolve(response)
-          })
-          .catch(error => { return Promise.reject(error) })
-    },
-    getRelationsForObjects ({ commit, state, getters }, config = {}) {
-      if(!getters.relationsBetweenTwoObjects({
-        objectId1: config.params.object_1_id,
-        objectId2: config.params.object_2_id,
-      }))
-        return getResponseAxios('objects/relations/', config)
-          .then(response => { commit('addRelations', {
-            objectId1: config.params.object_1_id,
-            objectId2: config.params.object_2_id,
-            relations: response.data
-          }) })
-          .catch(() => {})
-    },
-    findObjectOnServer({ commit, state }, config = {}) {
-      let searchTree = state.workAreaAboveObjects.find(object => object.tempId === state.activeObjectId)
+    findObjectsOnServer({ commit, state }, config = {}) {
+      let searchTree = state.workAreaOfObjects.find(object => object.tempId === state.activeObjectId)
       return postResponseAxios('objects/search', searchTree.searchTree, config)
         .then(response => {
           commit('findObjectOnServer', response.data)
           return Promise.resolve(response)
         })
         .catch(error => { return Promise.reject(error) })
-},
+    },
+    createNewObject({ commit, state, rootState }, object) {
+      let neededClassifiers = []
+      for (let classifier of rootState.graph.classifiers.listOfClassifiersOfObjects[object.object_id])
+        if (classifier.need)
+          neededClassifiers.push({ id: classifier.id, value: null, })
+      commit('createNewObject', {
+        classifier: neededClassifiers,
+        tempId: object.tempId
+      })
+    },
+    addClassifierToObject({ commit }, props) {
+      commit('addClassifierToObject', props)
+    },
   }
 }

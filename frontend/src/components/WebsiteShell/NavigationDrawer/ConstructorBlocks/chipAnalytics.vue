@@ -1,5 +1,5 @@
 <template>
-  <v-tooltip bottom transition="false" color="teal" z-index="10001" max-width="20%">
+  <v-tooltip bottom transition="false" color="#00796B" z-index="10001" max-width="20%">
     <template v-slot:activator="{ on }">
       <v-chip
         @click:close="$emit('deleteActiveAnalytics', analytics)"

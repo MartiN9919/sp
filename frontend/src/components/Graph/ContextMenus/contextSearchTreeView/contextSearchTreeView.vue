@@ -1,10 +1,10 @@
 <template>
   <v-window v-model="stepWindowStyle">
-    <v-window-item key="menuItemSelection" value="menuItemSelection"> <!-- transition="" reverse-transition="" -->
+    <v-window-item key="menuItemSelection" value="menuItemSelection">
       <v-list rounded>
         <v-list-item
-            v-for="(item, index) in bodyRightClickMenu" :key="index" dense
-            @click="item.next ? stepWindowStyle = item.next : $emit('selectMenuItemTreeView', item)">
+          v-for="(item, index) in bodyRightClickMenu" :key="index" dense
+          @click="item.next ? stepWindowStyle = item.next : $emit('selectMenuItemTreeView', item)">
           <v-list-item-title style="font-size: 1em">{{ item.title }}</v-list-item-title>
           <v-list-item-icon>
             <v-icon right color="teal">{{ item.icon }}</v-icon>
@@ -12,16 +12,16 @@
         </v-list-item>
       </v-list>
     </v-window-item>
-    <v-window-item key="selectObject" value="selectObject"> <!-- transition="" reverse-transition="" -->
+    <v-window-item key="selectObject" value="selectObject">
       <select-object
         :header='"Выберете объект для связи с объектом: \"" + titleObject(object.object_id) + "\""'
         stepBack="menuItemSelection" stepNext="selectRelation"
-        :listItems="listObjectTemplates" :importance="true"
+        :listItems="listOfPrimaryObjects" :importance="true"
         @changeWindow="stepWindowStyle = $event" v-model="selectedObject"
         @getSelectedObject="checkObject"
       ></select-object>
     </v-window-item>
-    <v-window-item key="selectRelation" value="selectRelation"> <!-- transition="" reverse-transition="" -->
+    <v-window-item key="selectRelation" value="selectRelation">
       <select-object
         :header='"Выберете связь между: \"" + titleObject(object.object_id) + "\" и \"" + getTitleSelectedObject + "\""'
         stepBack="selectObject" :listItems="getRelations"
@@ -32,7 +32,7 @@
     <v-window-item key="changeObject" value="changeObject"> <!-- transition="" reverse-transition="" -->
       <select-object
         header='Если вам необходимо - измените тип объекта' stepBack="menuItemSelection" stepNext="changeRelation"
-        :listItems="listObjectTemplates" :importance="true"
+        :listItems="listOfPrimaryObjects" :importance="true"
         @changeWindow="stepWindowStyle = $event" v-model="selectedObject"
         @getSelectedObject="changeObject"
       ></select-object>
@@ -65,7 +65,7 @@ export default {
     selectedRelation: null,
   }),
   computed: {
-    ...mapGetters(['relationsBetweenTwoObjects', 'listObjectTemplates', 'objectTemplates', 'relationObject',]),
+    ...mapGetters(['relationsBetweenTwoObjects', 'listOfPrimaryObjects', 'primaryObject', 'relationObject',]),
     bodyRightClickMenu: function () {
       let menuBody = [
         { id: 1, title: 'Добавить объект для поиска', icon: 'mdi-database-plus', next: 'selectObject' },
@@ -122,7 +122,7 @@ export default {
       this.closeContextMenu()
     },
     titleObject: function (id) {
-      return this.objectTemplates(id)?.title_single
+      return this.primaryObject(id)?.title_single
     },
     closeContextMenu() {
       this.stepWindowStyle = 'menuItemSelection'
@@ -140,12 +140,12 @@ export default {
   },
   watch: {
     stepWindowStyle: function (value) {
-      if (value === 'selectObject') this.selectedObject = this.listObjectTemplates[0]
+      if (value === 'selectObject') this.selectedObject = this.listOfPrimaryObjects[0]
       if (value === 'selectRelation') this.selectedRelation = this.getRelations[0]
-      if (value === 'changeObject') this.selectedObject = this.objectTemplates(this.object.object_id)
+      if (value === 'changeObject') this.selectedObject = this.primaryObject(this.object.object_id)
       if (value === 'changeRelation') {
         if (!this.selectedObject) {
-          this.selectedObject = this.objectTemplates(this.object.object_id)
+          this.selectedObject = this.primaryObject(this.object.object_id)
           let findRelation = this.relationObject(this.object.rel_id)
           this.selectedRelation = findRelation ? findRelation : this.getChangeRelations[0]
         } else {

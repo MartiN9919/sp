@@ -1,40 +1,21 @@
 <template>
   <v-treeview
-    :items=treeViewItems
-    :open.sync="listOpenFolder"
-    class="py-1"
-    open-on-click
-    active-class=""
-    color=""
-    @update:active="activateItem"
-    activatable
-    hoverable
-    return-object
-    transition
-    dense>
-
+    :items=treeViewItems :open.sync="listOpenFolder"
+    @update:active="activateItem" return-object
+    hoverable transition dense open-on-click
+    activatable active-class="" color=""
+  >
     <template v-slot:label="{ item, open }">
-      <v-tooltip bottom open-delay="1000" color="teal" style="z-index: 10001" max-width="20%">
-        <template v-slot:activator="{ on, attrs }">
-          <div v-bind="attrs" v-on="on">
-            <v-icon
-                :id="'btn' + item.id"
-                :color="selectedTreeViewItem.id === item.id
-                || findFolders.find(folder => folder.id === item.id) ?
-                'teal' : 'grey lighten-1'"
-            >
-              {{ item.icon ? open ? 'mdi-folder-open-outline' : 'mdi-folder-outline' : 'mdi-script-text-outline' }}
-            </v-icon>
-            <span
-                :class="item.icon ? 'text-uppercase' : 'text-lowercase'"
-                class="pl-2"
-                :style="selectedTreeViewItem.id === item.id ? {color: 'teal'} : {}">{{ item.name }}</span>
+      <v-tooltip bottom open-delay="1000" color="#00796B" z-index="10001" max-width="20%">
+        <template v-slot:activator="{ on }">
+          <div v-on="on">
+            <v-icon :id="iconId(item.id)" :color="colorIcon(item)">{{ typeIcon(item, open) }}</v-icon>
+            <span :class="itemTextStyle(item.icon)" :style="itemTextColor(item)">{{ item.name }}</span>
           </div>
         </template>
-        <p class="text-justify ma-0">{{ item.hint ? item.hint : 'Описание отсутствует' }}</p>
+        <p class="text-justify ma-0">{{ checkHintInItem(item) }}</p>
       </v-tooltip>
     </template>
-
   </v-treeview>
 </template>
 
@@ -62,13 +43,36 @@ export default {
         this.listOpenFolder = this.listOpenFolder.concat(this.findFolders)
         sleep(500).then(() => {
           this.$vuetify.goTo(
-            '#btn' + item.id,
+            '#' + this.iconId(item.id),
             { duration: 300, offset: 100, easing: 'easeInOutCubic', container: '.v-treeview' })
         })
       } else this.findFolders = []
     }
   },
   methods: {
+
+    checkHintInItem(item) {
+      return item.hint ? item.hint : 'Описание отсутствует'
+    },
+    itemTextColor(item) {
+      return this.checkForSelectedItem(item) ? {color: '#00796B'} : {}
+    },
+    checkForSelectedItem(item) {
+      return this.selectedTreeViewItem.id === item.id
+    },
+    itemTextStyle(status) {
+      return status ? 'text-uppercase pl-2' : 'text-lowercase pl-2'
+    },
+    typeIcon(item, open) {
+      return item.icon ? open ? 'mdi-folder-open-outline' : 'mdi-folder-outline' : 'mdi-script-text-outline'
+    },
+    iconId(id) {
+      return 'btn' + id
+    },
+    colorIcon(item) {
+      return this.checkForSelectedItem(item) ||
+      this.findFolders.find(folder => folder.id === item.id) ? '#00796B' : '#616161'
+    },
 
     /** Вызов родительского метода обработки выбора скрипта */
     activateItem (item) {
@@ -94,8 +98,11 @@ export default {
       for (const treeViewItem of treeViewItems) {
         if (treeViewItem.id !== item.id) {
           if ('children' in treeViewItem) {
-            if (this.findFolders.indexOf(treeViewItem) === -1) { this.findFolders.push(treeViewItem) }
-            if (this.findItemInTreeView(item, treeViewItem.children)) { return true } else this.findFolders.splice(this.findFolders.indexOf(treeViewItem))
+            if (this.findFolders.indexOf(treeViewItem) === -1)
+              this.findFolders.push(treeViewItem)
+            if (this.findItemInTreeView(item, treeViewItem.children))
+              return true
+            else this.findFolders.splice(this.findFolders.indexOf(treeViewItem))
           }
         } else return true
       }

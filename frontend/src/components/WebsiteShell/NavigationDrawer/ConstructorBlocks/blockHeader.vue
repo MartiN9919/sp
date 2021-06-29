@@ -1,5 +1,5 @@
 <template>
-  <div class="title font-weight-light text text-center select_off" style="color: #80CBC4">
+  <div class="title text-center select_off" style="color: #00796B">
     {{ textHeader }}
   </div>
 </template>

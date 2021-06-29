@@ -9,8 +9,8 @@
       <v-text-field
         autocomplete="off"
         append-icon="mdi-calendar"
-        v-model="variable.value"
-        :label="variable.title"
+        v-model="value"
+        :label="title"
         placeholder="Выберете необходимую дату"
         hide-details readonly class="pt-0 mt-0" color="teal" type="text"
         v-on="on"
@@ -18,7 +18,7 @@
     </template>
     <v-card>
       <v-date-picker
-        v-model="variable.value"
+        v-model="value"
         show-adjacent-months
         first-day-of-week="1"
         color="teal" locale="ru"
@@ -31,7 +31,15 @@
 export default {
   name: "dateInput",
   props: {
-    variable: Object,
+    title: String,
+    inputString: String,
+  },
+  model: { prop: 'inputString', event: 'changeInputString', },
+  computed: {
+    value: {
+      get: function () { return this.inputString },
+      set: function (value) { this.$emit('changeInputString', value) }
+    }
   },
 }
 </script>

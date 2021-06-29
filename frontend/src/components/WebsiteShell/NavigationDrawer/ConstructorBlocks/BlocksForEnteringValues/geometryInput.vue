@@ -4,8 +4,8 @@
       <v-text-field
           autocomplete="off"
           append-icon="mdi-map-marker-outline"
-          :label="variable.title"
-          v-model="variable.value"
+          :label="title"
+          v-model="value"
           placeholder="Выберете объект на карте"
           hide-details color="teal" readonly class="pt-0 mt-0" type="text"
           v-on="on"
@@ -34,21 +34,23 @@ export default {
   name: "geometryInput",
   components: { LeafletEditor, },
   props: {
-    variable: Object,
+    title: String,
+    inputString: Array,
   },
+  model: { prop: 'inputString', event: 'changeInputString', },
   data: () => ({
     dialog: false,
   }),
   computed: {
-    valueGeometry: {
-      get: function() { return this.value },
-      set: function(value) { this.$emit('changeValueGeometry', value) },
+    value: {
+      get: function () { return this.inputString },
+      set: function (value) { this.$emit('changeInputString', value) }
     },
   },
 
   methods: {
     acceptGeometry() {
-      this.valueGeometry = [1, 2]; // тут объекты fc с карты после нажатия кнопки подтверждения
+      this.value = [1, 2]; // тут объекты fc с карты после нажатия кнопки подтверждения
       this.dialog = false;
     },
 

@@ -15,17 +15,22 @@ export default {
   data: () => ({
     bodyRightClickMenu: [
       {
+        id: 2,
+        title: 'Создать новый объект',
+        icon: 'mdi-plus',
+      },
+      {
+        id: 3,
+        title: 'Найти объект',
+        icon: 'mdi-magnify',
+      },
+      {
         id: 0,
         title: 'Закрыть вкладку',
         icon: 'mdi-close',
       },
-      {
-        id: 1,
-        title: 'Удалить объект',
-        icon: 'mdi-delete',
-      },
     ],
-  })
+  }),
 }
 </script>
 
