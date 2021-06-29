@@ -5,7 +5,7 @@ import requests
 from data_base_driver.constants.fulltextsearch import FullTextSearch
 
 
-def find_key_value(object_id, key_id, value):
+def find_key_value_http(object_id, key_id, value):
     """
     Функция для нахождения в базе данных по отдельным полям
     @param object_id: идентификатор типа объекта
