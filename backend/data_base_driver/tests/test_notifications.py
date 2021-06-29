@@ -1,6 +1,6 @@
 from django.test import TestCase
 
-from data_base_driver.connect.connect_manticore import on_test_mode, off_test_mode
+from data_base_driver.full_text_search.http_api.add_object_http import on_test_mode_manticore, off_test_mode_manticore
 from data_base_driver.sys_notifications.get_notifications_info import get_notifications_by_user
 from data_base_driver.sys_notifications.set_notifications_info import add_notification, remove_notification
 from datetime import datetime
@@ -17,12 +17,12 @@ class TestNotifications(TestCase):
     def setUpTestData(cls):
         db_reconnect(TEST_DATA)
         set_autocommit_off()
-        on_test_mode()
+        on_test_mode_manticore()
 
     @classmethod
     def tearDownClass(cls) -> None:
         set_autocommit_on()
-        off_test_mode()
+        off_test_mode_manticore()
 
 
 class TestGetObject(TestNotifications):

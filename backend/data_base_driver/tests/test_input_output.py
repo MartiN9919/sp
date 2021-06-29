@@ -1,11 +1,12 @@
 import json
-from geojson import GeometryCollection, Point, LineString, Polygon
+from geojson import GeometryCollection, Polygon
 from time import sleep
 from django.test import TestCase
 
-from data_base_driver.connect.connect_manticore import on_test_mode, off_test_mode
+
+from data_base_driver.full_text_search.http_api.add_object_http import on_test_mode_manticore, off_test_mode_manticore
 from data_base_driver.input_output.io import io_set, io_get_obj, io_get_rel
-from data_base_driver.connect.connect_mysql import db_connect, db_reconnect, set_autocommit_on, set_autocommit_off, \
+from data_base_driver.connect.connect_mysql import db_reconnect, set_autocommit_on, set_autocommit_off, \
     roll_back
 from data_base_driver.constants.connect_db import TEST_DATA
 
@@ -17,12 +18,12 @@ class TestInputOutputBase(TestCase):
     def setUpTestData(cls):
         db_reconnect(TEST_DATA)
         set_autocommit_off()
-        on_test_mode()
+        on_test_mode_manticore()
 
     @classmethod
     def tearDownClass(cls) -> None:
         set_autocommit_on()
-        off_test_mode()
+        off_test_mode_manticore()
 
 
 class TestGetObject(TestInputOutputBase):

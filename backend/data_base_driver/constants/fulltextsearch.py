@@ -20,3 +20,4 @@ class FullTextSearch:
     LIST_ID = 'list_id'
 
     SEARCH_URL = 'http://200.200.200.235:9312/search'
+    INSERT_URL = 'http://200.200.200.235:9312/insert'

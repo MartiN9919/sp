@@ -1,9 +1,6 @@
-import datetime
-
 from data_base_driver.connect.connect_manticore import db_shinxql
 from data_base_driver.constants.fulltextsearch import FullTextSearch
 from data_base_driver.full_text_search.additional_functions import get_date_from_days_sec
-
 
 
 def find_reliable(object_type, request):
