@@ -13,9 +13,9 @@ class IO_PARS_RELS(dict):
     EQU_2 = 'equ_2'  # вариант 2 ...
 
     def __init__(self, obj_rel_1=None, obj_rel_2=None):
-        obj_id_1 = None;
+        obj_id_1 = None
         obj_id_2 = None
-        rec_id_1 = None;
+        rec_id_1 = None
         rec_id_2 = None
         if obj_rel_1:
             if len(obj_rel_1) > 0: obj_id_1 = DAT_SYS_OBJ.DUMP.to_id(obj_rel_1[0])

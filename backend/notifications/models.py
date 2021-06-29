@@ -55,8 +55,9 @@ class ModelNotification(models.Model):
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         super(ModelNotification, self).save()
         from_user = ModelCustomUser.objects.get(id=self.from_user_id).username
-        notification= get_alert_json((self.id, from_user, self.content, self.date_time.replace(tzinfo=None, microsecond=0),
-                               self.type, self.file_id, self.geometry,))
+        notification = get_alert_json(
+            (self.id, from_user, self.content, self.date_time.replace(tzinfo=None, microsecond=0),
+             self.type, self.file_id, self.geometry,))
         send_notification(self.to_user_id, notification)
 
     class Meta:
