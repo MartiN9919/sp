@@ -1,4 +1,4 @@
-from data_base_driver.full_text_search.sphinxql.find_rel import get_relations_with_object
+from data_base_driver.full_text_search.http_api.find_rel import get_relations_with_object_http
 from data_base_driver.sys_key.get_object_dump import get_object_by_id
 from data_base_driver.sys_key.get_object_dump import get_object_by_name
 
@@ -16,7 +16,7 @@ def get_rel_by_object(group_id, object, id, parents):
         object = get_object_by_name(object)['id']
     # rels = io_get_rel(group_id=group_id, keys=[], obj_rel_1=None, obj_rel_2=[int(object), id], where_dop=[],
     #                   is_unique=False)
-    rels = get_relations_with_object(int(object), id)
+    rels = get_relations_with_object_http(int(object), id)
     first_data = [{'object_type': rel[2], 'rel_type': rel[0], 'rec_id': rel[3]} for rel in rels if
                   (rel[4] == object and rel[5] == id) and len(
                       [temp for temp in parents if int(temp[0]) == rel[2] and temp[1] == rel[3]]) == 0]
