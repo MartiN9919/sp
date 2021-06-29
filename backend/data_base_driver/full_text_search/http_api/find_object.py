@@ -50,7 +50,7 @@ def get_object_record_by_id_http(object_id, rec_id):
     response = requests.post(FullTextSearch.SEARCH_URL, data=data)
     temp = [(item['_source']['key_id'], item['_source']['val'], item['_source']['date'], item['_source']['sec']) for
             item in json.loads(response.text)['hits']['hits']]
-    params = [{'id': int(item[0]), 'val': item[1], 'date': get_date_from_days_sec(int(item[2]), int(item[3]))} for item
+    params = [{'id': int(item[0]), 'value': item[1], 'date': get_date_from_days_sec(int(item[2]), int(item[3]))} for item
               in temp]
     return {'object_id': object_id, 'rec_id': rec_id, 'params': params}
 

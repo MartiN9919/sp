@@ -42,7 +42,7 @@ def get_object_record_by_id(object_id, rec_id):
     """
     sql = 'SELECT key_id, val, date, sec FROM obj_' + FullTextSearch.TABLES[object_id] + '_row WHERE id = ' + \
           str(rec_id) + ';'
-    params = [{'id': int(item[0]), 'val': item[1], 'date': get_date_from_days_sec(int(item[2]), int(item[3]))} for item
+    params = [{'id': int(item[0]), 'value': item[1], 'date': get_date_from_days_sec(int(item[2]), int(item[3]))} for item
               in db_shinxql(sql)]
     return {'object_id': object_id, 'rec_id': rec_id, 'params': params}
 

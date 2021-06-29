@@ -30,7 +30,7 @@ def add_data(group_id, object):
     @param object: вносимая информация в формате {object_id, rec_id, params:[{id,val},...,{}]}
     @return: идентификатор нового/измененного объекта в базе данных
     """
-    data = [[param['id'], param['val'], datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")]
+    data = [[param['id'], param['value'], datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")]
             for param in object['params']]
     if object.get('rec_id', 0) != 0:
         data.append(['id', object.get('rec_id')])

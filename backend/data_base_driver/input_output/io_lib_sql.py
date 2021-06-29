@@ -63,7 +63,6 @@ class IO_LIB_SQL():
             )
             date_time_str = item.get(DAT_OBJ_ROW.DAT, datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
             date_time_str = date_time_str.replace('\'', '')
-
             add_record_http(data_pars.row_table, data_pars.rec_id, date_time_str, item[DAT_OBJ_ROW.KEY_ID],
                             item[DAT_OBJ_ROW.VAL].replace('\'',''))
 
