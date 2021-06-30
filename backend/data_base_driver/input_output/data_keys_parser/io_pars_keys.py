@@ -49,7 +49,7 @@ class IO_PARS_KEYS(dict):
         self.row_table = self[self.ROW_TABLE] = DAT_OBJ_ROW.table_name(self.obj_name)
 
         self.col_select = self[self.COL_SELECT] = ['id']
-        self.row_select = self[self.ROW_SELECT] = ['id'] + list(DAT_OBJ_ROW.LIST)
+        self.row_select = self[self.ROW_SELECT] = [DAT_OBJ_ROW.ID] + list(DAT_OBJ_ROW.LIST)
 
         # при отсутствии списка ключей - только col-ключи, перечислять row-ключи НЕ ЦЕЛЕСООБРАЗНО, т.к. их много и они указываются в SQL IN (...)
         if self.all_key:

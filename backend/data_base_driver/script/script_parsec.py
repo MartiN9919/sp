@@ -36,8 +36,8 @@ def get_function_name(string):
 def default_checker(str):
     """
     проверка содержит ли данная строка запрещенные функции или переменные окружения
-    :param str: строка из скрипта
-    :return: False если строка не прошла проверку, True если проверка пройдена
+    @param str: строка из скрипта
+    @return: False если строка не прошла проверку, True если проверка пройдена
     """
     if len(list(
             set(str.split()) & set(
@@ -53,11 +53,11 @@ def default_checker(str):
 def parse_text_to_python(name, text, params, type):
     """
     парсинг текста скрипта в файл модуля python
-    :param name: имя или id скрипта
-    :param text: текст скрипта
-    :param params: передаваемые в скрипт параметры
-    :param type: тип скрипта
-    :return: не возвращает состояние
+    @param name: имя или id скрипта
+    @param text: текст скрипта
+    @param params: передаваемые в скрипт параметры
+    @param type: тип скрипта
+    @return: не возвращает состояние
     """
     path = BASE_PATH_TO_USER_SCRIPTS + name + '.py'
     file = open(path, 'w')
