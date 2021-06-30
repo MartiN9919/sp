@@ -50,7 +50,7 @@ export default {
         object: getObjectFromWorkArea(rootState, object.tempId)
       })
     },
-    createNewObjectFromServer({ commit, dispatch }, config = {}) {
+    createNewObjectFromServer({ commit, rootState }, config = {}) {
       let findObject = getActiveObject(rootState)
       let request = { object_id: findObject.object_id, rec_id: findObject.rec_id, params: findObject.params, }
       return postResponseAxios('objects/object', request, config)
