@@ -1,8 +1,6 @@
 from data_base_driver.constants.fulltextsearch import FullTextSearch
 from data_base_driver.full_text_search.http_api.find_object import find_reliable_http, get_object_record_by_id_http
 from data_base_driver.full_text_search.http_api.find_rel import search_rel_with_key_http
-from data_base_driver.full_text_search.sphinxql.find_object import find_reliable, get_object_record_by_id
-from data_base_driver.full_text_search.sphinxql.find_rel import search_rel_with_key
 
 
 def find_with_rel_reliable_key(object_1_type, request_1, object_2_type, request_2, rel_key, list_id):

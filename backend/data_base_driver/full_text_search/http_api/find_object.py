@@ -1,5 +1,4 @@
 import json
-
 import requests
 from data_base_driver.constants.fulltextsearch import FullTextSearch
 from data_base_driver.full_text_search.additional_functions import get_date_from_days_sec
@@ -17,7 +16,7 @@ def find_reliable_http(object_type, request):
     for word in request:
         data = json.dumps({"index": "obj_" + object_type + "_row", "query": {"match": {"val": word}}})
         response = requests.post(FullTextSearch.SEARCH_URL, data=data)
-        fetchall = [int(hit['_id']) for hit in json.loads(response.text)['hits']['hits']]
+        fetchall = [int(hit['_source']['rec_id']) for hit in json.loads(response.text)['hits']['hits']]
         if result == None:
             result = set(fetchall)
         else:
@@ -35,7 +34,7 @@ def find_unreliable_http(object_type, request):
     request = request.replace(' ', '|')
     data = json.dumps({"index": "obj_" + object_type + "_row", "query": {"match": {"val": request}}})
     response = requests.post(FullTextSearch.SEARCH_URL, data=data)
-    return [int(hit['_id']) for hit in json.loads(response.text)['hits']['hits']]
+    return [int(hit['_source']['rec_id']) for hit in json.loads(response.text)['hits']['hits']]
 
 
 def get_object_record_by_id_http(object_id, rec_id):
@@ -46,7 +45,7 @@ def get_object_record_by_id_http(object_id, rec_id):
     @return: словарь в формате {object_id, rec_id, params:[{id,val},...,{}]}
     """
     data = json.dumps(
-        {"index": 'obj_' + FullTextSearch.TABLES[object_id] + '_row', "query": {"equals": {"id": rec_id}}})
+        {"index": 'obj_' + FullTextSearch.TABLES[object_id] + '_row', "query": {"equals": {"rec_id": rec_id}}})
     response = requests.post(FullTextSearch.SEARCH_URL, data=data)
     temp = [(item['_source']['key_id'], item['_source']['val'], item['_source']['date'], item['_source']['sec']) for
             item in json.loads(response.text)['hits']['hits']]

@@ -1,5 +1,4 @@
 import datetime
-
 from data_base_driver.connect.connect_manticore import db_shinxql
 from data_base_driver.connect.connect_mysql import db_sql, db_connect
 from data_base_driver.constants.const_dat import DAT_SYS_ID, DAT_OBJ_ROW

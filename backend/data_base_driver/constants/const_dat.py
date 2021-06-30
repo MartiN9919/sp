@@ -122,7 +122,7 @@ class DAT_SYS_KEY:
     TYPE_INT = 'number'
     TYPE_BIT = 'checkbox'
     TYPE_DATA = 'date'
-    TYPE_DATATIME = 'datatime'
+    TYPE_DATATIME = 'datetime'
     TYPE_GEOMETRY = 'geometry'
 
     TYPE_LIST = (
@@ -265,7 +265,7 @@ class DAT_OBJ_COL:
 
 class DAT_OBJ_ROW:
     table_name = lambda group: 'obj_' + group + '_row'
-    ID = 'id'
+    ID = 'rec_id'
     KEY_ID = 'key_id'
     VAL = 'val'
     DAT = 'dat'
