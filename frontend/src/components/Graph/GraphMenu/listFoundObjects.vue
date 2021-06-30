@@ -32,7 +32,7 @@
           <v-text-field
             v-for="param in findObject.params" :key="param.id"
             readonly hide-details :label="titleClassifier(findObject.object_id, param.id)"
-            v-model="param.val" color="teal"
+            v-model="param.value" color="teal"
           ></v-text-field>
         </v-expansion-panel-content>
       </v-expansion-panel>
@@ -57,7 +57,7 @@ export default {
     },
     checkClassifierForNeeded (valueForCheck, classifierId) {
       for (let value of valueForCheck)
-        if (value.id === classifierId) return value.val
+        if (value.id === classifierId) return value.value
       return '-'
     },
   },

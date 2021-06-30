@@ -58,7 +58,7 @@ export default {
     ...mapGetters(['primaryObject', ])
   },
   methods: {
-    ...mapActions(['removeObjectInWorkAreaAboveObjects', ]),
+    ...mapActions(['removeObjectInWorkArea', ]),
     checkForActive (object) {
       return this.activeTab === object.tempId
     },
@@ -69,7 +69,7 @@ export default {
     },
     selectMenuItem (item) {
       if (item.id === 0) {
-        this.removeObjectInWorkAreaAboveObjects(this.contextMenu.typeMenu)
+        this.removeObjectInWorkArea(this.contextMenu.typeMenu)
       }
       if (item.id === 2 || item.id === 3) {
         let findObject = this.workPlace.find(object => object.tempId === this.contextMenu.typeMenu)

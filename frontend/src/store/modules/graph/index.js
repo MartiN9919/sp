@@ -2,7 +2,7 @@ import classifiers from './classifiers'
 import objects from './objects'
 import relations from './relations'
 import contextMenu from './contextMenu'
-import graph from './graph'
+import workArea from './workArea'
 
 export default {
   modules: {
@@ -10,6 +10,6 @@ export default {
     objects,
     relations,
     contextMenu,
-    graph,
+    workArea,
   },
 }

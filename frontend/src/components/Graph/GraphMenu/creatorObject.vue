@@ -39,7 +39,7 @@ export default {
       this.deactivateContextMenu()
     },
     saveObject () {
-      console.log(this.object.params)
+      this.$store.dispatch('createNewObjectFromServer')
     }
   }
 }

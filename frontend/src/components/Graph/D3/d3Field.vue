@@ -29,7 +29,7 @@ export default {
         .then(() => {
           if (!this.drawer)
             this.$store.dispatch('changeNavigationDrawerStatus')
-          this.$store.dispatch('addObjectInWorkAreaOfObjects', object.id)
+          this.$store.dispatch('addObjectInWorkArea', object.id)
         })
       this.deactivateContextMenu()
     },
