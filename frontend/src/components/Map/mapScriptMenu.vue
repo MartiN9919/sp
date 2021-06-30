@@ -15,7 +15,7 @@
         :treeViewItems="treeView"
         :selectedTreeViewItem="selectedItem"
         @changeSelectedTreeViewItem="setSelectedTreeViewItem"
-        class="tree-view overflow-y-auto"
+        class="tree-view overflow-y-auto my-1"
       ></treeView>
     </v-col>
 
@@ -59,18 +59,21 @@
           <settingsAnalytics
             v-for="variable in selectedItem.variables"
             :variable="variable"
+            v-model="variable.value"
+            :type="variable.type"
+            :title="variable.title"
             :key="variable.id"
           ></settingsAnalytics>
 
           <div class="text-center pt-2">
             <v-btn
               @click="executeScript(selectedItem)"
-              outlined color="teal" class="mx-2 mb-2"
+              outlined color="#00796B" class="mx-2 mb-2"
             >Выполнить</v-btn>
             <v-btn
               :disabled="selectedTemplate.passiveAnalysts.indexOf(selectedItem) !== -1"
               @click="disabledActiveAnalysts()"
-              outlined color="teal" class="mx-2 mb-2"
+              outlined color="#00796B" class="mx-2 mb-2"
             >Отключить</v-btn>
           </div>
         </div>

@@ -6,7 +6,7 @@ module.exports = {
   filenameHashing: false,
   runtimeCompiler: true,
   devServer: {
-        writeToDisk: true,
+    writeToDisk: true,
   },
   transpileDependencies: [
     'vuetify'

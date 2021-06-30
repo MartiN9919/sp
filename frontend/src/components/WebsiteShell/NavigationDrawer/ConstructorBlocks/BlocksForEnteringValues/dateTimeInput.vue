@@ -11,15 +11,15 @@
           <v-text-field
             autocomplete="off"
             append-icon="mdi-calendar"
-            v-model="variable.value.date"
-            :label="'Дата - ' + variable.title"
+            v-model="value.date"
+            :label="'Дата - ' + title"
             placeholder="Выберете дату"
             hide-details readonly class="pt-0 mt-0" color="teal" type="text"
             v-on="on"
           ></v-text-field>
         </template>
         <v-date-picker
-          v-model="variable.value.date"
+          v-model="value.date"
           show-adjacent-months
           first-day-of-week="1"
           color="teal" locale="ru"
@@ -37,15 +37,15 @@
           <v-text-field
             autocomplete="off"
             append-icon="mdi-clock-outline"
-            v-model="variable.value.time"
-            :label="'Время - ' + variable.title"
+            v-model="value.time"
+            :label="'Время - ' + title"
             placeholder="Выберете время"
             hide-details readonly class="pt-0 mt-0" color="teal" type="text"
             v-on="on"
           ></v-text-field>
         </template>
         <v-time-picker
-          v-model="variable.value.time"
+          v-model="value.time"
           scrollable
           color="teal" format="24hr"
         ></v-time-picker>
@@ -58,13 +58,20 @@
 <script>
 export default {
   name: "dateTimeInput",
-  props: { variable: Object, },
+  props: {
+    title: String,
+    inputString: [String, Object, ],
+  },
+  model: { prop: 'inputString', event: 'changeInputString', },
+  computed: {
+    value: {
+      get: function () { return this.inputString ? this.inputString : '' },
+      set: function (value) { this.$emit('changeInputString', value) }
+    }
+  },
   created() {
-    if (!this.variable.value)
-      this.variable.value = {
-        date: '',
-        time: '',
-      }
+    if (!this.value)
+      this.value = { date: '', time: '', }
   },
 }
 </script>

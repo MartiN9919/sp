@@ -10,8 +10,8 @@
         slot="activator"
         autocomplete="off"
         append-icon="mdi-order-bool-descending-variant"
-        v-model="variable.value === null ? '' : variable.value ? 'ДА' : 'НЕТ'"
-        :label="variable.title"
+        v-model="value"
+        :label="title"
         placeholder="Выберете необходимое значение"
         hide-details readonly class="pt-0 mt-0" color="teal" type="text"
         v-on="on"
@@ -21,7 +21,7 @@
       <v-list link>
         <v-list-item
           v-for="item in [{text: 'ДА', value: true}, {text: 'НЕТ', value: false}]"
-          @click="variable.value = item.value"
+          @click="value = item.value"
           :key="item.value"
         >
           <v-list-item-title>
@@ -37,8 +37,16 @@
 export default {
   name: "booleanInput",
   props: {
-    variable: Object,
-  }
+    title: String,
+    inputString: Boolean,
+  },
+  model: { prop: 'inputString', event: 'changeInputString', },
+  computed: {
+    value: {
+      get: function () { return this.inputString === null ? '' : this.inputString ? 'ДА' : 'НЕТ' },
+      set: function (value) { this.$emit('changeInputString', value) }
+    }
+  },
 }
 </script>
 

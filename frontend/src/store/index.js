@@ -2,27 +2,25 @@ import Vue      from 'vue'
 import Vuex     from 'vuex'
 import auth     from './modules/auth'
 import treeview from './modules/treeview'
-import rightClickMenu from './modules/graph/contextMenu'
 import map      from './modules/map/index'
 import alerts   from './modules/alerts'
 import socket   from './modules/socket'
 import report   from './modules/report'
-import graph   from './modules/graph/graph'
 import script   from './modules/script/index'
+import graph from "./modules/graph/index";
 
 Vue.use(Vuex)
 
 const store = new Vuex.Store({
   modules: {
     auth,
-    graph,
     treeview,
-    rightClickMenu,
     script,
     report,
     alerts,
     socket,
     map,
+    graph,
   }
 })
 

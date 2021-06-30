@@ -1,27 +1,31 @@
 <template>
   <v-row no-gutters class="align-center noselect pb-4">
     <geometry-input
-      v-if="variable.type === 'geometry'"
-      :variable="variable">
-    </geometry-input>
+      v-if="type === 'geometry'"
+      :title="title"
+      v-model="value"
+    ></geometry-input>
     <boolean-input
-      v-else-if="variable.type === 'checkbox'"
-      :variable="variable"
+      v-else-if="type === 'checkbox'"
+      :title="title"
+      v-model="value"
     ></boolean-input>
     <date-input
-      v-else-if="variable.type === 'date'"
-      :variable="variable"
+      v-else-if="type === 'date'"
+      :title="title"
+      v-model="value"
     ></date-input>
     <date-time-input
-      v-else-if="variable.type === 'datetime'"
-      :variable="variable"
-    >
-    </date-time-input>
+      v-else-if="type === 'datetime'"
+      :title="title"
+      v-model="value"
+    ></date-time-input>
     <v-text-field
+      autocomplete="off"
       v-else color="teal"
-      :type="variable.type"
-      v-model="variable.value"
-      :label="variable.title"
+      :type="type"
+      v-model="value"
+      :label="title"
       placeholder="Введите значение"
       hide-details class="pt-0 mt-0"
     ></v-text-field>
@@ -30,7 +34,6 @@
 
 <script>
 import '@/assets/css/noselect.css'
-// import './BlocksForEnteringValues/geometryInputDialog'
 import geometryInput from "./BlocksForEnteringValues/geometryInput";
 import booleanInput from "./BlocksForEnteringValues/booleanInput";
 import dateInput from "./BlocksForEnteringValues/dateInput";
@@ -40,8 +43,17 @@ export default {
   name: 'settingsAnalytics',
   components: {geometryInput, booleanInput, dateInput, dateTimeInput, },
   props: {
-    variable: Object
+    type: String,
+    title: String,
+    inputString: [String, Object, Boolean, Array, ],
   },
+  model: { prop: 'inputString', event: 'changeInputString', },
+  computed: {
+    value: {
+      get: function () { return this.inputString },
+      set: function (value) { this.$emit('changeInputString', value) }
+    }
+  }
 }
 </script>
 

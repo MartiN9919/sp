@@ -1,6 +1,6 @@
 <template>
   <v-window v-model="stepWindowStyle">
-    <v-window-item key="menuItemSelection" value="menuItemSelection">
+    <v-window-item key="menuItemSelection" value="menuItemSelection"> <!-- transition="" reverse-transition="" -->
       <v-list rounded>
         <v-list-item
             v-for="(item, index) in bodyRightClickMenu" :key="index" dense
@@ -10,10 +10,10 @@
         </v-list-item>
       </v-list>
     </v-window-item>
-    <v-window-item key="selectObject" value="selectObject">
+    <v-window-item key="selectClassifier" value="selectClassifier"> <!-- transition="" reverse-transition="" -->
       <v-card flat>
         <v-card-subtitle class="text-uppercase py-2 text-center text-break" style="background-color: #009688; color: white">
-          Выберете объект, который хотите создать
+          Выберете Классификатор
         </v-card-subtitle>
         <v-divider></v-divider>
         <v-card-text class="pa-1">
@@ -22,12 +22,12 @@
               <v-icon>mdi-arrow-left</v-icon>
             </v-btn>
             <v-autocomplete
-              :items="$store.getters.listOfPrimaryObjects" item-text="title"
-              v-model="selectedObject" hide-details
-              return-object color="teal" hide-no-data
-              class="pa-0 ma-0 pb-2" item-color="teal"
+                :items="classifiersForObjects(objectId)" item-text="title"
+                v-model="selectedClassifier" hide-details
+                return-object color="teal" hide-no-data
+                class="pa-0 ma-0 pb-2" item-color="teal"
             ></v-autocomplete>
-            <v-btn icon color="teal" :disabled="!selectedObject" @click="$emit('selectObject', selectedObject)">
+            <v-btn icon color="teal" :disabled="!selectedClassifier" @click="selectClassifier">
               <v-icon>mdi-check</v-icon>
             </v-btn>
           </v-card-actions>
@@ -38,23 +38,31 @@
 </template>
 
 <script>
+import {mapGetters} from "vuex";
+
 export default {
-  name: "contextD3WorkSpace",
+  name: "contextCreatorObject",
+  props: { objectId: Number, },
   data: () => ({
     stepWindowStyle: 'menuItemSelection',
-    selectedObject: null,
+    selectedClassifier: null,
     bodyRightClickMenu: [
       {
-        title: 'Добавить объект',
+        title: 'Добавить классификатор',
         icon: 'mdi-database-plus',
-        next: 'selectObject',
-      },
-      {
-        title: 'Удалить объект',
-        icon: 'mdi-database-minus',
+        next: 'selectClassifier',
       },
     ],
   }),
+  computed: {
+    ...mapGetters(['classifiersForObjects', ]),
+  },
+  methods: {
+    selectClassifier() {
+      this.$emit('selectClassifier', this.selectedClassifier)
+      this.selectedClassifier = null
+    },
+  },
 }
 </script>
 

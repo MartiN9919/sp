@@ -1,9 +1,9 @@
 <template>
   <v-app-bar
-    app dense flat
-    color="#004D40"
-    dark
-    v-if="userInformation">
+    v-if="userInformation"
+    app dense flat dark
+    color="#00796B"
+  >
     <v-app-bar-nav-icon
       @click="changeNavigationDrawerStatus($router.currentRoute.name)"
     ></v-app-bar-nav-icon>

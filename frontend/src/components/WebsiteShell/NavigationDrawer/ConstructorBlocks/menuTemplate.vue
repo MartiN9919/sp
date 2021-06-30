@@ -3,25 +3,21 @@
     <template v-slot:activator="{ on, value }">
       <v-row dense no-gutters class="pa-4 pr-2 pb-2 pt-2 select_off">
         <v-text-field
-          autocomplete="off"
-          ref="form"
-          v-model="templateTitle"
-          :label="inputLabel"
-          :rules="[templateTitle.length !== 0, analystsListLength !== 0]"
+          autocomplete="off" ref="form"
+          v-model="templateTitle" :label="inputLabel"
+          :rules="[!!templateTitle.length, !!analystsListLength]"
           :error-messages="errorMessage"
-          dense required
-          single-line
-          color="teal"
-          class="pa-0 mt-0"
+          dense required single-line
+          color="teal" class="pa-0 mt-0"
         >
           <template slot="append-outer">
             <v-btn icon v-on="on">
-              <v-icon :color="value ? 'teal' : ''">mdi-menu-down-outline</v-icon>
+              <v-icon :color="iconColor(value)">mdi-menu-down-outline</v-icon>
             </v-btn>
             <v-menu offset-x z-index="10001" max-height="50%">
               <template v-slot:activator="{ on, value }">
                 <v-btn icon v-on="on">
-                  <v-icon :color="value ? 'teal' : ''">mdi-cog-outline</v-icon>
+                  <v-icon :color="iconColor(value)">mdi-cog-outline</v-icon>
                 </v-btn>
               </template>
               <v-list rounded>
@@ -38,8 +34,8 @@
                   <v-list-item-title>Сохранить шаблон</v-list-item-title>
                 </v-list-item>
                 <v-dialog v-if="'id' in selectedTemplate" v-model="dialogDeleteStatus" persistent max-width="460">
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-list-item  v-bind="attrs" v-on="on">
+                  <template v-slot:activator="{ on }">
+                    <v-list-item v-on="on">
                       <v-list-item-icon>
                         <v-icon>mdi-delete-outline</v-icon>
                       </v-list-item-icon>
@@ -51,13 +47,9 @@
                       Вы согласны с удалением шаблона?
                     </v-card-title>
                     <v-card-actions>
-                      <v-btn color="teal" text @click="dialogDeleteStatus = false">
-                        Отменить
-                      </v-btn>
+                      <v-btn color="#00796B" text @click="dialogDeleteStatus = false">Отменить</v-btn>
                       <v-spacer></v-spacer>
-                      <v-btn color="teal" text @click="deleteTemplate">
-                        Подтвердить
-                      </v-btn>
+                      <v-btn color="#00796B" text @click="deleteTemplate">Подтвердить</v-btn>
                     </v-card-actions>
                   </v-card>
                 </v-dialog>
@@ -67,19 +59,15 @@
         </v-text-field>
       </v-row>
     </template>
-
     <v-list rounded>
       <v-list-item
-        v-for="temp in templates"
+        v-for="temp in templates" :key="temp.id"
         :disabled="temp.id === parseInt(selectedTemplate.id)"
         @click="getTemplate(temp.id)"
-        :key="temp.id"
-        link
       >
         <v-list-item-title>{{temp.title}}</v-list-item-title>
       </v-list-item>
     </v-list>
-
   </v-menu>
 </template>
 
@@ -106,6 +94,9 @@ export default {
     }
   },
   methods: {
+    iconColor (status) {
+      return status ? '#00796B' : ''
+    },
     getTemplate (id) {
       this.errorMessage = ''
       this.$emit('getTemplate', id)

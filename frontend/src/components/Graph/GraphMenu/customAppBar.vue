@@ -1,25 +1,27 @@
 <template>
   <v-row no-gutters class="flex-nowrap justify-space-between custom-app-bar">
     <v-card @click="scrollTabs('left')" class="right-board-card"
-            width="fit-content" color="#00897B" dark flat rounded="0">
+            width="fit-content" color="#00796B" dark flat rounded="0">
       <v-card-actions><v-icon>mdi-arrow-left</v-icon></v-card-actions>
     </v-card>
     <v-row no-gutters class="overflow-x-auto flex-nowrap tabs-row" id="row-tabs">
       <v-card
         v-for="object in workPlace" :key="object.tempId"
-        @click="activeTab === object.tempId ? activateTab(null) : activateTab(object.tempId)"
+        @click="checkForActive(object) ? activateTab(null) : activateTab(object.tempId)"
         @contextmenu.stop="contextMenu = { event: $event, typeMenu: object.tempId }"
         dark flat rounded="0" min-width="fit-content" width="100%"
-        :color="activeTab === object.tempId ? '#004D40' : '#00897B'"
+        :class="checkForActive(object) ? 'active-custom-tab' : 'custom-tab'"
       >
         <v-card-actions class="px-4 py-2 single-tab text-uppercase justify-center">
-          <v-icon left size="20">{{ objectTemplates(object.objectId).icon }}</v-icon>
-          {{ objectTemplates(object.objectId).title_single }}
+          <v-icon left size="20" :color="checkForActive(object) ? '#00796B' : 'white'">
+            {{ primaryObject(object.object_id).icon }}
+          </v-icon>
+          {{ primaryObject(object.object_id).title_single }}
         </v-card-actions>
       </v-card>
     </v-row>
     <v-card @click="scrollTabs('right')" class="left-board-card"
-            width="fit-content" color="#00897B" dark flat rounded="0">
+            width="fit-content" color="#00796B" dark flat rounded="0">
       <v-card-actions><v-icon>mdi-arrow-right</v-icon></v-card-actions>
     </v-card>
     <context-menu v-if="contextMenu.typeMenu === typeContextMenu">
@@ -47,19 +49,34 @@ export default {
   model: { prop: 'activeTab', event: 'activateTab', },
   data: () => ({
     contextMenu: { event: null, typeMenu: null, },
+    windows: {
+      2: 'createObject',
+      3: 'searchTree',
+    }
   }),
   computed: {
-    ...mapGetters(['objectTemplates', ])
+    ...mapGetters(['primaryObject', ])
   },
   methods: {
-    ...mapActions(['removeObjectInWorkAreaAboveObjects', ]),
+    ...mapActions(['removeObjectInWorkArea', ]),
+    checkForActive (object) {
+      return this.activeTab === object.tempId
+    },
     activateTab (position) { this.$emit('activateTab', position) },
     scrollTabs(direction) {
       if (direction === 'left') document.getElementById('row-tabs').scrollLeft -= 80
       else document.getElementById('row-tabs').scrollLeft += 80
     },
     selectMenuItem (item) {
-      if (item.id === 0) this.removeObjectInWorkAreaAboveObjects(this.contextMenu.typeMenu)
+      if (item.id === 0) {
+        this.removeObjectInWorkArea(this.contextMenu.typeMenu)
+      }
+      if (item.id === 2 || item.id === 3) {
+        let findObject = this.workPlace.find(object => object.tempId === this.contextMenu.typeMenu)
+        findObject.activeWindow = this.windows[item.id]
+        this.activateTab(findObject.tempId)
+        this.$emit('selectMenuItem', {window: this.windows[item.id], object: findObject})
+      }
       this.deactivateContextMenu()
     }
   },
@@ -86,12 +103,22 @@ export default {
 }
 
 .tabs-row {
-  background-color: #00897B;
+  background-color: #00796B;
+}
+
+.active-custom-tab {
+  background-color: white;
+  color: #00796B;
+}
+
+.custom-tab {
+  background-color: #00796B;
+  color: white;
 }
 
 .custom-app-bar {
   border-top-style: solid;
   border-top-color:#FFFFFF;
-  border-top-width: 1px
+  border-top-width: 1px;
 }
 </style>
