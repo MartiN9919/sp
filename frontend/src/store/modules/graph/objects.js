@@ -1,17 +1,5 @@
 import { getResponseAxios, postResponseAxios } from '@/plugins/axios_settings'
-
-function getWorkArea(rootState) {
-  return rootState.graph.workArea.workAreaOfObjects
-}
-
-function getObjectFromWorkArea(rootState, objectId) {
-  return getWorkArea(rootState).find(object => object.tempId === objectId)
-}
-
-function getActiveObject(rootState) {
-  let workAreaOfObjects = getWorkArea(rootState)
-  return workAreaOfObjects.find(object => object.tempId === rootState.graph.workArea.activeObjectId)
-}
+import { getActiveObject, getObjectFromWorkArea } from './index'
 
 export default {
   state: {

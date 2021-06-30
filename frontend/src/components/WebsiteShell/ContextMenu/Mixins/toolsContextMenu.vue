@@ -21,6 +21,7 @@ export default {
   },
   watch: {
     contextMenu(value) {
+      this.deactivateContextMenu()
       this.setTypeContextMenu(value.typeMenu)
       this.setCoordinatesContextMenu(value.event)
       this.$nextTick(() => {

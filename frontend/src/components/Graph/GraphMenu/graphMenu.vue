@@ -1,5 +1,5 @@
 <template>
-  <div style="max-height: 100%">
+  <div style="height: 100%">
     <custom-app-bar
       v-model="active"
       :work-place="workAreaOfObjects"
@@ -8,7 +8,6 @@
     <div
       v-for="object in workAreaOfObjects" :key="object.tempId"
       v-show="object.tempId === active"
-      class="column-settings"
     >
       <search-tree-view
         v-if="windowActiveObject === 'searchTree'"
@@ -59,7 +58,6 @@ export default {
 
 <style scoped>
 .column-settings {
-  height: 100%;
-  max-height: 100%;
+
 }
 </style>
