@@ -37,34 +37,51 @@ def recursion_search(request):
     @param request: древовидный запрос
     @return: список словарей формате [{object_id, rec_ids},...,{}]
     """
-    result = []
+    result = {'object_id': request.get(FullTextSearch.OBJECT_ID, None),
+              'rec_ids': None,
+              'old_result': [],
+              'pre_old_result': []}
     for rel in request.get(FullTextSearch.RELATIONS, None):
         if len(rel.get(FullTextSearch.RELATIONS, None)) == 0:
-            result.append({FullTextSearch.OBJECT_ID: request.get(FullTextSearch.OBJECT_ID, None),
-                           'rec_ids': find_with_rel_reliable_key(request.get(FullTextSearch.OBJECT_ID, None),
-                                                                 request.get(FullTextSearch.REQUEST, None),
-                                                                 rel.get(FullTextSearch.OBJECT_ID, None),
-                                                                 rel.get(FullTextSearch.REQUEST, None),
-                                                                 rel.get(FullTextSearch.RELATION_ID, None),
-                                                                 rel.get(FullTextSearch.LIST_ID, 0))})
+            temp_set = set(find_with_rel_reliable_key(request.get(FullTextSearch.OBJECT_ID, None),
+                                                      request.get(FullTextSearch.REQUEST, None),
+                                                      rel.get(FullTextSearch.OBJECT_ID, None),
+                                                      rel.get(FullTextSearch.REQUEST, None),
+                                                      rel.get(FullTextSearch.RELATION_ID, None),
+                                                      rel.get(FullTextSearch.LIST_ID, 0)))
+            if not result.get('rec_ids'):
+                result['rec_ids'] = temp_set
+            else:
+                result['rec_ids'].intersection_update(temp_set)
+            result['old_result'].append({'object_id': rel.get(FullTextSearch.OBJECT_ID, None),
+                                            'rec_ids': find_reliable_http(
+                                                FullTextSearch.TABLES[rel.get(FullTextSearch.OBJECT_ID, None)],
+                                                rel.get(FullTextSearch.REQUEST, None))})
         else:
             if len(request.get(FullTextSearch.REQUEST, None)) == 0:
                 main_object_ids = [0]
             else:
                 main_object_ids = find_reliable_http(FullTextSearch.TABLES[request.get(FullTextSearch.OBJECT_ID, None)],
-                                                request.get(FullTextSearch.REQUEST, None))
+                                                     request.get(FullTextSearch.REQUEST, None))
             temp = recursion_search(rel)
-            temp_result = []
-            for item in temp:
-                for rec_id in item.get('rec_ids'):
-                    for rec_id_main in main_object_ids:
-                        temp_result.extend(search_rel_with_key_http(rel.get(FullTextSearch.RELATION_ID),
-                                                               request.get(FullTextSearch.OBJECT_ID, None), rec_id_main,
-                                                               item.get(FullTextSearch.OBJECT_ID), rec_id,
-                                                               rel.get(FullTextSearch.LIST_ID, 0)))
-
-            result.append(
-                {FullTextSearch.OBJECT_ID: request.get(FullTextSearch.OBJECT_ID, None), 'rec_ids': temp_result})
+            result['old_result'].append({'object_id': temp['object_id'],
+                                            'rec_ids': temp['rec_ids']})
+            result['pre_old_result'] = temp['old_result']
+            temp_result = set()
+            for rec_id in temp.get('rec_ids'):
+                for rec_id_main in main_object_ids:
+                    temp_set = set(search_rel_with_key_http(rel.get(FullTextSearch.RELATION_ID),
+                                                            request.get(FullTextSearch.OBJECT_ID, None), rec_id_main,
+                                                            temp.get(FullTextSearch.OBJECT_ID), rec_id,
+                                                            rel.get(FullTextSearch.LIST_ID, 0)))
+                    if len(temp_result) == 0:
+                        temp_result = temp_set
+                    else:
+                        temp_result = temp_result.union(temp_set)
+            result['rec_ids'] = temp_result
+    for temp in result['pre_old_result']:
+        if temp['object_id'] == result['object_id']:
+            result['rec_ids'] = result['rec_ids'].difference(temp['rec_ids'])
     return result
 
 
@@ -74,22 +91,10 @@ def search(request):
     @param request: древовидный запрос
     @return: список найденных объектов в формате [{object_id, rec_id, params:[{id,val},...,{}]},...,{}]
     """
-    result = []
     if len(request.get(FullTextSearch.RELATIONS, None)) != 0:
-        temp = recursion_search(request)
-        for item in temp:
-            result.append(item.get('rec_ids'))
-        temp_set = None
-        for item in result:
-            if len(item) == 0:
-                temp_set = set()
-                break
-            if not temp_set:
-                temp_set = set(item)
-            else:
-                temp_set.intersection_update(set(item))
-        return [get_object_record_by_id_http(request.get(FullTextSearch.OBJECT_ID, None), item) for item in temp_set]
+        return [get_object_record_by_id_http(request.get(FullTextSearch.OBJECT_ID, None), item) for item in
+                recursion_search(request)['rec_ids']]
     else:
         return [get_object_record_by_id_http(request.get(FullTextSearch.OBJECT_ID, None), item) for item in
                 find_reliable_http(FullTextSearch.TABLES[request.get(FullTextSearch.OBJECT_ID, None)],
-                              request.get(FullTextSearch.REQUEST, None))]
+                                   request.get(FullTextSearch.REQUEST, None))]
