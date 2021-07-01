@@ -1,3 +1,4 @@
+import itertools
 import json
 import requests
 from data_base_driver.constants.fulltextsearch import FullTextSearch
@@ -51,6 +52,22 @@ def get_object_record_by_id_http(object_id, rec_id):
     response = requests.post(FullTextSearch.SEARCH_URL, data=data)
     temp = [(item['_source']['key_id'], item['_source']['val'], item['_source']['date'], item['_source']['sec']) for
             item in json.loads(response.text)['hits']['hits']]
-    params = [{'id': int(item[0]), 'value': item[1], 'date': get_date_from_days_sec(int(item[2]), int(item[3]))}
-              for item in temp]
+    params = []
+    for item in temp:
+        keys = [key for key in params if key['id'] == item[0]]
+        if len(keys) > 0:
+            for key in keys:
+                if key['date'] > get_date_from_days_sec(int(item[2]), int(item[3])):
+                    key['old'].append({'value': item[1], 'date': get_date_from_days_sec(int(item[2]), int(item[3]))})
+                else:
+                    key['old'].append({'value': key['value'], 'date': key['date']})
+                    key['value'] = item[1]
+                    key['date'] = get_date_from_days_sec(int(item[2]), int(item[3]))
+            continue
+        params.append({'id': item[0], 'value': item[1], 'date': get_date_from_days_sec(int(item[2]), int(item[3])), 'old':[]})
+
+    for item in params:
+        item['old'].sort(key=lambda x: x['date'])
+
     return {'object_id': object_id, 'rec_id': rec_id, 'params': params}
+
