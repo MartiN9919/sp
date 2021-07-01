@@ -1,15 +1,16 @@
 <template>
   <v-dialog v-model="dialog" persistent>
     <template v-slot:activator="{ on, attrs }">
-      <v-text-field
-          autocomplete="off"
-          append-icon="mdi-map-marker-outline"
-          :label="title"
-          v-model="value"
-          placeholder="Выберете объект на карте"
-          hide-details color="teal" readonly class="pt-0 mt-0" type="text"
-          v-on="on"
-      ></v-text-field>
+      <v-textarea
+        row-height="1" auto-grow
+        autocomplete="off"
+        append-icon="mdi-map-marker-outline"
+        :label="title"
+        v-model="value"
+        placeholder="Выберете объект на карте"
+        hide-details color="teal" readonly class="pt-0 mt-0" type="text"
+        v-on="on"
+      ></v-textarea>
     </template>
     <v-card>
 

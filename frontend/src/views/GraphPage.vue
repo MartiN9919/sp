@@ -4,7 +4,7 @@
     split-to="columns" :allow-resize="true" units="percents"
     :min-size="15" :max-size="85" :size="drawer ? sizeNavigation : 0"
     :resizerBorderThickness="1" :resizerThickness="1" resizer-border-thickness="">
-    <graph-menu slot="firstPane"></graph-menu>
+    <graph-menu slot="firstPane" class="select_off"></graph-menu>
     <d3-field slot="secondPane" :drawer="drawer"></d3-field>
   </ResSplitPane>
 </template>

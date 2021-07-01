@@ -89,7 +89,7 @@ export default {
 }
 
 ::-webkit-scrollbar {
-  height: 0;
+  height: 0px;
 }
 
 .right-board-card {

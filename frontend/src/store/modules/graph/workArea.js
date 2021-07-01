@@ -15,13 +15,8 @@ export default {
     addObjectInWorkArea: (state, object) => { state.workAreaOfObjects.push(object) },
     setActiveObjectId: (state, id) => { state.activeObjectId = id },
     removeObjectInWorkArea: (state, id) => {
-      let objectIndex = state.workAreaOfObjects.findIndex(object => object.tempId === id)
-      state.workAreaOfObjects.splice(objectIndex, 1)
+      state.workAreaOfObjects.splice(state.workAreaOfObjects.findIndex(object => object.tempId === id), 1)
     },
-    addClassifierToObject: (state, props) => {
-      let findObject = state.workAreaOfObjects.find(object => object.tempId === props.tempId)
-      findObject.params.push(props.classifier)
-    }
   },
   actions: {
     addObjectInWorkArea ({ commit, state }, id) {
@@ -45,10 +40,6 @@ export default {
     },
     setActiveObjectId ({commit}, id) {
       commit('setActiveObjectId', id)
-    },
-
-    addClassifierToObject({ commit }, props) {
-      commit('addClassifierToObject', props)
     },
   }
 }

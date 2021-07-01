@@ -62,6 +62,7 @@
             v-model="variable.value"
             :type="variable.type"
             :title="variable.title"
+            :hint="variable.hint"
             :key="variable.id"
           ></settingsAnalytics>
 

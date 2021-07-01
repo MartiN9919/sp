@@ -1,23 +1,30 @@
 import { getResponseAxios } from '@/plugins/axios_settings'
+import { getObjectFromWorkArea } from "./index";
 
 export default {
   state: {
     listOfClassifiersOfObjects: {},
   },
   getters: {
-    listOfClassifiersOfObjects: state => id => {
-      return state.listOfClassifiersOfObjects[id]
-    },
-    classifiersForObjects: state => objectId => {
-      return state.listOfClassifiersOfObjects[objectId]
-    },
+    listOfClassifiersOfObjects: state => id => { return state.listOfClassifiersOfObjects[id] },
+    classifiersForObjects: state => objectId => { return state.listOfClassifiersOfObjects[objectId] },
+    classifier: state => objectIds => {
+      let classifiers = state.listOfClassifiersOfObjects[objectIds.objectId]
+      return classifiers.find(classifier => classifier.id === objectIds.classifierId)}
   },
   mutations: {
+    addClassifierToObject: (state, { object, classifier }) => { object.params.push(classifier) },
     addListOfClassifiersOfObjects: (state, { objectId, classifiers }) => {
       state.listOfClassifiersOfObjects[objectId] = classifiers
-    },
+    }
   },
   actions: {
+    addClassifierToObject({ commit, rootState }, props) {
+      commit('addClassifierToObject', {
+        object: getObjectFromWorkArea(rootState, props.tempId),
+        classifier: props.classifier
+      })
+    },
     getListOfClassifiersOfObjects ({ commit, state }, config = {}) {
       let objectId = config.params.object_id
       if (!(objectId in state.listOfClassifiersOfObjects))

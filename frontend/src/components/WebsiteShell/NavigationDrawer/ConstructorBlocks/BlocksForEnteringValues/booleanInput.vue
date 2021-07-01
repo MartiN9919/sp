@@ -6,7 +6,8 @@
     transition="slide-x-reverse-transition"
     >
     <template v-slot:activator="{ on }">
-      <v-text-field
+      <v-textarea
+        row-height="1" auto-grow
         slot="activator"
         autocomplete="off"
         append-icon="mdi-order-bool-descending-variant"
@@ -15,7 +16,7 @@
         placeholder="Выберете необходимое значение"
         hide-details readonly class="pt-0 mt-0" color="teal" type="text"
         v-on="on"
-      ></v-text-field>
+      ></v-textarea>
     </template>
     <v-card>
       <v-list link>
