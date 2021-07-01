@@ -91,10 +91,10 @@ def search_rel_with_key_http(rel_key, object_1_type, object_1_id, object_2_type,
     if object_1_id != 0 and object_2_id != 0:
         data_1 = json.dumps({"index": 'rel', "query": {
             "query_string": get_sphinxql_two_object_1(object_1_type, object_1_id, object_2_type, object_2_id, rel_key,
-                                                      list_id)}})
+                                                      list_id)}, "limit": 100})
         data_2 = json.dumps({"index": 'rel', "query": {
             "query_string": get_sphinxql_two_object_2(object_1_type, object_1_id, object_2_type,
-                                                      object_2_id, rel_key, list_id)}})
+                                                      object_2_id, rel_key, list_id)}, "limit": 100})
         response_1 = requests.post(FullTextSearch.SEARCH_URL, data=data_1)
         response_2 = requests.post(FullTextSearch.SEARCH_URL, data=data_2)
         result = set([item['_source']['rec_id_1'] for item in json.loads(response_1.text)['hits']['hits']])
@@ -103,10 +103,10 @@ def search_rel_with_key_http(rel_key, object_1_type, object_1_id, object_2_type,
     elif object_1_id == 0 and object_2_id != 0:
         data_1 = json.dumps({"index": 'rel', "query": {
             "query_string": get_sphinxql_without_first_object_1(object_1_type, object_2_type, object_2_id, rel_key,
-                                                                list_id)}})
+                                                                list_id)}, "limit": 100})
         data_2 = json.dumps({"index": 'rel', "query": {
             "query_string": get_sphinxql_without_first_object_2(object_1_type, object_2_type, object_2_id, rel_key,
-                                                                list_id)}})
+                                                                list_id)}, "limit": 100})
         response_1 = requests.post(FullTextSearch.SEARCH_URL, data=data_1)
         response_2 = requests.post(FullTextSearch.SEARCH_URL, data=data_2)
         result = set([item['_source']['rec_id_1'] for item in json.loads(response_1.text)['hits']['hits']])
@@ -115,10 +115,10 @@ def search_rel_with_key_http(rel_key, object_1_type, object_1_id, object_2_type,
     elif object_1_id != 0 and object_2_id == 0:
         data_1 = json.dumps({"index": 'rel', "query": {
             "query_string": get_sphinxql_without_second_object_1(object_1_type, object_1_id, object_2_type, rel_key,
-                                                                 list_id)}})
+                                                                 list_id)}, "limit": 100})
         data_2 = json.dumps({"index": 'rel', "query": {
             "query_string": get_sphinxql_without_second_object_2(object_1_type, object_1_id, object_2_type, rel_key,
-                                                                 list_id)}})
+                                                                 list_id)}, "limit": 100})
         response_1 = requests.post(FullTextSearch.SEARCH_URL, data=data_1)
         response_2 = requests.post(FullTextSearch.SEARCH_URL, data=data_2)
         result = set([item['_source']['rec_id_1'] for item in json.loads(response_1.text)['hits']['hits']])
@@ -126,9 +126,11 @@ def search_rel_with_key_http(rel_key, object_1_type, object_1_id, object_2_type,
             set([item['_source']['rec_id_2'] for item in json.loads(response_2.text)['hits']['hits']]))
     else:
         data_1 = json.dumps({"index": 'rel', "query": {
-            "query_string": get_sphinxql_without_objects_1(object_1_type, object_2_type, rel_key, list_id)}})
+            "query_string": get_sphinxql_without_objects_1(object_1_type, object_2_type, rel_key, list_id)},
+                             "limit": 100})
         data_2 = json.dumps({"index": 'rel', "query": {
-            "query_string": get_sphinxql_without_objects_2(object_1_type, object_2_type, rel_key, list_id)}})
+            "query_string": get_sphinxql_without_objects_2(object_1_type, object_2_type, rel_key, list_id)},
+                             "limit": 100})
         response_1 = requests.post(FullTextSearch.SEARCH_URL, data=data_1)
         response_2 = requests.post(FullTextSearch.SEARCH_URL, data=data_2)
         result = set([item['_source']['rec_id_1'] for item in json.loads(response_1.text)['hits']['hits']])
@@ -148,13 +150,13 @@ def get_relations_with_object_http(object_type, object_id):
         "index": 'rel',
         "query": {
             "query_string": '@obj_id_1 ' + str(object_type) + ' @rec_id_1 ' + str(object_id)
-        }
+        }, "limit": 500
     })
     data_2 = json.dumps({
         "index": 'rel',
         "query": {
             "query_string": '@obj_id_2 ' + str(object_type) + ' @rec_id_2 ' + str(object_id)
-        }
+        }, "limit": 500
     })
     response_1 = requests.post(FullTextSearch.SEARCH_URL, data=data_1)
     response_2 = requests.post(FullTextSearch.SEARCH_URL, data=data_2)

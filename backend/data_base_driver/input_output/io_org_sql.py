@@ -74,7 +74,7 @@ class IO_ORG_SQL():
                 # row_equ: {'key_id': '40403', 'val': '255', 'dat': 'null'}
                 for ind, item in enumerate(data_pars.row_equ(is_null=True)):
                     rec = self.io_sql.select(table=data_pars.row_table, select=['1'],
-                                             where=['id=' + data_pars.rec_id, ] + item, only_first=True)
+                                             where=['rec_id=' + data_pars.rec_id, ] + item, only_first=True)
                     if len(rec) > 0:
                         if DEBUG: print('Skip set row-obj: RECORD EXIST')
                         continue
