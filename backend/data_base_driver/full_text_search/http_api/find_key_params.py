@@ -13,7 +13,8 @@ def find_key_value_http(object_id, key_id, value):
     """
     data = json.dumps(
         {"index": 'obj_' + FullTextSearch.TABLES[object_id] + '_row',
-         "query": {"query_string": '@key_id ' + str(key_id) + '@val ' + str(value)}})
+         "query": {"query_string": '@key_id ' + str(key_id) + '@val ' + str(value)},
+         "limit": 100})
     response = requests.post(FullTextSearch.SEARCH_URL, data=data)
     return [int(item['_source']['rec_id']) for item in json.loads(response.text)['hits']['hits']]
 

@@ -43,7 +43,7 @@ class IO_LIB_SQL():
     # + запись ОДНОГО row-ключа ОДНОЙ sql-операцией => ОДНА запись
     obj_insert_row_one = lambda self, data_pars, ind: self.insert_one_rec( #возможны проблемы из-за замены стандартной функции
         table=data_pars.row_table,
-        equ=['id=' + data_pars.rec_id, ] + data_pars.equ_item(item_dic=data_pars.row_dic[ind], is_null=False)
+        equ=['rec_id=' + data_pars.rec_id, ] + data_pars.equ_item(item_dic=data_pars.row_dic[ind], is_null=False)
     )
 
     # + запись ВСЕХ row-ключей ОДНОЙ sql-операцией => НЕСКОЛЬКО записей

@@ -14,7 +14,7 @@ def find_reliable_http(object_type, request):
     request = request.split(' ')
     result = None
     for word in request:
-        data = json.dumps({"index": "obj_" + object_type + "_row", "query": {"match": {"val": word}}})
+        data = json.dumps({"index": "obj_" + object_type + "_row", "query": {"match": {"val": word}}, "limit": 500})
         response = requests.post(FullTextSearch.SEARCH_URL, data=data)
         fetchall = [int(hit['_source']['rec_id']) for hit in json.loads(response.text)['hits']['hits']]
         if result == None:
@@ -32,7 +32,7 @@ def find_unreliable_http(object_type, request):
     @return: список id объектов с искомыми параметрами, если подобных нет, то пустой список
     """
     request = request.replace(' ', '|')
-    data = json.dumps({"index": "obj_" + object_type + "_row", "query": {"match": {"val": request}}})
+    data = json.dumps({"index": "obj_" + object_type + "_row", "query": {"match": {"val": request}}, "limit": 500})
     response = requests.post(FullTextSearch.SEARCH_URL, data=data)
     return [int(hit['_source']['rec_id']) for hit in json.loads(response.text)['hits']['hits']]
 
@@ -45,11 +45,12 @@ def get_object_record_by_id_http(object_id, rec_id):
     @return: словарь в формате {object_id, rec_id, params:[{id,val},...,{}]}
     """
     data = json.dumps(
-        {"index": 'obj_' + FullTextSearch.TABLES[object_id] + '_row', "query": {"equals": {"rec_id": rec_id}}})
+        {"index": 'obj_' + FullTextSearch.TABLES[object_id] + '_row',
+         "query": {"equals": {"rec_id": rec_id}},
+         "limit": 500})
     response = requests.post(FullTextSearch.SEARCH_URL, data=data)
     temp = [(item['_source']['key_id'], item['_source']['val'], item['_source']['date'], item['_source']['sec']) for
             item in json.loads(response.text)['hits']['hits']]
-    params = [{'id': int(item[0]), 'value': item[1], 'date': get_date_from_days_sec(int(item[2]), int(item[3]))} for item
-              in temp]
+    params = [{'id': int(item[0]), 'value': item[1], 'date': get_date_from_days_sec(int(item[2]), int(item[3]))}
+              for item in temp]
     return {'object_id': object_id, 'rec_id': rec_id, 'params': params}
-

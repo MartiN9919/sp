@@ -56,8 +56,7 @@ def get_relations_list(object1, object2):
     for item in get_keys_by_rel(object1, object2):
         list_item = None
         if item.get('list_id'):
-            list_item = get_list_by_top_id(int(item.get('list_id')))
-            list_item = {item.get('list_id'): list_item}
+            list_item = [item['value'] for item in get_list_by_top_id(int(item.get('list_id')))]
         result.append({'id': item['id'], 'title': item['title'], 'hint': item['hint'], 'list': list_item})
     return result
 
@@ -77,9 +76,7 @@ def get_keys_by_object(object):
         temp.pop('rel_obj_1_id')
         temp.pop('rel_obj_2_id')
         if temp.get('list_id'):
-            list_item = get_list_by_top_id(int(temp.get('list_id')))
-            list_item = {temp.get('list_id'): list_item}
-            temp['list_id'] = list_item
+            temp['list_id'] = [item['value'] for item in get_list_by_top_id(int(temp.get('list_id')))]
         result.append(temp)
     return result
 
