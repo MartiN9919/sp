@@ -64,7 +64,7 @@ def get_object_record_by_id_http(object_id, rec_id):
                     key['value'] = item[1]
                     key['date'] = get_date_from_days_sec(int(item[2]), int(item[3]))
             continue
-        params.append({'id': item[0], 'value': item[1], 'date': get_date_from_days_sec(int(item[2]), int(item[3])), 'old':[]})
+        params.append({'id': int(item[0]), 'value': item[1], 'date': get_date_from_days_sec(int(item[2]), int(item[3])), 'old':[]})
 
     for item in params:
         item['old'].sort(key=lambda x: x['date'])
