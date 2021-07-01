@@ -285,6 +285,7 @@ class DAT_REL:
     REC_ID_1 = 'rec_id_1'
     OBJ_ID_2 = 'obj_id_2'
     REC_ID_2 = 'rec_id_2'
+    VAL = 'val'
     LIST = (KEY_ID, DAT, OBJ_ID_1, REC_ID_1, OBJ_ID_2, REC_ID_2,)
 
 

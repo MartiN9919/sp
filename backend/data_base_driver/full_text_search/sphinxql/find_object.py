@@ -1,6 +1,6 @@
 from data_base_driver.connect.connect_manticore import db_shinxql
 from data_base_driver.constants.fulltextsearch import FullTextSearch
-from data_base_driver.full_text_search.additional_functions import get_date_from_days_sec
+from data_base_driver.full_text_search.additional_functions import get_date_from_days_sec, intercept_sort_list
 
 
 def find_reliable(object_type, request):
@@ -11,14 +11,14 @@ def find_reliable(object_type, request):
     @return: список id объектов с искомыми параметрами, если не найдено, то пустой список
     """
     request = request.split(' ')
-    result = None
+    result = []
     for word in request:
         fetchall = db_shinxql('SELECT id FROM obj_' + object_type + '_row WHERE MATCH(\'' + word + '\')')
         if result == None:
-            result = set(fetchall)
+            result.append(list(dict.fromkeys(fetchall)))
         else:
-            result.intersection_update(set(fetchall))
-    return [item[0] for item in list(result)]
+            result.append(list(dict.fromkeys(fetchall)))
+    return intercept_sort_list(result)
 
 
 def find_unreliable(object_type, request):
