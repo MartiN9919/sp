@@ -1,5 +1,5 @@
 <template>
-  <div style="height: 100%">
+  <div style="height: 100%" class="overflow-y-auto">
     <custom-app-bar
       v-model="active"
       :work-place="workAreaOfObjects"

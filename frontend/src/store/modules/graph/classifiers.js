@@ -8,6 +8,9 @@ export default {
   getters: {
     listOfClassifiersOfObjects: state => id => { return state.listOfClassifiersOfObjects[id] },
     classifiersForObjects: state => objectId => { return state.listOfClassifiersOfObjects[objectId] },
+    classifier: state => objectIds => {
+      let classifiers = state.listOfClassifiersOfObjects[objectIds.objectId]
+      return classifiers.find(classifier => classifier.id === objectIds.classifierId)}
   },
   mutations: {
     addClassifierToObject: (state, { object, classifier }) => { object.params.push(classifier) },

@@ -6,7 +6,8 @@
     transition="slide-x-reverse-transition"
     min-width="auto" fixed>
     <template v-slot:activator="{ on }">
-      <v-text-field
+      <v-textarea
+        row-height="1" auto-grow
         autocomplete="off"
         append-icon="mdi-calendar"
         v-model="value"
@@ -14,7 +15,7 @@
         placeholder="Выберете необходимую дату"
         hide-details readonly class="pt-0 mt-0" color="teal" type="text"
         v-on="on"
-      ></v-text-field>
+      ></v-textarea>
     </template>
     <v-card>
       <v-date-picker
