@@ -18,6 +18,10 @@ class FullTextSearch:
     RELATIONS = 'rels'
     RELATION_ID = 'rel_id'
     LIST_ID = 'list_id'
+    ACTUAL = 'actual'
+    REL_VALUE = 'value'
+    REL = 'rel'
+
 
     SEARCH_URL = 'http://200.200.200.235:9312/search'
     INSERT_URL = 'http://200.200.200.235:9312/insert'

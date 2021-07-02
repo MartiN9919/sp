@@ -77,6 +77,32 @@ def get_sphinxql_without_objects_2(object_1_type, object_2_type, key_id=0, list_
     return tmp
 
 
+def get_rel_request(query_string, date_time_1, date_time_2):
+
+    data = {
+        "index": 'rel',
+        "query":
+            {
+                "query_string": query_string,
+                "range":
+                    {
+                        "date":
+                            {
+                                "gte": 0,
+                                "lte": 0
+                            },
+                        "sec":
+                            {
+                                "gte": 0,
+                                "lte": 0
+                            }
+                    }
+            },
+        "limit": 100
+    }
+    return json.dumps(data)
+
+
 def search_rel_with_key_http(rel_key, object_1_type, object_1_id, object_2_type, object_2_id, list_id):
     """
     Функция для поиска связей между двумя конкретными объектами
