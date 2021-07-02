@@ -3,7 +3,8 @@ from data_base_driver.full_text_search.http_api.find_object import find_reliable
 from data_base_driver.full_text_search.http_api.find_rel import search_rel_with_key_http
 
 
-def find_with_rel_reliable_key(object_1_type, request_1, object_2_type, request_2, rel_key, list_id):
+def find_with_rel_reliable_key(object_1_type, request_1, object_2_type, request_2, rel_key, list_id, actual_1=False,
+                               actual_2=False):
     """
     Функция для поиска записей с учетом связей, проводит надежную сверку по двум запросам, учитывает тип связи
     @param object_1_type: тип главного объекта для связи
@@ -12,17 +13,19 @@ def find_with_rel_reliable_key(object_1_type, request_1, object_2_type, request_
     @param request_2: запрос по второстепенному объекту
     @param rel_key: тип связи
     @param list_id: идентификатор значения списка если есть
+    @param actual_1: флаг актуальности поиска для первого объекта
+    @param actual_2: флаг актуальности поиска для второго объекта
     @return: список с идентификаторами подходящих записей
     """
     result = []
     if len(request_1) == 0:
         result1 = [0]
     else:
-        result1 = find_reliable_http(FullTextSearch.TABLES[object_1_type], request_1)
+        result1 = find_reliable_http(FullTextSearch.TABLES[object_1_type], request_1, actual_1)
     if len(request_2) == 0:
         result2 = [0]
     else:
-        result2 = find_reliable_http(FullTextSearch.TABLES[object_2_type], request_2)
+        result2 = find_reliable_http(FullTextSearch.TABLES[object_2_type], request_2, actual_2)
     for item in result1:
         for item_next in result2:
             res = search_rel_with_key_http(rel_key, object_1_type, item, object_2_type, item_next, list_id)
@@ -47,33 +50,39 @@ def recursion_search(request):
                                                       request.get(FullTextSearch.REQUEST, None),
                                                       rel.get(FullTextSearch.OBJECT_ID, None),
                                                       rel.get(FullTextSearch.REQUEST, None),
-                                                      rel.get(FullTextSearch.RELATION_ID, None),
-                                                      rel.get(FullTextSearch.LIST_ID, 0)))
+                                                      rel.get(FullTextSearch.REL, {}).get(FullTextSearch.RELATION_ID),
+                                                      rel.get(FullTextSearch.REL, {}).get(FullTextSearch.REL_VALUE,''),
+                                                      request.get(FullTextSearch.ACTUAL, False),
+                                                      rel.get(FullTextSearch.ACTUAL, False)))
             if not result.get('rec_ids'):
                 result['rec_ids'] = temp_set
             else:
                 result['rec_ids'].intersection_update(temp_set)
             result['old_result'].append({'object_id': rel.get(FullTextSearch.OBJECT_ID, None),
-                                            'rec_ids': find_reliable_http(
-                                                FullTextSearch.TABLES[rel.get(FullTextSearch.OBJECT_ID, None)],
-                                                rel.get(FullTextSearch.REQUEST, None))})
+                                         'rec_ids': find_reliable_http(
+                                             FullTextSearch.TABLES[rel.get(FullTextSearch.OBJECT_ID, None)],
+                                             rel.get(FullTextSearch.REQUEST, None),
+                                             rel.get(FullTextSearch.ACTUAL, False))})
         else:
             if len(request.get(FullTextSearch.REQUEST, None)) == 0:
                 main_object_ids = [0]
             else:
                 main_object_ids = find_reliable_http(FullTextSearch.TABLES[request.get(FullTextSearch.OBJECT_ID, None)],
-                                                     request.get(FullTextSearch.REQUEST, None))
+                                                     request.get(FullTextSearch.REQUEST, None),
+                                                     request.get(FullTextSearch.ACTUAL, False))
             temp = recursion_search(rel)
             result['old_result'].append({'object_id': temp['object_id'],
-                                            'rec_ids': temp['rec_ids']})
+                                         'rec_ids': temp['rec_ids']})
             result['pre_old_result'] = temp['old_result']
             temp_result = set()
             for rec_id in temp.get('rec_ids'):
                 for rec_id_main in main_object_ids:
-                    temp_set = set(search_rel_with_key_http(rel.get(FullTextSearch.RELATION_ID),
+                    temp_set = set(search_rel_with_key_http(rel.get(FullTextSearch.REL, {}).
+                                                            get(FullTextSearch.RELATION_ID),
                                                             request.get(FullTextSearch.OBJECT_ID, None), rec_id_main,
                                                             temp.get(FullTextSearch.OBJECT_ID), rec_id,
-                                                            rel.get(FullTextSearch.LIST_ID, 0)))
+                                                            rel.get(FullTextSearch.REL, {}).
+                                                            get(FullTextSearch.REL_VALUE,'')))
                     if len(temp_result) == 0:
                         temp_result = temp_set
                     else:
@@ -97,4 +106,5 @@ def search(request):
     else:
         return [get_object_record_by_id_http(request.get(FullTextSearch.OBJECT_ID, None), item) for item in
                 find_reliable_http(FullTextSearch.TABLES[request.get(FullTextSearch.OBJECT_ID, None)],
-                                   request.get(FullTextSearch.REQUEST, None))]
+                                   request.get(FullTextSearch.REQUEST, None),
+                                   request.get(FullTextSearch.ACTUAL, False))]
