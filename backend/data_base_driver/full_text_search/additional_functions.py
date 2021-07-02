@@ -27,3 +27,29 @@ def get_sorted_list(items):
             counter[item] = 1
 
     return [item[0] for item in sorted(counter.items(), key=lambda x: x[1], reverse=True)]
+
+
+def intercept_sort_list(elements):
+    """
+    Функция для пересечения списков с сохранением сортировки
+    @param elements: список содержащий списки целых чисел
+    @return: список целых чисел встреченных во всех начальных списков с сохранением их сортировки
+    """
+    if len(elements) == 1:
+        return elements[0]
+    temp_list = []
+    for elem in elements[0]:
+        temp = {'elem': elem, 'pos': []}
+        for item in elements:
+            if not elem in item:
+                temp['pos'] = []
+                break
+            else:
+                temp['pos'].append(item.index(elem))
+        if len(temp['pos']) > 0:
+            temp['midle'] = sum(temp['pos']) / len(temp['pos'])
+            temp_list.append(temp)
+        else:
+            continue
+    temp_list.sort(key=lambda x: x['midle'])
+    return [temp['elem'] for temp in temp_list]
