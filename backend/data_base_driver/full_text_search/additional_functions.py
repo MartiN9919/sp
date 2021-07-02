@@ -13,6 +13,12 @@ def get_date_from_days_sec(days, sec):
     return datetime.datetime.fromordinal(days - 365).replace(hour=h, minute=m, second=s).strftime("%Y-%m-%d %H:%M:%S")
 
 
+def get_date_time_from_sec(sec):
+    days = sec // 86400
+    sec = sec % 86400
+    return get_date_from_days_sec(days,sec)
+
+
 def get_sorted_list(items):
     """
     Функция для сортировки списка по количеству вхождений элемента

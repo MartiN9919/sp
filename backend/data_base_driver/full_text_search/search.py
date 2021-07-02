@@ -78,11 +78,11 @@ def recursion_search(request):
             for rec_id in temp.get('rec_ids'):
                 for rec_id_main in main_object_ids:
                     temp_set = set(search_rel_with_key_http(rel.get(FullTextSearch.REL, {}).
-                                                            get(FullTextSearch.RELATION_ID),
+                                                            get(FullTextSearch.RELATION_ID, 0),
                                                             request.get(FullTextSearch.OBJECT_ID, None), rec_id_main,
                                                             temp.get(FullTextSearch.OBJECT_ID), rec_id,
                                                             rel.get(FullTextSearch.REL, {}).
-                                                            get(FullTextSearch.REL_VALUE,'')))
+                                                            get(FullTextSearch.REL_VALUE, 0)))
                     if len(temp_result) == 0:
                         temp_result = temp_set
                     else:

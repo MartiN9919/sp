@@ -1,7 +1,8 @@
 import json
 import requests
 from data_base_driver.constants.fulltextsearch import FullTextSearch
-from data_base_driver.full_text_search.additional_functions import get_date_from_days_sec, intercept_sort_list
+from data_base_driver.full_text_search.additional_functions import get_date_from_days_sec, intercept_sort_list, \
+    get_date_time_from_sec
 
 
 def find_reliable_http(object_type, request, actual=False):
@@ -17,8 +18,8 @@ def find_reliable_http(object_type, request, actual=False):
     for word in request:
         data = json.dumps({"index": "obj_" + object_type + "_row", "query": {"query_string": word}, "limit": 500})
         response = requests.post(FullTextSearch.SEARCH_URL, data=data)
-        fetchall = [(int(hit['_source']['rec_id']), int(hit['_source']['key_id']), (int(hit['_source']['date'])),
-                     (int(hit['_source']['sec']))) for hit in json.loads(response.text)['hits']['hits']]
+        fetchall = [(int(hit['_source']['rec_id']), int(hit['_source']['key_id']), (int(hit['_source']['sec'])))
+                    for hit in json.loads(response.text)['hits']['hits']]
         remove_list = []
         if actual:
             for item in fetchall:
@@ -32,11 +33,10 @@ def find_reliable_http(object_type, request, actual=False):
                 response = requests.post(FullTextSearch.SEARCH_URL, data=data)
                 temp = json.loads(response.text)['hits']['hits']
                 for temp_item in temp:
-                    if item[2] == temp_item['_source']['date'] and item[3] == temp_item['_source']['sec']:
+                    if item[2] == temp_item['_source']['sec']:
                         continue
                     else:
-                        if item[2] < temp_item['_source']['date'] or item[2] == temp_item['_source']['date'] \
-                                and item[3] < temp_item['_source']['sec']:
+                        if item[2] < temp_item['_source']['sec']:
                             remove_list.append(item)
         fetchall = [item[0] for item in fetchall if not item in remove_list]
         if result == None:
@@ -71,21 +71,21 @@ def get_object_record_by_id_http(object_id, rec_id):
          "query": {"equals": {"rec_id": rec_id}},
          "limit": 500})
     response = requests.post(FullTextSearch.SEARCH_URL, data=data)
-    temp = [(int(item['_source']['key_id']), item['_source']['val'], item['_source']['date'], item['_source']['sec']) for
+    temp = [(int(item['_source']['key_id']), item['_source']['val'], int(item['_source']['sec'])) for
             item in json.loads(response.text)['hits']['hits']]
     params = []
     for item in temp:
         keys = [key for key in params if key['id'] == item[0]]
         if len(keys) > 0:
             for key in keys:
-                if key['date'] > get_date_from_days_sec(int(item[2]), int(item[3])):
-                    key['old'].append({'value': item[1], 'date': get_date_from_days_sec(int(item[2]), int(item[3]))})
+                if key['date'] > get_date_time_from_sec(item[2]):
+                    key['old'].append({'value': item[1], 'date': get_date_time_from_sec(item[2])})
                 else:
                     key['old'].append({'value': key['value'], 'date': key['date']})
                     key['value'] = item[1]
-                    key['date'] = get_date_from_days_sec(int(item[2]), int(item[3]))
+                    key['date'] = get_date_time_from_sec(int(item[2]))
             continue
-        params.append({'id': int(item[0]), 'value': item[1], 'date': get_date_from_days_sec(int(item[2]), int(item[3])),
+        params.append({'id': int(item[0]), 'value': item[1], 'date': get_date_time_from_sec(item[2]),
                        'old': []})
 
     for item in params:
