@@ -29,14 +29,13 @@ def add_record_http(index_title, id, date_time, key_id, val):
     if TEST_MODE:
         return False
     date_time = datetime.datetime.strptime(date_time, "%Y-%m-%d %H:%M:%S")
-    days = date_time.date().toordinal()
-    seconds = date_time.time().second + date_time.time().minute * 60 + date_time.time().hour * 3600
+    days = date_time.date().toordinal() + 365
+    seconds = date_time.time().second + date_time.time().minute * 60 + date_time.time().hour * 3600 + days*86400
     data = json.dumps({'index': index_title,
                        'id': 0,
                        'doc':
                            {
                                'rec_id': int(id),
-                               'date': days,
                                'sec': seconds,
                                'key_id': str(key_id),
                                'val': str(val)
