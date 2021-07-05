@@ -79,18 +79,63 @@ def get_sphinxql_without_objects_2(object_1_type, object_2_type, key_id=0, list_
 
 
 def get_validate_request(key_id, rec_id_1, rec_id_2, val):
+    """
+    Функция для отправки запроса проверки актуальности
+    @param key_id: ключ классификатора проверяемой связи
+    @param rec_id_1: идентификатор первого объекта
+    @param rec_id_2: идентификатор второго объекта
+    @param val: значение идентификатора списка если есть, если нет пустая строка
+    @return: упакованный для отправки json
+    """
+    if len(val) != 0:
+        val = str(val)
+    else:
+        val = '*'
     data = {
         "index": 'rel',
         "query":
             {
-                "query_string": '@key_id' + key_id + ' @rec_id_1 ' + rec_id_1 + '@ rec_id_2 ' \
+                "query_string": '@key_id ' + key_id + ' @rec_id_1 ' + rec_id_1 + ' @rec_id_2 ' \
                                 + rec_id_2 + ' @val ' + val
             }
     }
     return json.dumps(data)
 
 
-def get_rel_request(query_string, date_time_1_str, date_time_2_str):
+def validate_rel_actual(rel):
+    """
+    Функция для проверки актуальности отдельной связи
+    @param rel: словарь содержащий информацию о проверяемой связи
+    @return: False если связь не актуальна, True если актуальна
+    """
+    data = get_validate_request(rel['key_id'], rel['rec_id_1'], rel['rec_id_2'], rel['val'])
+    response = requests.post(FullTextSearch.SEARCH_URL, data=data)
+    for temp in json.loads(response.text)['hits']['hits']:
+        if temp['_source']['sec'] == rel['sec']:
+            continue
+        if temp['_source']['sec'] > rel['sec']:
+            return False
+    return True
+
+
+def get_rel_request(query_string, date_time_start, date_time_end):
+    """
+    Функция для формирования запроса для поиска связи
+    @param query_string: строка запроса manticore/sphinx
+    @param date_time_start: начальная дата и время периода поиска
+    @param date_time_end: конечная дата и время периода поиска
+    @return: json запрос для manticore API
+    """
+    date_time_2_str = date_time_end['date'] + ' ' + date_time_end['time'] + ':00'
+    if date_time_start['date'] == '':
+        date_time_1_str = '0001-01-01 '
+    else:
+        date_time_1_str = date_time_start['date'] + ' '
+    if date_time_start['time'] == '':
+        date_time_1_str += '00:00:00'
+    else:
+        date_time_1_str += date_time_end['time'] + ':00'
+
     date_time_1 = datetime.datetime.strptime(date_time_1_str, "%Y-%m-%d %H:%M:%S")
     days = date_time_1.date().toordinal() + 365
     seconds_1 = date_time_1.time().second + date_time_1.time().minute * 60 + date_time_1.time().hour * 3600 \
@@ -118,7 +163,8 @@ def get_rel_request(query_string, date_time_1_str, date_time_2_str):
     return json.dumps(data)
 
 
-def search_rel_with_key_http(rel_key, object_1_type, object_1_id, object_2_type, object_2_id, list_id):
+def search_rel_with_key_http(rel_key, object_1_type, object_1_id, object_2_type, object_2_id, list_id, date_time_start,
+                               date_time_end):
     """
     Функция для поиска связей между двумя конкретными объектами
     @param rel_key: тип связи
@@ -127,41 +173,37 @@ def search_rel_with_key_http(rel_key, object_1_type, object_1_id, object_2_type,
     @param object_2_type: тип второго объекта
     @param object_2_id: идентификационный номер второго объекта
     @param list_id: идентификационный в списке если есть
+    @param date_time_start: дата и время начала поиска связи
+    @param date_time_end: дата и время конца поиска связи
     @return: список идентификационных номеров объектов
     """
     if object_1_id != 0 and object_2_id != 0:
-        data_1 = json.dumps({"index": 'rel', "query": {
-            "query_string": get_sphinxql_two_object_1(object_1_type, object_1_id, object_2_type, object_2_id, rel_key,
-                                                      list_id)}, "limit": 100})
-        data_2 = json.dumps({"index": 'rel', "query": {
-            "query_string": get_sphinxql_two_object_2(object_1_type, object_1_id, object_2_type,
-                                                      object_2_id, rel_key, list_id)}, "limit": 100})
+        data_1 = get_rel_request(get_sphinxql_two_object_1(object_1_type, object_1_id, object_2_type, object_2_id,
+                                                           rel_key, list_id), date_time_start, date_time_end)
+        data_2 = get_rel_request(get_sphinxql_two_object_2(object_1_type, object_1_id, object_2_type, object_2_id,
+                                                           rel_key, list_id), date_time_start, date_time_end)
     elif object_1_id == 0 and object_2_id != 0:
-        data_1 = json.dumps({"index": 'rel', "query": {
-            "query_string": get_sphinxql_without_first_object_1(object_1_type, object_2_type, object_2_id, rel_key,
-                                                                list_id)}, "limit": 100})
-        data_2 = json.dumps({"index": 'rel', "query": {
-            "query_string": get_sphinxql_without_first_object_2(object_1_type, object_2_type, object_2_id, rel_key,
-                                                                list_id)}, "limit": 100})
+        data_1 = get_rel_request(get_sphinxql_without_first_object_1(object_1_type, object_2_type, object_2_id, rel_key,
+                                                                list_id), date_time_start, date_time_end)
+        data_2 = get_rel_request(get_sphinxql_without_first_object_2(object_1_type, object_2_type, object_2_id, rel_key,
+                                                                list_id), date_time_start, date_time_end)
     elif object_1_id != 0 and object_2_id == 0:
-        data_1 = json.dumps({"index": 'rel', "query": {
-            "query_string": get_sphinxql_without_second_object_1(object_1_type, object_1_id, object_2_type, rel_key,
-                                                                 list_id)}, "limit": 100})
-        data_2 = json.dumps({"index": 'rel', "query": {
-            "query_string": get_sphinxql_without_second_object_2(object_1_type, object_1_id, object_2_type, rel_key,
-                                                                 list_id)}, "limit": 100})
+        data_1 = get_rel_request(get_sphinxql_without_second_object_1(object_1_type, object_1_id, object_2_type,
+                                                                      rel_key, list_id), date_time_start, date_time_end)
+        data_2 = get_rel_request(get_sphinxql_without_second_object_2(object_1_type, object_1_id, object_2_type,
+                                                                      rel_key, list_id), date_time_start, date_time_end)
     else:
-        data_1 = json.dumps({"index": 'rel', "query": {
-            "query_string": get_sphinxql_without_objects_1(object_1_type, object_2_type, rel_key, list_id)},
-                             "limit": 100})
-        data_2 = json.dumps({"index": 'rel', "query": {
-            "query_string": get_sphinxql_without_objects_2(object_1_type, object_2_type, rel_key, list_id)},
-                             "limit": 100})
+        data_1 = get_rel_request(get_sphinxql_without_objects_1(object_1_type, object_2_type, rel_key, list_id),
+                                 date_time_start, date_time_end)
+        data_2 = get_rel_request(get_sphinxql_without_objects_2(object_1_type, object_2_type, rel_key, list_id),
+                                 date_time_start, date_time_end)
     response_1 = requests.post(FullTextSearch.SEARCH_URL, data=data_1)
     response_2 = requests.post(FullTextSearch.SEARCH_URL, data=data_2)
-    result = set([item['_source']['rec_id_1'] for item in json.loads(response_1.text)['hits']['hits']])
+    result = set([item['_source']['rec_id_1'] for item in json.loads(response_1.text)['hits']['hits']
+                  if validate_rel_actual(item['_source'])])
     result = result.union(
-        set([item['_source']['rec_id_2'] for item in json.loads(response_2.text)['hits']['hits']]))
+        set([item['_source']['rec_id_2'] for item in json.loads(response_2.text)['hits']['hits']
+             if validate_rel_actual(item['_source'])]))
     return [int(item) for item in list(result)]
 
 
