@@ -193,7 +193,7 @@ class IO_PARS_DATA(dict):
                     DAT_SYS_KEY.DUMP.get_rec(obj_id=self.obj_id, id=key_id))
                 vals[DAT_REL.KEY_ID] = str(key_id)
 
-            # ['val', 'УД'] дописать с учетом
+            # ['val', 'УД'] дописать с учетом появления значения у связи
             if data_key == DAT_REL.VAL:
                 pass
 

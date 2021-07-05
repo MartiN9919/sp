@@ -51,7 +51,7 @@ def recursion_search(request):
                                                       rel.get(FullTextSearch.OBJECT_ID, None),
                                                       rel.get(FullTextSearch.REQUEST, None),
                                                       rel.get(FullTextSearch.REL, {}).get(FullTextSearch.RELATION_ID),
-                                                      rel.get(FullTextSearch.REL, {}).get(FullTextSearch.REL_VALUE,''),
+                                                      rel.get(FullTextSearch.REL, {}).get(FullTextSearch.REL_VALUE, 0),
                                                       request.get(FullTextSearch.ACTUAL, False),
                                                       rel.get(FullTextSearch.ACTUAL, False)))
             if not result.get('rec_ids'):
