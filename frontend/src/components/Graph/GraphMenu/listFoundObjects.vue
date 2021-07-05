@@ -29,7 +29,7 @@
               >
                 <template v-slot:activator="{ on }">
                   <v-textarea
-                    row-height="1" auto-grow readonly hide-details
+                    readonly hide-details rows="1" auto-grow
                     :label="getClassifier(findObject.object_id, param.id).title"
                     v-model="param.value" color="teal" class="pb-2" v-on="on"
                   ></v-textarea>

@@ -4,27 +4,21 @@
       {{header}}
     </v-card-subtitle>
     <v-divider></v-divider>
-    <v-card-actions class="pa-1">
-      <v-btn
-       :disabled="!stepBack"
-        @click="sendMessageParentComponent('changeWindow', stepBack)"
-        icon color="teal"
-      >
-        <v-icon>mdi-arrow-left</v-icon>
-      </v-btn>
+    <v-card-text class="px-4 py-2">
       <v-autocomplete
-        :items="listItems" item-text="title"
-        v-model="selectedObject" hide-details
-        return-object color="teal" hide-no-data
-        class="pa-0 ma-0 pb-2" item-color="teal"
+        :items="listItems" item-text="title" v-model="selected" return-object
+        hide-details color="teal" hide-no-data item-color="teal" class="pt-0"
       ></v-autocomplete>
-      <v-btn
-        @click="sendMessageParentComponent('getSelectedObject', stepNext)"
-        icon color="teal" :disabled="importance && !selectedObject"
-      >
-        <v-icon>{{stepNext ? 'mdi-arrow-right' : 'mdi-check'}}</v-icon>
-      </v-btn>
-    </v-card-actions>
+      <v-switch
+        v-model="isActualStatus" outlined hide-details color="teal"
+        label="Поиск только по актуальным значениям"
+      ></v-switch>
+    </v-card-text>
+      <v-card-actions>
+        <v-btn outlined color="teal" width="40%" @click="$emit('stepBack')">Назад</v-btn>
+        <v-spacer></v-spacer>
+        <v-btn outlined color="teal" width="40%" @click="$emit('stepNext')">Продолжить</v-btn>
+      </v-card-actions>
   </v-card>
 </template>
 
@@ -33,24 +27,20 @@ export default {
   name: "selectObject",
   props: {
     listItems: { type: Array, default: function () { return [] } },
-    stepBack: { type: String, default: null },
-    stepNext: { type: String, default: null },
     header: { type: String, default: null },
-    selected: { type: Object, default: null },
-    importance: { type: Boolean, default: false },
+    selectedObject: { type: Object, default: null },
+    isActual: { type: Boolean, default: false },
   },
-  model: {prop: 'selected', event: 'changeSelected'},
   computed: {
-    selectedObject: {
-      get: function () { return this.selected },
-      set: function (value) { this.$emit('changeSelected', value) }
+    selected: {
+      get: function () { return this.selectedObject },
+      set: function (value) { this.$emit('selectedObject', value) }
+    },
+    isActualStatus: {
+      get: function () { return this.isActual },
+      set: function (value) { this.$emit('isActual', value) },
     },
   },
-  methods: {
-    sendMessageParentComponent(method, fill) {
-      this.$emit(method, fill)
-    }
-  }
 }
 </script>
 

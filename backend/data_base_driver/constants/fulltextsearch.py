@@ -16,7 +16,7 @@ class FullTextSearch:
     OBJECT_ID = 'object_id'
     REQUEST = 'request'
     RELATIONS = 'rels'
-    RELATION_ID = 'rel_id'
+    RELATION_ID = 'id'
     LIST_ID = 'list_id'
     ACTUAL = 'actual'
     REL_VALUE = 'value'

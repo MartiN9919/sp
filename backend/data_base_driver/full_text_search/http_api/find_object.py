@@ -75,7 +75,7 @@ def get_object_record_by_id_http(object_id, rec_id):
             item in json.loads(response.text)['hits']['hits']]
     params = []
     for item in temp:
-        keys = [key for key in params if key['id'] == item[0]]
+        keys = [key for key in params if key['id'] == int(item[0])]
         if len(keys) > 0:
             for key in keys:
                 if key['date'] > get_date_time_from_sec(item[2]):
