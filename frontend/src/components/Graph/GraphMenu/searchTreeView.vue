@@ -12,9 +12,12 @@
         ></v-text-field>
       </template>
       <template v-slot:append="{ item, open }">
+        <v-row no-gutters>
+        <v-checkbox v-model="item.actual" hide-details color="teal"></v-checkbox>
         <v-btn large icon v-if="item === treeItems" class="mt-2">
           <v-icon color="teal" @click="$emit('findObject')">mdi-magnify mdi-36px</v-icon>
         </v-btn>
+        </v-row>
       </template>
     </v-treeview>
     <context-menu v-if="typeMenu === typeContextMenu">
@@ -52,14 +55,20 @@ export default {
   },
   methods: {
     labelObject (item) {
-      let relation = this.$store.getters.relationObject(item.rel_id)
+      let relation = this.$store.getters.relationObject(item.rel.id)
       let relationTitle = relation ? relation.title: 'Отсутствует'
       return this.$store.getters.primaryObject(item.object_id).title_single + ': ' + relationTitle
     },
     createNewRelation(selectedProperties) {
       this.typeMenu.rels.unshift({
         object_id: selectedProperties.selectedObject.id,
-        rel_id: selectedProperties.selectedRelation ? selectedProperties.selectedRelation.id : 0,
+        actual: selectedProperties.actual,
+        rel: {
+          id: selectedProperties.selectedRelation ? selectedProperties.selectedRelation.id : 0,
+          value: selectedProperties.value,
+          date_time_start: selectedProperties.date_time_start,
+          date_time_end: selectedProperties.date_time_end,
+        },
         request: '',
         rels: [],
       },)

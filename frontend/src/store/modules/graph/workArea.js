@@ -26,7 +26,18 @@ export default {
         object_id: id,
         rec_id: 0,
         activeWindow: 'searchTree',
-        searchTree: { object_id: id, rel_id: 0, request: '', rels: [], },
+        searchTree: {
+          object_id: id,
+          rel: {
+            id: 0,
+            value: null,
+            date_time_start: null,
+            date_time_end: null,
+          },
+          request: '',
+          actual: false,
+          rels: [],
+        },
         foundObjects: [],
         params: [],
       })

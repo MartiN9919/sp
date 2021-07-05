@@ -1,5 +1,5 @@
 <template>
-  <v-row>
+  <v-row no-gutters>
     <v-col>
       <v-menu
         :close-on-content-click="false"
@@ -27,7 +27,7 @@
         ></v-date-picker>
       </v-menu>
     </v-col>
-    <v-col>
+    <v-col class="pl-4">
       <v-menu
         :close-on-content-click="false"
         offset-x offset-y z-index="10001" bottom right
