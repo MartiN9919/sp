@@ -176,7 +176,7 @@ class ModelKey(models.Model):
         help_text='Является ли данный классификатор обязательным для объекта',
     )
     type = models.CharField(
-        max_length=10,
+        max_length=15,
         verbose_name='Формат',
         choices=DAT_SYS_KEY.TYPE_LIST,
         help_text='К какому типу будет относиться вносимое значение',

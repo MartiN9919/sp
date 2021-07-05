@@ -61,8 +61,6 @@ def get_relations_list(object1, object2):
     return result
 
 
-
-
 def get_keys_by_object(object):
     """
     получение списка ключей по типу объекта

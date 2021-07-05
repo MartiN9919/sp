@@ -124,12 +124,14 @@ class DAT_SYS_KEY:
     TYPE_DATA = 'date'
     TYPE_DATATIME = 'datetime'
     TYPE_GEOMETRY = 'geometry'
+    TYPE_PHONE_NUMBER = 'phone_number'
 
     TYPE_LIST = (
         (TYPE_INT, "Число"),
         (TYPE_STR, 'Текст'),
         (TYPE_DATATIME, 'Дата/Время'),
         (TYPE_DATA, 'Дата'),
+        (TYPE_PHONE_NUMBER, 'Номер телефона'),
         (TYPE_BIT, 'Да/Нет'),
         (TYPE_GEOMETRY, 'Точка/Путь/Полигон'),
     )

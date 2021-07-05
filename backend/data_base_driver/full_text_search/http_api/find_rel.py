@@ -228,10 +228,10 @@ def get_relations_with_object_http(object_type, object_id):
     })
     response_1 = requests.post(FullTextSearch.SEARCH_URL, data=data_1)
     response_2 = requests.post(FullTextSearch.SEARCH_URL, data=data_2)
-    resule_1 = [(int(item['_source']['key_id']), item['_source']['date'], int(item['_source']['obj_id_1']),
+    resule_1 = [(int(item['_source']['key_id']), item['_source']['sec'], int(item['_source']['obj_id_1']),
                  int(item['_source']['rec_id_1']), int(item['_source']['obj_id_2']), int(item['_source']['rec_id_2']))
                 for item in json.loads(response_1.text)['hits']['hits']]
-    resule_2 = [(int(item['_source']['key_id']), item['_source']['date'], int(item['_source']['obj_id_1']),
+    resule_2 = [(int(item['_source']['key_id']), item['_source']['sec'], int(item['_source']['obj_id_1']),
                  int(item['_source']['rec_id_1']), int(item['_source']['obj_id_2']), int(item['_source']['rec_id_2']))
                 for item in json.loads(response_2.text)['hits']['hits']]
     result = set(resule_1)

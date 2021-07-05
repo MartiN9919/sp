@@ -198,7 +198,7 @@ class IO_PARS_DATA(dict):
             if data_key == DAT_REL.VAL:
                 if data_val1 == '':
                     continue
-                vals[DAT_REL.VAL] = str(data_val1)
+                vals[DAT_REL.VAL] = '\'' + str(data_val1) + '\''
                 continue
 
             # ['obj_1',5,100], ['obj_2','file']
