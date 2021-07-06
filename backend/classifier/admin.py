@@ -5,10 +5,10 @@ from django.core.exceptions import ValidationError
 from django.db.models import Q
 from django.db import models
 
-from .models import ModelKey, ModelObject, ModelList, ModelListDop
+from .models import ModelKey, ModelObject, ModelList, ModelListDop, ModelPhoneNumberFormat
 
 from data_base_driver.constants.const_admin import PROJECT_TITLE_ADMIN
-from data_base_driver.constants.const_dat import DAT_SYS_KEY, DAT_SYS_OBJ, DAT_SYS_LIST_TOP
+from data_base_driver.constants.const_dat import DAT_SYS_KEY, DAT_SYS_OBJ, DAT_SYS_LIST_TOP, DAT_SYS_PHONE_NUMBER_FORMAT
 
 admin.site.site_header = PROJECT_TITLE_ADMIN
 
@@ -42,6 +42,18 @@ class ModelListAdmin(admin.ModelAdmin):
     )
     ordering = (DAT_SYS_LIST_TOP.TITLE,)
     inlines = [ModelListDopAdmin]
+
+
+@admin.register(ModelPhoneNumberFormat)
+class ModelPhoneNumberFormatAdmin(admin.ModelAdmin):
+    search_fields = (DAT_SYS_PHONE_NUMBER_FORMAT.COUNTRY,)
+    list_display = (DAT_SYS_PHONE_NUMBER_FORMAT.COUNTRY, DAT_SYS_PHONE_NUMBER_FORMAT.COUNTRY_CODE,
+                    DAT_SYS_PHONE_NUMBER_FORMAT.LENGTH,)
+    fieldsets = (
+        (None, {'fields': ((DAT_SYS_PHONE_NUMBER_FORMAT.COUNTRY, DAT_SYS_PHONE_NUMBER_FORMAT.COUNTRY_CODE,
+                    DAT_SYS_PHONE_NUMBER_FORMAT.LENGTH,),)}),
+    )
+    ordering = (DAT_SYS_PHONE_NUMBER_FORMAT.COUNTRY,)
 
 
 class SpeciesFilterRel(RelatedFieldListFilter):

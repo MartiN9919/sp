@@ -3,6 +3,7 @@ import datetime
 from data_base_driver.full_text_search.http_api.find_key_params import find_key_value_http
 from data_base_driver.full_text_search.http_api.find_object import get_object_record_by_id_http
 from data_base_driver.input_output.io import io_set
+from data_base_driver.record.validate_record import validate_record, get_country_by_number, remove_special_chars
 from data_base_driver.sys_key.get_key_dump import get_key_by_id
 
 
@@ -14,7 +15,7 @@ def add_record(group_id, object_id, object_info):
     @param object_info: информация об объекте в формате [[key:value],[],...,[]]
     для добавления информации о уже существующем объекте необходимо в качестве ключа передать id,
     а в качестве значение точный идентификационный номер объекта
-    @return:
+    @return: rec_id добавленной записи
     """
     result = io_set(group_id=group_id, obj=object_id, data=object_info)
     if result[0]:
@@ -30,8 +31,24 @@ def add_data(group_id, object):
     @param object: вносимая информация в формате {object_id, rec_id, params:[{id,val},...,{}]}
     @return: идентификатор нового/измененного объекта в базе данных
     """
-    data = [[param['id'], param['value'], datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")]
-            for param in object['params']]
+    try:
+        data = [[param['id'], param['value'], datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")]
+                for param in object['params'] if validate_record(param)]
+    except Exception as e:
+        raise e
+    # костыль для добавления классификатора телефона для страны, придумать как переделать-------------------------------
+    if object.get('object_id') == 52:
+        country = get_country_by_number([param for param in object['params'] if param['id'] == 50054][0]['value'])
+        fl = 0
+        for temp in data:
+            if temp[0] == 50054:
+                temp[1] = remove_special_chars(temp[1])
+            if temp[0] == 50055:
+                temp[1] = country
+                fl = 1
+        if fl == 0:
+            data.append([50055, country, datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")])
+    # ------------------------------------------------------------------------------------------------------------------
     if object.get('rec_id', 0) != 0:
         data.append(['id', object.get('rec_id')])
     else:

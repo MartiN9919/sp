@@ -2,7 +2,7 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.db import models
 from data_base_driver.constants.const_dat import DAT_SYS_OBJ, DAT_SYS_LIST_TOP, DAT_SYS_KEY, DAT_SYS_LIST_DOP, \
-    DAT_SYS_KEY_GROUP
+    DAT_SYS_KEY_GROUP, DAT_SYS_PHONE_NUMBER_FORMAT
 
 
 class ModelObject(models.Model):
@@ -152,6 +152,28 @@ class ModelKeyGroup(models.Model):
         verbose_name_plural = "Группа классификатора"
 
 
+class ModelPhoneNumberFormat(models.Model):
+    country = models.CharField(
+        max_length=50,
+        verbose_name='Страна принадлежности',
+        help_text='К какой стране относится этот номер',
+    )
+    country_code = models.IntegerField(
+        verbose_name='Код страны',
+        help_text='Набор цифр составляющих код страны',
+    )
+    length = models.IntegerField(
+        verbose_name='Длинна номера',
+        help_text='С учетом кода страны',
+    )
+
+    class Meta:
+        managed = False
+        db_table = DAT_SYS_PHONE_NUMBER_FORMAT.TABLE_SHORT
+        verbose_name = "Формат телефонный номеров"
+        verbose_name_plural = "Формат телефонный номеров"
+
+
 class ModelKey(models.Model):
     """
     Модель таблицы sys_key для хранения классификаторов.
@@ -176,7 +198,7 @@ class ModelKey(models.Model):
         help_text='Является ли данный классификатор обязательным для объекта',
     )
     type = models.CharField(
-        max_length=10,
+        max_length=15,
         verbose_name='Формат',
         choices=DAT_SYS_KEY.TYPE_LIST,
         help_text='К какому типу будет относиться вносимое значение',
@@ -202,7 +224,7 @@ class ModelKey(models.Model):
         max_length=50,
         verbose_name='Имя классификатора',
     )
-    hint = models.CharField(
+    hint = models.TextField(
         max_length=255,
         verbose_name='Всплывающая подсказка',
         help_text='Дополнительная информация для пользователя, который будет вносить данные',

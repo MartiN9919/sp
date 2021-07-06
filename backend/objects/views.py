@@ -82,7 +82,10 @@ def aj_object(request):
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
-            result = add_data(group_id=group_id, object=data)
+            try:
+                result = add_data(group_id=group_id, object=data)
+            except Exception as e:
+                return JsonResponse({'data': e.args[0]}, status=452)
             if result.get('status', -1) != -1:
                 return JsonResponse({'data': result}, status=200)
             else:
@@ -108,7 +111,8 @@ def aj_relation(request):
         data = json.loads(request.body)
         try:
             add_rel(group_id=group_id, key_id=data.get('key_id'), object_1_id=data.get('object_1_id'),
-                    rec_1_id=data.get('rec_1_id'), object_2_id=data.get('object_2_id'), rec_2_id=data.get('rec_2_id'))
+                    rec_1_id=data.get('rec_1_id'), object_2_id=data.get('object_2_id'), rec_2_id=data.get('rec_2_id'),
+                    val=data.get('val'), date_time=data.get('date_time'))
             return JsonResponse({'data': 'связь добавлена'}, status=200)
         except:
             return JsonResponse({'data': 'ошибка добавления'}, status=403)

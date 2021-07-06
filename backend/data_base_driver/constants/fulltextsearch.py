@@ -21,6 +21,8 @@ class FullTextSearch:
     ACTUAL = 'actual'
     REL_VALUE = 'value'
     REL = 'rel'
+    DATE_TIME_START = 'date_time_start'
+    DATE_TIME_END = 'date_time_end'
 
 
     SEARCH_URL = 'http://200.200.200.235:9312/search'

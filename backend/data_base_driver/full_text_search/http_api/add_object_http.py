@@ -64,12 +64,11 @@ def add_relation_http(date_time, key_id, obj_id_1, rec_id_1, obj_id_2, rec_id_2,
         return False
     date_time = datetime.datetime.strptime(date_time, "%Y-%m-%d %H:%M:%S")
     days = date_time.date().toordinal()
-    seconds = date_time.time().second + date_time.time().minute * 60 + date_time.time().hour * 3600
+    seconds = date_time.time().second + date_time.time().minute * 60 + date_time.time().hour * 3600 + days*86400
     data = json.dumps({
         "index": "rel",
         "doc":
         {
-            "date": str(days),
             "sec": str(seconds),
             "key_id": str(key_id),
             "obj_id_1": str(obj_id_1),

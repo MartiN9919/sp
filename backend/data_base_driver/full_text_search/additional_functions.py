@@ -2,6 +2,12 @@ import datetime
 
 
 def get_date_from_days_sec(days, sec):
+    """
+    Функция для получения даты и времени в строковом формате из дней с рождества христова и секунд с начала дня
+    @param days: количество дней с прошедших с рождества христова
+    @param sec: количество секунд прошедших с начала дня
+    @return: строка содержащую дату и время в формате Y-m-d H:M:S
+    """
     if days == 0 and sec == 0:
         return 'unknow'
     elif sec == 0:
@@ -14,6 +20,11 @@ def get_date_from_days_sec(days, sec):
 
 
 def get_date_time_from_sec(sec):
+    """
+    Функция для получения даты и времени в строковом формате из секунд с рождества христова
+    @param sec: количество секунд прошедших с рождества христова
+    @return: строка содержащую дату и время в формате Y-m-d H:M:S
+    """
     days = sec // 86400
     sec = sec % 86400
     return get_date_from_days_sec(days,sec)

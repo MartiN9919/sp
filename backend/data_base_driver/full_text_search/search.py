@@ -3,8 +3,8 @@ from data_base_driver.full_text_search.http_api.find_object import find_reliable
 from data_base_driver.full_text_search.http_api.find_rel import search_rel_with_key_http
 
 
-def find_with_rel_reliable_key(object_1_type, request_1, object_2_type, request_2, rel_key, list_id, actual_1=False,
-                               actual_2=False):
+def find_with_rel_reliable_key(object_1_type, request_1, object_2_type, request_2, rel_key, list_id, date_time_start,
+                               date_time_end, actual_1=False, actual_2=False):
     """
     Функция для поиска записей с учетом связей, проводит надежную сверку по двум запросам, учитывает тип связи
     @param object_1_type: тип главного объекта для связи
@@ -13,6 +13,8 @@ def find_with_rel_reliable_key(object_1_type, request_1, object_2_type, request_
     @param request_2: запрос по второстепенному объекту
     @param rel_key: тип связи
     @param list_id: идентификатор значения списка если есть
+    @param date_time_start: дата и время начала поиска связи
+    @param date_time_end: дата и время конца поиска связи
     @param actual_1: флаг актуальности поиска для первого объекта
     @param actual_2: флаг актуальности поиска для второго объекта
     @return: список с идентификаторами подходящих записей
@@ -28,7 +30,8 @@ def find_with_rel_reliable_key(object_1_type, request_1, object_2_type, request_
         result2 = find_reliable_http(FullTextSearch.TABLES[object_2_type], request_2, actual_2)
     for item in result1:
         for item_next in result2:
-            res = search_rel_with_key_http(rel_key, object_1_type, item, object_2_type, item_next, list_id)
+            res = search_rel_with_key_http(rel_key, object_1_type, item, object_2_type, item_next, list_id,
+                                           date_time_start, date_time_end)
             if len(res) != 0:
                 result.extend([int(elem) for elem in res])
     return result
@@ -51,7 +54,9 @@ def recursion_search(request):
                                                       rel.get(FullTextSearch.OBJECT_ID, None),
                                                       rel.get(FullTextSearch.REQUEST, None),
                                                       rel.get(FullTextSearch.REL, {}).get(FullTextSearch.RELATION_ID),
-                                                      rel.get(FullTextSearch.REL, {}).get(FullTextSearch.REL_VALUE,''),
+                                                      rel.get(FullTextSearch.REL, {}).get(FullTextSearch.REL_VALUE, 0),
+                                                      rel.get(FullTextSearch.REL, {}).get(FullTextSearch.DATE_TIME_START),
+                                                      rel.get(FullTextSearch.REL, {}).get(FullTextSearch.DATE_TIME_END),
                                                       request.get(FullTextSearch.ACTUAL, False),
                                                       rel.get(FullTextSearch.ACTUAL, False)))
             if not result.get('rec_ids'):
@@ -82,7 +87,12 @@ def recursion_search(request):
                                                             request.get(FullTextSearch.OBJECT_ID, None), rec_id_main,
                                                             temp.get(FullTextSearch.OBJECT_ID), rec_id,
                                                             rel.get(FullTextSearch.REL, {}).
-                                                            get(FullTextSearch.REL_VALUE, 0)))
+                                                            get(FullTextSearch.REL_VALUE, 0),
+                                                            rel.get(FullTextSearch.REL, {}).
+                                                            get(FullTextSearch.DATE_TIME_START),
+                                                            rel.get(FullTextSearch.REL, {}).
+                                                            get(FullTextSearch.DATE_TIME_END),
+                                                            ))
                     if len(temp_result) == 0:
                         temp_result = temp_set
                     else:
