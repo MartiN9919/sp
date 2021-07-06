@@ -78,54 +78,25 @@ def get_sphinxql_without_objects_2(object_1_type, object_2_type, key_id=0, list_
     return tmp
 
 
-def get_validate_request(key_id, rec_id_1, rec_id_2, val):
+def get_validate_request(key_id, rec_id_1, rec_id_2):
     """
     Функция для отправки запроса проверки актуальности
     @param key_id: ключ классификатора проверяемой связи
     @param rec_id_1: идентификатор первого объекта
     @param rec_id_2: идентификатор второго объекта
-    @param val: значение идентификатора списка если есть, если нет пустая строка
     @return: упакованный для отправки json
     """
-    if len(val) != 0:
-        val = str(val)
-    else:
-        val = '*'
     data = {
         "index": 'rel',
         "query":
             {
-                "query_string": '@key_id ' + key_id + ' @rec_id_1 ' + rec_id_1 + ' @rec_id_2 ' \
-                                + rec_id_2 + ' @val ' + val
+                "query_string": '@key_id ' + key_id + ' @rec_id_1 ' + rec_id_1 + ' @rec_id_2 ' + rec_id_2
             }
     }
     return json.dumps(data)
 
 
-def validate_rel_actual(rel):
-    """
-    Функция для проверки актуальности отдельной связи
-    @param rel: словарь содержащий информацию о проверяемой связи
-    @return: False если связь не актуальна, True если актуальна
-    """
-    data = get_validate_request(rel['key_id'], rel['rec_id_1'], rel['rec_id_2'], rel['val'])
-    response = requests.post(FullTextSearch.SEARCH_URL, data=data)
-    for temp in json.loads(response.text)['hits']['hits']:
-        if temp['_source']['sec'] == rel['sec']:
-            continue
-        if temp['_source']['sec'] > rel['sec']:
-            return False
-    return True
-
-
-def get_rel_request(query_string, date_time_start, date_time_end):
-    """
-    Функция для формирования запроса для поиска связи
-    @param query_string: строка запроса manticore/sphinx
-    @param date_time_start: начальная дата и время периода поиска
-    @param date_time_end: конечная дата и время периода поиска
-    @return: json запрос для manticore API
-    """
+def get_seconds_from_request_data_time(date_time_start, date_time_end):
     date_time_2_str = date_time_end['date'] + ' ' + date_time_end['time'] + ':00'
     if date_time_start['date'] == '':
         date_time_1_str = '0001-01-01 '
@@ -144,6 +115,38 @@ def get_rel_request(query_string, date_time_start, date_time_end):
     days = date_time_2.date().toordinal() + 365
     seconds_2 = date_time_2.time().second + date_time_2.time().minute * 60 + date_time_2.time().hour * 3600 \
                 + days * 86400
+    return seconds_1, seconds_2
+
+
+def validate_rel_actual(rel, date_time_start, date_time_end):
+    """
+    Функция для проверки актуальности отдельной связи
+    @param rel: словарь содержащий информацию о проверяемой связи
+    @param date_time_start: дата и время начала выборки
+    @param date_time_end: дата и время конца выборки
+    @return: False если связь не актуальна, True если актуальна
+    """
+    seconds_1, seconds_2 = get_seconds_from_request_data_time(date_time_start, date_time_end)
+    data = get_validate_request(rel['key_id'], rel['rec_id_1'], rel['rec_id_2'])
+    response = requests.post(FullTextSearch.SEARCH_URL, data=data)
+    for temp in json.loads(response.text)['hits']['hits']:
+        if temp['_source']['sec'] < seconds_1 or temp['_source']['sec'] > seconds_2 or \
+                temp['_source']['sec'] == rel['sec']:
+            continue
+        if temp['_source']['sec'] > rel['sec']:
+            return False
+    return True
+
+
+def get_rel_request(query_string, date_time_start, date_time_end):
+    """
+    Функция для формирования запроса для поиска связи
+    @param query_string: строка запроса manticore/sphinx
+    @param date_time_start: начальная дата и время периода поиска
+    @param date_time_end: конечная дата и время периода поиска
+    @return: json запрос для manticore API
+    """
+    seconds_1, seconds_2 = get_seconds_from_request_data_time(date_time_start, date_time_end)
     data = {
         "index": 'rel',
         "query":
@@ -200,10 +203,10 @@ def search_rel_with_key_http(rel_key, object_1_type, object_1_id, object_2_type,
     response_1 = requests.post(FullTextSearch.SEARCH_URL, data=data_1)
     response_2 = requests.post(FullTextSearch.SEARCH_URL, data=data_2)
     result = set([item['_source']['rec_id_1'] for item in json.loads(response_1.text)['hits']['hits']
-                  if validate_rel_actual(item['_source'])])
+                  if validate_rel_actual(item['_source'], date_time_start, date_time_end)])
     result = result.union(
         set([item['_source']['rec_id_2'] for item in json.loads(response_2.text)['hits']['hits']
-             if validate_rel_actual(item['_source'])]))
+             if validate_rel_actual(item['_source'],date_time_start, date_time_end)]))
     return [int(item) for item in list(result)]
 
 

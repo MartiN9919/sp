@@ -4,6 +4,8 @@ from data_base_driver.constants.connect_db import VEC_DATA
 ##################################################################################
 # DAT_SYS_SCRIPT
 ##################################################################################
+
+
 class DAT_SYS_SCRIPT():
     TABLE_SHORT = 'sys_script'
     TABLE = VEC_DATA['NAME'] + '.' + TABLE_SHORT
@@ -85,6 +87,16 @@ class DAT_SYS_KEY_GROUP:
     OBJ_ID = 'obj_id'
     NAME = 'name'
     POS = 'pos'
+
+
+class DAT_SYS_PHONE_NUMBER_FORMAT:
+    TABLE_SHORT = 'sys_phone_number_format'
+    TABLE = VEC_DATA['NAME'] + '.' + TABLE_SHORT
+    ID = 'id'
+    COUNTRY = 'country'
+    COUNTRY_CODE = 'country_code'
+    LENGTH = 'length'
+    DUMP = None
 
 
 ##################################################################################
@@ -350,7 +362,9 @@ class DAT_SYS_SCRIPT_RESULT:
 from data_base_driver.dump.dump_obj import DUMP_OBJ
 from data_base_driver.dump.dump_key import DUMP_KEY
 from data_base_driver.dump.dump_owner import DUMP_OWNER
+from data_base_driver.dump.dump_phone_number import DUMP_PHONE_NUMBER_FORMAT
 
 DAT_SYS_OBJ.DUMP = DUMP_OBJ()
 DAT_SYS_KEY.DUMP = DUMP_KEY()
 DAT_OWNER.DUMP = DUMP_OWNER()
+DAT_SYS_PHONE_NUMBER_FORMAT.DUMP = DUMP_PHONE_NUMBER_FORMAT()

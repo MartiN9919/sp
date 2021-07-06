@@ -2,7 +2,7 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.db import models
 from data_base_driver.constants.const_dat import DAT_SYS_OBJ, DAT_SYS_LIST_TOP, DAT_SYS_KEY, DAT_SYS_LIST_DOP, \
-    DAT_SYS_KEY_GROUP
+    DAT_SYS_KEY_GROUP, DAT_SYS_PHONE_NUMBER_FORMAT
 
 
 class ModelObject(models.Model):
@@ -150,6 +150,28 @@ class ModelKeyGroup(models.Model):
         db_table = DAT_SYS_KEY_GROUP.TABLE_SHORT
         verbose_name = "Группа классификатора"
         verbose_name_plural = "Группа классификатора"
+
+
+class ModelPhoneNumberFormat(models.Model):
+    country = models.CharField(
+        max_length=50,
+        verbose_name='Страна принадлежности',
+        help_text='К какой стране относится этот номер',
+    )
+    country_code = models.IntegerField(
+        verbose_name='Код страны',
+        help_text='Набор цифр составляющих код страны',
+    )
+    length = models.IntegerField(
+        verbose_name='Длинна номера',
+        help_text='С учетом кода страны',
+    )
+
+    class Meta:
+        managed = False
+        db_table = DAT_SYS_PHONE_NUMBER_FORMAT.TABLE_SHORT
+        verbose_name = "Формат телефонный номеров"
+        verbose_name_plural = "Формат телефонный номеров"
 
 
 class ModelKey(models.Model):

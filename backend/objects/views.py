@@ -82,7 +82,10 @@ def aj_object(request):
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
-            result = add_data(group_id=group_id, object=data)
+            try:
+                result = add_data(group_id=group_id, object=data)
+            except Exception as e:
+                return JsonResponse({'data': e.args[0]}, status=403)
             if result.get('status', -1) != -1:
                 return JsonResponse({'data': result}, status=200)
             else:
