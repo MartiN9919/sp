@@ -15,7 +15,7 @@
     <v-window-item key="selectObject" value="selectObject" eager>
       <select-object
         :header='"Выберете объект для связи с объектом: \"" + titleObject(object.object_id) + "\""'
-        :listItems="listOfPrimaryObjects"
+        :listItems="filteredListOfPrimaryObjects(object.object_id)"
         :is-actual="isActualStatus" @isActual="isActualStatus = $event"
         :selected-object="selectedObject" @selectedObject="selectedObject = $event"
         @stepNext="getRelationsForSelectObject(object.object_id, 'selectRelation')"
@@ -33,10 +33,11 @@
         @stepNext="createRelatedObject" @stepBack="changeWindow('selectObject', true)"
       ></select-relation>
     </v-window-item>
-    <v-window-item key="changeObject" value="changeObject" eager>
+    <v-window-item key="changeObject" value="changeObject" v-if="parentObject" eager>
       <select-object
         header='Если вам необходимо - измените тип объекта' stepBack="menuItemSelection"
-        :listItems="listOfPrimaryObjects" :is-actual="isActualStatus" @isActual="isActualStatus = $event"
+        :listItems="filteredListOfPrimaryObjects(parentObject.object_id)"
+        :is-actual="isActualStatus" @isActual="isActualStatus = $event"
         :selected-object="selectedObject" @selectedObject="selectedObject = $event"
         :disable-selected-object="!!object.rels.length"
         @stepNext="getRelationsForSelectObject(parentObject.object_id, 'changeRelation')"
@@ -97,7 +98,7 @@ export default {
     changeWindow (stepNext, stepBack=false) {
       if (stepNext === 'menuItemSelection') {
         this.isActualStatus = false
-        this.selectedObject = this.listOfPrimaryObjects[0]
+        this.selectedObject = this.filteredListOfPrimaryObjects(this.object.object_id)[0]
         this.selectedRelation = this.getRelations(this.object.object_id)[0]
         this.selectedRelationListItem = this.getListRelationItems[0]
         this.dateTimeStart = { date: '', time: '' }
@@ -113,8 +114,9 @@ export default {
         }
       }
       if (stepNext === 'changeObject' && !stepBack) {
+        let filteredList = this.filteredListOfPrimaryObjects(this.parentObject.object_id)
         this.isActualStatus = this.object.actual
-        this.selectedObject = this.listOfPrimaryObjects.find(primary => primary.id === this.object.object_id)
+        this.selectedObject = filteredList.find(primary => primary.id === this.object.object_id)
       }
       if (stepNext === 'changeRelation') {
         let findRelation = this.relationObject(this.object.rel.id)
@@ -144,6 +146,13 @@ export default {
       this.stepWindowStyle = stepNext
     },
     titleObject: function (id) { return this.primaryObject(id)?.title_single },
+    filteredListOfPrimaryObjects (objectId) {
+      let filteredListOfPrimaryObjects = []
+      for (let item of this.listOfPrimaryObjects)
+        if (item.rels.includes(objectId))
+          filteredListOfPrimaryObjects.push(item)
+      return filteredListOfPrimaryObjects
+    },
     getRelationsForSelectObject(parentObjectId, stepNext) {
       this.getRelationsForObjects({
         params: { object_1_id: parentObjectId, object_2_id: this.selectedObject.id, },

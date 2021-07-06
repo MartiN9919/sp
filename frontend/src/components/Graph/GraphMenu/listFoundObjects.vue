@@ -32,7 +32,13 @@
                     readonly hide-details rows="1" auto-grow
                     :label="getClassifier(findObject.object_id, param.id).title"
                     v-model="param.value" color="teal" class="pb-2" v-on="on"
-                  ></v-textarea>
+                  >
+                    <template v-slot:append="">
+                      <v-btn v-if="param.old.length" icon>
+                        <v-icon>mdi-arrow-bottom-right-bold-outline</v-icon>
+                      </v-btn>
+                    </template>
+                  </v-textarea>
                 </template>
                 <p class="text-formatter-for-window-size additional-text text-justify ma-0">
                   {{getClassifierHint(findObject.object_id, param.id)}}
@@ -73,12 +79,9 @@ export default {
     },
     toggle(id) {
       const index = this.opened.indexOf(id);
-      if (index > -1) {
-        this.opened.splice(index, 1)
-      } else {
-        this.opened.push(id)
-      }
-    }
+      if (index > -1) this.opened.splice(index, 1)
+      else this.opened.push(id)
+    },
   },
 }
 </script>
