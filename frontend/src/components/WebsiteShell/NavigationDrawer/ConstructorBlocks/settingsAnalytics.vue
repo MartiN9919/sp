@@ -42,11 +42,6 @@
         ></text-input>
       </v-row>
       <v-row v-else no-gutters class="align-center noselect pb-3" v-on="on">
-<!--        <selector-input-->
-<!--          :title="title"-->
-<!--          v-model="value"-->
-<!--          :list="list"-->
-<!--        ></selector-input>-->
         <v-select
           :items="list" autocomplete="off" :label="title" attach v-model="value"
           :menu-props="{offsetY: true, maxWidth: '100%', minWidth: '100%'}"
