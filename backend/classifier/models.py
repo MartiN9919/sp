@@ -224,7 +224,7 @@ class ModelKey(models.Model):
         max_length=50,
         verbose_name='Имя классификатора',
     )
-    hint = models.CharField(
+    hint = models.TextField(
         max_length=255,
         verbose_name='Всплывающая подсказка',
         help_text='Дополнительная информация для пользователя, который будет вносить данные',

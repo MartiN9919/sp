@@ -31,6 +31,11 @@
           v-model="value"
         ></number-input>
         <text-input
+          v-else-if="type === 'phone_number'"
+          :title="title"
+          v-model="value"
+        ></text-input>
+        <text-input
           v-else-if="type === 'text'"
           :title="title"
           v-model="value"

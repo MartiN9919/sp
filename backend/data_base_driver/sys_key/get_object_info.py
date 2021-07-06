@@ -1,14 +1,23 @@
 import copy
 
-from data_base_driver.constants.const_dat import DAT_SYS_OBJ
+from data_base_driver.constants.const_dat import DAT_SYS_OBJ, DAT_SYS_KEY
 
 
 ###########################################
 # СПИСОК ОБЪЕКТОВ
 ###########################################
 def obj_list():
-    return [item for item in sorted(copy.deepcopy(DAT_SYS_OBJ.DUMP.get_all()), key=lambda x: x[DAT_SYS_OBJ.TITLE])
+    temp_list = [item for item in sorted(copy.deepcopy(DAT_SYS_OBJ.DUMP.get_all()), key=lambda x: x[DAT_SYS_OBJ.TITLE])
             if item.get('id') != 1]
+    keys = DAT_SYS_KEY.DUMP.get_rec(obj_id=1, only_first=False)
+    for temp in temp_list:
+        temp_rels = []
+        temp_keys_1 = list(set([key['rel_obj_2_id'] for key in keys if key['rel_obj_1_id'] == temp['id']]))
+        temp_keys_2 = list(set([key['rel_obj_1_id'] for key in keys if key['rel_obj_2_id'] == temp['id']]))
+        temp_rels.extend(temp_keys_1)
+        temp_rels.extend(temp_keys_2)
+        temp['rels'] = temp_rels
+    return temp_list
 
 
 # из rel-записей получить множество obj_id/rec_id: {(25, 34), (20, 1), (25, 33)}

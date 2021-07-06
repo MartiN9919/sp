@@ -85,7 +85,7 @@ def aj_object(request):
             try:
                 result = add_data(group_id=group_id, object=data)
             except Exception as e:
-                return JsonResponse({'data': e.args[0]}, status=403)
+                return JsonResponse({'data': e.args[0]}, status=452)
             if result.get('status', -1) != -1:
                 return JsonResponse({'data': result}, status=200)
             else:

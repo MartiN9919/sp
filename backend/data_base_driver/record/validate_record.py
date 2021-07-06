@@ -46,8 +46,8 @@ def validate_phone_number(phone_number):
 def validate_record(record):
     """
     Функция для проверки правильности вносимой записи
-    @param record:
-    @return:
+    @param record: вносимая запись
+    @return: True - если запись корректна, исключение с тестом объясняющим ошибку
     """
     key = get_key_by_id(record['id'])
     if key['type'] == 'phone_number' and not validate_phone_number(record['value']):
