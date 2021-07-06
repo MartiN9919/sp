@@ -29,16 +29,24 @@
               >
                 <template v-slot:activator="{ on }">
                   <v-textarea
+                    v-if="!param.old.length"
                     readonly hide-details rows="1" auto-grow
                     :label="getClassifier(findObject.object_id, param.id).title"
                     v-model="param.value" color="teal" class="pb-2" v-on="on"
+                  ></v-textarea>
+                  <v-select
+                    v-else
+                    :items="[{ value: param.value, date: param.date }].concat(param.old)"
+                    v-model="param.value" autocomplete="off" attach item-text="value"
+                    :label="getClassifier(findObject.object_id, param.id).title"
+                    :menu-props="{offsetY: true, maxWidth: '100%', minWidth: '100%', closeOnClick: true}"
+                    append-icon="mdi-format-list-bulleted" placeholder="Выберете необходимое значение"
+                    hide-details class="pb-2" color="teal" type="text" item-color="teal"
                   >
-                    <template v-slot:append="">
-                      <v-btn v-if="param.old.length" icon>
-                        <v-icon>mdi-arrow-bottom-right-bold-outline</v-icon>
-                      </v-btn>
+                    <template v-slot:item="{ item }">
+                      <v-list-item @click="" class="py-1">{{item.value}}</v-list-item>
                     </template>
-                  </v-textarea>
+                  </v-select>
                 </template>
                 <p class="text-formatter-for-window-size additional-text text-justify ma-0">
                   {{getClassifierHint(findObject.object_id, param.id)}}
