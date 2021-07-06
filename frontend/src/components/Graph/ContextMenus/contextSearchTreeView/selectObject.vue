@@ -6,8 +6,8 @@
     <v-divider></v-divider>
     <v-card-text class="px-4 py-2">
       <v-autocomplete
-        :items="listItems" item-text="title" v-model="selected" return-object
-        hide-details color="teal" hide-no-data item-color="teal" class="pt-0"
+        :items="listItems" item-text="title" v-model="selected" :disabled="disableSelectedObject"
+        return-object hide-details color="teal" hide-no-data item-color="teal" class="pt-0"
       ></v-autocomplete>
       <v-switch
         v-model="isActualStatus" outlined hide-details color="teal"
@@ -30,6 +30,7 @@ export default {
     header: { type: String, default: null },
     selectedObject: { type: Object, default: null },
     isActual: { type: Boolean, default: false },
+    disableSelectedObject: { type: Boolean, default: false },
   },
   computed: {
     selected: {
