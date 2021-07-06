@@ -2,9 +2,9 @@
   <v-row no-gutters>
     <v-col>
       <v-menu
-        :close-on-content-click="false"
+        v-model=menuDate :close-on-content-click="false"
         offset-x offset-y z-index="10001" bottom right
-        nudge-left="290"
+        nudge-left="290" ref="menuDate"
         transition="slide-x-reverse-transition"
         min-width="auto" fixed>
         <template v-slot:activator="{ on }">
@@ -20,18 +20,21 @@
           ></v-textarea>
         </template>
         <v-date-picker
+          v-if="menuDate"
           v-model="value.date"
           show-adjacent-months
           first-day-of-week="1"
           color="teal" locale="ru"
+          @click:date="$refs.menuDate.save()"
         ></v-date-picker>
       </v-menu>
     </v-col>
     <v-col class="pl-4">
       <v-menu
         :close-on-content-click="false"
+        v-model="menuTime"
         offset-x offset-y z-index="10001" bottom right
-        nudge-left="290"
+        nudge-left="290" ref="menuTime"
         transition="slide-x-reverse-transition"
         min-width="auto" fixed>
         <template v-slot:activator="{ on }">
@@ -47,8 +50,10 @@
           ></v-textarea>
         </template>
         <v-time-picker
+          v-if="menuTime"
           v-model="value.time"
           scrollable
+          @click:minute="$refs.menuTime.save()"
           color="teal" format="24hr"
         ></v-time-picker>
       </v-menu>
@@ -65,6 +70,10 @@ export default {
     inputString: [String, Object, ],
   },
   model: { prop: 'inputString', event: 'changeInputString', },
+  data: () => ({
+    menuDate: false,
+    menuTime: false,
+  }),
   computed: {
     value: {
       get: function () { return this.inputString ? this.inputString : '' },
