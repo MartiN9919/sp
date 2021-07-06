@@ -48,7 +48,7 @@
     <context-menu v-if="typeMenu === typeContextMenu">
       <context-search-tree-view
         :parent-object="typeMenu === treeItems ? null : findParentObject()" :object="typeMenu"
-        @createNewRelation="createNewRelation" @selectMenuItemTreeView="selectMenuItem" @changeObject="changeRelation"
+        @createNewRelation="createNewRelation" @selectMenuItemTreeView="selectMenuItem"
       ></context-search-tree-view>
     </context-menu>
   </div>
@@ -74,11 +74,7 @@ export default {
       get: function () { return this.searchTree },
       set: function (tree) { this.$emit('changeSearchTree', tree) },
     },
-    // typeMenu: function () { return this.contextMenu.typeMenu },
-    typeMenu: {
-      get: function () { return this.contextMenu.typeMenu },
-      set: function (value) { this.contextMenu.typeMenu = value },
-    }
+    typeMenu: function () { return this.contextMenu.typeMenu },
   },
   methods: {
     labelObject (item) {
@@ -102,34 +98,20 @@ export default {
       return { start: dateTimeStart, end: dateTimeEnd }
     },
     createNewRelation(selectedProperties) {
+      let rel = {
+        id: selectedProperties.selectedRelation ? selectedProperties.selectedRelation.id : 0,
+        value: selectedProperties.value,
+        date_time_start: selectedProperties.date_time_start,
+        date_time_end: selectedProperties.date_time_end,
+      }
       this.typeMenu.rels.unshift({
         object_id: selectedProperties.selectedObject.id,
         actual: selectedProperties.actual,
-        rel: {
-          id: selectedProperties.selectedRelation ? selectedProperties.selectedRelation.id : 0,
-          value: selectedProperties.value,
-          date_time_start: selectedProperties.date_time_start,
-          date_time_end: selectedProperties.date_time_end,
-        },
         request: '',
+        rel: rel,
         rels: [],
       },)
       this.openObject.push(this.typeMenu)
-      this.deactivateContextMenu()
-    },
-    changeRelation(selectedProperties) {
-      this.typeMenu = {
-        object_id: selectedProperties.selectedObject.id,
-        actual: selectedProperties.actual,
-        rel: {
-          id: selectedProperties.selectedRelation ? selectedProperties.selectedRelation.id : 0,
-          value: selectedProperties.value,
-          date_time_start: selectedProperties.date_time_start,
-          date_time_end: selectedProperties.date_time_end,
-        },
-        request: '',
-        rels: [],
-      }
       this.deactivateContextMenu()
     },
     selectMenuItem (item) {
