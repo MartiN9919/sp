@@ -42,7 +42,7 @@ export default {
       let findObject = getActiveObject(rootState)
       let request = { object_id: findObject.object_id, rec_id: findObject.rec_id, params: findObject.params, }
       return postResponseAxios('objects/object', request, config)
-        .then(response => { console.log(response) })
+        .then(response => { findObject.rec_id = response.data.rec_id })
         .catch(() => {})
     },
   }

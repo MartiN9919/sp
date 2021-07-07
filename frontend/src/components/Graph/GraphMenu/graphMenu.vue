@@ -17,6 +17,7 @@
       <list-found-objects
         v-if="windowActiveObject === 'searchTree'"
         :object="object"
+        @changeFindObject="changeFindObject(object, $event)"
       ></list-found-objects>
       <creator-object
         v-if="windowActiveObject === 'createObject'"
@@ -44,6 +45,11 @@ export default {
     }
   },
   methods: {
+    changeFindObject(object, findObject) {
+      object.params = findObject.params
+      object.rec_id = findObject.rec_id
+      object.activeWindow = 'createObject'
+    },
     findObject () {
       this.$store.dispatch('findObjectsOnServer')
     },
