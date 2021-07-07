@@ -37,9 +37,9 @@ def aj_list_classifier(request):
         try:
             return JsonResponse({'data': get_keys_by_object(request.GET['object_id'])}, status=200)
         except:
-            return JsonResponse({'status': 'неверный номер объекта'}, status=404)
+            return JsonResponse({'status': 'неверный номер объекта'}, status=496)
     else:
-        return JsonResponse({'status': 'неверный тип запроса'}, status=400)
+        return JsonResponse({'status': 'неверный тип запроса'}, status=480)
 
 
 @login_check
@@ -56,9 +56,9 @@ def aj_list_rels(request):
             return JsonResponse({'data': get_relations_list(request.GET['object_1_id'], request.GET['object_2_id'])},
                                 status=200)
         except:
-            return JsonResponse({'status': 'некорректные id объектов'}, status=404)
+            return JsonResponse({'status': 'некорректные id объектов'}, status=496)
     else:
-        return JsonResponse({'status': 'неверный тип запроса'}, status=400)
+        return JsonResponse({'status': 'неверный тип запроса'}, status=480)
 
 
 @login_check
@@ -78,22 +78,22 @@ def aj_object(request):
             return JsonResponse({'data': get_object_record_by_id_http(object_id=request.GET['object_id'],
                                                                       rec_id=request.GET['record_id'])}, status=200)
         except:
-            return JsonResponse({'status': 'неверный номер объекта'}, status=404)
+            return JsonResponse({'status': 'неверный номер объекта'}, status=496)
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
-            try:
-                result = add_data(group_id=group_id, object=data)
-            except Exception as e:
-                return JsonResponse({'data': e.args[0]}, status=452)
+            result = add_data(group_id=group_id, object=data)
             if result.get('status', -1) != -1:
                 return JsonResponse({'data': result}, status=200)
             else:
-                return JsonResponse({'data': 'ошибка добавления'}, status=403)
-        except:
-            return JsonResponse({'data': 'ошибка добавления'}, status=403)
+                return JsonResponse({'data': 'ошибка добавления'}, status=497)
+        except Exception as e:
+            if e.args[0] == 1:
+                return JsonResponse({'data': ''}, status=452)
+            else:
+                return JsonResponse({'data': 'ошибка добавления'}, status=498)
     else:
-        return JsonResponse({'data': 'неизвестный тип запроса'}, status=404)
+        return JsonResponse({'data': 'неизвестный тип запроса'}, status=480)
 
 
 @login_check
@@ -115,9 +115,9 @@ def aj_relation(request):
                     val=data.get('val'), date_time=data.get('date_time'))
             return JsonResponse({'data': 'связь добавлена'}, status=200)
         except:
-            return JsonResponse({'data': 'ошибка добавления'}, status=403)
+            return JsonResponse({'data': 'ошибка добавления'}, status=497)
     else:
-        return JsonResponse({'data': 'неизвестный тип запроса'}, status=404)
+        return JsonResponse({'data': 'неизвестный тип запроса'}, status=480)
 
 
 @login_check
@@ -134,9 +134,9 @@ def aj_search_objects(request):
             data = json.loads(request.body)
             return JsonResponse({'data': search(data)}, status=200)
         except:
-            return JsonResponse({'status': ' ошибочный запрос'}, status=404)
+            return JsonResponse({'status': ' ошибочный запрос'}, status=496)
     else:
-        return JsonResponse({'data': 'неизвестный тип запроса'}, status=404)
+        return JsonResponse({'data': 'неизвестный тип запроса'}, status=480)
 
 
 @login_check
@@ -155,4 +155,4 @@ def aj_set_geometry(request):
                                                             ['location', geometry_object['geometry']]])
         return JsonResponse({'data': 'изменено'}, status=200)
     except:
-        return JsonResponse({'data': 'ошибка добавления'}, status=403)
+        return JsonResponse({'data': 'ошибка добавления'}, status=480)
