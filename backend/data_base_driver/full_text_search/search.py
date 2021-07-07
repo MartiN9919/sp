@@ -63,11 +63,15 @@ def recursion_search(request):
                 result['rec_ids'] = temp_set
             else:
                 result['rec_ids'].intersection_update(temp_set)
-            result['old_result'].append({'object_id': rel.get(FullTextSearch.OBJECT_ID, None),
-                                         'rec_ids': find_reliable_http(
-                                             FullTextSearch.TABLES[rel.get(FullTextSearch.OBJECT_ID, None)],
-                                             rel.get(FullTextSearch.REQUEST, None),
-                                             rel.get(FullTextSearch.ACTUAL, False))})
+            if rel.get(FullTextSearch.REQUEST, None) == '':
+                result['old_result'].append({'object_id': rel.get(FullTextSearch.OBJECT_ID, None),
+                                             'rec_ids': []})
+            else:
+                result['old_result'].append({'object_id': rel.get(FullTextSearch.OBJECT_ID, None),
+                                             'rec_ids': find_reliable_http(
+                                                 FullTextSearch.TABLES[rel.get(FullTextSearch.OBJECT_ID, None)],
+                                                 rel.get(FullTextSearch.REQUEST, None),
+                                                 rel.get(FullTextSearch.ACTUAL, False))})
         else:
             if len(request.get(FullTextSearch.REQUEST, None)) == 0:
                 main_object_ids = [0]
