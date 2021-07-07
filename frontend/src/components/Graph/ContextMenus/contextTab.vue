@@ -12,25 +12,17 @@
 <script>
 export default {
   name: "customAppBarCM",
-  data: () => ({
-    bodyRightClickMenu: [
-      {
-        id: 2,
-        title: 'Создать новый объект',
-        icon: 'mdi-plus',
-      },
-      {
-        id: 3,
-        title: 'Найти объект',
-        icon: 'mdi-magnify',
-      },
-      {
-        id: 0,
-        title: 'Закрыть вкладку',
-        icon: 'mdi-close',
-      },
-    ],
-  }),
+  props: { activatedObject: Boolean },
+  computed: {
+    bodyRightClickMenu: function () {
+      let bodyMenu = [{ id: 0, title: 'Закрыть вкладку', icon: 'mdi-close' }]
+      if (!this.activatedObject) {
+        bodyMenu.push({ id: 2, title: 'Создать новый объект', icon: 'mdi-plus' })
+        bodyMenu.push({ id: 3, title: 'Найти объект', icon: 'mdi-magnify' })
+      }
+      return bodyMenu
+    }
+  }
 }
 </script>
 
