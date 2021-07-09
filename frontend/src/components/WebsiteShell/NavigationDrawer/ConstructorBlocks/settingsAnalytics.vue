@@ -42,16 +42,17 @@
         ></text-input>
       </v-row>
       <v-row v-else no-gutters class="align-center noselect pb-3" v-on="on">
-        <v-select
+        <v-autocomplete
           :items="list" autocomplete="off" :label="title" attach v-model="value"
           :menu-props="{offsetY: true, maxWidth: '100%', minWidth: '100%'}"
+          no-data-text="Ничего не найдено"
           append-icon="mdi-format-list-bulleted" placeholder="Выберете необходимое значение"
           hide-details class="pt-0 mt-0 leaflet-grab" color="teal" type="text" item-color="teal"
         >
           <template v-slot:item="{ item }">
             <div class="py-1">{{item}}</div>
           </template>
-        </v-select>
+        </v-autocomplete>
       </v-row>
     </template>
     <p class="text-formatter-for-window-size additional-text text-justify ma-0">

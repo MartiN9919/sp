@@ -60,7 +60,7 @@ def add_data(group_id, object):
                 else:
                     temp_set = set(find_key_value_http(object.get('object_id'), item[0], item[1]))
         if len(temp_set) != 0:
-            return {'status': 2, 'objects': [get_object_record_by_id_http(item) for item in temp_set]}
+            return {'status': 2, 'objects': [get_object_record_by_id_http(object.get('object_id'), item) for item in temp_set]}
     result = add_record(group_id=group_id, object_id=object.get('object_id'), object_info=data)
     if result != -1:
         return {'status': 1,

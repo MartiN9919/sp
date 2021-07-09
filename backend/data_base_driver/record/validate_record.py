@@ -49,9 +49,11 @@ def validate_record(record):
     @param record: вносимая запись
     @return: True - если запись корректна, исключение с тестом объясняющим ошибку
     """
+    if len(record['value']) == 0:
+        return False
     key = get_key_by_id(record['id'])
     if key['type'] == 'phone_number' and not validate_phone_number(record['value']):
-        raise Exception('Некорректный формат номера телефона')
+        raise Exception(1, 'Некорректный формат номера телефона')
     return True
 
 

@@ -89,7 +89,7 @@ def get_object_record_by_id_http(object_id, rec_id):
                        'old': []})
 
     for item in params:
-        item['old'].sort(key=lambda x: x['date'])
+        item['old'].sort(key=lambda x: x['date'], reverse=True)
 
     return {'object_id': object_id, 'rec_id': rec_id, 'params': params}
 

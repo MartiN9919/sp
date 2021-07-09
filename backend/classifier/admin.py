@@ -1,12 +1,8 @@
-from django import forms
 from django.contrib import admin
 from django.contrib.admin import RelatedFieldListFilter
 from django.core.exceptions import ValidationError
 from django.db.models import Q
-from django.db import models
-
-from .models import ModelKey, ModelObject, ModelList, ModelListDop, ModelPhoneNumberFormat
-
+from classifier.models import ModelKey, ModelObject, ModelList, ModelListDop, ModelPhoneNumberFormat
 from data_base_driver.constants.const_admin import PROJECT_TITLE_ADMIN
 from data_base_driver.constants.const_dat import DAT_SYS_KEY, DAT_SYS_OBJ, DAT_SYS_LIST_TOP, DAT_SYS_PHONE_NUMBER_FORMAT
 
