@@ -97,17 +97,10 @@ def get_validate_request(key_id, rec_id_1, rec_id_2):
 
 
 def get_seconds_from_request_data_time(date_time_start, date_time_end):
-    date_time_1_str = ''
-    if len(date_time_start) == 0:
+    if not date_time_start:
         date_time_1_str = '0001-01-01 00:00:00'
-    if len(date_time_start.split('-')) > 1:
-        date_time_1_str += date_time_start.split(' ')[0]
-    if len(date_time_start.split(':')) > 1 and len(date_time_start.split('-')) > 1:
-        date_time_1_str += ' ' + date_time_start.split(' ')[1] + ':00'
-    elif len(date_time_start.split(':')) > 1 and len(date_time_start.split('-')) == 1:
-        date_time_1_str += '0001-01-01 ' + date_time_start.split(' ')[0] + ':00'
-    elif len(date_time_start) != 0:
-        date_time_1_str += ' 00:00:00'
+    else:
+        date_time_1_str = date_time_start + ':00'
     date_time_2_str = date_time_end + ':00'
     date_time_1 = datetime.datetime.strptime(date_time_1_str, "%Y-%m-%d %H:%M:%S")
     days = date_time_1.date().toordinal() + 365
