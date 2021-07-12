@@ -89,7 +89,7 @@ export default {
     MAP_MUT_CENTER_Y:          (state, val)  => state.center_y   = val,
     MAP_MUT_ZOOM:              (state, val)  => state.zoom       = val,
 
-    MAP_MUT_EDIT:              (state, data) => { state.edit = data || { "type": "FeatureCollection", "features": [], }; },
+    MAP_MUT_EDIT:              (state, data) => state.edit       = data, // data || { "type": "FeatureCollection", "features": [], },
   },
 
 
