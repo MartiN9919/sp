@@ -1,23 +1,22 @@
 <template>
   <div @contextmenu.stop="contextMenu = { event: $event, typeMenu: 'creatorObject' + object.tempId }">
-    <div class="mt-3">
-      <v-form ref="form" v-model="valid" lazy-validation>
-        <creator-form
-          v-for="(classifier, key) in object.params" :key="key"
-          v-model="classifier.value" :work-area-id="object.tempId"
-          :classifier="getClassifier(object.object_id, classifier.id)"
-          @contextmenu.native.stop="contextMenu = { event: $event,  typeMenu: getNameContextInput(classifier.id) }"
-          @observer="classifier.changed = $event" class="px-3"
-        >
-          <context-menu v-if="getNameContextInput(classifier.id) === typeContextMenu">
-            Удалить {{typeContextMenu}}
-          </context-menu>
-        </creator-form>
-      </v-form>
-      <v-btn @click.right.stop="" @click="saveObject" outlined color="teal" class="save-btn mt-3">
-        Временная кнопка сохранения объекта
+    <v-form ref="form" v-model="valid" lazy-validation>
+      <creator-form
+        v-for="(classifier, key) in object.params" :key="key" class="px-3 pt-3"
+        v-model="classifier.value" @observer="classifier.changed = $event"
+        :classifier="getClassifier(object.object_id, classifier.id)"
+        @contextmenu.native.stop="contextMenu = { event: $event,  typeMenu: getNameContextInput(classifier.id) }"
+      >
+        <context-menu v-if="getNameContextInput(classifier.id) === typeContextMenu">
+          Удалить {{typeContextMenu}}
+        </context-menu>
+      </creator-form>
+      <v-btn @click.right.stop="" @click="saveObject" outlined color="teal" class="mt-3 mx-12 no-text-transform">
+        <span style="white-space: normal;">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam nec dapibus augue.
+          </span>
       </v-btn>
-    </div>
+    </v-form>
     <context-menu v-if="typeContextMenu === 'creatorObject' + object.tempId">
       <context-creator-object
         :object-id="object.object_id" :classifiers="object.params" @selectClassifier="selectClassifier"
@@ -52,7 +51,7 @@ export default {
       })
       this.deactivateContextMenu()
     },
-    getNameContextInput(classifierId) { return classifierId.toString() + this.object.tempId.toString() },
+    getNameContextInput(classifierId) { return this.object.tempId.toString() + classifierId.toString() },
     saveObject () {
       if (this.$refs.form.validate())
         this.$store.dispatch('createNewObjectFromServer')

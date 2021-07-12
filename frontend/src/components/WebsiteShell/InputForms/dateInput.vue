@@ -1,31 +1,19 @@
 <template>
   <v-menu
-    :close-on-content-click="false"
-    offset-x offset-y z-index="10001" bottom right
-    nudge-left="290"
-    transition="slide-x-reverse-transition"
-    min-width="auto" fixed>
+    :close-on-content-click="false" ref="menuDate" transition="slide-x-reverse-transition"
+    offset-x offset-y bottom right fixed z-index="10001" min-width="auto" nudge-left="290"
+  >
     <template v-slot:activator="{ on }">
       <v-textarea
-        row-height="1" auto-grow
-        autocomplete="off"
-        append-icon="mdi-calendar"
-        v-model="value"
-        :rules="rules"
-        :label="title"
-        placeholder="Выберете необходимую дату"
-        hide-details readonly class="pt-0 mt-0" color="teal" type="text"
-        v-on="on"
+        v-model="value" v-on="on" :rules="rules" :label="title"
+        autocomplete="off" append-icon="mdi-calendar" row-height="1" auto-grow
+        hide-details readonly class="pt-0 mt-0" color="teal" type="text" placeholder="Выберете необходимую дату"
       ></v-textarea>
     </template>
-    <v-card>
-      <v-date-picker
-        v-model="value"
-        show-adjacent-months
-        first-day-of-week="1"
-        color="teal" locale="ru"
-      ></v-date-picker>
-    </v-card>
+    <v-date-picker
+      v-model="value" @click:date="$refs.menuDate.save()"
+      show-adjacent-months first-day-of-week="1" color="teal" locale="ru"
+    ></v-date-picker>
   </v-menu>
 </template>
 
@@ -41,8 +29,8 @@ export default {
   computed: {
     value: {
       get: function () { return this.inputString },
-      set: function (value) { this.$emit('changeInputString', value) }
-    }
+      set: function (value) { this.$emit('changeInputString', value) },
+    },
   },
 }
 </script>
