@@ -5,6 +5,7 @@ export default {
   },
   getters: {
     workAreaOfObjects: state => { return state.workAreaOfObjects },
+    workAreaOfObject: state => id => { return state.workAreaOfObjects.find(object => object.tempId === id) },
     activeObject: state => { return state.workAreaOfObjects.find(object => object.tempId === state.activeObjectId) },
     foundObjects: state => id => { return state.workAreaOfObjects.find(object => object.tempId === id).foundObjects },
     windowActiveObject: state => {

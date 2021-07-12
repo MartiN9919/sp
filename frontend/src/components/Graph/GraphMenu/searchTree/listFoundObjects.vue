@@ -1,15 +1,15 @@
 <template>
-  <v-simple-table class="mx-3 my-5 elevation-13" fixed-header>
+  <v-simple-table fixed-header class="elevation-20 simple-table" height="100%">
     <template v-slot:default>
       <thead>
         <tr>
           <th
-            v-for="classifier in listOfClassifiersOfObjects(object.object_id)"
-            v-if="classifier.need === 1" :key="classifier.name" class="text-left"
+            v-for="classifier in listOfClassifiersOfObjects(object.object_id)" :key="classifier.name"
+            v-if="classifier.need === 1" class="text-left header-table"
           >
             <span class="font-weight-medium text-uppercase">{{classifier.title}}</span>
           </th>
-          <th>
+          <th class="header-table text-right">
             <span class="font-weight-medium text-uppercase">Выбрать</span>
           </th>
         </tr>
@@ -23,7 +23,7 @@
             >
               <span>{{checkClassifierForNeeded(findObject.params, classifier.id)}}</span>
             </td>
-            <td>
+            <td class="text-right">
               <v-btn icon @click.stop="$emit('changeFindObject', findObject)">
                 <v-icon>mdi-check</v-icon>
               </v-btn>
@@ -115,4 +115,12 @@ tr:hover {
 .context-row {
   border-left: 6px outset #00796B;
 }
+.header-table {
+  background-color: #00796B !important;
+  color: white !important;
+}
+.simple-table {
+  border-radius: 0;
+}
+
 </style>

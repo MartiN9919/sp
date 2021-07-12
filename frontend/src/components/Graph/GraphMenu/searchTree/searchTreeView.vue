@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="py-2">
     <v-treeview :items="[treeItems]" item-children="rels" :open="openObject" return-object>
       <template v-slot:label="{ item }">
         <v-tooltip v-if="item !== treeItems" bottom transition="false" color="#00796B" z-index="10001" max-width="30%">
@@ -18,7 +18,7 @@
             <tr><th>Связь</th><td colspan="2">{{ labelRelation(item) }}</td></tr>
             <tr><th rowspan="3">Период</th></tr>
             <tr><th>Дата начала</th><th>Дата конца</th></tr>
-            <tr><td>{{ labelPeriod(item).start }}</td><td>{{ labelPeriod(item).end }}</td></tr>
+            <tr><td>{{ item.rel.date_time_start }}</td><td>{{ item.rel.date_time_end }}</td></tr>
             <tr>
               <th>Поиск по актуальным значениям</th>
               <td colspan="2">
@@ -40,7 +40,7 @@
         </v-text-field>
       </template>
       <template v-slot:append="{ item, open }">
-        <v-btn large icon v-if="item === treeItems" class="mt-2">
+        <v-btn large icon v-if="item === treeItems">
           <v-icon color="teal" @click="$emit('findObject')">mdi-magnify mdi-36px</v-icon>
         </v-btn>
       </template>
@@ -55,9 +55,9 @@
 </template>
 
 <script>
-import contextMenu from "../../WebsiteShell/ContextMenu/contextMenu"
-import toolsContextMenu from "../../WebsiteShell/ContextMenu/Mixins/toolsContextMenu"
-import contextSearchTreeView from "../ContextMenus/contextSearchTreeView/contextSearchTreeView"
+import contextMenu from "../../../WebsiteShell/ContextMenu/contextMenu"
+import toolsContextMenu from "../../../WebsiteShell/ContextMenu/Mixins/toolsContextMenu"
+import contextSearchTreeView from "../../ContextMenus/contextSearchTreeView/contextSearchTreeView"
 
 export default {
   name: "searchTreeView",
@@ -89,13 +89,6 @@ export default {
         if (relationValue) relationValueTitle = '(' + relationValue.value + ')'
       }
       return relationTitle + relationValueTitle
-    },
-    labelPeriod (item) {
-      let startDate = item.rel.date_time_start.date
-      let startTime = item.rel.date_time_start.time
-      let dateTimeStart = startDate || startTime ? startDate + ' ' + startTime : 'с самого начала'
-      let dateTimeEnd = item.rel.date_time_end.date + ' ' + item.rel.date_time_end.time
-      return { start: dateTimeStart, end: dateTimeEnd }
     },
     createNewRelation(selectedProperties) {
       let rel = {

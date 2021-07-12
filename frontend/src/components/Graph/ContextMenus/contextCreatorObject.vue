@@ -22,10 +22,10 @@
               <v-icon>mdi-arrow-left</v-icon>
             </v-btn>
             <v-autocomplete
-                :items="classifiersForObjects(objectId)" item-text="title"
-                v-model="selectedClassifier" hide-details
-                return-object color="teal" hide-no-data
-                class="pa-0 ma-0 pb-2" item-color="teal"
+              :items="items" item-text="title"
+              v-model="selectedClassifier" hide-details
+              return-object color="teal" hide-no-data
+              class="pa-0 ma-0 pb-2" item-color="teal"
             ></v-autocomplete>
             <v-btn icon color="teal" :disabled="!selectedClassifier" @click="selectClassifier">
               <v-icon>mdi-check</v-icon>
@@ -42,7 +42,7 @@ import {mapGetters} from "vuex";
 
 export default {
   name: "contextCreatorObject",
-  props: { objectId: Number, },
+  props: { objectId: Number, classifiers: Array, },
   data: () => ({
     stepWindowStyle: 'menuItemSelection',
     selectedClassifier: null,
@@ -56,6 +56,14 @@ export default {
   }),
   computed: {
     ...mapGetters(['classifiersForObjects', ]),
+    items: function () {
+      let resultClassifiers = []
+      let allClassifiers = this.classifiersForObjects(this.objectId)
+      for (let item of allClassifiers)
+        if (!this.classifiers.find(cl => cl.id === item.id))
+          resultClassifiers.push(item)
+      return resultClassifiers
+    },
   },
   methods: {
     selectClassifier() {

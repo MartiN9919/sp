@@ -12,6 +12,7 @@
         autocomplete="off"
         append-icon="mdi-order-bool-descending-variant"
         v-model="value"
+        :rules="rules"
         :label="title"
         placeholder="Выберете необходимое значение"
         hide-details readonly class="pt-0 mt-0" color="teal" type="text"
@@ -38,6 +39,7 @@
 export default {
   name: "booleanInput",
   props: {
+    rules: Array,
     title: String,
     inputString: Boolean,
   },

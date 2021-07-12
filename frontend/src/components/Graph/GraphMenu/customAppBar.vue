@@ -26,7 +26,10 @@
     </v-card>
     <context-menu v-if="contextMenu.typeMenu === typeContextMenu">
       <v-card>
-        <context-tab :activatedObject="!!activeObject.rec_id" @selectMenuItem="selectMenuItem"></context-tab>
+        <context-tab
+          :activatedObject="activatedObject"
+          @selectMenuItem="selectMenuItem"
+        ></context-tab>
       </v-card>
     </context-menu>
   </v-row>
@@ -55,7 +58,8 @@ export default {
     }
   }),
   computed: {
-    ...mapGetters(['primaryObject', 'activeObject', ])
+    ...mapGetters(['primaryObject', 'workAreaOfObject', ]),
+    activatedObject: function () { return !!this.workAreaOfObject(this.typeContextMenu)?.rec_id }
   },
   methods: {
     ...mapActions(['removeObjectInWorkArea', ]),

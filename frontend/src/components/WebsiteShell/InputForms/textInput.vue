@@ -2,10 +2,10 @@
   <v-textarea
     row-height="1" auto-grow
     autocomplete="off"
-    append-icon="mdi-numeric"
-    :label="title"
+    append-icon="mdi-format-color-text"
     v-model="value"
-    @keypress="isNumber($event)"
+    :label="title"
+    :rules="rules"
     placeholder="Введите необходимое значение"
     hide-details class="pt-0 mt-0" color="teal" type="text"
   ></v-textarea>
@@ -13,8 +13,9 @@
 
 <script>
 export default {
-  name: "numberInput",
+  name: "textInput",
   props: {
+    rules: Array,
     title: String,
     inputString: String,
   },
@@ -25,16 +26,6 @@ export default {
       set: function (value) { this.$emit('changeInputString', value) }
     }
   },
-  methods: {
-    isNumber(event) {
-      if(!this.value) {
-        if (!Number(event.key) && !(event.key === '-'))
-          return event.preventDefault()
-      } else
-        if (!Number(this.value + event.key))
-          return event.preventDefault()
-    }
-  }
 }
 </script>
 
