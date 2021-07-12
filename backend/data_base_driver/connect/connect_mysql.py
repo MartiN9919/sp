@@ -225,11 +225,14 @@ def db_sql(sql, wait=False, read=True, database=VEC_DATA, connection=-1):
         else:
             connection.autocommit(AUTOCOMMIT)
             try:
+                print(sql)
                 connection.query(sql)
+
             except Exception as e:
                 connection_my_sql.free_connection()
                 raise e
-
+            if AUTOCOMMIT:
+                connection.commit()
             ret = []
             ret.append(connection.insert_id())
         if not (db_opened):
@@ -247,6 +250,7 @@ def db_sql(sql, wait=False, read=True, database=VEC_DATA, connection=-1):
             isOk = True
             # logger.debug("OK "+sql[:130])
         except Exception as e:
+            print(e)
             ret = []
             isOk = not wait
             if (iErr < 10) and wait:
