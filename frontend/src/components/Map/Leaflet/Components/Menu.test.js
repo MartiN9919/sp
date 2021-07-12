@@ -4,6 +4,8 @@ import {
 
 export const MAP_TEST_ITEM_1 = {
   //"id": 5,
+  "name": "Test 1",
+  "hint": "Это тест 1",
   "color": "green",  //rgba(255, 190, 218, 0.5)
   "marker": MAP_ITEM.MARKER.FONT,
   "line":   MAP_ITEM.LINE.ANT,
@@ -124,6 +126,8 @@ export const MAP_TEST_ITEM_1 = {
 
 export const MAP_TEST_ITEM_2 = {
   //"id": 6,
+  "name": "Test 2",
+  "hint": "Это тест 2",
   "color": "#923",
   "marker": MAP_ITEM.MARKER.PULSE,
   "fc": {
@@ -204,6 +208,8 @@ export const MAP_TEST_ITEM_2 = {
 
 
 export const MAP_TEST_ITEM_3 = {
+  "name": "Test 3",
+  "hint": "Это тест 3",
   "color": "#443",
   "polygon": MAP_ITEM.POLYGON.GREEN_MIN,
   "fc": {
