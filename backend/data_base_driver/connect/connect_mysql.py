@@ -207,7 +207,6 @@ def db_sql(sql, wait=False, read=True, database=VEC_DATA, connection=-1):
     @return: результат запроса на чтение, либо пустой список если успешная запись, или список с
     строкой 'error' в случае ошибки
     """
-
     def run(connection_my_sql, db_opened, db_reconnect):
         if ((not db_opened) or db_reconnect):
             connection_my_sql = db_connect(database=database)
@@ -227,14 +226,13 @@ def db_sql(sql, wait=False, read=True, database=VEC_DATA, connection=-1):
             try:
                 print(sql)
                 connection.query(sql)
-
             except Exception as e:
                 connection_my_sql.free_connection()
                 raise e
-            if AUTOCOMMIT:
-                connection.commit()
             ret = []
             ret.append(connection.insert_id())
+            if AUTOCOMMIT:
+                connection.commit()
         if not (db_opened):
             connection_my_sql.free_connection()
         return ret
