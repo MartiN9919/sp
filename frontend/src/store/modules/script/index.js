@@ -127,6 +127,7 @@ export default {
           commit('addActiveAnalysts', data)
           commit('SCRIPT_MUT_ITEM_ADD', data.selectedScript)
           commit('changeSelectedTreeViewItem', {})
+          dispatch('MAP_ACT_RANGE_TS')
         })
         .catch(() => {})
     },
