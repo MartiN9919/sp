@@ -73,7 +73,9 @@ export default {
     addActiveAnalysts: (state, playLoad) => {
       playLoad.selectedScript[MAP_ITEM.FC] = playLoad[MAP_ITEM.FC]
       if (playLoad.selectedScript.color === '#696969FF') { playLoad.selectedScript.color = '#FFA500FF' }
-      state.selectedTemplate.activeAnalysts.push(playLoad.selectedScript)
+
+      // см. SCRIPT_MUT_ITEM_ADD
+      // state.selectedTemplate.activeAnalysts.push(playLoad.selectedScript)
     },
     removeAnalytics: (state, analytics) => {
       let checkForAvailability = state.selectedTemplate.passiveAnalysts.indexOf(analytics)
@@ -96,7 +98,6 @@ export default {
     SCRIPT_MUT_ITEM_ADD: (state, item) => {
       if (item.marker===undefined) item.marker = '';
       if (item.color ===undefined) item.color  = '';
-      console.log(1)
       let item_copy = JSON.parse(JSON.stringify(item));        // deep copy
       state.selectedTemplate.activeAnalysts.push(item_copy);
     },
@@ -118,11 +119,13 @@ export default {
     executeMapScript ({ commit }, parameters = {}) {
       return postResponseAxios('script/execute_map/', parameters.request, parameters.config)
         .then(response => {
-          commit('removeAnalytics', parameters.request)
-          commit('addActiveAnalysts', {
+          let data = {
             selectedScript: parameters.request,
             fc: response.data
-          })
+          }
+          commit('removeAnalytics', parameters.request)
+          commit('addActiveAnalysts', data)
+          commit('SCRIPT_MUT_ITEM_ADD', data.selectedScript)
           commit('changeSelectedTreeViewItem', {})
         })
         .catch(() => {})
