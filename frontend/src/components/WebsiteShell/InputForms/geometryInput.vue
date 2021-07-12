@@ -6,6 +6,7 @@
         autocomplete="off"
         append-icon="mdi-map-marker-outline"
         :label="title"
+        :rules="rules"
         v-model="value"
         placeholder="Выберете объект на карте"
         hide-details color="teal" readonly class="pt-0 mt-0" type="text"
@@ -35,6 +36,7 @@ export default {
   name: "geometryInput",
   components: { LeafletEditor, },
   props: {
+    rules: Array,
     title: String,
     inputString: Array,
   },

@@ -6,7 +6,9 @@
     transition="slide-x-reverse-transition"
     :position-x="coordinatesContextMenu.x"
     :position-y="coordinatesContextMenu.y"
-  ><slot></slot></v-menu>
+  >
+    <slot></slot>
+  </v-menu>
 </template>
 
 <script>

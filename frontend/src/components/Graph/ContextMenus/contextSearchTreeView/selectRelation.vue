@@ -6,8 +6,8 @@
     <v-divider></v-divider>
     <v-card-text class="px-4 py-2">
       <v-autocomplete
-        :items="listRelations" item-text="title" v-model="selectedObject" return-object
-        hide-details color="teal" hide-no-data item-color="teal" class="pt-0" :menu-props="{maxWidth: '23em', minWidth: '23em'}"
+        :items="listRelations" item-text="title" v-model="selectedObject" return-object hide-no-data
+        hide-details color="teal" item-color="teal" class="pt-0" :menu-props="{maxWidth: '23em', minWidth: '23em'}"
       ></v-autocomplete>
       <v-autocomplete
         v-if="listRelationItems" v-model="selectedRelationListItem" return-object
@@ -18,31 +18,26 @@
           <div class="my-3">{{item.value}}</div>
         </template>
       </v-autocomplete>
-      <v-list>
-        <v-list-group value="true" color="teal" style="margin: 0 -14px">
-          <template v-slot:activator>
-            <v-list-item-title>Период времени связи</v-list-item-title>
-          </template>
-          <v-list-item  class="pb-1">
-            <v-col class="pa-0">
-            <date-time-input title="начала" v-model="selectedDateTimeStart" class="pt-4"></date-time-input>
-            <date-time-input title="конца" v-model="selectedDateTimeEnd" class="pt-4"></date-time-input>
-            </v-col>
-          </v-list-item>
-        </v-list-group>
-      </v-list>
+      <v-form ref="form" v-model="validDateTimeForm" lazy-validation>
+        <div class="mt-3">
+          <date-time-input title="начала" v-model="selectedDateTimeStart"></date-time-input>
+        </div>
+        <div class="mt-3">
+          <date-time-input title="конца" v-model="selectedDateTimeEnd"></date-time-input>
+        </div>
+      </v-form>
 
     </v-card-text>
     <v-card-actions>
-      <v-btn outlined color="teal" width="40%" @click="$emit('stepBack')">Назад</v-btn>
+      <v-btn outlined color="teal" width="40%" @click="sendActionParent('stepBack')">Назад</v-btn>
       <v-spacer></v-spacer>
-      <v-btn outlined color="teal" width="40%" @click="$emit('stepNext')">Готово</v-btn>
+      <v-btn outlined color="teal" width="40%" @click="sendActionParent('stepNext', true)">Готово</v-btn>
     </v-card-actions>
   </v-card>
 </template>
 
 <script>
-import dateTimeInput from "../../../WebsiteShell/NavigationDrawer/ConstructorBlocks/BlocksForEnteringValues/dateTimeInput"
+import dateTimeInput from "../../../WebsiteShell/InputForms/dateTimeInput"
 
 export default {
   name: "selectRelation",
@@ -53,9 +48,12 @@ export default {
     listRelationItems: { type: Array, default: function () { return null } },
     selectedRelation: { type: Object, default: null },
     selectedRelationItem: { type: Object, default:  function () { return {} } , },
-    dateTimeStart: { type: Object, default: function () { return { date: '', time: '' } } },
-    dateTimeEnd: { type: Object, default: function () { return { date: '', time: '' } } }
+    dateTimeStart: { type: String, default: '' },
+    dateTimeEnd: { type: String, default: '' }
   },
+  data: () => ({
+    validDateTimeForm: true,
+  }),
   computed: {
     selectedObject: {
       get: function () { return this.selectedRelation },
@@ -73,6 +71,14 @@ export default {
       get: function () { return this.dateTimeStart },
       set: function (value) { this.$emit('dateTimeStart', value) },
     }
+  },
+  methods: {
+    sendActionParent(action, validate=false) {
+      if (validate) {
+        if (this.$refs.form.validate())
+          this.$emit(action)
+      } else this.$emit(action)
+    },
   },
   created() {
     this.selectedRelationListItem = this.selectedRelationItem

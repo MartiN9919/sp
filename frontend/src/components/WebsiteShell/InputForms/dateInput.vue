@@ -11,6 +11,7 @@
         autocomplete="off"
         append-icon="mdi-calendar"
         v-model="value"
+        :rules="rules"
         :label="title"
         placeholder="Выберете необходимую дату"
         hide-details readonly class="pt-0 mt-0" color="teal" type="text"
@@ -32,6 +33,7 @@
 export default {
   name: "dateInput",
   props: {
+    rules: Array,
     title: String,
     inputString: String,
   },

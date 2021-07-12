@@ -56,15 +56,24 @@
       <v-scroll-y-transition mode="out-in">
         <div v-if="'id' in selectedItem" :key="selectedItem.id" class="pa-4 py-1">
           <block-header :text-header="'Настройки ' + selectedItem.name" class="pb-3"></block-header>
-          <settingsAnalytics
-            v-for="variable in selectedItem.variables"
-            :variable="variable"
-            v-model="variable.value"
-            :type="variable.type"
-            :title="variable.title"
-            :hint="variable.hint"
-            :key="variable.id"
-          ></settingsAnalytics>
+          <v-tooltip
+            v-for="variable in selectedItem.variables" :key="variable.id"
+            bottom nudge-bottom="-20" z-index="10001"
+            transition="false" color="#00796B" max-width="20%"
+          >
+            <template v-slot:activator="{ on }">
+              <div v-on="on" class="mb-3">
+                <settingsAnalytics
+                  v-model="variable.value" :variable="variable"
+                  :type="variable.type" :title="variable.title"
+                ></settingsAnalytics>
+              </div>
+
+            </template>
+            <p class="text-formatter-for-window-size additional-text text-justify ma-0">
+              {{variable.hint ? variable.hint : 'Описание отсутствует'}}
+            </p>
+          </v-tooltip>
 
           <div class="text-center pt-2">
             <v-btn
@@ -86,14 +95,14 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import ResSplitPane from 'vue-resize-split-pane'
-import treeView from '../WebsiteShell/NavigationDrawer/ConstructorBlocks/treeView'
-import chipAnalytics from '../WebsiteShell/NavigationDrawer/ConstructorBlocks/chipAnalytics'
-import settingsAnalytics from '../WebsiteShell/NavigationDrawer/ConstructorBlocks/settingsAnalytics'
-import menuTemplate from '../WebsiteShell/NavigationDrawer/ConstructorBlocks/menuTemplate'
-import blockHeader from '../WebsiteShell/NavigationDrawer/ConstructorBlocks/blockHeader'
-import CreatorTreeView from '../WebsiteShell/NavigationDrawer/Mixins/CreatorTreeView'
-import ExecutorScripts from '../WebsiteShell/NavigationDrawer/Mixins/ExecutorScripts'
-import SelectedScriptFormatter from '../WebsiteShell/NavigationDrawer/Mixins/SelectedScriptFormatter'
+import treeView from './treeView'
+import chipAnalytics from './chipAnalytics'
+import settingsAnalytics from './settingsAnalytics'
+import menuTemplate from './menuTemplate'
+import blockHeader from './blockHeader'
+import CreatorTreeView from './Mixins/CreatorTreeView'
+import ExecutorScripts from './Mixins/ExecutorScripts'
+import SelectedScriptFormatter from './Mixins/SelectedScriptFormatter'
 
 export default {
   name: 'mapScriptMenu',

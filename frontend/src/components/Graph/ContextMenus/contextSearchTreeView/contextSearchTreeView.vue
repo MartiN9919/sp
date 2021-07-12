@@ -73,8 +73,8 @@ export default {
     selectedObject: null,
     selectedRelation: null,
     selectedRelationListItem: null,
-    dateTimeStart: { date: '', time: '' },
-    dateTimeEnd: { date: '', time: '' },
+    dateTimeStart: null,
+    dateTimeEnd: null,
   }),
   computed: {
     ...mapGetters(['relationsTwoObjects', 'listOfPrimaryObjects', 'primaryObject', 'relationObject',]),
@@ -101,7 +101,7 @@ export default {
         this.selectedObject = this.filteredListOfPrimaryObjects(this.object.object_id)[0]
         this.selectedRelation = this.getRelations(this.object.object_id)[0]
         this.selectedRelationListItem = this.getListRelationItems[0]
-        this.dateTimeStart = { date: '', time: '' }
+        this.dateTimeStart = null
         this.dateTimeEnd = this.getDateTimeEnd()
       }
       if (stepNext === 'selectRelation') {
@@ -109,7 +109,7 @@ export default {
         if (!relations.find(relation => relation === this.selectedRelation)) {
           this.selectedRelation = relations[0]
           this.selectedRelationListItem = this.getListRelationItems[0]
-          this.dateTimeStart = { date: '', time: '' }
+          this.dateTimeStart = null
           this.dateTimeEnd = this.getDateTimeEnd()
         }
       }
@@ -127,7 +127,7 @@ export default {
           if (!relations.find(relation => relation === this.selectedRelation)) {
             this.selectedRelation = relations[0]
             this.selectedRelationListItem = this.getListRelationItems[0]
-            this.dateTimeStart = { date: '', time: '' }
+            this.dateTimeStart = null
             this.dateTimeEnd = this.getDateTimeEnd()
           } else {
             this.dateTimeStart = this.object.rel.date_time_start
@@ -168,7 +168,7 @@ export default {
       let dateTime = new Date()
       let time = dateTime.toLocaleTimeString().split(':')
       let date = dateTime.toLocaleDateString().split('/')
-      return { date: date[2] + '-' + date[1] + '-' + date[0], time: time[0] + ':' + time[1] }
+      return date[2] + '-' + date[1] + '-' + date[0] + ' ' + time[0] + ':' + time[1]
     },
     createRelatedObject() {
       this.$emit('createNewRelation', {

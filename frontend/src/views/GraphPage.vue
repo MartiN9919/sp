@@ -12,7 +12,7 @@
 <script>
 import d3Field from '../components/Graph/D3/d3Field'
 import graphMenu from '../components/Graph/GraphMenu/graphMenu'
-import NavigationDrawer from '../components/WebsiteShell/NavigationDrawer/Mixins/NavigationDrawer'
+import NavigationDrawer from '../components/WebsiteShell/Mixins/NavigationDrawer'
 import ResSplitPane from 'vue-resize-split-pane'
 
 export default {

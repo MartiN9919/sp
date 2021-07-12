@@ -1,25 +1,26 @@
 <template>
-  <div style="height: 100%" class="overflow-y-auto">
+  <div>
     <custom-app-bar
-      v-model="active"
-      :work-place="workAreaOfObjects"
-      @selectMenuItem="selectMenuItem"
+      v-model="active" :work-place="workAreaOfObjects"
+      @selectMenuItem="selectMenuItem" class="appbar"
     ></custom-app-bar>
     <div
       v-for="object in workAreaOfObjects" :key="object.tempId"
-      v-show="object.tempId === active"
+      v-show="object.tempId === active" class="workplace"
     >
-      <search-tree-view
-        v-if="windowActiveObject === 'searchTree'"
-        v-model="object.searchTree"
-        @findObject="findObject"
-      ></search-tree-view>
-      <list-found-objects
-        v-if="windowActiveObject === 'searchTree'"
-        :object="object"
-        @changeFindObject="changeFindObject(object, $event)"
-      ></list-found-objects>
-      <creator-object
+      <div v-if="windowActiveObject === 'searchTree'" class="search-place">
+        <search-tree-view
+          v-model="object.searchTree"
+          @findObject="findObject"
+          class="search-tree-view"
+        ></search-tree-view>
+        <list-found-objects
+          :object="object"
+          @changeFindObject="changeFindObject(object, $event)"
+          class="list-found-objects"
+        ></list-found-objects>
+      </div>
+      <creator-object class="creator-object text-center"
         v-if="windowActiveObject === 'createObject'"
         :object="object"
       ></creator-object>
@@ -30,9 +31,9 @@
 <script>
 import { mapGetters } from "vuex"
 import customAppBar from "./customAppBar"
-import searchTreeView from "./searchTreeView"
-import listFoundObjects from "./listFoundObjects"
-import creatorObject from "./creatorObject";
+import searchTreeView from "./searchTree/searchTreeView"
+import listFoundObjects from "./searchTree/listFoundObjects"
+import creatorObject from "./createObject/creatorObject";
 
 export default {
   name: "graphMenu",
@@ -63,7 +64,23 @@ export default {
 </script>
 
 <style scoped>
-.column-settings {
-
+.appbar {
+  height: 2.7em;
+}
+.workplace {
+  height: calc(100% - 2.7em);
+}
+.search-place, .creator-object {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.list-found-objects {
+  max-height: calc(100% - 4em);
+  overflow-y: hidden;
+}
+.search-tree-view {
+  max-height: 36%;
+  overflow-y: auto;
 }
 </style>
