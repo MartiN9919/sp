@@ -10,7 +10,7 @@
       >
         <p class="text-formatter-for-window-size font-for-color-background mb-0">{{ analytics.name }}</p>
         <!-- объект меню, содержищий палитру, для выбора цвета -->
-        <v-menu v-if="'result' in analytics" offset-y :close-on-content-click=false z-index="10001">
+        <v-menu v-if="'fc' in analytics" offset-y :close-on-content-click=false z-index="10001">
           <template v-slot:activator="{ on }">
             <v-icon right v-on="on">mdi-brush</v-icon>
           </template>
