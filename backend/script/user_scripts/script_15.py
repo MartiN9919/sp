@@ -18,6 +18,6 @@ def script_15(request):
 		keys_rel = [int(keys_rel)]
 		
 		
-		return rel_to_geo_fc(obj,0,keys_rel=keys_rel,keys_obj=['parent_id'])
+		return rel_to_geo_fc(obj,0,keys_rel=keys_rel,keys_obj=['parent_id'], where_dop=[])
 	except BaseException:
 		return 'error'

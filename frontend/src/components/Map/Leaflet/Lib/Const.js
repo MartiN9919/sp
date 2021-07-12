@@ -24,6 +24,6 @@ export class MAP_ITEM {
   static ICON       = 'icon';
   static COLOR      = 'color';
 
-  static FC         = 'result';
+  static FC         = 'fc';
   static FC_COLOR   = 'color';
 }
