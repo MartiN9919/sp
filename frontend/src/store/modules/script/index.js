@@ -71,7 +71,7 @@ export default {
       state.selectedTemplate.passiveAnalysts = []
     },
     addActiveAnalysts: (state, playLoad) => {
-      playLoad.selectedScript.result = playLoad.result
+      playLoad.selectedScript[MAP_ITEM.FC] = playLoad[MAP_ITEM.FC]
       if (playLoad.selectedScript.color === '#696969FF') { playLoad.selectedScript.color = '#FFA500FF' }
       state.selectedTemplate.activeAnalysts.push(playLoad.selectedScript)
     },
@@ -96,6 +96,7 @@ export default {
     SCRIPT_MUT_ITEM_ADD: (state, item) => {
       if (item.marker===undefined) item.marker = '';
       if (item.color ===undefined) item.color  = '';
+      console.log(1)
       let item_copy = JSON.parse(JSON.stringify(item));        // deep copy
       state.selectedTemplate.activeAnalysts.push(item_copy);
     },
@@ -120,7 +121,7 @@ export default {
           commit('removeAnalytics', parameters.request)
           commit('addActiveAnalysts', {
             selectedScript: parameters.request,
-            result: response.data
+            fc: response.data
           })
           commit('changeSelectedTreeViewItem', {})
         })
