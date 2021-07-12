@@ -1,4 +1,4 @@
-import { getResponseAxios, postResponseAxios, getResponseAxiosForCloseProblemWithAlertInLoginPage } from '@/plugins/axios_settings'
+import { getResponseAxios, postResponseAxios } from '@/plugins/axios_settings'
 
 import router from '@/router'
 
@@ -7,6 +7,7 @@ export default {
     userInformation: null,
     navigationDrawerStatusMap: false,
     navigationDrawerStatusReport: false,
+    navigationDrawerStatusGraph: false,
     progressLinearStatus: false
   },
   getters: {
@@ -15,6 +16,7 @@ export default {
     navigationDrawerStatus: state => page => {
       if (page === 'Map') return state.navigationDrawerStatusMap
       if (page === 'Report') return state.navigationDrawerStatusReport
+      if (page === 'Graph') return state.navigationDrawerStatusGraph
     }
   },
   mutations: {
@@ -22,6 +24,7 @@ export default {
     changeNavigationDrawerStatus: (state) => {
       if (router.currentRoute.name === 'Map') state.navigationDrawerStatusMap = !state.navigationDrawerStatusMap
       if (router.currentRoute.name === 'Report') state.navigationDrawerStatusReport = !state.navigationDrawerStatusReport
+      if (router.currentRoute.name === 'Graph') state.navigationDrawerStatusGraph = !state.navigationDrawerStatusGraph
     },
     setUserInformation: (state, userInformation) => state.userInformation = userInformation
   },
@@ -52,9 +55,7 @@ export default {
           }
           return Promise.resolve()
         })
-
         .catch(error => { return Promise.reject(error) })
-
     }
   }
 }

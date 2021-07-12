@@ -20,9 +20,9 @@
 
 <script>
 import LeafletMain from '../components/Map/Leaflet/LeafletMain'
-import mapScriptMenu from '../components/Map/mapScriptMenu'
+import mapScriptMenu from '../components/Map/MapMenu/mapScriptMenu'
 import ResSplitPane from 'vue-resize-split-pane'
-import NavigationDrawer from '../components/NavigationDrawer/Mixins/NavigationDrawer'
+import NavigationDrawer from '../components/WebsiteShell/Mixins/NavigationDrawer'
 
 export default {
   name: 'MapPage',

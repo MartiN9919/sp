@@ -7,17 +7,17 @@ from data_base_driver.constants.const_script import IMPORTS, ENABLED_FUNCTIONS, 
 DEBUG = False
 
 
-def is_function(str):
+def is_function(string):
     """
     Стандартная функция проверки является ли данное слова функцией
     @param str: строка содержащие проверяемое слово
     @return: True если функция, False если нет
     """
-    if str.find('\'') != -1 and str.find('(') != -1 and str.find('(') < str.find('\''):
+    if string.find('\'') != -1 and string.find('(') != -1 and string.find('(') < string.find('\''):
         return True
-    elif str.find('\"') != -1 and str.find('(') != -1 and str.find('(') < str.find('\"'):
+    elif string.find('\"') != -1 and string.find('(') != -1 and string.find('(') < string.find('\"'):
         return True
-    elif str.find('(') != -1:
+    elif string.find('(') != -1:
         return True
 
 
@@ -36,8 +36,8 @@ def get_function_name(string):
 def default_checker(str):
     """
     проверка содержит ли данная строка запрещенные функции или переменные окружения
-    :param str: строка из скрипта
-    :return: False если строка не прошла проверку, True если проверка пройдена
+    @param str: строка из скрипта
+    @return: False если строка не прошла проверку, True если проверка пройдена
     """
     if len(list(
             set(str.split()) & set(
@@ -53,11 +53,11 @@ def default_checker(str):
 def parse_text_to_python(name, text, params, type):
     """
     парсинг текста скрипта в файл модуля python
-    :param name: имя или id скрипта
-    :param text: текст скрипта
-    :param params: передаваемые в скрипт параметры
-    :param type: тип скрипта
-    :return: не возвращает состояние
+    @param name: имя или id скрипта
+    @param text: текст скрипта
+    @param params: передаваемые в скрипт параметры
+    @param type: тип скрипта
+    @return: не возвращает состояние
     """
     path = BASE_PATH_TO_USER_SCRIPTS + name + '.py'
     file = open(path, 'w')

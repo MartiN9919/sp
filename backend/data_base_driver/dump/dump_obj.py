@@ -31,7 +31,7 @@ class DUMP_OBJ:
                 DAT_SYS_OBJ.ICON + ", " +
                 DAT_SYS_OBJ.DESCRIPT + " " +
                 "FROM " +
-                DAT_SYS_OBJ.TABLE + ";",
+                DAT_SYS_OBJ.TABLE_SHORT + ";",
                 wait=True,
                 read=True
             )

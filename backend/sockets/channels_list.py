@@ -1,4 +1,4 @@
-from data_base_driver.connect.connect_mysql import SingletonMeta
+from data_base_driver.connect.base_conection import SingletonMeta
 
 
 class ChannelsList(metaclass=SingletonMeta):

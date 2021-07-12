@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <v-app class="select_off"> <!--  oncontextmenu="return false" -->
     <appBar></appBar>  <!--  Меню навигации  -->
     <v-main>
       <v-progress-linear
@@ -19,8 +19,8 @@
 </template>
 
 <script>
-import alertsList from './components/Notifications/alertsList'
-import appBar from './components/AppBar/appBar'
+import alertsList from './components/WebsiteShell/Notifications/alertsList'
+import appBar from './components/WebsiteShell/AppBar/appBar'
 
 export default {
   name: 'App',
@@ -37,5 +37,14 @@ export default {
     -khtml-user-select: none;
     user-select: none;
     cursor: default;
+  }
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #FFFFFF;
+  }
+  ::-webkit-scrollbar-thumb {
+    background : rgba(0, 0, 0, .1);
   }
 </style>

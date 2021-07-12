@@ -19,6 +19,17 @@ export const MAP_DATA_MENU_TILES = [
     attr:     '',
     tms:      false,
   },
+
+  // {
+  //   title:    'OSM',
+  //   subtitle: 'Схема (Локальная сеть)',
+  //   url:      'http://192.168.56.1:8080/osm/{z}/{x}/{y}.png',
+  //   icon:     'mdi-map-outline',
+  //   attr:     '',
+  //   tms:      false,
+  //   enabled:  false,
+  // },
+
   {
     title:    'Yandex',
     subtitle: 'Интернет',
@@ -27,17 +38,9 @@ export const MAP_DATA_MENU_TILES = [
     attr:     '',
     tms:      false,
     crs:      L.CRS.EPSG3395,
-  //disabled: true,
+    enabled:  false,
   },
-  {
-    title:    'Yandex',
-    subtitle: 'Спутник (Локальная сеть)',
-    url:      'http://200.200.200.232/{z}/{x}/{y}.jpg',
-    icon:     'mdi-map-outline',
-    attr:     '',
-    tms:      false,
-    crs:      L.CRS.EPSG3395, // L.CRS.EPSG4326, //+L.CRS.EPSG3857,  -L.CRS.EPSG4326 -L.CRS.EPSG3395, -L.CRS.Simple,
-  },
+
   {
     title:    'ESRI',
     subtitle: 'Спутник (Интернет)',
@@ -61,5 +64,15 @@ export const MAP_DATA_MENU_TILES = [
     url:      'http://{s}.tile.stamen.com/toner/{z}/{x}/{y}.png',
     attr:     '',
     tms:      false,
+  },
+  {
+    title:    'Yandex',
+    subtitle: 'Спутник (Локальная сеть)',
+    url:      'http://200.200.200.232/{z}/{x}/{y}.jpg',
+    icon:     'mdi-map-outline',
+    attr:     '',
+    tms:      false,
+    crs:      L.CRS.EPSG3395, //+L.CRS.EPSG3857,  -L.CRS.EPSG4326
+    enabled:  false,
   },
 ];

@@ -3,10 +3,20 @@ import time
 
 import MySQLdb
 
-from data_base_driver.connect.connect_mysql import SingletonMeta, BaseConnection
+from data_base_driver.connect.base_conection import SingletonMeta, BaseConnection
 from data_base_driver.constants.connect_db import MANTICORE
 
 AUTOCOMMIT = True
+
+
+def on_test_mode():
+    global AUTOCOMMIT
+    AUTOCOMMIT = False
+
+
+def off_test_mode():
+    global AUTOCOMMIT
+    AUTOCOMMIT = True
 
 
 class ManticoreConnection(BaseConnection):
@@ -22,7 +32,6 @@ class ManticoreConnection(BaseConnection):
         self.connection = MySQLdb.connect(
             host=database['HOST'],
             port=int(database['PORT']),
-            db=database['NAME'],
         )
         self.busy = False
 
@@ -54,7 +63,7 @@ class SingletonManticore(metaclass=SingletonMeta):
                 free_connection[0].get_connection().ping(True)
                 return free_connection[0]
             except:
-                print('not free connection')
+                print('not free connection manticore')
                 return False
 
     def reconnect(self, database):
@@ -136,8 +145,7 @@ def db_shinxql(sql, wait=False, read=True, database=MANTICORE, connection=-1):
                 raise e
             ret = cursor.fetchall()
             cursor.close()
-        else:
-            connection.autocommit(AUTOCOMMIT)
+        elif AUTOCOMMIT:
             try:
                 connection.query(sql)
             except Exception as e:
@@ -146,6 +154,10 @@ def db_shinxql(sql, wait=False, read=True, database=MANTICORE, connection=-1):
 
             ret = []
             ret.append(connection.insert_id())
+            connection.commit()
+        else:
+            connection_manticore.free_connection()
+            ret = []
         if not (db_opened):
             connection_manticore.free_connection()
         return ret

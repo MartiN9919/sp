@@ -7,6 +7,7 @@ import alerts   from './modules/alerts'
 import socket   from './modules/socket'
 import report   from './modules/report'
 import script   from './modules/script/index'
+import graph from "./modules/graph/index";
 
 Vue.use(Vuex)
 
@@ -19,6 +20,7 @@ const store = new Vuex.Store({
     alerts,
     socket,
     map,
+    graph,
   }
 })
 

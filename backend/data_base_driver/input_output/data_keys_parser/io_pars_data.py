@@ -1,3 +1,5 @@
+import datetime
+
 from data_base_driver.constants.const_dat import DAT_SYS_OBJ, DAT_SYS_KEY, DAT_OBJ_ROW, DAT_OBJ_COL, DAT_REL
 
 DEBUG = False
@@ -7,7 +9,7 @@ DEBUG = False
 # РАСПАРСИТЬ DAT
 # ДЛЯ ПОСЛЕДУЮЩИХ SQL-ОПЕРАЦИЙ
 # (ГОТОВЫЕ СТРОКИ ДЛЯ ФОРМИРОВАНИЯ SQL)
-# add={'sys_key': True} - добавить ссылки на записи классификаторв: col_key, row_key
+# add={'sys_key': True} - добавить ссылки на записи классификаторов: col_key, row_key
 # valid - проверка на уникальность ключей и наличие обязательных ключей (только rel)
 ###########################################
 class IO_PARS_DATA(dict):
@@ -74,7 +76,7 @@ class IO_PARS_DATA(dict):
     # КОРРЕКТНОЕ ЗНАЧЕНИЕ VAL ДЛЯ SQL
     ###########################################
     def val(self, type, val):
-        if type in [DAT_SYS_KEY.TYPE_STR, DAT_SYS_KEY.TYPE_DATA]:
+        if type in [DAT_SYS_KEY.TYPE_STR, DAT_SYS_KEY.TYPE_DATA, DAT_SYS_KEY.TYPE_PHONE_NUMBER]:
             ret = "'" + str(val) + "'"
         elif type == DAT_SYS_KEY.TYPE_GEOMETRY:
             ret = "ST_GeomFromGeoJson('" + val + "')"
@@ -156,7 +158,8 @@ class IO_PARS_DATA(dict):
                 self.row_dic.append({
                     DAT_OBJ_ROW.KEY_ID: str(key_id),
                     DAT_OBJ_ROW.VAL: val,
-                    DAT_OBJ_ROW.DAT: "'" + data_item[DATA_DAT] + "'" if len(data_item) > 2 else 'null'
+                    DAT_OBJ_ROW.DAT: '\'' + data_item[DATA_DAT] + '\'' if len(
+                        data_item) > 2 else '\'' + datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + '\''
                 })
 
         if self.valid:
@@ -189,6 +192,14 @@ class IO_PARS_DATA(dict):
                 if add.get(self.ADD_SYS_KEY, False): self.row_key.append(
                     DAT_SYS_KEY.DUMP.get_rec(obj_id=self.obj_id, id=key_id))
                 vals[DAT_REL.KEY_ID] = str(key_id)
+                continue
+
+            # ['val', 'УД'] дописать с учетом появления значения у связи
+            if data_key == DAT_REL.VAL:
+                if data_val1 == '':
+                    continue
+                vals[DAT_REL.VAL] = '\'' + str(data_val1) + '\''
+                continue
 
             # ['obj_1',5,100], ['obj_2','file']
             elif data_key in (self.FIELD_OBJ_1, self.FIELD_OBJ_2):
@@ -199,20 +210,25 @@ class IO_PARS_DATA(dict):
                 if len(data_item) > 2:
                     key = DAT_REL.REC_ID_1 if data_key == self.FIELD_OBJ_1 else DAT_REL.REC_ID_2
                     vals[key] = str(data_item[DATA_VAL2])
+                continue
 
             # ['obj_id_1','file'], ['obj_id_2',5],
             elif data_key in (DAT_REL.OBJ_ID_1, DAT_REL.OBJ_ID_2):
                 obj_id = DAT_SYS_OBJ.DUMP.to_id(val=data_val1)
                 vals[data_key] = str(obj_id)
+                continue
 
             # ['rec_id_2',5],
             elif data_key in (DAT_REL.REC_ID_1, DAT_REL.REC_ID_2):
                 vals[data_key] = str(data_val1)
+                continue
+
 
             # ['dat','2020-09-07'],
             elif data_key == DAT_REL.DAT:
                 vals[data_key] = self.val(type=DAT_SYS_KEY.TYPE_DATA, val=data_val1)
                 is_dat = True
+                continue
 
             # ['file',200], [4,200],
             else:
@@ -228,10 +244,11 @@ class IO_PARS_DATA(dict):
                     is_2 = True
                 vals[key_obj] = str(obj_id)
                 vals[key_rec] = str(data_val1)
+                continue
 
         # dat is null
         if not is_dat:
-            vals[DAT_REL.DAT] = 'null'
+            vals[DAT_REL.DAT] = '\'' + datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + '\''
 
         self.row_dic.append(vals)
 

@@ -17,9 +17,9 @@ def sort_by_type(item):
 def get_sql(parent_id, script_type):
     """
     Функция для получения строки sql запроса по выводу всех предков данной папки
-    @param parent_id:
-    @param script_type:
-    @return:
+    @param parent_id: идентификатор папки
+    @param script_type: тип скрипта (карта или отчеты)
+    @return: строка sql запроса
     """
     return "SELECT " + \
            DAT_SYS_SCRIPT.ID + ", " + \
@@ -39,10 +39,10 @@ def get_sql(parent_id, script_type):
 def script_list(parent_id, group_id, script_type):
     """
     получения списка скриптов из базы данных
-    :param parent_id: родительский id для данного набора скриптов
-    :param group_id:
-    :param script_type:
-    :return: список скриптов в формате
+    @param parent_id: родительский id для данного набора скриптов
+    @param group_id: идентификатор группы пользователя
+    @param script_type: тип скрипта (карта или отчеты)
+    @return: список скриптов в формате
     {"id":id,"text":text,"variables":variables},
     где id это уникальный номер скрипта в базе данных,
     text - название скрипта, variables - его переменные и их типы

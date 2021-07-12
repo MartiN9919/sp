@@ -81,7 +81,7 @@ class IO_PERMIT():
         group_id = int(group_id)
         rec_id = int(rec_id)
 
-        # id не завлялся при инициализации - ошибка
+        # id не заявлялся при инициализации - ошибка
         if not str(rec_id) in self.ids: raise Exception('Error rec_id: ' + str(rec_id))
 
         # разрешенные группы для записи rec_id

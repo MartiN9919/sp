@@ -1,8 +1,10 @@
 import json
 
 from django.test import TestCase
-from data_base_driver.sys_reports.get_files_info import get_list_files_by_user, get_file_path
-from data_base_driver.sys_reports.set_file_info import add_file, set_file_status, set_file_path
+
+from data_base_driver.full_text_search.http_api.add_object_http import on_test_mode_manticore, off_test_mode_manticore
+from data_base_driver.sys_reports.get_files_info import get_list_files_by_user
+from data_base_driver.sys_reports.set_file_info import add_file
 
 from datetime import datetime
 from data_base_driver.connect.connect_mysql import db_reconnect, set_autocommit_off, set_autocommit_on, \
@@ -17,10 +19,12 @@ class TestReports(TestCase):
     def setUpTestData(cls):
         db_reconnect(TEST_DATA)
         set_autocommit_off()
+        on_test_mode_manticore()
 
     @classmethod
     def tearDownClass(cls) -> None:
         set_autocommit_on()
+        off_test_mode_manticore()
 
 
 class TestGetObject(TestReports):

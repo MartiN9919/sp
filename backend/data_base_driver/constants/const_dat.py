@@ -4,6 +4,8 @@ from data_base_driver.constants.connect_db import VEC_DATA
 ##################################################################################
 # DAT_SYS_SCRIPT
 ##################################################################################
+
+
 class DAT_SYS_SCRIPT():
     TABLE_SHORT = 'sys_script'
     TABLE = VEC_DATA['NAME'] + '.' + TABLE_SHORT
@@ -77,6 +79,26 @@ class DAT_SYS_OBJ:
     NAME_VAL = 'val'  # ?????
 
 
+class DAT_SYS_KEY_GROUP:
+    TABLE_SHORT = 'sys_key_group'
+    TABLE = VEC_DATA['NAME'] + '.' + TABLE_SHORT
+    ID = 'id'
+    OBJ = 'obj'
+    OBJ_ID = 'obj_id'
+    NAME = 'name'
+    POS = 'pos'
+
+
+class DAT_SYS_PHONE_NUMBER_FORMAT:
+    TABLE_SHORT = 'sys_phone_number_format'
+    TABLE = VEC_DATA['NAME'] + '.' + TABLE_SHORT
+    ID = 'id'
+    COUNTRY = 'country'
+    COUNTRY_CODE = 'country_code'
+    LENGTH = 'length'
+    DUMP = None
+
+
 ##################################################################################
 # DAT_SYS_KEY
 ##################################################################################
@@ -90,7 +112,7 @@ class DAT_SYS_KEY:
     OBJ_ID = 'obj_id'
     COL = 'col'
     NEED = 'need'
-    TYPE_VAL = 'type_val'
+    TYPE_VAL = 'type'
     LIST_ID = 'list_id'
     NAME = 'name'
     TITLE = 'title'
@@ -104,19 +126,24 @@ class DAT_SYS_KEY:
     LIST = 'list'
     IND_REL_OBJ_1 = 'ind_rel_obj_1'
     IND_REL_OBJ_2 = 'ind_rel_obj_2'
+    GROUP = 'group'
+    GROUP_ID = 'group_id'
+    PATH = 'path'
 
     TYPE_STR = 'text'
     TYPE_INT = 'number'
     TYPE_BIT = 'checkbox'
     TYPE_DATA = 'date'
-    TYPE_DATATIME = 'datatime'
+    TYPE_DATATIME = 'datetime'
     TYPE_GEOMETRY = 'geometry'
+    TYPE_PHONE_NUMBER = 'phone_number'
 
     TYPE_LIST = (
         (TYPE_INT, "Число"),
         (TYPE_STR, 'Текст'),
         (TYPE_DATATIME, 'Дата/Время'),
         (TYPE_DATA, 'Дата'),
+        (TYPE_PHONE_NUMBER, 'Номер телефона'),
         (TYPE_BIT, 'Да/Нет'),
         (TYPE_GEOMETRY, 'Точка/Путь/Полигон'),
     )
@@ -214,6 +241,7 @@ class DAT_SYS_LIST_DOP:
     TABLE = VEC_DATA['NAME'] + '.' + TABLE_SHORT
     ID = 'id'
     KEY_ID = 'key_id'
+    LIST_ID = 'list_id'
     VAL = 'val'
 
 
@@ -251,7 +279,7 @@ class DAT_OBJ_COL:
 
 class DAT_OBJ_ROW:
     table_name = lambda group: 'obj_' + group + '_row'
-    ID = 'id'
+    ID = 'rec_id'
     KEY_ID = 'key_id'
     VAL = 'val'
     DAT = 'dat'
@@ -271,6 +299,7 @@ class DAT_REL:
     REC_ID_1 = 'rec_id_1'
     OBJ_ID_2 = 'obj_id_2'
     REC_ID_2 = 'rec_id_2'
+    VAL = 'val'
     LIST = (KEY_ID, DAT, OBJ_ID_1, REC_ID_1, OBJ_ID_2, REC_ID_2,)
 
 
@@ -333,7 +362,9 @@ class DAT_SYS_SCRIPT_RESULT:
 from data_base_driver.dump.dump_obj import DUMP_OBJ
 from data_base_driver.dump.dump_key import DUMP_KEY
 from data_base_driver.dump.dump_owner import DUMP_OWNER
+from data_base_driver.dump.dump_phone_number import DUMP_PHONE_NUMBER_FORMAT
 
 DAT_SYS_OBJ.DUMP = DUMP_OBJ()
 DAT_SYS_KEY.DUMP = DUMP_KEY()
 DAT_OWNER.DUMP = DUMP_OWNER()
+DAT_SYS_PHONE_NUMBER_FORMAT.DUMP = DUMP_PHONE_NUMBER_FORMAT()

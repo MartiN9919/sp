@@ -1,3 +1,4 @@
+import datetime
 import json
 import geojson
 
@@ -103,4 +104,7 @@ def geo_id_to_fc(obj, group_id, geo_ids, keys):
     for d_key in d:
         feature = geojson.Feature(**d[d_key])
         features.append(feature)
+    for temp in features:
+        temp['properties']['hint'] = 'что нибудь'
+        temp['properties']['date'] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
     return geojson.FeatureCollection(features)
