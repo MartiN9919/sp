@@ -40,7 +40,13 @@ export default {
     },
     createNewObjectFromServer({ commit, rootState }, config = {}) {
       let findObject = getActiveObject(rootState)
-      let request = { object_id: findObject.object_id, rec_id: findObject.rec_id, params: findObject.params, }
+      let classifiers = []
+      for (let classifier of findObject.params)
+        if (classifier?.changed) {
+          classifiers.push({ id: classifier.id, value: classifier.value })
+          delete classifier.changed
+        }
+      let request = { object_id: findObject.object_id, rec_id: findObject.rec_id, params: classifiers, }
       return postResponseAxios('objects/object', request, config)
         .then(response => { findObject.rec_id = response.data.rec_id })
         .catch(() => {})
