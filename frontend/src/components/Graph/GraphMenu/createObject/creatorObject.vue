@@ -1,20 +1,20 @@
 <template>
   <div @contextmenu.stop="contextMenu = { event: $event, typeMenu: 'creatorObject' + object.tempId }">
     <div class="mt-3">
-      {{contextMenu}}
       <v-form ref="form" v-model="valid" lazy-validation>
         <creator-form
           v-for="(classifier, key) in object.params" :key="key"
           v-model="classifier.value" :work-area-id="object.tempId"
           :classifier="getClassifier(object.object_id, classifier.id)"
-          @click.right.stop="contextMenu = { event: $event, typeMenu: classifier.toString() + object.tempId.toString() }"
+          @contextmenu.native.stop="contextMenu = { event: $event,  typeMenu: getNameContextInput(classifier.id) }"
+          @observer="classifier.changed = $event" class="px-3"
         >
-          <context-menu v-if="classifier.toString() + object.tempId.toString() === typeContextMenu">
+          <context-menu v-if="getNameContextInput(classifier.id) === typeContextMenu">
             Удалить {{typeContextMenu}}
           </context-menu>
         </creator-form>
       </v-form>
-      <v-btn @click.right.stop="" @click="saveObject" outlined color="teal" class="save-btn">
+      <v-btn @click.right.stop="" @click="saveObject" outlined color="teal" class="save-btn mt-3">
         Временная кнопка сохранения объекта
       </v-btn>
     </div>
@@ -52,9 +52,10 @@ export default {
       })
       this.deactivateContextMenu()
     },
+    getNameContextInput(classifierId) { return classifierId.toString() + this.object.tempId.toString() },
     saveObject () {
-      console.log(this.$refs.form.validate())
-      // this.$store.dispatch('createNewObjectFromServer')
+      if (this.$refs.form.validate())
+        this.$store.dispatch('createNewObjectFromServer')
     }
   }
 }
