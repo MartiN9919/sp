@@ -26,7 +26,7 @@
             return-object color="teal" hide-no-data
             class="pa-0 ma-0 pb-2" item-color="teal"
           ></v-autocomplete>
-          <v-btn icon color="teal" :disabled="!selectedObject" @click="$emit('selectObject', selectedObject)">
+          <v-btn icon color="teal" :disabled="!selectedObject" @click="selectObject">
             <v-icon>mdi-check</v-icon>
           </v-btn>
         </v-card-actions>
@@ -53,6 +53,13 @@ export default {
       },
     ],
   }),
+  methods: {
+    selectObject () {
+      this.$emit('selectObject', this.selectedObject)
+      this.stepWindowStyle = 'menuItemSelection'
+      this.selectedObject = null
+    }
+  }
 }
 </script>
 

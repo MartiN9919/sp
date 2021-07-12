@@ -43,13 +43,19 @@ export default {
       let classifiers = []
       for (let classifier of findObject.params)
         if (classifier?.changed) {
-          classifiers.push({ id: classifier.id, value: classifier.value })
+          classifiers.push({id: classifier.id, value: classifier.value})
           delete classifier.changed
         }
-      let request = { object_id: findObject.object_id, rec_id: findObject.rec_id, params: classifiers, }
-      return postResponseAxios('objects/object', request, config)
-        .then(response => { findObject.rec_id = response.data.rec_id })
-        .catch(() => {})
+      if (classifiers.length) {
+        let request = { object_id: findObject.object_id, rec_id: findObject.rec_id, params: classifiers, }
+        return postResponseAxios('objects/object', request, config)
+          .then(response => {
+            findObject.rec_id = response.data.object.rec_id
+            findObject.params = response.data.object.params
+          })
+          .catch(() => {
+          })
+      }
     },
   }
 }

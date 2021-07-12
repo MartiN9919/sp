@@ -69,6 +69,7 @@ export default {
     selectClassifier() {
       this.$emit('selectClassifier', this.selectedClassifier)
       this.selectedClassifier = null
+      this.stepWindowStyle = 'menuItemSelection'
     },
   },
 }
