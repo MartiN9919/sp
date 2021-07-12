@@ -11,10 +11,8 @@
           Удалить {{typeContextMenu}}
         </context-menu>
       </creator-form>
-      <v-btn @click.right.stop="" @click="saveObject" outlined color="teal" class="mt-3 mx-12 no-text-transform">
-        <span style="white-space: normal;">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam nec dapibus augue.
-          </span>
+      <v-btn @click.right.stop="" @click="saveObject"  outlined color="teal" class="mt-3 mx-12">
+        Сохранить
       </v-btn>
     </v-form>
     <context-menu v-if="typeContextMenu === 'creatorObject' + object.tempId">

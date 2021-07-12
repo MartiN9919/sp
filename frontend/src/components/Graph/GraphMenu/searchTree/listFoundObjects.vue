@@ -32,28 +32,31 @@
           <tr v-if="opened.includes(key)">
             <td colspan="9999" class="context-row">
               <v-tooltip
-                v-for="param in findObject.params" :key="param.id" open-delay="1000" nudge-bottom="-15"
-                bottom transition="false" color="#00796B" z-index="10001" max-width="20%"
+                v-for="param in findObject.params" :key="param.id" bottom
+                open-delay="1000" nudge-bottom="-15" transition="false" color="#00796B" z-index="10001" max-width="20%"
               >
                 <template v-slot:activator="{ on }">
                   <v-textarea
-                    v-if="!param.old.length"
-                    readonly hide-details rows="1" auto-grow
+                    v-if="!param.old.length" v-model="param.value" v-on="on"
                     :label="getClassifier(findObject.object_id, param.id).title"
-                    v-model="param.value" color="teal" class="py-2" v-on="on"
+                    readonly hide-details rows="1" auto-grow color="teal" class="py-2"
                   ></v-textarea>
                   <v-select
-                    v-else
-                    :items="[{ value: param.value, date: param.date }].concat(param.old)"
-                    v-model='param.date'  autocomplete="off" attach item-text="value" item-value="date"
-                    :label="getClassifier(findObject.object_id, param.id).title"
+                    v-else v-model='param.date' :items="[{ value: param.value, date: param.date }].concat(param.old)"
+                    attach hide-details class="pb-2" color="teal" type="text" item-color="teal" autocomplete="off"
+                    :label="getClassifier(findObject.object_id, param.id).title" item-text="value" item-value="date"
                     :menu-props="{ offsetY: true, maxWidth: '100%', minWidth: '100%', closeOnClick: true }"
                     append-icon="mdi-format-list-bulleted" placeholder="Выберете необходимое значение"
-                    hide-details class="pb-2" color="teal" type="text" item-color="teal"
                   >
                     <template v-slot:item="{ item }">
-                      <v-list-item @click="" :key="item.date" :style="param.date === item.date ? {backgroundColor: '#E0F2F1'} : {}">
-                        {{item.value}}<v-spacer></v-spacer>{{item.date}}
+                      <v-list-item
+                        @click="" :key="item.date"
+                        :style="param.date !== item.date || { backgroundColor: '#E0F2F1' }"
+                      >
+                        <v-row no-gutters>
+                          <v-col>{{item.value}}</v-col>
+                          <v-col class="d-flex text-right align-center" cols="auto">{{item.date}}</v-col>
+                        </v-row>
                       </v-list-item>
                     </template>
                   </v-select>
