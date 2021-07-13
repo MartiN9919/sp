@@ -60,6 +60,9 @@ class ModelList(models.Model):
         return self.title
 
     def clean(self):
+        """
+        Функция дял установи режима проверки списка
+        """
         self.fl = 0  # костыль, потом изменить
         try:
             self.save()
@@ -67,6 +70,11 @@ class ModelList(models.Model):
             raise e
 
     def save(self, *args, **kwargs):
+        """
+        Функция сохранения списка с проверкой на дублирование названия
+        @param args: стандартный параметр
+        @param kwargs: стандартный параметр
+        """
         if len(ModelList.objects.filter(title=self.title)) != 0 and self.fl == 0 and not self.id:
             raise ValidationError('список с таким именем уже существует')
         else:
@@ -96,6 +104,9 @@ class ModelListDop(models.Model):
     )
 
     def clean(self):
+        """
+        Функция для валидации списка
+        """
         if not self.key_id:
             ModelList.save(self.key)
         self.fl = 0  # костыль, потом изменить
@@ -106,6 +117,11 @@ class ModelListDop(models.Model):
                 raise e
 
     def save(self, *args, **kwargs):
+        """
+        Функция для сохранения подсписка с проверкой на дублирование
+        @param args: стандартный параметр
+        @param kwargs: стандартный параметр
+        """
         if len(ModelListDop.objects.filter(key=self.key).filter(val=self.val)) > 0 and self.fl == 0:
             raise ValidationError('в данном списке уже есть такой элемент')
         else:
@@ -121,6 +137,9 @@ class ModelListDop(models.Model):
 
 
 class ModelKeyGroup(models.Model):
+    """
+    Класс для модели группы классификаторов одного объекта
+    """
     obj = models.ForeignKey(
         ModelObject,
         verbose_name='Объект',
@@ -153,6 +172,9 @@ class ModelKeyGroup(models.Model):
 
 
 class ModelPhoneNumberFormat(models.Model):
+    """
+    Класс для модели формата телефонного номера
+    """
     country = models.CharField(
         max_length=50,
         verbose_name='Страна принадлежности',
@@ -178,7 +200,6 @@ class ModelKey(models.Model):
     """
     Модель таблицы sys_key для хранения классификаторов.
     """
-
     obj = models.ForeignKey(
         ModelObject,
         verbose_name='Объект',
@@ -266,6 +287,11 @@ class ModelKey(models.Model):
         return self.title
 
     def save(self, *args, **kwargs):
+        """
+        Переопределенная функция сохранения для переупорядочивания объектов в связи в зависимости от их идентификатора
+        @param args: стандартный параметр
+        @param kwargs: стандартный параметр
+        """
         if self.obj_id == 1:
             if self.rel_obj_1_id > self.rel_obj_2_id:
                 temp_id = self.rel_obj_1_id

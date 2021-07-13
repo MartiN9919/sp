@@ -8,6 +8,7 @@ from data_base_driver.constants.const_dat import DAT_SYS_NOTIFY
 
 class ModelNotification(models.Model):
     """
+    Класс модели оповещений
     """
     from_user = models.ForeignKey(
         ModelCustomUser,
@@ -53,6 +54,13 @@ class ModelNotification(models.Model):
         return self.type
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        """
+        Переопределенная функция сохранения модели с добавлением отправки оповещения по каналу
+        @param force_insert: стандартный параметр
+        @param force_update: стандартный параметр
+        @param using: стандартный параметр
+        @param update_fields: стандартный параметр
+        """
         super(ModelNotification, self).save()
         from_user = ModelCustomUser.objects.get(id=self.from_user_id).username
         notification = get_alert_json(

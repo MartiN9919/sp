@@ -49,9 +49,13 @@ def add_data(group_id, object):
         if fl == 0:
             data.append([50055, country, datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")])
     # ------------------------------------------------------------------------------------------------------------------
-    if object.get('rec_id', 0) != 0:
+    if len(data) == 0: # проверка на пустой запрос
+        return {'status': 1,
+                'object': get_object_record_by_id_http(object.get('object_id'), object.get('rec_id', 0))}
+    if object.get('rec_id', 0) != 0: # проверка на внесение новой записи
         data.append(['id', object.get('rec_id')])
-    elif not object.get('force', False):
+
+    elif not object.get('force', False): # проверка на дублирование
         temp_set = None
         for item in data:
             if get_key_by_id(int(item[0])).get('need', 0) == 1:
