@@ -24,7 +24,7 @@
       <v-scroll-y-transition mode="out-in">
         <div v-if="'id' in selectedItem" :key="selectedItem.id" class="pa-4 py-1">
           <settingsAnalytics
-            v-for="variable in selectedItem.variables"
+            v-for="(variable, key) in selectedItem.variables" :key="key"
             :variable="variable"
           ></settingsAnalytics>
 

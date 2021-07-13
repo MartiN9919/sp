@@ -5,6 +5,7 @@
     :position-y="options.y"
     :close-on-content-click="false"
     class="select_off"
+    style="z-index: 50000;"
     min-width="500px"
     max-width="500px"
     absolute

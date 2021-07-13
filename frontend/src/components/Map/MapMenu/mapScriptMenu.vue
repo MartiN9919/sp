@@ -62,7 +62,7 @@
             transition="false" color="#00796B" max-width="20%"
           >
             <template v-slot:activator="{ on }">
-              <div v-on="on" class="mb-3">
+              <div v-on="on" class="mb-5">
                 <settingsAnalytics
                   v-model="variable.value" :variable="variable"
                   :type="variable.type" :title="variable.title"

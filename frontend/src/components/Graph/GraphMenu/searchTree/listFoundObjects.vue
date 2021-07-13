@@ -31,40 +31,7 @@
           </tr>
           <tr v-if="opened.includes(key)">
             <td colspan="9999" class="context-row">
-              <v-tooltip
-                v-for="param in findObject.params" :key="param.id" bottom
-                open-delay="1000" nudge-bottom="-15" transition="false" color="#00796B" z-index="10001" max-width="20%"
-              >
-                <template v-slot:activator="{ on }">
-                  <v-textarea
-                    v-if="!param.old.length" v-model="param.value" v-on="on"
-                    :label="getClassifier(findObject.object_id, param.id).title"
-                    readonly hide-details rows="1" auto-grow color="teal" class="py-2"
-                  ></v-textarea>
-                  <v-select
-                    v-else v-model='param.date' :items="[{ value: param.value, date: param.date }].concat(param.old)"
-                    attach hide-details class="pb-2" color="teal" type="text" item-color="teal" autocomplete="off"
-                    :label="getClassifier(findObject.object_id, param.id).title" item-text="value" item-value="date"
-                    :menu-props="{ offsetY: true, maxWidth: '100%', minWidth: '100%', closeOnClick: true }"
-                    append-icon="mdi-format-list-bulleted" placeholder="Выберете необходимое значение"
-                  >
-                    <template v-slot:item="{ item }">
-                      <v-list-item
-                        @click="" :key="item.date"
-                        :style="param.date !== item.date || { backgroundColor: '#E0F2F1' }"
-                      >
-                        <v-row no-gutters>
-                          <v-col>{{item.value}}</v-col>
-                          <v-col class="d-flex text-right align-center" cols="auto">{{item.date}}</v-col>
-                        </v-row>
-                      </v-list-item>
-                    </template>
-                  </v-select>
-                </template>
-                <p class="text-formatter-for-window-size additional-text text-justify ma-0">
-                  {{getClassifierHint(findObject.object_id, param.id)}}
-                </p>
-              </v-tooltip>
+              <form-show-find-objects :object="findObject"></form-show-find-objects>
             </td>
           </tr>
         </template>
@@ -74,11 +41,13 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters } from "vuex"
+import formShowFindObjects from "./formShowFindObjects"
 
 export default {
   name: "listFoundObjects",
   props: { object: Object, },
+  components: { formShowFindObjects, },
   computed: {
     ...mapGetters(['listOfClassifiersOfObjects', 'foundObjects']),
   },
@@ -86,13 +55,6 @@ export default {
     opened: [],
   }),
   methods: {
-    getClassifier(objectId, classifierId) {
-      return this.listOfClassifiersOfObjects(objectId).find(classifier => classifier.id === classifierId)
-    },
-    getClassifierHint(objectId, classifierId) {
-      let classifier =  this.getClassifier(objectId, classifierId)
-      return classifier.hint ?  classifier.hint : 'Описание отсутствует'
-    },
     checkClassifierForNeeded (valueForCheck, classifierId) {
       for (let value of valueForCheck)
         if (value.id === classifierId) return value.value

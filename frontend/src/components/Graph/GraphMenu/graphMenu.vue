@@ -37,7 +37,7 @@ import creatorObject from "./createObject/creatorObject";
 
 export default {
   name: "graphMenu",
-  components: { searchTreeView, customAppBar, listFoundObjects, creatorObject},
+  components: { searchTreeView, customAppBar, listFoundObjects, creatorObject, },
   computed: {
     ...mapGetters(['workAreaOfObjects', 'activeObject', 'windowActiveObject',]),
     active: {
