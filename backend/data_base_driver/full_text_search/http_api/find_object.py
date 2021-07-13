@@ -3,6 +3,7 @@ import requests
 from data_base_driver.constants.fulltextsearch import FullTextSearch
 from data_base_driver.full_text_search.additional_functions import get_date_from_days_sec, intercept_sort_list, \
     get_date_time_from_sec
+from data_base_driver.sys_key.get_key_dump import get_key_by_id
 
 
 def find_reliable_http(object_type, request, actual=False):
@@ -90,5 +91,7 @@ def get_object_record_by_id_http(object_id, rec_id):
                        'old': []})
     for item in params:
         item['old'].sort(key=lambda x: x['date'], reverse=True)
+    params.sort(key=lambda x: get_key_by_id(x['id'])['title'], reverse=True)
+    params.sort(key=lambda x: get_key_by_id(x['id'])['need'], reverse=True)
     return {'object_id': object_id, 'rec_id': rec_id, 'params': params}
 

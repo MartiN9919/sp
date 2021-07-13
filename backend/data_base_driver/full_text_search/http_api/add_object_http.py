@@ -7,11 +7,17 @@ TEST_MODE = False
 
 
 def on_test_mode_manticore():
+    """
+    Функция для включения тестового режима базы данных, без записи в мантикору
+    """
     global TEST_MODE
     TEST_MODE = True
 
 
 def off_test_mode_manticore():
+    """
+    Функция для выключения тестового режима базы данных, разрешение записи в мантикору
+    """
     global TEST_MODE
     TEST_MODE = False
 
