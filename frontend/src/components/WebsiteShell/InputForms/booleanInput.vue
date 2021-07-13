@@ -1,37 +1,21 @@
 <template>
   <v-menu
-    :close-on-content-click="false"
-    offset-x offset-y z-index="10001" bottom right
-    nudge-left="64" min-width="auto" fixed
-    transition="slide-x-reverse-transition"
-    >
+    :close-on-content-click="false" ref="menuBoolean" transition="slide-x-reverse-transition"
+    offset-x offset-y bottom right fixed z-index="10001" min-width="auto" nudge-left="64"
+  >
     <template v-slot:activator="{ on }">
       <v-textarea
-        row-height="1" auto-grow
-        slot="activator"
-        autocomplete="off"
-        append-icon="mdi-order-bool-descending-variant"
-        v-model="value"
-        :rules="rules"
-        :label="title"
-        placeholder="Выберете необходимое значение"
-        hide-details readonly class="pt-0 mt-0" color="teal" type="text"
-        v-on="on"
+        v-model="value" v-on="on" :rules="rules" :label="title"
+        autocomplete="off" append-icon="mdi-order-bool-descending-variant" row-height="1" auto-grow
+        hide-details readonly class="pt-0 mt-0" color="teal" type="text" placeholder="Выберете необходимое значение"
       ></v-textarea>
     </template>
-    <v-card>
       <v-list link>
         <v-list-item
           v-for="item in [{text: 'ДА', value: true}, {text: 'НЕТ', value: false}]"
-          @click="value = item.value"
-          :key="item.value"
-        >
-          <v-list-item-title>
-            {{item.text}}
-          </v-list-item-title>
-        </v-list-item>
+          @click="value = item.value; $refs.menuBoolean.save()" :key="item.value"
+        ><v-list-item-title>{{item.text}}</v-list-item-title></v-list-item>
       </v-list>
-    </v-card>
   </v-menu>
 </template>
 

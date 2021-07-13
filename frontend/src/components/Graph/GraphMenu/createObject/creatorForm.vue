@@ -52,18 +52,24 @@ export default {
   props: {
     classifier: Object,
     inputString: String,
-    workAreaId: Number,
   },
   data: () => ({
     valid: true,
     rules: [ v => !!v || 'Поле должно быть заполнено', ],
+    oldestValue: null,
   }),
   computed: {
     value: {
       get: function () { return this.inputString },
-      set: function (val) { this.$emit('changeInputString', val) },
+      set: function (val) {
+        this.$emit('changeInputString', val)
+        this.$emit('observer', val !== this.oldestValue)
+      },
     },
   },
+  created() {
+    this.oldestValue = this.inputString
+  }
 }
 </script>
 

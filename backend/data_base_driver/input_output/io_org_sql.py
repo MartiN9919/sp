@@ -65,8 +65,12 @@ class IO_ORG_SQL():
             if not data_pars.rec_id:
                 # создать rec_id и вставить ОДНОЙ опрацией без проверки на повторы
                 data_pars.rec_id = self.io_sql.obj_rec_id_new(obj_id=data_pars.obj_id)
-                if self.io_sql.obj_insert_row_all(data_pars=data_pars) != len(data_pars.row_dic):
-                    raise Exception('Error insert row: data_pars = ' + str(data_pars))
+
+                # надо вернуть с учетом обработки после комита
+                # if self.io_sql.obj_insert_row_all(data_pars=data_pars) != len(data_pars.row_dic):
+                    # raise Exception('Error insert row: data_pars = ' + str(data_pars))
+
+                self.io_sql.obj_insert_row_all(data_pars=data_pars)
 
             # rec_id известно
             else:
@@ -110,7 +114,7 @@ class IO_ORG_SQL():
             if ids_max_block == None: ids_max_block = 1000
             for ids_ind in range(0, len(ids), ids_max_block):
                 yield from __read__(
-                    where_ids=['id IN (' + ','.join([str(i) for i in ids[ids_ind:ids_ind + ids_max_block]]) + ')', ])
+                    where_ids=['rec_id IN (' + ','.join([str(i) for i in ids[ids_ind:ids_ind + ids_max_block]]) + ')', ])
         # если нет ids
         else:
             yield from __read__(where_ids=[])

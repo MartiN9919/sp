@@ -166,8 +166,8 @@ export default {
     },
     getDateTimeEnd: function () {
       let dateTime = new Date()
-      let time = dateTime.toLocaleTimeString().split(':')
-      let date = dateTime.toLocaleDateString().split('/')
+      let time = dateTime.toLocaleTimeString('ru-RU').split(':')
+      let date = dateTime.toLocaleDateString('ru-RU').split('.')
       return date[2] + '-' + date[1] + '-' + date[0] + ' ' + time[0] + ':' + time[1]
     },
     createRelatedObject() {

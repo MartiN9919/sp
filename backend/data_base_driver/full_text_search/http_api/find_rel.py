@@ -201,7 +201,7 @@ def search_rel_with_key_http(rel_key, object_1_type, object_1_id, object_2_type,
                   if validate_rel_actual(item['_source'], date_time_start, date_time_end)])
     result = result.union(
         set([item['_source']['rec_id_2'] for item in json.loads(response_2.text)['hits']['hits']
-             if validate_rel_actual(item['_source'],date_time_start, date_time_end)]))
+             if validate_rel_actual(item['_source'], date_time_start, date_time_end)]))
     return [int(item) for item in list(result)]
 
 

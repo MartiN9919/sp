@@ -51,11 +51,11 @@ def add_data(group_id, object):
     # ------------------------------------------------------------------------------------------------------------------
     if object.get('rec_id', 0) != 0:
         data.append(['id', object.get('rec_id')])
-    else:
+    elif not object.get('force', False):
         temp_set = None
         for item in data:
             if get_key_by_id(int(item[0])).get('need', 0) == 1:
-                if temp_set:
+                if type(temp_set) == set:
                     temp_set.intersection_update(set(find_key_value_http(object.get('object_id'), item[0], item[1])))
                 else:
                     temp_set = set(find_key_value_http(object.get('object_id'), item[0], item[1]))
@@ -64,7 +64,7 @@ def add_data(group_id, object):
     result = add_record(group_id=group_id, object_id=object.get('object_id'), object_info=data)
     if result != -1:
         return {'status': 1,
-                'rec_id': result}
+                'object': get_object_record_by_id_http(object.get('object_id'), result)}
     else:
         return {'status': -1}
 

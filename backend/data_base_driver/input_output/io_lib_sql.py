@@ -23,10 +23,10 @@ class IO_LIB_SQL():
     # + получить rec_id для нового элемента obj
     def obj_rec_id_new(self, obj_id):
         # в одно обращение к БД без чтения с блокировкой
-        self.__sql_exec__(
+        ret = self.__sql_exec__(
             sql="UPDATE " + DAT_SYS_ID.TABLE + " SET id = LAST_INSERT_ID(id + 1) WHERE " + DAT_SYS_ID.OBJ_ID + "=" + str(
                 obj_id), read=False)
-        ret = self.connection.get_connection().insert_id()
+        ret = ret[0]
         if ret == 0: raise Exception('Unknow get new id for obj.' + str(obj_id))
         return ret
 
@@ -37,7 +37,7 @@ class IO_LIB_SQL():
     def obj_insert_col_one(self, data_pars):
         if not data_pars.rec_id: raise Exception('Unknow rec_id: data_pars = ' + str(data_pars))
         sql = "INSERT IGNORE INTO " + data_pars.col_table + " " + \
-            "SET " + ', '.join(['id=' + data_pars.rec_id] + data_pars.col_equ_flat())
+            "SET " + ', '.join(['rec_id=' + data_pars.rec_id] + data_pars.col_equ_flat())
         self.__sql_exec__(sql, read=False)
 
     # + запись ОДНОГО row-ключа ОДНОЙ sql-операцией => ОДНА запись

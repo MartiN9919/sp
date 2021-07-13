@@ -1,42 +1,47 @@
 <template>
   <div @contextmenu.stop="contextMenu = { event: $event, typeMenu: 'creatorObject' + object.tempId }">
-    <div class="mt-3">
-      {{contextMenu}}
-      <v-form ref="form" v-model="valid" lazy-validation>
-        <creator-form
-          v-for="(classifier, key) in object.params" :key="key"
-          v-model="classifier.value" :work-area-id="object.tempId"
-          :classifier="getClassifier(object.object_id, classifier.id)"
-          @click.right.stop="contextMenu = { event: $event, typeMenu: classifier.toString() + object.tempId.toString() }"
-        >
-          <context-menu v-if="classifier.toString() + object.tempId.toString() === typeContextMenu">
-            Удалить {{typeContextMenu}}
-          </context-menu>
-        </creator-form>
-      </v-form>
-      <v-btn @click.right.stop="" @click="saveObject" outlined color="teal" class="save-btn">
-        Временная кнопка сохранения объекта
+    <v-form ref="form" v-model="valid" lazy-validation>
+      <creator-form
+        v-for="(classifier, key) in object.params" :key="key" class="px-3 pt-5"
+        v-model="classifier.value" @observer="classifier.changed = $event"
+        :classifier="getClassifier(object.object_id, classifier.id)"
+        @contextmenu.native.stop="contextMenu = { event: $event,  typeMenu: getNameContextInput(classifier.id) }"
+      >
+        <context-menu v-if="getNameContextInput(classifier.id) === typeContextMenu && !('date' in classifier)">
+          <context-creator-form @deleteClassifier="deleteClassifier(classifier)"></context-creator-form>
+        </context-menu>
+      </creator-form>
+      <v-btn @click.right.stop="" @click="saveObject"  outlined color="teal" class="mt-5 mx-12">
+        Сохранить
       </v-btn>
-    </div>
+    </v-form>
     <context-menu v-if="typeContextMenu === 'creatorObject' + object.tempId">
       <context-creator-object
         :object-id="object.object_id" :classifiers="object.params" @selectClassifier="selectClassifier"
       ></context-creator-object>
     </context-menu>
+    <v-dialog v-model="$store.getters.conflictingObjects.length" persistent max-width="90%">
+      <conflict-form
+        :conflicting-objects="$store.getters.conflictingObjects"
+        @resolveConflict="$store.dispatch('clearConflictingObjects')"
+      ></conflict-form>
+    </v-dialog>
   </div>
 </template>
 
 <script>
-import creatorForm from "./creatorForm";
+import creatorForm from "./creatorForm"
+import conflictForm from "./conflictForm"
 import toolsContextMenu from "../../../WebsiteShell/ContextMenu/Mixins/toolsContextMenu"
 import contextMenu from "../../../WebsiteShell/ContextMenu/contextMenu"
 import contextCreatorObject from "../../ContextMenus/contextCreatorObject"
+import contextCreatorForm from "../../ContextMenus/contextCreatorForm"
 
 export default {
   name: "creatorObject",
   props: { object: Object },
   mixins: [ toolsContextMenu, ],
-  components: { creatorForm, contextMenu, contextCreatorObject, },
+  components: { creatorForm, contextMenu, contextCreatorObject, contextCreatorForm, conflictForm, },
   data: () => ({
     valid: true,
     contextMenu: { event: null, typeMenu: null,},
@@ -52,9 +57,13 @@ export default {
       })
       this.deactivateContextMenu()
     },
+    getNameContextInput(classifierId) { return this.object.tempId.toString() + classifierId.toString() },
+    deleteClassifier (classifier) {
+      this.object.params.splice(this.object.params.findIndex(item => item.id === classifier.id), 1)
+    },
     saveObject () {
-      console.log(this.$refs.form.validate())
-      // this.$store.dispatch('createNewObjectFromServer')
+      if (this.$refs.form.validate())
+        this.$store.dispatch('createNewObjectFromServer')
     }
   }
 }
