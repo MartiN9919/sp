@@ -51,7 +51,7 @@ def add_data(group_id, object):
     # ------------------------------------------------------------------------------------------------------------------
     if object.get('rec_id', 0) != 0:
         data.append(['id', object.get('rec_id')])
-    else:
+    elif not object.get('force', False):
         temp_set = None
         for item in data:
             if get_key_by_id(int(item[0])).get('need', 0) == 1:
