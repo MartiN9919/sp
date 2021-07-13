@@ -21,10 +21,9 @@
       <!-- ФИГУРЫ ИЗ state.map -->
       <l-layer-group
         v-for="(map_item, map_ind) in SCRIPT_GET"
-        v-bind:key="MAP_GET_KEY(map_ind)"
+        :key="MAP_GET_KEY(map_ind)"
       >
         <l-marker-cluster
-          :key="MAP_GET_KEY(map_ind)"
           :options="cluster_options(map_ind)"
         >
           <l-geo-json

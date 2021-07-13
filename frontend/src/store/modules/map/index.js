@@ -45,13 +45,14 @@ export default {
   getters: {
     MAP_GET_KEY: (state, getters) => (ind) =>
       ind+'-'+
-      getters.MAP_GET_RANGE_SEL           +'-'+
-      getters.SCRIPT_GET_ITEM_MARKER (ind)+'-'+
-      getters.SCRIPT_GET_ITEM_LINE   (ind)+'-'+
+      getters.MAP_GET_RANGE_SEL              +'-'+
+      getters.SCRIPT_GET_ITEM_REFRESH   (ind)+'-'+
+      getters.SCRIPT_GET_ITEM_MARKER    (ind)+'-'+
+      getters.SCRIPT_GET_ITEM_LINE      (ind)+'-'+
       // getters.SCRIPT_GET_ITEM_POLYGON(ind)+'-'+
-      getters.SCRIPT_GET_ITEM_COLOR  (ind)+'-'+
-      getters.SCRIPT_GET_ITEM_ICON   (ind)+'-'+
-      getters.MAP_GET_CLUSTER             +'-'+
+      getters.SCRIPT_GET_ITEM_COLOR     (ind)+'-'+
+      getters.SCRIPT_GET_ITEM_ICON      (ind)+'-'+
+      getters.MAP_GET_CLUSTER                +'-'+
       getters.MAP_GET_HINT,
 
     MAP_GET_RANGE_SHOW:        (state) =>  state.range.show,
