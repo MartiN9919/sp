@@ -89,7 +89,7 @@ export default {
     MAP_MUT_CENTER_Y:          (state, val)  => state.center_y   = val,
     MAP_MUT_ZOOM:              (state, val)  => state.zoom       = val,
 
-    MAP_MUT_EDIT:              (state, data) => { state.edit = data || { "type": "FeatureCollection", "features": [], }; },
+    MAP_MUT_EDIT:              (state, data) => state.edit       = data, // data || { "type": "FeatureCollection", "features": [], },
   },
 
 
@@ -104,7 +104,7 @@ export default {
     MAP_ACT_MEASURE:        ({commit}, param={}) => { commit('MAP_MUT_MEASURE',    param.on);  cook_set('MAP_MEASURE',    param.on ); },
     MAP_ACT_LOGO:           ({commit}, param={}) => { commit('MAP_MUT_LOGO',       param.on);  cook_set('MAP_LOGO',       param.on ); },
 
-    MAP_ACT_ITEM_ADD:       ({commit, dispatch}, param={}) => { commit('SCRIPT_MUT_ITEM_ADD',   param);    /*dispatch('MAP_ACT_RANGE_TS');*/ },
+    MAP_ACT_ITEM_ADD:       ({commit, dispatch}, param={}) => { commit('SCRIPT_MUT_ITEM_ADD',   param);    dispatch('MAP_ACT_RANGE_TS'); },
     MAP_ACT_ITEM_COLOR:     ({commit}, param={})           =>   commit('SCRIPT_MUT_ITEM_COLOR', param),
     MAP_ACT_ITEM_DEL:       ({commit, dispatch}, param={}) => { commit('SCRIPT_MUT_ITEM_DEL',   param.id); dispatch('MAP_ACT_RANGE_TS'); },
 

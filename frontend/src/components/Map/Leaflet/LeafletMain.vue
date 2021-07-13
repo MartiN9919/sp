@@ -246,7 +246,7 @@ export default {
     // FeatureCollection РЕДАКТИРУЕМЫХ объектов
     fc_edit: {
       get()    { return this.MAP_GET_EDIT; },
-      set(val) { console.log(111, val) /* this.MAP_ACT_EDIT({data: val}); */ },
+      set(val) { this.MAP_ACT_EDIT({data: val}); },
     },
   },
 

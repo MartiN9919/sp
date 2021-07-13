@@ -73,7 +73,9 @@ export default {
     addActiveAnalysts: (state, playLoad) => {
       playLoad.selectedScript[MAP_ITEM.FC] = playLoad[MAP_ITEM.FC]
       if (playLoad.selectedScript.color === '#696969FF') { playLoad.selectedScript.color = '#FFA500FF' }
-      state.selectedTemplate.activeAnalysts.push(playLoad.selectedScript)
+
+      // см. SCRIPT_MUT_ITEM_ADD
+      // state.selectedTemplate.activeAnalysts.push(playLoad.selectedScript)
     },
     removeAnalytics: (state, analytics) => {
       let checkForAvailability = state.selectedTemplate.passiveAnalysts.indexOf(analytics)
@@ -96,7 +98,6 @@ export default {
     SCRIPT_MUT_ITEM_ADD: (state, item) => {
       if (item.marker===undefined) item.marker = '';
       if (item.color ===undefined) item.color  = '';
-      console.log(1)
       let item_copy = JSON.parse(JSON.stringify(item));        // deep copy
       state.selectedTemplate.activeAnalysts.push(item_copy);
     },
@@ -107,7 +108,7 @@ export default {
   actions: {
     addPassiveAnalysts: ({ commit }, analytics = {}) => commit('addPassiveAnalysts', analytics),
 
-    removeAnalytics: ({ commit }, analytics = {}) => commit('removeAnalytics', analytics),
+    removeAnalytics: ({ commit, dispatch }, analytics = {}) => { commit('removeAnalytics', analytics); dispatch('MAP_ACT_RANGE_TS'); },
 
     changeColorActiveAnalysts: ({ commit }, parameters = {}) => commit('changeColorActiveAnalysts', parameters),
 
@@ -115,21 +116,24 @@ export default {
 
     createNewTemplate: ({ commit }) => commit('createNewTemplate'),
 
-    executeMapScript ({ commit }, parameters = {}) {
+    executeMapScript ({ commit, dispatch }, parameters = {}) {
       return postResponseAxios('script/execute_map/', parameters.request, parameters.config)
         .then(response => {
-          commit('removeAnalytics', parameters.request)
-          commit('addActiveAnalysts', {
+          let data = {
             selectedScript: parameters.request,
             fc: response.data
-          })
+          }
+          commit('removeAnalytics', parameters.request)
+          commit('addActiveAnalysts', data)
+          commit('SCRIPT_MUT_ITEM_ADD', data.selectedScript)
           commit('changeSelectedTreeViewItem', {})
+          dispatch('MAP_ACT_RANGE_TS')
         })
         .catch(() => {})
     },
-    getTemplatesList ({ commit }, config = {}) {
+    getTemplatesList ({ commit, dispatch }, config = {}) {
       return getResponseAxios('script/templates/', config)
-        .then(response => { { commit('loadTemplatesList', response.data) } })
+        .then(response => { { commit('loadTemplatesList', response.data); dispatch('MAP_ACT_RANGE_TS'); } })
         .catch(() => {})
     },
     saveSelectedTemplate ({ state, commit }, parameters = {}) {
@@ -154,11 +158,12 @@ export default {
         })
         .catch(() => {})
     },
-    deleteSelectedTemplate ({ commit }, config = {}) {
+    deleteSelectedTemplate ({ commit, dispatch }, config = {}) {
       return deleteResponseAxios('script/template/', config)
         .then(response => {
           commit('deleteSelectedTemplate', config.params.template_id)
           commit('changeSelectedTreeViewItem', {})
+          dispatch('MAP_ACT_RANGE_TS')
         })
         .catch(() => {})
     }
