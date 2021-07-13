@@ -114,7 +114,7 @@ class IO_ORG_SQL():
             if ids_max_block == None: ids_max_block = 1000
             for ids_ind in range(0, len(ids), ids_max_block):
                 yield from __read__(
-                    where_ids=['id IN (' + ','.join([str(i) for i in ids[ids_ind:ids_ind + ids_max_block]]) + ')', ])
+                    where_ids=['rec_id IN (' + ','.join([str(i) for i in ids[ids_ind:ids_ind + ids_max_block]]) + ')', ])
         # если нет ids
         else:
             yield from __read__(where_ids=[])

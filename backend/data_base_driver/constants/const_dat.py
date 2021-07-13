@@ -274,7 +274,7 @@ class DAT_SYS_FILES:
 ##################################################################################
 class DAT_OBJ_COL:
     table_name = lambda group: 'obj_' + group + '_col'
-    ID = 'id'
+    ID = 'rec_id'
 
 
 class DAT_OBJ_ROW:

@@ -37,7 +37,7 @@ class IO_LIB_SQL():
     def obj_insert_col_one(self, data_pars):
         if not data_pars.rec_id: raise Exception('Unknow rec_id: data_pars = ' + str(data_pars))
         sql = "INSERT IGNORE INTO " + data_pars.col_table + " " + \
-            "SET " + ', '.join(['id=' + data_pars.rec_id] + data_pars.col_equ_flat())
+            "SET " + ', '.join(['rec_id=' + data_pars.rec_id] + data_pars.col_equ_flat())
         self.__sql_exec__(sql, read=False)
 
     # + запись ОДНОГО row-ключа ОДНОЙ sql-операцией => ОДНА запись

@@ -14,6 +14,7 @@ def find_reliable_http(object_type, request, actual=False):
     @return: список id объектов с искомыми параметрами, если не найдено, то пустой список
     """
     request = request.split(' ')
+    request = [word.replace('-', '<<') for word in request] # костыль, в последующем поменяить настройки мантикоры, что бы индексировала '-'
     result = []
     for word in request:
         data = json.dumps({"index": "obj_" + object_type + "_row", "query": {"query_string": word}, "limit": 500})
@@ -87,9 +88,7 @@ def get_object_record_by_id_http(object_id, rec_id):
             continue
         params.append({'id': int(item[0]), 'value': item[1], 'date': get_date_time_from_sec(item[2]),
                        'old': []})
-
     for item in params:
         item['old'].sort(key=lambda x: x['date'], reverse=True)
-
     return {'object_id': object_id, 'rec_id': rec_id, 'params': params}
 
