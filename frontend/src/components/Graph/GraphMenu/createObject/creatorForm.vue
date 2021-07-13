@@ -52,7 +52,6 @@ export default {
   props: {
     classifier: Object,
     inputString: String,
-    workAreaId: Number,
   },
   data: () => ({
     valid: true,

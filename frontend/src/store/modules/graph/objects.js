@@ -4,17 +4,22 @@ import { getActiveObject, getObjectFromWorkArea } from './index'
 export default {
   state: {
     listOfPrimaryObjects: [],
+    conflictingObjects: [],
   },
   getters: {
     listOfPrimaryObjects: state => { return state.listOfPrimaryObjects },
     primaryObject: state => id => { return state.listOfPrimaryObjects.find(object => object.id === id) },
+    conflictingObjects: state => { return state.conflictingObjects },
   },
   mutations: {
     setListOfPrimaryObjects: (state, listObject) => { state.listOfPrimaryObjects = listObject },
     setFoundObjects: (state, response) => { response.activeObject.foundObjects = response.foundObjects },
-    createNewObject(state, props) { props.object.params = props.classifier },
+    createNewObject: (state, props) => { props.object.params = props.classifier },
+    addConflictingObjects: (state, objects) => { state.conflictingObjects = objects },
+    clearConflictingObjects: (state) => { state.conflictingObjects = [] },
   },
   actions: {
+    clearConflictingObjects({commit}) { commit('clearConflictingObjects') },
     getListOfPrimaryObjects({commit}, config = {}) {
       return getResponseAxios('objects/list_type/', config)
         .then(response => { commit('setListOfPrimaryObjects', response.data) })
@@ -50,8 +55,13 @@ export default {
         let request = { object_id: findObject.object_id, rec_id: findObject.rec_id, params: classifiers, }
         return postResponseAxios('objects/object', request, config)
           .then(response => {
-            findObject.rec_id = response.data.object.rec_id
-            findObject.params = response.data.object.params
+            if (response.data.status === 1) {
+              findObject.rec_id = response.data.object.rec_id
+              findObject.params = response.data.object.params
+            }
+            if (response.data.status === 2) {
+              commit('addConflictingObjects', response.data.objects)
+            }
           })
           .catch(() => {
           })

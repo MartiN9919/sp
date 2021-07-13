@@ -20,21 +20,28 @@
         :object-id="object.object_id" :classifiers="object.params" @selectClassifier="selectClassifier"
       ></context-creator-object>
     </context-menu>
+    <v-dialog v-model="$store.getters.conflictingObjects.length" persistent max-width="90%">
+      <conflict-form
+        :conflicting-objects="$store.getters.conflictingObjects"
+        @resolveConflict="$store.dispatch('clearConflictingObjects')"
+      ></conflict-form>
+    </v-dialog>
   </div>
 </template>
 
 <script>
-import creatorForm from "./creatorForm";
+import creatorForm from "./creatorForm"
+import conflictForm from "./conflictForm"
 import toolsContextMenu from "../../../WebsiteShell/ContextMenu/Mixins/toolsContextMenu"
 import contextMenu from "../../../WebsiteShell/ContextMenu/contextMenu"
 import contextCreatorObject from "../../ContextMenus/contextCreatorObject"
-import contextCreatorForm from "../../ContextMenus/contextCreatorForm";
+import contextCreatorForm from "../../ContextMenus/contextCreatorForm"
 
 export default {
   name: "creatorObject",
   props: { object: Object },
   mixins: [ toolsContextMenu, ],
-  components: { creatorForm, contextMenu, contextCreatorObject, contextCreatorForm, },
+  components: { creatorForm, contextMenu, contextCreatorObject, contextCreatorForm, conflictForm, },
   data: () => ({
     valid: true,
     contextMenu: { event: null, typeMenu: null,},
