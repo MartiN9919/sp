@@ -1,6 +1,7 @@
 <template>
   <v-dialog
     v-model="dialog"
+    @input="show_dialog"
     persistent
   >
     <template v-slot:activator="{ on, attrs }">
@@ -27,8 +28,8 @@
       <v-divider></v-divider>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="teal" text @click="dialog = false">Отменить</v-btn>
-        <v-btn color="teal" text @click="acceptGeometry">Подтвердить</v-btn>
+        <v-btn color="teal" text @click="click_cancel">Отменить</v-btn>
+        <v-btn color="teal" text @click="click_ok">Подтвердить</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -43,20 +44,15 @@ export default {
   props: {
     rules: Array,
     title: String,
-    inputString: Array,
+    inputString: Object,
   },
   model: { prop: 'inputString', event: 'changeInputString', },
   data: () => ({
     dialog: false,
+    fc_temp: undefined,
   }),
-  computed: {
-    value: {
-      get: function () { return this.inputString },
-      set: function (value) { this.$emit('changeInputString', value) }
-    },
-    fc: {
-      get() {
-        return {
+  mounted: function() {
+    this.value = {
           "type": "FeatureCollection",
           "features": [
             {
@@ -88,18 +84,37 @@ export default {
             },
           ],
         }
+  },
+  computed: {
+    value: {
+      get: function () { return this.inputString },
+      set: function (value) { this.$emit('changeInputString', value) }
+    },
+    fc: {
+      get() {
+        return this.value;
       },
-
       set(val) {
-
+        console.log(888, val)
+        this.fc_temp = val;
       },
     },
   },
 
   methods: {
-    acceptGeometry() {
-      this.value = [1, 2]; // тут объекты fc с карты после нажатия кнопки подтверждения
+    show_dialog (e) {
+       if (this.value == undefined) this.value = { "type": "FeatureCollection", "features": [], }
+       this.fc = JSON.parse(JSON.stringify(this.value));
+    },
+
+    click_ok() {
       this.dialog = false;
+      this.value = JSON.parse(JSON.stringify(this.fc_temp));
+    },
+
+    click_cancel() {
+      this.dialog = false;
+      //this.fc     = JSON.parse(JSON.stringify(this.value));
     },
 
     // задавать не обязательно
