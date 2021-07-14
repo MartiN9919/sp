@@ -43,7 +43,7 @@
 
 <script>
 
-import { mapGetters, mapActions } from 'vuex';
+import { mapGetters } from 'vuex';
 import 'leaflet';
 import { LMap, LTileLayer, LControlScale, } from 'vue2-leaflet';
 import LControlPolylineMeasure from 'vue2-leaflet-polyline-measure';
@@ -54,8 +54,8 @@ import MixMeasure from '@/components/Map/Leaflet/Mixins/Measure';
 
 export default {
   name: 'LeafletEditor',
-  model:      { prop:  ['fc_parent_prop'], event: 'fc_parent_change', },
-  props:      {
+  model: { prop:  ['fc_parent_prop'], event: 'fc_parent_change', },
+  props: {
     fc_parent_prop: {
       type: Object,
       default() { return undefined; },
@@ -63,12 +63,12 @@ export default {
     options: {
       type: Object,
       default() { return {
-        // mode_enabled: {
+        // mode_enabled: {            // доступные для создания элементы
         //   marker:  true,
         //   line:    true,
         //   polygon: true,
         // },
-        // mode_selected: 'Polygon',
+        // mode_selected: 'Polygon',  // включенный по умолчанию режим
       };
     },
     },
@@ -88,47 +88,18 @@ export default {
     }
   },
 
-  watch: {
-    // fc_child: {
-    //   handler() {
-    //     console.log('watch changed fc_child 2', this.fc_child);
-    //   },
-    //   deep: true,
-    // },
-
-    fc_child: function(val) {
-      console.log('fc_child update 2', this.fc_child, val);
-    },
-  },
-
-  mounted() {
-    console.log('mounted')
-  },
-
   computed: {
     ...mapGetters([
       'MAP_GET_TILES',
       'MAP_GET_TILE',
       'MAP_GET_SCALE',
       'MAP_GET_MEASURE',
-
-      'SCRIPT_GET',
-      'SCRIPT_GET_ITEM_COLOR',
-      'SCRIPT_GET_ITEM_MARKER',
-      'SCRIPT_GET_ITEM_LINE',
-      'SCRIPT_GET_ITEM_POLYGON',
-      'SCRIPT_GET_ITEM_ICON',
     ]),
 
+    // проброс fc
     fc_child: {
-      get()    {     // { "type": "FeatureCollection", "features": [], }, //L.featureGroup().toGeoJSON(),
-        console.log('get')
-        return this.fc_parent_prop
-      },
-      set(val) {
-        console.log('set', val)
-        this.$emit('fc_parent_change', val)
-      },
+      get()    { return this.fc_parent_prop; },
+      set(val) { this.$emit('fc_parent_change', val); },
     },
 
   },
