@@ -18,7 +18,7 @@
 
     <!-- РЕДАКТОР -->
     <Edit
-      v-model="fc_edit"
+      v-model="fc"
       :options="options"
     />
 
@@ -89,20 +89,20 @@ export default {
   },
 
   watch: {
-    // fc_edit: {
+    // fc: {
     //   handler() {
-    //     console.log('watch changed fc_edit 2', this.fc_edit);
+    //     console.log('watch changed fc 2', this.fc);
     //   },
     //   deep: true,
     // },
 
-    fc_edit: function(val) {
-      console.log('update 2', this.fc_edit, val);
+    fc: function(val) {
+      console.log('update 2', this.fc, val);
     },
   },
 
   mounted() {
-    this.fc_edit = '1'
+    console.log('mounted')
   },
 
   computed: {
@@ -121,8 +121,9 @@ export default {
     ]),
 
     // FeatureCollection РЕДАКТИРУЕМЫХ объектов
-    fc_edit: {
+    fc: {
       get()    {     // { "type": "FeatureCollection", "features": [], }, //L.featureGroup().toGeoJSON(),
+        console.log('get')
         return {
           "type": "FeatureCollection",
         "features": [
@@ -156,7 +157,7 @@ export default {
         ],
       }
       },
-      set(val) { console.log(111, val) /* this.MAP_ACT_EDIT({data: val}); */ },
+      set(val) { console.log('set', val) },
     },
 
   },
@@ -169,7 +170,7 @@ export default {
     },
 
     on_map_click(event) {
-      console.log(event.latlng);
+      // console.log(event.latlng);
     },
 
   },
