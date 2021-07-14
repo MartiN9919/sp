@@ -1,5 +1,8 @@
 <template>
-  <v-dialog v-model="dialog" persistent>
+  <v-dialog
+    v-model="dialog"
+    persistent
+  >
     <template v-slot:activator="{ on, attrs }">
       <v-textarea
         row-height="1" auto-grow
@@ -16,7 +19,9 @@
     <v-card>
 
       <LeafletEditor
-          :options="edit_options()"
+        v-if="dialog"
+        v-model="fc"
+        :options="edit_options()"
       />
 
       <v-divider></v-divider>
@@ -48,6 +53,46 @@ export default {
     value: {
       get: function () { return this.inputString },
       set: function (value) { this.$emit('changeInputString', value) }
+    },
+    fc: {
+      get() {
+        return {
+          "type": "FeatureCollection",
+          "features": [
+            {
+              "type": "Feature",
+              "properties": {
+                "hint": "Edit 1",
+              },
+              "geometry": {
+                "type": "Polygon",
+                "coordinates": [
+                  [
+                    [30.212402343750004,55.19141243527065],
+                    [30.443115234375004,54.50832650029076],
+                    [31.014404296875004,54.718275018302315],
+                    [30.212402343750004,55.19141243527065],
+                  ]
+                ]
+              }
+            },
+            {
+              "type": "Feature",
+              "properties": {
+                "hint": "Edit 2",
+              },
+              "geometry": {
+                "type":        "Point",
+                "coordinates": [24.071044921875004,55.86914706303444]
+              },
+            },
+          ],
+        }
+      },
+
+      set(val) {
+
+      },
     },
   },
 

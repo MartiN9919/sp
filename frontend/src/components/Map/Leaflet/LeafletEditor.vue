@@ -18,7 +18,7 @@
 
     <!-- РЕДАКТОР -->
     <Edit
-      v-model="fc"
+      v-model="fc_child"
       :options="options"
     />
 
@@ -54,12 +54,12 @@ import MixMeasure from '@/components/Map/Leaflet/Mixins/Measure';
 
 export default {
   name: 'LeafletEditor',
-
+  model:      { prop:  ['fc_parent_prop'], event: 'fc_parent_change', },
   props:      {
-    // fc_prop: {
-    //   type: Object,
-    //   default() { return undefined; },
-    // },
+    fc_parent_prop: {
+      type: Object,
+      default() { return undefined; },
+    },
     options: {
       type: Object,
       default() { return {
@@ -89,15 +89,15 @@ export default {
   },
 
   watch: {
-    // fc: {
+    // fc_child: {
     //   handler() {
-    //     console.log('watch changed fc 2', this.fc);
+    //     console.log('watch changed fc_child 2', this.fc_child);
     //   },
     //   deep: true,
     // },
 
-    fc: function(val) {
-      console.log('update 2', this.fc, val);
+    fc_child: function(val) {
+      console.log('fc_child update 2', this.fc_child, val);
     },
   },
 
@@ -120,44 +120,15 @@ export default {
       'SCRIPT_GET_ITEM_ICON',
     ]),
 
-    // FeatureCollection РЕДАКТИРУЕМЫХ объектов
-    fc: {
+    fc_child: {
       get()    {     // { "type": "FeatureCollection", "features": [], }, //L.featureGroup().toGeoJSON(),
         console.log('get')
-        return {
-          "type": "FeatureCollection",
-        "features": [
-          {
-            "type": "Feature",
-            "properties": {
-              "hint": "Edit 1",
-            },
-            "geometry": {
-              "type": "Polygon",
-              "coordinates": [
-                [
-                  [30.212402343750004,55.19141243527065],
-                  [30.443115234375004,54.50832650029076],
-                  [31.014404296875004,54.718275018302315],
-                  [30.212402343750004,55.19141243527065],
-                ]
-              ]
-            }
-          },
-          {
-            "type": "Feature",
-            "properties": {
-              "hint": "Edit 2",
-            },
-            "geometry": {
-              "type":        "Point",
-              "coordinates": [24.071044921875004,55.86914706303444]
-            },
-          },
-        ],
-      }
+        return this.fc_parent_prop
       },
-      set(val) { console.log('set', val) },
+      set(val) {
+        console.log('set', val)
+        this.$emit('fc_parent_change', val)
+      },
     },
 
   },

@@ -126,7 +126,7 @@ const TYPES = class {
 
 export default {
   name:       'Edit',
-  model:      { prop:  ['fc_prop'], event: 'fc_change', }, // FeatureCollection РЕДАКТИРУЕМЫХ объектов
+  model:      { prop:  ['fc_prop'], event: 'fc_change', },
   props:      {
     fc_prop: {
       type: Object,
