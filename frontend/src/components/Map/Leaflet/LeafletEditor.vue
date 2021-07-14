@@ -19,7 +19,8 @@
     <!-- РЕДАКТОР -->
     <Edit
       v-model="fc_child"
-      :options="options"
+      :modeEnabled="modeEnabled"
+      :modeSelected="modeSelected"
     />
 
     <!-- МАСШТАБ -->
@@ -60,18 +61,8 @@ export default {
       type: Object,
       default() { return undefined; },
     },
-    options: {
-      type: Object,
-      default() { return {
-        // mode_enabled: {            // доступные для создания элементы
-        //   marker:  true,
-        //   line:    true,
-        //   polygon: true,
-        // },
-        // mode_selected: 'Polygon',  // включенный по умолчанию режим
-      };
-    },
-    },
+    modeEnabled: Object,      // доступные для создания элементы, например: { marker: true, line: true, polygon: true }
+    modeSelected: String,     // включенный по умолчанию режим, например: 'Polygon'
   },
 
 

@@ -25,11 +25,12 @@
     </template>
 
     <v-card>
-      <v-card-title class="text-h5">{{ title }}</v-card-title>
+      <v-card-title class="text-h7">{{ title }}</v-card-title>
       <LeafletEditor
         v-if="dialog"
-        v-model="edit_fc"
-        :options="edit_options()"
+        v-model="fc"
+        :modeEnabled="modeEnabled"
+        :modeSelected="modeSelected"
       />
       <v-divider></v-divider>
       <v-card-actions>
@@ -51,19 +52,20 @@ export default {
     rules: Array,
     title: String,
     inputString: Object,
+    modeEnabled: Object,      // доступные для создания элементы, например: { marker: true, line: true, polygon: true }
+    modeSelected: String,     // включенный по умолчанию режим, например: 'Polygon'
   },
   model: { prop: 'inputString', event: 'changeInputString', },
   data: () => ({
-    dd: "ddda",
     dialog: false,
-    fc_temp: undefined,    // не принятые изменения edit_fc
+    fc_temp: undefined,       // не принятые изменения fc
   }),
   computed: {
     value: {
       get()    { return this.inputString; },
       set(val) { this.$emit('changeInputString', val); }
     },
-    edit_fc: {
+    fc: {
       get()    { return this.value; },
       set(val) { this.fc_temp = val; },
     },
@@ -72,7 +74,7 @@ export default {
   methods: {
     show_dialog (e) {
        if (this.value == undefined) this.value = { "type": "FeatureCollection", "features": [], }
-       this.edit_fc = JSON.parse(JSON.stringify(this.value));
+       this.fc = JSON.parse(JSON.stringify(this.value));
     },
 
     click_ok() {
@@ -88,18 +90,6 @@ export default {
       if (this.value == undefined) return ''
       if (this.value.features.length == 0) return ''
       return '[объект]'
-    },
-
-    // задавать не обязательно
-    edit_options() {
-      return {
-        mode_enabled: {             // доступные для создания элементы
-          marker:  true,
-          line:    true,
-          polygon: true,
-        },
-        // mode_selected: 'Polygon',   // включенный по умолчанию режим
-      }
     },
 
   },
