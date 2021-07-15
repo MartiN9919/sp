@@ -63,17 +63,6 @@
       <!-- ЛОГОТИП -->
       <Logo/>
 
-      <!-- ТЕСТ -->
-      <!--
-      <l-control
-        v-if="true"
-        position="topleft"
-      >
-        <v-btn class="button-container leaflet-buttons-control-button" @click="editor_on">Test 1</v-btn>
-        <v-btn class="button-container leaflet-buttons-control-button" @click="onTest2">Test 2</v-btn>
-      </l-control>
-      -->
-
     </l-map>
 
     <Menu
@@ -89,7 +78,7 @@
 <script>
 
 import { mapGetters, mapActions, } from 'vuex';
-import { Icon       } from 'leaflet';
+import { Icon } from 'leaflet';
 
 import {
   LMap,
@@ -180,24 +169,14 @@ export default {
         y:       0,
       },
 
-      // FeatureCollection РЕДАКТИРУЕМЫХ объектов
-      // fc_edit: this.MAP_GET_EDIT,
-
       hover_map_ind:     -1,      // MAP_ITEM[hover_map_ind]                   - блок, над которым находится курсор
       hover_feature_ind: -1,      // MAP_ITEM[].FC.features[hover_feature_ind] - фигура, над которой находится курсор
 
       mapOptions: {
         zoomControl: false,
         zoomSnap:    0.5,
-        //crs:       this.ttt(),
       },
     };
-  },
-
-  watch: {
-    fc_edit: function(val) {
-      console.log('update ', this.fc_edit, val);
-    },
   },
 
 
@@ -231,7 +210,7 @@ export default {
     // FeatureCollection РЕДАКТИРУЕМЫХ объектов
     fc_edit: {
       get()    { return this.MAP_GET_EDIT; },
-      set(val) { this.MAP_ACT_EDIT({data: val}); },
+      set(val) { /* this.MAP_ACT_EDIT({data: val}); */ },
     },
   },
 
@@ -414,35 +393,14 @@ export default {
     // ===============
     onMapReady() {
       this.map.invalidateSize();
-      //this.onEditReady();
     },
 
     onClick(event) {
       console.log(event.latlng);
     },
 
-    onTest2(event) {
-      // var fg = L.featureGroup();
-      // this.map.eachLayer((layer)=>{
-      //   if((layer instanceof L.Path || layer instanceof L.Marker) && layer.pm && layer.pm.edited){
-      //     fg.addLayer(layer);
-      //   }
-      // });
-      // console.log(fg.toGeoJSON());
-
-      // this.map.pm.getGeomanLayers().forEach(function(layer){
-      //   console.log(1, layer)
-      // });
-
-      // console.log(2, this.map.pm.getGeomanLayers(true))
-      // this.map.pm.enableDraw('Polygon', {});
-
-      this.editor_data_set();
-    },
-
     on_edit_ok(event, dat) {
-      console.log('on_edit_ok', event, dat);
-      //this.fc_edit = dat;
+      this.MAP_ACT_EDIT({data: dat});
     },
 
 
@@ -467,9 +425,6 @@ export default {
           geoJSONShape.properties = layer.properties;
           geoJSONShape.id         = layer._leaflet_id;
           geoJSON.features.push(geoJSONShape);
-
-          // normalize coordinates (> 180/>90)
-          // TODO
         }
       });
 
@@ -499,6 +454,7 @@ export default {
     color: red!important;
   }
 </style>
+
 <style scoped lang="scss">
   @import "~leaflet/dist/leaflet.css";
   @import "~leaflet.markercluster/dist/MarkerCluster.css";
