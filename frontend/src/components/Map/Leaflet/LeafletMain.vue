@@ -6,6 +6,7 @@
       :options="mapOptions"
       :crs="MAP_GET_TILES[MAP_GET_TILE].crs"
       @ready="on_map_ready"
+      @resize="on_map_resize"
       @dblclick="on_map_dblclick"
       @contextmenu="menu_show"
     >
@@ -397,6 +398,10 @@ export default {
       this.map.invalidateSize();
     },
 
+    on_map_resize() {
+      this.map.invalidateSize();
+    },
+
     on_map_dblclick(event) {
       this.appendErrorAlert({status: 501, content: event.latlng, show_time: 5, });
     },
@@ -404,8 +409,6 @@ export default {
     on_edit_ok(event, dat) {
       this.MAP_ACT_EDIT({data: dat});
     },
-
-
 
 
     // GET BUTTON

@@ -5,6 +5,7 @@
     :options="map_options"
     :crs="MAP_GET_TILES[MAP_GET_TILE].crs"
     @ready="on_map_ready"
+    @resize="on_map_resize"
     @contextmenu=""
     @dblclick="on_map_dblclick"
   >
@@ -105,6 +106,10 @@ export default {
       this.map.doubleClickZoom.disable();
       this.map.invalidateSize();
       this.key_mounted_after();
+    },
+
+    on_map_resize() {
+      this.map.invalidateSize();
     },
 
     on_map_dblclick(event) {
