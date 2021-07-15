@@ -66,6 +66,7 @@ export default {
       let zoom   = this.map.getZoom();
       let s = center.lng.toString()+KEY_SEPARATOR+center.lat.toString()+KEY_SEPARATOR+zoom.toString();
       cook_set(KEY_POS_COOK+ind.toString(), s);
+      this.appendErrorAlert({status: 501, content: 'Карта сохранена под номером '+ind, show_time: 3, });
     },
 
     // cookies: загрузить позицию

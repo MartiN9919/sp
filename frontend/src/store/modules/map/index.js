@@ -1,10 +1,5 @@
 
 import {
-  mapState,
-  mapMutations,
-} from 'vuex';
-
-import {
   MAP_ITEM,
 } from '@/components/Map/Leaflet/Lib/Const';
 

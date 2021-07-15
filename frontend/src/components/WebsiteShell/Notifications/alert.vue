@@ -14,14 +14,14 @@
           <div>{{alertText[alert.status]}}</div>
         </div>
         <v-col v-else-if="[501, 502, 503].indexOf(alert.status) !== -1">
-          <v-row no-gutters>
-            <v-col class="d-flex justify-start" >{{alert.date_time}} <br> </v-col>
-            <v-col class="d-flex justify-end "><p class="font-weight-thin mb-0" style="font-size: 12px">Отправитель {{alert.from}}</p></v-col>
+          <v-row v-if="(alert.date_time || alert.from)" no-gutters>
+            <v-col v-if="alert.date_time" class="d-flex justify-start" >{{alert.date_time}}<br></v-col>
+            <v-col v-if="alert.from"      class="d-flex justify-end "><p class="font-weight-thin mb-0" style="font-size: 12px">Отправитель {{alert.from}}</p></v-col>
           </v-row>
 
-          <v-divider dark></v-divider>
+          <v-divider dark v-if="(alert.date_time || alert.from)"></v-divider>
 
-          <div>Сообщение - {{alert.content}}</div>
+          <div>{{alert.content}}</div>
 
         </v-col>
       </v-row>
@@ -51,9 +51,9 @@ export default {
       'no connect': 'Нет соединения с сервером. Проверьте ваше соединение с сетью, либо подождите некоторое время.'
     },
     alertType: {
-      '501': 'green darken-1',
-      '502': 'blue darken-1',
-      '503': 'purple darken-1'
+      501: 'green darken-1',
+      502: 'blue darken-1',
+      503: 'purple darken-1',
     }
   }),
   props: {
@@ -73,6 +73,7 @@ export default {
   },
   created () {
     if (this.status === 'red darken-1') setTimeout(() => { this.$emit('removeAlert', this.alert) }, 5000)
+    if (this.alert.show_time)      setTimeout(() => { this.$emit('removeAlert', this.alert) }, this.alert.show_time*1000)
   }
 }
 </script>
