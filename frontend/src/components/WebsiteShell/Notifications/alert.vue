@@ -4,7 +4,7 @@
       @click="$emit('removeAlert', alert)"
       :icon="this.icon"
       border="left" dark
-      style="cursor: default"
+      style="cursor: default;"
       elevation="20"
     >
       <v-row no-gutters class="noselect">

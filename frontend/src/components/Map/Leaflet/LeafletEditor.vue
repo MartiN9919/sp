@@ -6,7 +6,7 @@
     :crs="MAP_GET_TILES[MAP_GET_TILE].crs"
     @ready="on_map_ready"
     @contextmenu=""
-    @click="on_map_click"
+    @dblclick="on_map_dblclick"
   >
 
     <!-- ПОДЛОЖКА -->
@@ -44,7 +44,7 @@
 
 <script>
 
-import { mapGetters } from 'vuex';
+import { mapGetters, mapActions, } from 'vuex';
 import 'leaflet';
 import { LMap, LTileLayer, LControlScale, } from 'vue2-leaflet';
 import LControlPolylineMeasure from 'vue2-leaflet-polyline-measure';
@@ -96,14 +96,19 @@ export default {
   },
 
   methods: {
+    ...mapActions([
+      'appendErrorAlert',
+    ]),
+
     on_map_ready() {
       this.map = this.$refs.map.mapObject;
+      this.map.doubleClickZoom.disable();
       this.map.invalidateSize();
       this.key_mounted_after();
     },
 
-    on_map_click(event) {
-      // console.log(event.latlng);
+    on_map_dblclick(event) {
+      // this.appendErrorAlert({status: 501, content: event.latlng, show_time: 5, });
     },
 
   },

@@ -5,8 +5,8 @@
       style="height: 100%; z-index: 0;"
       :options="mapOptions"
       :crs="MAP_GET_TILES[MAP_GET_TILE].crs"
-      @ready="onMapReady"
-      @dblclick="onDblClick"
+      @ready="on_map_ready"
+      @dblclick="on_map_dblclick"
       @contextmenu="menu_show"
     >
 
@@ -182,6 +182,7 @@ export default {
 
   mounted: function() {
     this.map = this.$refs.map.mapObject;
+    this.map.doubleClickZoom.disable();
     this.key_mounted_after();
   },
 
@@ -392,11 +393,11 @@ export default {
     // ===============
     // СОБЫТИЯ
     // ===============
-    onMapReady() {
+    on_map_ready() {
       this.map.invalidateSize();
     },
 
-    onDblClick(event) {
+    on_map_dblclick(event) {
       this.appendErrorAlert({status: 501, content: event.latlng, show_time: 5, });
     },
 
