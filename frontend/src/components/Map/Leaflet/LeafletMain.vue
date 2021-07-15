@@ -207,20 +207,6 @@ export default {
   },
 
 
-  // watch: {
-  //   // fc_edit: {
-  //   //   handler() {
-  //   //     console.log('watch changed fc_edit', this.fc_edit);
-  //   //   },
-  //   //   deep: true,
-  //   // },
-  //   // MAP_GET_EDIT: {
-  //   //   handler() {
-  //   //     this.fc_edit = this.MAP_GET_EDIT;
-  //   //   },
-  //   // }
-  // },
-
   computed: {
     ...mapGetters([
       'MAP_GET_KEY',
@@ -427,6 +413,7 @@ export default {
     // СОБЫТИЯ
     // ===============
     onMapReady() {
+      this.map.invalidateSize();
       //this.onEditReady();
     },
 

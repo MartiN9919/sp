@@ -2,6 +2,7 @@
   <v-dialog
     v-model="dialog"
     @input="show_dialog"
+    @keydown.esc="dialog = false"
     persistent
   >
     <template
