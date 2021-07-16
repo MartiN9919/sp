@@ -13,7 +13,7 @@
           <v-divider light></v-divider>
           <div>{{alertText[alert.status]}}</div>
         </div>
-        <v-col v-else-if="[501, 502, 503].indexOf(alert.status) !== -1">
+        <v-col v-else-if="[501, 502, 503, 504].indexOf(alert.status) !== -1">
           <v-row v-if="(alert.date_time || alert.from)" no-gutters>
             <v-col v-if="alert.date_time" class="d-flex justify-start" >{{alert.date_time}}<br></v-col>
             <v-col v-if="alert.from"      class="d-flex justify-end "><p class="font-weight-thin mb-0" style="font-size: 12px">Отправитель {{alert.from}}</p></v-col>
@@ -54,6 +54,7 @@ export default {
       501: 'green darken-1',
       502: 'blue darken-1',
       503: 'purple darken-1',
+      504: 'red darken-2',
     }
   }),
   props: {
@@ -72,8 +73,11 @@ export default {
     }
   },
   created () {
+    if (this.alert.show_time) {
+      setTimeout(() => { this.$emit('removeAlert', this.alert) }, this.alert.show_time*1000);
+      return;
+    }
     if (this.status === 'red darken-1') setTimeout(() => { this.$emit('removeAlert', this.alert) }, 5000)
-    if (this.alert.show_time)      setTimeout(() => { this.$emit('removeAlert', this.alert) }, this.alert.show_time*1000)
   }
 }
 </script>

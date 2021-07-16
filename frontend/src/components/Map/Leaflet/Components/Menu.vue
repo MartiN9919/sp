@@ -134,7 +134,7 @@ export default {
   data: () => ({
     group_items: [
       {
-        title:        'КАРТА: ПОДЛОЖКА',
+        title:        'ПОДЛОЖКА',
         key:          'tile',
         model:        'prop_tile',
         click:        'click_tile',
@@ -142,7 +142,7 @@ export default {
         items:        'MAP_GET_TILES',
       },
       {
-        title:        'КАРТА: ЭЛЕМЕНТЫ',
+        title:        'ЭЛЕМЕНТЫ',
         items: [
           {
             icon:        'mdi-calendar-range',
@@ -209,6 +209,18 @@ export default {
           },
         ],
       },
+      // {
+      //   title:        'ОПЕРАЦИИ',
+      //   click:        'click_tile',
+      //   items: [
+      //     {
+      //       icon:        'mdi-content-save',
+      //       title:       'Скриншот',
+      //       subtitle:    'Сделать скриншот карты в новое окно',
+      //       click:       'operation_screenshot',
+      //     },
+      //   ],
+      // },
       {
         title: 'ТЕСТ ITEM',
         active: true,
@@ -343,6 +355,8 @@ export default {
     ]),
     click_tile (ind)          { this.prop_tile=ind; },
     click_prop_invert(val)    { this.form[val] = !this.form[val]; },
+
+    operation_screenshot()    { this.$emit('event_screenshot', ''); },
 
     test_item_add_1()         { this.MAP_ACT_ITEM_ADD(MAP_TEST_ITEM_1); },
     test_item_add_2()         { this.MAP_ACT_ITEM_ADD(MAP_TEST_ITEM_2); },

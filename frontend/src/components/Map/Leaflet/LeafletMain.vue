@@ -1,5 +1,8 @@
 <template>
-  <div style="height: 100%; width: 100%;">
+  <div
+    ref="block_print"
+    style="height: 100%; width: 100%;"
+    >
     <l-map
       ref="map"
       style="height: 100%; z-index: 0;"
@@ -410,6 +413,26 @@ export default {
       this.MAP_ACT_EDIT({data: dat});
     },
 
+    // on_screenshot(event) {
+    //   let self = this;
+    //   const el = this.$refs.block_print;
+    //   const options = {
+    //     type: 'dataURL',
+    //     preferCanvas: true,
+    //   };
+    //   //const dd = await this.$html2canvas(el, options);
+    //   //window.open('', dd.toDataURL());
+
+    //   this.$html2canvas(el, options).then(canvas => {
+    //     var link      = document.createElement('a');
+    //     link.href     = canvas;
+    //     link.download = '1.png';
+    //     link.click();
+
+    //   // }).catch((error) => {
+    //   //   self.appendErrorAlert({status: 504, content: 'Ошибка получения скриншота', });
+    //   });
+    // },
 
     // GET BUTTON
     btn_get_click(event) {
