@@ -69,7 +69,7 @@
 
     </l-map>
 
-    <Menu name='File'
+    <Menu
       ref="menu"
       :menuItems='menu_items'
       @click='menu_on_click'
@@ -279,6 +279,10 @@ export default {
       'appendErrorAlert',
     ]),
 
+
+    // ===============
+    // MENU
+    // ===============
     menu_on_click (item) {
       console.log(2222, item)
       if (item.action) { item.action() }
@@ -287,42 +291,6 @@ export default {
       e.originalEvent.preventDefault();
       e.originalEvent.stopPropagation();
       this.$refs.menu.activate_root(e.originalEvent.clientX, e.originalEvent.clientY);
-    },
-
-
-
-    // ===============
-    // MENU
-    // ===============
-    menu_title_click(e, menu, item, ind, dd) {
-      console.log(e)
-      //menu.offsetOverflow = true;
-      this.menu.expanded = (this.menu.expanded != ind)?ind:undefined;
-
-      //console.log(1, this.menu.expanded, item)
-
-      // this.menu.visible = false;
-      // //this.menu.x = e.clientX;
-      // this.menu.y = e.clientY;
-      // this.$nextTick(() => { this.menu.visible = true })
-    },
-    // menu_show(e) {
-    //   e.originalEvent.preventDefault();
-    //   e.originalEvent.stopPropagation();
-    //   this.menu.visible = false;
-    //   this.menu.x = e.originalEvent.clientX;
-    //   this.menu.y = e.originalEvent.clientY;
-    //   //console.log(e)
-    //   this.$nextTick(() => { this.menu.visible = 'dddd' })
-    // },
-
-    menu_options() {
-      return {
-        visible    : this.menu.visible,
-        x          : this.menu.x,
-        y          : this.menu.y,
-        title_click: this.menu_title_click,
-      }
     },
 
 
@@ -492,26 +460,6 @@ export default {
       this.MAP_ACT_EDIT({data: dat});
     },
 
-    // on_screenshot(e) {
-    //   let self = this;
-    //   const el = this.$refs.block_print;
-    //   const options = {
-    //     type: 'dataURL',
-    //     preferCanvas: true,
-    //   };
-    //   //const dd = await this.$html2canvas(el, options);
-    //   //window.open('', dd.toDataURL());
-
-    //   this.$html2canvas(el, options).then(canvas => {
-    //     var link      = document.createElement('a');
-    //     link.href     = canvas;
-    //     link.download = '1.png';
-    //     link.click();
-
-    //   // }).catch((error) => {
-    //   //   self.appendErrorAlert({status: 504, content: 'Ошибка получения скриншота', });
-    //   });
-    // },
 
     // GET BUTTON
     btn_get_click(e) {

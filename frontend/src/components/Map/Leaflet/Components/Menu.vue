@@ -1,5 +1,7 @@
 <template>
   <v-menu
+    class="select_off"
+    style="z-index: 50000;"
     :close-on-content-click="false"
     :offset-x="isOffsetX"
     :offset-y="isOffsetY"
@@ -17,7 +19,9 @@
             <v-icon>mdi-chevron-right</v-icon>
         </v-list-item>
       </template>
-      <v-list>
+      <v-list
+        rounded
+      >
         <template v-for="(item, index) in menuItems">
           <v-divider v-if='item.divider' :key='index' />
           <Menu v-else-if='item.menu'
