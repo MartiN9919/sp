@@ -28,9 +28,9 @@
             :is-offset-x=true
             :is-offset-y=false
             :is-sub-menu=true
-            @Menu-click='on_click_item'
+            @click='on_click'
           />
-          <v-list-item v-else :key='index' @click='on_click_item(item)'>
+          <v-list-item v-else :key='index' @click='on_click(item)'>
               <v-list-item-title>{{ item.name }}</v-list-item-title>
           </v-list-item>
         </template>
@@ -52,8 +52,8 @@ export default {
     transition:    { type: String,  default: "slide-x-transition" }, // появление меню
   },
   methods: {
-    on_click_item (item) {
-      this.$emit("Menu-click", item);
+    on_click(item) {
+      this.$emit("click", item);
       this.open = false;
     },
     activate_root(x, y) {

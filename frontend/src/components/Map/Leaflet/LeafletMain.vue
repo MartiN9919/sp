@@ -72,7 +72,7 @@
     <Menu name='File'
       ref="menu"
       :menuItems='menu_items'
-      @Menu-click='menu_on_click'
+      @click='menu_on_click'
     />
   </div>
 </template>
