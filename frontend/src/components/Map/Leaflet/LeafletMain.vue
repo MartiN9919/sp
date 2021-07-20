@@ -1,6 +1,5 @@
 <template>
   <div
-    ref="block_print"
     style="height: 100%; width: 100%;"
     >
     <l-map
@@ -69,11 +68,10 @@
 
     </l-map>
 
-    <Menu
-      ref="menu"
-      :menuItems='menu_items'
-      @click='menu_on_click'
+    <MenuOrg
+      ref="menu_org"
     />
+
   </div>
 </template>
 
@@ -108,7 +106,7 @@ import { marker_get }               from '@/components/Map/Leaflet/Markers/Fun';
 
 import                      '@/components/Map/Leaflet/Markers/Pulse';
 import Edit            from '@/components/Map/Leaflet/Components/Edit';
-import Menu            from '@/components/Map/Leaflet/Components/Menu';
+import MenuOrg         from '@/components/Map/Leaflet/Components/MenuOrg';
 import Range           from '@/components/Map/Leaflet/Components/Range';
 import Legend          from '@/components/Map/Leaflet/Components/Legend';
 import Logo            from '@/components/Map/Leaflet/Components/Logo';
@@ -158,7 +156,7 @@ export default {
     LControlPolylineMeasure,
 
     Edit,
-    Menu,
+    MenuOrg,
     Range,
     Legend,
     Logo,
@@ -167,68 +165,8 @@ export default {
 
   data() {
     return {
-
-    menu_items: [
-      {
-        name: "Menu Item 1",
-        action: () => {
-          console.log("menu-item-1");
-        }
-      },
-      { divider: true },
-      { name: "Menu Item 2" },
-      {
-        name: "Sub 1",
-        menu: [
-          { name: "1.1" },
-          { name: "1.2" },
-          {
-            name: "Sub-menu 2",
-            menu: [
-              { name: "2.1" },
-              { name: "2.2" },
-              {
-                name: "Sub-menu 3",
-                menu: [
-                  { name: "3.1" },
-                  { name: "3.2" },
-                  {
-                    name: "Sub-menu 4",
-                    menu: [{ name: "4.1" }, { name: "4.2" }, { name: "4.3" }]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-
-      { name: "Menu Item 3" },
-      { divider: true },
-      {
-        name: "Menu Item 4",
-        action: () => {
-          console.log("menu-item-4");
-        }
-      },
-      {
-        name: "Menu Item 5",
-        action: () => {
-          console.log("menu-item-5");
-        }
-      }
-    ],
-
-
-      menu: {
-        visible:  false,
-        x:        0,
-        y:        0,
-      },
-
       hover_map_ind:     -1,      // MAP_ITEM[hover_map_ind]                   - блок, над которым находится курсор
       hover_feature_ind: -1,      // MAP_ITEM[].FC.features[hover_feature_ind] - фигура, над которой находится курсор
-
       mapOptions: {
         zoomControl: false,
         zoomSnap:    0.5,
@@ -283,14 +221,14 @@ export default {
     // ===============
     // MENU
     // ===============
-    menu_on_click (item) {
-      console.log(2222, item)
-      if (item.action) { item.action() }
-    },
+    // menu_on_click (item) {
+    //   console.log(2222, item)
+    //   if (item.action) { item.action() }
+    // },
     menu_show(e) {
       e.originalEvent.preventDefault();
       e.originalEvent.stopPropagation();
-      this.$refs.menu.activate_root(e.originalEvent.clientX, e.originalEvent.clientY);
+      this.$refs.menu_org.menu_show(e.originalEvent.clientX, e.originalEvent.clientY);
     },
 
 
