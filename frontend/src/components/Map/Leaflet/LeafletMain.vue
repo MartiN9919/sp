@@ -69,10 +69,10 @@
 
     </l-map>
 
-    <Menu
-      :options="menu_options()"
-      @event_get="btn_get_click"
-      @legend_hide="legend_hide"
+    <Menu name='File'
+      ref="menu"
+      :menu-items='fileMenuItems'
+      @Menu-click='onMenuItemClick'
     />
   </div>
 </template>
@@ -167,10 +167,63 @@ export default {
 
   data() {
     return {
+
+    fileMenuItems: [
+      {
+        name: "Menu Item 1",
+        action: () => {
+          console.log("menu-item-1");
+        }
+      },
+      { isDivider: true },
+      { name: "Menu Item 2" },
+      {
+        name: "Sub 1",
+        menu: [
+          { name: "1.1" },
+          { name: "1.2" },
+          {
+            name: "Sub-menu 2",
+            menu: [
+              { name: "2.1" },
+              { name: "2.2" },
+              {
+                name: "Sub-menu 3",
+                menu: [
+                  { name: "3.1" },
+                  { name: "3.2" },
+                  {
+                    name: "Sub-menu 4",
+                    menu: [{ name: "4.1" }, { name: "4.2" }, { name: "4.3" }]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+
+      { name: "Menu Item 3" },
+      { isDivider: true },
+      {
+        name: "Menu Item 4",
+        action: () => {
+          console.log("menu-item-4");
+        }
+      },
+      {
+        name: "Menu Item 5",
+        action: () => {
+          console.log("menu-item-5");
+        }
+      }
+    ],
+
+
       menu: {
-        visible: false,
-        x:       0,
-        y:       0,
+        visible:  false,
+        x:        0,
+        y:        0,
       },
 
       hover_map_ind:     -1,      // MAP_ITEM[hover_map_ind]                   - блок, над которым находится курсор
@@ -226,23 +279,57 @@ export default {
       'appendErrorAlert',
     ]),
 
+    onMenuItemClick (item) {
+      console.log(`onMenuItemClick(), item=${item}`)
+      if (item.action) {
+        item.action()
+      }
+    },
+    menu_show(e) {
+      console.log(111)
+      e.originalEvent.preventDefault();
+      e.originalEvent.stopPropagation();
+      this.$refs.menu.activateRoot(e.originalEvent.clientX, e.originalEvent.clientY);
+      // this.menu2.visible = false;
+      // this.menu2.x = e.originalEvent.clientX;
+      // this.menu2.y = e.originalEvent.clientY;
+      // //console.log(e)
+      // this.$nextTick(() => { this.menu2.visible = true })
+    },
+
+
+
     // ===============
     // MENU
     // ===============
-    menu_show(e) {
-      e.originalEvent.preventDefault();
-      e.originalEvent.stopPropagation();
-      this.menu.visible = false;
-      this.menu.x = e.originalEvent.clientX;
-      this.menu.y = e.originalEvent.clientY;
-      this.$nextTick(() => { this.menu.visible = true })
+    menu_title_click(e, menu, item, ind, dd) {
+      console.log(e)
+      //menu.offsetOverflow = true;
+      this.menu.expanded = (this.menu.expanded != ind)?ind:undefined;
+
+      //console.log(1, this.menu.expanded, item)
+
+      // this.menu.visible = false;
+      // //this.menu.x = e.clientX;
+      // this.menu.y = e.clientY;
+      // this.$nextTick(() => { this.menu.visible = true })
     },
+    // menu_show(e) {
+    //   e.originalEvent.preventDefault();
+    //   e.originalEvent.stopPropagation();
+    //   this.menu.visible = false;
+    //   this.menu.x = e.originalEvent.clientX;
+    //   this.menu.y = e.originalEvent.clientY;
+    //   //console.log(e)
+    //   this.$nextTick(() => { this.menu.visible = 'dddd' })
+    // },
 
     menu_options() {
       return {
-        visible : this.menu.visible,
-        x       : this.menu.x,
-        y       : this.menu.y,
+        visible    : this.menu.visible,
+        x          : this.menu.x,
+        y          : this.menu.y,
+        title_click: this.menu_title_click,
       }
     },
 
@@ -405,15 +492,15 @@ export default {
       this.map.invalidateSize();
     },
 
-    on_map_dblclick(event) {
-      this.appendErrorAlert({status: 501, content: event.latlng, show_time: 5, });
+    on_map_dblclick(e) {
+      this.appendErrorAlert({status: 501, content: e.latlng, show_time: 5, });
     },
 
-    on_edit_ok(event, dat) {
+    on_edit_ok(e, dat) {
       this.MAP_ACT_EDIT({data: dat});
     },
 
-    // on_screenshot(event) {
+    // on_screenshot(e) {
     //   let self = this;
     //   const el = this.$refs.block_print;
     //   const options = {
@@ -435,7 +522,7 @@ export default {
     // },
 
     // GET BUTTON
-    btn_get_click(event) {
+    btn_get_click(e) {
       console.log(this.getDataAsGeoJSON());
     },
 
