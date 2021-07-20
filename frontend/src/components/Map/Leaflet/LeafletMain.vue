@@ -71,8 +71,8 @@
 
     <Menu name='File'
       ref="menu"
-      :menu-items='fileMenuItems'
-      @Menu-click='onMenuItemClick'
+      :menuItems='menu_items'
+      @Menu-click='menu_on_click'
     />
   </div>
 </template>
@@ -168,14 +168,14 @@ export default {
   data() {
     return {
 
-    fileMenuItems: [
+    menu_items: [
       {
         name: "Menu Item 1",
         action: () => {
           console.log("menu-item-1");
         }
       },
-      { isDivider: true },
+      { divider: true },
       { name: "Menu Item 2" },
       {
         name: "Sub 1",
@@ -204,7 +204,7 @@ export default {
       },
 
       { name: "Menu Item 3" },
-      { isDivider: true },
+      { divider: true },
       {
         name: "Menu Item 4",
         action: () => {
@@ -279,22 +279,14 @@ export default {
       'appendErrorAlert',
     ]),
 
-    onMenuItemClick (item) {
-      console.log(`onMenuItemClick(), item=${item}`)
-      if (item.action) {
-        item.action()
-      }
+    menu_on_click (item) {
+      console.log(2222, item)
+      if (item.action) { item.action() }
     },
     menu_show(e) {
-      console.log(111)
       e.originalEvent.preventDefault();
       e.originalEvent.stopPropagation();
-      this.$refs.menu.activateRoot(e.originalEvent.clientX, e.originalEvent.clientY);
-      // this.menu2.visible = false;
-      // this.menu2.x = e.originalEvent.clientX;
-      // this.menu2.y = e.originalEvent.clientY;
-      // //console.log(e)
-      // this.$nextTick(() => { this.menu2.visible = true })
+      this.$refs.menu.activate_root(e.originalEvent.clientX, e.originalEvent.clientY);
     },
 
 
