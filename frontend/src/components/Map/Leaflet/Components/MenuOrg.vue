@@ -27,31 +27,53 @@ export default {
     return {
       menu_items: [
         {
-          name: "Menu Item 1",
+          title: 'ПОДЛОЖКА',
+        },
+        {
+          title: 'ЭЛЕМЕНТЫ',
+          menu: [
+            {
+              icon:        'mdi-calendar-range',
+              title:       'Дата-время',
+              subtitle:    'Фильтр отображаемых данных по дате-времени',
+            },
+            {
+              icon:        'mdi-google-circles-group',
+              title:       'Группировка маркеров',
+              subtitle:    'Объединять близлежащие маркеры в группы',
+            },
+          ],
+        },
+
+
+
+
+        {
+          title: "Menu Item 1",
           action: () => {
             console.log("menu-item-1");
           }
         },
         { divider: true },
-        { name: "Menu Item 2" },
+        { title: "Menu Item 2" },
         {
-          name: "Sub 1",
+          title: "Sub 1",
           menu: [
-            { name: "1.1" },
-            { name: "1.2" },
+            { title: "1.1" },
+            { title: "1.2" },
             {
-              name: "Sub-menu 2",
+              title: "Sub-menu 2",
               menu: [
-                { name: "2.1" },
-                { name: "2.2" },
+                { title: "2.1" },
+                { title: "2.2" },
                 {
-                  name: "Sub-menu 3",
+                  title: "Sub-menu 3",
                   menu: [
-                    { name: "3.1" },
-                    { name: "3.2" },
+                    { title: "3.1" },
+                    { title: "3.2" },
                     {
-                      name: "Sub-menu 4",
-                      menu: [{ name: "4.1" }, { name: "4.2" }, { name: "4.3" }]
+                      title: "Sub-menu 4",
+                      menu: [{ title: "4.1" }, { title: "4.2" }, { title: "4.3" }]
                     }
                   ]
                 }
@@ -60,36 +82,22 @@ export default {
           ],
         },
 
-        { name: "Menu Item 3" },
+        { title: "Menu Item 3" },
         { divider: true },
         {
-          name: "Menu Item 4",
+          title: "Menu Item 4",
           action: () => {
             console.log("menu-item-4");
           }
         },
         {
-          name: "Menu Item 5",
+          title: "Menu Item 5",
           action: () => {
             console.log("menu-item-5");
           }
         }
       ],
 
-
-      // menu: {
-      //   visible:  false,
-      //   x:        0,
-      //   y:        0,
-      // },
-
-      hover_map_ind:     -1,      // MAP_ITEM[hover_map_ind]                   - блок, над которым находится курсор
-      hover_feature_ind: -1,      // MAP_ITEM[].FC.features[hover_feature_ind] - фигура, над которой находится курсор
-
-      mapOptions: {
-        zoomControl: false,
-        zoomSnap:    0.5,
-      },
     };
   },
 
@@ -99,14 +107,8 @@ export default {
       if (item.action) { item.action() }
     },
     menu_show(x, y) {
-      console.log(1111, x, y)
       this.$refs.menu.activate_root(x, y);
     },
-    // menu_show(e) {
-    //   e.originalEvent.preventDefault();
-    //   e.originalEvent.stopPropagation();
-    //   this.$refs.menu.activate_root(e.originalEvent.clientX, e.originalEvent.clientY);
-    // },
   },
 
 }

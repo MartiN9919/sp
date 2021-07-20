@@ -68,9 +68,7 @@
 
     </l-map>
 
-    <MenuOrg
-      ref="menu_org"
-    />
+    <MenuOrg ref="menu_org"/>
 
   </div>
 </template>
@@ -221,10 +219,6 @@ export default {
     // ===============
     // MENU
     // ===============
-    // menu_on_click (item) {
-    //   console.log(2222, item)
-    //   if (item.action) { item.action() }
-    // },
     menu_show(e) {
       e.originalEvent.preventDefault();
       e.originalEvent.stopPropagation();

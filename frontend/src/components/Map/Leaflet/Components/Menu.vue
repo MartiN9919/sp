@@ -20,13 +20,17 @@
         </v-list-item>
       </template>
       <v-list
-        rounded
+
       >
         <template v-for="(item, index) in menuItems">
+
+          <!-- ЭЛЕМЕНТ МЕНЮ: СЕПАРАТОР-->
           <v-divider v-if='item.divider' :key='index' />
+
+         <!-- ЭЛЕМЕНТ МЕНЮ: ССЫЛКА ПОДМЕНЮ -->
           <Menu v-else-if='item.menu'
             :key='index'
-            :name='item.name'
+            :name='item.title'
             :menu-items='item.menu'
             :is-open-on-hover=false
             :is-offset-x=true
@@ -34,9 +38,26 @@
             :is-sub-menu=true
             @click='on_click'
           />
-          <v-list-item v-else :key='index' @click='on_click(item)'>
-              <v-list-item-title>{{ item.name }}</v-list-item-title>
+
+          <!-- ЭЛЕМЕНТ МЕНЮ: ITEM -->
+          <v-list-item v-else
+            :key='index'
+            @click='on_click(item)'
+          >
+            <!-- ITEM: ИКОНКА -->
+            <v-list-item-icon>
+              <v-icon large v-text="item.icon"/>
+            </v-list-item-icon>
+
+            <!-- ТЕКСТ -->
+            <v-list-item-content>
+              <v-list-item-title v-text="item.title"/>
+              <v-list-item-subtitle v-text="item.subtitle"/>
+            </v-list-item-content>
+
+
           </v-list-item>
+
         </template>
       </v-list>
   </v-menu>
