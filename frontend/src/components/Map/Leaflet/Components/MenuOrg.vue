@@ -41,7 +41,7 @@ export default {
         },
         {
           icon:     'mdi-eye',
-          title:    'Элементы карты',
+          title:    'Оформление карты',
           menu: [
             {
               icon:     'mdi-calendar-range',
@@ -96,7 +96,7 @@ export default {
           title: 'ТЕСТЫ',
           menu:  [
             {
-              title: 'ITEM',
+              title: 'Отображение элементов карты',
               menu:  [
                 {
                   icon:     'mdi-map-marker-plus',
@@ -140,7 +140,7 @@ export default {
             },
 
             {
-              title: 'EDIT',
+              title: 'Редактирование элементов карты',
               menu:  [
                 {
                   icon:     'mdi-vector-polyline-edit',
