@@ -1,6 +1,6 @@
 <template>
   <div>
-  <Menu
+  <contextMenuNested
     ref="menu"
     :menuItems='menu_items'
     @click-item='on_click_item'
@@ -22,13 +22,13 @@ import {
   MAP_TEST_EDIT_2,
 } from '@/components/Map/Leaflet/Components/Menu.test';
 
-import Menu from '@/components/Map/Leaflet/Components/Menu';
+import contextMenuNested from '@/components/WebsiteShell/ContextMenu/contextMenuNested';
 
 export default {
   name: 'MenuOrg',
 
   components: {
-    Menu,
+    contextMenuNested,
   },
 
   data() {
