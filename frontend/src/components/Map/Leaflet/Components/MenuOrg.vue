@@ -40,8 +40,8 @@ export default {
           menu: [],
         },
         {
-          icon:     'mdi-calendar-range',
-          title:    'Элементы',
+          icon:     'mdi-eye',
+          title:    'Элементы карты',
           menu: [
             {
               icon:     'mdi-calendar-range',
@@ -92,7 +92,7 @@ export default {
 
         { divider: true },
         {
-          icon:  ' ',
+          icon:  'mdi-wrench',
           title: 'ТЕСТЫ',
           menu:  [
             {
