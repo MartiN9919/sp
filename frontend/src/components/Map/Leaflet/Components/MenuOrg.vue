@@ -2,7 +2,7 @@
   <div>
   <contextMenuNested
     ref="menu"
-    :menuItems='menu_items'
+    :items='menu_items'
     @click-item='on_click_item'
   />
   </div>
@@ -49,6 +49,7 @@ export default {
               click:       this.click_prop_invert,
               click_param: this.prop_range,
               action:      true,
+              color:       'red',
             },
             {
               icon:        'mdi-google-circles-group',
