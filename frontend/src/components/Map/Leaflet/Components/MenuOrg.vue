@@ -2,8 +2,8 @@
   <div>
   <contextMenuNested
     ref="menu"
+    :form="form"
     :items='menu_items'
-    @click-item='on_click_item'
   />
   </div>
 </template>
@@ -41,24 +41,53 @@ export default {
           title: 'ЭЛЕМЕНТЫ',
           menu: [
             {
-              icon:        'mdi-calendar-range',
-              title:       'Дата-время',
-              subtitle:    'Фильтр отображаемых данных по дате-времени',
-              model:       'prop_range',
-              // click:       'click_prop_invert(prop_range)',
-              click:       this.click_prop_invert,
-              click_param: this.prop_range,
-              action:      true,
-              color:       'red',
+              icon:     'mdi-calendar-range',
+              title:    'Дата-время',
+              subtitle: 'Фильтр отображаемых данных по дате-времени',
+              model:    'prop_range',
+              color:    'red',
             },
             {
-              icon:        'mdi-google-circles-group',
-              title:       'Группировка маркеров',
-              subtitle:    'Объединять близлежащие маркеры в группы',
-              model:       'prop_cluster',
-              click:       'click_prop_invert(prop_cluster)',
-              //click_param: 'prop_cluster',
-              action:      true,
+              icon:     'mdi-google-circles-group',
+              title:    'Группировка маркеров',
+              subtitle: 'Объединять близлежащие маркеры в группы',
+              model:    'prop_cluster',
+            },
+            {
+              icon:     'mdi-message',
+              title:    'Подсказки',
+              subtitle: 'Показывать всплывающие подсказки',
+              model:    'prop_hint',
+            },
+            {
+              icon:     'mdi-map-legend',
+              title:    'Легенды',
+              subtitle: 'Показывать всплывающие легенды',
+              model:    'prop_legend',
+            },
+            {
+              icon:     'mdi-ruler',
+              title:    'Масштаб',
+              subtitle: 'Показывать масштабную линейку',
+              model:    'prop_scale',
+            },
+            {
+              icon:     'mdi-arrow-expand-right', //'mdi-tape-measure',
+              title:    'Рулетка',
+              subtitle: 'Показывать рулетку',
+              model:    'prop_measure',
+            },
+            {
+              icon:     'mdi-copyright',
+              title:    'Логотип',
+              subtitle: 'Показывать логотип',
+              model:    'prop_logo',
+            },
+            {
+              icon:     'mdi-google-circles-group',
+              title:    '1111',
+              subtitle: '22222',
+              action:   'dd',
             },
           ],
         },
@@ -198,19 +227,13 @@ export default {
       this.prop_tile=ind;
     },
 
-    click_prop_invert(val)    {
-      console.log('click_prop_invert', val)
-      //this.form[val] = !this.form[val];
-    },
-
-    on_click_item(item) {
-      console.log('menuOrg.on_click_item', item)
-      //if (item.action) { item.action() }
-    },
-
     menu_show(x, y) {
       this.$refs.menu.show_root(x, y);
     },
+
+    dd(item) {
+      console.log(item)
+    }
   },
 
 }

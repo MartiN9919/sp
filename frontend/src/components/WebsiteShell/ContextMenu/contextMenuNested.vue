@@ -8,13 +8,13 @@
     :position-x="positionX"
     :position-y="positionY"
     :open-on-hover='isOpenOnHover'
-    :transition='transition'
+    :transition="transition"
     :value="open"
     :absolute="root"
   >
       <template v-if="!root" v-slot:activator="{ on }">
         <v-list-item
-          class='d-flex justify-space-between'
+          class="d-flex justify-space-between"
           v-on="on"
         >
           {{ title }}
@@ -29,30 +29,30 @@
         <template v-for="(item, index) in items">
 
           <!-- ЭЛЕМЕНТ МЕНЮ: СЕПАРАТОР-->
-          <v-divider v-if='item.divider' :key='index'/>
+          <v-divider v-if="item.divider" :key="index"/>
 
          <!-- ЭЛЕМЕНТ МЕНЮ: ПОДМЕНЮ -->
          <!-- ПРОБРОС СВОЙСТВ И СОБЫТИЙ В РЕКУРСИИ -->
-          <contextMenuNested v-else-if='item.menu'
-            :key='index'
-            :title='item.title'
+          <contextMenuNested v-else-if="item.menu"
+            :key="index"
+            :title="item.title"
 
-            :items='item.menu'
-            :color='color'
+            :form="form"
+            :items="item.menu"
+            :color="color"
 
             :is-open-on-hover=false
             :is-offset-x=true
             :is-offset-y=false
             :is-sub-menu=true
 
-            @click-item='on_click_item_retraslate'
-            @close-menu='on_close_menu'
+            @close-menu="on_close_menu"
           />
 
           <!-- ЭЛЕМЕНТ МЕНЮ: ITEM -->
           <v-list-item v-else
-            :key='index'
-            @click='on_click_item(item)'
+            :key="index"
+            @click="on_click_item(item)"
           >
 
             <!-- ITEM: ИКОНКА -->
@@ -68,10 +68,10 @@
 
             <!-- ACTION -->
             <v-list-item-action
-              v-if="item.action"
+              v-if="item.model"
             >
               <v-switch
-                v-model="item.model"
+                v-model="form[item.model]"
                 :color="item.color || color"
                 @click.stop=""
               />
@@ -92,22 +92,25 @@
 
 ПРИМЕР ВЫЗОВА
   <contextMenuNested
+    :form="form"
     :menuItems='menu_items'
     :color="'red'"
-    @click-item='on_click_item'
   />
 
+ВАЖНО:
+  item могуть быть с обработкой model или action (закрытие при выборе)
 
 */
 
 export default {
   name: 'contextMenuNested',
   props: {
+    form:          Object,                                           // указатель на объект, вызвавший root menu (органайзер)
     title:         String,                                           // заголовок субменю
     items:         Array,
     isOffsetX:     { type: Boolean, default: false },
     isOffsetY:     { type: Boolean, default: true  },
-    isOpenOnHover: { type: Boolean, default: false },                // открытие при наведении курсора, с субменю работает не корректно
+    isOpenOnHover: { type: Boolean, default: false },                // открытие при наведении курсора, только для root
     transition:    { type: String,  default: "slide-x-transition" }, // анимация появления меню
     color:         { type: String,  default: "green" },              // цвет по умолчанию (переключатели и т.п.)
   },
@@ -118,11 +121,6 @@ export default {
     positionX: undefined,
     positionY: undefined,
   }),
-
-  computed: {
-    // https://coderoad.ru/63553151/Vue-как-использовать-Getter-настройка-в-v-модели-с-v-for
-    form: vm => vm,
-  },
 
   methods: {
     show_root(x, y) {
@@ -139,16 +137,19 @@ export default {
     },
 
     on_click_item(item) {
-      this.$emit("click-item", item);
-      this.on_close_menu();
-    },
+      // ITEM: MODEL
+      if (item.model) {
+        this.form[item.model] = !this.form[item.model];
+      }
 
-    on_click_item_retraslate(item, ee) {
-      this.$emit("click-item", item);      // проброс события в рекурсии
+      // ITEM: ACTION
+      else if (item.action) {
+        this.on_close_menu();
+        this.form[item.action](item);
+      }
     },
 
   },
-
 
 
 }
