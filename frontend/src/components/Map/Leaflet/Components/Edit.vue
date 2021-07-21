@@ -82,17 +82,16 @@
  * КОМПОНЕНТ: РЕДАКТОР ФИГУР
  *  <Edit
  *    v-model="fc"
- *    :options="options()"
+      :modeEnabled="modeEnabled"
+      :modeSelected="modeSelected"
  *    @ok="on_edit_stop_ok"
  *  />
  *
- *  options = {
- *    mode_enabled: {
- *      marker:  true,
- *      polygon: true,
- *    },
- *    mode_selected: 'Polygon',
- *  }
+ *  modeEnabled = {
+ *    marker:  true,
+ *    polygon: true,
+ *  },
+ *  modeSelected: 'Polygon',
  *
  * v-model       - fc с двунаправленной связью, куда складываются данные
  *                 пустая область - { "type": "FeatureCollection", "features": [], } или L.featureGroup().toGeoJSON()
@@ -126,24 +125,19 @@ const TYPES = class {
 
 export default {
   name:       'Edit',
-  model:      { prop:  ['fc_prop'], event: 'fc_change', }, // FeatureCollection РЕДАКТИРУЕМЫХ объектов
+  model:      { prop:  ['fc_prop'], event: 'fc_change', },
   props:      {
     fc_prop: {
       type: Object,
       default() { return undefined; },
     },
-    options: {
+    modeEnabled: {            // доступные для создания элементы
       type: Object,
-      default() {
-        return {
-        // mode_enabled: {
-        //   marker:  true,
-        //   line:    true,
-        //   polygon: true,
-        // },
-        // mode_selected: 'Polygon',
-        };
-      },
+      default() { return { marker: true, line: true, polygon: true, } },
+    },
+    modeSelected: {           // включенный по умолчанию режим, например: 'Polygon'
+      type: String,
+      default() { return undefined; },
     },
   },
   components: { LControl, },
@@ -374,11 +368,11 @@ export default {
     // РЕЖИМ: КНОПКИ РЕДАКТИРОВАНИЯ - ДОСТУПНОСТЬ
     // ======================================
     mode_enabled_set() {
-      let mode_enabled_         =  this.options.mode_enabled || { marker: true, line: true, polygon: true, };
-      this.mode_enabled.marker  =  mode_enabled_.marker      || false;
-      this.mode_enabled.line    =  mode_enabled_.line        || false;
-      this.mode_enabled.polygon =  mode_enabled_.polygon     || false;
-      this.mode_enabled.cut     = (this.mode_enabled.line    || this.mode_enabled.polygon);
+      let mode_enabled_         =  this.modeEnabled       || { marker: true, line: true, polygon: true, };
+      this.mode_enabled.marker  =  mode_enabled_.marker   || false;
+      this.mode_enabled.line    =  mode_enabled_.line     || false;
+      this.mode_enabled.polygon =  mode_enabled_.polygon  || false;
+      this.mode_enabled.cut     = (this.mode_enabled.line || this.mode_enabled.polygon);
     },
     mode_enabled_off() {
       this.mode_enabled.marker  = false;
@@ -394,7 +388,7 @@ export default {
     // ======================================
     // режим по умолчанию
     mode_selected_set() {
-      switch(this.options.mode_selected) {
+      switch(this.modeSelected) {
         case TYPES.MARKER:  this.mode_selected_on_marker();  break;
         case TYPES.LINE:    this.mode_selected_on_line();    break;
         case TYPES.POLYGON: this.mode_selected_on_polygon(); break;

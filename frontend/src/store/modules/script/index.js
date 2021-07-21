@@ -44,6 +44,7 @@ export default {
     SCRIPT_GET_ITEM_COLOR:        state => ind => state.selectedTemplate.activeAnalysts[ind].color        || 'red',
     SCRIPT_GET_ITEM_COLOR_LEGEND: state => ind => state.selectedTemplate.activeAnalysts[ind].color_legend || [],
     SCRIPT_GET_ITEM_ICON:         state => ind => state.selectedTemplate.activeAnalysts[ind].icon         || 'mdi-star',
+    SCRIPT_GET_ITEM_REFRESH:      state => ind => state.selectedTemplate.activeAnalysts[ind].refresh,
 
     // работает, но не используется
     // SCRIPT_GET_ITEM_ID:        state => ind => state.selectedTemplate.activeAnalysts[ind].id           || '',
@@ -73,9 +74,7 @@ export default {
     addActiveAnalysts: (state, playLoad) => {
       playLoad.selectedScript[MAP_ITEM.FC] = playLoad[MAP_ITEM.FC]
       if (playLoad.selectedScript.color === '#696969FF') { playLoad.selectedScript.color = '#FFA500FF' }
-
-      // см. SCRIPT_MUT_ITEM_ADD
-      // state.selectedTemplate.activeAnalysts.push(playLoad.selectedScript)
+      // state.selectedTemplate.activeAnalysts.push(playLoad.selectedScript) // см. SCRIPT_MUT_ITEM_ADD
     },
     removeAnalytics: (state, analytics) => {
       let checkForAvailability = state.selectedTemplate.passiveAnalysts.indexOf(analytics)
@@ -99,6 +98,7 @@ export default {
       if (item.marker===undefined) item.marker = '';
       if (item.color ===undefined) item.color  = '';
       let item_copy = JSON.parse(JSON.stringify(item));        // deep copy
+      item_copy.refresh = new Date().getTime();
       state.selectedTemplate.activeAnalysts.push(item_copy);
     },
     SCRIPT_MUT_ITEM_DEL:   (state, id)      => state.selectedTemplate.activeAnalysts.splice(id, 1),
