@@ -3,7 +3,6 @@
   <Menu
     ref="menu"
     :menuItems='menu_items'
-    @click-submenu='on_click_submenu'
     @click-item='on_click_item'
   />
   </div>
@@ -197,15 +196,12 @@ export default {
     click_tile (ind)          {
       this.prop_tile=ind;
     },
+
     click_prop_invert(val)    {
       console.log('click_prop_invert', val)
       //this.form[val] = !this.form[val];
     },
 
-    on_click_submenu(item) {
-      console.log('menuOrg.on_click_submenu', item)
-      //if (item.action) { item.action() }
-    },
     on_click_item(item) {
       console.log('menuOrg.on_click_item', item)
       //if (item.action) { item.action() }

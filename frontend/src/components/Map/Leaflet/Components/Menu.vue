@@ -36,7 +36,6 @@
             :is-offset-x=true
             :is-offset-y=false
             :is-sub-menu=true
-            @click='on_click_submenu'
             @click-item='on_click_item_retraslate'
             @close-menu='on_close_menu'
           />
@@ -115,12 +114,6 @@ export default {
     on_close_menu() {
       this.open = false;
       this.$emit("close-menu");           // проброс события в рекурсии
-    },
-
-    on_click_submenu(item) {
-      console.log('menu.on_click_submenu', item)
-      //this.$emit("click-submenu", item);
-      this.open = false;
     },
 
     on_click_item(item) {
