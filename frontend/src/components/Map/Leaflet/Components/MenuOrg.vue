@@ -168,7 +168,7 @@ export default {
                 },
                 { title: "Menu Item 1" },
                 { divider: true },
-                { title: "Menu Item 2" },
+                { title: "Menu Item 2", menu: [], },
                 {
                   title: "Sub 1",
                   menu: [

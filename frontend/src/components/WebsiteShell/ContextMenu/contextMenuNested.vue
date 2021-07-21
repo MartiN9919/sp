@@ -17,6 +17,7 @@
         <v-list-item
           class="d-flex justify-space-between"
           v-on="on"
+          :disabled="!( items && (items.length > 0) )"
         >
           <v-list-item-icon v-if="icon">
             <v-icon v-text="icon"/>
@@ -101,6 +102,7 @@
 ИСХОДНИК
   https://codepen.io/Moloth/pen/ZEBOzQP
 
+
 ПРИМЕР ВЫЗОВА
   <contextMenuNested
     :form="form"
@@ -108,11 +110,14 @@
     :color="'red'"
   />
 
+  menu_show(x, y) { this.$refs.menu.show_root(x, y); },
+
+
 ВАЖНО:
   item могуть быть:
     с обработкой model
     с обработкой action (закрытие при выборе)
-
+  item.menu == [] - item disabled
 */
 
 export default {
@@ -137,6 +142,7 @@ export default {
   }),
 
   methods: {
+    // Показать первый уровень меню, вызывается из родителя
     show_root(x, y) {
       this.open      = false;
       this.root      = true;
@@ -145,9 +151,10 @@ export default {
       this.$nextTick(() => { this.open = true })
     },
 
+    // закрыть меню рекурсивно
     on_close_menu() {
       this.open = false;
-      this.$emit("close-menu");           // проброс события в рекурсии
+      this.$emit("close-menu");
     },
 
     on_click_item(item) {
