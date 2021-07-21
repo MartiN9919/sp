@@ -212,7 +212,7 @@ export default {
     },
 
     menu_show(x, y) {
-      this.$refs.menu.activate_root(x, y);
+      this.$refs.menu.show_root(x, y);
     },
   },
 

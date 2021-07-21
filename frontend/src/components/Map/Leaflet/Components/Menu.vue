@@ -20,7 +20,7 @@
         </v-list-item>
       </template>
       <v-list
-
+        oncontextmenu="return false"
       >
         <template v-for="(item, index) in menuItems">
 
@@ -38,6 +38,7 @@
             :is-sub-menu=true
             @click='on_click_submenu'
             @click-item='on_click_item_retraslate'
+            @close-menu='on_close_menu'
           />
 
           <!-- ЭЛЕМЕНТ МЕНЮ: ITEM -->
@@ -45,12 +46,7 @@
             :key='index'
             @click='on_click_item(item)'
           >
-            <!--
-              @click.prevent="item.click(item.click_param)"
 
-              @click='on_click(item)'
-              @click.prevent="form[item.click](item.click_param)"
-            -->
             <!-- ITEM: ИКОНКА -->
             <v-list-item-icon>
               <v-icon large v-text="item.icon"/>
@@ -108,7 +104,7 @@ export default {
   },
 
   methods: {
-    activate_root(x, y) {
+    show_root(x, y) {
       this.open      = false;
       this.root      = true;
       this.positionX = x;
@@ -116,22 +112,25 @@ export default {
       this.$nextTick(() => { this.open = true })
     },
 
+    on_close_menu() {
+      this.open = false;
+      this.$emit("close-menu");           // проброс события в рекурсии
+    },
+
     on_click_submenu(item) {
       console.log('menu.on_click_submenu', item)
-      this.$emit("click-submenu", item);
+      //this.$emit("click-submenu", item);
       this.open = false;
     },
 
     on_click_item(item) {
-      console.log('menu.on_click_item', item)
       this.$emit("click-item", item);
-      //item.click(item.click_param)
+      this.on_close_menu();
     },
 
-    // проброс события в рекурсии
     on_click_item_retraslate(item, ee) {
-      console.log('!!!', item, ee)
-      this.$emit("click-item", item);
+      this.$emit("click-item", item);      // проброс события в рекурсии
+
     }
   },
 
