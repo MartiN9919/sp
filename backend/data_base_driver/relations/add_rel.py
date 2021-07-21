@@ -17,10 +17,10 @@ def add_rel(group_id, key_id, object_1_id, rec_1_id, object_2_id, rec_2_id, val,
     @param val: значение идентификатора закрепленного списка если есть
     @param date_time: дата и время установления связи
     """
-    if date_time['date'] == '':
+    if not date_time:
         date_time_str = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     else:
-        date_time_str = date_time['date'] + ' ' + date_time['time'] + ':00'
+        date_time_str = date_time + ':00'
     if object_1_id > object_2_id:
         temp_object, temp_rec = object_1_id, rec_1_id
         object_1_id, rec_1_id = object_2_id, rec_2_id

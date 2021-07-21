@@ -162,7 +162,7 @@ def get_rel_request(query_string, date_time_start, date_time_end):
 
 
 def search_rel_with_key_http(rel_key, object_1_type, object_1_id, object_2_type, object_2_id, list_id, date_time_start,
-                               date_time_end):
+                               date_time_end, mode=1):
     """
     Функция для поиска связей между двумя конкретными объектами
     @param rel_key: тип связи
@@ -197,12 +197,15 @@ def search_rel_with_key_http(rel_key, object_1_type, object_1_id, object_2_type,
                                  date_time_start, date_time_end)
     response_1 = requests.post(FullTextSearch.SEARCH_URL, data=data_1)
     response_2 = requests.post(FullTextSearch.SEARCH_URL, data=data_2)
-    result = set([item['_source']['rec_id_1'] for item in json.loads(response_1.text)['hits']['hits']
+    result = set([(item['_source']['rec_id_1'], item['_source']['key_id']) for item in json.loads(response_1.text)['hits']['hits']
                   if validate_rel_actual(item['_source'], date_time_start, date_time_end)])
     result = result.union(
-        set([item['_source']['rec_id_2'] for item in json.loads(response_2.text)['hits']['hits']
+        set([(item['_source']['rec_id_2'], item['_source']['key_id']) for item in json.loads(response_2.text)['hits']['hits']
              if validate_rel_actual(item['_source'], date_time_start, date_time_end)]))
-    return [int(item) for item in list(result)]
+    if mode == 1:
+        return [int(item[0]) for item in list(result)]
+    else:
+        return [{'rec_id': item[0], 'key_id': item[1]} for item in list(result)]
 
 
 def get_relations_with_object_http(object_type, object_id):
@@ -235,3 +238,5 @@ def get_relations_with_object_http(object_type, object_id):
     result = set(resule_1)
     result = result.union(set(resule_2))
     return list(result)
+
+
