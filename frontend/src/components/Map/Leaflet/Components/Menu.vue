@@ -27,7 +27,7 @@
           <!-- ЭЛЕМЕНТ МЕНЮ: СЕПАРАТОР-->
           <v-divider v-if='item.divider' :key='index'/>
 
-         <!-- ЭЛЕМЕНТ МЕНЮ: ССЫЛКА ПОДМЕНЮ -->
+         <!-- ЭЛЕМЕНТ МЕНЮ: ПОДМЕНЮ -->
           <Menu v-else-if='item.menu'
             :key='index'
             :name='item.title'
@@ -36,13 +36,14 @@
             :is-offset-x=true
             :is-offset-y=false
             :is-sub-menu=true
-            @click='on_click'
+            @click='on_click_submenu'
+            @click-item='on_click_item_retraslate'
           />
 
           <!-- ЭЛЕМЕНТ МЕНЮ: ITEM -->
           <v-list-item v-else
             :key='index'
-            @click.prevent="dd(item)"
+            @click='on_click_item(item)'
           >
             <!--
               @click.prevent="item.click(item.click_param)"
@@ -107,10 +108,6 @@ export default {
   },
 
   methods: {
-    on_click(item) {
-      this.$emit("click", item);
-      this.open = false;
-    },
     activate_root(x, y) {
       this.open      = false;
       this.root      = true;
@@ -118,9 +115,23 @@ export default {
       this.positionY = y;
       this.$nextTick(() => { this.open = true })
     },
-    dd(item) {
-      console.log(555, item)
-      item.click(item.click_param)
+
+    on_click_submenu(item) {
+      console.log('menu.on_click_submenu', item)
+      this.$emit("click-submenu", item);
+      this.open = false;
+    },
+
+    on_click_item(item) {
+      console.log('menu.on_click_item', item)
+      this.$emit("click-item", item);
+      //item.click(item.click_param)
+    },
+
+    // проброс события в рекурсии
+    on_click_item_retraslate(item, ee) {
+      console.log('!!!', item, ee)
+      this.$emit("click-item", item);
     }
   },
 

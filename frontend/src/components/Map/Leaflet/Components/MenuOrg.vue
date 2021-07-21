@@ -3,7 +3,8 @@
   <Menu
     ref="menu"
     :menuItems='menu_items'
-    @click='menu_on_click'
+    @click-submenu='on_click_submenu'
+    @click-item='on_click_item'
   />
   </div>
 </template>
@@ -132,7 +133,7 @@ export default {
       'MAP_GET_LOGO',
     ]),
 
-    //form: vm => vm,
+    form: vm => vm,
 
     prop_range: {
       set: function(val) {
@@ -201,10 +202,15 @@ export default {
       //this.form[val] = !this.form[val];
     },
 
-    menu_on_click (item) {
-      console.log('menu_on_click', item)
+    on_click_submenu(item) {
+      console.log('menuOrg.on_click_submenu', item)
       //if (item.action) { item.action() }
     },
+    on_click_item(item) {
+      console.log('menuOrg.on_click_item', item)
+      //if (item.action) { item.action() }
+    },
+
     menu_show(x, y) {
       this.$refs.menu.activate_root(x, y);
     },
