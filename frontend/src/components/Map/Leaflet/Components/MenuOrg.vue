@@ -31,18 +31,22 @@ export default {
     contextMenuNested,
   },
 
+  mounted() {
+    this.menu_items[0]['menu'] = this.MAP_GET_TILES;
+  },
+
   data() {
     return {
       menu_items: [
         {
-          icon:     ' ',
-          title:    'Подложка',
-          menu: [],
+          icon:  'mdi-map-outline',
+          title: 'Подложка',
+          //menu: this.MAP_GET_TILES,
         },
         {
-          icon:     'mdi-eye',
-          title:    'Оформление карты',
-          menu: [
+          icon:  'mdi-eye',
+          title: 'Оформление карты',
+          menu:  [
             {
               icon:     'mdi-calendar-range',
               title:    'Дата-время',
@@ -277,12 +281,14 @@ export default {
       'MAP_ACT_EDIT',
     ]),
 
-    click_tile (ind)          {
-      this.prop_tile=ind;
+    click_tile(ind)          {
+      this.prop_tile = ind;
     },
 
     // Показать первый уровень меню, вызывается из родителя
-    menu_show(x, y)   { this.$refs.menu.show_root(x, y); },
+    menu_show(x, y)   {
+      this.$refs.menu.show_root(x, y);
+    },
 
     test_item_add_1() { this.MAP_ACT_ITEM_ADD(MAP_TEST_ITEM_1); },
     test_item_add_2() { this.MAP_ACT_ITEM_ADD(MAP_TEST_ITEM_2); },
@@ -295,7 +301,7 @@ export default {
     test_edit_2()     { this.MAP_ACT_EDIT(MAP_TEST_EDIT_2); },
 
     dd(item) {
-      console.log(item)
+      console.log(1, item)
     },
   },
 

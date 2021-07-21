@@ -68,7 +68,7 @@
           >
 
             <!-- ITEM: ИКОНКА -->
-            <v-list-item-icon>
+            <v-list-item-icon v-if="item.icon">
               <v-icon v-text="item.icon"/>
             </v-list-item-icon>
 
