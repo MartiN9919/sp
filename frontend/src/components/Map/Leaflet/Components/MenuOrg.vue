@@ -39,13 +39,17 @@ export default {
     return {
       menu_items: [
         {
-          icon:  'mdi-map-outline',
-          title: 'Подложка',
-          //menu: this.MAP_GET_TILES,
+          icon:     'mdi-map-outline',
+          title:    'Подложка',
+          subtitle: 'Фон карты',
+          model:    'prop_tile',
+          radio:    true,
+          // menu:  see mounted
         },
         {
-          icon:  'mdi-eye',
-          title: 'Оформление карты',
+          icon:     'mdi-eye',
+          title:    'Оформление',
+          subtitle: 'Отображаемые элементы карты',
           menu:  [
             {
               icon:     'mdi-calendar-range',
@@ -96,8 +100,9 @@ export default {
 
         { divider: true },
         {
-          icon:  'mdi-wrench',
-          title: 'ТЕСТЫ',
+          icon:     'mdi-wrench',
+          title:    'ТЕСТЫ',
+          subtitle: 'На этапе разработки',
           menu:  [
             {
               title: 'Отображение элементов карты',

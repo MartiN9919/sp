@@ -25,6 +25,7 @@
 
           <v-list-item-content>
             <v-list-item-title v-text="title"/>
+            <v-list-item-subtitle v-text="subtitle"/>
           </v-list-item-content>
 
           <v-list-item-action>
@@ -48,6 +49,7 @@
             :key="index"
             :icon="item.icon"
             :title="item.title"
+            :subtitle="item.subtitle"
 
             :form="form"
             :items="item.menu"
@@ -124,8 +126,9 @@ export default {
   name: 'contextMenuNested',
   props: {
     form:          Object,                                           // указатель на объект, вызвавший root menu (органайзер)
-    title:         String,                                           // заголовок субменю
-    icon:          String,                                           // иконка субменю, если ' ' - отсутствует, но место остается
+    title:         String,                                           // субменю: заголовок
+    subtitle:      String,                                           // субменю: подзаголовок
+    icon:          String,                                           // субменю: иконка, если ' ' - отсутствует, но место остается
     items:         Array,
     isOffsetX:     { type: Boolean, default: false },
     isOffsetY:     { type: Boolean, default: true  },
