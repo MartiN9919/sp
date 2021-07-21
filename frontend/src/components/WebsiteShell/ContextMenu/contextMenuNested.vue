@@ -12,18 +12,28 @@
     :value="open"
     :absolute="root"
   >
+      <!-- АКТИВАТОР ПОДМЕНЮ -->
       <template v-if="!root" v-slot:activator="{ on }">
         <v-list-item
           class="d-flex justify-space-between"
           v-on="on"
         >
-          {{ title }}
-          <div class="flex-grow-1"></div>
-          <v-icon>mdi-chevron-right</v-icon>
+          <v-list-item-icon v-if="icon">
+            <v-icon v-text="icon"/>
+          </v-list-item-icon>
+
+          <v-list-item-content>
+            <v-list-item-title v-text="title"/>
+          </v-list-item-content>
+
+          <v-list-item-action>
+            <v-icon>mdi-chevron-right</v-icon>
+          </v-list-item-action>
         </v-list-item>
       </template>
 
       <v-list
+        rounded
         oncontextmenu="return false"
       >
         <template v-for="(item, index) in items">
@@ -35,6 +45,7 @@
          <!-- ПРОБРОС СВОЙСТВ И СОБЫТИЙ В РЕКУРСИИ -->
           <contextMenuNested v-else-if="item.menu"
             :key="index"
+            :icon="item.icon"
             :title="item.title"
 
             :form="form"
@@ -57,7 +68,7 @@
 
             <!-- ITEM: ИКОНКА -->
             <v-list-item-icon>
-              <v-icon large v-text="item.icon"/>
+              <v-icon v-text="item.icon"/>
             </v-list-item-icon>
 
             <!-- ТЕКСТ -->
@@ -107,6 +118,7 @@ export default {
   props: {
     form:          Object,                                           // указатель на объект, вызвавший root menu (органайзер)
     title:         String,                                           // заголовок субменю
+    icon:          String,                                           // иконка субменю
     items:         Array,
     isOffsetX:     { type: Boolean, default: false },
     isOffsetY:     { type: Boolean, default: true  },

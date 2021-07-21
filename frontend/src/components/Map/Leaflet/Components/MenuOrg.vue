@@ -35,10 +35,13 @@ export default {
     return {
       menu_items: [
         {
-          title: 'ПОДЛОЖКА',
+          icon:     ' ',
+          title:    'Подложка',
+          menu: [],
         },
         {
-          title: 'ЭЛЕМЕНТЫ',
+          icon:     'mdi-calendar-range',
+          title:    'Элементы',
           menu: [
             {
               icon:     'mdi-calendar-range',
@@ -83,12 +86,12 @@ export default {
               subtitle: 'Показывать логотип',
               model:    'prop_logo',
             },
-            {
-              icon:     'mdi-google-circles-group',
-              title:    '1111',
-              subtitle: '22222',
-              action:   'dd',
-            },
+            // {
+            //   icon:     'mdi-google-circles-group',
+            //   title:    '1111',
+            //   subtitle: '22222',
+            //   action:   'dd',
+            // },
           ],
         },
 
