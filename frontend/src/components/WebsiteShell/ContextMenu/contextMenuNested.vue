@@ -109,7 +109,9 @@
   />
 
 ВАЖНО:
-  item могуть быть с обработкой model или action (закрытие при выборе)
+  item могуть быть:
+    с обработкой model
+    с обработкой action (закрытие при выборе)
 
 */
 
@@ -118,7 +120,7 @@ export default {
   props: {
     form:          Object,                                           // указатель на объект, вызвавший root menu (органайзер)
     title:         String,                                           // заголовок субменю
-    icon:          String,                                           // иконка субменю
+    icon:          String,                                           // иконка субменю, если ' ' - отсутствует, но место остается
     items:         Array,
     isOffsetX:     { type: Boolean, default: false },
     isOffsetY:     { type: Boolean, default: true  },
