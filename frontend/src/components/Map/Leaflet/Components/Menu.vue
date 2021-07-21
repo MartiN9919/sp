@@ -12,7 +12,7 @@
     :value="open"
     :absolute="root"
   >
-      <template v-slot:activator="{ on }">
+      <template v-if="!root" v-slot:activator="{ on }">
         <v-list-item class='d-flex justify-space-between' v-on="on">
             {{ name }}
             <div class="flex-grow-1"></div>
@@ -25,7 +25,7 @@
         <template v-for="(item, index) in menuItems">
 
           <!-- ЭЛЕМЕНТ МЕНЮ: СЕПАРАТОР-->
-          <v-divider v-if='item.divider' :key='index' />
+          <v-divider v-if='item.divider' :key='index'/>
 
          <!-- ЭЛЕМЕНТ МЕНЮ: ССЫЛКА ПОДМЕНЮ -->
           <Menu v-else-if='item.menu'
@@ -42,8 +42,14 @@
           <!-- ЭЛЕМЕНТ МЕНЮ: ITEM -->
           <v-list-item v-else
             :key='index'
-            @click='on_click(item)'
+            @click.prevent="dd(item)"
           >
+            <!--
+              @click.prevent="item.click(item.click_param)"
+
+              @click='on_click(item)'
+              @click.prevent="form[item.click](item.click_param)"
+            -->
             <!-- ITEM: ИКОНКА -->
             <v-list-item-icon>
               <v-icon large v-text="item.icon"/>
@@ -55,6 +61,16 @@
               <v-list-item-subtitle v-text="item.subtitle"/>
             </v-list-item-content>
 
+            <!-- ACTION -->
+            <v-list-item-action
+              v-if="item.action"
+            >
+              <v-switch
+                v-model="item.model"
+                color="green"
+                @click.stop=""
+              />
+            </v-list-item-action>
 
           </v-list-item>
 
@@ -65,6 +81,7 @@
 
 <script>
 // https://codepen.io/Moloth/pen/ZEBOzQP
+
 export default {
   name: 'Menu',
   props: {
@@ -76,6 +93,19 @@ export default {
     isOpenOnHover: { type: Boolean, default: false },                // открытие при наведении курсора, с субменю работает не корректно
     transition:    { type: String,  default: "slide-x-transition" }, // появление меню
   },
+
+  data: () => ({
+    root:      false,
+    open:      false,
+    positionX: undefined,
+    positionY: undefined,
+  }),
+
+  computed: {
+    // https://coderoad.ru/63553151/Vue-как-использовать-Getter-настройка-в-v-модели-с-v-for
+    form: vm => vm,
+  },
+
   methods: {
     on_click(item) {
       this.$emit("click", item);
@@ -87,13 +117,14 @@ export default {
       this.positionX = x;
       this.positionY = y;
       this.$nextTick(() => { this.open = true })
+    },
+    dd(item) {
+      console.log(555, item)
+      item.click(item.click_param)
     }
   },
-  data: () => ({
-    root:      false,
-    open:      false,
-    positionX: undefined,
-    positionY: undefined,
-  }),
+
+
+
 }
 </script>
