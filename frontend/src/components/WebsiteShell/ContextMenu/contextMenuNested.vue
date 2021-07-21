@@ -50,6 +50,7 @@
             :icon="item.icon"
             :title="item.title"
             :subtitle="item.subtitle"
+            :radio="item.radio"
 
             :form="form"
             :items="item.menu"
@@ -63,7 +64,52 @@
             @close-menu="on_close_menu"
           />
 
-          <!-- ЭЛЕМЕНТ МЕНЮ: ITEM -->
+          <!-- ЭЛЕМЕНТ МЕНЮ: ITEM (RADIO) -->
+          <v-radio-group v-else-if="radio"
+            class="map-menu-radio-group select_off"
+            hide-details
+          >
+            111
+            <v-list-item
+              class="map-menu-tile-radio"
+            >
+            </v-list-item>
+          </v-radio-group>
+
+<!--
+          <v-radio-group v-else-if="item.radio"
+            v-if="group_item.radio"
+            v-for="(item, ind) in form[group_item.items]"
+            v-model="form[group_item.model]"
+            :key="group_item.key+'_'+ind"
+            class="map-menu-radio-group select_off"
+            hide-details
+          >
+            <v-list-item
+              class="map-menu-tile-radio"
+              @click.prevent="form[group_item.click](ind)"
+              :disabled="item.disabled"
+            >
+              <v-list-item-icon>
+                <v-icon large v-text="item.icon"/>
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title v-text="item.title"/>
+                <v-list-item-subtitle v-text="item.subtitle"/>
+              </v-list-item-content>
+              <v-list-item-action>
+                <v-radio
+                  color="green"
+                  :value="ind"
+                  :key="ind"
+                  @click.stop=""
+                />
+              </v-list-item-action>
+            </v-list-item>
+          </v-radio-group>
+-->
+
+          <!-- ЭЛЕМЕНТ МЕНЮ: ITEM (ОБЫЧНЫЙ, CHECK) -->
           <v-list-item v-else
             :key="index"
             @click="on_click_item(item)"
@@ -126,9 +172,10 @@ export default {
   name: 'contextMenuNested',
   props: {
     form:          Object,                                           // указатель на объект, вызвавший root menu (органайзер)
+    icon:          String,                                           // субменю: иконка, если ' ' - отсутствует, но место остается
     title:         String,                                           // субменю: заголовок
     subtitle:      String,                                           // субменю: подзаголовок
-    icon:          String,                                           // субменю: иконка, если ' ' - отсутствует, но место остается
+    radio:         Boolean,                                          // субменю: radio-группа
     items:         Array,
     isOffsetX:     { type: Boolean, default: false },
     isOffsetY:     { type: Boolean, default: true  },
