@@ -41,10 +41,7 @@ def find_reliable_http(object_type, request, actual=False):
                         if item[2] < temp_item['_source']['sec']:
                             remove_list.append(item)
         fetchall = [item[0] for item in fetchall if not item in remove_list]
-        if result == None:
-            result.append(list(dict.fromkeys(fetchall)))
-        else:
-            result.append(list(dict.fromkeys(fetchall)))
+        result.append(list(dict.fromkeys(fetchall)))
     return intercept_sort_list(result)
 
 

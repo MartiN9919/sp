@@ -50,9 +50,9 @@ def recursion_search(request):
     for rel in request.get(FullTextSearch.RELATIONS, None):
         if len(rel.get(FullTextSearch.RELATIONS, None)) == 0:
             temp_set = set(find_with_rel_reliable_key(request.get(FullTextSearch.OBJECT_ID, None),
-                                                      request.get(FullTextSearch.REQUEST, None),
+                                                      request.get(FullTextSearch.REQUEST, ''),
                                                       rel.get(FullTextSearch.OBJECT_ID, None),
-                                                      rel.get(FullTextSearch.REQUEST, None),
+                                                      rel.get(FullTextSearch.REQUEST, ''),
                                                       rel.get(FullTextSearch.REL, {}).get(FullTextSearch.RELATION_ID),
                                                       rel.get(FullTextSearch.REL, {}).get(FullTextSearch.REL_VALUE, 0),
                                                       rel.get(FullTextSearch.REL, {}).get(FullTextSearch.DATE_TIME_START),
@@ -63,21 +63,21 @@ def recursion_search(request):
                 result['rec_ids'] = temp_set
             else:
                 result['rec_ids'].intersection_update(temp_set)
-            if rel.get(FullTextSearch.REQUEST, None) == '':
+            if rel.get(FullTextSearch.REQUEST, '') == '':
                 result['old_result'].append({'object_id': rel.get(FullTextSearch.OBJECT_ID, None),
                                              'rec_ids': []})
             else:
                 result['old_result'].append({'object_id': rel.get(FullTextSearch.OBJECT_ID, None),
                                              'rec_ids': find_reliable_http(
                                                  FullTextSearch.TABLES[rel.get(FullTextSearch.OBJECT_ID, None)],
-                                                 rel.get(FullTextSearch.REQUEST, None),
+                                                 rel.get(FullTextSearch.REQUEST, ''),
                                                  rel.get(FullTextSearch.ACTUAL, False))})
         else:
-            if len(request.get(FullTextSearch.REQUEST, None)) == 0:
+            if len(request.get(FullTextSearch.REQUEST, '')) == 0:
                 main_object_ids = [0]
             else:
                 main_object_ids = find_reliable_http(FullTextSearch.TABLES[request.get(FullTextSearch.OBJECT_ID, None)],
-                                                     request.get(FullTextSearch.REQUEST, None),
+                                                     request.get(FullTextSearch.REQUEST, ''),
                                                      request.get(FullTextSearch.ACTUAL, False))
             temp = recursion_search(rel)
             result['old_result'].append({'object_id': temp['object_id'],
@@ -120,5 +120,5 @@ def search(request):
     else:
         return [get_object_record_by_id_http(request.get(FullTextSearch.OBJECT_ID, None), item) for item in
                 find_reliable_http(FullTextSearch.TABLES[request.get(FullTextSearch.OBJECT_ID, None)],
-                                   request.get(FullTextSearch.REQUEST, None),
+                                   request.get(FullTextSearch.REQUEST, ''),
                                    request.get(FullTextSearch.ACTUAL, False))]
