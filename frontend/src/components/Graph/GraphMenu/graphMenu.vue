@@ -1,86 +1,77 @@
 <template>
-  <div>
-    <custom-app-bar
-      v-model="active" :work-place="workAreaOfObjects"
-      @selectMenuItem="selectMenuItem" class="appbar"
-    ></custom-app-bar>
-    <div
-      v-for="object in workAreaOfObjects" :key="object.tempId"
-      v-show="object.tempId === active" class="workplace"
-    >
-      <div v-if="windowActiveObject === 'searchTree'" class="search-place">
+  <div v-if="positionNewGraphObject">
+    <div class="px-2 pt-2" style="height: 3em">
+      <v-select
+        :items="listOfPrimaryObjects" v-model="graphObject" :menu-props="{ offsetY: true }" @change="getClassifiersOfObject"
+        item-text="title" item-value="id" hide-no-data hide-details outlined
+        color="teal" item-color="teal" class="v-input--dense" label="Тип объекта"
+      ></v-select>
+    </div>
+    <div style="display: flex; flex-direction: column; height: calc(100% - 3em);">
+      <div ref="searchTreeView" style="max-height: 30%; overflow-y: auto; flex-shrink: 0">
         <search-tree-view
-          v-model="object.searchTree"
+          :search-tree="searchTreeView"
+          :search-status="searchStatus"
           @findObject="findObject"
-          class="search-tree-view"
         ></search-tree-view>
+      </div>
+      <div style="max-height: calc(100% - 4em); overflow-y: auto">
         <list-found-objects
-          :object="object"
-          @changeFindObject="changeFindObject(object, $event)"
-          class="list-found-objects"
+          :object-id="graphObject"
+          :found-objects="foundObjects"
         ></list-found-objects>
       </div>
-      <creator-object class="creator-object text-center"
-        v-if="windowActiveObject === 'createObject'"
-        :object="object"
-      ></creator-object>
+
     </div>
+<!--    <creator-object></creator-object>-->
   </div>
 </template>
 
 <script>
-import { mapGetters } from "vuex"
-import customAppBar from "./customAppBar"
+import {mapActions, mapGetters} from "vuex"
 import searchTreeView from "./searchTree/searchTreeView"
-import listFoundObjects from "./searchTree/listFoundObjects"
+import listFoundObjects from "./foundObjects/listFoundObjects"
 import creatorObject from "./createObject/creatorObject";
 
 export default {
   name: "graphMenu",
-  components: { searchTreeView, customAppBar, listFoundObjects, creatorObject, },
+  components: { searchTreeView, listFoundObjects, creatorObject, },
+  data: () => ({
+    searchTreeView: null,
+    searchStatus: false,
+    foundObjects: null,
+  }),
   computed: {
-    ...mapGetters(['workAreaOfObjects', 'activeObject', 'windowActiveObject',]),
-    active: {
-      get: function () { return this.activeObject?.tempId },
-      set: function (id) { this.$store.dispatch('setActiveObjectId', id) },
-    }
+    ...mapGetters(['positionNewGraphObject', 'selectedGraphObjectId', 'listOfPrimaryObjects', ]),
+    graphObject: {
+      get: function () { return this.selectedGraphObjectId },
+      set: function (id) {
+        this.setSelectedGraphObjectId(id)
+        this.createSearchTreeView(id)
+        this.foundObjects = null
+      },
+    },
   },
   methods: {
-    changeFindObject(object, findObject) {
-      object.params = findObject.params
-      object.rec_id = findObject.rec_id
-      object.activeWindow = 'createObject'
-    },
+    ...mapActions(['setSelectedGraphObjectId', ]),
     findObject () {
-      this.$store.dispatch('findObjectsOnServer')
+      this.searchStatus = true
+      this.$store.dispatch('findObjectsOnServer', { searchTree: this.searchTreeView })
+      .then(response => {
+        this.searchStatus = false
+        this.foundObjects = response.data
+      })
+      .catch(() => { this.searchStatus = false })
     },
-    selectMenuItem(selected) {
-      if(selected.window === 'createObject')
-        this.$store.dispatch('createNewObject', selected.object)
+    createSearchTreeView (id) {
+      this.searchTreeView = { object_id: id, rel: null, request: '', actual: false, rels: [] }
     },
+    getClassifiersOfObject () {
+      this.$store.dispatch('getListOfClassifiersOfObjects', { params: { object_id: this.graphObject } })
+    }
   },
-
 }
 </script>
 
 <style scoped>
-.appbar {
-  height: 2.7em;
-}
-.workplace {
-  height: calc(100% - 2.7em);
-}
-.search-place, .creator-object {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-}
-.list-found-objects {
-  max-height: calc(100% - 4em);
-  overflow-y: hidden;
-}
-.search-tree-view {
-  max-height: 36%;
-  overflow-y: auto;
-}
 </style>

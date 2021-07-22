@@ -1,54 +1,46 @@
 <template>
-  <div class="py-2">
-    <v-treeview :items="[treeItems]" item-children="rels" :open="openObject" return-object>
+  <div class="pb-2">
+    <v-treeview :items="searchTreeItems" :open="openObject" return-object item-children="rels">
       <template v-slot:label="{ item }">
-        <v-tooltip v-if="item !== treeItems" bottom transition="false" color="#00796B" z-index="10001" max-width="30%">
+        <custom-tooltip v-if="item.rel">
           <template v-slot:activator="{ on }">
-            <v-text-field
-              v-model="item.request" v-on="on" autocomplete="off"
-              @contextmenu.stop="contextMenu = { event: $event, typeMenu: item, }"
-              hide-details outlined dense class="mt-1" color="teal"
-            >
-              <template v-slot:label="">
-                <v-icon size="20">{{ labelObject(item).icon }}</v-icon>
-              </template>
-            </v-text-field>
+            <div v-on="on" @contextmenu.stop="createContextMenu(item, $event)">
+              <tree-item v-model="item.request">
+                <template v-slot:label>
+                  <v-icon size="20">{{ labelObject(item.object_id).icon }}</v-icon>
+                </template>
+              </tree-item>
+            </div>
           </template>
-          <table style="width:100%">
-            <tr><th>Связь</th><td colspan="2">{{ labelRelation(item) }}</td></tr>
-            <tr><th rowspan="3">Период</th></tr>
-            <tr><th>Дата начала</th><th>Дата конца</th></tr>
-            <tr><td>{{ item.rel.date_time_start }}</td><td>{{ item.rel.date_time_end }}</td></tr>
-            <tr>
-              <th>Поиск по актуальным значениям</th>
-              <td colspan="2">
-                <v-icon v-if="item.actual" color="green">mdi-check</v-icon>
-                <v-icon v-else color="red">mdi-close</v-icon>
-              </td>
-            </tr>
-          </table>
-        </v-tooltip>
-        <v-text-field
-          v-else v-model="item.request" autocomplete="off"
-          @contextmenu.stop="contextMenu = { event: $event, typeMenu: item, }"
-          hide-details outlined dense class="mt-1" color="teal"
-        >
+          <template v-slot:body>
+            <tooltip-tree-item :item="item"></tooltip-tree-item>
+          </template>
+        </custom-tooltip>
+        <tree-item v-else v-model="item.request" @contextmenu.native="createContextMenu(item, $event)">
+          <template v-slot:label>
+            <v-icon size="20">{{ labelObject(item.object_id).icon }}</v-icon>
+          </template>
           <template v-slot:append="">
             <span v-model="item.actual" class="pr-2 mt-1" style="color: #555555">Актуальность</span>
             <v-switch v-model="item.actual" hide-details color="teal" class="mt-0 pt-0"></v-switch>
           </template>
-        </v-text-field>
+        </tree-item>
       </template>
       <template v-slot:append="{ item, open }">
-        <v-btn large icon v-if="item === treeItems">
-          <v-icon color="teal" @click="$emit('findObject')">mdi-magnify mdi-36px</v-icon>
+        <v-btn v-if="!item.rel" :loading="searchStatus" icon large class="mt-2">
+          <v-icon @click="$emit('findObject')" color="teal">mdi-magnify mdi-36px</v-icon>
         </v-btn>
       </template>
     </v-treeview>
     <context-menu v-if="typeMenu === typeContextMenu">
       <context-search-tree-view
-        :parent-object="typeMenu === treeItems ? null : findParentObject()" :object="typeMenu"
-        @createNewRelation="createNewRelation" @selectMenuItemTreeView="selectMenuItem"
+        :object="typeMenu"
+        :newObject="newObject"
+        :parent-object="parentItem"
+        @selectMenuItemTreeView="selectMenuItem"
+        @createNewRelation="createNewRelation"
+        @changeNewRelation="changeNewRelation"
+        @deleteNewRelation="deleteNewRelation"
       ></context-search-tree-view>
     </context-menu>
   </div>
@@ -58,59 +50,70 @@
 import contextMenu from "../../../WebsiteShell/ContextMenu/contextMenu"
 import toolsContextMenu from "../../../WebsiteShell/ContextMenu/Mixins/toolsContextMenu"
 import contextSearchTreeView from "../../ContextMenus/contextSearchTreeView/contextSearchTreeView"
+import customTooltip from "../../../WebsiteShell/UI/customTooltip";
+import tooltipTreeItem from "./tooltipTreeItem";
+import TreeItem from "./treeItem";
 
 export default {
   name: "searchTreeView",
   mixins: [ toolsContextMenu, ],
-  components: {contextMenu, contextSearchTreeView, },
-  props: { searchTree: Object, },
-  model: { prop: 'searchTree', event: 'changeSearchTree', },
+  components: {TreeItem, customTooltip, tooltipTreeItem, contextMenu, contextSearchTreeView, },
+  props: {
+    searchTree: Object,
+    searchStatus: Boolean,
+  },
   data: () => ({
     openObject: [],
-    contextMenu: { event: null, typeMenu: null,},
+    contextMenu: { event: null, typeMenu: null },
+    newObject: null,
   }),
   computed: {
-    treeItems: {
-      get: function () { return this.searchTree },
-      set: function (tree) { this.$emit('changeSearchTree', tree) },
-    },
     typeMenu: function () { return this.contextMenu.typeMenu },
+    mainSearchTreeItem: function () { return this.searchTreeItems[0] },
+    parentItem: function () { return this.typeMenu === this.mainSearchTreeItem ? null : this.findParentObject() },
+    searchTreeItems: function () {
+      if (this.searchTree) {
+        this.openObject = []
+        this.openTree(this.searchTree)
+        return [this.searchTree]
+      }
+      return []
+    },
   },
   methods: {
-    labelObject (item) {
-      return this.$store.getters.primaryObject(item.object_id)
-    },
-    labelRelation (item) {
-      let relation = this.$store.getters.relationObject(item.rel.id)
-      let relationTitle = relation ? relation.title: 'Не выбрана'
-      let relationValueTitle = ''
-      if (relation?.list) {
-        let relationValue = relation.list.find(i => i.id === item.rel.value)
-        if (relationValue) relationValueTitle = '(' + relationValue.value + ')'
-      }
-      return relationTitle + relationValueTitle
-    },
-    createNewRelation(selectedProperties) {
-      let rel = {
-        id: selectedProperties.selectedRelation ? selectedProperties.selectedRelation.id : 0,
-        value: selectedProperties.value,
-        date_time_start: selectedProperties.date_time_start,
-        date_time_end: selectedProperties.date_time_end,
-      }
-      this.typeMenu.rels.unshift({
-        object_id: selectedProperties.selectedObject.id,
-        actual: selectedProperties.actual,
-        request: '',
-        rel: rel,
-        rels: [],
-      },)
+    labelObject (id) { return this.$store.getters.primaryObject(id) },
+    createNewRelation() {
+      this.typeMenu.rels.unshift(this.newObject)
       this.openObject.push(this.typeMenu)
       this.deactivateContextMenu()
+      this.newObject = null
     },
-    selectMenuItem (item) {
-      if (item.id === 2)
-        this.deleteSearchTreeItem(this.treeItems)
+    changeNewRelation() {
       this.deactivateContextMenu()
+      this.deleteNewRelation()
+    },
+    deleteNewRelation() {
+      this.newObject = null
+    },
+    selectMenuItem (id) {
+      switch(id) {
+        case 1:
+          if (!this.newObject)
+            this.createNewObject()
+          break
+        case 2:
+          this.deleteSearchTreeItem(this.mainSearchTreeItem)
+          this.deactivateContextMenu()
+          break
+        case 3:
+          this.changeObject()
+          break
+      }
+    },
+    openTree (root) {
+      this.openObject.push(root)
+      for (let item of root.rels)
+        this.openTree(item)
     },
     deleteSearchTreeItem (body) {
       let findIndexObject = body.rels.findIndex(object => object === this.typeMenu)
@@ -119,36 +122,38 @@ export default {
           this.deleteSearchTreeItem(object)
       else body.rels.splice(findIndexObject, 1)
     },
-    findParentObject (body=this.treeItems) {
+    findParentObject (body=this.mainSearchTreeItem) {
       if (!body.rels.find(object => object === this.typeMenu)) {
         for (let object of body.rels) {
           let findParent = this.findParentObject(object)
           if (findParent) return findParent
         } return null
       } else return body
-    }
+    },
+    changeObject () {
+      this.newObject = this.contextMenu.typeMenu
+    },
+    createNewObject () {
+      this.newObject = {
+        object_id: null,
+        request: null,
+        actual: false,
+        rels: [],
+        rel: {
+          id: null,
+          value: null,
+          date_time_start: null,
+          date_time_end: null,
+        }
+      }
+    },
+    createContextMenu (item, event) {
+      this.contextMenu = { event: event, typeMenu: item, }
+    },
   },
 }
 </script>
 
 <style scoped>
-table {
-  border-collapse: collapse;
-  table-layout: fixed;
-  font-size: 0.80em;
-  color: white;
-  width: 100%;
-}
 
-th {
-  text-align: center;
-}
-td, th {
-  border: 1px solid white;
-  padding-left: 5px;
-  padding-right: 5px;
-  padding-top: 2px;
-  padding-bottom: 2px;
-  white-space: pre-wrap;
-}
 </style>

@@ -1,6 +1,6 @@
 <template>
   <div @contextmenu.stop="contextMenu = { event: $event, typeMenu: 'creatorObject' + object.tempId }">
-    <v-form ref="form" v-model="valid" lazy-validation>
+    <v-form ref="form" v-model="valid" lazy-validation class="pb-3">
       <creator-form
         v-for="(classifier, key) in object.params" :key="key" class="px-3 pt-5"
         v-model="classifier.value" @observer="classifier.changed = $event"
@@ -20,18 +20,15 @@
         :object-id="object.object_id" :classifiers="object.params" @selectClassifier="selectClassifier"
       ></context-creator-object>
     </context-menu>
-    <v-dialog v-model="$store.getters.conflictingObjects.length" persistent max-width="90%">
-      <conflict-form
-        :conflicting-objects="$store.getters.conflictingObjects"
-        @resolveConflict="$store.dispatch('clearConflictingObjects')"
-      ></conflict-form>
+    <v-dialog v-model="conflictForm" width="70%" ref="conflictForm">
+      <conflict-form></conflict-form>
     </v-dialog>
   </div>
 </template>
 
 <script>
 import creatorForm from "./creatorForm"
-import conflictForm from "./conflictForm"
+import conflictForm from "./conflictForm/conflictForm"
 import toolsContextMenu from "../../../WebsiteShell/ContextMenu/Mixins/toolsContextMenu"
 import contextMenu from "../../../WebsiteShell/ContextMenu/contextMenu"
 import contextCreatorObject from "../../ContextMenus/contextCreatorObject"
@@ -46,6 +43,12 @@ export default {
     valid: true,
     contextMenu: { event: null, typeMenu: null,},
   }),
+  computed: {
+    conflictForm: {
+      get: function () { return this.$store.getters.conflictingObjects.length !== 0 },
+      set: function (value) { if (!value) this.$store.dispatch('clearConflictingObjects') },
+    },
+  },
   methods: {
     getClassifier (objectId, classifierId) {
       return this.$store.getters.classifier({ objectId: objectId, classifierId: classifierId })

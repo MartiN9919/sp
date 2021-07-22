@@ -30,6 +30,7 @@
           :options="cluster_options(map_ind)"
         >
           <l-geo-json
+              ref="geoJson"
             :geojson="data_normalize(map_ind)"
             :options="geojson_options(map_ind)"
           />
@@ -283,7 +284,7 @@ export default {
         });
         fc.features = features;
       }
-
+      console.log(this.$refs.geoJson)
       return fc;
     },
 
