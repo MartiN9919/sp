@@ -233,13 +233,19 @@ export default {
 
     form: vm => vm,
 
+    prop_tile: {
+      set: function(val) {
+        console.log('set', val)
+        this.MAP_ACT_TILE({ind: val});
+      },
+      get: function()    {
+        console.log('get', this.MAP_GET_TILE)
+        return this.MAP_GET_TILE;
+      },
+    },
     prop_range: {
       set: function(val) { this.MAP_ACT_RANGE_SHOW({on: val}); },
       get: function()    { return this.MAP_GET_RANGE_SHOW; },
-    },
-    prop_tile: {
-      set: function(val) { this.MAP_ACT_TILE({ind: val}); },
-      get: function()    { return this.MAP_GET_TILE; },
     },
     prop_cluster: {
       set: function(val) { this.MAP_ACT_CLUSTER({on: val}); },
@@ -286,14 +292,8 @@ export default {
       'MAP_ACT_EDIT',
     ]),
 
-    click_tile(ind)          {
-      this.prop_tile = ind;
-    },
-
     // Показать первый уровень меню, вызывается из родителя
-    menu_show(x, y)   {
-      this.$refs.menu.show_root(x, y);
-    },
+    menu_show(x, y)   { this.$refs.menu.show_root(x, y); },
 
     test_item_add_1() { this.MAP_ACT_ITEM_ADD(MAP_TEST_ITEM_1); },
     test_item_add_2() { this.MAP_ACT_ITEM_ADD(MAP_TEST_ITEM_2); },

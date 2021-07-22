@@ -12,7 +12,7 @@
     :value="open"
     :absolute="root"
   >
-      <!-- АКТИВАТОР ПОДМЕНЮ -->
+      <!-- СЛОТ-АКТИВАТОР ПОДМЕНЮ -->
       <template v-if="!root" v-slot:activator="{ on }">
         <v-list-item
           class="d-flex justify-space-between"
@@ -37,7 +37,14 @@
       <v-list
         rounded
         oncontextmenu="return false"
+        hide-details
       >
+
+        <v-radio-group
+          v-model="form[radio]"
+          hide-details
+        >
+
         <template v-for="(item, index) in items">
 
           <!-- ЭЛЕМЕНТ МЕНЮ: СЕПАРАТОР-->
@@ -51,6 +58,7 @@
             :title="item.title"
             :subtitle="item.subtitle"
             :radio="item.radio"
+            :model="item.model"
 
             :form="form"
             :items="item.menu"
@@ -64,18 +72,56 @@
             @close-menu="on_close_menu"
           />
 
-          <!-- ЭЛЕМЕНТ МЕНЮ: ITEM (RADIO) -->
-          <v-radio-group v-else-if="radio"
-            class="map-menu-radio-group select_off"
-            hide-details
+          <!-- ЭЛЕМЕНТ МЕНЮ: ITEM (ОБЫЧНЫЙ, SWITCH, RADIO) -->
+          <v-list-item v-else
+            :key="index"
+            @click="on_click_item(item, index)"
           >
-            111
-            <v-list-item
-              class="map-menu-tile-radio"
-            >
-            </v-list-item>
-          </v-radio-group>
 
+            <!-- ITEM: ИКОНКА -->
+            <v-list-item-icon v-if="item.icon">
+              <v-icon v-text="item.icon"/>
+            </v-list-item-icon>
+
+            <!-- ITEM: ТЕКСТ -->
+            <v-list-item-content>
+              <v-list-item-title v-text="item.title"/>
+              <v-list-item-subtitle v-text="item.subtitle"/>
+            </v-list-item-content>
+
+            <!-- ITEM: ACTION -->
+            <v-list-item-action
+              v-if="item.model || radio"
+            >
+
+              <!-- ITEM ACTION: SWITCH -->
+              <v-switch
+                v-if="item.model"
+                v-model="form[item.model]"
+                :color="item.color || color"
+                @click.stop=""
+              />
+
+              <!-- ITEM ACTION: RADIO -->
+              <v-radio
+                v-if="radio"
+                :value="index"
+                :key="index"
+                :color="item.color || color"
+                @click.stop=""
+              />
+
+            </v-list-item-action>
+
+          </v-list-item>
+
+        </template>
+
+        </v-radio-group>
+      </v-list>
+  </v-menu>
+
+          <!-- ЭЛЕМЕНТ МЕНЮ: ITEM (RADIO) -->
 <!--
           <v-radio-group v-else-if="item.radio"
             v-if="group_item.radio"
@@ -109,39 +155,6 @@
           </v-radio-group>
 -->
 
-          <!-- ЭЛЕМЕНТ МЕНЮ: ITEM (ОБЫЧНЫЙ, CHECK) -->
-          <v-list-item v-else
-            :key="index"
-            @click="on_click_item(item)"
-          >
-
-            <!-- ITEM: ИКОНКА -->
-            <v-list-item-icon v-if="item.icon">
-              <v-icon v-text="item.icon"/>
-            </v-list-item-icon>
-
-            <!-- ТЕКСТ -->
-            <v-list-item-content>
-              <v-list-item-title v-text="item.title"/>
-              <v-list-item-subtitle v-text="item.subtitle"/>
-            </v-list-item-content>
-
-            <!-- ACTION -->
-            <v-list-item-action
-              v-if="item.model"
-            >
-              <v-switch
-                v-model="form[item.model]"
-                :color="item.color || color"
-                @click.stop=""
-              />
-            </v-list-item-action>
-
-          </v-list-item>
-
-        </template>
-      </v-list>
-  </v-menu>
 </template>
 
 <script>
@@ -176,6 +189,7 @@ export default {
     title:         String,                                           // субменю: заголовок
     subtitle:      String,                                           // субменю: подзаголовок
     radio:         Boolean,                                          // субменю: radio-группа
+    model:         String,                                           // субменю: radio-model
     items:         Array,
     isOffsetX:     { type: Boolean, default: false },
     isOffsetY:     { type: Boolean, default: true  },
@@ -207,10 +221,15 @@ export default {
       this.$emit("close-menu");
     },
 
-    on_click_item(item) {
-      // ITEM: MODEL
+    on_click_item(item, index) {
+      // ITEM: SWITCH
       if (item.model) {
         this.form[item.model] = !this.form[item.model];
+      }
+
+      // ITEM: RADIO
+      else if ((this.radio) && (this.model)) {
+        this.form[this.model] = index;
       }
 
       // ITEM: ACTION
