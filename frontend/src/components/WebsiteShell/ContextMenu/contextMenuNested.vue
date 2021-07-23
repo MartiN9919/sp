@@ -71,10 +71,13 @@
         <v-radio-group v-else-if="item.radio"
           v-model="form[item.model]"
           style="margin-top:0;padding-top:0;"
+          hide-details
         >
           <v-list-item-group>
             <v-list-item
               v-for="(radio_item, radio_index) in item.radio"
+              :key="item.model+'_'+radio_index"
+              :disabled="radio_item.disabled"
               @click="on_click_radio(item, radio_item, radio_index)"
             >
             <v-list-item-icon v-if="radio_item.icon">
@@ -90,6 +93,7 @@
               <v-radio
                 :value="radio_index"
                 :key="radio_index"
+                :disabled="item.disabled"
                 :color="radio_item.color || color"
                 @click.stop=""
               />
@@ -102,6 +106,7 @@
         <!-- ЭЛЕМЕНТ МЕНЮ: ITEM (ОБЫЧНЫЙ, SWITCH) -->
         <v-list-item v-else
           :key="index"
+          :disabled="item.disabled"
           @click="on_click_item(item, index)"
         >
 
@@ -125,6 +130,7 @@
               <v-switch
                 v-if="item.model"
                 v-model="form[item.model]"
+                :disabled="item.disabled"
                 :color="item.color || color"
                 @click.stop=""
               />
@@ -149,18 +155,57 @@
 
 ПРИМЕР ВЫЗОВА
   <contextMenuNested
-    :form="form"
-    :menuItems='menu_items'
-    :color="'red'"
+    :form="form"                    - указатель на vue-объект родителя
+    :menuItems='menu_items'         - структура меню, см. ниже
+    :color="'blue'"                 - цвет switch/radio по умолчанию
   />
 
+  // активация в родителе
   menu_show(x, y) { this.$refs.menu.show_root(x, y); },
 
-
 ВАЖНО:
+  образец menu_items: [
+    {
+      icon:     '...',
+      title:    '...',
+      subtitle: '...',
+      menu: [
+        {
+          icon:     '...',
+          title:    '...',
+          subtitle: '...',
+          model:    'prop_range',
+          color:    'red',
+          disabled: true,
+        },
+        ...
+      ],
+    },
+    { divider: true },
+    {
+      icon:     '...',
+      title:    '...',
+      subtitle: '...',
+      menu:     [
+        {
+          model: 'prop_tile',
+          radio: [
+            {
+              title:    '...',
+              subtitle: '...',
+              color:    'red',
+            },
+            ...
+          ],
+        },
+      ],
+    },
+  ]
+
   item могуть быть:
-    с обработкой model
     с обработкой action (закрытие при выборе)
+    с обработкой model (switch)
+    c обработкой radio-group
   item.menu == [] - item disabled
 */
 

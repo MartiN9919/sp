@@ -9,6 +9,7 @@ export const MAP_DATA_MENU_TILES = [
     attr:     '',
     tms:      false,
     //crs:      L.CRS.EPSG3857,
+    color:    'red',
   },
   {
     title:    'OSM',
@@ -17,16 +18,6 @@ export const MAP_DATA_MENU_TILES = [
     attr:     '',
     tms:      false,
   },
-
-  // {
-  //   title:    'OSM',
-  //   subtitle: 'Схема (Локальная сеть)',
-  //   url:      'http://192.168.56.1:8080/osm/{z}/{x}/{y}.png',
-  //   attr:     '',
-  //   tms:      false,
-  //   enabled:  false,
-  // },
-
   {
     title:    'Yandex',
     subtitle: 'Интернет',
@@ -34,29 +25,7 @@ export const MAP_DATA_MENU_TILES = [
     attr:     '',
     tms:      false,
     crs:      L.CRS.EPSG3395,
-    enabled:  false,
-  },
-
-  {
-    title:    'ESRI',
-    subtitle: 'Спутник (Интернет)',
-    url:      'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-    attr:     '',
-    tms:      false,
-  },
-  {
-    title:    'ОТМ',
-    subtitle: 'Схема (Интернет)',
-    url:      'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
-    attr:     '',
-    tms:      false,
-  },
-  {
-    title:    'Stamen',
-    subtitle: 'Черно-белая (Интернет)',
-    url:      'http://{s}.tile.stamen.com/toner/{z}/{x}/{y}.png',
-    attr:     '',
-    tms:      false,
+    color:    'red',
   },
   {
     title:    'Yandex',
@@ -65,6 +34,29 @@ export const MAP_DATA_MENU_TILES = [
     attr:     '',
     tms:      false,
     crs:      L.CRS.EPSG3395, //+L.CRS.EPSG3857,  -L.CRS.EPSG4326
-    enabled:  false,
+  },
+  {
+    title:    'ESRI',
+    subtitle: 'Спутник (Интернет)',
+    url:      'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+    attr:     '',
+    tms:      false,
+    color:    'red',
+  },
+  {
+    title:    'ОТМ',
+    subtitle: 'Схема (Интернет)',
+    url:      'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
+    attr:     '',
+    tms:      false,
+    color:    'red',
+  },
+  {
+    title:    'Stamen',
+    subtitle: 'Черно-белая (Интернет)',
+    url:      'http://{s}.tile.stamen.com/toner/{z}/{x}/{y}.png',
+    attr:     '',
+    tms:      false,
+    color:    'red',
   },
 ];
