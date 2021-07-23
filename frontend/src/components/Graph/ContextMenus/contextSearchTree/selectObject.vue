@@ -1,7 +1,5 @@
 <template>
   <v-card flat>
-    <v-card-subtitle class="text-uppercase py-2 text-center text-break block-card-subtitle">
-    </v-card-subtitle>
     <v-card-text class="pa-0">
       <v-list class="py-0">
         <v-list-item>
@@ -32,7 +30,7 @@
             <v-list-item-title>Дополнительные настройки</v-list-item-title>
           </template>
           <v-list-item>
-            <v-form ref="form" v-model="validDateTimeForm" lazy-validation style="width: 100%">
+            <v-form ref="form" lazy-validation style="width: 100%">
               <div class="py-3">
                 <date-time-input title="начала" v-model="selectedDateTimeStart"></date-time-input>
               </div>
@@ -49,15 +47,9 @@
       </v-list>
     </v-card-text>
     <v-card-actions>
-      <v-btn
-        outlined color="teal" width="40%"
-        @click="$emit('cancel')"
-      >Назад</v-btn>
+      <v-btn @click="$emit('cancel')" outlined color="teal" width="40%" >Назад</v-btn>
       <v-spacer></v-spacer>
-      <v-btn
-        outlined color="teal" width="40%"
-        @click="$emit(createStatus)"
-      >Готово</v-btn>
+      <v-btn @click="sendActionParent(createStatus)" outlined color="teal" width="40%">Готово</v-btn>
     </v-card-actions>
   </v-card>
 </template>
@@ -76,7 +68,6 @@ export default {
     newObject: Object,
   },
   data: () => ({
-    validDateTimeForm: true,
     createStatus: '',
   }),
   computed: {
@@ -133,11 +124,9 @@ export default {
   },
   methods: {
     ...mapActions(['getRelationsForObjects', ]),
-    sendActionParent(action, validate=false) {
-      if (validate) {
-        if (this.$refs.form.validate())
-          this.$emit(action)
-      } else this.$emit(action)
+    sendActionParent(action) {
+      if (this.$refs.form.validate())
+        this.$emit(action)
     },
   },
   mounted() {
@@ -155,8 +144,5 @@ export default {
 </script>
 
 <style scoped>
-.block-card-subtitle {
-  background-color: #009688;
-  color: white !important;
-}
+
 </style>

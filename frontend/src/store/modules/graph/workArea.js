@@ -23,7 +23,6 @@ export default {
     findObjectsOnServer({ commit, rootState }, props = {}) {
       return postResponseAxios('objects/search', props.searchTree, props?.config)
         .then(response => {
-          // commit('setFoundObjects', { activeObject: activeObject, foundObjects: response.data })
           return Promise.resolve(response)
         })
         .catch(error => { return Promise.reject(error) })

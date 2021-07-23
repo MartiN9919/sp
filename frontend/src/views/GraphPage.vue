@@ -5,12 +5,12 @@
     :min-size="15" :max-size="85" :size="drawer ? sizeNavigation : 0"
     :resizerBorderThickness="1" :resizerThickness="1" resizer-border-thickness="">
     <graph-menu slot="firstPane"></graph-menu>
-    <d3-field slot="secondPane" :drawer="drawer"></d3-field>
+    <work-place slot="secondPane" :drawer="drawer"></work-place>
   </ResSplitPane>
 </template>
 
 <script>
-import d3Field from '../components/Graph/D3/d3Field'
+import workPlace from '../components/Graph/Graph/workPlace'
 import graphMenu from '../components/Graph/GraphMenu/graphMenu'
 import NavigationDrawer from '../components/WebsiteShell/Mixins/NavigationDrawer'
 import ResSplitPane from 'vue-resize-split-pane'
@@ -18,7 +18,7 @@ import ResSplitPane from 'vue-resize-split-pane'
 export default {
   name: 'GraphPage',
   mixins: [ NavigationDrawer, ],
-  components: { ResSplitPane, d3Field, graphMenu,},
+  components: { ResSplitPane, workPlace, graphMenu,},
   created() { this.$store.dispatch('getListOfPrimaryObjects') },
 }
 </script>
