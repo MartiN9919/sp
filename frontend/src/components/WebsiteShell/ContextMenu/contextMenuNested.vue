@@ -72,10 +72,11 @@
           v-model="form[item.model]"
           style="margin-top:0;padding-top:0;"
         >
-        <v-list-item-group>
-          <v-list-item
-            v-for="(radio_item, radio_index) in item.radio"
-          >
+          <v-list-item-group>
+            <v-list-item
+              v-for="(radio_item, radio_index) in item.radio"
+              @click="on_click_radio(item, radio_item, radio_index)"
+            >
             <v-list-item-icon v-if="radio_item.icon">
               <v-icon v-text="radio_item.icon"/>
             </v-list-item-icon>
@@ -209,16 +210,15 @@ export default {
         this.form[item.model] = !this.form[item.model];
       }
 
-      // ITEM: RADIO
-      else if ((this.radio) && (this.model)) {
-        this.form[this.model] = index;
-      }
-
       // ITEM: ACTION
       else if (item.action) {
         this.on_close_menu();
         this.form[item.action](item);
       }
+    },
+
+    on_click_radio(item, radio_item, radio_index) {
+      this.form[item.model] = radio_index;
     },
 
   },
