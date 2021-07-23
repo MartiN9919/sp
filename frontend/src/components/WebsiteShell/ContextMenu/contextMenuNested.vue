@@ -73,14 +73,9 @@
           style="margin-top:0;padding-top:0;"
         >
         <v-list-item-group>
-              <v-radio
-                v-for="(radio_item, radio_index) in item.radio"
-                :value="radio_index"
-                :key="radio_index"
-                :color="radio_item.color || color"
-                @click.stop=""
-              >
-
+          <v-list-item
+            v-for="(radio_item, radio_index) in item.radio"
+          >
             <v-list-item-icon v-if="radio_item.icon">
               <v-icon v-text="radio_item.icon"/>
             </v-list-item-icon>
@@ -90,8 +85,15 @@
               <v-list-item-subtitle v-text="radio_item.subtitle"/>
             </v-list-item-content>
 
-
-              </v-radio>
+            <v-list-item-action>
+              <v-radio
+                :value="radio_index"
+                :key="radio_index"
+                :color="radio_item.color || color"
+                @click.stop=""
+              />
+            </v-list-item-action>
+          </v-list-item>
         </v-list-item-group>
         </v-radio-group>
 
@@ -134,40 +136,6 @@
 
       </v-list>
   </v-menu>
-
-          <!-- ЭЛЕМЕНТ МЕНЮ: ITEM (RADIO) -->
-<!--
-          <v-radio-group v-else-if="item.radio"
-            v-if="group_item.radio"
-            v-for="(item, ind) in form[group_item.items]"
-            v-model="form[group_item.model]"
-            :key="group_item.key+'_'+ind"
-            class="map-menu-radio-group select_off"
-            hide-details
-          >
-            <v-list-item
-              class="map-menu-tile-radio"
-              @click.prevent="form[group_item.click](ind)"
-              :disabled="item.disabled"
-            >
-              <v-list-item-icon>
-                <v-icon large v-text="item.icon"/>
-              </v-list-item-icon>
-              <v-list-item-content>
-                <v-list-item-title v-text="item.title"/>
-                <v-list-item-subtitle v-text="item.subtitle"/>
-              </v-list-item-content>
-              <v-list-item-action>
-                <v-radio
-                  color="green"
-                  :value="ind"
-                  :key="ind"
-                  @click.stop=""
-                />
-              </v-list-item-action>
-            </v-list-item>
-          </v-radio-group>
--->
 
 </template>
 
