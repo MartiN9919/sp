@@ -89,6 +89,11 @@ class ModelScript(models.Model):
         return self.title
 
     def clean(self, *args, **kwargs):
+        """
+        Функция для проверки правильности синтаксиса написанного скрипта
+        @param args: стандартный список параметров
+        @param kwargs: стандартный список параметров
+        """
         if not self.icon:
             status, error_str, error_code, error_type = parse_text_to_python('script_test', self.content,
                                                                              self.variables, self.type)
@@ -99,13 +104,22 @@ class ModelScript(models.Model):
                 os.remove(BASE_PATH_TO_USER_SCRIPTS + 'script_test.py')
 
     def save(self, *args, **kwargs):
-        """Парсинг поля контента в исполняемый файл"""
+        """
+        Функция для переопределения сохранения модели, добавлено сохранение файла в папку пользовательских скриптов
+        @param args: стандартный список параметров
+        @param kwargs: стандартный список параметров
+        """
         super().save(*args, **kwargs)
         if not self.icon:
             parse_text_to_python('script_' + str(ModelScript.objects.get(title=self.title).id), self.content,
                                  self.variables, self.type)
 
     def delete(self, using=None, keep_parents=False):
+        """
+        Функция для удаления скрипта, удаляет как из базы данных, так и из файловой системы
+        @param using:
+        @param keep_parents:
+        """
         if not self.icon:
             os.remove(BASE_PATH_TO_USER_SCRIPTS + 'script_' + str(self.id) + '.py')
         super().delete()

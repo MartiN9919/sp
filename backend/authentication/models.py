@@ -9,6 +9,9 @@ from data_base_driver.constants.const_dat import DAT_OWNER_GROUPS, DAT_OWNER_LIN
 
 
 class ModelOwnerRegions(models.Model):
+    """
+    Класс для описания модели линии доступа по региону
+    """
     parent_id = models.IntegerField(
         verbose_name='Родительский объект',
     )
@@ -28,6 +31,9 @@ class ModelOwnerRegions(models.Model):
 
 
 class ModelOwnerLines(models.Model):
+    """
+    Класс для описания модели линии доступа по направлению деятельности
+    """
     parent_id = models.IntegerField(
         verbose_name='Родительский объект',
     )
@@ -47,6 +53,9 @@ class ModelOwnerLines(models.Model):
 
 
 class ModelOwnerGroups(models.Model):
+    """
+    Класс для описания модели группы доступа
+    """
     owner_regions = models.ForeignKey(
         ModelOwnerRegions,
         on_delete=models.CASCADE,
@@ -81,6 +90,9 @@ class ModelOwnerGroups(models.Model):
 
 
 class ModelCustomUser(AbstractBaseUser, PermissionsMixin):
+    """
+    Класс для описания модели настраиваемого пользователя
+    """
     username_validator = UnicodeUsernameValidator()
 
     username = models.CharField(

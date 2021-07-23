@@ -5,6 +5,7 @@ from data_base_driver.constants.const_dat import DAT_SYS_FILES
 
 class ModelOfficialDocument(models.Model):
     """
+    Класс модели для представления официальных документов
     """
     path = models.CharField(
         max_length=255,

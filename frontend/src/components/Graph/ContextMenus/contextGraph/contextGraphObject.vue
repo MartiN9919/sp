@@ -1,6 +1,6 @@
 <template>
   <v-card>
-    <v-card-title class="justify-center pa-0">
+    <v-card-title class="justify-center pa-0" @click="takeScreenshot">
       Пустое меню
     </v-card-title>
   </v-card>
@@ -8,7 +8,7 @@
 
 <script>
 export default {
-  name: "contextD3Object",
+  name: "contextGraphObject",
 }
 </script>
 

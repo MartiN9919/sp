@@ -56,11 +56,7 @@
       <v-scroll-y-transition mode="out-in">
         <div v-if="'id' in selectedItem" :key="selectedItem.id" class="pa-4 py-1">
           <block-header :text-header="'Настройки ' + selectedItem.name" class="pb-3"></block-header>
-          <v-tooltip
-            v-for="variable in selectedItem.variables" :key="variable.id"
-            bottom nudge-bottom="-20" z-index="10001"
-            transition="false" color="#00796B" max-width="20%"
-          >
+          <custom-tooltip v-for="variable in selectedItem.variables" :key="variable.id">
             <template v-slot:activator="{ on }">
               <div v-on="on" class="mb-5">
                 <settingsAnalytics
@@ -68,13 +64,13 @@
                   :type="variable.type" :title="variable.title"
                 ></settingsAnalytics>
               </div>
-
             </template>
-            <p class="text-formatter-for-window-size additional-text text-justify ma-0">
-              {{variable.hint ? variable.hint : 'Описание отсутствует'}}
-            </p>
-          </v-tooltip>
-
+            <template v-slot:body>
+              <p class="text-formatter-for-window-size additional-text text-justify ma-0">
+                {{variable.hint ? variable.hint : 'Описание отсутствует'}}
+              </p>
+            </template>
+          </custom-tooltip>
           <div class="text-center pt-2">
             <v-btn
               @click="executeScript(selectedItem)"
@@ -103,11 +99,12 @@ import blockHeader from './blockHeader'
 import CreatorTreeView from './Mixins/CreatorTreeView'
 import ExecutorScripts from './Mixins/ExecutorScripts'
 import SelectedScriptFormatter from './Mixins/SelectedScriptFormatter'
+import CustomTooltip from "../../WebsiteShell/UI/customTooltip";
 
 export default {
   name: 'mapScriptMenu',
   mixins: [CreatorTreeView, ExecutorScripts, SelectedScriptFormatter],
-  components: { treeView, chipAnalytics, settingsAnalytics, menuTemplate, ResSplitPane, blockHeader },
+  components: { CustomTooltip, treeView, chipAnalytics, settingsAnalytics, menuTemplate, ResSplitPane, blockHeader, },
   computed: {
     ...mapGetters(['templatesList', 'selectedTemplate'])
   },

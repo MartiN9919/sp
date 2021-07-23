@@ -3,6 +3,7 @@ import requests
 from data_base_driver.constants.fulltextsearch import FullTextSearch
 from data_base_driver.full_text_search.additional_functions import get_date_from_days_sec, intercept_sort_list, \
     get_date_time_from_sec
+from data_base_driver.sys_key.get_key_dump import get_key_by_id
 
 
 def find_reliable_http(object_type, request, actual=False):
@@ -13,6 +14,8 @@ def find_reliable_http(object_type, request, actual=False):
     @param actual: флаг актуальности искомого параметра, если True то учитываются только записи актуальные для объекта на данный момент
     @return: список id объектов с искомыми параметрами, если не найдено, то пустой список
     """
+    if not request:
+        request = ''
     request = request.split(' ')
     request = [word.replace('-', '<<') for word in request] # костыль, в последующем поменяить настройки мантикоры, что бы индексировала '-'
     result = []
@@ -40,10 +43,7 @@ def find_reliable_http(object_type, request, actual=False):
                         if item[2] < temp_item['_source']['sec']:
                             remove_list.append(item)
         fetchall = [item[0] for item in fetchall if not item in remove_list]
-        if result == None:
-            result.append(list(dict.fromkeys(fetchall)))
-        else:
-            result.append(list(dict.fromkeys(fetchall)))
+        result.append(list(dict.fromkeys(fetchall)))
     return intercept_sort_list(result)
 
 
@@ -90,5 +90,7 @@ def get_object_record_by_id_http(object_id, rec_id):
                        'old': []})
     for item in params:
         item['old'].sort(key=lambda x: x['date'], reverse=True)
+    params.sort(key=lambda x: get_key_by_id(x['id'])['title'], reverse=True)
+    params.sort(key=lambda x: get_key_by_id(x['id'])['need'], reverse=True)
     return {'object_id': object_id, 'rec_id': rec_id, 'params': params}
 
