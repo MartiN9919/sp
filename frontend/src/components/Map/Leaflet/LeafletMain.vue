@@ -69,9 +69,7 @@
 
     </l-map>
 
-    <MenuOrg
-      ref="menu_org"
-    />
+    <MenuOrg ref="menu_org"/>
 
   </div>
 </template>
@@ -107,7 +105,7 @@ import { marker_get }               from '@/components/Map/Leaflet/Markers/Fun';
 
 import                      '@/components/Map/Leaflet/Markers/Pulse';
 import Edit            from '@/components/Map/Leaflet/Components/Edit';
-import MenuOrg         from '@/components/Map/Leaflet/Components/MenuOrg';
+import MenuOrg         from '@/components/Map/Leaflet/Components/Menu.org';
 import Range           from '@/components/Map/Leaflet/Components/Range';
 import Legend          from '@/components/Map/Leaflet/Components/Legend';
 import Logo            from '@/components/Map/Leaflet/Components/Logo';
@@ -222,10 +220,6 @@ export default {
     // ===============
     // MENU
     // ===============
-    // menu_on_click (item) {
-    //   console.log(2222, item)
-    //   if (item.action) { item.action() }
-    // },
     menu_show(e) {
       e.originalEvent.preventDefault();
       e.originalEvent.stopPropagation();
