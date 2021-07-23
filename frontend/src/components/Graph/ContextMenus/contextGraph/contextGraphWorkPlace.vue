@@ -11,7 +11,7 @@
 
 <script>
 export default {
-  name: "contextD3WorkSpace",
+  name: "contextGraphWorkPlace",
   data: () => ({
     bodyRightClickMenu: [
       {

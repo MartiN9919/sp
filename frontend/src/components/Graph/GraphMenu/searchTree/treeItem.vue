@@ -6,6 +6,9 @@
     <template v-slot:append="">
       <slot name="append"></slot>
     </template>
+    <template v-slot:append-outer="">
+      <slot name="append-outer"></slot>
+    </template>
   </v-text-field>
 </template>
 
@@ -25,6 +28,8 @@ export default {
 }
 </script>
 
-<style scoped>
-
+<style>
+.v-treeview-node__root {
+  padding: 0 !important;
+}
 </style>

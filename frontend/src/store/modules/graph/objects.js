@@ -13,8 +13,6 @@ export default {
   },
   mutations: {
     setListOfPrimaryObjects: (state, listObject) => { state.listOfPrimaryObjects = listObject },
-    setFoundObjects: (state, response) => { response.activeObject.foundObjects = response.foundObjects },
-    createNewObject: (state, props) => { props.object.params = props.classifier },
     addConflictingObjects: (state, objects) => { state.conflictingObjects = objects },
     clearConflictingObjects: (state) => { state.conflictingObjects = [] },
     changeConflictingObjects: (state, newObject) => {
@@ -29,15 +27,6 @@ export default {
       return getResponseAxios('objects/list_type/', config)
         .then(response => { commit('setListOfPrimaryObjects', response.data) })
         .catch(() => {})
-    },
-    createNewObject({ commit, rootState }, object) {
-      let neededClassifiers = []
-      for (let classifier of rootState.graph.classifiers.listOfClassifiersOfObjects[object.object_id])
-        if (classifier.need) neededClassifiers.push({ id: classifier.id, value: null, })
-      commit('createNewObject', {
-        classifier: neededClassifiers,
-        object: getObjectFromWorkArea(rootState, object.tempId)
-      })
     },
     createNewObjectFromServer({ commit, rootState }, props = {}) {
       let findObject = props?.object ? props.object : getActiveObject(rootState)

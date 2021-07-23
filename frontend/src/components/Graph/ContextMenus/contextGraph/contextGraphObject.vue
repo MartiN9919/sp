@@ -8,7 +8,7 @@
 
 <script>
 export default {
-  name: "contextD3Object",
+  name: "contextGraphObject",
 }
 </script>
 

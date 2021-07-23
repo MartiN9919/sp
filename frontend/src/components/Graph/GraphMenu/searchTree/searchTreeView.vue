@@ -1,5 +1,5 @@
 <template>
-  <div class="pb-2">
+  <div>
     <v-treeview :items="searchTreeItems" :open="openObject" return-object item-children="rels">
       <template v-slot:label="{ item }">
         <custom-tooltip v-if="item.rel">
@@ -24,12 +24,12 @@
             <span v-model="item.actual" class="pr-2 mt-1" style="color: #555555">Актуальность</span>
             <v-switch v-model="item.actual" hide-details color="teal" class="mt-0 pt-0"></v-switch>
           </template>
+          <template v-slot:append-outer="">
+            <v-btn v-if="!item.rel" :loading="searchStatus" icon large>
+              <v-icon @click="$emit('findObject')" color="teal">mdi-magnify</v-icon>
+            </v-btn>
+          </template>
         </tree-item>
-      </template>
-      <template v-slot:append="{ item, open }">
-        <v-btn v-if="!item.rel" :loading="searchStatus" icon large class="mt-2">
-          <v-icon @click="$emit('findObject')" color="teal">mdi-magnify mdi-36px</v-icon>
-        </v-btn>
       </template>
     </v-treeview>
     <context-menu v-if="typeMenu === typeContextMenu">
@@ -49,7 +49,7 @@
 <script>
 import contextMenu from "../../../WebsiteShell/ContextMenu/contextMenu"
 import toolsContextMenu from "../../../WebsiteShell/ContextMenu/Mixins/toolsContextMenu"
-import contextSearchTreeView from "../../ContextMenus/contextSearchTreeView/contextSearchTreeView"
+import contextSearchTreeView from "../../ContextMenus/contextSearchTree/contextSearchTreeView"
 import customTooltip from "../../../WebsiteShell/UI/customTooltip";
 import tooltipTreeItem from "./tooltipTreeItem";
 import TreeItem from "./treeItem";
