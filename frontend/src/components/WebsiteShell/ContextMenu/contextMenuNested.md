@@ -1,5 +1,4 @@
 # вложенные v-menu
-***
 
 ### ПРИМЕР ВЫЗОВА
 ```html
@@ -65,5 +64,5 @@ menu_show(x, y) { this.$refs.menu.show_root(x, y); },
   - с обработкой model (switch)
   - c обработкой radio-group
 - item.menu == [] - item disabled
-
+***
 [исходник](https://codepen.io/Moloth/pen/ZEBOzQP)
