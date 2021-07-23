@@ -79,12 +79,15 @@ def recursion_search(request):
                                                  rel.get(FullTextSearch.REQUEST, ''),
                                                  rel.get(FullTextSearch.ACTUAL, False))})
         else:
-            if len(request.get(FullTextSearch.REQUEST, '')) == 0:
-                main_object_ids = [0]
+            if request.get(FullTextSearch.REQUEST, ''):
+                if len(request.get(FullTextSearch.REQUEST, '')) == 0:
+                    main_object_ids = [0]
+                else:
+                    main_object_ids = find_reliable_http(FullTextSearch.TABLES[request.get(FullTextSearch.OBJECT_ID, None)],
+                                                         request.get(FullTextSearch.REQUEST, ''),
+                                                         request.get(FullTextSearch.ACTUAL, False))
             else:
-                main_object_ids = find_reliable_http(FullTextSearch.TABLES[request.get(FullTextSearch.OBJECT_ID, None)],
-                                                     request.get(FullTextSearch.REQUEST, ''),
-                                                     request.get(FullTextSearch.ACTUAL, False))
+                main_object_ids = [0]
             temp = recursion_search(rel)
             result['old_result'].append({'object_id': temp['object_id'],
                                          'rec_ids': temp['rec_ids']})
