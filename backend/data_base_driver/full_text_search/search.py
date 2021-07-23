@@ -20,14 +20,20 @@ def find_with_rel_reliable_key(object_1_type, request_1, object_2_type, request_
     @return: список с идентификаторами подходящих записей
     """
     result = []
-    if len(request_1) == 0:
+    if request_1:
+        if len(request_1) == 0:
+            result1 = [0]
+        else:
+            result1 = find_reliable_http(FullTextSearch.TABLES[object_1_type], request_1, actual_1)
+    else:
         result1 = [0]
+    if request_2:
+        if len(request_2) == 0:
+            result2 = [0]
+        else:
+            result2 = find_reliable_http(FullTextSearch.TABLES[object_2_type], request_2, actual_2)
     else:
-        result1 = find_reliable_http(FullTextSearch.TABLES[object_1_type], request_1, actual_1)
-    if len(request_2) == 0:
         result2 = [0]
-    else:
-        result2 = find_reliable_http(FullTextSearch.TABLES[object_2_type], request_2, actual_2)
     for item in result1:
         for item_next in result2:
             res = search_rel_with_key_http(rel_key, object_1_type, item, object_2_type, item_next, list_id,

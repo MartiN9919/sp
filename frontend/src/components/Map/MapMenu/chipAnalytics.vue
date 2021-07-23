@@ -1,5 +1,5 @@
 <template>
-  <v-tooltip bottom transition="false" color="#00796B" z-index="10001" max-width="20%">
+  <custom-tooltip>
     <template v-slot:activator="{ on }">
       <v-chip
         @click:close="$emit('deleteActiveAnalytics', analytics)"
@@ -9,7 +9,6 @@
         outlined class="ma-1" v-on="on"
       >
         <p class="text-formatter-for-window-size font-for-color-background mb-0">{{ analytics.name }}</p>
-        <!-- объект меню, содержищий палитру, для выбора цвета -->
         <v-menu v-if="'fc' in analytics" offset-y :close-on-content-click=false z-index="10001">
           <template v-slot:activator="{ on }">
             <v-icon right v-on="on">mdi-brush</v-icon>
@@ -18,29 +17,33 @@
         </v-menu>
       </v-chip>
     </template>
-    <div class="my-2">
-      <table>
-        <tr>
-          <th>Название переменной</th>
-          <th>Введенное значение</th>
-        </tr>
-        <tr v-for="variable in analytics.variables">
-          <td>{{variable.title}}</td>
-          <td v-if="typeof variable.value !== 'object'">{{variable.value}}</td>
-          <td v-else><span v-for="(value) in variable.value">{{value}} </span></td>
-        </tr>
-      </table>
-      <v-divider dark class="py-1"></v-divider>
-      <p v-if="analytics.hint"
-         class="text-formatter-for-window-size additional-text text-justify ma-0"
-      >{{analytics.hint}}</p>
-    </div>
-  </v-tooltip>
+    <template v-slot:body>
+      <div class="my-2">
+        <table>
+          <tr>
+            <th>Название переменной</th>
+            <th>Введенное значение</th>
+          </tr>
+          <tr v-for="variable in analytics.variables">
+            <td>{{variable.title}}</td>
+            <td v-if="typeof variable.value !== 'object'">{{variable.value}}</td>
+            <td v-else><span v-for="(value) in variable.value">{{value}} </span></td>
+          </tr>
+        </table>
+        <v-divider dark class="py-1"></v-divider>
+        <p v-if="analytics.hint"
+           class="text-formatter-for-window-size additional-text text-justify ma-0"
+        >{{analytics.hint}}</p>
+      </div>
+    </template>
+  </custom-tooltip>
 </template>
 
 <script>
+import CustomTooltip from "../../WebsiteShell/UI/customTooltip";
 export default {
   name: 'chipAnalytics',
+  components: { CustomTooltip, },
   props: {
     analytics: Object,
     selectedTreeViewItem: Object

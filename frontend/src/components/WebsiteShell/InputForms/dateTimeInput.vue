@@ -6,8 +6,8 @@
     <template v-slot:activator="{ on }">
       <v-textarea
         v-model="value" v-on="on" :rules="rulesDateTime" :label="'Дата и время - ' + title"
-        autocomplete="off" append-icon="mdi-calendar-clock" row-height="1" auto-grow
-        hide-details readonly class="pt-0 mt-0" color="teal" type="text" placeholder="Выберете дату"
+        autocomplete="off" row-height="1" auto-grow class="pt-0 mt-0 geometry-input-cursor"
+        hide-details readonly color="teal" type="text" placeholder="Выберете дату" append-icon="mdi-calendar-clock"
       ></v-textarea>
     </template>
       <v-window v-model="bottomNavigation">

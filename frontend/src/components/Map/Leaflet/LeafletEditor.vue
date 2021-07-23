@@ -5,8 +5,9 @@
     :options="map_options"
     :crs="MAP_GET_TILES[MAP_GET_TILE].crs"
     @ready="on_map_ready"
+    @resize="on_map_resize"
     @contextmenu=""
-    @click="on_map_click"
+    @dblclick="on_map_dblclick"
   >
 
     <!-- ПОДЛОЖКА -->
@@ -18,8 +19,9 @@
 
     <!-- РЕДАКТОР -->
     <Edit
-      v-model="fc_edit"
-      :options="options"
+      v-model="fc_child"
+      :modeEnabled="modeEnabled"
+      :modeSelected="modeSelected"
     />
 
     <!-- МАСШТАБ -->
@@ -43,7 +45,7 @@
 
 <script>
 
-import { mapGetters, mapActions } from 'vuex';
+import { mapGetters, mapActions, } from 'vuex';
 import 'leaflet';
 import { LMap, LTileLayer, LControlScale, } from 'vue2-leaflet';
 import LControlPolylineMeasure from 'vue2-leaflet-polyline-measure';
@@ -54,24 +56,14 @@ import MixMeasure from '@/components/Map/Leaflet/Mixins/Measure';
 
 export default {
   name: 'LeafletEditor',
-
-  props:      {
-    // fc_prop: {
-    //   type: Object,
-    //   default() { return undefined; },
-    // },
-    options: {
+  model: { prop:  ['fc_parent_prop'], event: 'fc_parent_change', },
+  props: {
+    fc_parent_prop: {
       type: Object,
-      default() { return {
-        // mode_enabled: {
-        //   marker:  true,
-        //   line:    true,
-        //   polygon: true,
-        // },
-        // mode_selected: 'Polygon',
-      };
+      default() { return undefined; },
     },
-    },
+    modeEnabled: Object,      // доступные для создания элементы, например: { marker: true, line: true, polygon: true }
+    modeSelected: String,     // включенный по умолчанию режим, например: 'Polygon'
   },
 
 
@@ -88,88 +80,40 @@ export default {
     }
   },
 
-  watch: {
-    // fc_edit: {
-    //   handler() {
-    //     console.log('watch changed fc_edit 2', this.fc_edit);
-    //   },
-    //   deep: true,
-    // },
-
-    fc_edit: function(val) {
-      console.log('update 2', this.fc_edit, val);
-    },
-  },
-
-  mounted() {
-    this.fc_edit = '1'
-  },
-
   computed: {
     ...mapGetters([
       'MAP_GET_TILES',
       'MAP_GET_TILE',
       'MAP_GET_SCALE',
       'MAP_GET_MEASURE',
-
-      'SCRIPT_GET',
-      'SCRIPT_GET_ITEM_COLOR',
-      'SCRIPT_GET_ITEM_MARKER',
-      'SCRIPT_GET_ITEM_LINE',
-      'SCRIPT_GET_ITEM_POLYGON',
-      'SCRIPT_GET_ITEM_ICON',
     ]),
 
-    // FeatureCollection РЕДАКТИРУЕМЫХ объектов
-    fc_edit: {
-      get()    {     // { "type": "FeatureCollection", "features": [], }, //L.featureGroup().toGeoJSON(),
-        return {
-          "type": "FeatureCollection",
-        "features": [
-          {
-            "type": "Feature",
-            "properties": {
-              "hint": "Edit 1",
-            },
-            "geometry": {
-              "type": "Polygon",
-              "coordinates": [
-                [
-                  [30.212402343750004,55.19141243527065],
-                  [30.443115234375004,54.50832650029076],
-                  [31.014404296875004,54.718275018302315],
-                  [30.212402343750004,55.19141243527065],
-                ]
-              ]
-            }
-          },
-          {
-            "type": "Feature",
-            "properties": {
-              "hint": "Edit 2",
-            },
-            "geometry": {
-              "type":        "Point",
-              "coordinates": [24.071044921875004,55.86914706303444]
-            },
-          },
-        ],
-      }
-      },
-      set(val) { console.log(111, val) /* this.MAP_ACT_EDIT({data: val}); */ },
+    // проброс fc
+    fc_child: {
+      get()    { return this.fc_parent_prop; },
+      set(val) { this.$emit('fc_parent_change', val); },
     },
 
   },
 
   methods: {
+    ...mapActions([
+      'appendErrorAlert',
+    ]),
+
     on_map_ready() {
       this.map = this.$refs.map.mapObject;
+      this.map.doubleClickZoom.disable();
       this.map.invalidateSize();
       this.key_mounted_after();
     },
 
-    on_map_click(event) {
-      console.log(event.latlng);
+    on_map_resize() {
+      this.map.invalidateSize();
+    },
+
+    on_map_dblclick(event) {
+      // this.appendErrorAlert({status: 501, content: event.latlng, show_time: 5, });
     },
 
   },

@@ -14,6 +14,8 @@ def find_reliable_http(object_type, request, actual=False):
     @param actual: флаг актуальности искомого параметра, если True то учитываются только записи актуальные для объекта на данный момент
     @return: список id объектов с искомыми параметрами, если не найдено, то пустой список
     """
+    if not request:
+        request = ''
     request = request.split(' ')
     request = [word.replace('-', '<<') for word in request] # костыль, в последующем поменяить настройки мантикоры, что бы индексировала '-'
     result = []

@@ -1,31 +1,33 @@
 <template>
   <v-treeview
-    :items=treeViewItems :open.sync="listOpenFolder"
-    @update:active="activateItem" return-object
-    hoverable transition dense open-on-click
-    activatable active-class="" color=""
+    :items=treeViewItems :open.sync="listOpenFolder" @update:active="activateItem"
+    return-object hoverable transition dense open-on-click activatable active-class="" color=""
   >
     <template v-slot:label="{ item, open }">
-      <v-tooltip bottom open-delay="1000" color="#00796B" z-index="10001" max-width="20%">
+      <custom-tooltip>
         <template v-slot:activator="{ on }">
           <div v-on="on">
             <v-icon :id="iconId(item.id)" :color="colorIcon(item)">{{ typeIcon(item, open) }}</v-icon>
             <span :class="itemTextStyle(item.icon)" :style="itemTextColor(item)">{{ item.name }}</span>
           </div>
         </template>
-        <p class="text-justify ma-0">{{ checkHintInItem(item) }}</p>
-      </v-tooltip>
+        <template v-slot:body>
+          <p class="text-justify ma-0">{{ checkHintInItem(item) }}</p>
+        </template>
+      </custom-tooltip>
     </template>
   </v-treeview>
 </template>
 
 <script>
+import CustomTooltip from "../../WebsiteShell/UI/customTooltip";
 function sleep (time) {
   return new Promise((resolve) => setTimeout(resolve, time))
 }
 
 export default {
   name: 'treeView',
+  components: { CustomTooltip, },
   data: () => ({
     listOpenFolder: [],
     findFolders: [],

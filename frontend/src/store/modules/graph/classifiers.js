@@ -6,7 +6,9 @@ export default {
     listOfClassifiersOfObjects: {},
   },
   getters: {
-    listOfClassifiersOfObjects: state => id => { return state.listOfClassifiersOfObjects[id] },
+    listOfClassifiersOfObjects: (state, rootGetters) => {
+      return state.listOfClassifiersOfObjects[rootGetters.selectedGraphObjectId]
+    },
     classifiersForObjects: state => objectId => { return state.listOfClassifiersOfObjects[objectId] },
     classifier: state => objectIds => {
       let classifiers = state.listOfClassifiersOfObjects[objectIds.objectId]
@@ -15,7 +17,10 @@ export default {
   mutations: {
     addClassifierToObject: (state, { object, classifier }) => { object.params.push(classifier) },
     addListOfClassifiersOfObjects: (state, { objectId, classifiers }) => {
-      state.listOfClassifiersOfObjects[objectId] = classifiers
+      let listClassifiers = Object.assign({}, state.listOfClassifiersOfObjects)
+      listClassifiers[objectId] = classifiers
+      state.listOfClassifiersOfObjects = listClassifiers
+
     }
   },
   actions: {

@@ -1,18 +1,18 @@
 <template>
   <v-menu
-    v-model="showMenu" :close-on-content-click="false"
-    max-height="50%" min-width="25em" max-width="25em"
-    absolute offset-x offset-y z-index="10001"
-    transition="slide-x-reverse-transition"
+    v-model="showMenu"
     :position-x="coordinatesContextMenu.x"
     :position-y="coordinatesContextMenu.y"
+    offset-overflow right
+    :close-on-content-click="false"
+    max-height="50%" min-width="25em" max-width="25em" z-index="10001" transition="slide-x-reverse-transition"
   >
     <slot></slot>
   </v-menu>
 </template>
 
 <script>
-import { mapActions, mapGetters } from "vuex";
+import { mapActions, mapGetters } from "vuex"
 
 export default {
   name: "rightClickMenu",

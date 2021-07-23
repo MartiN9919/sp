@@ -6,7 +6,10 @@
         @contextmenu.stop="contextMenu = { event: $event, typeMenu: 'circle' }"/>
     </svg>
     <context-menu v-if="['workSpace', 'circle'].includes(typeContextMenu)">
-      <context-d3-work-space v-if="typeContextMenu === 'workSpace'" @selectObject="confirmFillingSelectors"/>
+      <context-d3-work-space
+        v-if="typeContextMenu === 'workSpace'"
+        @selectMenuItem="confirmFillingSelectors"
+      />
       <context-d3-object v-if="typeContextMenu === 'circle'"></context-d3-object>
     </context-menu>
   </v-container>
@@ -17,6 +20,7 @@ import contextD3WorkSpace from "../ContextMenus/contextD3WorkSpace"
 import contextD3Object from "../ContextMenus/contextD3Object";
 import contextMenu from "../../WebsiteShell/ContextMenu/contextMenu"
 import toolsContextMenu from "../../WebsiteShell/ContextMenu/Mixins/toolsContextMenu"
+import {mapActions} from "vuex";
 
 export default {
   name: "d3Field",
@@ -24,13 +28,21 @@ export default {
   components: { contextMenu, contextD3WorkSpace, contextD3Object, },
   props: { drawer: Boolean, },
   methods: {
-    confirmFillingSelectors(object) {
-      this.$store.dispatch('getListOfClassifiersOfObjects', { params: { object_id: object.id } })
-        .then(() => {
+    ...mapActions(['changeNavigationDrawerStatus', 'setPositionNewGraphObject', ]),
+    confirmFillingSelectors(menuItemId) {
+      switch(menuItemId) {
+        case 1:
           if (!this.drawer)
-            this.$store.dispatch('changeNavigationDrawerStatus')
-          this.$store.dispatch('addObjectInWorkArea', object.id)
-        })
+            this.changeNavigationDrawerStatus()
+          this.setPositionNewGraphObject({ x: this.contextMenu.event.x, y: this.contextMenu.event.y })
+          break
+        case 2:
+          console.log('Удалить')
+          break
+        default:
+          console.log('default')
+          break
+      }
       this.deactivateContextMenu()
     },
   },

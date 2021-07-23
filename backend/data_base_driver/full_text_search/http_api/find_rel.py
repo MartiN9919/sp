@@ -102,7 +102,7 @@ def get_seconds_from_request_data_time(date_time_start, date_time_end):
     else:
         date_time_1_str = date_time_start + ':00'
     if not date_time_end:
-        date_time_2_str = '0001-01-01 00:00:00'
+        date_time_2_str = datetime.datetime.now().isoformat(sep=' ')[:19]
     else:
         date_time_2_str = date_time_end + ':00'
     date_time_1 = datetime.datetime.strptime(date_time_1_str, "%Y-%m-%d %H:%M:%S")
@@ -241,5 +241,7 @@ def get_relations_with_object_http(object_type, object_id):
     result = set(resule_1)
     result = result.union(set(resule_2))
     return list(result)
+
+
 
 

@@ -5,9 +5,9 @@
   >
     <template v-slot:activator="{ on }">
       <v-textarea
-        v-model="value" v-on="on" :rules="rules" :label="title"
-        autocomplete="off" append-icon="mdi-order-bool-descending-variant" row-height="1" auto-grow
-        hide-details readonly class="pt-0 mt-0" color="teal" type="text" placeholder="Выберете необходимое значение"
+        v-model="value" v-on="on" :rules="rules" :label="title" type="text"
+        autocomplete="off" append-icon="mdi-order-bool-descending-variant" row-height="1" auto-grow color="teal"
+        hide-details readonly class="pt-0 mt-0 geometry-input-cursor" placeholder="Выберете необходимое значение"
       ></v-textarea>
     </template>
       <v-list link>
