@@ -12,71 +12,95 @@
     :value="open"
     :absolute="root"
   >
-      <!-- СЛОТ-АКТИВАТОР ПОДМЕНЮ -->
-      <template v-if="!root" v-slot:activator="{ on }">
-        <v-list-item
-          class="d-flex justify-space-between"
-          v-on="on"
-          :disabled="!( items && (items.length > 0) )"
-        >
-          <v-list-item-icon v-if="icon">
-            <v-icon v-text="icon"/>
-          </v-list-item-icon>
-
-          <v-list-item-content>
-            <v-list-item-title v-text="title"/>
-            <v-list-item-subtitle v-text="subtitle"/>
-          </v-list-item-content>
-
-          <v-list-item-action>
-            <v-icon>mdi-chevron-right</v-icon>
-          </v-list-item-action>
-        </v-list-item>
-      </template>
-
-      <v-list
-        rounded
-        oncontextmenu="return false"
-        hide-details
+    <!-- СЛОТ-АКТИВАТОР ПОДМЕНЮ -->
+    <template v-if="!root" v-slot:activator="{ on }">
+      <v-list-item
+        class="d-flex justify-space-between"
+        v-on="on"
+        :disabled="!( items && (items.length > 0) )"
       >
+        <v-list-item-icon v-if="icon">
+          <v-icon v-text="icon"/>
+        </v-list-item-icon>
 
-        <v-radio-group
-          v-model="form[radio]"
-          hide-details
+        <v-list-item-content>
+          <v-list-item-title v-text="title"/>
+          <v-list-item-subtitle v-text="subtitle"/>
+        </v-list-item-content>
+
+        <v-list-item-action>
+          <v-icon>mdi-chevron-right</v-icon>
+        </v-list-item-action>
+      </v-list-item>
+    </template>
+
+    <v-list
+      oncontextmenu="return false"
+      rounded
+      hide-details
+    >
+
+      <template v-for="(item, index) in items">
+
+        <!-- ЭЛЕМЕНТ МЕНЮ: СЕПАРАТОР-->
+        <v-divider v-if="item.divider" :key="index"/>
+
+        <!-- ЭЛЕМЕНТ МЕНЮ: ПОДМЕНЮ -->
+        <!-- ПРОБРОС СВОЙСТВ И СОБЫТИЙ В РЕКУРСИИ -->
+        <contextMenuNested v-else-if="item.menu"
+          :key="index"
+          :icon="item.icon"
+          :title="item.title"
+          :subtitle="item.subtitle"
+          :radio="item.radio"
+          :model="item.model"
+
+          :form="form"
+          :items="item.menu"
+          :color="color"
+
+          :is-open-on-hover=false
+          :is-offset-x=true
+          :is-offset-y=false
+          :is-sub-menu=true
+
+          @close-menu="on_close_menu"
+        />
+
+        <!-- ЭЛЕМЕНТ МЕНЮ: RADIO-GROUP -->
+        <v-radio-group v-else-if="item.radio"
+          v-model="form[item.model]"
+          style="margin-top:0;padding-top:0;"
         >
+        <v-list-item-group>
+              <v-radio
+                v-for="(radio_item, radio_index) in item.radio"
+                :value="radio_index"
+                :key="radio_index"
+                :color="radio_item.color || color"
+                @click.stop=""
+              >
 
-        <template v-for="(item, index) in items">
+            <v-list-item-icon v-if="radio_item.icon">
+              <v-icon v-text="radio_item.icon"/>
+            </v-list-item-icon>
 
-          <!-- ЭЛЕМЕНТ МЕНЮ: СЕПАРАТОР-->
-          <v-divider v-if="item.divider" :key="index"/>
+            <v-list-item-content>
+              <v-list-item-title v-text="radio_item.title"/>
+              <v-list-item-subtitle v-text="radio_item.subtitle"/>
+            </v-list-item-content>
 
-         <!-- ЭЛЕМЕНТ МЕНЮ: ПОДМЕНЮ -->
-         <!-- ПРОБРОС СВОЙСТВ И СОБЫТИЙ В РЕКУРСИИ -->
-          <contextMenuNested v-else-if="item.menu"
-            :key="index"
-            :icon="item.icon"
-            :title="item.title"
-            :subtitle="item.subtitle"
-            :radio="item.radio"
-            :model="item.model"
 
-            :form="form"
-            :items="item.menu"
-            :color="color"
+              </v-radio>
+        </v-list-item-group>
+        </v-radio-group>
 
-            :is-open-on-hover=false
-            :is-offset-x=true
-            :is-offset-y=false
-            :is-sub-menu=true
 
-            @close-menu="on_close_menu"
-          />
-
-          <!-- ЭЛЕМЕНТ МЕНЮ: ITEM (ОБЫЧНЫЙ, SWITCH, RADIO) -->
-          <v-list-item v-else
-            :key="index"
-            @click="on_click_item(item, index)"
-          >
+        <!-- ЭЛЕМЕНТ МЕНЮ: ITEM (ОБЫЧНЫЙ, SWITCH) -->
+        <v-list-item v-else
+          :key="index"
+          @click="on_click_item(item, index)"
+        >
 
             <!-- ITEM: ИКОНКА -->
             <v-list-item-icon v-if="item.icon">
@@ -102,22 +126,12 @@
                 @click.stop=""
               />
 
-              <!-- ITEM ACTION: RADIO -->
-              <v-radio
-                v-if="radio"
-                :value="index"
-                :key="index"
-                :color="item.color || color"
-                @click.stop=""
-              />
-
             </v-list-item-action>
 
           </v-list-item>
 
         </template>
 
-        </v-radio-group>
       </v-list>
   </v-menu>
 
