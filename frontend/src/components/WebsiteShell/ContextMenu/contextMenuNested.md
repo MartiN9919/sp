@@ -1,10 +1,7 @@
-# КОМПОНЕНТ contextMenuNested.vue
 # вложенные v-menu
+***
 
-## ИСХОДНИК
-https://codepen.io/Moloth/pen/ZEBOzQP
-
-## ПРИМЕР ВЫЗОВА
+### ПРИМЕР ВЫЗОВА
 ```html
   <template>
     <contextMenuNested
@@ -14,7 +11,6 @@ https://codepen.io/Moloth/pen/ZEBOzQP
     />
   </template>
 ```
-
 ```js
 data() => {
   menu_items: [
@@ -63,8 +59,11 @@ computed: {
 menu_show(x, y) { this.$refs.menu.show_root(x, y); },
 ```
 
-** item могуть быть:
-*** с обработкой action (закрытие при выборе)
-*** с обработкой model (switch)
-*** c обработкой radio-group
-** item.menu == [] - item disabled
+### ВАЖНО
+- item могуть быть:
+  - с обработкой action (закрытие при выборе)
+  - с обработкой model (switch)
+  - c обработкой radio-group
+- item.menu == [] - item disabled
+
+[исходник](https://codepen.io/Moloth/pen/ZEBOzQP)
