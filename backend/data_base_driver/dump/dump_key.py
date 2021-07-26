@@ -35,7 +35,8 @@ class DUMP_KEY:
                   DAT_SYS_KEY.HINT + ", " + \
                   DAT_SYS_KEY.DESCRIPT + ", " + \
                   DAT_SYS_KEY.REL_OBJ_1_ID + ", " + \
-                  DAT_SYS_KEY.REL_OBJ_2_ID + " " + \
+                  DAT_SYS_KEY.REL_OBJ_2_ID + ", " + \
+                  DAT_SYS_KEY.PRIORITY + " " + \
                   "FROM " + \
                   DAT_SYS_KEY.TABLE_SHORT + " " + \
                   "ORDER BY " + \
@@ -58,6 +59,7 @@ class DUMP_KEY:
                 DAT_SYS_KEY.DESCRIPT,
                 DAT_SYS_KEY.REL_OBJ_1_ID,
                 DAT_SYS_KEY.REL_OBJ_2_ID,
+                DAT_SYS_KEY.PRIORITY,
             ])
             # если name==None -> name=str(id) - только dop
             for ind, item in enumerate(self.dump):
