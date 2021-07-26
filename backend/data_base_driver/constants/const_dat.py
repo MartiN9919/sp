@@ -129,6 +129,7 @@ class DAT_SYS_KEY:
     GROUP = 'group'
     GROUP_ID = 'group_id'
     PATH = 'path'
+    PRIORITY = 'priority'
 
     TYPE_STR = 'text'
     TYPE_INT = 'number'

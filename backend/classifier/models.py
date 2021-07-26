@@ -282,6 +282,11 @@ class ModelKey(models.Model):
         blank=True,
         null=True,
     )
+    priority = models.IntegerField(
+        verbose_name='Приоритет',
+        help_text=' Приоритет при именовании',
+        null=False,
+    )
 
     def __str__(self):
         return self.title
