@@ -92,5 +92,22 @@ def get_object_record_by_id_http(object_id, rec_id):
         item['old'].sort(key=lambda x: x['date'], reverse=True)
     params.sort(key=lambda x: get_key_by_id(x['id'])['title'], reverse=True)
     params.sort(key=lambda x: get_key_by_id(x['id'])['need'], reverse=True)
-    return {'object_id': object_id, 'rec_id': rec_id, 'params': params}
+    title_list = []
+    for param in params:
+        key = get_key_by_id(param['id'])
+        if key['priority']:
+            title_list.append({'title': key['title'],
+                               'priority': key['priority'],
+                               'value': param['value']})
+    title_list.sort(key=lambda x: x['priority'])
+    if len(title_list) == 0:
+        title = 'Основная информация о объекте не известна, идентификатор объекта = ' + str(rec_id)
+    else:
+        title = ', '.join(str(x['title'] + ': ' + x['value']) for x in title_list)
+    return {'object_id': object_id, 'rec_id': rec_id, 'params': params, 'title': title}
+
+
+print(get_object_record_by_id_http(35,1))
+
+
 
