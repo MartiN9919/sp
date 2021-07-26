@@ -101,13 +101,18 @@ def get_object_record_by_id_http(object_id, rec_id):
                                'value': param['value']})
     title_list.sort(key=lambda x: x['priority'])
     if len(title_list) == 0:
-        title = 'Основная информация о объекте не известна, идентификатор объекта = ' + str(rec_id)
+        title = ', '.join(str(get_key_by_id(param['id'])['title'] + ': ' + param['value']) for param in params)
     else:
-        title = ', '.join(str(x['title'] + ': ' + x['value']) for x in title_list)
+        title = ', '.join(str(title['title'] + ': ' + title['value']) for title in title_list)
+    if len(title_list) < 3:
+        sub_title = ', '.join(str(get_key_by_id(param['id'])['title'] + ': ' + param['value']) for param in
+                              [param for param in params
+                               if not get_key_by_id(param['id'])['priority']][:(3 - len(title_list))])
+
+        title += ', ' + sub_title
     return {'object_id': object_id, 'rec_id': rec_id, 'params': params, 'title': title}
 
 
 print(get_object_record_by_id_http(35,1))
-
 
 
