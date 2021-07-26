@@ -10,7 +10,7 @@
     v-on:update:size="sizeNavigation = $event"
     units="percents">
     <v-col class="pa-0" slot="firstPane">
-      <map-script-menu></map-script-menu>
+      <map-menu></map-menu>
     </v-col>
     <v-col class="pa-0" slot="secondPane">
       <LeafletMain></LeafletMain>
@@ -20,14 +20,21 @@
 
 <script>
 import LeafletMain from '../components/Map/Leaflet/LeafletMain'
-import mapScriptMenu from '../components/Map/MapMenu/mapScriptMenu'
+import MapMenu from "../components/Map/MapMenu/mapMenu"
 import ResSplitPane from 'vue-resize-split-pane'
 import NavigationDrawer from '../components/WebsiteShell/Mixins/NavigationDrawer'
+import { mapActions } from "vuex"
 
 export default {
   name: 'MapPage',
-  components: { LeafletMain, mapScriptMenu, ResSplitPane },
-  mixins: [NavigationDrawer]
+  components: { MapMenu, LeafletMain, ResSplitPane },
+  mixins: [NavigationDrawer],
+  methods: {
+    ...mapActions(['setDefaultValueActiveToolMap', ]),
+  },
+  mounted() {
+    this.setDefaultValueActiveToolMap()
+  },
 }
 </script>
 

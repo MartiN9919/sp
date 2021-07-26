@@ -11,13 +11,13 @@
 
 <script>
 import '@/assets/css/noselect.css'
-import geometryInput from "../../WebsiteShell/InputForms/geometryInput";
-import booleanInput from "../../WebsiteShell/InputForms/booleanInput";
-import dateInput from "../../WebsiteShell/InputForms/dateInput";
-import dateTimeInput from "../../WebsiteShell/InputForms/dateTimeInput";
-import numberInput from "../../WebsiteShell/InputForms/numberInput";
-import textInput from "../../WebsiteShell/InputForms/textInput";
-import selectorInput from "../../WebsiteShell/InputForms/selectorInput";
+import geometryInput from "../../../WebsiteShell/InputForms/geometryInput";
+import booleanInput from "../../../WebsiteShell/InputForms/booleanInput";
+import dateInput from "../../../WebsiteShell/InputForms/dateInput";
+import dateTimeInput from "../../../WebsiteShell/InputForms/dateTimeInput";
+import numberInput from "../../../WebsiteShell/InputForms/numberInput";
+import textInput from "../../../WebsiteShell/InputForms/textInput";
+import selectorInput from "../../../WebsiteShell/InputForms/selectorInput";
 
 export default {
   name: 'settingsAnalytics',
