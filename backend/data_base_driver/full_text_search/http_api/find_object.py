@@ -113,6 +113,4 @@ def get_object_record_by_id_http(object_id, rec_id):
     return {'object_id': object_id, 'rec_id': rec_id, 'params': params, 'title': title}
 
 
-print(get_object_record_by_id_http(35,1))
-
 
