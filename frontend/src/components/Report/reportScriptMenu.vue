@@ -43,9 +43,9 @@
 
 <script>
 import { mapActions } from 'vuex'
-import treeView from '../Map/MapMenu/treeView'
-import settingsAnalytics from '../Map/MapMenu/settingsAnalytics'
-import blockHeader from '../Map/MapMenu/blockHeader'
+import treeView from '../Map/MapMenu/scriptsPage/treeView'
+import settingsAnalytics from '../Map/MapMenu/scriptsPage/settingsAnalytics'
+import blockHeader from '../Map/MapMenu/scriptsPage/blockHeader'
 import CreatorTreeView from '../Map/MapMenu/Mixins/CreatorTreeView'
 import ExecutorScripts from '../Map/MapMenu/Mixins/ExecutorScripts'
 import SelectedScriptFormatter from '../Map/MapMenu/Mixins/SelectedScriptFormatter'

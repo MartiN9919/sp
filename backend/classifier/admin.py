@@ -175,6 +175,7 @@ class ModelKeyAdminObject(admin.ModelAdmin):
         DAT_SYS_KEY.COL,
         DAT_SYS_KEY.NEED,
         DAT_SYS_KEY.DESCRIPT,
+        DAT_SYS_KEY.PRIORITY,
     )
     search_fields = [DAT_SYS_KEY.TITLE, ]
 
@@ -183,8 +184,9 @@ class ModelKeyAdminObject(admin.ModelAdmin):
     autocomplete_fields = (DAT_SYS_KEY.LIST,)
 
     fieldsets = (
-        ("Название классификатора", {'fields': ((DAT_SYS_KEY.TITLE, DAT_SYS_KEY.NAME,), (DAT_SYS_KEY.PATH,),)}),
-        ("Основные настройки классификатора", {'fields': (DAT_SYS_KEY.OBJ, DAT_SYS_KEY.TYPE_VAL, DAT_SYS_KEY.LIST,), }),
+        ("Название классификатора", {'fields': ((DAT_SYS_KEY.TITLE, DAT_SYS_KEY.NAME,), (DAT_SYS_KEY.PATH,
+                                                                                         DAT_SYS_KEY.PRIORITY, ),)}),
+        ("Основные настройки классификатора", {'fields': (DAT_SYS_KEY.OBJ, DAT_SYS_KEY.TYPE_VAL, DAT_SYS_KEY.LIST, ), }),
         ("Описания для классификатора", {'fields': ((DAT_SYS_KEY.HINT,),), }),
         (None, {'fields': ((DAT_SYS_KEY.COL, DAT_SYS_KEY.NEED,),), }),
         ("Дополнительная информация", {'fields': (DAT_SYS_KEY.DESCRIPT,), }),

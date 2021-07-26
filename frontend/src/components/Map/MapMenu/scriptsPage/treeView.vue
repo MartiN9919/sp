@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import CustomTooltip from "../../WebsiteShell/UI/customTooltip";
+import CustomTooltip from "../../../WebsiteShell/UI/customTooltip";
 function sleep (time) {
   return new Promise((resolve) => setTimeout(resolve, time))
 }
