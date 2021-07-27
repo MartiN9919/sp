@@ -108,9 +108,6 @@ def get_object_record_by_id_http(object_id, rec_id):
         sub_title = ', '.join(str(get_key_by_id(param['id'])['title'] + ': ' + param['value']) for param in
                               [param for param in params
                                if not get_key_by_id(param['id'])['priority']][:(3 - len(title_list))])
-
         title += ', ' + sub_title
     return {'object_id': object_id, 'rec_id': rec_id, 'params': params, 'title': title}
-
-
 

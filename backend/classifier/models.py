@@ -2,7 +2,7 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.db import models
 from data_base_driver.constants.const_dat import DAT_SYS_OBJ, DAT_SYS_LIST_TOP, DAT_SYS_KEY, DAT_SYS_LIST_DOP, \
-    DAT_SYS_KEY_GROUP, DAT_SYS_PHONE_NUMBER_FORMAT
+     DAT_SYS_PHONE_NUMBER_FORMAT
 
 
 class ModelObject(models.Model):
@@ -128,47 +128,11 @@ class ModelListDop(models.Model):
             self.fl = 1
             super().save(*args, **kwargs)
 
-
     class Meta:
         managed = False
         verbose_name = "Поле списка"
         verbose_name_plural = "Поля списков"
         db_table = DAT_SYS_LIST_DOP.TABLE_SHORT
-
-
-class ModelKeyGroup(models.Model):
-    """
-    Класс для модели группы классификаторов одного объекта
-    """
-    obj = models.ForeignKey(
-        ModelObject,
-        verbose_name='Объект',
-        related_name='ind_obj_пкщгз',
-        on_delete=models.CASCADE,
-        help_text='К какому объекту относится данная группа',
-    )
-    name = models.CharField(
-        max_length=255,
-        verbose_name='Название группы',
-        help_text='Название группы',
-        blank=True,
-        null=True,
-    )
-    pos = models.IntegerField(
-        verbose_name='Приоритет группы',
-        help_text='Необходим для сортировки',
-        blank=True,
-        null=True,
-    )
-
-    def __str__(self):
-        return self.name
-
-    class Meta:
-        managed = False
-        db_table = DAT_SYS_KEY_GROUP.TABLE_SHORT
-        verbose_name = "Группа классификатора"
-        verbose_name_plural = "Группа классификатора"
 
 
 class ModelPhoneNumberFormat(models.Model):
