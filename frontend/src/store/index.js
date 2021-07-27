@@ -3,7 +3,7 @@ import Vuex     from 'vuex'
 import auth     from './modules/auth'
 import treeview from './modules/treeview'
 import map      from './modules/map/index'
-import mapMenuControl      from './modules/map/mapMenuControl'
+import toolsMenuControl      from './modules/toolsMenuControl'
 import alerts   from './modules/alerts'
 import socket   from './modules/socket'
 import report   from './modules/report'
@@ -21,7 +21,7 @@ const store = new Vuex.Store({
     alerts,
     socket,
     map,
-    mapMenuControl,
+    toolsMenuControl,
     graph,
   }
 })

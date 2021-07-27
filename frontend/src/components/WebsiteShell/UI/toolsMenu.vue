@@ -9,7 +9,7 @@
       v-model="activeItem"
     >
       <v-list-item
-        v-for="tool in toolsMenu"
+        v-for="tool in items"
         :key="tool.name"
         :value="tool.name"
         :disabled="tool.name === activeItem"
@@ -25,22 +25,28 @@
 </template>
 
 <script>
+import {mapActions, mapGetters} from "vuex"
+import router from '@/router'
+
 export default {
   name: "toolsMenu",
-  props: {
-    toolsMenu: Array,
-    activeTool: String,
-  },
-  model: {
-    prop: 'activeTool',
-    event: 'setActiveTool',
-  },
   computed: {
+    ...mapGetters(['activeTool', 'toolsMenu', ]),
+    items: function () {
+      return this.toolsMenu(router.currentRoute.name)
+    },
     activeItem: {
-      get: function () { return this.activeTool },
-      set: function (item) { this.$emit('setActiveTool', item) }
+      get: function () {
+        return this.activeTool(router.currentRoute.name)
+      },
+      set: function (item) {
+        this.setActiveTool(item)
+      },
     },
   },
+  methods: {
+    ...mapActions(['setActiveTool', ])
+  }
 }
 </script>
 
