@@ -40,7 +40,7 @@
 </template>
 
 <script>
-import CustomTooltip from "../../WebsiteShell/UI/customTooltip";
+import CustomTooltip from "../../../WebsiteShell/UI/customTooltip";
 export default {
   name: 'chipAnalytics',
   components: { CustomTooltip, },

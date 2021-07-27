@@ -8,7 +8,7 @@
     :resizerBorderThickness="1"
     :resizerThickness="1"
     v-on:update:size="sizeMenuColumn = $event"
-    units="percents"
+    units="percents" style="position: static"
   >
     <v-col slot="firstPane" class="column-settings pa-0">
       <treeView
@@ -96,10 +96,10 @@ import chipAnalytics from './chipAnalytics'
 import settingsAnalytics from './settingsAnalytics'
 import menuTemplate from './menuTemplate'
 import blockHeader from './blockHeader'
-import CreatorTreeView from './Mixins/CreatorTreeView'
-import ExecutorScripts from './Mixins/ExecutorScripts'
-import SelectedScriptFormatter from './Mixins/SelectedScriptFormatter'
-import CustomTooltip from "../../WebsiteShell/UI/customTooltip";
+import CreatorTreeView from '../Mixins/CreatorTreeView'
+import ExecutorScripts from '../Mixins/ExecutorScripts'
+import SelectedScriptFormatter from '../Mixins/SelectedScriptFormatter'
+import CustomTooltip from "../../../WebsiteShell/UI/customTooltip";
 
 export default {
   name: 'mapScriptMenu',
