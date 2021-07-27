@@ -1,7 +1,7 @@
 import json
 import requests
 from data_base_driver.constants.fulltextsearch import FullTextSearch
-from data_base_driver.full_text_search.additional_functions import get_date_from_days_sec, intercept_sort_list, \
+from data_base_driver.additional_functions import intercept_sort_list, \
     get_date_time_from_sec
 from data_base_driver.sys_key.get_key_dump import get_key_by_id
 

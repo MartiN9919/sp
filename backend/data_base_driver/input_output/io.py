@@ -1,3 +1,8 @@
+import json
+
+import requests
+
+from data_base_driver.constants.fulltextsearch import FullTextSearch
 from data_base_driver.input_output.io_class import IO
 
 
@@ -68,6 +73,57 @@ def io_get_obj(
     ))
 
 
+def io_get_obj_manticore_dict(group_id,
+                              object_type,
+                              keys,
+                              ids,
+                              ids_max_block,
+                              where_dop_row,
+                              ):
+    if not ids:
+        ids = []
+    if not keys:
+        keys = []
+    if not where_dop_row:
+        where_dop_row = ''
+    if not ids_max_block:
+        ids_max_block = 100
+    index = 'obj_' + FullTextSearch.TABLES[object_type] + '_row'
+    must = []
+    if len(ids) > 0:
+        must.append({'in': {'rec_id': [int(rec_id) for rec_id in ids]}})
+    if len(keys) > 0:
+        must.append({'in': {'key_id': [str(key) for key in keys]}})
+    data = json.dumps({
+        'index': index,
+        'query': {
+            'query_string': where_dop_row,
+            'bool': {
+                'must': must
+            }
+        },
+        "limit": ids_max_block
+    })
+    response = requests.post(FullTextSearch.SEARCH_URL, data=data)
+    return [item['_source'] for item in json.loads(response.text)['hits']['hits']]
+
+
+def io_get_obj_manticore_tuple(group_id,
+                               object_type,
+                               keys,
+                               ids,
+                               ids_max_block,
+                               where_dop_row,
+                               ):
+    return [(item['rec_id'], int(item['key_id']), item['val'], item['sec'])
+            for item in io_get_obj_manticore_dict(group_id,
+                                                  object_type,
+                                                  keys,
+                                                  ids,
+                                                  ids_max_block,
+                                                  where_dop_row)]
+
+
 def io_get_rel_generator(
         group_id,
         keys=[],
@@ -115,6 +171,60 @@ def io_get_rel(
     return ret
 
 
+def io_get_rel_manticore_dict(group_id,
+                              keys,
+                              obj_rel_1,
+                              obj_rel_2,
+                              val,
+                              where_dop,
+                              is_unique,
+                              ):
+    if not keys:
+        keys = []
+    if not val:
+        val = []
+    must = []
+    if len(keys) > 0:
+        must.append({'in': {'key_id': [str(key_id) for key_id in keys]}})
+    if len(val) > 0:
+        must.append({'in': {'val': [str(x) for x in val]}})
+    request_1_obj_1, request_2_obj_2,  request_1_rec_1, request_2_rec_2 = '', '', '', ''
+    request_2_obj_1, request_1_obj_2,  request_2_rec_1, request_1_rec_2 = '', '', '', ''
+    if len(obj_rel_1) > 0:
+        request_1_obj_1 = 'obj_id_1 ' + str(obj_rel_1[0])
+        request_2_obj_2 = 'obj_id_2 ' + str(obj_rel_1[0])
+    if len(obj_rel_1 > 1):
+        request_1_rec_1 = 'rec_id_1 ' + str(obj_rel_1[1])
+        request_2_rec_2 = 'rec_id_2 ' + str(obj_rel_1[1])
+    if len(obj_rel_2) > 0:
+        request_1_obj_2 = 'obj_id_2 ' + str(obj_rel_2[0])
+        request_2_obj_1 = 'obj_id_1 ' + str(obj_rel_2[0])
+    if len(obj_rel_2 > 1):
+        request_1_rec_2 = 'rec_id_2 ' + str(obj_rel_2[1])
+        request_2_rec_1 = 'rec_id_1 ' + str(obj_rel_2[1])
+    data_1 = json.dumps({
+        'index': 'rel',
+        'query': {
+            'query_string': ' '.join([request_1_obj_1, request_1_obj_2, request_1_rec_1, request_1_rec_2]),
+            'bool': {
+                'must': must
+            }
+        }
+        })
+    data_2 = json.dumps({
+        'index': 'rel',
+        'query': {
+            'query_string': ' '.join([request_2_obj_1, request_2_obj_2, request_2_rec_1, request_2_rec_2]),
+            'bool': {
+                'must': must
+            }
+        }
+    })
+    response_1 = requests.post(FullTextSearch.SEARCH_URL, data=data_1)['hits']['hits']
+    response_2 = requests.post(FullTextSearch.SEARCH_URL, data=data_2)['hits']['hits']
+    return response_1 + response_2
+
+
 ###########################################
 # ЧТЕНИЕ GEOMETRY_TREE
 ###########################################
@@ -128,3 +238,5 @@ def io_get_geometry_tree(
         parent_id=parent_id,
         write=write,
     ))
+
+

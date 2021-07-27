@@ -1,46 +1,7 @@
 from data_base_driver.constants.fulltextsearch import FullTextSearch
 from data_base_driver.full_text_search.http_api.find_object import find_reliable_http, get_object_record_by_id_http
 from data_base_driver.full_text_search.http_api.find_rel import search_rel_with_key_http
-
-
-def find_with_rel_reliable_key(object_1_type, request_1, object_2_type, request_2, rel_key, list_id, date_time_start,
-                               date_time_end, actual_1=False, actual_2=False):
-    """
-    Функция для поиска записей с учетом связей, проводит надежную сверку по двум запросам, учитывает тип связи
-    @param object_1_type: тип главного объекта для связи
-    @param request_1: запрос по главному объекту
-    @param object_2_type: тип второстепенного объекта для связи
-    @param request_2: запрос по второстепенному объекту
-    @param rel_key: тип связи
-    @param list_id: идентификатор значения списка если есть
-    @param date_time_start: дата и время начала поиска связи
-    @param date_time_end: дата и время конца поиска связи
-    @param actual_1: флаг актуальности поиска для первого объекта
-    @param actual_2: флаг актуальности поиска для второго объекта
-    @return: список с идентификаторами подходящих записей
-    """
-    result = []
-    if request_1:
-        if len(request_1) == 0:
-            result1 = [0]
-        else:
-            result1 = find_reliable_http(FullTextSearch.TABLES[object_1_type], request_1, actual_1)
-    else:
-        result1 = [0]
-    if request_2:
-        if len(request_2) == 0:
-            result2 = [0]
-        else:
-            result2 = find_reliable_http(FullTextSearch.TABLES[object_2_type], request_2, actual_2)
-    else:
-        result2 = [0]
-    for item in result1:
-        for item_next in result2:
-            res = search_rel_with_key_http(rel_key, object_1_type, item, object_2_type, item_next, list_id,
-                                           date_time_start, date_time_end)
-            if len(res) != 0:
-                result.extend([int(elem) for elem in res])
-    return result
+from data_base_driver.relations.get_rel import find_with_rel_reliable_key
 
 
 def recursion_search(request):
