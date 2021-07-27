@@ -21,6 +21,11 @@ export default {
   },
   mutations: {
     changeProgressLinearStatus: (state, status) => state.progressLinearStatus = status,
+    setNavigationDrawerStatus: (state) => {
+      if (router.currentRoute.name === 'Map') state.navigationDrawerStatusMap = true
+      if (router.currentRoute.name === 'Report') state.navigationDrawerStatusReport = true
+      if (router.currentRoute.name === 'Graph') state.navigationDrawerStatusGraph = true
+    },
     changeNavigationDrawerStatus: (state) => {
       if (router.currentRoute.name === 'Map') state.navigationDrawerStatusMap = !state.navigationDrawerStatusMap
       if (router.currentRoute.name === 'Report') state.navigationDrawerStatusReport = !state.navigationDrawerStatusReport
@@ -29,6 +34,7 @@ export default {
     setUserInformation: (state, userInformation) => state.userInformation = userInformation
   },
   actions: {
+    setNavigationDrawerStatus: ({ commit }) => commit('setNavigationDrawerStatus'),
     changeNavigationDrawerStatus: ({ commit }) => commit('changeNavigationDrawerStatus'),
 
     authenticateUser ({ commit }, parameters = {}) {

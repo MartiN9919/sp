@@ -214,6 +214,8 @@ export default {
     ...mapActions([
       'MAP_ACT_EDIT',
       'appendErrorAlert',
+      'setNavigationDrawerStatus',
+      'setActiveTool',
     ]),
 
 
@@ -278,7 +280,7 @@ export default {
         });
         fc.features = features;
       }
-      console.log(this.$refs.geoJson)
+      // console.log(this.$refs.geoJson)
       return fc;
     },
 
@@ -387,6 +389,8 @@ export default {
 
     on_map_dblclick(e) {
       this.appendErrorAlert({status: 501, content: e.latlng, show_time: 5, });
+      this.setNavigationDrawerStatus();
+      this.setActiveTool('dossierPage');
     },
 
     on_edit_ok(e, dat) {

@@ -1,11 +1,11 @@
 <template>
   <v-row no-gutters style="flex-wrap: nowrap; height: 100%">
     <v-col cols="auto">
-      <tools-menu></tools-menu>
+      <tools-menu/>
     </v-col>
     <v-col class="overflow-y-auto">
-      <map-script-menu v-if="activeWindow === 'scriptsPage'"></map-script-menu>
-      <h1 v-if="activeWindow === 'dossierPage'">Dossier Page</h1>
+      <map-script-menu v-if="activeWindow === 'scriptsPage'"/>
+      <map-dossier v-if="activeWindow === 'dossierPage'"/>
     </v-col>
   </v-row>
 </template>
@@ -15,10 +15,11 @@ import ToolsMenu from "../../WebsiteShell/UI/toolsMenu"
 import MapScriptMenu from "./scriptsPage/mapScriptMenu"
 import router from '@/router'
 import {mapGetters} from "vuex"
+import MapDossier from "./dossierPage/dossierPage";
 
 export default {
   name: "mapMenu",
-  components: {MapScriptMenu, ToolsMenu, },
+  components: {MapScriptMenu, ToolsMenu, MapDossier, },
   data: () => ({
   }),
   computed: {
