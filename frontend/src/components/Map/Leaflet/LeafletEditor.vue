@@ -1,44 +1,63 @@
 <template>
-  <l-map
-    ref="map"
-    style="height: 70vh; z-index: 0;"
-    :options="map_options"
-    :crs="MAP_GET_TILES[MAP_GET_TILE].crs"
-    @ready="on_map_ready"
-    @resize="on_map_resize"
-    @contextmenu=""
-    @dblclick="on_map_dblclick"
+  <ResSplitPane
+    split-to="columns"
+    :allow-resize="true"
+    :min-size="15"
+    :max-size="85"
+    :size="sizeMenuColumn"
+    :resizerBorderThickness="1"
+    :resizerThickness="1"
+    v-on:update:size="sizeMenuColumn = $event"
+    units="percents"
+    style="position: static"
   >
+    <v-col slot="firstPane" class="column-settings pa-0">
+      <MapGeometry/>
+    </v-col>
 
-    <!-- ПОДЛОЖКА -->
-    <l-tile-layer
-      :url="MAP_GET_TILES[MAP_GET_TILE].url"
-      :attribution="MAP_GET_TILES[MAP_GET_TILE].attr"
-      :tms="MAP_GET_TILES[MAP_GET_TILE].tms"
-    />
+    <v-col slot="secondPane" class="column-settings overflow-hidden pa-0">
+      <l-map
+        ref="map"
+        style="height: 70vh; z-index: 0;"
+        :options="map_options"
+        :crs="MAP_GET_TILES[MAP_GET_TILE].crs"
+        @ready="on_map_ready"
+        @resize="on_map_resize"
+        @contextmenu=""
+        @dblclick="on_map_dblclick"
+      >
 
-    <!-- РЕДАКТОР -->
-    <Edit
-      v-model="fc_child"
-      :modeEnabled="modeEnabled"
-      :modeSelected="modeSelected"
-    />
+        <!-- ПОДЛОЖКА -->
+        <l-tile-layer
+          :url="MAP_GET_TILES[MAP_GET_TILE].url"
+          :attribution="MAP_GET_TILES[MAP_GET_TILE].attr"
+          :tms="MAP_GET_TILES[MAP_GET_TILE].tms"
+        />
 
-    <!-- МАСШТАБ -->
-    <l-control-scale
-      v-if="MAP_GET_SCALE"
-      position="bottomright"
-      :imperial="false"
-      :metric="true"
-    />
+        <!-- РЕДАКТОР -->
+        <MapEdit
+          v-model="fc_child"
+          :modeEnabled="modeEnabled"
+          :modeSelected="modeSelected"
+        />
 
-    <!-- ЛИНЕЙКА -->
-    <l-control-polyline-measure
-      v-if="MAP_GET_MEASURE"
-      :options="measure_options()"
-    />
+        <!-- МАСШТАБ -->
+        <l-control-scale
+          v-if="MAP_GET_SCALE"
+          position="bottomright"
+          :imperial="false"
+          :metric="true"
+        />
 
-  </l-map>
+        <!-- ЛИНЕЙКА -->
+        <l-control-polyline-measure
+          v-if="MAP_GET_MEASURE"
+          :options="measure_options()"
+        />
+
+      </l-map>
+    </v-col>
+  </ResSplitPane>
 </template>
 
 
@@ -49,10 +68,12 @@ import { mapGetters, mapActions, } from 'vuex';
 import 'leaflet';
 import { LMap, LTileLayer, LControlScale, } from 'vue2-leaflet';
 import LControlPolylineMeasure from 'vue2-leaflet-polyline-measure';
+import ResSplitPane from 'vue-resize-split-pane'
 
-import Edit       from '@/components/Map/Leaflet/Components/Edit';
-import MixKey     from '@/components/Map/Leaflet/Mixins/Key';
-import MixMeasure from '@/components/Map/Leaflet/Mixins/Measure';
+import MapEdit      from '@/components/Map/Leaflet/Components/MapEdit';
+import MapGeometry  from '@/components/Map/Leaflet/Components/MapGeometry';
+import MixKey       from '@/components/Map/Leaflet/Mixins/Key';
+import MixMeasure   from '@/components/Map/Leaflet/Mixins/Measure';
 
 export default {
   name: 'LeafletEditor',
@@ -69,7 +90,7 @@ export default {
 
   mixins: [ MixKey, MixMeasure, ],
 
-  components: { LMap, LTileLayer, LControlScale, LControlPolylineMeasure, Edit, },
+  components: { LMap, LTileLayer, LControlScale, LControlPolylineMeasure, ResSplitPane, MapEdit, MapGeometry, },
 
   data() {
     return {
