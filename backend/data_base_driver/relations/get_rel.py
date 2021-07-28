@@ -1,8 +1,9 @@
 import datetime
 
-from data_base_driver.constants.fulltextsearch import FullTextSearch
-from data_base_driver.full_text_search.http_api.find_object import get_object_record_by_id_http, find_reliable_http
-from data_base_driver.full_text_search.http_api.find_rel import get_relations_with_object_http, search_rel_with_key_http
+from data_base_driver.record.find_object import find_reliable_http
+from data_base_driver.record.get_record import get_object_record_by_id_http
+from data_base_driver.relations.find_rel import search_rel_with_key_http
+from data_base_driver.input_output.io import io_get_rel_manticore_tuple
 from data_base_driver.sys_key.get_object_dump import get_object_by_name
 
 
@@ -17,9 +18,7 @@ def get_rel_by_object(group_id, object, id, parents):
     """
     if not (isinstance(object, int)) and not (object.isdigit()):
         object = get_object_by_name(object)['id']
-    # rels = io_get_rel(group_id=group_id, keys=[], obj_rel_1=None, obj_rel_2=[int(object), id], where_dop=[],
-    #                   is_unique=False)
-    rels = get_relations_with_object_http(int(object), id)
+    rels = io_get_rel_manticore_tuple(group_id, [], [int(object), id], [], [], {}, True)
     first_data = [{'object_type': rel[2], 'rel_type': rel[0], 'rec_id': rel[3],
                    'params': get_object_record_by_id_http(rel[2], rel[3])['params']} for rel in rels if
                   (rel[4] == object and rel[5] == id) and len(
@@ -67,79 +66,6 @@ def get_rel_cascade(group_id, object, id, depth):
     return rels
 
 
-def get_rel_rec_find(group_id, rels, depth, parents, searchedObject, searchedId):
-    """
-    вспомогательная функция рекурсивного обхода поиска, аналогична get_rel_by_object, за исключением выхода при нахождении
-    связи с целевым объектом, точка входа get_rel_with_object
-    :@param rels: уже найденные на данном шаге связи
-    :@param depth: глибина рекурсии на данном шаге
-    :@param parents: уже встреченные в графе связи
-    :@param searchedObject: тип искомого объекта
-    :@param searchedId: id искомого объекта
-    :@return: возвращает True при обнаружении искомого объекта и None при отсутствии связи
-    """
-    if depth == 0 or len(rels) == 0: return rels
-    for rel in rels:
-        newParents = parents.copy()
-        newRels = get_rel_by_object(group_id, rel[0], rel[2], newParents)
-        if len(newRels[3]) != 0:
-            mas = [t for t in newRels[3] if
-                   int(get_object_by_name(t[0])['id']) == searchedObject and t[2] == searchedId]
-            if len(mas) > 0:
-                rel.append(mas)
-                return True
-        newParents.append([newRels[0], newRels[2]])
-        rel.append(newRels[3])
-        if get_rel_rec_find(newRels[3], depth - 1, newParents, searchedObject, searchedId):
-            return True
-
-
-def getRelPath(rels, path=[]):
-    """
-    вспомогательная функция для возвращения точного пути между связанными объектами, точка входа get_rel_with_object
-    :@param rels: граф связей
-    :@param path: уже построенный путь на данном ребре графа
-    :@return: кортеж из состояния выполнения True/False  и списка связей в формате [[record,id],[object1,id1],...,[objectN,idN]]
-    """
-    if len(rels) <= 3:
-        return False, ''
-    if len(rels[3]) == 0:
-        return False, ''
-    for rel in rels[3]:
-        newPath = path.copy()
-        if len(rel) == 3:
-            newPath.append([rel[0], rel[1], rel[2]])
-            return True, newPath
-        newPath.append([rel[0], rel[1], rel[2]])
-        res, resultPath = getRelPath(rel, newPath)
-        if res:
-            return True, resultPath
-    return False, ''
-
-
-def get_rel_with_object(group_id, object, id, searchedObject, searchedId, depth):
-    """
-    функция для писка связи между двумя объектами
-    :@param object: id или имя типа связи начального объекта
-    :@param id: id начального объекта
-    :@param searchedObject: id или имя типа связи искомого объекта
-    :@param searchedId: id искомого объекта
-    :@param depth: глубина рекурсии поиска, по умолчанию 10
-    :@return: кортеж из состояния выполнения True/False  и списка связей в формате [[record,id],[object1,id1],...,[objectN,idN]]
-    """
-    if not (isinstance(searchedObject, int)) and not (searchedObject.isdigit()):
-        searchedObject = get_object_by_name(searchedObject)['id']
-    rels = get_rel_by_object(group_id, object, id)
-    mas = [t for t in rels[3] if t[0] == searchedObject and t[2] == searchedId]
-    if len(mas) > 0:
-        return rels
-    if get_rel_rec_find(group_id, rels[3], depth, parents=[[rels[0], rels[2]]], searchedObject=searchedObject,
-                        searchedId=searchedId):
-        return getRelPath(rels, [[object, 'parent', id]])
-    else:
-        return False
-
-
 def check_relation(root, object_id, rec_id):
     """
     Функция для проверки нового объекта на связи с уже имеющимися в дереве
@@ -161,7 +87,6 @@ def check_relation(root, object_id, rec_id):
                                            0,
                                            None,
                                            datetime.datetime.now().isoformat(sep=' ')[:16],
-                                           mode=2
                                            )
     if len(temp_result) > 0:
         temp = get_object_record_by_id_http(object_id, rec_id)
@@ -190,7 +115,7 @@ def search_relations_recursive(group_id, request, parent, root):
     """
     for relation in request.get('rels', []):
         if len(relation.get('request', '')) != 0:
-            rec_ids = find_reliable_http(FullTextSearch.TABLES[relation.get('object_id')], relation.get('request', ''),
+            rec_ids = find_reliable_http(relation.get('object_id'), relation.get('request', ''),
                                          relation.get('actual'))
             for rec_id in rec_ids:
                 temp_result = search_rel_with_key_http(relation.get('rel').get('id'),
@@ -201,7 +126,6 @@ def search_relations_recursive(group_id, request, parent, root):
                                                        relation.get('rel').get('value'),
                                                        relation.get('rel').get('date_time_start'),
                                                        relation.get('rel').get('date_time_end'),
-                                                       mode=2
                                                        )
                 if len(temp_result) > 0:
                     temp = get_object_record_by_id_http(relation.get('object_id'), rec_id)
@@ -220,7 +144,6 @@ def search_relations_recursive(group_id, request, parent, root):
                                                relation.get('rel').get('value'),
                                                relation.get('rel').get('date_time_start'),
                                                relation.get('rel').get('date_time_end'),
-                                               mode=2
                                                )
             for rec_id in rec_ids:
                 old_result = [item for item in parent['rels'] if item['rec_id'] == rec_id['rec_id']]
@@ -263,46 +186,8 @@ def search_relations(group_id, request):
         parent['rels'] = []
         return search_relations_recursive(group_id, request, parent, parent)
 
-
-def find_with_rel_reliable_key(object_1_type, request_1, object_2_type, request_2, rel_key, list_id, date_time_start,
-                               date_time_end, actual_1=False, actual_2=False):
-    """
-    Функция для поиска записей с учетом связей, проводит надежную сверку по двум запросам, учитывает тип связи
-    @param object_1_type: тип главного объекта для связи
-    @param request_1: запрос по главному объекту
-    @param object_2_type: тип второстепенного объекта для связи
-    @param request_2: запрос по второстепенному объекту
-    @param rel_key: тип связи
-    @param list_id: идентификатор значения списка если есть
-    @param date_time_start: дата и время начала поиска связи
-    @param date_time_end: дата и время конца поиска связи
-    @param actual_1: флаг актуальности поиска для первого объекта
-    @param actual_2: флаг актуальности поиска для второго объекта
-    @return: список с идентификаторами подходящих записей
-    """
-    result = []
-    if request_1:
-        if len(request_1) == 0:
-            result1 = [0]
-        else:
-            result1 = find_reliable_http(FullTextSearch.TABLES[object_1_type], request_1, actual_1)
-    else:
-        result1 = [0]
-    if request_2:
-        if len(request_2) == 0:
-            result2 = [0]
-        else:
-            result2 = find_reliable_http(FullTextSearch.TABLES[object_2_type], request_2, actual_2)
-    else:
-        result2 = [0]
-    for item in result1:
-        for item_next in result2:
-            res = search_rel_with_key_http(rel_key, object_1_type, item, object_2_type, item_next, list_id,
-                                           date_time_start, date_time_end)
-            if len(res) != 0:
-                result.extend([int(elem) for elem in res])
-    return result
-
+#
+#
 # request = {'object_id': 35, 'rec_id': 1, 'rel': None, 'rels': [
 #     {'object_id': 35, 'rel': {'id': 0, 'value': 0, 'date_time_start': None, 'date_time_end': '2021-07-20 12:00'},
 #      'request': '', 'actual': True, 'rels': []},

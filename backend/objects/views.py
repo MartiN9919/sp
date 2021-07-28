@@ -3,7 +3,7 @@ import json
 from django.http import JsonResponse
 from core.projectSettings.decoraters import login_check, decor_log_request
 from data_base_driver.constants.const_dat import DAT_OWNER
-from data_base_driver.full_text_search.http_api.find_object import get_object_record_by_id_http
+from data_base_driver.record.get_record import get_object_record_by_id_http
 from data_base_driver.input_output.io_geo import get_geometry_tree, geo_id_to_fc
 from data_base_driver.record.search import search
 from data_base_driver.input_output.io import io_set, io_get_geometry_tree
@@ -161,7 +161,7 @@ def aj_set_geometry(request):
 
 @login_check
 @decor_log_request
-def aj_geometry_try(request):
+def aj_geometry_tree(request):
     """
     Функция API для получения дерева геометрий
     @param request: запрос, поддерживаемый тип - GET, дополнительная нашрузка не требуется
