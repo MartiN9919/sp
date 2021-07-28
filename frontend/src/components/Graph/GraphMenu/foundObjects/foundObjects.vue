@@ -6,9 +6,14 @@
     <div class="body-table">
     <v-list-item v-for="object in objects" :key="object.rel_id" class="px-0" @click="">
       <v-hover v-slot="{ hover }">
-        <v-card tile flat width="100%" height="100%" :class="bodyContentClasses">
+        <v-card
+          tile flat width="100%" height="100%"
+          :class="hover ? ['body-content-hover', 'body-content'] : ['body-content']"
+        >
           <v-card-text class="pr-0">{{object.title}}</v-card-text>
-          <div v-if="hover" class="d-flex align-center list-icons" :class="listIconsClasses">
+          <div
+              v-if="hover" class="d-flex align-center list-icons"
+              :class="hover ? ['list-icons-hover', 'list-icons'] : ['list-icons']">
             <v-btn icon><v-icon>mdi-plus</v-icon></v-btn>
             <v-btn icon><v-icon>mdi-check</v-icon></v-btn>
             <v-btn icon><v-icon>mdi-close</v-icon></v-btn>
@@ -25,10 +30,6 @@ export default {
   name: "foundObjects",
   props: {
     objects: Array,
-  },
-  computed: {
-    bodyContentClasses: function () { return this.hover ? ['body-content-hover', 'body-content'] : ['body-content'] },
-    listIconsClasses: function () { return this.hover ? ['list-icons-hover', 'list-icons'] : ['list-icons'] },
   },
 }
 </script>
