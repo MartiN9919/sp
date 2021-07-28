@@ -3,6 +3,33 @@ from data_base_driver.input_output.io import io_get_obj_manticore_dict
 from data_base_driver.sys_key.get_key_dump import get_key_by_id
 
 
+def get_title(params, title_len=3):
+    """
+    Функция для получения названия объекта по его параметрам
+    @param params: row параметры объекта
+    @param title_len: длинна названия
+    @return: название составленное из параметров с учетом приоритета и длинны
+    """
+    title_list = []
+    for param in params:
+        key = get_key_by_id(param['id'])
+        if key['priority']:
+            title_list.append({'title': key['title'],
+                               'priority': key['priority'],
+                               'value': param['value']})
+    title_list.sort(key=lambda x: x['priority'])
+    if len(title_list) == 0:
+        title = ', '.join(str(get_key_by_id(param['id'])['title'] + ': ' + param['value']) for param in params)
+    else:
+        title = ', '.join(str(title['title'] + ': ' + title['value']) for title in title_list)
+    if len(title_list) < title_len:
+        sub_title = ', '.join(str(get_key_by_id(param['id'])['title'] + ': ' + param['value']) for param in
+                              [param for param in params
+                               if not get_key_by_id(param['id'])['priority']][:(title_len - len(title_list))])
+        title += ', ' + sub_title
+    return title
+
+
 def get_object_record_by_id_http(object_id, rec_id, group_id=0):
     """
     Функция для получения информации о объекте по его типу и идентификатору записи
@@ -31,21 +58,7 @@ def get_object_record_by_id_http(object_id, rec_id, group_id=0):
         item['old'].sort(key=lambda x: x['date'], reverse=True)
     params.sort(key=lambda x: get_key_by_id(x['id'])['title'], reverse=True)
     params.sort(key=lambda x: get_key_by_id(x['id'])['need'], reverse=True)
-    title_list = []
-    for param in params:
-        key = get_key_by_id(param['id'])
-        if key['priority']:
-            title_list.append({'title': key['title'],
-                               'priority': key['priority'],
-                               'value': param['value']})
-    title_list.sort(key=lambda x: x['priority'])
-    if len(title_list) == 0:
-        title = ', '.join(str(get_key_by_id(param['id'])['title'] + ': ' + param['value']) for param in params)
-    else:
-        title = ', '.join(str(title['title'] + ': ' + title['value']) for title in title_list)
-    if len(title_list) < 3:
-        sub_title = ', '.join(str(get_key_by_id(param['id'])['title'] + ': ' + param['value']) for param in
-                              [param for param in params
-                               if not get_key_by_id(param['id'])['priority']][:(3 - len(title_list))])
-        title += ', ' + sub_title
+    title = get_title(params)
     return {'object_id': object_id, 'rec_id': rec_id, 'params': params, 'title': title}
+
+
