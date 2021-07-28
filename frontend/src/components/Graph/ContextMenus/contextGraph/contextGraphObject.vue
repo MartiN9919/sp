@@ -1,7 +1,7 @@
 <template>
   <v-card>
-    <v-card-title class="justify-center pa-0" @click="takeScreenshot">
-      Пустое меню
+    <v-card-title class="justify-center pa-0" @click="">
+      Пустое меню объекта
     </v-card-title>
   </v-card>
 </template>

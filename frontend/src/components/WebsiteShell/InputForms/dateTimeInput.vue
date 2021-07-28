@@ -8,6 +8,7 @@
         v-model="value" v-on="on" :rules="rulesDateTime" :label="'Дата и время - ' + title"
         autocomplete="off" row-height="1" auto-grow class="pt-0 mt-0 geometry-input-cursor"
         hide-details readonly color="teal" type="text" placeholder="Выберете дату" append-icon="mdi-calendar-clock"
+        :clearable="clearable"
       ></v-textarea>
     </template>
       <v-window v-model="bottomNavigation">
@@ -38,6 +39,7 @@ export default {
     rules: { type: Array, default: () => { return [] }},
     title: String,
     inputString: String,
+    clearable: Boolean,
   },
   model: { prop: 'inputString', event: 'changeInputString', },
   data: () => ({

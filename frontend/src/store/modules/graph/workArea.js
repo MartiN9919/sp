@@ -2,30 +2,36 @@ import { postResponseAxios } from '@/plugins/axios_settings'
 
 export default {
   state: {
-    positionNewGraphObject: null,
-    selectedGraphObjectId: null,
+    searchTreeGraph: null,
+    foundObjects: null,
   },
   getters: {
-    positionNewGraphObject: state => { return state.positionNewGraphObject },
-    selectedGraphObjectId: state => { return state.selectedGraphObjectId },
+    searchTreeGraph: state => { return state.searchTreeGraph },
+    foundObjects: state => { return state.foundObjects },
   },
   mutations: {
-    setSelectedGraphObjectId: (state, id) => {
-      state.selectedGraphObjectId = id
-    },
-    setPositionNewGraphObject: (state, position) => {
-      state.positionNewGraphObject = position
-    }
+    setRootSearchTreeGraph: (state, rootObject) => { state.searchTreeGraph = rootObject },
+    setActualRootSearchTree: (state, actual) => { state.searchTreeGraph.actual = actual },
+    setFoundObjects: (state, objects) => { state.foundObjects = objects },
   },
   actions: {
-    setSelectedGraphObjectId({ commit }, id) { commit('setSelectedGraphObjectId', id) },
-    setPositionNewGraphObject({ commit }, position) { commit('setPositionNewGraphObject', position) },
-    findObjectsOnServer({ commit, rootState }, props = {}) {
-      return postResponseAxios('objects/search', props.searchTree, props?.config)
-        .then(response => {
-          return Promise.resolve(response)
-        })
-        .catch(error => { return Promise.reject(error) })
+    setRootSearchTreeGraph({ state, commit }, {objectId, actual=false}) {
+      if (state.searchTreeGraph?.object_id !== objectId) {
+        let rootObject = { object_id: objectId, rel: null, request: null, actual: actual, rels: [] }
+        localStorage.setItem('searchDefaultIdGraph', objectId)
+        commit('setRootSearchTreeGraph', rootObject)
+      } else {
+        commit('setActualRootSearchTree', actual)
+      }
+    },
+    setDefaultRootSearchTreeGraph({ dispatch, rootGetters }) {
+      let searchDefaultId = parseInt(localStorage.getItem('searchDefaultIdGraph')) || rootGetters.listOfPrimaryObjects[0].id
+      dispatch('setRootSearchTreeGraph', { objectId: searchDefaultId })
+    },
+    findObjectsOnServer({ commit, rootState }, { searchTree, config={} }) {
+      return postResponseAxios('objects/search', searchTree, config)
+        .then(response => { commit('setFoundObjects', response.data) })
+        .catch(error => {  })
     },
   }
 }
