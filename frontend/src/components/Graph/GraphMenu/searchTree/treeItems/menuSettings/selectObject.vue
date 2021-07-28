@@ -19,6 +19,7 @@
         </v-list-item>
         <v-list-item>
           <custom-autocomplete
+            :disabled="listRelationItems.length === 1"
             v-model="selectedRelationItem"
             :items="listRelationItems"
             :item-text="'value'"
@@ -32,10 +33,10 @@
           <v-list-item>
             <v-form ref="form" lazy-validation style="width: 100%">
               <div class="py-3">
-                <date-time-input title="начала" v-model="selectedDateTimeStart"></date-time-input>
+                <date-time-input title="начала" v-model="selectedDateTimeStart" :clearable="true"></date-time-input>
               </div>
               <div class="py-3">
-                <date-time-input title="конца" v-model="selectedDateTimeEnd"></date-time-input>
+                <date-time-input title="конца" v-model="selectedDateTimeEnd" :clearable="true"></date-time-input>
               </div>
             </v-form>
           </v-list-item>
@@ -47,7 +48,7 @@
       </v-list>
     </v-card-text>
     <v-card-actions>
-      <v-btn @click="$emit('cancel')" outlined color="teal" width="40%" >Назад</v-btn>
+      <v-btn @click="cancel" outlined color="teal" width="40%">Отмена</v-btn>
       <v-spacer></v-spacer>
       <v-btn @click="sendActionParent(createStatus)" outlined color="teal" width="40%">Готово</v-btn>
     </v-card-actions>
@@ -55,14 +56,14 @@
 </template>
 
 <script>
-import dateTimeInput from "../../../WebsiteShell/InputForms/dateTimeInput"
-import CustomAutocomplete from "../../../WebsiteShell/UI/customAutocomplete";
-import BooleanInput from "../../../WebsiteShell/InputForms/booleanInput";
-import { mapActions, mapGetters } from "vuex";
+import dateTimeInput from "../../../../../WebsiteShell/InputForms/dateTimeInput"
+import CustomAutocomplete from "../../../../../WebsiteShell/UI/customAutocomplete"
+import BooleanInput from "../../../../../WebsiteShell/InputForms/booleanInput"
+import { mapActions, mapGetters } from "vuex"
 
 export default {
   name: "selectObject",
-  components: {BooleanInput, CustomAutocomplete, dateTimeInput, },
+  components: { BooleanInput, CustomAutocomplete, dateTimeInput, },
   props: {
     object: Object,
     newObject: Object,
@@ -128,10 +129,13 @@ export default {
       if (this.$refs.form.validate())
         this.$emit(action)
     },
+    cancel() {
+      this.$emit('cancel')
+    },
   },
   mounted() {
     if (!this.newObject.object_id)
-      this.createStatus = 'confirm'
+      this.createStatus = 'create'
     else this.createStatus = 'change'
     if (!this.newObject.object_id)
       this.selectedObject = this.filteredListOfPrimaryObjects[0]

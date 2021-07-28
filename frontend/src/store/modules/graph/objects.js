@@ -23,9 +23,12 @@ export default {
   actions: {
     clearConflictingObjects({ commit }) { commit('clearConflictingObjects') },
     changeConflictingObjects({ commit }, object) { commit('changeConflictingObjects', object) },
-    getListOfPrimaryObjects({commit}, config = {}) {
+    getListOfPrimaryObjects({ commit, dispatch }, config = {}) {
       return getResponseAxios('objects/list_type/', config)
-        .then(response => { commit('setListOfPrimaryObjects', response.data) })
+        .then(response => {
+          commit('setListOfPrimaryObjects', response.data)
+          dispatch('setDefaultRootSearchTreeGraph')
+        })
         .catch(() => {})
     },
     createNewObjectFromServer({ commit, rootState }, props = {}) {

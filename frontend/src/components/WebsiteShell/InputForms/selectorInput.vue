@@ -1,5 +1,5 @@
 <template>
-  <v-autocomplete
+  <v-combobox
     :items="list" autocomplete="off" :label="title" v-model="value" :rules="rules"
     :menu-props="{ offsetY: true, maxWidth: '100%', minWidth: '100%' }" attach
     append-icon="mdi-format-list-bulleted" placeholder="Выберете необходимое значение"
@@ -8,7 +8,7 @@
     <template v-slot:item="{ item }">
       <div class="py-1">{{item}}</div>
     </template>
-  </v-autocomplete>
+  </v-combobox>
 </template>
 
 <script>

@@ -1,9 +1,13 @@
 <template>
-  <v-autocomplete
+  <v-combobox
     :items="items" :item-text="itemText" v-model="selected" :disabled="disabled"
     return-object hide-details color="teal" hide-no-data item-color="teal"
-    :menu-props="{ maxWidth: '23em', minWidth: '23em' }"
-  ></v-autocomplete>
+    :menu-props="{ offsetY: true, maxWidth: '320', minWidth: '320' }"
+  >
+    <template v-slot:item="{ item }">
+      <div class="py-1">{{item[itemText]}}</div>
+    </template>
+  </v-combobox>
 </template>
 
 <script>
@@ -25,9 +29,14 @@ export default {
   computed: {
     selected: {
       get: function () { return this.input },
-      set: function (value) { this.$emit('changeInput', value) },
+      set: function (value) {
+        if (this.items.find(item => item === value))
+          this.$emit('changeInput', value)
+        else this.$emit('changeInput', this.items[0])
+      },
     },
   },
+
 }
 </script>
 
