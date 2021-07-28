@@ -1,10 +1,16 @@
 <template>
-  <div
-    style="height:100%;"
+  <v-treeview
+    active-class=""
+    color=""
+    :items="items"
+    return-object
+    hoverable
+    transition
+    dense
+    open-on-click
+    activatable
   >
-    <h1>555</h1>
-    <h3>444555</h3>
-  </div>
+  </v-treeview>
 </template>
 
 <script>
@@ -12,30 +18,80 @@
 export default {
   name:       'EditorNav',
   data: () => ({
-    drawer: true,
+    items: [
+      {
+        id: 1,
+        name: 'Applications :',
+        children: [
+          { id: 2, name: 'Calendar : app' },
+          { id: 3, name: 'Chrome : app' },
+          { id: 4, name: 'Webstorm : app' },
+        ],
+      },
+      {
+        id: 5,
+        name: 'Documents :',
+        children: [
+          {
+            id: 6,
+            name: 'vuetify :',
+            children: [
+              {
+                id: 7,
+                name: 'src :',
+                children: [
+                  { id: 8, name: 'index : ts' },
+                  { id: 9, name: 'bootstrap : ts' },
+                ],
+              },
+            ],
+          },
+          {
+            id: 10,
+            name: 'material2 :',
+            children: [
+              {
+                id: 11,
+                name: 'src :',
+                children: [
+                  { id: 12, name: 'v-btn : ts' },
+                  { id: 13, name: 'v-card : ts' },
+                  { id: 14, name: 'v-window : ts' },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+      {
+        id: 15,
+        name: 'Downloads :',
+        children: [
+          { id: 16, name: 'October : pdf' },
+          { id: 17, name: 'November : pdf' },
+          { id: 18, name: 'Tutorial : html' },
+        ],
+      },
+      {
+        id: 19,
+        name: 'Videos :',
+        children: [
+          {
+            id: 20,
+            name: 'Tutorials :',
+            children: [
+              { id: 21, name: 'Basic layouts : mp4' },
+              { id: 22, name: 'Advanced techniques : mp4' },
+              { id: 23, name: 'All about app : dir' },
+            ],
+          },
+          { id: 24, name: 'Intro : mov' },
+          { id: 25, name: 'Conference introduction : avi' },
+        ],
+      },
+    ],
   }),
 }
-
-/*
-  <v-treeview
-    :items=treeViewItems :open.sync="listOpenFolder" @update:active="activateItem"
-    return-object hoverable transition dense open-on-click activatable active-class="" color=""
-  >
-    <template v-slot:label="{ item, open }">
-      <custom-tooltip>
-        <template v-slot:activator="{ on }">
-          <div v-on="on">
-            <v-icon :id="iconId(item.id)" :color="colorIcon(item)">{{ typeIcon(item, open) }}</v-icon>
-            <span :class="itemTextStyle(item.icon)" :style="itemTextColor(item)">{{ item.name }}</span>
-          </div>
-        </template>
-        <template v-slot:body>
-          <p class="text-justify ma-0">{{ checkHintInItem(item) }}</p>
-        </template>
-      </custom-tooltip>
-    </template>
-  </v-treeview>
-
-*/
-
 </script>
+
+

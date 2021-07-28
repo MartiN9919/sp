@@ -1,5 +1,7 @@
 <template>
-  <EditorSplit>
+  <EditorSplit
+    style="height: 70vh;"
+  >
 
     <template v-slot:firstPane>
       <EditorNav/>
@@ -8,7 +10,7 @@
     <template v-slot:secondPane>
       <l-map
         ref="map"
-        style="height: 70vh; z-index: 0;"
+        style="z-index: 0;"
         :options="map_options"
         :crs="MAP_GET_TILES[MAP_GET_TILE].crs"
         @ready="on_map_ready"

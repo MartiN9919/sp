@@ -1,6 +1,6 @@
 <template>
   <ResSplitPane
-    style="height:auto;position: inherit;"
+    style="height:auto; overflow: auto; position: inherit; "
     split-to="columns"
     units="percents"
     :allow-resize="true"
@@ -64,6 +64,11 @@ export default {
 </script>
 
 <style scoped>
+
+  /* полоса прокрутки tree */
+  div::v-deep div.Pane.column:first-of-type { overflow: auto!important; }
+
   /* исправить перекрытие сепаратора второй панелью */
   div::v-deep span.Resizer.columnsres { height: auto!important; }
+
 </style>
