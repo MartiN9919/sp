@@ -4,8 +4,9 @@ from django.http import JsonResponse
 from core.projectSettings.decoraters import login_check, decor_log_request
 from data_base_driver.constants.const_dat import DAT_OWNER
 from data_base_driver.full_text_search.http_api.find_object import get_object_record_by_id_http
-from data_base_driver.full_text_search.search import search
-from data_base_driver.input_output.io import io_set
+from data_base_driver.input_output.io_geo import get_geometry_tree, geo_id_to_fc
+from data_base_driver.record.search import search
+from data_base_driver.input_output.io import io_set, io_get_geometry_tree
 from data_base_driver.record.add_record import add_data
 from data_base_driver.relations.add_rel import add_rel
 from data_base_driver.sys_key.get_key_dump import get_keys_by_object, get_relations_list
@@ -156,3 +157,38 @@ def aj_set_geometry(request):
         return JsonResponse({'data': 'изменено'}, status=200)
     except:
         return JsonResponse({'data': 'ошибка добавления'}, status=480)
+
+
+@login_check
+@decor_log_request
+def aj_geometry_try(request):
+    """
+    Функция API для получения дерева геометрий
+    @param request: запрос, поддерживаемый тип - GET, дополнительная нашрузка не требуется
+    @return:  json дерево в формате: [{id,name,icon,child:[{},{},...,{}]},{},...,{}]
+    """
+    group_id = DAT_OWNER.DUMP.get_group(user_id=request.user.id)
+    if request.method == 'GET':
+        try:
+            return JsonResponse({'data': get_geometry_tree(group_id=group_id, geometry=None, write=False)}, status=200)
+        except:
+            return JsonResponse({'status': ' ошибочный запрос'}, status=496)
+    else:
+        return JsonResponse({'data': 'неизвестный тип запроса'}, status=480)
+
+
+@login_check
+@decor_log_request
+def aj_geometry(request):
+    group_id = DAT_OWNER.DUMP.get_group(user_id=request.user.id)
+    if request.method == 'GET':
+        try:
+            return JsonResponse({'data': geo_id_to_fc(30,
+                                                      group_id,
+                                                      [request.GET['rec_id']],
+                                                      ['name', 'icon']
+                                                      )}, status=200)
+        except:
+            return JsonResponse({'status': ' ошибочный запрос'}, status=496)
+    else:
+        return JsonResponse({'data': 'неизвестный тип запроса'}, status=480)

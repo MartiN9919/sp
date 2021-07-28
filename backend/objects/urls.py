@@ -9,4 +9,6 @@ urlpatterns = [
     url(r'^relations', views.aj_list_rels),
     url(r'^search', views.aj_search_objects),
     url(r'^relation', views.aj_relation),
+    url(r'^geometry_try', views.aj_geometry_try),
+    url(r'^geometry', views.aj_geometry),
 ]

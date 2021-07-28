@@ -79,16 +79,6 @@ class DAT_SYS_OBJ:
     NAME_VAL = 'val'  # ?????
 
 
-class DAT_SYS_KEY_GROUP:
-    TABLE_SHORT = 'sys_key_group'
-    TABLE = VEC_DATA['NAME'] + '.' + TABLE_SHORT
-    ID = 'id'
-    OBJ = 'obj'
-    OBJ_ID = 'obj_id'
-    NAME = 'name'
-    POS = 'pos'
-
-
 class DAT_SYS_PHONE_NUMBER_FORMAT:
     TABLE_SHORT = 'sys_phone_number_format'
     TABLE = VEC_DATA['NAME'] + '.' + TABLE_SHORT

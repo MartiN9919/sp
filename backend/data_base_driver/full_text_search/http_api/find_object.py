@@ -1,7 +1,7 @@
 import json
 import requests
 from data_base_driver.constants.fulltextsearch import FullTextSearch
-from data_base_driver.full_text_search.additional_functions import get_date_from_days_sec, intercept_sort_list, \
+from data_base_driver.additional_functions import intercept_sort_list, \
     get_date_time_from_sec
 from data_base_driver.sys_key.get_key_dump import get_key_by_id
 
@@ -108,9 +108,6 @@ def get_object_record_by_id_http(object_id, rec_id):
         sub_title = ', '.join(str(get_key_by_id(param['id'])['title'] + ': ' + param['value']) for param in
                               [param for param in params
                                if not get_key_by_id(param['id'])['priority']][:(3 - len(title_list))])
-
         title += ', ' + sub_title
     return {'object_id': object_id, 'rec_id': rec_id, 'params': params, 'title': title}
-
-
 
