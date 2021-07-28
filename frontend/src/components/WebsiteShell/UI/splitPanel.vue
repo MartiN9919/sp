@@ -8,8 +8,7 @@
       :resizerThickness="1"
       :size="drawer ? sizeNavigation : 0"
       v-on:update:size="sizeNavigation = $event"
-      units="percents"
-    >
+      units="percents">
     <v-col class="pa-0" slot="firstPane">
       <slot name="firstPane"></slot>
     </v-col>

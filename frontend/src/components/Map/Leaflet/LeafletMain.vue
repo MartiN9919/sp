@@ -39,7 +39,7 @@
 
 
       <!-- РЕДАКТОР -->
-      <MapEdit
+      <EditorMap
         v-model="fc_edit"
         @ok="on_edit_ok"
       />
@@ -104,7 +104,7 @@ import { MAP_ITEM }                 from '@/components/Map/Leaflet/Lib/Const';
 import { marker_get }               from '@/components/Map/Leaflet/Markers/Fun';
 
 import                      '@/components/Map/Leaflet/Markers/Pulse';
-import MapEdit         from '@/components/Map/Leaflet/Components/MapEdit';
+import EditorMap       from '@/components/Map/Leaflet/Components/EditorMap';
 import MenuOrg         from '@/components/Map/Leaflet/Components/Menu.org';
 import Range           from '@/components/Map/Leaflet/Components/Range';
 import Legend          from '@/components/Map/Leaflet/Components/Legend';
@@ -154,7 +154,7 @@ export default {
     'l-marker-cluster': Vue2LeafletMarkerCluster,
     LControlPolylineMeasure,
 
-    MapEdit,
+    EditorMap,
     MenuOrg,
     Range,
     Legend,

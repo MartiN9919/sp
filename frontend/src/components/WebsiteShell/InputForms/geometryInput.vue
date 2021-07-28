@@ -28,6 +28,7 @@
 
     <v-card>
       <v-card-title class="text-h7">{{ title }}</v-card-title>
+      <v-divider></v-divider>
       <LeafletEditor
         v-if="dialog"
         v-model="fc"

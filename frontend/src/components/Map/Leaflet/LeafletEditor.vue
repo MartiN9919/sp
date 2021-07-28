@@ -1,21 +1,11 @@
 <template>
-  <ResSplitPane
-    split-to="columns"
-    :allow-resize="true"
-    :min-size="15"
-    :max-size="85"
-    :size="sizeMenuColumn"
-    :resizerBorderThickness="1"
-    :resizerThickness="1"
-    v-on:update:size="sizeMenuColumn = $event"
-    units="percents"
-    style="position: static"
-  >
-    <v-col slot="firstPane" class="column-settings pa-0">
-      <MapGeometry/>
-    </v-col>
+  <EditorSplit>
 
-    <v-col slot="secondPane" class="column-settings overflow-hidden pa-0">
+    <template v-slot:firstPane>
+      <EditorNav/>
+    </template>
+
+    <template v-slot:secondPane>
       <l-map
         ref="map"
         style="height: 70vh; z-index: 0;"
@@ -35,7 +25,7 @@
         />
 
         <!-- РЕДАКТОР -->
-        <MapEdit
+        <EditorMap
           v-model="fc_child"
           :modeEnabled="modeEnabled"
           :modeSelected="modeSelected"
@@ -56,8 +46,9 @@
         />
 
       </l-map>
-    </v-col>
-  </ResSplitPane>
+     </template>
+
+  </EditorSplit>
 </template>
 
 
@@ -68,10 +59,10 @@ import { mapGetters, mapActions, } from 'vuex';
 import 'leaflet';
 import { LMap, LTileLayer, LControlScale, } from 'vue2-leaflet';
 import LControlPolylineMeasure from 'vue2-leaflet-polyline-measure';
-import ResSplitPane from 'vue-resize-split-pane'
 
-import MapEdit      from '@/components/Map/Leaflet/Components/MapEdit';
-import MapGeometry  from '@/components/Map/Leaflet/Components/MapGeometry';
+import EditorSplit  from '@/components/Map/Leaflet/Components/EditorSplit';
+import EditorNav    from '@/components/Map/Leaflet/Components/EditorNav';
+import EditorMap    from '@/components/Map/Leaflet/Components/EditorMap';
 import MixKey       from '@/components/Map/Leaflet/Mixins/Key';
 import MixMeasure   from '@/components/Map/Leaflet/Mixins/Measure';
 
@@ -90,16 +81,14 @@ export default {
 
   mixins: [ MixKey, MixMeasure, ],
 
-  components: { LMap, LTileLayer, LControlScale, LControlPolylineMeasure, ResSplitPane, MapEdit, MapGeometry, },
+  components: { LMap, LTileLayer, LControlScale, LControlPolylineMeasure, EditorMap, EditorNav, EditorSplit, },
 
-  data() {
-    return {
-      map_options: {
-        zoomControl: false,
-        zoomSnap: 0.5,
-      },
-    }
-  },
+  data: () => ({
+    map_options: {
+      zoomControl: false,
+      zoomSnap: 0.5,
+    },
+  }),
 
   computed: {
     ...mapGetters([
