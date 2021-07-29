@@ -1,7 +1,7 @@
 import datetime
 
-from data_base_driver.full_text_search.http_api.find_key_params import find_key_value_http
-from data_base_driver.full_text_search.http_api.find_object import get_object_record_by_id_http
+from data_base_driver.record.find_object import find_key_value_http
+from data_base_driver.record.get_record import get_object_record_by_id_http
 from data_base_driver.input_output.io import io_set
 from data_base_driver.record.validate_record import validate_record, get_country_by_number, remove_special_chars
 from data_base_driver.sys_key.get_key_dump import get_key_by_id

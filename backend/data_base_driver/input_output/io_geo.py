@@ -1,9 +1,8 @@
-import datetime
 import json
 import geojson
 
 from data_base_driver.constants.const_dat import DAT_SYS_OBJ, DAT_SYS_KEY
-from .io import io_get_obj, io_get_rel_generator
+from data_base_driver.input_output.io import io_get_obj, io_get_rel_generator, io_get_geometry_tree
 from data_base_driver.sys_key.get_object_info import rel_rec_to_el, el_to_rec_id
 
 
@@ -108,3 +107,27 @@ def geo_id_to_fc(obj, group_id, geo_ids, keys):
     #     temp['properties']['hint'] = 'что нибудь'
     #     temp['properties']['date'] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
     return geojson.FeatureCollection(features)
+
+
+def get_geometry_tree(group_id, geometry=None, write=False):
+    """
+    Функция для получения дерева геометрий
+    @param group_id: идентификатор группы пользователя
+    @param geometry: геометрий на данной итерации рекурсии, по стандарту None
+    @param write: флаг на запись
+    @return: дерево в формате: [{id,name,icon,child:[{},{},...,{}]},{},...,{}]
+    """
+    if not geometry:
+        geometry = {'id': 0}
+    geometry_list = io_get_geometry_tree(group_id, geometry['id'], write)
+    for item in geometry_list:
+        item['child'] = []
+        get_geometry_tree(group_id, item, write)
+    geometry['child'] = geometry_list
+    return geometry_list
+
+#
+#
+# print(geo_id_to_fc(30, 0, [41], ['name', 'icon']))
+
+

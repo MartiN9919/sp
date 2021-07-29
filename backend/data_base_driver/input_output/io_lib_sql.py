@@ -2,7 +2,7 @@ import datetime
 from data_base_driver.connect.connect_manticore import db_shinxql
 from data_base_driver.connect.connect_mysql import db_sql, db_connect
 from data_base_driver.constants.const_dat import DAT_SYS_ID, DAT_OBJ_ROW
-from data_base_driver.full_text_search.http_api.add_object_http import add_record_http, add_relation_http
+from data_base_driver.input_output.add_object_http import add_record_http, add_relation_http
 
 DEBUG = False
 

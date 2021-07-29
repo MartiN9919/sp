@@ -1,50 +1,43 @@
-from data_base_driver.input_output.io import io_get_obj
+from data_base_driver.additional_functions import get_date_time_from_sec, get_title
+from data_base_driver.input_output.io import io_get_obj_manticore_dict
 from data_base_driver.sys_key.get_key_dump import get_key_by_id
-from itertools import groupby
 
 
-def get_records_by_key_params(group_id, type, key, value, keys):
+def get_object_record_by_id_http(object_id, rec_id, group_id=0):
     """
-    функция для нахождения объектов с заданным параметрами
-    :param type: тип объекта
-    :param key: тип искомого ключа
-    :param value: значение искомого ключа
-    :param keys: параметры которые необходимо знать у найденных объектов
-    :return: список словарей в формате [ {id:{param:{title:title1,value:value1},param1:{...},...,paramN:valueN}},{},...{} ]
+    Функция для получения информации о объекте по его типу и идентификатору записи
+    @param object_id: тип объекта
+    @param rec_id: идентификатору записи
+    @param group_id: идентификатору группы пользователя
+    @return: словарь в формате {object_id, rec_id, params:[{id,val},...,{}]}
     """
-    objects = io_get_obj(group_id=group_id, obj=type, keys=[key], ids=[], where_dop_row=[])
-    objects_id = [object[0] for object in objects if object[2] == str(value)]
-    objects = io_get_obj(group_id=group_id, obj=type, ids=objects_id, keys=keys, where_dop_row=[])
-    group_objects = [list(group) for key, group in groupby(sorted(list(objects)), lambda x: x[0])]
-    result = [{objects[0][0]: {get_key_by_id(record[1])['name']: {'title': get_key_by_id(record[1])['title'],
-                                                                  'value': record[2]} for record in objects}}
-              for objects in group_objects]
-    return result
+    response = io_get_obj_manticore_dict(group_id, object_id, [], [rec_id], 500, '')
+    temp = [(int(item['key_id']), item['val'], int(item['sec'])) for item in response]
+    params = []
+    for item in temp:
+        keys = [key for key in params if key['id'] == int(item[0])]
+        if len(keys) > 0:
+            for key in keys:
+                key['values'].append({'value': item[1], 'date': get_date_time_from_sec(item[2])})
+            continue
+        params.append({'id': int(item[0]), 'values': [{'value': item[1], 'date': get_date_time_from_sec(item[2])}]})
+    for item in params:
+        item['values'].sort(key=lambda x: x['date'], reverse=True)
+    params.sort(key=lambda x: get_key_by_id(x['id'])['title'], reverse=True)
+    params.sort(key=lambda x: get_key_by_id(x['id'])['need'], reverse=True)
+    return {'object_id': object_id, 'rec_id': rec_id, 'params': params}
 
 
-def get_record_by_id(group_id, object_type, record_id):
+def get_record_title(object_id, rec_id, group_id=0):
     """
-    функция для получения отдельного объекта по его идентификационному номеру
-    @param group_id: идентификационный номер группы пользователя
-    @param object_type: тип объекта, имя или строка
-    @param record_id: идентификационный номер объекта
-    @return: словарь в формате {rec_id, object_id, params:[{id,val},...,{}]}
+    Функция для получения строки с краткой информацией о объекте
+    @param object_id: тип объекта
+    @param rec_id: идентификатору записи
+    @param group_id: идентификатору группы пользователя
+    @return: словарь в формате {object_id, rec_id, title},...,{}]}
     """
-    object = io_get_obj(group_id=group_id, obj=object_type, keys=[], ids=[record_id], where_dop_row=[])
-    return {'rec_id': record_id, 'object_id': object_type,
-            'params': [{'id': record[1], 'value': record[2], 'date': record[3]} for record in object]}
+    record = get_object_record_by_id_http(object_id, rec_id, group_id=0)
+    title = get_title(record['params'])
+    return {'object_id': record['object_id'], 'rec_id': record['rec_id'], 'title': title}
 
 
-def get_records_by_object(group_id, object_type):
-    """
-    функция для получения списка объектов по заданному типу
-    @param group_id: идентификационный номер группы пользователя
-    @param object_type: тип объекта, название иди идентификационный номер
-    @return:
-    """
-    objects = io_get_obj(group_id=group_id, obj=object_type, keys=[], ids=[], where_dop_row=[])
-    group_objects = [list(group) for key, group in groupby(sorted(list(objects)), lambda x: x[0])]
-    result = [{objects[0][0]: {get_key_by_id(record[1])['name']: {'title': get_key_by_id(record[1])['title'],
-                                                                  'value': record[2]} for record in objects}}
-              for objects in group_objects]
-    return result
