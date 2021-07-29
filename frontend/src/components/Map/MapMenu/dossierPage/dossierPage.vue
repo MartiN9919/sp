@@ -8,6 +8,7 @@
     :compass="true"
     style="height: 500px;">
   </vue-pannellum>
+  {{foo}}
   </div>
 </template>
 

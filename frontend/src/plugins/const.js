@@ -1,12 +1,16 @@
 
-export class APP {
-  static COLOR             = '#00796B';
-};
+export default class CONST {
+  static APP = class {
+    static COLOR_OBJ         = '#00796B';
+    //static COLOR_FONT        = '#fff';
+  };
 
-export class TREE {
-  static ICON_SIZE         = '20'; // undefined; // '20';
-  static ICON_FOLDER_CLOSE = 'mdi-folder-outline';
-  static ICON_FOLDER_OPEN  = 'mdi-folder-open-outline';
-  static COLOR_DEFAULT     = undefined; // '#616161';
-  static COLOR_SELECT      = APP.COLOR;
+  static TREE = class {
+    static ICON_SIZE         = undefined; // '20';
+    static ICON_FOLDER_CLOSE = 'mdi-folder-outline';
+    static ICON_FOLDER_OPEN  = 'mdi-folder-open-outline';
+
+    static COLOR_DEFAULT     = undefined; // '#616161';
+    static COLOR_SELECT      = CONST.APP.COLOR_OBJ;
+  };
 };

@@ -10,8 +10,15 @@
     open-on-click
     activatable
   >
-    <template v-slot:prepend="{ item, open }">
-      <v-icon :size="getIconSize()" :color="getColor(item)">{{ getIcon(item, open) }}</v-icon>
+    <template v-slot:label="{ item, open }">
+      <v-icon
+        :id="item.id"
+        :size="$CONST.TREE.ICON_SIZE"
+        :color="getColor(item)"
+      >{{ getIcon(item, open) }}</v-icon>
+      <div
+        class="v-treeview-node__label"
+      >{{ item.name }}</div>
     </template>
   </v-treeview>
 </template>
@@ -20,7 +27,7 @@
 
 <script>
 
-import { TREE } from '@/plugins/const';
+// import { TREE } from '@/plugins/const';
 
 export default {
   name:       'EditorNav',
@@ -103,14 +110,12 @@ export default {
   methods: {
     getIcon(item, open) {
       if (!item.children) return 'mdi-vector-polygon'
-      if (open)           return TREE.ICON_FOLDER_OPEN
-      return TREE.ICON_FOLDER_CLOSE //'mdi-folder-outline'
+      if (open)           return this.$CONST.TREE.ICON_FOLDER_OPEN
+      return this.$CONST.TREE.ICON_FOLDER_CLOSE
     },
 
-    getIconSize() { return TREE.ICON_SIZE; },
-
     getColor(item) {
-      return (item.id == this.id_select) ? TREE.COLOR_SELECT : TREE.COLOR_DEFAULT;
+      return (item.id == this.id_select) ? this.$CONST.TREE.COLOR_SELECT : this.$CONST.TREE.COLOR_DEFAULT;
     },
   },
 }
