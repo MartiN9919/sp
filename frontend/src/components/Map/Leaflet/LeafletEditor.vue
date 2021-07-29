@@ -1,6 +1,7 @@
 <template>
   <EditorSplit
     style="height: 70vh;"
+    keySave="script_param"
   >
 
     <template v-slot:firstPane>

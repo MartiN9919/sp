@@ -6,7 +6,7 @@
     units="percents"
     :allow-resize="true"
     :min-size="20"
-    :max-size="50"
+    :max-size="60"
     :resizerBorderThickness="1"
     :resizerThickness="1"
     :size="split_visible ? split_pos : 0"
@@ -28,13 +28,16 @@ import ResSplitPane  from 'vue-resize-split-pane'
 
 export default {
   name: 'EditorSplit',
+  props: {
+    keySave: { type: String, default() { return '' } },
+  },
   components: { ResSplitPane, },
   data: () => ({
     split_storage_name: undefined,
     split_pos: 30,
   }),
   mounted () {
-    this.split_storage_name = router.currentRoute.name + '_editor_splitter_pos'
+    this.split_storage_name = router.currentRoute.name + '_editor_splitter_' + this.keySave+'_pos'
     if (localStorage[this.split_storage_name]) {
       this.split_pos = parseInt(localStorage[this.split_storage_name])
     }
