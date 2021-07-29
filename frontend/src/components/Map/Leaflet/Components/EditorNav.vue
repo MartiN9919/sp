@@ -10,14 +10,22 @@
     open-on-click
     activatable
   >
+    <template v-slot:prepend="{ item, open }">
+      <v-icon :size="getIconSize()" :color="getColor(item)">{{ getIcon(item, open) }}</v-icon>
+    </template>
   </v-treeview>
 </template>
 
+
+
 <script>
+
+import { TREE } from '@/plugins/const';
 
 export default {
   name:       'EditorNav',
   data: () => ({
+    id_select: 8,
     items: [
       {
         id: 1,
@@ -91,6 +99,20 @@ export default {
       },
     ],
   }),
+
+  methods: {
+    getIcon(item, open) {
+      if (!item.children) return 'mdi-vector-polygon'
+      if (open)           return TREE.ICON_FOLDER_OPEN
+      return TREE.ICON_FOLDER_CLOSE //'mdi-folder-outline'
+    },
+
+    getIconSize() { return TREE.ICON_SIZE; },
+
+    getColor(item) {
+      return (item.id == this.id_select) ? TREE.COLOR_SELECT : TREE.COLOR_DEFAULT;
+    },
+  },
 }
 </script>
 
