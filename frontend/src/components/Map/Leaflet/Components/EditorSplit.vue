@@ -1,5 +1,6 @@
 <template>
   <ResSplitPane
+    ref="EditorSplit"
     style="height:auto; overflow: auto; position: inherit; "
     split-to="columns"
     units="percents"
@@ -21,8 +22,8 @@
 </template>
 
 <script>
+// import { mapActions, mapGetters } from 'vuex'
 import router from '@/router'
-import { mapActions, mapGetters } from 'vuex'
 import ResSplitPane  from 'vue-resize-split-pane'
 
 export default {
@@ -37,7 +38,7 @@ export default {
     if (localStorage[this.split_storage_name]) {
       this.split_pos = parseInt(localStorage[this.split_storage_name])
     }
-    //document.getElementsByClassName('column')[0].classList.add('shadow-effect')
+    this.$refs.EditorSplit.$children[1].$el.classList.add('shadow-effect')
   },
   watch: {
     split_pos (newSize) {
