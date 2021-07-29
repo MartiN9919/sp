@@ -186,8 +186,7 @@ def search_relations(group_id, request):
         parent['rels'] = []
         return search_relations_recursive(group_id, request, parent, parent)
 
-#
-#
+
 # request = {'object_id': 35, 'rec_id': 1, 'rel': None, 'rels': [
 #     {'object_id': 35, 'rel': {'id': 0, 'value': 0, 'date_time_start': None, 'date_time_end': '2021-07-20 12:00'},
 #      'request': '', 'actual': True, 'rels': []},

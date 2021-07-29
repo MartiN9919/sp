@@ -1,5 +1,4 @@
 import json
-
 import requests
 
 from data_base_driver.constants.fulltextsearch import FullTextSearch
@@ -63,7 +62,7 @@ def io_get_obj_manticore_dict(group_id, object_type, keys, ids, ids_max_block, w
     @param keys: список содержащий идентификаторы ключей
     @param ids: список содержащий идентификаторы объектов
     @param ids_max_block: максимальное количество записей в ответе
-    @param where_dop_row: аргументы полнотекствого поиска (блок match запроса sphinx/manticore)
+    @param where_dop_row: аргументы полнотекстового поиска (блок match запроса sphinx/manticore)
     @return: список словарей в формате [{rec_id,sec,key_id,val},{},...,{}]
     """
     if not ids:
@@ -102,7 +101,7 @@ def io_get_obj_manticore_tuple(group_id, object_type, keys, ids, ids_max_block, 
     @param keys: список содержащий идентификаторы ключей
     @param ids: список содержащий идентификаторы объектов
     @param ids_max_block: максимальное количество записей в ответе
-    @param where_dop_row: аргументы полнотекствого поиска (блок match запроса sphinx/manticore)
+    @param where_dop_row: аргументы полнотекстового поиска (блок match запроса sphinx/manticore)
     @return: список словарей в формате [(rec_id,key_id,val,sec),(),...,()]
     """
     return [(item['rec_id'], int(item['key_id']), item['val'], item['sec'])

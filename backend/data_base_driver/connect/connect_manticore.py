@@ -130,7 +130,6 @@ def db_shinxql(sql, wait=False, read=True, database=MANTICORE, connection=-1):
     @return: результат запроса на чтение, либо пустой список если успешная запись, или список с
     строкой 'error' в случае ошибки
     """
-
     def run(connection_manticore, db_opened, db_reconnect):
         if ((not db_opened) or db_reconnect):
             connection_manticore = manticore_connect(database=database)

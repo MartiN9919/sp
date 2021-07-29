@@ -183,11 +183,8 @@ def aj_geometry(request):
     group_id = DAT_OWNER.DUMP.get_group(user_id=request.user.id)
     if request.method == 'GET':
         try:
-            return JsonResponse({'data': geo_id_to_fc(30,
-                                                      group_id,
-                                                      [request.GET['rec_id']],
-                                                      ['name', 'icon']
-                                                      )}, status=200)
+            geometry = geo_id_to_fc(30, group_id, [request.GET['rec_id']], ['name', 'icon'])
+            return JsonResponse({'data': geometry}, status=200)
         except:
             return JsonResponse({'status': ' ошибочный запрос'}, status=496)
     else:

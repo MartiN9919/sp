@@ -1,6 +1,6 @@
 from data_base_driver.constants.fulltextsearch import FullTextSearch
 from data_base_driver.record.find_object import find_reliable_http
-from data_base_driver.record.get_record import get_object_record_by_id_http
+from data_base_driver.record.get_record import get_object_record_by_id_http, get_record_title
 from data_base_driver.relations.find_rel import search_rel_with_key_http
 from data_base_driver.relations.find_rel import find_with_rel_reliable_key
 
@@ -86,10 +86,10 @@ def search(request):
     @return: список найденных объектов в формате [{object_id, rec_id, params:[{id,val},...,{}]},...,{}]
     """
     if len(request.get(FullTextSearch.RELATIONS, None)) != 0:
-        return [get_object_record_by_id_http(request.get(FullTextSearch.OBJECT_ID, None), item) for item in
+        return [get_record_title(request.get(FullTextSearch.OBJECT_ID, None), item) for item in
                 recursion_search(request)['rec_ids']]
     else:
-        return [get_object_record_by_id_http(request.get(FullTextSearch.OBJECT_ID, None), item) for item in
+        return [get_record_title(request.get(FullTextSearch.OBJECT_ID, None), item) for item in
                 find_reliable_http(request.get(FullTextSearch.OBJECT_ID, None),
                                    request.get(FullTextSearch.REQUEST, ''),
                                    request.get(FullTextSearch.ACTUAL, False))]
