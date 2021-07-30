@@ -1,10 +1,7 @@
 <template>
-  <div>
-  <v-btn @click="tt1">111</v-btn>
-  <v-btn @click="tt2">222</v-btn>
-  <v-btn @click="tt3">333</v-btn>
   <v-treeview
     :items="items"
+    @update:active="activateItem"
     hoverable
     activatable
     transition
@@ -30,7 +27,6 @@
       </div>
     </template>
   </v-treeview>
-  </div>
 </template>
 
 <script>
@@ -43,51 +39,88 @@ export default {
     item_sel_prop: Number,
   },
 
+  data: () => ({
+    items_path_id: {},
+    items_parent: {},          // id родителя по id узла
+    items_node:  {},           // узлел по его id
+  }),
+
   watch: {
-    // при внешнем изменении model
-    item_sel_prop: function(val) {
-      console.log(111, val)
+    item_sel_prop: function(item_id) {
+      console.log(111, item_id);
+      this.setActiveChain(item_id);
     },
   },
 
-  mounted() {
-    // this.model = this.item_sel_prop;
+  mounted: function() {
+    // построить словари по id
+    this.items_step(this.items, [], function(item, path_id) {
+      this.items_node[item.id] = item;
+      this.items_path_id[item.id] = path_id;
+      if (item.children) {
+        for (const item_children of item.children) {
+          this.items_parent[item_children.id] = item.id
+        }
+      }
+    }.bind(this));
+
+    //console.log(this.items_parent)
+    console.log(this.items_path_id)
   },
 
   computed: {
     item_sel: {
-      get() {
-        console.log('item_sel get', this.item_sel_prop);
-        return this.item_sel_prop;
-      },
-      // при внутреннем изменении model
-      set(val) {
-        console.log('item_sel set', val)
-        this.$emit('item_sel_change', val);
-        // this.model = val;
-      },
+      get()    { return this.item_sel_prop; },
+      set(val) { this.$emit('item_sel_change', val); },
     },
   },
 
   methods: {
-    tt1() {
-      console.log(1, this.model, this.item_sel)
+    // вызвать fun(item) для всех item, в т.ч. вложенных
+    items_step(items, path_id, fun) {
+      for (const item of items) {
+        const path_id_new = [...path_id, ...[item.id]]
+        fun(item, path_id_new)
+        if (item.children) this.items_step(item.children, path_id_new, fun)
+      }
     },
-    tt2() {
-      this.item_sel = 9;
-    },
-    tt3() {
-      this.item_sel = 10;
-    },
+
     getIcon(item, open) {
-      if (!item.children) return 'mdi-vector-polygon'
-      if (open)           return this.$CONST.TREE.ICON_FOLDER_OPEN
-      return this.$CONST.TREE.ICON_FOLDER_CLOSE
+      if (!item.children) return 'mdi-vector-polygon';
+      if (open)           return this.$CONST.TREE.ICON_FOLDER_OPEN;
+      return this.$CONST.TREE.ICON_FOLDER_CLOSE;
     },
 
     getColor(item) {
-      return (item.id == this.item_sel) ? this.$CONST.TREE.COLOR_SELECT : this.$CONST.TREE.COLOR_DEFAULT;
+      console.log(1)
+      return ((this.items_path_id[item.id] != undefined) && (this.items_path_id[item.id].indexOf(this.item_sel) !== -1)) ? this.$CONST.TREE.COLOR_SELECT : this.$CONST.TREE.COLOR_DEFAULT;
     },
+
+    activateItem (item) {
+      if (!item) return;
+      this.item_sel = item[0].id;
+      // if (item.length) {
+      //   /** Вызов родительского метода и передача ему глубокой копии выбранного скрипта */
+      //   this.$emit('changeSelectedTreeViewItem', JSON.parse(JSON.stringify(item[0])))
+      //   this.lastActiveItem = item[0]
+      // } else {
+      //   /** Вызов родительского метода и передача ему глубокой копии выбранного скрипта */
+      //   this.$emit('changeSelectedTreeViewItem', JSON.parse(JSON.stringify(this.lastActiveItem)))
+      //   this.lastActiveItem = null
+      // }
+    },
+
+    setActiveChain(item_id) {
+      this.items_active_chain = []
+      // this.findItemInTreeView(item, this.treeViewItems)
+      // this.listOpenFolder = this.listOpenFolder.concat(this.items_active_chain)
+      // sleep(500).then(() => {
+      //   this.$vuetify.goTo(
+      //     '#' + this.iconId(item.id),
+      //     { duration: 300, offset: 100, easing: 'easeInOutCubic', container: '.v-treeview' })
+      // })
+    },
+
   },
 }
 </script>
