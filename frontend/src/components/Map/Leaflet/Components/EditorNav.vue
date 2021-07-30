@@ -1,38 +1,17 @@
 <template>
-  <v-treeview
-    active-class=""
-    color=""
-    :items="items"
-    return-object
-    hoverable
-    transition
-    dense
-    open-on-click
-    activatable
-  >
-    <template v-slot:label="{ item, open }">
-      <v-icon
-        :id="item.id"
-        :size="$CONST.TREE.ICON_SIZE"
-        :color="getColor(item)"
-      >{{ getIcon(item, open) }}</v-icon>
-      <div
-        class="v-treeview-node__label"
-      >{{ item.name }}</div>
-    </template>
-  </v-treeview>
+  <PaneTree
+   :items="items"
+   :idSelect=8
+  />
 </template>
 
-
-
 <script>
-
-// import { TREE } from '@/plugins/const';
+import PaneTree from '@/components/Map/Leaflet/Components/PaneTree';
 
 export default {
-  name:       'EditorNav',
+  name: 'EditorNav',
+  components: { PaneTree, },
   data: () => ({
-    id_select: 8,
     items: [
       {
         id: 1,
@@ -107,17 +86,10 @@ export default {
     ],
   }),
 
-  methods: {
-    getIcon(item, open) {
-      if (!item.children) return 'mdi-vector-polygon'
-      if (open)           return this.$CONST.TREE.ICON_FOLDER_OPEN
-      return this.$CONST.TREE.ICON_FOLDER_CLOSE
-    },
+  watch: {
 
-    getColor(item) {
-      return (item.id == this.id_select) ? this.$CONST.TREE.COLOR_SELECT : this.$CONST.TREE.COLOR_DEFAULT;
-    },
   },
+
 }
 </script>
 
