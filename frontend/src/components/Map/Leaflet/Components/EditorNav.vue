@@ -1,8 +1,12 @@
 <template>
+  <div>
+  <v-btn @click="tt">aaa</v-btn>
+
   <PaneTree
+   v-model="item_sel"
    :items="items"
-   :idSelect=8
   />
+</div>
 </template>
 
 <script>
@@ -11,7 +15,18 @@ import PaneTree from '@/components/Map/Leaflet/Components/PaneTree';
 export default {
   name: 'EditorNav',
   components: { PaneTree, },
+  watch: {
+    item_sel: function(val) {
+        console.log('EditorNav set', val);
+      },
+  },
+  methods: {
+    tt() {
+      this.item_sel = 3;
+    }
+  },
   data: () => ({
+    item_sel: 8,
     items: [
       {
         id: 1,

@@ -1,4 +1,8 @@
 <template>
+  <div>
+  <v-btn @click="tt1">111</v-btn>
+  <v-btn @click="tt2">222</v-btn>
+  <v-btn @click="tt3">333</v-btn>
   <v-treeview
     :items="items"
     hoverable
@@ -26,17 +30,55 @@
       </div>
     </template>
   </v-treeview>
+  </div>
 </template>
 
 <script>
 
 export default {
   name: 'PaneTree',
+  model: { prop: 'item_sel_prop', event: 'item_sel_change', },
   props: {
     items: Array,
-    idSelect: Number,
+    item_sel_prop: Number,
   },
+
+  watch: {
+    // при внешнем изменении model
+    item_sel_prop: function(val) {
+      console.log(111, val)
+    },
+  },
+
+  mounted() {
+    // this.model = this.item_sel_prop;
+  },
+
+  computed: {
+    item_sel: {
+      get() {
+        console.log('item_sel get', this.item_sel_prop);
+        return this.item_sel_prop;
+      },
+      // при внутреннем изменении model
+      set(val) {
+        console.log('item_sel set', val)
+        this.$emit('item_sel_change', val);
+        // this.model = val;
+      },
+    },
+  },
+
   methods: {
+    tt1() {
+      console.log(1, this.model, this.item_sel)
+    },
+    tt2() {
+      this.item_sel = 9;
+    },
+    tt3() {
+      this.item_sel = 10;
+    },
     getIcon(item, open) {
       if (!item.children) return 'mdi-vector-polygon'
       if (open)           return this.$CONST.TREE.ICON_FOLDER_OPEN
@@ -44,7 +86,7 @@ export default {
     },
 
     getColor(item) {
-      return (item.id == this.idSelect) ? this.$CONST.TREE.COLOR_SELECT : this.$CONST.TREE.COLOR_DEFAULT;
+      return (item.id == this.item_sel) ? this.$CONST.TREE.COLOR_SELECT : this.$CONST.TREE.COLOR_DEFAULT;
     },
   },
 }
