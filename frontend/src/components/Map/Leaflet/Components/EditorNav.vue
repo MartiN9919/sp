@@ -18,14 +18,15 @@ export default {
   components: { PaneTree, },
 
   created: function() {
+    // fix bug
     this.$watch('item_sel', function(val) {
-      console.log('Changed name.', val);
+      console.log('Changed', val, this.item_sel);
     });
   },
 
   methods: {
     tt() {
-      this.item_sel = 3;
+      this.item_sel = 8;
     },
     tt5() {
       console.log(this.item_sel);
@@ -33,7 +34,7 @@ export default {
   },
 
   data: () => ({
-    item_sel: 8,
+    item_sel: 4,
     items: [
       {
         id: 1,
