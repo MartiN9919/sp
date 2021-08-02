@@ -32,7 +32,7 @@ def aj_list_classifier(request):
     Функция API для получения списка классификаторов для отдельного объекта
     @param request: запрос на получение списка, может быть только GET и должен содержать в url object_id
     @return: json содержащих информации по ключу data в формате:
-    [{id,obj_id,col,need,type,list_id:{name,val:[]},name,title,hint,descript},...,{}]
+    [{id,obj_id,col,need,type,list_id:{name,val:[]},name,title,hint,descript}, ...,{}]
     """
     if request.method == 'GET':
         try:
@@ -192,6 +192,18 @@ def aj_geometry(request):
         try:
             geometry = geo_id_to_fc(30, group_id, [request.GET['rec_id']], ['name', 'icon'])
             return JsonResponse({'data': geometry}, status=200)
+        except:
+            return JsonResponse({'status': ' ошибочный запрос'}, status=496)
+    else:
+        return JsonResponse({'data': 'неизвестный тип запроса'}, status=480)
+
+
+@login_check
+@decor_log_request
+def aj_groups(request):
+    if request.method == 'GET':
+        try:
+            return JsonResponse({'data': DAT_OWNER.DUMP.get_groups_list()}, status=200)
         except:
             return JsonResponse({'status': ' ошибочный запрос'}, status=496)
     else:

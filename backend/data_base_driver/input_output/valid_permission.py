@@ -74,7 +74,7 @@ def valid_group(group_id, permit_group, keys_validation_tuple, write=False):
                 not permit_group.get(keys_validation_dict['owner_add_ro'], None):
             return True
         read_groups = permit_group.get(keys_validation_dict['owner_add_ro'], []) + permit_group.get(
-            keys_validation_dict['owner_add_ro_limit'], [])
+            keys_validation_dict['owner_add_ro_limit'], []) + permit_group.get(keys_validation_dict['owner_add_rw'], [])
         return DAT_OWNER.DUMP.valid_io_group(group_id=group_id,
                                              valids_id=read_groups)
 
