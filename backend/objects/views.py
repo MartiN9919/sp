@@ -161,7 +161,7 @@ def aj_set_geometry(request):
 
 @login_check
 @decor_log_request
-def aj_geometry_try(request):
+def aj_geometry_tree(request):
     """
     Функция API для получения дерева геометрий
     @param request: запрос, поддерживаемый тип - GET, дополнительная нашрузка не требуется

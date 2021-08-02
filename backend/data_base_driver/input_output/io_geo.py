@@ -108,22 +108,21 @@ def geo_id_to_fc(obj, group_id, geo_ids, keys):
     #     temp['properties']['date'] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
     return geojson.FeatureCollection(features)
 
-
 def get_geometry_tree(group_id, geometry=None, write=False):
     """
     Функция для получения дерева геометрий
     @param group_id: идентификатор группы пользователя
     @param geometry: геометрий на данной итерации рекурсии, по стандарту None
     @param write: флаг на запись
-    @return: дерево в формате: [{id,name,icon,child:[{},{},...,{}]},{},...,{}]
+    @return: дерево в формате: [{id,name,icon,children:[{},{},...,{}]},{},...,{}]
     """
     if not geometry:
         geometry = {'id': 0}
     geometry_list = io_get_geometry_tree(group_id, geometry['id'], write)
     for item in geometry_list:
-        item['child'] = []
         get_geometry_tree(group_id, item, write)
-    geometry['child'] = geometry_list
+    if len(geometry_list) > 0:
+        geometry['children'] = geometry_list
     return geometry_list
 
 #

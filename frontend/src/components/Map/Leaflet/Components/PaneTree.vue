@@ -90,7 +90,11 @@ export default {
     },
 
     get_color(item) {
-      return ((this.item_sel) && (this.items_path[this.item_sel].indexOf(item.id) !== -1)) ? this.$CONST.TREE.COLOR_SELECT : this.$CONST.TREE.COLOR_DEFAULT;
+      return (
+          (this.item_sel) &&
+          (this.items_path[this.item_sel]) &&
+          (this.items_path[this.item_sel].indexOf(item.id) !== -1)
+        ) ? this.$CONST.TREE.COLOR_SELECT : this.$CONST.TREE.COLOR_DEFAULT;
     },
 
   },

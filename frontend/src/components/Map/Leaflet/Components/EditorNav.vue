@@ -11,6 +11,7 @@
 </template>
 
 <script>
+import { getResponseAxios } from '@/plugins/axios_settings';
 import PaneTree from '@/components/Map/Leaflet/Components/PaneTree';
 
 export default {
@@ -22,6 +23,15 @@ export default {
     this.$watch('item_sel', function(val) {
       console.log('Changed', val, this.item_sel);
     });
+
+    // get data
+    getResponseAxios(this.$CONST.API.OBJ.GEOMETRY_TREE)
+      .then(response => {
+        console.log(response)
+        this.items = response.data;
+        return Promise.resolve(response)
+      })
+      .catch(error => { return Promise.reject(error) });
   },
 
   methods: {
