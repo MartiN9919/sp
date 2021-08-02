@@ -33,19 +33,19 @@ export default {
   },
   components: { ResSplitPane, },
   data: () => ({
-    split_storage_name: undefined,
+    split_key: undefined,
     split_pos: 30,
   }),
   mounted () {
-    this.split_storage_name = router.currentRoute.name + '_editor_splitter_' + this.keySave+'_pos'
-    if (localStorage[this.split_storage_name]) {
-      this.split_pos = parseInt(localStorage[this.split_storage_name])
+    this.split_key = router.currentRoute.name + '_editor_splitter_' + this.keySave+'_pos'
+    if (localStorage[this.split_key]) {
+      this.split_pos = parseInt(localStorage[this.split_key])
     }
     this.$refs.EditorSplit.$children[1].$el.classList.add('shadow-effect')
   },
   watch: {
     split_pos (newSize) {
-      localStorage[this.split_storage_name] = newSize
+      localStorage[this.split_key] = newSize
     },
   },
   computed: {

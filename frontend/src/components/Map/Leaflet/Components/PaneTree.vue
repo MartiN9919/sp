@@ -2,7 +2,6 @@
   <v-treeview
     :items="items"
     :open="items_active"
-    :active="items_active"
     @update:active="activate_item"
     hoverable
     activatable
@@ -31,6 +30,7 @@
 </template>
 
 <script>
+//     :active="items_active"
 export default {
   name: 'PaneTree',
   model: { prop: 'item_sel_prop', event: 'item_sel_change', },
@@ -45,46 +45,56 @@ export default {
   }),
 
   watch: {
-    item_sel_prop: function(item_id) {
+    items: function(items) {
+      this.ini_items();
+    },
+    item_sel: function(item_id) {
       this.activate_item(item_id);
     },
   },
 
-  created: function() {
-    this.ini_items();
-    this.activate_item(this.item_sel);
-  },
+  // created: function() {
+  //   this.ini_items();
+  // },
 
   computed: {
     item_sel: {
-      get()   { return this.item_sel_prop; },
-      set(id) { this.$emit('item_sel_change', id); },
+      get()   {
+        return this.item_sel_prop;
+      },
+      set(val) {
+        let id = 0;
+        if (val instanceof Object) { id = (val.length > 0) ? val[0] : 0; }
+        else                       { id = val; }
+        if (this.items_path[id]) { this.items_active = this.items_path[id]; }
+        this.$emit('item_sel_change', id);
+      },
     },
   },
 
   methods: {
     ini_items() {
-      this.loop_items(this.items, [], function(item, path_id) {
+      if (!this.items) return;
+      this._loop_items_(this.items, [], function(item, path_id) {
         this.items_path[item.id] = path_id;
       }.bind(this));
     },
 
     // вызывать fun(item) для всех item, в т.ч. вложенных
-    loop_items(items, path_id, fun) {
+    _loop_items_(items, path_id, fun) {
       for (let item of items) {
         const path_id_new = [...path_id, ...[item.id]]
         fun(item, path_id_new)
-        if (item.children) this.loop_items(item.children, path_id_new, fun)
+        if (item.children) this._loop_items_(item.children, path_id_new, fun)
       }
     },
 
     activate_item(item_id) {
       this.item_sel = item_id;
-      this.items_active = this.items_path[this.item_sel];
     },
 
     get_icon(item, open) {
-      if (!item.children) return 'mdi-vector-polygon';
+      if (!item.children) return (item.icon)?item.icon:'mdi-vector-polygon';
       if (open)           return this.$CONST.TREE.ICON_FOLDER_OPEN;
       return this.$CONST.TREE.ICON_FOLDER_CLOSE;
     },
