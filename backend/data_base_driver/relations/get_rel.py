@@ -3,7 +3,7 @@ import datetime
 from data_base_driver.record.find_object import find_reliable_http
 from data_base_driver.record.get_record import get_object_record_by_id_http
 from data_base_driver.relations.find_rel import search_rel_with_key_http
-from data_base_driver.input_output.io import io_get_rel_manticore_tuple
+from data_base_driver.input_output.input_output import io_get_rel_manticore_tuple
 from data_base_driver.sys_key.get_object_dump import get_object_by_name
 
 

@@ -1,5 +1,5 @@
 from data_base_driver.additional_functions import intercept_sort_list
-from data_base_driver.input_output.io import io_get_obj_manticore_dict
+from data_base_driver.input_output.input_output import io_get_obj_manticore_dict
 
 
 def find_reliable_http(object_type, request, actual=False, group_id=0):

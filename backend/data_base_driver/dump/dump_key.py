@@ -18,7 +18,6 @@ class DUMP_KEY:
         self._lock = threading.Lock()
         self._refresh_()
 
-
     def _refresh_(self, force=False):
         if not force and (self.refreshTime > time.time()): return
         with self._lock:
@@ -78,7 +77,6 @@ class DUMP_KEY:
             for item in self.dump:
                 ind = find_element_in_list(list_element=DAT_SYS_KEY.NAME_OWNER_LIST, element=item[DAT_SYS_KEY.NAME])
                 if ind < 0: continue
-
                 val = self.owners.get(item[DAT_SYS_KEY.OBJ_ID], [-1, -1, -1, -1])
                 val[ind] = item[DAT_SYS_KEY.ID]
                 self.owners[item[DAT_SYS_KEY.OBJ_ID]] = val

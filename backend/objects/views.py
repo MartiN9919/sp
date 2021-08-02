@@ -6,7 +6,7 @@ from data_base_driver.constants.const_dat import DAT_OWNER
 from data_base_driver.record.get_record import get_object_record_by_id_http
 from data_base_driver.input_output.io_geo import get_geometry_tree, geo_id_to_fc
 from data_base_driver.record.search import search
-from data_base_driver.input_output.io import io_set, io_get_geometry_tree
+from data_base_driver.input_output.input_output import io_set, io_get_geometry_tree
 from data_base_driver.record.add_record import add_data
 from data_base_driver.relations.add_rel import add_rel
 from data_base_driver.sys_key.get_key_dump import get_keys_by_object, get_relations_list
@@ -77,7 +77,8 @@ def aj_object(request):
     if request.method == 'GET':
         try:
             return JsonResponse({'data': get_object_record_by_id_http(object_id=request.GET['object_id'],
-                                                                      rec_id=request.GET['record_id'])}, status=200)
+                                                                      rec_id=request.GET['record_id'],
+                                                                      group_id=group_id)}, status=200)
         except:
             return JsonResponse({'status': 'неверный номер объекта'}, status=496)
     if request.method == 'POST':
@@ -130,10 +131,11 @@ def aj_search_objects(request):
     {obj_id, request, key_id, list_id, rels:[{obj_id, request, key_id, list_id, rels},...,{}]}
     @return: json с информацией о объекте в формате [{rec_id, obj_id, params:[{id,val},...,{}]},...,{}]
     """
+    group_id = DAT_OWNER.DUMP.get_group(user_id=request.user.id)
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
-            return JsonResponse({'data': search(data)}, status=200)
+            return JsonResponse({'data': search(data, group_id)}, status=200)
         except:
             return JsonResponse({'status': ' ошибочный запрос'}, status=496)
     else:
@@ -180,6 +182,11 @@ def aj_geometry_tree(request):
 @login_check
 @decor_log_request
 def aj_geometry(request):
+    """
+    Функция API для получения геометрии по ее идентификатору
+    @param request: GET запрос содержащий идентификатор геометрии по ключу rec_id
+    @return: feature collection из базы данных соответствующий данному идентификатору
+    """
     group_id = DAT_OWNER.DUMP.get_group(user_id=request.user.id)
     if request.method == 'GET':
         try:

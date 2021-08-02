@@ -3,6 +3,7 @@ import requests
 
 from data_base_driver.constants.fulltextsearch import FullTextSearch
 from data_base_driver.input_output.io_class import IO
+from data_base_driver.input_output.valid_permission import get_enabled_records
 
 
 def io_set(group_id, obj, data):
@@ -90,7 +91,8 @@ def io_get_obj_manticore_dict(group_id, object_type, keys, ids, ids_max_block, w
         "limit": ids_max_block
     })
     response = requests.post(FullTextSearch.SEARCH_URL, data=data)
-    return [item['_source'] for item in json.loads(response.text)['hits']['hits']]
+    return get_enabled_records(object_type, [item['_source'] for item in json.loads(response.text)['hits']['hits']],
+                               group_id, False)
 
 
 def io_get_obj_manticore_tuple(group_id, object_type, keys, ids, ids_max_block, where_dop_row):
