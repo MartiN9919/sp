@@ -35,8 +35,7 @@ export default {
     load_geometry(id) {
       getResponseAxios(this.$CONST.API.OBJ.GEOMETRY, {params: {rec_id: id,}})
         .then(response => {
-          console.log(id, response.data)
-
+          this.$emit('loadGeometry', response.data);
           return Promise.resolve(response)
         })
         .catch(error => { return Promise.reject(error) });

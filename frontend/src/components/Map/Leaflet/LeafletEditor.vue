@@ -5,7 +5,9 @@
   >
 
     <template v-slot:firstPane>
-      <EditorNav/>
+      <EditorNav
+        @loadGeometry="load_geometry"
+      />
     </template>
 
     <template v-slot:secondPane>
@@ -125,8 +127,12 @@ export default {
       this.map.invalidateSize();
     },
 
-    on_map_dblclick(event) {
-      // this.appendErrorAlert({status: 501, content: event.latlng, show_time: 5, });
+    on_map_dblclick(e) {
+      // this.appendErrorAlert({status: 501, content: e.latlng, show_time: 5, });
+    },
+
+    load_geometry(e) {
+      console.log(1, e)
     },
 
   },
