@@ -58,8 +58,9 @@ export default {
         let id = 0;
         if (val instanceof Object) { id = (val.length > 0) ? val[0] : 0; }
         else                       { id = val; }
+        if (id == 0) return;
 
-        if (this.items_path[id])   { this.items_active = this.items_path[id]; }
+        if (this.items_path[id])   { this.items_active = this.items_path[id].slice(0, -1); } // .slice(0, -1) - нет эффекта
         if (this.item_sel != id)   { this.$emit('item_sel_change', id); }
       },
     },

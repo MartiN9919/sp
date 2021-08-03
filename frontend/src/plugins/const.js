@@ -15,6 +15,7 @@ export default class CONST {
   static API = class {
     static OBJ = class {
       static GEOMETRY_TREE = 'objects/geometry_tree/';
+      static GEOMETRY      = 'objects/geometry/';
     };
   };
 
