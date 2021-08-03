@@ -28,7 +28,6 @@ export default {
     // get data
     getResponseAxios(this.$CONST.API.OBJ.GEOMETRY_TREE)
       .then(response => {
-        console.log(response.data)
         this.items = response.data;
         if (localStorage[this.key_sel]) { this.item_sel = parseInt(localStorage[this.key_sel]); }
         return Promise.resolve(response)
@@ -46,9 +45,9 @@ export default {
   },
 
   data: () => ({
-    key_sel: 'sel_geometry',
-    item_sel: undefined,
-    items: undefined,
+    key_sel:  'sel_geometry',
+    item_sel: 0,
+    items:    [],
     // [
     //   {
     //     id: 1,

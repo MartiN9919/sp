@@ -35,8 +35,8 @@ export default {
   name: 'PaneTree',
   model: { prop: 'item_sel_prop', event: 'item_sel_change', },
   props: {
-    items: Array,
-    item_sel_prop: Number,
+    items:         { type: Array,  default() { return []; }, },
+    item_sel_prop: { type: Number, default() { return 0;  }, },
   },
 
   data: () => ({
@@ -45,17 +45,9 @@ export default {
   }),
 
   watch: {
-    items: function(items) {
-      this.ini_items();
-    },
-    item_sel: function(item_id) {
-      this.activate_item(item_id);
-    },
+    items:    function(items)   { this.ini_items(); },
+    item_sel: function(item_id) { this.activate_item(item_id); },
   },
-
-  // created: function() {
-  //   this.ini_items();
-  // },
 
   computed: {
     item_sel: {
@@ -66,8 +58,9 @@ export default {
         let id = 0;
         if (val instanceof Object) { id = (val.length > 0) ? val[0] : 0; }
         else                       { id = val; }
-        if (this.items_path[id]) { this.items_active = this.items_path[id]; }
-        this.$emit('item_sel_change', id);
+
+        if (this.items_path[id])   { this.items_active = this.items_path[id]; }
+        if (this.item_sel != id)   { this.$emit('item_sel_change', id); }
       },
     },
   },
@@ -89,8 +82,8 @@ export default {
       }
     },
 
-    activate_item(item_id) {
-      this.item_sel = item_id;
+    activate_item(val) {
+      this.item_sel = val;
     },
 
     get_icon(item, open) {
