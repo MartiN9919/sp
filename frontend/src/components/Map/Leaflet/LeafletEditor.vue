@@ -109,6 +109,10 @@ export default {
       set(val) { this.$emit('fc_parent_change', val); },
     },
 
+    fc_child_internal: {
+      get()    { return this.fc_parent_prop; },
+      set(val) { this.fc_parent_prop = val; },
+    },
   },
 
   methods: {
@@ -131,8 +135,9 @@ export default {
       // this.appendErrorAlert({status: 501, content: e.latlng, show_time: 5, });
     },
 
-    load_geometry(e) {
-      console.log(1, e)
+    load_geometry(fc) {
+      console.log(1, this.fc_child, fc)
+      this.fc_child_internal = JSON.parse(JSON.stringify(fc));
     },
 
   },
