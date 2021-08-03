@@ -97,7 +97,8 @@ class IO_LIB_SQL():
                             equ[2].split('=')[1].replace('\'', '')
                             )
         else:
-            add_relation_http(equ[5].split('=')[1].replace('\'', ''),
+            add_relation_http(int(equ[6].split('=')[1]),
+                              equ[5].split('=')[1].replace('\'', ''),
                               int(equ[0].split('=')[1]),
                               int(equ[1].split('=')[1]),
                               int(equ[2].split('=')[1]),

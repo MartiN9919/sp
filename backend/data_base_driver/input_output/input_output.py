@@ -3,7 +3,8 @@ import requests
 
 from data_base_driver.constants.fulltextsearch import FullTextSearch
 from data_base_driver.input_output.io_class import IO
-from data_base_driver.input_output.valid_permission import get_enabled_records
+from data_base_driver.input_output.valid_permission import get_enabled_records, get_object_permission, \
+    check_relation_permission
 
 
 def io_set(group_id, obj, data):
@@ -176,8 +177,8 @@ def io_get_rel_manticore_dict(group_id, keys, obj_rel_1, obj_rel_2, val, time_in
         must.append({'in': {'key_id': [str(key_id) for key_id in keys]}})
     if len(val) > 0:
         must.append({'in': {'val': [str(x) for x in val]}})
-    request_1_obj_1, request_2_obj_2,  request_1_rec_1, request_2_rec_2 = '', '', '', ''
-    request_2_obj_1, request_1_obj_2,  request_2_rec_1, request_1_rec_2 = '', '', '', ''
+    request_1_obj_1, request_2_obj_2, request_1_rec_1, request_2_rec_2 = '', '', '', ''
+    request_2_obj_1, request_1_obj_2, request_2_rec_1, request_1_rec_2 = '', '', '', ''
     if len(obj_rel_1) > 0:
         request_1_obj_1 = '@obj_id_1 ' + str(obj_rel_1[0])
         request_2_obj_2 = '@obj_id_2 ' + str(obj_rel_1[0])
@@ -198,7 +199,7 @@ def io_get_rel_manticore_dict(group_id, keys, obj_rel_1, obj_rel_2, val, time_in
                 'must': must
             }
         }
-        })
+    })
     data_2 = json.dumps({
         'index': 'rel',
         'query': {
@@ -210,16 +211,16 @@ def io_get_rel_manticore_dict(group_id, keys, obj_rel_1, obj_rel_2, val, time_in
     })
     response_1 = json.loads(requests.post(FullTextSearch.SEARCH_URL, data=data_1).text)['hits']['hits']
     response_2 = json.loads(requests.post(FullTextSearch.SEARCH_URL, data=data_2).text)['hits']['hits']
-    full_result = [item['_source'] for item in response_1 + response_2]
+    full_result = [item['_source'] for item in response_1 + response_2 if check_relation_permission(item, group_id)]
     unique_result = []
     for item in full_result:
         if len([x for x in unique_result if item['sec'] == x['sec'] and
-                                      item['key_id'] == x['key_id'] and
-                                      item['obj_id_1'] == x['obj_id_1'] and
-                                      item['rec_id_1'] == x['rec_id_1'] and
-                                      item['obj_id_2'] == x['obj_id_2'] and
-                                      item['rec_id_2'] == x['rec_id_2'] and
-                                      item['val'] == x['val']]) == 0:
+                                            item['key_id'] == x['key_id'] and
+                                            item['obj_id_1'] == x['obj_id_1'] and
+                                            item['rec_id_1'] == x['rec_id_1'] and
+                                            item['obj_id_2'] == x['obj_id_2'] and
+                                            item['rec_id_2'] == x['rec_id_2'] and
+                                            item['val'] == x['val']]) == 0:
             unique_result.append(item)
     if is_unique:
         return unique_result
@@ -265,5 +266,3 @@ def io_get_geometry_tree(
         parent_id=parent_id,
         write=write,
     ))
-
-

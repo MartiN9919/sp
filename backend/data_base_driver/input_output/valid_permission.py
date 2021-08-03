@@ -17,6 +17,8 @@ def get_object_permission(group_id, object_type, rec_id, write=False):
     @param write: флаг запись/чтение
     @return: True если для группы пользователя доступ разрешен, в противном случае False
     """
+    if object_type not in DAT_SYS_KEY.DUMP.owners.keys():
+        return True
     keys_validation_tuple = DAT_SYS_KEY.DUMP.owners[object_type]
     index = 'obj_' + FullTextSearch.TABLES[object_type] + '_row'
     data = json.dumps({
@@ -24,14 +26,14 @@ def get_object_permission(group_id, object_type, rec_id, write=False):
         'query': {
             'bool': {
                 'must': [{
-                        'in': {
-                            'key_id': [str(key) for key in keys_validation_tuple]
-                        }
-                    }, {
-                        'equals': {
-                            'rec_id': rec_id
-                        }
+                    'in': {
+                        'key_id': [str(key) for key in keys_validation_tuple]
                     }
+                }, {
+                    'equals': {
+                        'rec_id': rec_id
+                    }
+                }
                 ]
             }
         }
@@ -98,6 +100,27 @@ def get_enabled_records(object_type, records, group_id, write=False):
     return [record for record in records if record['rec_id'] not in remove_objects]
 
 
-
-
+def check_relation_permission(relation, group_id):
+    """
+    Функция для проверки доступа пользователя к связи
+    @param relation: проверяемая связь в формате {_id, _source:{key_id, obj_id_1, ..., val}}
+    @param group_id: идентификатор группы пользователя
+    @return: True если доступ есть, в противном случае False
+    """
+    if not (get_object_permission(group_id, relation['obj_id_1'], relation['rec_id_1'], False) \
+            and get_object_permission(group_id, relation['obj_id_2'], relation['rec_id_2'], False)):
+        return False
+    data = json.dumps({
+        'index': 'rel',
+        'query': {
+            'query_string': '@key_id 1 @rec_id_1 ' + str(relation['_id'])
+        },
+        'limit': 100
+    })
+    response = requests.post(FullTextSearch.SEARCH_URL, data=data)
+    special_relations = json.loads(response.text)['hits']['hits']
+    for special_relation in special_relations:
+        if not get_object_permission(group_id, special_relation['obj_id_2'], special_relation['rec_id_2'], False):
+            return False
+    return True
 

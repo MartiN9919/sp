@@ -54,9 +54,10 @@ def add_record_http(index_title, id, date_time, key_id, val):
         return True
 
 
-def add_relation_http(date_time, key_id, obj_id_1, rec_id_1, obj_id_2, rec_id_2, val):
+def add_relation_http(rec_id, date_time, key_id, obj_id_1, rec_id_1, obj_id_2, rec_id_2, val):
     """
     Функция для добавления связи
+    @param rec_id: идентификатор записи о связи
     @param date_time: строка содержащая дату и время добавления
     @param key_id: идентификатор ключа классификатора
     @param obj_id_1: идентификатор типа первого объекта
@@ -73,6 +74,7 @@ def add_relation_http(date_time, key_id, obj_id_1, rec_id_1, obj_id_2, rec_id_2,
     seconds = date_time.time().second + date_time.time().minute * 60 + date_time.time().hour * 3600 + days*86400
     data = json.dumps({
         "index": "rel",
+        "id": rec_id,
         "doc":
         {
             "sec": str(seconds),

@@ -283,7 +283,7 @@ class DAT_OBJ_ROW:
 class DAT_REL:
     TABLE_SHORT = 'rel'
     TABLE = VEC_DATA['NAME'] + '.' + TABLE_SHORT
-    # ID               = 'id'
+    REC_ID = 'rec_id'
     KEY_ID = 'key_id'
     DAT = 'dat'
     OBJ_ID_1 = 'obj_id_1'
