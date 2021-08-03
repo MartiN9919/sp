@@ -73,6 +73,6 @@ export default {
   div::v-deep div.Pane.column:first-of-type { overflow: auto!important; }
 
   /* исправить перекрытие сепаратора второй панелью */
-  div::v-deep span.Resizer.columnsres { height: auto!important; }
+  /* div::v-deep span.Resizer.columnsres { height: auto!important; } */
 
 </style>

@@ -169,7 +169,7 @@ export default {
     // при внешнем изменении model
     fc_prop: {
       handler(val) {
-        console.log(1111, val)
+        console.log('EditorMap.watch.fc_prop', val)
         this.mode_selected_off();         // отключить возможный режим редактирования
         this.model   = val;
         this.fc_copy = val?JSON.parse(JSON.stringify(val)):undefined;

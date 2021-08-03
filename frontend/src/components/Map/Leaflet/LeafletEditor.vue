@@ -89,11 +89,23 @@ export default {
   components: { LMap, LTileLayer, LControlScale, LControlPolylineMeasure, EditorMap, EditorNav, EditorSplit, },
 
   data: () => ({
+    fc_child: undefined,
     map_options: {
       zoomControl: false,
       zoomSnap: 0.5,
     },
   }),
+
+  created() {
+    this.fc_child = this.fc_parent;
+  },
+
+  // watch: {
+  //   fc_child: function(val) {
+  //     console.log('LeafletEditor.fc_child.watch.fc_child', val)
+  //     this.fc_parent = val;
+  //   },
+  // },
 
   computed: {
     ...mapGetters([
@@ -103,15 +115,15 @@ export default {
       'MAP_GET_MEASURE',
     ]),
 
-    // проброс fc
-    fc_child: {
-      get()    { return this.fc_parent_prop; },
-      set(val) { this.$emit('fc_parent_change', val); },
-    },
-
-    fc_child_internal: {
-      get()    { return this.fc_parent_prop; },
-      set(val) { this.fc_parent_prop = val; },
+    fc_parent: {
+      get()    {
+        console.log('LeafletEditor.fc_parent.get', this.fc_parent_prop)
+        return this.fc_parent_prop;
+      },
+      set(val) {
+        console.log('LeafletEditor.fc_parent.set', val)
+        this.$emit('fc_parent_change', val);
+      },
     },
   },
 
@@ -136,8 +148,9 @@ export default {
     },
 
     load_geometry(fc) {
-      console.log(1, this.fc_child, fc)
-      this.fc_child_internal = JSON.parse(JSON.stringify(fc));
+      console.log('LeafletEditor.load_geometry', fc)
+      this.fc_child  = fc; //JSON.parse(JSON.stringify(fc))
+      this.fc_parent = this.fc_child
     },
 
   },
