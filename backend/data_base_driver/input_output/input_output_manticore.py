@@ -1,0 +1,156 @@
+import json
+
+import requests
+
+from data_base_driver.constants.const_dat import DAT_SYS_KEY
+from data_base_driver.constants.const_fulltextsearch import FullTextSearch
+from data_base_driver.input_output.valid_permission import get_enabled_records, check_relation_permission
+
+
+def io_get_obj_row_manticore(group_id, object_type, keys, ids, ids_max_block, where_dop_row):
+    """
+    Функция для получения информации о объекте из row индексов мантикоры в формате списка словарей
+    @param group_id: идентификатор группы пользователя
+    @param object_type: идентификатор типа объекта, формат int
+    @param keys: список содержащий идентификаторы ключей
+    @param ids: список содержащий идентификаторы объектов
+    @param ids_max_block: максимальное количество записей в ответе
+    @param where_dop_row: аргументы полнотекстового поиска (блок match запроса sphinx/manticore)
+    @return: список словарей в формате [{rec_id,sec,key_id,val},{},...,{}]
+    """
+    index = 'obj_' + FullTextSearch.TABLES[object_type] + '_row'
+    must = []
+    if len(ids) > 0:
+        must.append({'in': {'rec_id': [int(rec_id) for rec_id in ids]}})
+    if len(keys) > 0:
+        must.append({'in': {'key_id': [str(key) for key in keys]}})
+    data = json.dumps({
+        'index': index,
+        'query': {
+            'query_string': where_dop_row,
+            'bool': {
+                'must': must
+            }
+        },
+        "limit": ids_max_block
+    })
+    response = requests.post(FullTextSearch.SEARCH_URL, data=data)
+    return get_enabled_records(object_type, [item['_source'] for item in json.loads(response.text)['hits']['hits']],
+                               group_id, False)
+
+
+def io_get_obj_col_manticore(group_id, object_type, keys, ids, ids_max_block, where_dop_row):
+    """
+    Функция для получения информации о объекте из col индексов мантикоры в формате списка словарей
+    @param group_id: идентификатор группы пользователя
+    @param object_type: идентификатор типа объекта, формат int
+    @param keys: список содержащий идентификаторы ключей
+    @param ids: список содержащий идентификаторы объектов
+    @param ids_max_block: максимальное количество записей в ответе
+    @param where_dop_row: аргументы полнотекстового поиска (блок match запроса sphinx/manticore)
+    @return: список словарей в формате [{rec_id,sec,key_id,val},{},...,{}]
+    """
+    col_keys = DAT_SYS_KEY.DUMP.get_rec(obj_id=object_type, col=True, only_first=False)
+    if len(keys) == 0:
+        result_keys = [{'id': item['id'], 'name': item['name']} for item in col_keys]
+    else:
+        result_keys = [{'id': item['id'], 'name': item['name']} for item in col_keys if item['id'] in keys]
+    if len(result_keys) == 0:
+        return []
+    index = 'obj_' + FullTextSearch.TABLES[object_type] + '_col'
+    must = []
+    if len(ids) > 0:
+        must.append({'in': {'rec_id': [int(rec_id) for rec_id in ids]}})
+    data = json.dumps({
+        'index': index,
+        'query': {
+            'query_string': where_dop_row,
+            'bool': {
+                'must': must
+            }
+        },
+        'limit': ids_max_block
+    })
+    response = json.loads(requests.post(FullTextSearch.SEARCH_URL, data=data).text)['hits']['hits']
+    result = []
+    for item in response:
+        params = item['_source']
+        for key in col_keys:
+            if params.get(key['name']):
+                result.append({'rec_id': int(params['rec_id']),
+                               'sec': None,
+                               'key_id': key['id'],
+                               'val': str(params.get(key['name']))})
+    return get_enabled_records(object_type, result, group_id, False)
+
+
+def io_get_rel_manticore(group_id, keys, obj_rel_1, obj_rel_2, val, time_interval, is_unique):
+    """
+    Функция для получения информации о связях в формате списка словарей
+    @param group_id: идентификатор группы пользователя
+    @param keys: список идентификаторов типов связей
+    @param obj_rel_1: информация о первом объекте для связи в формате списка [object_type(int), rec_id(int)],
+    может быть пустым или содержать только тип объекта
+    @param obj_rel_2: информация о втором объекте для связи в формате списка [object_type(int), rec_id(int)]
+    может быть пустым или содержать только тип объекта
+    @param val: список с возможными идентификаторами значений закрепленных списков
+    @param time_interval: словарь хранящий промежуток времени в секундах: {second_start, second_end}
+    @param is_unique: флаг проверки результирующего списка на уникальность входящих элементов
+    @return: список словарей в формате [{sec,key_id,obj_id_1,rec_id_1,obj_id_2,rec_id_2,val},{},...,{}]
+    """
+    must = []
+    must.append({'range': {'sec': {'gte': time_interval.get('second_start', 0),
+                                   'lte': time_interval.get('second_end', 100000000000)}}})
+    if len(keys) > 0:
+        must.append({'in': {'key_id': [str(key_id) for key_id in keys]}})
+    if len(val) > 0:
+        must.append({'in': {'val': [str(x) for x in val]}})
+    request_1_obj_1, request_2_obj_2, request_1_rec_1, request_2_rec_2 = '', '', '', ''
+    request_2_obj_1, request_1_obj_2, request_2_rec_1, request_1_rec_2 = '', '', '', ''
+    if len(obj_rel_1) > 0:
+        request_1_obj_1 = '@obj_id_1 ' + str(obj_rel_1[0])
+        request_2_obj_2 = '@obj_id_2 ' + str(obj_rel_1[0])
+    if len(obj_rel_1) > 1:
+        request_1_rec_1 = '@rec_id_1 ' + str(obj_rel_1[1])
+        request_2_rec_2 = '@rec_id_2 ' + str(obj_rel_1[1])
+    if len(obj_rel_2) > 0:
+        request_1_obj_2 = '@obj_id_2 ' + str(obj_rel_2[0])
+        request_2_obj_1 = '@obj_id_1 ' + str(obj_rel_2[0])
+    if len(obj_rel_2) > 1:
+        request_1_rec_2 = '@rec_id_2 ' + str(obj_rel_2[1])
+        request_2_rec_1 = '@rec_id_1 ' + str(obj_rel_2[1])
+    data_1 = json.dumps({
+        'index': 'rel',
+        'query': {
+            'query_string': ' '.join([request_1_obj_1, request_1_obj_2, request_1_rec_1, request_1_rec_2]),
+            'bool': {
+                'must': must
+            }
+        }
+    })
+    data_2 = json.dumps({
+        'index': 'rel',
+        'query': {
+            'query_string': ' '.join([request_2_obj_1, request_2_obj_2, request_2_rec_1, request_2_rec_2]),
+            'bool': {
+                'must': must
+            }
+        }
+    })
+    response_1 = json.loads(requests.post(FullTextSearch.SEARCH_URL, data=data_1).text)['hits']['hits']
+    response_2 = json.loads(requests.post(FullTextSearch.SEARCH_URL, data=data_2).text)['hits']['hits']
+    full_result = [item['_source'] for item in response_1 + response_2 if check_relation_permission(item, group_id)]
+    unique_result = []
+    for item in full_result:
+        if len([x for x in unique_result if item['sec'] == x['sec'] and
+                                            item['key_id'] == x['key_id'] and
+                                            item['obj_id_1'] == x['obj_id_1'] and
+                                            item['rec_id_1'] == x['rec_id_1'] and
+                                            item['obj_id_2'] == x['obj_id_2'] and
+                                            item['rec_id_2'] == x['rec_id_2'] and
+                                            item['val'] == x['val']]) == 0:
+            unique_result.append(item)
+    if is_unique:
+        return unique_result
+    else:
+        return full_result

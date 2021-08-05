@@ -1,10 +1,6 @@
-import json
-import requests
-
-from data_base_driver.constants.fulltextsearch import FullTextSearch
+from data_base_driver.input_output.input_output_manticore import io_get_obj_row_manticore, io_get_obj_col_manticore, \
+    io_get_rel_manticore
 from data_base_driver.input_output.io_class import IO
-from data_base_driver.input_output.valid_permission import get_enabled_records, get_object_permission, \
-    check_relation_permission
 
 
 def io_set(group_id, obj, data):
@@ -75,25 +71,16 @@ def io_get_obj_manticore_dict(group_id, object_type, keys, ids, ids_max_block, w
         where_dop_row = ''
     if not ids_max_block:
         ids_max_block = 100
-    index = 'obj_' + FullTextSearch.TABLES[object_type] + '_row'
-    must = []
-    if len(ids) > 0:
-        must.append({'in': {'rec_id': [int(rec_id) for rec_id in ids]}})
-    if len(keys) > 0:
-        must.append({'in': {'key_id': [str(key) for key in keys]}})
-    data = json.dumps({
-        'index': index,
-        'query': {
-            'query_string': where_dop_row,
-            'bool': {
-                'must': must
-            }
-        },
-        "limit": ids_max_block
-    })
-    response = requests.post(FullTextSearch.SEARCH_URL, data=data)
-    return get_enabled_records(object_type, [item['_source'] for item in json.loads(response.text)['hits']['hits']],
-                               group_id, False)
+    row_records = io_get_obj_row_manticore(group_id, object_type, keys, ids, ids_max_block, where_dop_row)
+    col_records = io_get_obj_col_manticore(group_id, object_type, keys, ids, ids_max_block, where_dop_row)
+    result = row_records + col_records
+    result.sort(key=lambda x: x['rec_id'])
+    return result
+
+
+# temp = io_get_obj_manticore_dict(0, 30, [], [], 200, '')
+# for t in temp:
+#     print(t)
 
 
 def io_get_obj_manticore_tuple(group_id, object_type, keys, ids, ids_max_block, where_dop_row):
@@ -170,62 +157,7 @@ def io_get_rel_manticore_dict(group_id, keys, obj_rel_1, obj_rel_2, val, time_in
         val = []
     if not time_interval:
         time_interval = {}
-    must = []
-    must.append({'range': {'sec': {'gte': time_interval.get('second_start', 0),
-                                   'lte': time_interval.get('second_end', 100000000000)}}})
-    if len(keys) > 0:
-        must.append({'in': {'key_id': [str(key_id) for key_id in keys]}})
-    if len(val) > 0:
-        must.append({'in': {'val': [str(x) for x in val]}})
-    request_1_obj_1, request_2_obj_2, request_1_rec_1, request_2_rec_2 = '', '', '', ''
-    request_2_obj_1, request_1_obj_2, request_2_rec_1, request_1_rec_2 = '', '', '', ''
-    if len(obj_rel_1) > 0:
-        request_1_obj_1 = '@obj_id_1 ' + str(obj_rel_1[0])
-        request_2_obj_2 = '@obj_id_2 ' + str(obj_rel_1[0])
-    if len(obj_rel_1) > 1:
-        request_1_rec_1 = '@rec_id_1 ' + str(obj_rel_1[1])
-        request_2_rec_2 = '@rec_id_2 ' + str(obj_rel_1[1])
-    if len(obj_rel_2) > 0:
-        request_1_obj_2 = '@obj_id_2 ' + str(obj_rel_2[0])
-        request_2_obj_1 = '@obj_id_1 ' + str(obj_rel_2[0])
-    if len(obj_rel_2) > 1:
-        request_1_rec_2 = '@rec_id_2 ' + str(obj_rel_2[1])
-        request_2_rec_1 = '@rec_id_1 ' + str(obj_rel_2[1])
-    data_1 = json.dumps({
-        'index': 'rel',
-        'query': {
-            'query_string': ' '.join([request_1_obj_1, request_1_obj_2, request_1_rec_1, request_1_rec_2]),
-            'bool': {
-                'must': must
-            }
-        }
-    })
-    data_2 = json.dumps({
-        'index': 'rel',
-        'query': {
-            'query_string': ' '.join([request_2_obj_1, request_2_obj_2, request_2_rec_1, request_2_rec_2]),
-            'bool': {
-                'must': must
-            }
-        }
-    })
-    response_1 = json.loads(requests.post(FullTextSearch.SEARCH_URL, data=data_1).text)['hits']['hits']
-    response_2 = json.loads(requests.post(FullTextSearch.SEARCH_URL, data=data_2).text)['hits']['hits']
-    full_result = [item['_source'] for item in response_1 + response_2 if check_relation_permission(item, group_id)]
-    unique_result = []
-    for item in full_result:
-        if len([x for x in unique_result if item['sec'] == x['sec'] and
-                                            item['key_id'] == x['key_id'] and
-                                            item['obj_id_1'] == x['obj_id_1'] and
-                                            item['rec_id_1'] == x['rec_id_1'] and
-                                            item['obj_id_2'] == x['obj_id_2'] and
-                                            item['rec_id_2'] == x['rec_id_2'] and
-                                            item['val'] == x['val']]) == 0:
-            unique_result.append(item)
-    if is_unique:
-        return unique_result
-    else:
-        return full_result
+    return io_get_rel_manticore(group_id, keys, obj_rel_1, obj_rel_2, val, time_interval, is_unique)
 
 
 def io_get_rel_manticore_tuple(group_id, keys, obj_rel_1, obj_rel_2, val, time_interval, is_unique):
@@ -266,3 +198,6 @@ def io_get_geometry_tree(
         parent_id=parent_id,
         write=write,
     ))
+
+
+

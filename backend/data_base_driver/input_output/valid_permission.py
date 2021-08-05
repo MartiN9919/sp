@@ -5,10 +5,10 @@ import requests
 
 from data_base_driver.additional_functions import date_time_to_sec, push_dict
 from data_base_driver.constants.const_dat import DAT_SYS_KEY, DAT_OWNER
-from data_base_driver.constants.fulltextsearch import FullTextSearch
+from data_base_driver.constants.const_fulltextsearch import FullTextSearch
 
 
-def get_object_permission(group_id, object_type, rec_id, write=False):
+def check_object_permission(group_id, object_type, rec_id, write=False):
     """
     Функция для получения информации о группах которые имеют доступ к данному объекту
     @param group_id: идентификатор группы пользователя запросившего объект
@@ -47,10 +47,10 @@ def get_object_permission(group_id, object_type, rec_id, write=False):
                 push_dict(permit_groups, int(key['key_id']), (int(key['val'])))
         else:
             push_dict(permit_groups, int(key['key_id']), (int(key['val'])))
-    return valid_group(group_id, permit_groups, keys_validation_tuple, write)
+    return valid_group_object(group_id, permit_groups, keys_validation_tuple, write)
 
 
-def valid_group(group_id, permit_group, keys_validation_tuple, write=False):
+def valid_group_object(group_id, permit_group, keys_validation_tuple, write=False):
     """
     Функция для проверки доступа группы пользователя к данному объекту
     @param group_id: идентификатор группы доступа
@@ -73,7 +73,8 @@ def valid_group(group_id, permit_group, keys_validation_tuple, write=False):
                                              valids_id=permit_group.get(keys_validation_dict['owner_add_rw'], []))
     else:
         if not permit_group.get(keys_validation_dict['owner_add_ro_limit'], None) and \
-                not permit_group.get(keys_validation_dict['owner_add_ro'], None):
+                not permit_group.get(keys_validation_dict['owner_add_ro'], None) and \
+                not permit_group.get(keys_validation_dict['owner_add_rw'], None):
             return True
         read_groups = permit_group.get(keys_validation_dict['owner_add_ro'], []) + permit_group.get(
             keys_validation_dict['owner_add_ro_limit'], []) + permit_group.get(keys_validation_dict['owner_add_rw'], [])
@@ -95,7 +96,7 @@ def get_enabled_records(object_type, records, group_id, write=False):
     objects = set([record['rec_id'] for record in records])
     remove_objects = []
     for object in objects:
-        if not get_object_permission(group_id, object_type, object, write):
+        if not check_object_permission(group_id, object_type, object, write):
             remove_objects.append(object)
     return [record for record in records if record['rec_id'] not in remove_objects]
 
@@ -107,8 +108,9 @@ def check_relation_permission(relation, group_id):
     @param group_id: идентификатор группы пользователя
     @return: True если доступ есть, в противном случае False
     """
-    if not (get_object_permission(group_id, relation['obj_id_1'], relation['rec_id_1'], False) \
-            and get_object_permission(group_id, relation['obj_id_2'], relation['rec_id_2'], False)):
+    if not (check_object_permission(group_id, relation['_source']['obj_id_1'], relation['_source']['rec_id_1'], False) \
+            and check_object_permission(group_id, relation['_source']['obj_id_2'], relation['_source']['rec_id_2'],
+                                        False)):
         return False
     data = json.dumps({
         'index': 'rel',
@@ -120,7 +122,7 @@ def check_relation_permission(relation, group_id):
     response = requests.post(FullTextSearch.SEARCH_URL, data=data)
     special_relations = json.loads(response.text)['hits']['hits']
     for special_relation in special_relations:
-        if not get_object_permission(group_id, special_relation['obj_id_2'], special_relation['rec_id_2'], False):
+        if not check_object_permission(group_id, int(special_relation['_source']['obj_id_2']),
+                                       int(special_relation['_source']['rec_id_2']), False):
             return False
     return True
-

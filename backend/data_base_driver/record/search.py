@@ -1,4 +1,4 @@
-from data_base_driver.constants.fulltextsearch import FullTextSearch
+from data_base_driver.constants.const_fulltextsearch import FullTextSearch
 from data_base_driver.record.find_object import find_reliable_http
 from data_base_driver.record.get_record import get_object_record_by_id_http, get_record_title
 from data_base_driver.relations.find_rel import search_rel_with_key_http

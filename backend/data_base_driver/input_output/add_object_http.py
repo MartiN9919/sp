@@ -1,7 +1,7 @@
 import datetime
 import json
 import requests
-from data_base_driver.constants.fulltextsearch import FullTextSearch
+from data_base_driver.constants.const_fulltextsearch import FullTextSearch
 
 TEST_MODE = False
 

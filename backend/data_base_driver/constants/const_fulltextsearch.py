@@ -2,7 +2,7 @@ class FullTextSearch:
     TABLES = {
         10: 'free',
         15: 'file',
-        20: 'free',
+        20: 'doc',
         25: 'point',
         30: 'geometry',
         35: 'person_p',
@@ -26,4 +26,5 @@ class FullTextSearch:
 
 
     SEARCH_URL = 'http://200.200.200.235:9312/search'
+    LOCAL_SEARCH_URL = 'http://127.0.0.1:9312/search'
     INSERT_URL = 'http://200.200.200.235:9312/insert'
