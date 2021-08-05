@@ -100,12 +100,12 @@ export default {
     this.fc_child = this.fc_parent;
   },
 
-  // watch: {
-  //   fc_child: function(val) {
-  //     console.log('LeafletEditor.fc_child.watch.fc_child', val)
-  //     this.fc_parent = val;
-  //   },
-  // },
+  watch: {
+    fc_child: function(val) {
+      console.log('LeafletEditor.fc_child.watch.fc_child', val)
+      this.fc_parent = val;
+    },
+  },
 
   computed: {
     ...mapGetters([
