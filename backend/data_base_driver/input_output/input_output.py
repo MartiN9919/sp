@@ -1,6 +1,10 @@
+from datetime import datetime
+
+from data_base_driver.additional_functions import get_date_time_from_sec, date_time_to_sec
 from data_base_driver.input_output.input_output_manticore import io_get_obj_row_manticore, io_get_obj_col_manticore, \
     io_get_rel_manticore
 from data_base_driver.input_output.io_class import IO
+from requests.exceptions import ConnectionError
 
 
 def io_set(group_id, obj, data):
@@ -74,10 +78,24 @@ def io_get_obj_manticore_dict(group_id, object_type, keys, ids, ids_max_block, w
         ids_max_block = 1000
     if not time_interval:
         time_interval = {}
-    row_records = io_get_obj_row_manticore(group_id, object_type, keys, ids, ids_max_block, where_dop_row,
-                                           time_interval)
-    col_records = io_get_obj_col_manticore(group_id, object_type, keys, ids, ids_max_block)
-    result = row_records + col_records
+    try:
+        row_records = io_get_obj_row_manticore(group_id, object_type, keys, ids, ids_max_block, where_dop_row,
+                                               time_interval)
+        if len(where_dop_row) > 0:
+            ids = [item['rec_id'] for item in row_records]
+        col_records = io_get_obj_col_manticore(group_id, object_type, keys, ids, ids_max_block)
+        result = row_records + col_records
+    except ConnectionError:
+        where_dop_sql = []
+        if len(where_dop_row) != 0:
+            where_dop_sql.append('val=\"' + where_dop_row + '\"')
+        if time_interval.get('second_start', None):
+            where_dop_sql.append('dat>\"' + get_date_time_from_sec(time_interval.get('second_start', None)) + '\"')
+        if time_interval.get('second_end', None):
+            where_dop_sql.append('dat<\"' + get_date_time_from_sec(time_interval.get('second_start', None)) + '\"')
+        result_tuple = io_get_obj(group_id, object_type, keys, ids, ids_max_block, where_dop_sql)
+        result = [{'rec_id': item[0], 'key_id': item[1], 'val': item[2].encode(),
+                   'sec': date_time_to_sec(datetime.strptime(item[3], '%Y-%m-%d %H:%M:%S'))} for item in result_tuple] #в col 3 а не 4 параметра
     result.sort(key=lambda x: x['rec_id'])
     return result
 
@@ -92,9 +110,9 @@ def io_get_obj_manticore_tuple(group_id, object_type, keys, ids, ids_max_block, 
     @param ids_max_block: максимальное количество записей в ответе
     @param where_dop_row: аргументы полнотекстового поиска (блок match запроса sphinx/manticore)
     @param time_interval: временной интервал записи в формате словаря с ключами second_start и second_end
-    @return: список словарей в формате [(rec_id,sec,key_id,val),(),...,()]
+    @return: список словарей в формате [(rec_id,key_id,val,sec),(),...,()]
     """
-    return [(item['rec_id'], int(item['sec']), item['key_id'], item['val'])
+    return [(item['rec_id'], int(item['key_id']), item['val'], item['sec'])
             for item in io_get_obj_manticore_dict(group_id,
                                                   object_type,
                                                   keys,
@@ -158,7 +176,22 @@ def io_get_rel_manticore_dict(group_id, keys, obj_rel_1, obj_rel_2, val, time_in
         val = []
     if not time_interval:
         time_interval = {}
-    return io_get_rel_manticore(group_id, keys, obj_rel_1, obj_rel_2, val, time_interval, is_unique)
+    try:
+        return io_get_rel_manticore(group_id, keys, obj_rel_1, obj_rel_2, val, time_interval, is_unique)
+    except ConnectionError:
+        where_dop_sql = []
+        if time_interval.get('second_start', None):
+            where_dop_sql.append('dat>\"' + get_date_time_from_sec(time_interval.get('second_start', None)) + '\"')
+        if time_interval.get('second_end', None):
+            where_dop_sql.append('dat<\"' + get_date_time_from_sec(time_interval.get('second_start', None)) + '\"')
+        result_tuple = io_get_rel(group_id, keys, obj_rel_1, obj_rel_2, where_dop_sql, is_unique)
+        return [{'sec': date_time_to_sec(datetime.strptime(item[1], '%Y-%m-%d %H:%M:%S')),
+                 'key_id': item[0],
+                 'obj_id_1': item[2],
+                 'rec_id_1': item[3],
+                 'obj_id_2': item[4],
+                 'rec_id_2': item[5],
+                 'val': None} for item in result_tuple]
 
 
 def io_get_rel_manticore_tuple(group_id, keys, obj_rel_1, obj_rel_2, val, time_interval, is_unique):
@@ -199,6 +232,3 @@ def io_get_geometry_tree(
         parent_id=parent_id,
         write=write,
     ))
-
-
-
