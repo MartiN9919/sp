@@ -52,7 +52,7 @@ def io_get_obj(group_id, obj, keys=[], ids=[], ids_max_block=None, where_dop_row
     ))
 
 
-def io_get_obj_manticore_dict(group_id, object_type, keys, ids, ids_max_block, where_dop_row):
+def io_get_obj_manticore_dict(group_id, object_type, keys, ids, ids_max_block, where_dop_row, time_interval):
     """
     Функция для получения информации о объекте из мантикоры в формате списка словарей
     @param group_id: идентификатор группы пользователя
@@ -61,6 +61,7 @@ def io_get_obj_manticore_dict(group_id, object_type, keys, ids, ids_max_block, w
     @param ids: список содержащий идентификаторы объектов
     @param ids_max_block: максимальное количество записей в ответе
     @param where_dop_row: аргументы полнотекстового поиска (блок match запроса sphinx/manticore)
+    @param time_interval: временной интервал записи в формате словаря с ключами second_start и second_end
     @return: список словарей в формате [{rec_id,sec,key_id,val},{},...,{}]
     """
     if not ids:
@@ -70,20 +71,17 @@ def io_get_obj_manticore_dict(group_id, object_type, keys, ids, ids_max_block, w
     if not where_dop_row:
         where_dop_row = ''
     if not ids_max_block:
-        ids_max_block = 100
-    row_records = io_get_obj_row_manticore(group_id, object_type, keys, ids, ids_max_block, where_dop_row)
-    col_records = io_get_obj_col_manticore(group_id, object_type, keys, ids, ids_max_block, where_dop_row)
+        ids_max_block = 1000
+    if not time_interval:
+        time_interval = {}
+    row_records = io_get_obj_row_manticore(group_id, object_type, keys, ids, ids_max_block, where_dop_row, time_interval)
+    col_records = io_get_obj_col_manticore(group_id, object_type, keys, ids, ids_max_block)
     result = row_records + col_records
     result.sort(key=lambda x: x['rec_id'])
     return result
 
 
-# temp = io_get_obj_manticore_dict(0, 30, [], [], 200, '')
-# for t in temp:
-#     print(t)
-
-
-def io_get_obj_manticore_tuple(group_id, object_type, keys, ids, ids_max_block, where_dop_row):
+def io_get_obj_manticore_tuple(group_id, object_type, keys, ids, ids_max_block, where_dop_row, time_interval):
     """
     Функция для получения информации о объекте из мантикоры в формате списка кортежей
     @param group_id: идентификатор группы пользователя
@@ -92,15 +90,17 @@ def io_get_obj_manticore_tuple(group_id, object_type, keys, ids, ids_max_block, 
     @param ids: список содержащий идентификаторы объектов
     @param ids_max_block: максимальное количество записей в ответе
     @param where_dop_row: аргументы полнотекстового поиска (блок match запроса sphinx/manticore)
-    @return: список словарей в формате [(rec_id,key_id,val,sec),(),...,()]
+    @param time_interval: временной интервал записи в формате словаря с ключами second_start и second_end
+    @return: список словарей в формате [(rec_id,sec,key_id,val),(),...,()]
     """
-    return [(item['rec_id'], int(item['key_id']), item['val'], item['sec'])
+    return [(item['rec_id'], int(item['sec']), item['key_id'], item['val'])
             for item in io_get_obj_manticore_dict(group_id,
                                                   object_type,
                                                   keys,
                                                   ids,
                                                   ids_max_block,
-                                                  where_dop_row)]
+                                                  where_dop_row,
+                                                  time_interval)]
 
 
 def io_get_rel_generator(group_id, keys=[], obj_rel_1=None, obj_rel_2=None, where_dop=[]):

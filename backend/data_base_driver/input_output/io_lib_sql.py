@@ -2,7 +2,7 @@ import datetime
 from data_base_driver.connect.connect_manticore import db_shinxql
 from data_base_driver.connect.connect_mysql import db_sql, db_connect
 from data_base_driver.constants.const_dat import DAT_SYS_ID, DAT_OBJ_ROW
-from data_base_driver.input_output.add_object_http import add_record_http, add_relation_http
+from data_base_driver.input_output.add_object_http import add_row_record_http, add_relation_http, add_col_record_http
 
 DEBUG = False
 
@@ -38,6 +38,7 @@ class IO_LIB_SQL():
         if not data_pars.rec_id: raise Exception('Unknow rec_id: data_pars = ' + str(data_pars))
         sql = "INSERT IGNORE INTO " + data_pars.col_table + " " + \
             "SET " + ', '.join(['rec_id=' + data_pars.rec_id] + data_pars.col_equ_flat())
+        add_col_record_http(data_pars.col_table, data_pars.rec_id, data_pars.col_equ_flat())
         self.__sql_exec__(sql, read=False)
 
     # + запись ОДНОГО row-ключа ОДНОЙ sql-операцией => ОДНА запись
@@ -62,8 +63,8 @@ class IO_LIB_SQL():
             )
             date_time_str = item.get(DAT_OBJ_ROW.DAT, datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
             date_time_str = date_time_str.replace('\'', '')
-            add_record_http(data_pars.row_table, data_pars.rec_id, date_time_str, item[DAT_OBJ_ROW.KEY_ID],
-                            item[DAT_OBJ_ROW.VAL].replace('\'',''))
+            add_row_record_http(data_pars.row_table, data_pars.rec_id, date_time_str, item[DAT_OBJ_ROW.KEY_ID],
+                                item[DAT_OBJ_ROW.VAL].replace('\'',''))
 
         sql = \
             "INSERT IGNORE " + data_pars.row_table + " (" + \
@@ -90,12 +91,12 @@ class IO_LIB_SQL():
     def insert_one_rec(self, table, equ):
         sql = "INSERT IGNORE INTO " + table + " SET " + ', '.join(equ)
         if len(equ) == 4:
-            add_record_http(table,
-                            int(equ[0].split('=')[1]),
-                            equ[3].split('=')[1].replace('\'', ''),
-                            equ[1].split('=')[1],
-                            equ[2].split('=')[1].replace('\'', '')
-                            )
+            add_row_record_http(table,
+                                int(equ[0].split('=')[1]),
+                                equ[3].split('=')[1].replace('\'', ''),
+                                equ[1].split('=')[1],
+                                equ[2].split('=')[1].replace('\'', '')
+                                )
         else:
             add_relation_http(int(equ[6].split('=')[1]),
                               equ[5].split('=')[1].replace('\'', ''),

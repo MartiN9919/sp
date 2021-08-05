@@ -1,5 +1,4 @@
 import json
-
 import requests
 
 from data_base_driver.constants.const_dat import DAT_SYS_KEY
@@ -7,7 +6,7 @@ from data_base_driver.constants.const_fulltextsearch import FullTextSearch
 from data_base_driver.input_output.valid_permission import get_enabled_records, check_relation_permission
 
 
-def io_get_obj_row_manticore(group_id, object_type, keys, ids, ids_max_block, where_dop_row):
+def io_get_obj_row_manticore(group_id, object_type, keys, ids, ids_max_block, where_dop_row, time_interval):
     """
     Функция для получения информации о объекте из row индексов мантикоры в формате списка словарей
     @param group_id: идентификатор группы пользователя
@@ -16,10 +15,13 @@ def io_get_obj_row_manticore(group_id, object_type, keys, ids, ids_max_block, wh
     @param ids: список содержащий идентификаторы объектов
     @param ids_max_block: максимальное количество записей в ответе
     @param where_dop_row: аргументы полнотекстового поиска (блок match запроса sphinx/manticore)
+    @param time_interval: временной интервал записи в формате словаря с ключами second_start и second_end
     @return: список словарей в формате [{rec_id,sec,key_id,val},{},...,{}]
     """
     index = 'obj_' + FullTextSearch.TABLES[object_type] + '_row'
     must = []
+    must.append({'range': {'sec': {'gte': time_interval.get('second_start', 0),
+                                   'lte': time_interval.get('second_end', 100000000000)}}})
     if len(ids) > 0:
         must.append({'in': {'rec_id': [int(rec_id) for rec_id in ids]}})
     if len(keys) > 0:
@@ -39,7 +41,7 @@ def io_get_obj_row_manticore(group_id, object_type, keys, ids, ids_max_block, wh
                                group_id, False)
 
 
-def io_get_obj_col_manticore(group_id, object_type, keys, ids, ids_max_block, where_dop_row):
+def io_get_obj_col_manticore(group_id, object_type, keys, ids, ids_max_block):
     """
     Функция для получения информации о объекте из col индексов мантикоры в формате списка словарей
     @param group_id: идентификатор группы пользователя
@@ -47,7 +49,6 @@ def io_get_obj_col_manticore(group_id, object_type, keys, ids, ids_max_block, wh
     @param keys: список содержащий идентификаторы ключей
     @param ids: список содержащий идентификаторы объектов
     @param ids_max_block: максимальное количество записей в ответе
-    @param where_dop_row: аргументы полнотекстового поиска (блок match запроса sphinx/manticore)
     @return: список словарей в формате [{rec_id,sec,key_id,val},{},...,{}]
     """
     col_keys = DAT_SYS_KEY.DUMP.get_rec(obj_id=object_type, col=True, only_first=False)
@@ -64,7 +65,6 @@ def io_get_obj_col_manticore(group_id, object_type, keys, ids, ids_max_block, wh
     data = json.dumps({
         'index': index,
         'query': {
-            'query_string': where_dop_row,
             'bool': {
                 'must': must
             }
@@ -75,7 +75,7 @@ def io_get_obj_col_manticore(group_id, object_type, keys, ids, ids_max_block, wh
     result = []
     for item in response:
         params = item['_source']
-        for key in col_keys:
+        for key in result_keys:
             if params.get(key['name']):
                 result.append({'rec_id': int(params['rec_id']),
                                'sec': None,
