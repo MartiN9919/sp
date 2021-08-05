@@ -107,13 +107,14 @@ import '@geoman-io/leaflet-geoman-free';
 const COLOR_ORIGIN = 'black';             // цвет маркеров и фигур ДО    ИЗМЕНЕНИЯ
 const COLOR_MODIFY = '#f00';              // цвет маркеров и фигур ПОСЛЕ ИЗМЕНЕНИЯ
 const TYPES = class {
-  static MARKER  = 'Marker';
-  static LINE    = 'Line';
-  static POLYGON = 'Polygon';
-  static CUT     = 'Cut';
+  static MARKER   = 'Marker';
+  static LINE     = 'Line';
+  static POLYGON  = 'Polygon';
+  static CUT      = 'Cut';
 };
-const FC_KEY_VAL = 'val';                 // fc
-const FC_KEY_NEW = 'new';                 // признак новых данных на замену старых
+const FC_KEY_VAL  = 'val';                // fc
+const FC_KEY_NEW  = 'new';                // признак новых данных на замену старых
+const FC_KEY_COPY = 'copy';               // признак необходимости копирования данных в fc_copy
 
 export default {
   name: 'EditorMap',
@@ -146,11 +147,15 @@ export default {
     fc: {
       get() { return this.fc_prop },
       set(obj) {
-        let val    = (obj) ? ((FC_KEY_VAL in obj) ? obj[FC_KEY_VAL] : obj  ) : obj;
-        let is_new = (obj) ? ((FC_KEY_NEW in obj) ? obj[FC_KEY_NEW] : false) : false;
+        let val     = (obj) ? ((FC_KEY_VAL  in obj) ? obj[FC_KEY_VAL]  : obj  ) : obj;
+        let is_new  = (obj) ? ((FC_KEY_NEW  in obj) ? obj[FC_KEY_NEW]  : false) : false;
+        let is_copy = (obj) ? ((FC_KEY_COPY in obj) ? obj[FC_KEY_COPY] : true ) : true;
+
+        if (is_copy) {
+          this.fc_copy = val?JSON.parse(JSON.stringify(val)):undefined; // глубокая копия для возможного восстановления
+        }
 
         if (is_new) {
-          this.fc_copy = val?JSON.parse(JSON.stringify(val)):undefined; // глубокая копия для возможного восстановления
           this.mode_selected_off();         // отключить возможный режим редактирования
         }
 
@@ -178,8 +183,9 @@ export default {
 
         // вызвать fc.set
         this.fc = {
-          [FC_KEY_VAL]: val,
-          [FC_KEY_NEW]: true,
+          [FC_KEY_VAL]:  val,
+          [FC_KEY_NEW]:  true,
+          [FC_KEY_COPY]: true,
         }
       },
       deep: true,
@@ -257,9 +263,7 @@ export default {
       this.mode_selected_off();
       let fg = L.featureGroup();
       this.map.pm.getGeomanLayers().forEach(function(layer) {
-        if (
-          (layer.options.editor) &&
-          (layer instanceof L.Path || layer instanceof L.Marker)) {
+        if ((layer instanceof L.Path) || (layer instanceof L.Marker)) {
           // bug fix: удалить удаленные части фигур
           if (layer instanceof L.Path) {
             layer._latlngs = layer._latlngs.filter( x => (!(x instanceof Array) || (x.length > 0)));
@@ -267,7 +271,11 @@ export default {
           fg.addLayer(layer);
         }
       });
-      this.fc = { [FC_KEY_VAL]: fg.toGeoJSON(), };
+      this.fc = {
+        [FC_KEY_VAL ]: fg.toGeoJSON(),
+        [FC_KEY_NEW ]: false,
+        [FC_KEY_COPY]: false,
+      };
     },
 
 
@@ -282,10 +290,7 @@ export default {
       // стили исходные
       let self  = this;
       let style = {
-        onEachFeature: function(feature, layer)  {
-          console.log('onEachFeature', layer)
-          layer.options.editor = true;
-        },
+        // onEachFeature: function(feature, layer)  { layer.options.editor = true;       },
         pointToLayer:  function(feature, latlng) { return self.marker_origin(latlng); },
         style:         function(feature)         { return self.path_origin();         },
       };
@@ -307,11 +312,8 @@ export default {
       let self = this;
       this.mode_selected_off();
       this.map.pm.getGeomanLayers().forEach(function(layer) {
-        console.log('map_clear', layer)
-        if (layer.options.editor) {
-          self.events_layer_off(layer);
-          self.map.removeLayer(layer);
-        }
+        self.events_layer_off(layer);
+        self.map.removeLayer(layer);
       });
     },
 
@@ -335,16 +337,11 @@ export default {
 
     // разрешить режим редактирования для каждой редактируемой фигуры
     mode_pm_on() {
-      this.map.eachLayer( function(layer) {
-        if (
-        (layer instanceof L.Path || layer instanceof L.Marker) &&
-        (layer.pm) &&
-        (layer.options.editor)) {
-          layer.pm.enable({
-            allowSelfIntersection: false,
-            limitMarkersToCount:   20,        // количество редактируемых точек на линии
-          });
-        }
+      this.map.pm.getGeomanLayers().forEach(function(layer) {
+        layer.pm.enable({
+          allowSelfIntersection: false,     // запретить самопересечения линий
+          limitMarkersToCount:   20,        // количество редактируемых точек на линии
+        });
       });
     },
 
@@ -513,15 +510,21 @@ export default {
     // очистить
     on_click_clear() {
       this.mode_selected_off();
-      this.fc = L.featureGroup().toGeoJSON();
-      //this.map_load();
+      this.fc = {
+        [FC_KEY_VAL]:  L.featureGroup().toGeoJSON(),
+        [FC_KEY_NEW]:  true,
+        [FC_KEY_COPY]: false,
+      }
     },
 
     // восстановить
     on_click_restore() {
       this.mode_selected_off();
-      this.fc = this.fc_copy?JSON.parse(JSON.stringify(this.fc_copy)):undefined;
-      //this.map_load();
+      this.fc = {
+        [FC_KEY_VAL]:  this.fc_copy?JSON.parse(JSON.stringify(this.fc_copy)):undefined,
+        [FC_KEY_NEW]:  true,
+        [FC_KEY_COPY]: false,
+      };
     },
 
     // изменение на карте
