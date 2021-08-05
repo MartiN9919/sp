@@ -115,6 +115,7 @@ const TYPES = class {
 const FC_KEY_VAL  = 'val';                // fc
 const FC_KEY_NEW  = 'new';                // признак новых данных на замену старых
 const FC_KEY_COPY = 'copy';               // признак необходимости копирования данных в fc_copy
+const FC_KEY_MODE = 'mode';               // признак необходимости установки режима редактирования (линия, точка, ...)
 
 export default {
   name: 'EditorMap',
@@ -150,6 +151,7 @@ export default {
         let val     = (obj) ? ((FC_KEY_VAL  in obj) ? obj[FC_KEY_VAL]  : obj  ) : obj;
         let is_new  = (obj) ? ((FC_KEY_NEW  in obj) ? obj[FC_KEY_NEW]  : false) : false;
         let is_copy = (obj) ? ((FC_KEY_COPY in obj) ? obj[FC_KEY_COPY] : true ) : true;
+        let is_mode = (obj) ? ((FC_KEY_MODE in obj) ? obj[FC_KEY_MODE] : false) : false;
 
         if (is_copy) {
           this.fc_copy = val?JSON.parse(JSON.stringify(val)):undefined; // глубокая копия для возможного восстановления
@@ -157,23 +159,18 @@ export default {
 
         if (is_new) {
           this.mode_selected_off();         // отключить возможный режим редактирования
+          this.map_load(val);
+          this.mode_set(is_mode);
         }
 
         this.fc_wait = val;
         this.$emit('fc_change', val);       // вызывает отложенный watch.fc
-
-        if (is_new) {
-          this.$nextTick(() => {            // ждем коррекции fc на следующем шаге
-            this.map_load();
-            this.mode_set(false);
-          });
-        }
       },
     },
   },
 
   watch: {
-    // при внешнем и внутреннем (после fc.set) изменении fc
+    // при внешнем и внутреннем изменении fc (после fc.set)
     fc_prop: {
       handler(val) {
         // блокировать следствие внутреннего изменения fc
@@ -183,10 +180,10 @@ export default {
 
         // вызвать fc.set
         this.fc = {
-          [FC_KEY_VAL]:  val,
+          [FC_KEY_VAL]:  val, // val?JSON.parse(JSON.stringify(val)):undefined,
           [FC_KEY_NEW]:  true,
           [FC_KEY_COPY]: true,
-        }
+        };
       },
       deep: true,
     },
@@ -235,12 +232,13 @@ export default {
      // обработчик события: нажатие клавиши
     this.map.addEventListener('keydown', this.on_key_down);
 
-    // копия исходных данных
-    this.fc_copy = this.fc?JSON.parse(JSON.stringify(this.fc)):undefined;
-    this.map_load();
-
-    // установка режима
-    this.mode_set(true);
+    // установка данных
+    this.fc = {
+      [FC_KEY_VAL]:  this.fc,
+      [FC_KEY_NEW]:  true,
+      [FC_KEY_COPY]: true,
+      [FC_KEY_MODE]: true,
+    };
   },
 
   beforeDestroy: function() {
@@ -263,12 +261,14 @@ export default {
       this.mode_selected_off();
       let fg = L.featureGroup();
       this.map.pm.getGeomanLayers().forEach(function(layer) {
-        if ((layer instanceof L.Path) || (layer instanceof L.Marker)) {
-          // bug fix: удалить удаленные части фигур
-          if (layer instanceof L.Path) {
-            layer._latlngs = layer._latlngs.filter( x => (!(x instanceof Array) || (x.length > 0)));
+        if (layer.options.editor) {
+          if ((layer instanceof L.Path) || (layer instanceof L.Marker)) {
+            // bug fix: удалить удаленные части фигур
+            if (layer instanceof L.Path) {
+              layer._latlngs = layer._latlngs.filter( x => (!(x instanceof Array) || (x.length > 0)));
+            }
+            fg.addLayer(layer);
           }
-          fg.addLayer(layer);
         }
       });
       this.fc = {
@@ -280,21 +280,27 @@ export default {
 
 
     // загрузить на карту из fc
-    map_load() {
+    // fc указывается как аргумент, т.к. функция вызывается из fc.set, когда значение this.fc еще старое
+    map_load(fc) {
       // очистить карту
       this.map_clear();
 
       // при отсутствии данных отбой
-      if (this.fc == undefined) return;
+      if (fc == undefined) return;
 
       // стили исходные
       let self  = this;
       let style = {
-        // onEachFeature: function(feature, layer)  { layer.options.editor = true;       },
+        onEachFeature: function(feature, layer)  {
+          layer.options.editor = true;
+          layer.editor = true;
+          let aa=1;
+        },
         pointToLayer:  function(feature, latlng) { return self.marker_origin(latlng); },
         style:         function(feature)         { return self.path_origin();         },
       };
-      let layer = (this.fc.type=='FeatureCollection')?L.geoJSON(this.fc, style):L.GeoJSON.geometryToLayer(this.fc, style);
+      let layer = (fc.type=='FeatureCollection')?L.geoJSON(fc, style):L.GeoJSON.geometryToLayer(fc, style);
+      layer.editor = true;
 
       // события: установить
       this.events_layer_on(layer);
@@ -312,11 +318,29 @@ export default {
       let self = this;
       this.mode_selected_off();
       this.map.pm.getGeomanLayers().forEach(function(layer) {
-        self.events_layer_off(layer);
-        self.map.removeLayer(layer);
+        if (self.editor_get(layer)) {
+          self.events_layer_off(layer);
+          self.map.removeLayer(layer);
+        }
       });
     },
 
+
+
+    // ======================================
+    // ПРИЗНАК РЕДАКТИРОВАНИЯ
+    // ======================================
+    editor_set(layer) {
+      layer.options.editor = true;
+      layer.editor = true;
+    },
+
+    editor_get(layer) {
+      if (!layer.pm) return false;
+      if (layer.pm._layer)  return layer.pm._layer.options.editor;
+      if (layer.pm._layers) return layer.pm._layers[0].options.editor;
+      return false;
+    },
 
 
     // ======================================
@@ -338,10 +362,12 @@ export default {
     // разрешить режим редактирования для каждой редактируемой фигуры
     mode_pm_on() {
       this.map.pm.getGeomanLayers().forEach(function(layer) {
-        layer.pm.enable({
-          allowSelfIntersection: false,     // запретить самопересечения линий
-          limitMarkersToCount:   20,        // количество редактируемых точек на линии
-        });
+        if (layer.options.editor) {
+          layer.pm.enable({
+            allowSelfIntersection: false,     // запретить самопересечения линий
+            limitMarkersToCount:   20,        // количество редактируемых точек на линии
+          });
+        }
       });
     },
 
@@ -509,7 +535,6 @@ export default {
 
     // очистить
     on_click_clear() {
-      this.mode_selected_off();
       this.fc = {
         [FC_KEY_VAL]:  L.featureGroup().toGeoJSON(),
         [FC_KEY_NEW]:  true,
@@ -519,7 +544,6 @@ export default {
 
     // восстановить
     on_click_restore() {
-      this.mode_selected_off();
       this.fc = {
         [FC_KEY_VAL]:  this.fc_copy?JSON.parse(JSON.stringify(this.fc_copy)):undefined,
         [FC_KEY_NEW]:  true,
