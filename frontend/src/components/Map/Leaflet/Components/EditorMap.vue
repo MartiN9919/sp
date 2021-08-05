@@ -259,10 +259,10 @@ export default {
     map_save() {
       this.mode_selected_off();
       let fg = L.featureGroup();
-      //this.map.pm.getGeomanLayers().forEach(function(layer) {
-      this.map.eachLayer( function(layer) {
-        //if (layer.options.editor) {
-        if (layer.editor) {
+      this.map.pm.getGeomanLayers().forEach(function(layer) {
+      //this.map.eachLayer( function(layer) {
+        if (layer.options.editor) {
+        //if (layer.editor) {
           if ((layer instanceof L.Path) || (layer instanceof L.Marker)) {
             // bug fix: удалить удаленные части фигур
             if (layer instanceof L.Path) {
@@ -295,17 +295,19 @@ export default {
       // стили исходные
       let self  = this;
       let style = {
-        // onEachFeature: function(feature, layer)  {
-        //   layer.options.editor = true;
-        //   layer.editor = true;
-        //   let aa=1;
-        // },
+        onEachFeature: function(feature, layer)  {
+          layer.options.editor = true;
+          //layer.editor = true;
+          //let aa=1;
+        },
         pointToLayer:  function(feature, latlng) { return self.marker_origin(latlng); },
         style:         function(feature)         { return self.path_origin();         },
       };
       let layer = (fc.type=='FeatureCollection')?L.geoJSON(fc, style):L.GeoJSON.geometryToLayer(fc, style);
-      layer.options.editor = true;
-      layer.editor = true;
+      //layer.options.editor = true;
+      //layer.editor = true;
+      //layer.pm.editor = true;
+      //layer.pm.options.editor = true;
 
       // события: установить
       this.events_layer_on(layer);
@@ -314,10 +316,10 @@ export default {
       layer.addTo(this.map);
 
       // разрешить режим редактирования
-      //this.mode_pm_on();
-      this.$nextTick(() => {
-        this.mode_pm_on();
-      });
+      this.mode_pm_on();
+      // this.$nextTick(() => {
+      //   this.mode_pm_on();
+      // });
     },
 
 
@@ -325,10 +327,10 @@ export default {
     map_clear() {
       let self = this;
       this.mode_selected_off();
-      //this.map.pm.getGeomanLayers().forEach(function(layer) {
-      this.map.eachLayer( function(layer) {
+      this.map.pm.getGeomanLayers().forEach(function(layer) {
+      //this.map.eachLayer( function(layer) {
         // if (self.editor_get(layer)) {
-        if (layer.editor) {
+        if (layer.options.editor) {
           self.events_layer_off(layer);
           self.map.removeLayer(layer);
         }
@@ -337,20 +339,20 @@ export default {
 
 
 
-    // ======================================
-    // ПРИЗНАК РЕДАКТИРОВАНИЯ
-    // ======================================
-    editor_set(layer) {
-      layer.options.editor = true;
-      layer.editor = true;
-    },
+    // // ======================================
+    // // ПРИЗНАК РЕДАКТИРОВАНИЯ
+    // // ======================================
+    // editor_set(layer) {
+    //   layer.options.editor = true;
+    //   layer.editor = true;
+    // },
 
-    editor_get(layer) {
-      if (!layer.pm) return false;
-      if (layer.pm._layer)  return layer.pm._layer.options.editor;
-      if (layer.pm._layers) return layer.pm._layers[0].options.editor;
-      return false;
-    },
+    // editor_get(layer) {
+    //   if (!layer.pm) return false;
+    //   if (layer.pm._layer)  return layer.pm._layer.options.editor;
+    //   if (layer.pm._layers) return layer.pm._layers[0].options.editor;
+    //   return false;
+    // },
 
 
     // ======================================
@@ -374,12 +376,12 @@ export default {
       this.map.pm.getGeomanLayers().forEach(function(layer) {
       //this.map.eachLayer( function(layer) {
         //if (layer.options.editor) {
-        if (layer.editor) {
+        //if (layer.editor) {
           layer.pm.enable({
             allowSelfIntersection: false,     // запретить самопересечения линий
             limitMarkersToCount:   20,        // количество редактируемых точек на линии
           });
-        }
+        //}
       });
     },
 
