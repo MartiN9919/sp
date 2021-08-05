@@ -150,7 +150,7 @@ export default {
       set(obj) {
         let val     = (obj) ? ((FC_KEY_VAL  in obj) ? obj[FC_KEY_VAL]  : obj  ) : obj;
         let is_new  = (obj) ? ((FC_KEY_NEW  in obj) ? obj[FC_KEY_NEW]  : false) : false;
-        let is_copy = (obj) ? ((FC_KEY_COPY in obj) ? obj[FC_KEY_COPY] : true ) : true;
+        let is_copy = (obj) ? ((FC_KEY_COPY in obj) ? obj[FC_KEY_COPY] : false) : false;
         let is_mode = (obj) ? ((FC_KEY_MODE in obj) ? obj[FC_KEY_MODE] : false) : false;
 
         if (is_copy) {
@@ -158,7 +158,6 @@ export default {
         }
 
         if (is_new) {
-          this.mode_selected_off();         // отключить возможный режим редактирования
           this.map_load(val);
           this.mode_set(is_mode);
         }
@@ -182,7 +181,7 @@ export default {
         this.fc = {
           [FC_KEY_VAL]:  val, // val?JSON.parse(JSON.stringify(val)):undefined,
           [FC_KEY_NEW]:  true,
-          [FC_KEY_COPY]: true,
+          [FC_KEY_COPY]: false,
         };
       },
       deep: true,
@@ -260,8 +259,10 @@ export default {
     map_save() {
       this.mode_selected_off();
       let fg = L.featureGroup();
-      this.map.pm.getGeomanLayers().forEach(function(layer) {
-        if (layer.options.editor) {
+      //this.map.pm.getGeomanLayers().forEach(function(layer) {
+      this.map.eachLayer( function(layer) {
+        //if (layer.options.editor) {
+        if (layer.editor) {
           if ((layer instanceof L.Path) || (layer instanceof L.Marker)) {
             // bug fix: удалить удаленные части фигур
             if (layer instanceof L.Path) {
@@ -282,6 +283,9 @@ export default {
     // загрузить на карту из fc
     // fc указывается как аргумент, т.к. функция вызывается из fc.set, когда значение this.fc еще старое
     map_load(fc) {
+      // отключить возможный режим редактирования
+      this.mode_selected_off();
+
       // очистить карту
       this.map_clear();
 
@@ -291,15 +295,16 @@ export default {
       // стили исходные
       let self  = this;
       let style = {
-        onEachFeature: function(feature, layer)  {
-          layer.options.editor = true;
-          layer.editor = true;
-          let aa=1;
-        },
+        // onEachFeature: function(feature, layer)  {
+        //   layer.options.editor = true;
+        //   layer.editor = true;
+        //   let aa=1;
+        // },
         pointToLayer:  function(feature, latlng) { return self.marker_origin(latlng); },
         style:         function(feature)         { return self.path_origin();         },
       };
       let layer = (fc.type=='FeatureCollection')?L.geoJSON(fc, style):L.GeoJSON.geometryToLayer(fc, style);
+      layer.options.editor = true;
       layer.editor = true;
 
       // события: установить
@@ -309,7 +314,10 @@ export default {
       layer.addTo(this.map);
 
       // разрешить режим редактирования
-      this.mode_pm_on();
+      //this.mode_pm_on();
+      this.$nextTick(() => {
+        this.mode_pm_on();
+      });
     },
 
 
@@ -317,8 +325,10 @@ export default {
     map_clear() {
       let self = this;
       this.mode_selected_off();
-      this.map.pm.getGeomanLayers().forEach(function(layer) {
-        if (self.editor_get(layer)) {
+      //this.map.pm.getGeomanLayers().forEach(function(layer) {
+      this.map.eachLayer( function(layer) {
+        // if (self.editor_get(layer)) {
+        if (layer.editor) {
           self.events_layer_off(layer);
           self.map.removeLayer(layer);
         }
@@ -362,7 +372,9 @@ export default {
     // разрешить режим редактирования для каждой редактируемой фигуры
     mode_pm_on() {
       this.map.pm.getGeomanLayers().forEach(function(layer) {
-        if (layer.options.editor) {
+      //this.map.eachLayer( function(layer) {
+        //if (layer.options.editor) {
+        if (layer.editor) {
           layer.pm.enable({
             allowSelfIntersection: false,     // запретить самопересечения линий
             limitMarkersToCount:   20,        // количество редактируемых точек на линии
