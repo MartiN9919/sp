@@ -74,7 +74,8 @@ def io_get_obj_manticore_dict(group_id, object_type, keys, ids, ids_max_block, w
         ids_max_block = 1000
     if not time_interval:
         time_interval = {}
-    row_records = io_get_obj_row_manticore(group_id, object_type, keys, ids, ids_max_block, where_dop_row, time_interval)
+    row_records = io_get_obj_row_manticore(group_id, object_type, keys, ids, ids_max_block, where_dop_row,
+                                           time_interval)
     col_records = io_get_obj_col_manticore(group_id, object_type, keys, ids, ids_max_block)
     result = row_records + col_records
     result.sort(key=lambda x: x['rec_id'])
@@ -105,8 +106,8 @@ def io_get_obj_manticore_tuple(group_id, object_type, keys, ids, ids_max_block, 
 
 def io_get_rel_generator(group_id, keys=[], obj_rel_1=None, obj_rel_2=None, where_dop=[]):
     """
-    Функция аналогична функции io_get_rel, за исключением типа возвращаемого значения, в данном случае возвращается генератор,
-     а не кортеж
+    Функция аналогична функции io_get_rel, за исключением типа возвращаемого значения, в данном случае возвращается
+    генератор, а не кортеж
     """
     yield from IO(group_id=group_id).get_rel(
         keys=keys,

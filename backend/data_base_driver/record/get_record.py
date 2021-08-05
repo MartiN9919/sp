@@ -1,5 +1,5 @@
-from data_base_driver.additional_functions import get_date_time_from_sec, get_title, push_dict
-from data_base_driver.constants.const_dat import DAT_SYS_KEY, DAT_OWNER_GROUPS, DAT_OWNER
+from data_base_driver.additional_functions import get_date_time_from_sec, get_title
+from data_base_driver.constants.const_dat import DAT_SYS_KEY, DAT_OWNER
 from data_base_driver.input_output.input_output import io_get_obj_manticore_dict
 from data_base_driver.sys_key.get_key_dump import get_key_by_id
 
@@ -12,7 +12,7 @@ def get_object_record_by_id_http(object_id, rec_id, group_id=0):
     @param group_id: идентификатору группы пользователя
     @return: словарь в формате {object_id, rec_id, params:[{id,val},...,{}]}
     """
-    response = io_get_obj_manticore_dict(group_id, object_id, [], [rec_id], 500, '')
+    response = io_get_obj_manticore_dict(group_id, object_id, [], [rec_id], 500, '', {})
     temp = [(int(item['key_id']), item['val'], int(item['sec'])) for item in response
             if int(item['key_id']) not in DAT_SYS_KEY.DUMP.owners.get(object_id, [])]
     params = []

@@ -108,7 +108,7 @@ def check_relation_permission(relation, group_id):
     @param group_id: идентификатор группы пользователя
     @return: True если доступ есть, в противном случае False
     """
-    if not (check_object_permission(group_id, relation['_source']['obj_id_1'], relation['_source']['rec_id_1'], False) \
+    if not (check_object_permission(group_id, relation['_source']['obj_id_1'], relation['_source']['rec_id_1'], False)
             and check_object_permission(group_id, relation['_source']['obj_id_2'], relation['_source']['rec_id_2'],
                                         False)):
         return False

@@ -1,6 +1,6 @@
 from data_base_driver.constants.const_fulltextsearch import FullTextSearch
 from data_base_driver.record.find_object import find_reliable_http
-from data_base_driver.record.get_record import get_object_record_by_id_http, get_record_title
+from data_base_driver.record.get_record import get_record_title
 from data_base_driver.relations.find_rel import search_rel_with_key_http
 from data_base_driver.relations.find_rel import find_with_rel_reliable_key
 
@@ -24,7 +24,8 @@ def recursion_search(request, group_id):
                                                       rel.get(FullTextSearch.REQUEST, ''),
                                                       rel.get(FullTextSearch.REL, {}).get(FullTextSearch.RELATION_ID),
                                                       rel.get(FullTextSearch.REL, {}).get(FullTextSearch.REL_VALUE, 0),
-                                                      rel.get(FullTextSearch.REL, {}).get(FullTextSearch.DATE_TIME_START),
+                                                      rel.get(FullTextSearch.REL, {}).get(
+                                                          FullTextSearch.DATE_TIME_START),
                                                       rel.get(FullTextSearch.REL, {}).get(FullTextSearch.DATE_TIME_END),
                                                       request.get(FullTextSearch.ACTUAL, False),
                                                       rel.get(FullTextSearch.ACTUAL, False),
