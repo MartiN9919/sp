@@ -97,12 +97,6 @@
  * @ok           - если задан - активна кнопка ОК
  *                 если задан - при обновлении fc включается режим редактирования
  *                 при нажатии на кнопку вызывается событие (возвращается копия fc) и редактирование завершается
- *
- * !!!!!!!!!!!!!!!!!!!!!!!!!!
- * задано        this.fc_prop
- * читать        this.model
- * писать        this.fc
- * !!!!!!!!!!!!!!!!!!!!!!!!!!
  */
 
 import { LControl, } from "vue2-leaflet";
@@ -118,23 +112,18 @@ const TYPES = class {
   static POLYGON = 'Polygon';
   static CUT     = 'Cut';
 };
+const FC_KEY_VAL = 'val';                 // fc
+const FC_KEY_NEW = 'new';                 // признак новых данных на замену старых
 
 export default {
-  name:       'EditorMap',
-  model:      { prop:  ['fc_prop'], event: 'fc_change', },
-  props:      {
-    fc_prop: {
-      type: Object,
-      default() { return undefined; },
-    },
-    modeEnabled: {            // доступные для создания элементы
-      type: Object,
-      default() { return { marker: true, line: true, polygon: true, } },
-    },
-    modeSelected: {           // включенный по умолчанию режим, например: 'Polygon'
-      type: String,
-      default() { return undefined; },
-    },
+  name: 'EditorMap',
+  model: { prop:  ['fc_prop'], event: 'fc_change', },
+  props: {
+    fc_prop: { type: Object, default() { return undefined; }, },
+    // доступные для создания элементы
+    modeEnabled: { type: Object,  default() { return { marker: true, line: true, polygon: true, } }, },
+    // включенный по умолчанию режим, например: 'Polygon'
+    modeSelected: { type: String, default() { return undefined; }, },
   },
   components: { LControl, },
   data() {
@@ -148,33 +137,52 @@ export default {
         cut:           false,             // устанавливается автоматически при наличии line или polygon
       },
       mode_selected: undefined,           // выбранный по умолчанию режим
-      fc_copy:       L.featureGroup().toGeoJSON(), // копия исходных данных model
+      fc_copy:       L.featureGroup().toGeoJSON(), // копия исходных данных fc
+      fc_wait:       undefined,           // ожидаемое значение fc в watch после set
     };
   },
 
   computed: {
     fc: {
-      get()    {
-        return this.model;
-      },
-      // при внутреннем изменении model
-      set(val) {
-        this.$emit('fc_change', val);
-        this.model = val;
+      get() { return this.fc_prop },
+      set(obj) {
+        let val    = (obj) ? ((FC_KEY_VAL in obj) ? obj[FC_KEY_VAL] : obj  ) : obj;
+        let is_new = (obj) ? ((FC_KEY_NEW in obj) ? obj[FC_KEY_NEW] : false) : false;
+
+        if (is_new) {
+          this.mode_selected_off();         // отключить возможный режим редактирования
+        }
+
+        this.fc_wait = val;
+        this.$emit('fc_change', val);       // вызывает отложенный watch.fc
+
+        if (is_new) {
+          this.$nextTick(() => {            // ждем коррекции fc на следующем шаге
+            this.map_load();
+            this.mode_set(false);
+          });
+        }
       },
     },
   },
 
   watch: {
-    // при внешнем изменении model
+    // при внешнем и внутреннем (после fc.set) изменении fc
     fc_prop: {
       handler(val) {
-        console.log('EditorMap.watch.fc_prop', val)
-        this.mode_selected_off();         // отключить возможный режим редактирования
-        this.model   = val;
+        // блокировать следствие внутреннего изменения fc
+        let is_in = (val == this.fc_wait);
+        this.fc_wait = undefined;
+        if (!is_in) { return }
+
+        // копия для возможного восстановления
         this.fc_copy = val?JSON.parse(JSON.stringify(val)):undefined;
-        this.map_load();
-        this.mode_set(false);
+
+        // вызвать fc.set
+        this.fc = {
+          [FC_KEY_VAL]: val,
+          [FC_KEY_NEW]: true,
+        }
       },
       deep: true,
     },
@@ -223,9 +231,8 @@ export default {
      // обработчик события: нажатие клавиши
     this.map.addEventListener('keydown', this.on_key_down);
 
-    // установка данных, по умолчанию только this.fc_prop
-    this.fc_copy = this.fc_prop?JSON.parse(JSON.stringify(this.fc_prop)):undefined;
-    this.fc      = this.fc_prop;
+    // копия исходных данных
+    this.fc_copy = this.fc?JSON.parse(JSON.stringify(this.fc)):undefined;
     this.map_load();
 
     // установка режима
@@ -247,7 +254,7 @@ export default {
     // ДАННЫЕ НА КАРТЕ
     // ======================================
 
-    // записать в model
+    // записать из карты в fc
     map_save() {
       this.mode_selected_off();
       let fg = L.featureGroup();
@@ -262,26 +269,29 @@ export default {
           fg.addLayer(layer);
         }
       });
-      this.fc = fg.toGeoJSON();
+      this.fc = { [FC_KEY_VAL]: fg.toGeoJSON(), };
     },
 
 
-    // загрузить из model
+    // загрузить на карту из fc
     map_load() {
       // очистить карту
       this.map_clear();
 
       // при отсутствии данных отбой
-      if (this.model == undefined) return;
+      if (this.fc == undefined) return;
 
       // стили исходные
       let self  = this;
       let style = {
-        onEachFeature: function(feature, layer)  { layer.options.editor = true;       },
+        onEachFeature: function(feature, layer)  {
+          console.log('onEachFeature', layer)
+          layer.options.editor = true;
+        },
         pointToLayer:  function(feature, latlng) { return self.marker_origin(latlng); },
         style:         function(feature)         { return self.path_origin();         },
       };
-      let layer = (this.model.type=='FeatureCollection')?L.geoJSON(this.model, style):L.GeoJSON.geometryToLayer(this.model, style);
+      let layer = (this.fc.type=='FeatureCollection')?L.geoJSON(this.fc, style):L.GeoJSON.geometryToLayer(this.fc, style);
 
       // события: установить
       this.events_layer_on(layer);
@@ -294,11 +304,12 @@ export default {
     },
 
 
-    // очистить на карте
+    // очистить карту
     map_clear() {
       let self = this;
       this.mode_selected_off();
       this.map.pm.getGeomanLayers().forEach(function(layer) {
+        console.log('map_clear', layer)
         if (layer.options.editor) {
           self.events_layer_off(layer);
           self.map.removeLayer(layer);
@@ -314,7 +325,7 @@ export default {
 
     // установить режим редактирования
     mode_set(first) {
-      if (this.model == undefined) {
+      if (this.fc == undefined) {
         this.show_if = false;
       } else {
         this.mode_ok_set();
@@ -350,7 +361,7 @@ export default {
 
     mode_ok_click() {
       // this.mode_selected_off();
-      this.$emit('ok', JSON.parse(JSON.stringify(this.model)));
+      this.$emit('ok', JSON.parse(JSON.stringify(this.fc)));
       this.fc_copy = undefined;
       this.$emit('fc_change', undefined);
       this.map_clear();
@@ -505,19 +516,19 @@ export default {
     on_click_clear() {
       this.mode_selected_off();
       this.fc = L.featureGroup().toGeoJSON();
-      this.map_load();
+      //this.map_load();
     },
 
     // восстановить
     on_click_restore() {
       this.mode_selected_off();
       this.fc = this.fc_copy?JSON.parse(JSON.stringify(this.fc_copy)):undefined;
-      this.map_load();
+      //this.map_load();
     },
 
     // изменение на карте
     on_modify(e) {
-      // сохранить данные из карты в model
+      // сохранить данные из карты в fc
       this.map_save();
 
       // изменить стили после редактирования
