@@ -150,6 +150,7 @@ export default {
         let is_new = (obj) ? ((FC_KEY_NEW in obj) ? obj[FC_KEY_NEW] : false) : false;
 
         if (is_new) {
+          this.fc_copy = val?JSON.parse(JSON.stringify(val)):undefined; // глубокая копия для возможного восстановления
           this.mode_selected_off();         // отключить возможный режим редактирования
         }
 
@@ -173,10 +174,7 @@ export default {
         // блокировать следствие внутреннего изменения fc
         let is_in = (val == this.fc_wait);
         this.fc_wait = undefined;
-        if (!is_in) { return }
-
-        // копия для возможного восстановления
-        this.fc_copy = val?JSON.parse(JSON.stringify(val)):undefined;
+        if (is_in) { return }
 
         // вызвать fc.set
         this.fc = {
