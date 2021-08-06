@@ -84,7 +84,30 @@ def io_get_obj_col_manticore(group_id, object_type, keys, ids, ids_max_block):
     return get_enabled_records(object_type, result, group_id, False)
 
 
-def io_get_rel_manticore(group_id, keys, obj_rel_1, obj_rel_2, val, time_interval, is_unique):
+def io_get_obj_manticore_dict(group_id, object_type, keys, ids, ids_max_block, where_dop_row, time_interval):
+    """
+    Функция для получения информации о объекте из мантикоры в формате списка словарей
+    @param group_id: идентификатор группы пользователя
+    @param object_type: идентификатор типа объекта, формат int
+    @param keys: список содержащий идентификаторы ключей
+    @param ids: список содержащий идентификаторы объектов
+    @param ids_max_block: максимальное количество записей в ответе
+    @param where_dop_row: аргументы полнотекстового поиска (блок match запроса sphinx/manticore)
+    @param time_interval: временной интервал записи в формате словаря с ключами second_start и second_end
+    @return: список словарей в формате [{rec_id,sec,key_id,val},{},...,{}]
+    """
+
+    row_records = io_get_obj_row_manticore(group_id, object_type, keys, ids, ids_max_block, where_dop_row,
+                                           time_interval)
+    if len(where_dop_row) > 0:
+        ids = [item['rec_id'] for item in row_records]
+    col_records = io_get_obj_col_manticore(group_id, object_type, keys, ids, ids_max_block)
+    result = row_records + col_records
+    result.sort(key=lambda x: x['rec_id'])
+    return result
+
+
+def io_get_rel_manticore_dict(group_id, keys, obj_rel_1, obj_rel_2, val, time_interval, is_unique):
     """
     Функция для получения информации о связях в формате списка словарей
     @param group_id: идентификатор группы пользователя

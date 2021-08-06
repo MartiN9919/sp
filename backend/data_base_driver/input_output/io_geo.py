@@ -2,7 +2,8 @@ import json
 import geojson
 
 from data_base_driver.constants.const_dat import DAT_SYS_OBJ, DAT_SYS_KEY
-from data_base_driver.input_output.input_output import io_get_obj, io_get_rel_generator, io_get_geometry_tree
+from data_base_driver.input_output.input_output import io_get_geometry_tree
+from data_base_driver.input_output.input_output_mysql import io_get_obj_mysql_tuple, io_get_rel_mysql_generator
 from data_base_driver.sys_key.get_object_info import rel_rec_to_el, el_to_rec_id
 
 
@@ -22,7 +23,7 @@ def rel_to_geo_fc(obj, group_id, keys_rel, keys_obj, where_dop=[]):
     obj_id = DAT_SYS_OBJ.DUMP.to_id(val=obj)
 
     # записи rel
-    rel_recs = io_get_rel_generator(
+    rel_recs = io_get_rel_mysql_generator(
         group_id=group_id,
         keys=keys_rel,
         obj_rel_1=(obj_id,),  # (DAT_SYS_OBJ.NAME_POINT,),
@@ -72,7 +73,7 @@ def geo_id_to_fc(obj, group_id, geo_ids, keys):
 
     # читать записи point по id
     # recs = ((42, 30303, 'Тест 41'), (42, 81, '-1', None), (42, 'location', '{"type": "GeometryCollection", "geometries": [{"type": "Polygon", "coordinates": []}]}'), ... )
-    recs = io_get_obj(
+    recs = io_get_obj_mysql_tuple(
         group_id=group_id,
         obj=obj_id,
         keys=keys,

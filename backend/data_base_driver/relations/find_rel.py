@@ -1,7 +1,7 @@
 import datetime
 
 from data_base_driver.additional_functions import date_time_to_sec
-from data_base_driver.input_output.input_output import io_get_rel_manticore_dict
+from data_base_driver.input_output.input_output import io_get_rel
 from data_base_driver.record.find_object import find_reliable_http
 
 
@@ -32,7 +32,7 @@ def validate_rel_actual(rel, date_time_start, date_time_end, group_id=0):
     """
     second_start, second_end = get_seconds_from_request_data_time(date_time_start, date_time_end)
     time_interval = {'second_start': second_start, 'second_end': second_end}
-    response = io_get_rel_manticore_dict(group_id, [int(rel['key_id'])], [int(rel['obj_id_1']), int(rel['rec_id_1'])],
+    response = io_get_rel(group_id, [int(rel['key_id'])], [int(rel['obj_id_1']), int(rel['rec_id_1'])],
                                          [int(rel['obj_id_2']), int(rel['rec_id_2'])], [], time_interval, True)
     for temp in response:
         if temp['sec'] < second_start or temp['sec'] > second_end or temp['sec'] == rel['sec']:
@@ -74,7 +74,7 @@ def search_rel_with_key_http(rel_key, object_1_type, object_1_id, object_2_type,
         object2.append(object_2_id)
     second_start, second_end = get_seconds_from_request_data_time(date_time_start, date_time_end)
     time_interval = {'second_start': second_start, 'second_end': second_end}
-    temp_result = io_get_rel_manticore_dict(group_id, rel_key, object1, object2, list_id, time_interval, True)
+    temp_result = io_get_rel(group_id, rel_key, object1, object2, list_id, time_interval, True)
     temp_result = [temp for temp in temp_result if validate_rel_actual(temp, date_time_start, date_time_end)]
     for temp in temp_result:
         if int(temp['obj_id_1']) == object_1_type:

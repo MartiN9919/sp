@@ -30,8 +30,8 @@ class TestGetGeoIdToFC(TestGetGeoBase):
         pass
 
     def test_get_point(self):
-        geo = geo_id_to_fc(obj='point', group_id=0, geo_ids=[37],keys=['address'])
-        self.assertEqual(geo[0].properties['address'][0],'Нижний Новгород, 40 лет Победы ул., 7')
+        geo = geo_id_to_fc(obj='point', group_id=0, geo_ids=[37],keys=['lat'])
+        self.assertEqual(geo[0].geometry['coordinates'][1], 53.262859)
 
     def test_get_geometry(self):
         geo = geo_id_to_fc(obj='geometry', group_id=0, geo_ids=[41],keys=['name'])
