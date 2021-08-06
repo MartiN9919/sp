@@ -102,7 +102,7 @@ export default {
 
   watch: {
     fc_child: function(val) {
-      console.log('LeafletEditor.fc_child.watch.fc_child', val)
+      //console.log('LeafletEditor.fc_child.watch.fc_child', val)
       this.fc_parent = val;
     },
   },
@@ -117,11 +117,11 @@ export default {
 
     fc_parent: {
       get()    {
-        console.log('LeafletEditor.fc_parent.get', this.fc_parent_prop)
+        //console.log('LeafletEditor.fc_parent.get', this.fc_parent_prop)
         return this.fc_parent_prop;
       },
       set(val) {
-        console.log('LeafletEditor.fc_parent.set', val)
+        //console.log('LeafletEditor.fc_parent.set', val)
         this.$emit('fc_parent_change', val);
       },
     },
