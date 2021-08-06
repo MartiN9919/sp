@@ -1,5 +1,7 @@
 import datetime
-from data_base_driver.input_output.io import io_get_rel_manticore_dict
+
+from data_base_driver.additional_functions import date_time_to_sec
+from data_base_driver.input_output.input_output import io_get_rel
 from data_base_driver.record.find_object import find_reliable_http
 
 
@@ -13,13 +15,9 @@ def get_seconds_from_request_data_time(date_time_start, date_time_end):
     else:
         date_time_2_str = date_time_end + ':00'
     date_time_1 = datetime.datetime.strptime(date_time_1_str, "%Y-%m-%d %H:%M:%S")
-    days = date_time_1.date().toordinal() + 365
-    seconds_1 = date_time_1.time().second + date_time_1.time().minute * 60 + date_time_1.time().hour * 3600 \
-                + days * 86400
+    seconds_1 = date_time_to_sec(date_time_1)
     date_time_2 = datetime.datetime.strptime(date_time_2_str, "%Y-%m-%d %H:%M:%S")
-    days = date_time_2.date().toordinal() + 365
-    seconds_2 = date_time_2.time().second + date_time_2.time().minute * 60 + date_time_2.time().hour * 3600 \
-                + days * 86400
+    seconds_2 = date_time_to_sec(date_time_2)
     return seconds_1, seconds_2
 
 
@@ -34,7 +32,7 @@ def validate_rel_actual(rel, date_time_start, date_time_end, group_id=0):
     """
     second_start, second_end = get_seconds_from_request_data_time(date_time_start, date_time_end)
     time_interval = {'second_start': second_start, 'second_end': second_end}
-    response = io_get_rel_manticore_dict(group_id, [int(rel['key_id'])], [int(rel['obj_id_1']), int(rel['rec_id_1'])],
+    response = io_get_rel(group_id, [int(rel['key_id'])], [int(rel['obj_id_1']), int(rel['rec_id_1'])],
                                          [int(rel['obj_id_2']), int(rel['rec_id_2'])], [], time_interval, True)
     for temp in response:
         if temp['sec'] < second_start or temp['sec'] > second_end or temp['sec'] == rel['sec']:
@@ -76,7 +74,7 @@ def search_rel_with_key_http(rel_key, object_1_type, object_1_id, object_2_type,
         object2.append(object_2_id)
     second_start, second_end = get_seconds_from_request_data_time(date_time_start, date_time_end)
     time_interval = {'second_start': second_start, 'second_end': second_end}
-    temp_result = io_get_rel_manticore_dict(group_id, rel_key, object1, object2, list_id, time_interval, True)
+    temp_result = io_get_rel(group_id, rel_key, object1, object2, list_id, time_interval, True)
     temp_result = [temp for temp in temp_result if validate_rel_actual(temp, date_time_start, date_time_end)]
     for temp in temp_result:
         if int(temp['obj_id_1']) == object_1_type:
@@ -104,7 +102,7 @@ def search_rel_with_key_http(rel_key, object_1_type, object_1_id, object_2_type,
 
 
 def find_with_rel_reliable_key(object_1_type, request_1, object_2_type, request_2, rel_key, list_id, date_time_start,
-                               date_time_end, actual_1=False, actual_2=False):
+                               date_time_end, actual_1=False, actual_2=False, group_id=0):
     """
     Функция для поиска записей с учетом связей, проводит надежную сверку по двум запросам, учитывает тип связи
     @param object_1_type: тип главного объекта для связи
@@ -117,6 +115,7 @@ def find_with_rel_reliable_key(object_1_type, request_1, object_2_type, request_
     @param date_time_end: дата и время конца поиска связи
     @param actual_1: флаг актуальности поиска для первого объекта
     @param actual_2: флаг актуальности поиска для второго объекта
+    @param group_id: идентификатор группы пользователя
     @return: список с идентификаторами подходящих записей
     """
     result = []
@@ -124,20 +123,20 @@ def find_with_rel_reliable_key(object_1_type, request_1, object_2_type, request_
         if len(request_1) == 0:
             result1 = [0]
         else:
-            result1 = find_reliable_http(object_1_type, request_1, actual_1)
+            result1 = find_reliable_http(object_1_type, request_1, actual_1, group_id)
     else:
         result1 = [0]
     if request_2:
         if len(request_2) == 0:
             result2 = [0]
         else:
-            result2 = find_reliable_http(object_2_type, request_2, actual_2)
+            result2 = find_reliable_http(object_2_type, request_2, actual_2, group_id)
     else:
         result2 = [0]
     for item in result1:
         for item_next in result2:
             res = search_rel_with_key_http(rel_key, object_1_type, item, object_2_type, item_next, list_id,
-                                           date_time_start, date_time_end)
+                                           date_time_start, date_time_end, group_id)
             if len(res) != 0:
                 result.extend([int(elem['rec_id']) for elem in res])
     return result

@@ -3,7 +3,7 @@ import datetime
 from data_base_driver.record.find_object import find_reliable_http
 from data_base_driver.record.get_record import get_object_record_by_id_http
 from data_base_driver.relations.find_rel import search_rel_with_key_http
-from data_base_driver.input_output.io import io_get_rel_manticore_tuple
+from data_base_driver.input_output.input_output import io_get_rel
 from data_base_driver.sys_key.get_object_dump import get_object_by_name
 
 
@@ -18,7 +18,7 @@ def get_rel_by_object(group_id, object, id, parents):
     """
     if not (isinstance(object, int)) and not (object.isdigit()):
         object = get_object_by_name(object)['id']
-    rels = io_get_rel_manticore_tuple(group_id, [], [int(object), id], [], [], {}, True)
+    rels = io_get_rel(group_id, [], [int(object), id], [], [], {}, True)
     first_data = [{'object_type': rel[2], 'rel_type': rel[0], 'rec_id': rel[3],
                    'params': get_object_record_by_id_http(rel[2], rel[3])['params']} for rel in rels if
                   (rel[4] == object and rel[5] == id) and len(

@@ -76,6 +76,16 @@ def get_sorted_list(items):
     return [item[0] for item in sorted(counter.items(), key=lambda x: x[1], reverse=True)]
 
 
+def date_time_to_sec(date_time):
+    """
+    Функция для преобразования даты и времени в секунды
+    @param date_time: дата и время в формате python datetime.datetime
+    @return: целочисленное количество секунд
+    """
+    days = date_time.date().toordinal() + 365
+    return date_time.time().second + date_time.time().minute * 60 + date_time.time().hour * 3600 + days * 86400
+
+
 def intercept_sort_list(elements):
     """
     Функция для пересечения списков с сохранением сортировки
@@ -100,3 +110,16 @@ def intercept_sort_list(elements):
             continue
     temp_list.sort(key=lambda x: x['midle'])
     return [temp['elem'] for temp in temp_list]
+
+
+def push_dict(dictionary, key, value):
+    """
+    Функция для добавления в список по ключу словаря, если ключа нет то создает список с одним значением
+    @param dictionary: исходный словарь
+    @param key: ключ словаря
+    @param value: вносимое значение
+    """
+    if dictionary.get(key, None):
+        dictionary[key].append(value)
+    else:
+        dictionary[key] = [value]

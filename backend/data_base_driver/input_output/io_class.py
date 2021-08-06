@@ -1,9 +1,9 @@
 from data_base_driver.constants.const_dat import DAT_SYS_OBJ, DAT_SYS_KEY, DAT_REL
-from .data_keys_parser.io_pars_data import IO_PARS_DATA
-from .data_keys_parser.io_pars_keys import IO_PARS_KEYS
-from .data_keys_parser.io_pars_rels import IO_PARS_RELS
-from .io_org_sql import IO_ORG_SQL
-from .io_permit import IO_PERMIT, permit
+from data_base_driver.input_output.data_keys_parser.io_pars_data import IO_PARS_DATA
+from data_base_driver.input_output.data_keys_parser.io_pars_keys import IO_PARS_KEYS
+from data_base_driver.input_output.data_keys_parser.io_pars_rels import IO_PARS_RELS
+from data_base_driver.input_output.io_org_sql import IO_ORG_SQL
+from data_base_driver.input_output.io_permit import IO_PERMIT, permit
 
 
 ###########################################
@@ -29,7 +29,6 @@ class IO():
     def set(self, obj, data):
         try:
             data_pars = IO_PARS_DATA(obj=obj, data=data)
-
             # проверка доступа obj
             if not self.is_admin and \
                     data_pars.obj_id != DAT_SYS_OBJ.ID_REL and \

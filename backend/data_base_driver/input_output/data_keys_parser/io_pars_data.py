@@ -249,6 +249,7 @@ class IO_PARS_DATA(dict):
         # dat is null
         if not is_dat:
             vals[DAT_REL.DAT] = '\'' + datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + '\''
+        vals[DAT_REL.REC_ID] = '0'
 
         self.row_dic.append(vals)
 
