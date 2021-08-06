@@ -4,6 +4,29 @@ from data_base_driver.input_output.input_output import io_get_obj
 from data_base_driver.sys_key.get_key_dump import get_key_by_id
 
 
+def get_permission_params(params, object_id):
+    """
+    Функция для получения словаря разрешений для данного объекта
+    @param params: список записей о объекте
+    @param object_id: идентификатор типа объекта
+    @return: словарь в формате {permission_type:{id,groups:[]}, ..., {}}
+    """
+    if object_id not in DAT_SYS_KEY.DUMP.owners.keys():
+        return {}
+    keys_validation_tuple = DAT_SYS_KEY.DUMP.owners[object_id]
+    permission = {keys_validation_tuple[0]: [],
+                  keys_validation_tuple[1]: [],
+                  keys_validation_tuple[2]: [],
+                  keys_validation_tuple[3]: []}
+    for param in params:
+        if int(param['key_id']) in keys_validation_tuple:
+            permission[int(param['key_id'])].append({
+                'group_id': int(param['val']),
+                'data_time': get_date_time_from_sec(param['sec'])
+            })
+    return permission
+
+
 def get_object_record_by_id_http(object_id, rec_id, group_id=0):
     """
     Функция для получения информации о объекте по его типу и идентификатору записи
@@ -44,25 +67,3 @@ def get_record_title(object_id, rec_id, group_id=0):
     return {'object_id': record['object_id'], 'rec_id': record['rec_id'], 'title': title}
 
 
-def get_permission_params(params, object_id):
-    """
-    Функция для получения словаря разрешений для данного объекта
-    @param params: список записей о объекте
-    @param object_id: идентификатор типа объекта
-    @return: словарь в формате {permission_type:{id,groups:[]}, ..., {}}
-    """
-    if object_id not in DAT_SYS_KEY.DUMP.owners.keys():
-        return {}
-    keys_validation_tuple = DAT_SYS_KEY.DUMP.owners[object_id]
-    permission = {keys_validation_tuple[0]: {'title': 'разрешение на запись', 'groups': []},
-                  keys_validation_tuple[1]: {'title': 'разрешение на чтение', 'groups': []},
-                  keys_validation_tuple[2]: {'title': 'разрешение на чтение временно', 'groups': []},
-                  keys_validation_tuple[3]: {'title': 'запрет', 'groups': []}}
-    for param in params:
-        if int(param['key_id']) in keys_validation_tuple:
-            permission[int(param['key_id'])]['groups'].append({
-                'group_id': int(param['val']),
-                'group_title': DAT_OWNER.DUMP.get_group_title(int(param['val'])),
-                'data_time': get_date_time_from_sec(param['sec'])
-            })
-    return permission

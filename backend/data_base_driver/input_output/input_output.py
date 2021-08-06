@@ -147,16 +147,3 @@ def io_get_rel_tuple(group_id, keys, obj_rel_1, obj_rel_2, val, time_interval, i
              ) for item in temp_result]
 
 
-###########################################
-# ЧТЕНИЕ GEOMETRY_TREE
-###########################################
-# ret = [ {id: , name: , icon: }, ... ]
-def io_get_geometry_tree(
-        group_id,
-        parent_id,
-        write=True,
-):
-    return tuple(IO(group_id=group_id).get_geometry_tree(
-        parent_id=parent_id,
-        write=write,
-    ))
