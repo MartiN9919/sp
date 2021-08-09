@@ -73,7 +73,7 @@ def get_keys_by_object(object):
     result = []
     for key in keys:
         temp = dict(key)
-        if key['id'] == 25202 or key['id'] == 25203: # проверка на lat, lon, если да то пропускаем
+        if key['id'] == 25202 or key['id'] == 25203: # проверка на lat, lon, если да то пропускаем - КОСТЫЛЬ
             continue
         temp.pop('rel_obj_1_id')
         temp.pop('rel_obj_2_id')
