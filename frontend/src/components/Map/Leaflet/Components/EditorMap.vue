@@ -192,6 +192,7 @@ export default {
 
 
   mounted() {
+    //L.PM.setOptIn(false);
     this.map = this.$parent.mapObject;    // в основном модуле: this.$refs.map.mapObject;
     this.map.pm.setLang('ru');
 
@@ -261,8 +262,9 @@ export default {
     map_save() {
       this.mode_selected_off();
       let fg = L.featureGroup();
-      //this.map.pm.getGeomanLayers().forEach(function(layer) { <= недопустимо
-      this.map.eachLayer(function(layer) {
+      this.map.pm.getGeomanLayers(true).eachLayer(function(layer) { // <= недопустимо
+      //this.map.pm.getGeomanLayers().forEach(function(layer) { // <= недопустимо
+      //this.map.eachLayer(function(layer) {
         if (layer.options.editor) {
           if ((layer instanceof L.Path) || (layer instanceof L.Marker)) {
             // bug fix: удалить удаленные части фигур
@@ -334,6 +336,7 @@ export default {
         layer._layers[key].options.editor = true;
       };
       if (layer.options) layer.options.editor = true;
+      L.PM.reInitLayer(layer);
 
       // события: установить
       layer.on('pm:edit',           this.on_modify, this);
