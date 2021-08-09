@@ -192,7 +192,6 @@ export default {
 
 
   mounted() {
-    //L.PM.setOptIn(false);
     this.map = this.$parent.mapObject;    // в основном модуле: this.$refs.map.mapObject;
     this.map.pm.setLang('ru');
 
@@ -224,6 +223,7 @@ export default {
     let icon = this.icon_modify();
     if (icon) { options.markerStyle.icon = icon; }
     this.map.pm.setGlobalOptions(options);
+    // L.PM.setOptIn(true);
 
     // обработчик события: создание фигур
     this.map.on('pm:create', this.on_pm_create);
@@ -262,10 +262,8 @@ export default {
     map_save() {
       this.mode_selected_off();
       let fg = L.featureGroup();
-      this.map.pm.getGeomanLayers(true).eachLayer(function(layer) { // <= недопустимо
-      //this.map.pm.getGeomanLayers().forEach(function(layer) { // <= недопустимо
-      //this.map.eachLayer(function(layer) {
-        if (layer.options.editor) {
+      this.map.pm.getGeomanLayers(true).eachLayer(function(layer) {
+        //if (layer.options.editor) {
           if ((layer instanceof L.Path) || (layer instanceof L.Marker)) {
             // bug fix: удалить удаленные части фигур
             if (layer instanceof L.Path) {
@@ -273,7 +271,7 @@ export default {
             }
             fg.addLayer(layer);
           }
-        }
+        //}
       });
       this.fc = {
         [FC_KEY_VAL ]: fg.toGeoJSON(),
@@ -318,9 +316,10 @@ export default {
     // очистить карту
     map_clear() {
       this.mode_selected_off();
-      //this.map.pm.getGeomanLayers().forEach(function(layer) { <= недопустимо
-      this.map.eachLayer(function(layer) {
-        this.layer_del(layer)
+      this.map.pm.getGeomanLayers(true).eachLayer(function(layer) {
+        if (layer.options.editor) {
+          this.layer_del(layer)
+        }
       }.bind(this));
     },
 
@@ -336,7 +335,9 @@ export default {
         layer._layers[key].options.editor = true;
       };
       if (layer.options) layer.options.editor = true;
-      L.PM.reInitLayer(layer);
+
+      // layer.pmIgnore = false;
+      // L.PM.reInitLayer(layer);
 
       // события: установить
       layer.on('pm:edit',           this.on_modify, this);
@@ -353,10 +354,10 @@ export default {
     },
 
     layer_del(layer) {
-      if (layer.options.editor) {
+      //if (layer.options.editor) {
         this.layer_free(layer);
         this.map.removeLayer(layer);
-      }
+      //}
     },
 
 
@@ -378,8 +379,7 @@ export default {
 
     // разрешить режим редактирования для каждой редактируемой фигуры
     mode_pm_on() {
-      //this.map.pm.getGeomanLayers().forEach(function(layer) { <= недопустимо
-      this.map.eachLayer(function(layer) {
+      this.map.pm.getGeomanLayers(true).eachLayer(function(layer) { // <= недопустимо
         if (layer.options.editor) {
           layer.pm.enable({
             allowSelfIntersection: false,     // запретить самопересечения линий
