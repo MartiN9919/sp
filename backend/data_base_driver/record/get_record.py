@@ -39,7 +39,7 @@ def get_object_record_by_id_http(object_id, rec_id, group_id=0):
     """
     response = io_get_obj(group_id, object_id, [], [rec_id], 500, '', {})
 
-    # костыль для точек
+    # костыль для точек-------------------------------------------------------------------------------------------------
     point_temp = [item for item in response if item['key_id'] == 25202 or item['key_id'] == 25203]
     point = {'type': 'Point', 'coordinates': []}
     if len(point_temp) > 1:
@@ -51,6 +51,7 @@ def get_object_record_by_id_http(object_id, rec_id, group_id=0):
                          'key_id': 25204, 'val': json.dumps(point)})
         response.remove(point_temp[0])
         response.remove(point_temp[1])
+    # ------------------------------------------------------------------------------------------------------------------
 
     temp = [(int(item['key_id']), item['val'], int(item['sec'])) for item in response
             if int(item['key_id']) not in DAT_SYS_KEY.DUMP.owners.get(object_id, [])]
@@ -70,9 +71,6 @@ def get_object_record_by_id_http(object_id, rec_id, group_id=0):
     return {'object_id': object_id, 'rec_id': rec_id, 'params': params, 'permission': permission}
 
 
-# a = get_object_record_by_id_http(25, 34, 1)
-# b = 12
-
 def get_record_title(object_id, rec_id, group_id=0):
     """
     Функция для получения строки с краткой информацией о объекте
@@ -82,7 +80,12 @@ def get_record_title(object_id, rec_id, group_id=0):
     @return: словарь в формате {object_id, rec_id, title},...,{}]}
     """
     record = get_object_record_by_id_http(object_id, rec_id, group_id)
+    if len(list(record['permission'].keys())) > 0:
+        write_groups = [item['group_id'] for item in record['permission'][list(record['permission'].keys())[0]]]
+        write = DAT_OWNER.DUMP.valid_io_group(group_id, write_groups)
+    else:
+        write = True
     title = get_title(record['params'])
-    return {'object_id': record['object_id'], 'rec_id': record['rec_id'], 'title': title}
+    return {'object_id': record['object_id'], 'rec_id': record['rec_id'], 'title': title, 'write': write}
 
 
