@@ -1,3 +1,5 @@
+import json
+
 from data_base_driver.additional_functions import get_date_time_from_sec, get_title
 from data_base_driver.constants.const_dat import DAT_SYS_KEY, DAT_OWNER
 from data_base_driver.input_output.input_output import io_get_obj
@@ -36,6 +38,20 @@ def get_object_record_by_id_http(object_id, rec_id, group_id=0):
     @return: словарь в формате {object_id, rec_id, params:[{id,val},...,{}]}
     """
     response = io_get_obj(group_id, object_id, [], [rec_id], 500, '', {})
+
+    # костыль для точек
+    point_temp = [item for item in response if item['key_id'] == 25202 or item['key_id'] == 25203]
+    point = {'type': 'Point', 'coordinates': []}
+    if len(point_temp) > 1:
+        lat = float([item['val'] for item in point_temp if item['key_id'] == 25202][0])
+        lon = float([item['val'] for item in point_temp if item['key_id'] == 25203][0])
+        point['coordinates'].append(lat)
+        point['coordinates'].append(lon)
+        response.append({'rec_id': point_temp[0]['rec_id'], 'sec': point_temp[0]['sec'],
+                         'key_id': 25204, 'val': json.dumps(point)})
+        response.remove(point_temp[0])
+        response.remove(point_temp[1])
+
     temp = [(int(item['key_id']), item['val'], int(item['sec'])) for item in response
             if int(item['key_id']) not in DAT_SYS_KEY.DUMP.owners.get(object_id, [])]
     params = []
@@ -53,6 +69,9 @@ def get_object_record_by_id_http(object_id, rec_id, group_id=0):
     permission = get_permission_params(response, object_id)
     return {'object_id': object_id, 'rec_id': rec_id, 'params': params, 'permission': permission}
 
+
+# a = get_object_record_by_id_http(30, 34, 1)
+# b = 12
 
 def get_record_title(object_id, rec_id, group_id=0):
     """
