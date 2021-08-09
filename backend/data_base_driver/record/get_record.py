@@ -70,7 +70,7 @@ def get_object_record_by_id_http(object_id, rec_id, group_id=0):
     return {'object_id': object_id, 'rec_id': rec_id, 'params': params, 'permission': permission}
 
 
-# a = get_object_record_by_id_http(30, 34, 1)
+# a = get_object_record_by_id_http(25, 34, 1)
 # b = 12
 
 def get_record_title(object_id, rec_id, group_id=0):

@@ -77,10 +77,14 @@ def io_get_obj_col_manticore(group_id, object_type, keys, ids, ids_max_block):
         params = item['_source']
         for key in result_keys:
             if params.get(key['name']):
+                if key['name'] == 'location':
+                    value = json.dumps(params.get(key['name']))
+                else:
+                    value = str(params.get(key['name']))
                 result.append({DAT_OBJ_ROW.ID: int(params['rec_id']),
                                DAT_OBJ_ROW.SEC: 0,
                                DAT_OBJ_ROW.KEY_ID: key['id'],
-                               DAT_OBJ_ROW.VAL: str(params.get(key['name']))})
+                               DAT_OBJ_ROW.VAL: value})
     return get_enabled_records(object_type, result, group_id, False)
 
 
