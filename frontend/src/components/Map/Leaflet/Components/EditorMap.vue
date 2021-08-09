@@ -261,10 +261,9 @@ export default {
     map_save() {
       this.mode_selected_off();
       let fg = L.featureGroup();
-      //this.map.pm.getGeomanLayers().forEach(function(layer) {
-      this.map.eachLayer( function(layer) {
-        //if (layer.options.editor) {
-        if (layer.editor) {
+      //this.map.pm.getGeomanLayers().forEach(function(layer) { <= недопустимо
+      this.map.eachLayer(function(layer) {
+        if (layer.options.editor) {
           if ((layer instanceof L.Path) || (layer instanceof L.Marker)) {
             // bug fix: удалить удаленные части фигур
             if (layer instanceof L.Path) {
@@ -302,33 +301,60 @@ export default {
         // onEachFeature: function(feature, layer)  { layer.options.editor = true; },
       };
       let layer = (fc.type=='FeatureCollection')?L.geoJSON(fc, style):L.GeoJSON.geometryToLayer(fc, style);
-      layer.editor = true;
 
-      // события: установить
-      this.events_layer_on(layer);
+      // слой: настроить
+      this.layer_set(layer);
 
-      // добавить слой на карту
+      // слой: добавить на карту
       layer.addTo(this.map);
 
-      // разрешить режим редактирования
+      // слой: разрешить режим редактирования
       this.mode_pm_on();
     },
 
 
     // очистить карту
     map_clear() {
-      let self = this;
       this.mode_selected_off();
+      //this.map.pm.getGeomanLayers().forEach(function(layer) { <= недопустимо
       this.map.eachLayer(function(layer) {
-        if (layer.editor) {
-          this.events_layer_off(layer);
-          this.map.removeLayer(layer);
-          console.log('del')
-        }
+        this.layer_del(layer)
       }.bind(this));
-
     },
 
+
+
+    // ======================================
+    // СЛОИ
+    // ======================================
+    layer_set(layer) {
+      // признак редактируемого слоя: установить
+      for (let key in layer._layers) {
+        if (!layer._layers[key].options) layer._layers[key].options = {};
+        layer._layers[key].options.editor = true;
+      };
+      if (layer.options) layer.options.editor = true;
+
+      // события: установить
+      layer.on('pm:edit',           this.on_modify, this);
+      layer.on('pm:cut',            this.on_modify, this);
+      layer.on('pm:remove',         this.on_modify, this);
+      layer.on('pm:vertexremoved',  this.on_modify, this);
+    },
+
+    layer_free(layer) {
+      layer.off('pm:edit',          this.on_modify, this);
+      layer.off('pm:cut',           this.on_modify, this);
+      layer.off('pm:remove',        this.on_modify, this);
+      layer.off('pm:vertexremoved', this.on_modify, this);
+    },
+
+    layer_del(layer) {
+      if (layer.options.editor) {
+        this.layer_free(layer);
+        this.map.removeLayer(layer);
+      }
+    },
 
 
     // ======================================
@@ -349,8 +375,9 @@ export default {
 
     // разрешить режим редактирования для каждой редактируемой фигуры
     mode_pm_on() {
-      this.map.eachLayer( function(layer) {
-        if (layer.editor) {
+      //this.map.pm.getGeomanLayers().forEach(function(layer) { <= недопустимо
+      this.map.eachLayer(function(layer) {
+        if (layer.options.editor) {
           layer.pm.enable({
             allowSelfIntersection: false,     // запретить самопересечения линий
             limitMarkersToCount:   20,        // количество редактируемых точек на линии
@@ -507,19 +534,6 @@ export default {
     // ======================================
     // СОБЫТИЯ
     // ======================================
-    events_layer_on(layer) {
-      layer.on('pm:edit',           this.on_modify, this);
-      layer.on('pm:cut',            this.on_modify, this);
-      layer.on('pm:remove',         this.on_modify, this);
-      layer.on('pm:vertexremoved',  this.on_modify, this);
-    },
-
-    events_layer_off(layer) {
-      layer.off('pm:edit',          this.on_modify, this);
-      layer.off('pm:cut',           this.on_modify, this);
-      layer.off('pm:remove',        this.on_modify, this);
-      layer.off('pm:vertexremoved', this.on_modify, this);
-    },
 
     // очистить
     on_click_clear() {
@@ -541,21 +555,31 @@ export default {
 
     // изменение на карте
     on_modify(e) {
-      // сохранить данные из карты в fc
-      this.map_save();
-
       // изменить стили после редактирования
       if (e.layer.setIcon)  e.layer.setIcon (this.icon_modify());
       if (e.layer.setStyle) e.layer.setStyle(this.path_modify());
 
-      // установить события на новый слой при резке
-      if (e.shape == 'Cut') this.events_layer_on(e.layer);
+      // настроить новый слой при резке
+      if (e.shape == 'Cut') {
+        this.layer_set(e.layer);
+        this.mode_pm_on();
+      }
+
+      // сохранить данные из карты в fc
+      this.map_save();
     },
 
     // операции с фигурами
     // при create срабатывает on_pm_create, потом on_pm_drawend
-    on_pm_create (e) { this.events_layer_on(e.layer); },
-    on_pm_drawend(e) { this.mode_selected_off(); this.map_save(); this.mode_pm_on(); },
+    // при разрезании фигуры - только on_pm_drawend
+    on_pm_create (e) {
+      this.layer_set(e.layer);
+    },
+    on_pm_drawend(e) {
+      this.mode_selected_off();
+      this.map_save();
+      this.mode_pm_on();
+    },
 
     // нажатие клавиши
     on_key_down(e)  {
