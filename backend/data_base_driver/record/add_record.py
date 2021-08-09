@@ -36,6 +36,7 @@ def add_data(group_id, object):
                 for param in object['params'] if validate_record(param)]
     except Exception as e:
         raise e
+
     # костыль для добавления классификатора телефона для страны, придумать как переделать-------------------------------
     if object.get('object_id') == 52:
         country = get_country_by_number([param for param in object['params'] if param['id'] == 50054][0]['value'])
@@ -49,6 +50,7 @@ def add_data(group_id, object):
         if fl == 0:
             data.append([50055, country, datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")])
     # ------------------------------------------------------------------------------------------------------------------
+
     if len(data) == 0:  # проверка на пустой запрос
         return {'status': 1,
                 'object': get_object_record_by_id_http(object.get('object_id'), object.get('rec_id', 0))}

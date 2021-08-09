@@ -78,7 +78,7 @@ def get_keys_by_object(object):
         temp.pop('rel_obj_1_id')
         temp.pop('rel_obj_2_id')
         if temp.get('list_id'):
-            temp['list_id'] = [item['value'] for item in get_list_by_top_id(int(temp.get('list_id')))]
+            temp['list_id'] = get_list_by_top_id(int(temp.get('list_id')))
         result.append(temp)
     return result
 
