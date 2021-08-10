@@ -8,6 +8,8 @@
     transition
     dense
     open-on-click
+    active-class=""
+    color=""
   >
     <template v-slot:prepend="{ item, open }">
       <v-icon

@@ -20,7 +20,7 @@ export default {
         this.items = response.data;
         if (localStorage[this.key_sel]) { this.item_sel = parseInt(localStorage[this.key_sel]); }
 
-        // fix bug
+        // watch fix bug
         this.$watch('item_sel', function(id) {
           localStorage[this.key_sel] = id;
           this.load_geometry(id);
