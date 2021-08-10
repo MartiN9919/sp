@@ -78,8 +78,9 @@
  * КОМПОНЕНТ: РЕДАКТОР ФИГУР
  *  <EditorMap
  *    v-model="fc"
-      :modeEnabled="modeEnabled"
-      :modeSelected="modeSelected"
+ *    editorId="text"
+ *    :modeEnabled="modeEnabled"
+ *    :modeSelected="modeSelected"
  *    @ok="on_edit_stop_ok"
  *  />
  *
@@ -92,6 +93,7 @@
  * v-model       - fc с двунаправленной связью, куда складываются данные
  *                 пустая область - { "type": "FeatureCollection", "features": [], } или L.featureGroup().toGeoJSON()
  *                 undedined      - режим редактирования выключается
+ * editorId      - идентификатор редактора (для одновременной работы нескольких редакторов)
  * mode_enabled  - доступные режимы редактирования (marker, line, polygon)
  * mode_selected - активизированный по умолчанию режим ('Marker', 'Line', 'Polygon')
  * @ok           - если задан - активна кнопка ОК
@@ -121,11 +123,13 @@ export default {
   name: 'EditorMap',
   model: { prop:  ['fc_prop'], event: 'fc_change', },
   props: {
-    fc_prop: { type: Object, default() { return undefined; }, },
+    fc_prop: { type: Object, default: () => ( undefined ), },
     // доступные для создания элементы
     modeEnabled: { type: Object,  default() { return { marker: true, line: true, polygon: true, } }, },
     // включенный по умолчанию режим, например: 'Polygon'
-    modeSelected: { type: String, default() { return undefined; }, },
+    modeSelected: { type: String, default: () => ( undefined ), },
+    // идентификатор редактора (для одновременной работы нескольких редакторов)
+    editorId: { type: String, default: () => ('edit'), },
   },
   components: { LControl, },
   data() {
@@ -161,10 +165,8 @@ export default {
         this.$emit('fc_change', val);       // вызывает отложенный watch.fc
 
         if (is_new) {
-        //  setTimeout(function(){
-            this.map_load(val);
-            this.mode_set(is_mode);
-        //  }.bind(this), 500);
+          this.map_load(val);
+          this.editor_set(is_mode);
         }
       },
     },
@@ -203,11 +205,11 @@ export default {
       finishOn:              'dblclick',  // завершение редактирования
       continueDrawing:       false,       // продолжать создание
       markerStyle: {
-        ...this.edit_property(),
+        ...this.layer_editor_prop(),      // признак редактирования слоя
         riseOnHover:         true,        // слой с маркером под курсором наверх
       },
       pathOptions: {
-        ...this.edit_property(),
+        //...this.layer_editor_prop(),    // признак редактирования слоя
         ...this.path_origin(),
         ...this.path_modify(),
       },
@@ -263,7 +265,7 @@ export default {
       this.mode_selected_off();
       let fg = L.featureGroup();
       this.map.pm.getGeomanLayers(true).eachLayer(function(layer) {
-        if (layer.options.editor) {
+        if (this.layer_editor_is(layer)) {
           if ((layer instanceof L.Path) || (layer instanceof L.Marker)) {
             // bug fix: удалить удаленные части фигур
             if (layer instanceof L.Path) {
@@ -272,7 +274,7 @@ export default {
             fg.addLayer(layer);
           }
         }
-      });
+      }.bind(this));
       this.fc = {
         [FC_KEY_VAL ]: fg.toGeoJSON(),
         [FC_KEY_NEW ]: false,
@@ -298,7 +300,7 @@ export default {
       let style = {
         pointToLayer:  function(feature, latlng) { return self.marker_origin(latlng); },
         style:         function(feature)         { return self.path_origin(); },
-        // onEachFeature: function(feature, layer)  { layer.options.editor = true; },
+        // onEachFeature: function(feature, layer)  { },
       };
       let layer = (fc.type=='FeatureCollection')?L.geoJSON(fc, style):L.GeoJSON.geometryToLayer(fc, style);
 
@@ -308,8 +310,8 @@ export default {
       // слой: добавить на карту
       layer.addTo(this.map);
 
-      // слой: разрешить режим редактирования
-      this.mode_pm_on();
+      // разрешить редактирование каждой редактируемой фигуры
+      this.editor_on();
     },
 
 
@@ -317,7 +319,7 @@ export default {
     map_clear() {
       this.mode_selected_off();
       this.map.pm.getGeomanLayers(true).eachLayer(function(layer) {
-        if (layer.options.editor) {
+        if (this.layer_editor_is(layer)) {
           this.layer_del(layer)
         }
       }.bind(this));
@@ -351,12 +353,16 @@ export default {
     },
 
 
+    layer_editor_prop()    { return { editor: this.editorId, } },
+    layer_editor_is(layer) { return (layer.options.editor === this.editorId) },
+
+
     // ======================================
     // РЕЖИМЫ
     // ======================================
 
     // установить режим редактирования
-    mode_set(first) {
+    editor_set(first) {
       if (this.fc == undefined) {
         this.show_if = false;
       } else {
@@ -367,16 +373,16 @@ export default {
       }
     },
 
-    // разрешить режим редактирования для каждой редактируемой фигуры
-    mode_pm_on() {
+    // разрешить редактирование каждой редактируемой фигуры
+    editor_on() {
       this.map.pm.getGeomanLayers(true).eachLayer(function(layer) {
-        if (layer.options.editor) {
+        if (this.layer_editor_is(layer)) {
           layer.pm.enable({
             allowSelfIntersection: false,     // запретить самопересечения линий
             limitMarkersToCount:   20,        // количество редактируемых точек на линии
           });
         }
-      });
+      }.bind(this));
     },
 
 
@@ -474,10 +480,6 @@ export default {
     // ======================================
     // СТИЛИ
     // ======================================
-    // признак редактирования
-    edit_property() {
-      return { /* editor: true, */ }
-    },
 
     // иконки
     icon_origin() {
@@ -497,15 +499,16 @@ export default {
 
     // маркеры
     marker_origin(latlng) {
-      return icon_2_marker(latlng, this.icon_origin(), { editor: true, });
+      return icon_2_marker(latlng, this.icon_origin(), this.layer_editor_prop());
     },
-    marker_modify(latlng) {
-      return icon_2_marker(latlng, this.icon_modify(), { editor: true, });
-    },
+    // marker_modify(latlng) {
+    //   return icon_2_marker(latlng, this.icon_modify(), this.layer_editor_prop());
+    // },
 
     // фигуры
     path_origin() {
       return {
+          ...this.layer_editor_prop(),
           weight:      5,
           opacity:     .5,
           fillOpacity: .3,
@@ -513,14 +516,13 @@ export default {
           fillColor:   COLOR_ORIGIN,
           dashArray:   '4, 8',
           //className: 'ddd',
-          editor: true,
         }
     },
     path_modify() {
       return {
+          ...this.layer_editor_prop(),
           color:       COLOR_MODIFY,
           fillColor:   COLOR_MODIFY,
-          editor: true,
         }
     },
 
@@ -557,7 +559,7 @@ export default {
       // настроить новый слой при резке
       if (e.shape == 'Cut') {
         this.layer_set(e.layer);
-        this.mode_pm_on();
+        this.editor_on();
       }
 
       // сохранить данные из карты в fc
@@ -573,7 +575,7 @@ export default {
     on_pm_drawend(e) {
       this.mode_selected_off();
       this.map_save();
-      this.mode_pm_on();
+      this.editor_on();
     },
 
     // нажатие клавиши
