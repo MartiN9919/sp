@@ -32,13 +32,14 @@
 </template>
 
 <script>
-//     :active="items_active"
+// :active="items_active"
 export default {
   name: 'PaneTree',
   model: { prop: 'item_sel_prop', event: 'item_sel_change', },
   props: {
-    items:         { type: Array,  default() { return []; }, },
-    item_sel_prop: { type: Number, default() { return 0;  }, },
+    items:         { type: Array,  default: () => [], },
+    item_sel_prop: { type: Number, default: () => 0, },
+    show_sel:      { type: Boolean, default: () => true, },
   },
 
   data: () => ({

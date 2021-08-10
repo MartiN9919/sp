@@ -139,7 +139,6 @@ export default {
     },
 
     load_geometry(fc) {
-      console.log('LeafletEditor.load_geometry', fc)
       this.fc_child  = JSON.parse(JSON.stringify(fc))
       this.fc_parent = this.fc_child
     },

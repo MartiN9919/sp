@@ -123,13 +123,13 @@ export default {
   name: 'EditorMap',
   model: { prop:  ['fc_prop'], event: 'fc_change', },
   props: {
-    fc_prop: { type: Object, default: () => ( undefined ), },
+    fc_prop: { type: Object, default: () => undefined, },
     // доступные для создания элементы
     modeEnabled: { type: Object,  default() { return { marker: true, line: true, polygon: true, } }, },
     // включенный по умолчанию режим, например: 'Polygon'
-    modeSelected: { type: String, default: () => ( undefined ), },
+    modeSelected: { type: String, default: () => undefined, },
     // идентификатор редактора (для одновременной работы нескольких редакторов)
-    editorId: { type: String, default: () => ('edit'), },
+    editorId: { type: String, default: () => 'edit', },
   },
   components: { LControl, },
   data() {
