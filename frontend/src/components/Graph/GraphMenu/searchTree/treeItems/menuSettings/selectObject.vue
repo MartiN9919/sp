@@ -1,51 +1,31 @@
 <template>
   <v-card flat>
-    <v-card-text class="pa-0">
-      <v-list class="py-0">
-        <v-list-item>
-          <custom-autocomplete
-            :disabled="!!newObject.rels.length"
-            v-model="selectedObject"
-            :items="filteredListOfPrimaryObjects"
-            :item-text="'title'"
-          ></custom-autocomplete>
-        </v-list-item>
-        <v-list-item>
-          <custom-autocomplete
-            v-model="selectedRelation"
-            :items="listRelations"
-            :item-text="'title'"
-          ></custom-autocomplete>
-        </v-list-item>
-        <v-list-item>
-          <custom-autocomplete
-            :disabled="listRelationItems.length === 1"
-            v-model="selectedRelationItem"
-            :items="listRelationItems"
-            :item-text="'value'"
-          ></custom-autocomplete>
-        </v-list-item>
-        <v-divider class="mt-4"></v-divider>
-        <v-list-group eager color="teal">
-          <template v-slot:activator>
-            <v-list-item-title>Дополнительные настройки</v-list-item-title>
-          </template>
+    <v-card-text>
+<!--      :disabled="!!newObject.rels.length"-->
+      <selector-input v-model="selectedObjectId" :list="filteredObjects" item-text="title"></selector-input>
+      <selector-input v-model="selectedRelationId" :list="listRelations" item-text="title" max-height="400%"></selector-input>
+<!--      :disabled="listRelationItems.length === 1"-->
+      <selector-input v-model="selectedRelationItemId" :list="listRelationItems" item-text="value" max-height="400%"></selector-input>
+      <v-divider></v-divider>
+      <v-list-group eager color="teal" class="context-settings">
+        <template v-slot:activator>
+          <v-list-item-title>Дополнительные настройки</v-list-item-title>
+        </template>
+
+        <v-form ref="form" lazy-validation style="width: 100%">
           <v-list-item>
-            <v-form ref="form" lazy-validation style="width: 100%">
-              <div class="py-3">
-                <date-time-input title="начала" v-model="selectedDateTimeStart" :clearable="true"></date-time-input>
-              </div>
-              <div class="py-3">
-                <date-time-input title="конца" v-model="selectedDateTimeEnd" :clearable="true"></date-time-input>
-              </div>
-            </v-form>
+            <date-time-input title="начала" v-model="selectedDateTimeStart" :clearable="true"></date-time-input>
           </v-list-item>
-          <v-list-item class="pt-1">
-            <boolean-input v-model="isActualStatus" :title="'Поиск только по актуальным значениям'"></boolean-input>
+          <v-list-item>
+            <date-time-input title="конца" v-model="selectedDateTimeEnd" :clearable="true"></date-time-input>
           </v-list-item>
-        </v-list-group>
-        <v-divider></v-divider>
-      </v-list>
+        </v-form>
+
+        <v-list-item>
+          <boolean-input v-model="isActualStatus" title="Поиск только по актуальным значениям"></boolean-input>
+        </v-list-item>
+      </v-list-group>
+      <v-divider></v-divider>
     </v-card-text>
     <v-card-actions>
       <v-btn @click="cancel" outlined color="teal" width="40%">Отмена</v-btn>
@@ -60,10 +40,11 @@ import dateTimeInput from "../../../../../WebsiteShell/InputForms/dateTimeInput"
 import CustomAutocomplete from "../../../../../WebsiteShell/UI/customAutocomplete"
 import BooleanInput from "../../../../../WebsiteShell/InputForms/booleanInput"
 import { mapActions, mapGetters } from "vuex"
+import SelectorInput from "../../../../../WebsiteShell/InputForms/selectorInput";
 
 export default {
   name: "selectObject",
-  components: { BooleanInput, CustomAutocomplete, dateTimeInput, },
+  components: {SelectorInput, BooleanInput, CustomAutocomplete, dateTimeInput, },
   props: {
     object: Object,
     newObject: Object,
@@ -73,24 +54,24 @@ export default {
   }),
   computed: {
     ...mapGetters(['primaryObject', 'listOfPrimaryObjects', 'relationsTwoObjects', 'relationObject', ]),
-    selectedObject: {
-      get: function () { return this.primaryObject(this.newObject.object_id) },
-      set: function (value) {
-        this.newObject.object_id = value.id
-        this.selectedRelation = this.listRelations[0]
-        this.getRelationsForObjects({ params: { object_1_id: this.object.object_id, object_2_id: value.id, }, })
+    selectedObjectId: {
+      get: function () { return this.newObject.object_id },
+      set: function (id) {
+        this.newObject.object_id = id
+        this.selectedRelationId = this.listRelations[0].id
+        this.getRelationsForObjects({ params: { object_1_id: this.object.object_id, object_2_id: id, }, })
       },
     },
-    selectedRelation: {
-      get: function () { return this.listRelations.find(rel => rel.id === this.newObject.rel.id) },
-      set: function (value) {
-        this.newObject.rel.id = value.id
-        this.selectedRelationItem = this.listRelationItems[0]
+    selectedRelationId: {
+      get: function () { return this.newObject.rel.id },
+      set: function (id) {
+        this.newObject.rel.id = id
+        this.selectedRelationItemID = this.listRelationItems[0].id
       },
     },
-    selectedRelationItem: {
-      get: function () { return this.listRelationItems.find(item => item.id === this.newObject.rel.value) },
-      set: function (item) { this.newObject.rel.value = item.id },
+    selectedRelationItemId: {
+      get: function () { return this.newObject.rel.value },
+      set: function (id) { this.newObject.rel.value = id },
     },
     isActualStatus: {
       get: function () { return this.newObject.actual },
@@ -104,7 +85,7 @@ export default {
       get: function () { return this.newObject.rel.date_time_start },
       set: function (value) { this.newObject.rel.date_time_start = value },
     },
-    filteredListOfPrimaryObjects () {
+    filteredObjects () {
       let listObjects = []
       for (let item of this.listOfPrimaryObjects)
         if (item.rels.includes(this.object.object_id))
@@ -113,12 +94,12 @@ export default {
     },
     listRelations () {
       let relations = []
-      relations = this.relationsTwoObjects({ firstId: this.object.object_id, secondId: this.selectedObject?.id })
+      relations = this.relationsTwoObjects({ firstId: this.object.object_id, secondId: this.selectedObjectId })
       let defaultRelations = [{ id: 0, title: 'Без связи' }]
       return Array.isArray(relations) ? defaultRelations.concat(relations) : defaultRelations
     },
     listRelationItems: function () {
-      let relationList = this.selectedRelation?.list
+      let relationList = this.listRelations.find(relation => relation.id === this.selectedRelationId)?.list
       let defaultRelationList = [{ id: 0, value: 'Не выбрано' }]
       return Array.isArray(relationList) ? defaultRelationList.concat(relationList) : defaultRelationList
     },
@@ -136,17 +117,18 @@ export default {
   mounted() {
     if (!this.newObject.object_id)
       this.createStatus = 'create'
-    else this.createStatus = 'change'
     if (!this.newObject.object_id)
-      this.selectedObject = this.filteredListOfPrimaryObjects[0]
+      this.selectedObjectId = this.filteredObjects[0]?.id
     if (!this.newObject.rel.id)
-      this.selectedRelation = this.listRelations[0]
+      this.selectedRelationId = this.listRelations[0].id
     if (!this.newObject.rel.value)
-      this.selectedRelationItem = this.listRelationItems[0]
+      this.selectedRelationItemId = this.listRelationItems[0].id
   },
 }
 </script>
 
 <style scoped>
-
+.context-settings >>> .v-list-item {
+  padding: 0 0;
+}
 </style>

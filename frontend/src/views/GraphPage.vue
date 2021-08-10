@@ -1,5 +1,5 @@
 <template>
-  <split-panel>
+  <split-panel shadow-effect>
     <template v-slot:firstPane>
       <graph-menu></graph-menu>
     </template>

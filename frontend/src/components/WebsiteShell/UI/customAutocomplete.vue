@@ -3,6 +3,7 @@
     :items="items" :item-text="itemText" v-model="selected" :disabled="disabled"
     return-object hide-details color="teal" hide-no-data item-color="teal"
     :menu-props="{ offsetY: true, maxWidth: '320', minWidth: '320' }"
+    class="v-input--dense"
   >
     <template v-slot:item="{ item }">
       <div class="py-1">{{item[itemText]}}</div>

@@ -1,40 +1,38 @@
 <template>
-  <v-menu
-    v-model="menuModal" offset-x offset-y fixed bottom right
-    :close-on-content-click="false" :close-on-click="false" ref="menuSettings"
-    transition="slide-x-reverse-transition" min-width="350" nudge-left="340" z-index="10001"
-  >
+  <drop-down-menu min-width="350" left :close-on-content-click="false">
     <template v-slot:activator="{ on }">
       <v-btn icon v-on="on">
         <v-icon>mdi-pencil-outline</v-icon>
       </v-btn>
     </template>
-    <select-object
-      v-if="menuModal && parentObject"
-      :object="parentObject"
-      :new-object="newObject"
-      @change="changeChildObject"
-      @cancel="cancel"
-    ></select-object>
-    <change-root-object
-      v-else-if="menuModal && !parentObject"
-      :object="object"
-      @cancel="cancel"
-      @change="changeRootObject"
-    ></change-root-object>
-  </v-menu>
+    <template v-slot:body="{ status, closeMenu }">
+      <select-object
+        v-if="status && parentObject"
+        :object="parentObject"
+        :new-object="newObject"
+        @change="changeChildObject()"
+        @cancel="closeMenu"
+      ></select-object>
+      <change-root-object
+        v-else-if="status && !parentObject"
+        :object="object"
+        @cancel="closeMenu"
+        @change="changeRootObject"
+      ></change-root-object>
+    </template>
+  </drop-down-menu>
 </template>
 
 <script>
+import DropDownMenu from "../../../../../WebsiteShell/InputForms/BodyToForm/dropDownMenu"
 import ChangeRootObject from "../menuSettings/changeRootObject"
 import SelectObject from "../menuSettings/selectObject"
-import mixinActionButton from "./mixinActionButton"
 
 export default {
   name: "changeTreeItemBtn",
-  mixins: [ mixinActionButton, ],
-  components: { SelectObject, ChangeRootObject, },
+  components: {DropDownMenu, SelectObject, ChangeRootObject, },
   props: {
+    object: Object,
     parentObject: {
       type: Object,
       default: function () { return null },
@@ -46,11 +44,9 @@ export default {
   methods: {
     changeRootObject(newData) {
       this.$emit('change', newData)
-      this.cancel()
     },
     changeChildObject() {
       this.$emit('change', this.newObject)
-      this.cancel()
     }
   },
   mounted() {

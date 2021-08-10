@@ -9,7 +9,7 @@
             :item-text="'title'"
           ></custom-autocomplete>
         </v-list-item>
-        <v-list-item class="pt-4">
+        <v-list-item>
           <boolean-input v-model="newActual" :title="'Поиск только по актуальным значениям'"></boolean-input>
         </v-list-item>
       </v-list>

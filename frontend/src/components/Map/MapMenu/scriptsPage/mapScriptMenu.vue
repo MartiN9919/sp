@@ -1,96 +1,83 @@
 <template>
-  <ResSplitPane
-    split-to="columns"
-    :allow-resize="true"
-    :min-size="15"
-    :max-size="85"
-    :size="sizeMenuColumn"
-    :resizerBorderThickness="1"
-    :resizerThickness="1"
-    v-on:update:size="sizeMenuColumn = $event"
-    units="percents" style="position: static"
-  >
-    <v-col slot="firstPane" class="column-settings pa-0">
+  <split-panel>
+    <template v-slot:firstPane>
       <treeView
         :treeViewItems="treeView"
         :selectedTreeViewItem="selectedItem"
         @changeSelectedTreeViewItem="setSelectedTreeViewItem"
-        class="tree-view overflow-y-auto my-1"
+        class="tree-view overflow-y-auto"
       ></treeView>
-    </v-col>
+    </template>
 
-    <v-col slot="secondPane" class="column-settings overflow-hidden pa-0">
-      <block-header :text-header="'Выбранные скрипты'"></block-header>
+    <template v-slot:secondPane>
+      <div class="second-column">
+        <menuTemplate
+          :templates="templatesList"
+          :selectedTemplate="selectedTemplate"
+          @getTemplate="getSelectedTemplate({ params: { template_id: $event } })"
+          @changeTitle="changeSelectedTemplateTitle"
+          @deleteTemplate="deleteSelectedTemplate"
+          @saveTemplate="saveTemplate"
+          @createNewTemplate="createTemplate"
+          class="px-2 pt-2"
+        ></menuTemplate>
+        <v-row no-gutters class="overflow-y-auto pa-1 chip-analytics">
+          <chipAnalytics
+            v-for="(analytics, id) in selectedTemplate.activeAnalysts.concat(selectedTemplate.passiveAnalysts)"
+            :analytics="analytics"
+            :key="id"
+            :selectedTreeViewItem="selectedItem"
+            @returnSelectAnalytics="setCurrentAnalytics"
+            @changeColor="changeColorActiveAnalysts"
+            @deleteActiveAnalytics="deleteAnalytics"
+          ></chipAnalytics>
+        </v-row>
+        <v-divider v-if="'id' in selectedItem"></v-divider>
 
-      <v-divider></v-divider>
-      <menuTemplate
-        :templates="templatesList"
-        :selectedTemplate="selectedTemplate"
-        @getTemplate="getSelectedTemplate({ params: { template_id: $event } })"
-        @changeTitle="changeSelectedTemplateTitle"
-        @deleteTemplate="deleteSelectedTemplate"
-        @saveTemplate="saveTemplate"
-        @createNewTemplate="createTemplate"
-      ></menuTemplate>
-
-      <v-divider
-          v-if="selectedTemplate.activeAnalysts.length || selectedTemplate.passiveAnalysts.length"
-      ></v-divider>
-
-      <v-row no-gutters class="overflow-y-auto py-3 px-2">
-        <chipAnalytics
-          v-for="(analytics, id) in selectedTemplate.activeAnalysts.concat(selectedTemplate.passiveAnalysts)"
-          :analytics="analytics"
-          :key="id"
-          :selectedTreeViewItem="selectedItem"
-          @returnSelectAnalytics="setCurrentAnalytics"
-          @changeColor="changeColorActiveAnalysts"
-          @deleteActiveAnalytics="deleteAnalytics"
-        ></chipAnalytics>
-      </v-row>
-
-      <v-divider
-        v-if="selectedTemplate.activeAnalysts.length || selectedTemplate.passiveAnalysts.length && 'id' in selectedItem"
-      ></v-divider>
-
-      <v-scroll-y-transition mode="out-in">
-        <div v-if="'id' in selectedItem" :key="selectedItem.id" class="pa-4 py-1">
-          <block-header :text-header="'Настройки ' + selectedItem.name" class="pb-3"></block-header>
-          <custom-tooltip v-for="variable in selectedItem.variables" :key="variable.id">
-            <template v-slot:activator="{ on }">
-              <div v-on="on" class="mb-5">
-                <settingsAnalytics
-                  v-model="variable.value" :variable="variable"
-                  :type="variable.type" :title="variable.title"
-                ></settingsAnalytics>
-              </div>
-            </template>
-            <template v-slot:body>
-              <p class="text-formatter-for-window-size additional-text text-justify ma-0">
-                {{variable.hint ? variable.hint : 'Описание отсутствует'}}
-              </p>
-            </template>
-          </custom-tooltip>
-          <div class="text-center pt-2">
-            <v-btn
-              @click="executeScript(selectedItem)"
-              outlined color="#00796B" class="mx-2 mb-2"
-            >Выполнить</v-btn>
-            <v-btn
-              :disabled="selectedTemplate.passiveAnalysts.indexOf(selectedItem) !== -1"
-              @click="disabledActiveAnalysts()"
-              outlined color="#00796B" class="mx-2 mb-2"
-            >Отключить</v-btn>
-          </div>
-        </div>
-      </v-scroll-y-transition>
-    </v-col>
-  </ResSplitPane>
+        <v-scroll-y-transition mode="out-in">
+          <v-form ref="form" v-if="'id' in selectedItem" :key="selectedItem.id" class="px-2">
+            <custom-tooltip v-for="variable in selectedItem.variables" :key="variable.id">
+              <template v-slot:activator="{ on }">
+                <div v-on="on">
+                  <settingsAnalytics
+                    v-model="variable.value"
+                    :type="variable.type"
+                    :title="variable.title"
+                    :list="variable.list"
+                    item-text="value"
+                    hide-details
+                    :rules="[ v => !!v || 'Поле должно быть заполнено', ]"
+                    class="pt-2"
+                  ></settingsAnalytics>
+                </div>
+              </template>
+              <template v-slot:body>
+                <p class="text-formatter-for-window-size additional-text text-justify ma-0">
+                  {{variable.hint ? variable.hint : 'Описание отсутствует'}}
+                </p>
+              </template>
+            </custom-tooltip>
+            <div class="py-2 d-flex flex-nowrap flex-row justify-center">
+              <v-btn
+                  :disabled="selectedTemplate.passiveAnalysts.indexOf(selectedItem) !== -1"
+                  @click="disabledActiveAnalysts()"
+                  outlined color="#00796B"
+              >Отключить</v-btn>
+              <v-spacer></v-spacer>
+              <v-btn
+                  @click="executeScript(selectedItem)"
+                  outlined color="#00796B"
+              >Выполнить</v-btn>
+            </div>
+          </v-form>
+        </v-scroll-y-transition>
+      </div>
+    </template>
+  </split-panel>
 </template>
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import ResSplitPane from 'vue-resize-split-pane'
 import treeView from './treeView'
 import chipAnalytics from './chipAnalytics'
 import settingsAnalytics from './settingsAnalytics'
@@ -100,11 +87,12 @@ import CreatorTreeView from '../Mixins/CreatorTreeView'
 import ExecutorScripts from '../Mixins/ExecutorScripts'
 import SelectedScriptFormatter from '../Mixins/SelectedScriptFormatter'
 import CustomTooltip from "../../../WebsiteShell/UI/customTooltip";
+import SplitPanel from "../../../WebsiteShell/UI/splitPanel";
 
 export default {
   name: 'mapScriptMenu',
-  mixins: [CreatorTreeView, ExecutorScripts, SelectedScriptFormatter],
-  components: { CustomTooltip, treeView, chipAnalytics, settingsAnalytics, menuTemplate, ResSplitPane, blockHeader, },
+  mixins: [ CreatorTreeView, ExecutorScripts, SelectedScriptFormatter, ],
+  components: {SplitPanel, CustomTooltip, treeView, chipAnalytics, settingsAnalytics, menuTemplate, blockHeader, },
   computed: {
     ...mapGetters(['templatesList', 'selectedTemplate'])
   },
@@ -198,12 +186,15 @@ export default {
 </script>
 
 <style scoped>
-  .tree-view {
-    max-height: 95%;
-  }
-  .column-settings {
-    max-height:100%;
-    display: flex;
-    flex-direction: column;
-  }
+.tree-view {
+  height: 100%;
+}
+.chip-analytics {
+  flex: auto;
+}
+.second-column {
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
 </style>

@@ -1,19 +1,21 @@
 <template>
-  <div class="text-input-form">
+  <div class="phone-number-form">
     <body-input-form
       v-model="value"
       :rules="rules"
       :clearable="clearable"
-      :hide-details="hideDetails"
       :class="bodyInputClasses"
       :placeholder="placeholder"
+      :hideDetails="hideDetails"
+      @keypress="isNumber($event)"
+      prefix="+"
     >
       <template v-slot:label>
         {{title}}
       </template>
       <template v-slot:append="props">
-        <v-icon v-if="deletable && props.hover" @click.stop="$emit('deletable')" size="24" class="action-icon">mdi-delete</v-icon>
-        <v-icon v-else size="24">mdi-format-color-text</v-icon>
+        <v-icon v-if="deletable && props.hover" @click.stop="" size="24" class="action-icon">mdi-delete</v-icon>
+        <v-icon v-else size="24">mdi-cellphone</v-icon>
       </template>
       <template v-slot:message>
         <slot name="message"></slot>
@@ -23,11 +25,10 @@
 </template>
 
 <script>
-
 import BodyInputForm from "./BodyToForm/bodyInputForm"
 
 export default {
-  name: "textInput",
+  name: "phoneInput",
   components: {BodyInputForm},
   model: { prop: 'inputString', event: 'changeInputString', },
   props: {
@@ -56,7 +57,7 @@ export default {
     },
     placeholder: {
       type: String,
-      default: 'Введите необходимое значение',
+      default: 'Введите номер телефона',
     },
   },
   computed: {
@@ -64,16 +65,25 @@ export default {
     value: {
       get: function () { return this.inputString },
       set: function (value) { this.$emit('changeInputString', value) }
-    }
+    },
   },
+  methods: {
+    isNumber(event) {
+      if (event.key === ' ' || event.key === '.')
+        return event.preventDefault()
+      if(!this.value) {
+        if (!Number(event.key))
+          return event.preventDefault()
+      } else
+      if (!Number(this.value + event.key))
+        return event.preventDefault()
+    }
+  }
 }
 </script>
 
 <style scoped>
-.text-input-form {
+.phone-number-form {
   width: 100%;
-}
-.action-icon {
-  cursor: pointer;
 }
 </style>
