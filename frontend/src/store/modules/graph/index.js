@@ -3,6 +3,7 @@ import objects from './objects'
 import relations from './relations'
 import contextMenu from './contextMenu'
 import workArea from './workArea'
+import graphNodes from './graphNodes'
 
 export function getWorkArea(rootState) {
   return rootState.graph.workArea.workAreaOfObjects
@@ -24,5 +25,6 @@ export default {
     relations,
     contextMenu,
     workArea,
+    graphNodes,
   },
 }

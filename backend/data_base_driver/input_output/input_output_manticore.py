@@ -100,7 +100,6 @@ def io_get_obj_manticore_dict(group_id, object_type, keys, ids, ids_max_block, w
     @param time_interval: временной интервал записи в формате словаря с ключами second_start и second_end
     @return: список словарей в формате [{rec_id,sec,key_id,val},{},...,{}]
     """
-
     row_records = io_get_obj_row_manticore(group_id, object_type, keys, ids, ids_max_block, where_dop_row,
                                            time_interval)
     if len(where_dop_row) > 0:

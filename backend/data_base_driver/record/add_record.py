@@ -32,7 +32,7 @@ def add_data(group_id, object):
     @return: идентификатор нового/измененного объекта в базе данных
     """
     try:
-        data = [[param['id'], param['value'], datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")]
+        data = [[param['id'], param['value'], param.get('date', datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))]
                 for param in object['params'] if validate_record(param)]
     except Exception as e:
         raise e
@@ -49,6 +49,17 @@ def add_data(group_id, object):
                 fl = 1
         if fl == 0:
             data.append([50055, country, datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")])
+
+    #  костыль для переделывания формата точки -------------------------------------------------------------------------
+    if object.get('object_id') == 25:
+        coordinates = [param for param in data if param[0] == 25204]
+        if len(coordinates) > 0:
+            coordinate = coordinates[0]
+            lat = [25202, coordinate[1]['coordinates'][0], datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")]
+            lon = [25202, coordinate[1]['coordinates'][1], datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")]
+            data.remove(coordinate)
+            data.append(lat)
+            data.append(lon)
     # ------------------------------------------------------------------------------------------------------------------
 
     if len(data) == 0:  # проверка на пустой запрос

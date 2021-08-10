@@ -20,6 +20,7 @@ export default {
     }
   },
   mutations: {
+
     changeLoadStatus: (state, status) => state.loadStatus = status,
     changeNavigationDrawerStatus: (state) => {
       if (router.currentRoute.name === 'Map') state.navigationDrawerStatusMap = !state.navigationDrawerStatusMap
@@ -29,6 +30,7 @@ export default {
     setUserInformation: (state, userInformation) => state.userInformation = userInformation
   },
   actions: {
+    setNavigationDrawerStatus: ({ commit }) => commit('setNavigationDrawerStatus'),
     changeNavigationDrawerStatus: ({ commit }) => commit('changeNavigationDrawerStatus'),
 
     authenticateUser ({ commit }, parameters = {}) {

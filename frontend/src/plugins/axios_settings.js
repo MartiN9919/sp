@@ -1,10 +1,9 @@
 import axios from 'axios'
 import store from '../store/index'
+import CONST from '@/plugins/const'
 
-const SERVER_IP = '127.0.0.1:8000/'
-//const SERVER_IP = '192.168.56.1:8002/'
-export const WS_SERVER_IP = 'ws://' + SERVER_IP
-export const HTTP_SERVER_IP = 'http://' + SERVER_IP
+export const WS_SERVER_IP = 'ws://' + CONST.URL.SERVER_IP
+export const HTTP_SERVER_IP = 'http://' + CONST.URL.SERVER_IP
 
 const http = axios.create({
   withCredentials: true,
