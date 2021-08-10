@@ -1,7 +1,7 @@
 import datetime
 
 from data_base_driver.constants.const_dat import DAT_REL
-from data_base_driver.input_output.io import io_set
+from data_base_driver.input_output.input_output import io_set
 from data_base_driver.sys_key.get_key_dump import get_key_by_id
 
 

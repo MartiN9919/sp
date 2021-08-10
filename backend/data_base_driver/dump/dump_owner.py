@@ -203,3 +203,12 @@ class DUMP_OWNER:
         line_region_list = [self.dump_groups.get(group_id, {}).get(DAT_OWNER_GROUPS.LINES_ID,[]),
                             self.dump_groups.get(group_id, {}).get(DAT_OWNER_GROUPS.REGIONS_ID,[])]
         return owner_line in line_region_list[0] and owner_region in line_region_list[1]
+
+    def get_group_title(self, group_id):
+        self._refresh_()
+        return self.dump_groups[group_id]['title']
+
+    def get_groups_list(self):
+        return [{'id': group, 'title': self.dump_groups[group]['title']} for group in self.dump_groups]
+
+

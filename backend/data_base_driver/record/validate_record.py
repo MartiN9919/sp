@@ -33,8 +33,6 @@ def validate_phone_number(phone_number):
     @return: True - если формат допустимый, False - если нет
     """
     phone_number_format = DAT_SYS_PHONE_NUMBER_FORMAT.DUMP.get_all()
-    if phone_number[0] != '+':
-        return False
     phone_number = remove_special_chars(phone_number)[1:]
     for format in phone_number_format:
         code, length = str(format['country_code']), format['length']

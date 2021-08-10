@@ -11,7 +11,7 @@ def login_user(request):
     """
     Создание сеанса пользователя
     """
-    # если пользователь уже залогинен, чего не может быть, но всеже возвращаем положительный результат аутентификации
+    # если пользователь уже залогинен, чего не может быть, но все же возвращаем положительный результат аутентификации
     if request.user.is_authenticated:
         return JsonResponse({}, status=200)
 
@@ -44,7 +44,6 @@ def logout_user(request):
     """
     auth.logout(request)
     return JsonResponse({}, status=200)
-
 
 
 @login_check

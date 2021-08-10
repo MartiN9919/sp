@@ -1,9 +1,9 @@
 <template>
   <v-row no-gutters style="flex-wrap: nowrap; height: 100%">
-    <v-col cols="auto">
-      <tools-menu/>
+    <v-col style="max-width: 56px">
+      <tools-menu></tools-menu>
     </v-col>
-    <v-col class="overflow-y-auto">
+    <v-col style="max-width: calc(100% - 56px)">
       <map-script-menu v-if="activeWindow === 'scriptsPage'"/>
       <map-dossier v-if="activeWindow === 'dossierPage'"/>
     </v-col>

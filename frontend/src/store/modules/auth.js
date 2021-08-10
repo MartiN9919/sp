@@ -8,10 +8,10 @@ export default {
     navigationDrawerStatusMap: false,
     navigationDrawerStatusReport: false,
     navigationDrawerStatusGraph: false,
-    progressLinearStatus: false
+    loadStatus: false
   },
   getters: {
-    progressLinearStatus: state => state.progressLinearStatus,
+    loadStatus: state => state.loadStatus,
     userInformation: state => state.userInformation,
     navigationDrawerStatus: state => page => {
       if (page === 'Map') return state.navigationDrawerStatusMap
@@ -20,12 +20,8 @@ export default {
     }
   },
   mutations: {
-    changeProgressLinearStatus: (state, status) => state.progressLinearStatus = status,
-    setNavigationDrawerStatus: (state) => {
-      if (router.currentRoute.name === 'Map') state.navigationDrawerStatusMap = true
-      if (router.currentRoute.name === 'Report') state.navigationDrawerStatusReport = true
-      if (router.currentRoute.name === 'Graph') state.navigationDrawerStatusGraph = true
-    },
+
+    changeLoadStatus: (state, status) => state.loadStatus = status,
     changeNavigationDrawerStatus: (state) => {
       if (router.currentRoute.name === 'Map') state.navigationDrawerStatusMap = !state.navigationDrawerStatusMap
       if (router.currentRoute.name === 'Report') state.navigationDrawerStatusReport = !state.navigationDrawerStatusReport

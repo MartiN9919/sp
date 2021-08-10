@@ -1,18 +1,20 @@
 <template>
   <v-treeview
     :items=treeViewItems :open.sync="listOpenFolder" @update:active="activateItem"
-    return-object hoverable transition dense open-on-click activatable active-class="" color=""
+    return-object open-on-click activatable dense active-class="" color=""
   >
     <template v-slot:label="{ item, open }">
       <custom-tooltip>
         <template v-slot:activator="{ on }">
           <div v-on="on">
-            <v-icon :id="iconId(item.id)" :color="colorIcon(item)">{{ typeIcon(item, open) }}</v-icon>
+            <v-icon :id="iconId(item.id)" :color="colorIcon(item)">
+              {{ typeIcon(item, open) }}
+            </v-icon>
             <span :class="itemTextStyle(item.icon)" :style="itemTextColor(item)">{{ item.name }}</span>
           </div>
         </template>
         <template v-slot:body>
-          <p class="text-justify ma-0">{{ checkHintInItem(item) }}</p>
+          <span class="text-justify">{{ checkHintInItem(item) }}</span>
         </template>
       </custom-tooltip>
     </template>
@@ -20,14 +22,15 @@
 </template>
 
 <script>
-import CustomTooltip from "../../../WebsiteShell/UI/customTooltip";
+import CustomTooltip from "../../../WebsiteShell/UI/customTooltip"
+
 function sleep (time) {
   return new Promise((resolve) => setTimeout(resolve, time))
 }
 
 export default {
   name: 'treeView',
-  components: { CustomTooltip, },
+  components: {CustomTooltip},
   data: () => ({
     listOpenFolder: [],
     findFolders: [],
@@ -52,12 +55,11 @@ export default {
     }
   },
   methods: {
-
     checkHintInItem(item) {
       return item.hint ? item.hint : 'Описание отсутствует'
     },
     itemTextColor(item) {
-      return this.checkForSelectedItem(item) ? {color: '#00796B'} : {}
+      return this.checkForSelectedItem(item) ? { color: '#00796B' } : {}
     },
     checkForSelectedItem(item) {
       return this.selectedTreeViewItem.id === item.id
@@ -110,6 +112,6 @@ export default {
       }
       return false
     }
-  },
+  }
 }
 </script>
