@@ -1,6 +1,4 @@
 <template>
-  <div>
-
     <l-control
       v-if="show_if"
       position="topleft"
@@ -70,8 +68,6 @@
         <v-icon>mdi-delete mdi-18px</v-icon>
       </a>
     </l-control>
-
-  </div>
 </template>
 
 
@@ -80,10 +76,11 @@
 
 /*
  * КОМПОНЕНТ: РЕДАКТОР ФИГУР
- *  <Edit
+ *  <EditorMap
  *    v-model="fc"
-      :modeEnabled="modeEnabled"
-      :modeSelected="modeSelected"
+ *    editorId="text"
+ *    :modeEnabled="modeEnabled"
+ *    :modeSelected="modeSelected"
  *    @ok="on_edit_stop_ok"
  *  />
  *
@@ -96,17 +93,12 @@
  * v-model       - fc с двунаправленной связью, куда складываются данные
  *                 пустая область - { "type": "FeatureCollection", "features": [], } или L.featureGroup().toGeoJSON()
  *                 undedined      - режим редактирования выключается
+ * editorId      - идентификатор редактора (для одновременной работы нескольких редакторов)
  * mode_enabled  - доступные режимы редактирования (marker, line, polygon)
  * mode_selected - активизированный по умолчанию режим ('Marker', 'Line', 'Polygon')
  * @ok           - если задан - активна кнопка ОК
  *                 если задан - при обновлении fc включается режим редактирования
  *                 при нажатии на кнопку вызывается событие (возвращается копия fc) и редактирование завершается
- *
- * !!!!!!!!!!!!!!!!!!!!!!!!!!
- * задано        this.fc_prop
- * читать        this.model
- * писать        this.fc
- * !!!!!!!!!!!!!!!!!!!!!!!!!!
  */
 
 import { LControl, } from "vue2-leaflet";
@@ -117,28 +109,27 @@ import '@geoman-io/leaflet-geoman-free';
 const COLOR_ORIGIN = 'black';             // цвет маркеров и фигур ДО    ИЗМЕНЕНИЯ
 const COLOR_MODIFY = '#f00';              // цвет маркеров и фигур ПОСЛЕ ИЗМЕНЕНИЯ
 const TYPES = class {
-  static MARKER  = 'Marker';
-  static LINE    = 'Line';
-  static POLYGON = 'Polygon';
-  static CUT     = 'Cut';
+  static MARKER   = 'Marker';
+  static LINE     = 'Line';
+  static POLYGON  = 'Polygon';
+  static CUT      = 'Cut';
 };
+const FC_KEY_VAL  = 'val';                // fc
+const FC_KEY_NEW  = 'new';                // признак новых данных на замену старых
+const FC_KEY_COPY = 'copy';               // признак необходимости копирования данных в fc_copy
+const FC_KEY_MODE = 'mode';               // признак необходимости установки режима редактирования (линия, точка, ...)
 
 export default {
-  name:       'Edit',
-  model:      { prop:  ['fc_prop'], event: 'fc_change', },
-  props:      {
-    fc_prop: {
-      type: Object,
-      default() { return undefined; },
-    },
-    modeEnabled: {            // доступные для создания элементы
-      type: Object,
-      default() { return { marker: true, line: true, polygon: true, } },
-    },
-    modeSelected: {           // включенный по умолчанию режим, например: 'Polygon'
-      type: String,
-      default() { return undefined; },
-    },
+  name: 'EditorMap',
+  model: { prop:  ['fc_prop'], event: 'fc_change', },
+  props: {
+    fc_prop: { type: Object, default: () => ( undefined ), },
+    // доступные для создания элементы
+    modeEnabled: { type: Object,  default() { return { marker: true, line: true, polygon: true, } }, },
+    // включенный по умолчанию режим, например: 'Polygon'
+    modeSelected: { type: String, default: () => ( undefined ), },
+    // идентификатор редактора (для одновременной работы нескольких редакторов)
+    editorId: { type: String, default: () => ('edit'), },
   },
   components: { LControl, },
   data() {
@@ -152,32 +143,50 @@ export default {
         cut:           false,             // устанавливается автоматически при наличии line или polygon
       },
       mode_selected: undefined,           // выбранный по умолчанию режим
-      fc_copy:       L.featureGroup().toGeoJSON(), // копия исходных данных model
+      fc_copy:       L.featureGroup().toGeoJSON(), // копия исходных данных fc
+      fc_wait:       undefined,           // ожидаемое значение fc в watch после set
     };
   },
 
   computed: {
     fc: {
-      get()    {
-        return this.model;
-      },
-      // при внутреннем изменении model
-      set(val) {
-        this.$emit('fc_change', val);
-        this.model = val;
+      get() { return this.fc_prop },
+      set(obj) {
+        let val     = (obj) ? ((FC_KEY_VAL  in obj) ? obj[FC_KEY_VAL]  : obj  ) : obj;
+        let is_new  = (obj) ? ((FC_KEY_NEW  in obj) ? obj[FC_KEY_NEW]  : false) : false;
+        let is_copy = (obj) ? ((FC_KEY_COPY in obj) ? obj[FC_KEY_COPY] : false) : false;
+        let is_mode = (obj) ? ((FC_KEY_MODE in obj) ? obj[FC_KEY_MODE] : false) : false;
+
+        if (is_copy) {
+          this.fc_copy = val?JSON.parse(JSON.stringify(val)):undefined; // глубокая копия для возможного восстановления
+        }
+
+        this.fc_wait = val;
+        this.$emit('fc_change', val);       // вызывает отложенный watch.fc
+
+        if (is_new) {
+          this.map_load(val);
+          this.editor_set(is_mode);
+        }
       },
     },
   },
 
   watch: {
-    // при внешнем изменении model
+    // при внешнем и внутреннем изменении fc (после fc.set)
     fc_prop: {
       handler(val) {
-        this.mode_selected_off();         // отключить возможный режим редактирования
-        this.model   = val;
-        this.fc_copy = val?JSON.parse(JSON.stringify(val)):undefined;
-        this.map_load();
-        this.mode_set(false);
+        // блокировать следствие внутреннего изменения fc
+        let is_in = (val == this.fc_wait);
+        this.fc_wait = undefined;
+        if (is_in) { return }
+
+        // вызвать fc.set
+        this.fc = {
+          [FC_KEY_VAL]:  val?JSON.parse(JSON.stringify(val)):undefined,
+          [FC_KEY_NEW]:  true,
+          [FC_KEY_COPY]: false,
+        };
       },
       deep: true,
     },
@@ -196,11 +205,11 @@ export default {
       finishOn:              'dblclick',  // завершение редактирования
       continueDrawing:       false,       // продолжать создание
       markerStyle: {
-        ...this.edit_property(),
+        ...this.layer_editor_prop(),      // признак редактирования слоя
         riseOnHover:         true,        // слой с маркером под курсором наверх
       },
       pathOptions: {
-        ...this.edit_property(),
+        //...this.layer_editor_prop(),    // признак редактирования слоя
         ...this.path_origin(),
         ...this.path_modify(),
       },
@@ -216,6 +225,7 @@ export default {
     let icon = this.icon_modify();
     if (icon) { options.markerStyle.icon = icon; }
     this.map.pm.setGlobalOptions(options);
+    // L.PM.setOptIn(true);
 
     // обработчик события: создание фигур
     this.map.on('pm:create', this.on_pm_create);
@@ -226,13 +236,13 @@ export default {
      // обработчик события: нажатие клавиши
     this.map.addEventListener('keydown', this.on_key_down);
 
-    // установка данных, по умолчанию только this.fc_prop
-    this.fc_copy = this.fc_prop?JSON.parse(JSON.stringify(this.fc_prop)):undefined;
-    this.fc      = this.fc_prop;
-    this.map_load();
-
-    // установка режима
-    this.mode_set(true);
+    // установка данных
+    this.fc = {
+      [FC_KEY_VAL]:  this.fc,
+      [FC_KEY_NEW]:  true,
+      [FC_KEY_COPY]: true,
+      [FC_KEY_MODE]: true,
+    };
   },
 
   beforeDestroy: function() {
@@ -250,65 +260,101 @@ export default {
     // ДАННЫЕ НА КАРТЕ
     // ======================================
 
-    // записать в model
+    // записать из карты в fc
     map_save() {
       this.mode_selected_off();
       let fg = L.featureGroup();
-      this.map.pm.getGeomanLayers().forEach(function(layer) {
-        if (
-          (layer.options.editor) &&
-          (layer instanceof L.Path || layer instanceof L.Marker)) {
-          // bug fix: удалить удаленные части фигур
-          if (layer instanceof L.Path) {
-            layer._latlngs = layer._latlngs.filter( x => (!(x instanceof Array) || (x.length > 0)));
+      this.map.pm.getGeomanLayers(true).eachLayer(function(layer) {
+        if (this.layer_editor_is(layer)) {
+          if ((layer instanceof L.Path) || (layer instanceof L.Marker)) {
+            // bug fix: удалить удаленные части фигур
+            if (layer instanceof L.Path) {
+              layer._latlngs = layer._latlngs.filter( x => (!(x instanceof Array) || (x.length > 0)));
+            }
+            fg.addLayer(layer);
           }
-          fg.addLayer(layer);
         }
-      });
-      this.fc = fg.toGeoJSON();
+      }.bind(this));
+      this.fc = {
+        [FC_KEY_VAL ]: fg.toGeoJSON(),
+        [FC_KEY_NEW ]: false,
+        [FC_KEY_COPY]: false,
+      };
     },
 
 
-    // загрузить из model
-    map_load() {
+    // загрузить на карту из fc
+    // fc указывается как аргумент, т.к. функция вызывается из fc.set, когда значение this.fc еще старое
+    map_load(fc) {
+      // отключить возможный режим редактирования
+      this.mode_selected_off();
+
       // очистить карту
       this.map_clear();
 
       // при отсутствии данных отбой
-      if (this.model == undefined) return;
+      if (fc == undefined) return;
 
       // стили исходные
       let self  = this;
       let style = {
-        onEachFeature: function(feature, layer)  { layer.options.editor = true;       },
         pointToLayer:  function(feature, latlng) { return self.marker_origin(latlng); },
-        style:         function(feature)         { return self.path_origin();         },
+        style:         function(feature)         { return self.path_origin(); },
+        // onEachFeature: function(feature, layer)  { },
       };
-      let layer = (this.model.type=='FeatureCollection')?L.geoJSON(this.model, style):L.GeoJSON.geometryToLayer(this.model, style);
+      let layer = (fc.type=='FeatureCollection')?L.geoJSON(fc, style):L.GeoJSON.geometryToLayer(fc, style);
 
-      // события: установить
-      this.events_layer_on(layer);
+      // слой: настроить
+      this.layer_set(layer);
 
-      // добавить слой на карту
+      // слой: добавить на карту
       layer.addTo(this.map);
 
-      // разрешить режим редактирования
-      this.mode_pm_on();
+      // разрешить редактирование каждой редактируемой фигуры
+      this.editor_on();
     },
 
 
-    // очистить на карте
+    // очистить карту
     map_clear() {
-      let self = this;
       this.mode_selected_off();
-      this.map.pm.getGeomanLayers().forEach(function(layer) {
-        if (layer.options.editor) {
-          self.events_layer_off(layer);
-          self.map.removeLayer(layer);
+      this.map.pm.getGeomanLayers(true).eachLayer(function(layer) {
+        if (this.layer_editor_is(layer)) {
+          this.layer_del(layer)
         }
-      });
+      }.bind(this));
     },
 
+
+
+    // ======================================
+    // СЛОИ
+    // ======================================
+    layer_set(layer) {
+      // layer.pmIgnore = false;
+      // L.PM.reInitLayer(layer);
+
+      layer.on('pm:edit',           this.on_modify, this);
+      layer.on('pm:cut',            this.on_modify, this);
+      layer.on('pm:remove',         this.on_modify, this);
+      layer.on('pm:vertexremoved',  this.on_modify, this);
+    },
+
+    layer_free(layer) {
+      layer.off('pm:edit',          this.on_modify, this);
+      layer.off('pm:cut',           this.on_modify, this);
+      layer.off('pm:remove',        this.on_modify, this);
+      layer.off('pm:vertexremoved', this.on_modify, this);
+    },
+
+    layer_del(layer) {
+      this.layer_free(layer);
+      this.map.removeLayer(layer);
+    },
+
+
+    layer_editor_prop()    { return { editor: this.editorId, } },
+    layer_editor_is(layer) { return (layer.options.editor === this.editorId) },
 
 
     // ======================================
@@ -316,8 +362,8 @@ export default {
     // ======================================
 
     // установить режим редактирования
-    mode_set(first) {
-      if (this.model == undefined) {
+    editor_set(first) {
+      if (this.fc == undefined) {
         this.show_if = false;
       } else {
         this.mode_ok_set();
@@ -327,19 +373,16 @@ export default {
       }
     },
 
-    // разрешить режим редактирования для каждой редактируемой фигуры
-    mode_pm_on() {
-      this.map.eachLayer( function(layer) {
-        if (
-        (layer instanceof L.Path || layer instanceof L.Marker) &&
-        (layer.pm) &&
-        (layer.options.editor)) {
+    // разрешить редактирование каждой редактируемой фигуры
+    editor_on() {
+      this.map.pm.getGeomanLayers(true).eachLayer(function(layer) {
+        if (this.layer_editor_is(layer)) {
           layer.pm.enable({
-            allowSelfIntersection: false,
+            allowSelfIntersection: false,     // запретить самопересечения линий
             limitMarkersToCount:   20,        // количество редактируемых точек на линии
           });
         }
-      });
+      }.bind(this));
     },
 
 
@@ -353,7 +396,7 @@ export default {
 
     mode_ok_click() {
       // this.mode_selected_off();
-      this.$emit('ok', JSON.parse(JSON.stringify(this.model)));
+      this.$emit('ok', JSON.parse(JSON.stringify(this.fc)));
       this.fc_copy = undefined;
       this.$emit('fc_change', undefined);
       this.map_clear();
@@ -437,10 +480,6 @@ export default {
     // ======================================
     // СТИЛИ
     // ======================================
-    // признак редактирования
-    edit_property() {
-      return { editor: true, }
-    },
 
     // иконки
     icon_origin() {
@@ -460,15 +499,16 @@ export default {
 
     // маркеры
     marker_origin(latlng) {
-      return icon_2_marker(latlng, this.icon_origin());
+      return icon_2_marker(latlng, this.icon_origin(), this.layer_editor_prop());
     },
-    marker_modify(latlng) {
-      return icon_2_marker(latlng, this.icon_modify());
-    },
+    // marker_modify(latlng) {
+    //   return icon_2_marker(latlng, this.icon_modify(), this.layer_editor_prop());
+    // },
 
     // фигуры
     path_origin() {
       return {
+          ...this.layer_editor_prop(),
           weight:      5,
           opacity:     .5,
           fillOpacity: .3,
@@ -480,6 +520,7 @@ export default {
     },
     path_modify() {
       return {
+          ...this.layer_editor_prop(),
           color:       COLOR_MODIFY,
           fillColor:   COLOR_MODIFY,
         }
@@ -490,51 +531,52 @@ export default {
     // ======================================
     // СОБЫТИЯ
     // ======================================
-    events_layer_on(layer) {
-      layer.on('pm:edit',           this.on_modify, this);
-      layer.on('pm:cut',            this.on_modify, this);
-      layer.on('pm:remove',         this.on_modify, this);
-      layer.on('pm:vertexremoved',  this.on_modify, this);
-    },
-
-    events_layer_off(layer) {
-      layer.off('pm:edit',          this.on_modify, this);
-      layer.off('pm:cut',           this.on_modify, this);
-      layer.off('pm:remove',        this.on_modify, this);
-      layer.off('pm:vertexremoved', this.on_modify, this);
-    },
 
     // очистить
     on_click_clear() {
-      this.mode_selected_off();
-      this.fc = L.featureGroup().toGeoJSON();
-      this.map_load();
+      this.fc = {
+        [FC_KEY_VAL]:  L.featureGroup().toGeoJSON(),
+        [FC_KEY_NEW]:  true,
+        [FC_KEY_COPY]: false,
+      }
     },
 
     // восстановить
     on_click_restore() {
-      this.mode_selected_off();
-      this.fc = this.fc_copy?JSON.parse(JSON.stringify(this.fc_copy)):undefined;
-      this.map_load();
+      this.fc = {
+        [FC_KEY_VAL]:  this.fc_copy?JSON.parse(JSON.stringify(this.fc_copy)):undefined,
+        [FC_KEY_NEW]:  true,
+        [FC_KEY_COPY]: false,
+      };
     },
 
     // изменение на карте
     on_modify(e) {
-      // сохранить данные из карты в model
-      this.map_save();
-
       // изменить стили после редактирования
       if (e.layer.setIcon)  e.layer.setIcon (this.icon_modify());
       if (e.layer.setStyle) e.layer.setStyle(this.path_modify());
 
-      // установить события на новый слой при резке
-      if (e.shape == 'Cut') this.events_layer_on(e.layer);
+      // настроить новый слой при резке
+      if (e.shape == 'Cut') {
+        this.layer_set(e.layer);
+        this.editor_on();
+      }
+
+      // сохранить данные из карты в fc
+      this.map_save();
     },
 
     // операции с фигурами
     // при create срабатывает on_pm_create, потом on_pm_drawend
-    on_pm_create (e) { this.events_layer_on(e.layer); },
-    on_pm_drawend(e) { this.mode_selected_off(); this.map_save(); this.mode_pm_on(); },
+    // при разрезании фигуры - только on_pm_drawend
+    on_pm_create (e) {
+      this.layer_set(e.layer);
+    },
+    on_pm_drawend(e) {
+      this.mode_selected_off();
+      this.map_save();
+      this.editor_on();
+    },
 
     // нажатие клавиши
     on_key_down(e)  {

@@ -1,6 +1,8 @@
 <template>
   <div class="geometry-input-form">
     <v-dialog
+        width="60%"
+        height="80%"
         v-model="dialog"
         @input="show_dialog"
         @keydown.esc="dialog = false"
@@ -12,8 +14,7 @@
       >
         <div v-on="on">
           <body-input-form
-              :input-string="valueText"
-              @changeInputString="$emit('changeInputString', $event)"
+              :value="show_text()"
               :rules="rules"
               :clearable="clearable"
               :hide-details="hideDetails"
@@ -35,23 +36,23 @@
         </div>
       </template>
 
-      <v-card>
-        <v-card-title class="text-h7">{{ title }}</v-card-title>
-        <LeafletEditor
-            v-if="dialog"
-            v-model="fc"
-            :modeEnabled="modeEnabled"
-            :modeSelected="modeSelected"
-        />
-        <v-divider></v-divider>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="teal" text @click="click_cancel">Отмена</v-btn>
-          <v-btn color="teal" text @click="click_ok">Ок</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-  </div>
+    <v-card>
+      <v-card-title class="text-h7">{{ title }}</v-card-title>
+      <v-divider></v-divider>
+      <LeafletEditor
+        v-if="dialog"
+        v-model="fc"
+        :modeEnabled="modeEnabled"
+        :modeSelected="modeSelected"
+      />
+      <v-divider></v-divider>
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn color="teal" text @click="click_cancel">Отмена</v-btn>
+        <v-btn color="teal" text @click="click_ok">Ок</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script>
