@@ -1,16 +1,17 @@
 <template>
-  <v-menu offset-y :disabled="!templates.length" max-height="50%" z-index="10001">
-    <template v-slot:activator="{ on, value }">
-      <v-row dense no-gutters class="pa-4 pr-2 pb-2 pt-2 select_off">
+  <div>
+    <v-menu offset-y :disabled="!templates.length" max-height="50%" min-width="95%" max-width="95%" z-index="10001" attach>
+      <template v-slot:activator="{ on, value }">
         <v-text-field
           autocomplete="off" ref="form"
           v-model="templateTitle" :label="inputLabel"
           :rules="[!!templateTitle.length, !!analystsListLength]"
-          :error-messages="errorMessage"
-          dense required single-line
-          color="teal" class="pa-0 mt-0"
+          :hide-details="!errorMessage.length"
+          :messages="errorMessage"
+          dense required solo
+          color="teal"
         >
-          <template slot="append-outer">
+          <template slot="append">
             <v-btn icon v-on="on">
               <v-icon :color="iconColor(value)">mdi-menu-down-outline</v-icon>
             </v-btn>
@@ -57,18 +58,18 @@
             </v-menu>
           </template>
         </v-text-field>
-      </v-row>
-    </template>
-    <v-list rounded>
-      <v-list-item
-        v-for="temp in templates" :key="temp.id"
-        :disabled="temp.id === parseInt(selectedTemplate.id)"
-        @click="getTemplate(temp.id)"
-      >
-        <v-list-item-title>{{temp.title}}</v-list-item-title>
-      </v-list-item>
-    </v-list>
-  </v-menu>
+      </template>
+      <v-list rounded>
+        <v-list-item
+          v-for="temp in templates" :key="temp.id"
+          :disabled="temp.id === parseInt(selectedTemplate.id)"
+          @click="getTemplate(temp.id)"
+        >
+          <v-list-item-title>{{temp.title}}</v-list-item-title>
+        </v-list-item>
+      </v-list>
+    </v-menu>
+  </div>
 </template>
 
 <script>
@@ -90,7 +91,7 @@ export default {
     inputLabel: function () { return this.analystsListLength ? 'Введите название шаблона' : 'Шаблон' },
     analystsListLength: function () {
       return this.selectedTemplate.activeAnalysts.concat(
-        this.selectedTemplate.passiveAnalysts).length
+          this.selectedTemplate.passiveAnalysts).length
     }
   },
   methods: {
@@ -122,5 +123,7 @@ export default {
 </script>
 
 <style scoped>
-
+.v-text-field.v-text-field--enclosed >>> .v-text-field__details {
+  margin-bottom: 0;
+}
 </style>

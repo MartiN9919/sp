@@ -1,7 +1,7 @@
 <template>
   <v-list class="py-0">
     <v-list-item class="title-table">
-      <v-list-item-subtitle>Найдено объектов: {{objects.length}}</v-list-item-subtitle>
+      <v-list-item-subtitle class="text-title-table">Найдено объектов: {{objects.length}}</v-list-item-subtitle>
     </v-list-item>
     <div class="body-table">
     <v-list-item v-for="object in objects" :key="object.rel_id" class="px-0" @click="">
@@ -36,8 +36,12 @@ export default {
 
 <style scoped>
 .title-table {
-  background-color: #f5f5f5;
+  background-color: rgba(0, 0, 0, .1);
   max-height: 2em;
+}
+.text-title-table {
+  display: flex;
+  justify-content: space-around;
 }
 .body-table {
   overflow-y: auto;

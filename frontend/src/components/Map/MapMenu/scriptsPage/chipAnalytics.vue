@@ -6,7 +6,7 @@
         @click="$emit('returnSelectAnalytics', analytics)"
         :class="{'pulse': selectedTreeViewItem === analytics}"
         :color=color :style="pulseAnimation" close
-        outlined class="ma-1" v-on="on"
+        outlined v-on="on" class="ma-1"
       >
         <p class="text-formatter-for-window-size font-for-color-background mb-0">{{ analytics.name }}</p>
         <v-menu v-if="'fc' in analytics" offset-y :close-on-content-click=false z-index="10001">
@@ -26,8 +26,8 @@
           </tr>
           <tr v-for="variable in analytics.variables">
             <td>{{variable.title}}</td>
-            <td v-if="typeof variable.value !== 'object'">{{variable.value}}</td>
-            <td v-else><span v-for="(value) in variable.value">{{value}} </span></td>
+            <td v-if="variable.list">{{ listValue(variable) }}</td>
+            <td v-else>{{variable.value}}</td>
           </tr>
         </table>
         <v-divider dark class="py-1"></v-divider>
@@ -54,6 +54,12 @@ export default {
       get: function () { return this.analytics.color },
       set: function (color) { this.$emit('changeColor', { analytics: this.analytics, color: color }) }
     },
+  },
+  methods: {
+    listValue (variable) {
+      let findObject = variable.list.find(item => item.id === variable.value)
+      return findObject ? findObject.value : ''
+    }
   }
 }
 </script>

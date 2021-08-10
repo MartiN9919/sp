@@ -4,7 +4,6 @@
     :open="openObject"
     return-object
     item-children="rels"
-    class="mt-2"
   >
     <template v-slot:label="{ item }">
       <root-tree-item

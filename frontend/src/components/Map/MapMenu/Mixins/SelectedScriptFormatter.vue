@@ -11,6 +11,8 @@ export default {
           hint:variable.hint,
           type: variable.type,
         } // формирование словаря с переменными
+        if (variable?.list)
+          variables[variable.name].list = variable.list
       }
       return { id: script.id, name: script.name, variables: variables, hint: script.hint }
     }

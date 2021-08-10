@@ -1,42 +1,99 @@
 <template>
-  <v-menu
-    :close-on-content-click="false" ref="menuBoolean" transition="slide-x-reverse-transition"
-    offset-x offset-y bottom right fixed z-index="10001" min-width="auto" nudge-left="64"
-  >
-    <template v-slot:activator="{ on }">
-      <v-textarea
-        v-model="value" v-on="on" :rules="rules" :label="title" type="text"
-        autocomplete="off" append-icon="mdi-order-bool-descending-variant" row-height="1" auto-grow color="teal"
-        hide-details readonly class="pt-0 mt-0 geometry-input-cursor" placeholder="Выберете необходимое значение"
-      ></v-textarea>
-    </template>
-      <v-list link>
-        <v-list-item
-          v-for="item in [{text: 'ДА', value: true}, {text: 'НЕТ', value: false}]"
-          @click="value = item.value; $refs.menuBoolean.save()" :key="item.value"
-        ><v-list-item-title>{{item.text}}</v-list-item-title></v-list-item>
-      </v-list>
-  </v-menu>
+  <div class="boolean-input-form">
+    <drop-down-menu nudge-left="64" min-width="auto" close-on-click close-on-content-click>
+      <template v-slot:activator="{ on }">
+        <div v-on="on">
+          <body-input-form
+            v-model="value"
+            :rules="rules"
+            :hide-details="hideDetails"
+            :class="bodyInputClasses"
+            :placeholder="placeholder"
+            readonly
+          >
+            <template v-slot:label>
+              {{title}}
+            </template>
+            <template v-slot:append="{ hover }" class="action-icon">
+              <v-icon v-if="deletable && hover" @click.stop="" size="24">mdi-delete</v-icon>
+              <v-icon v-else size="24">mdi-order-bool-descending-variant</v-icon>
+            </template>
+            <template v-slot:message>
+              <slot name="message"></slot>
+            </template>
+          </body-input-form>
+        </div>
+      </template>
+      <template v-slot:body="{ status, closeMenu }">
+        <menu-boolean v-if="status" v-model="value" :close-menu="closeMenu" :booleanMenu="booleanMenu"></menu-boolean>
+      </template>
+    </drop-down-menu>
+  </div>
 </template>
 
 <script>
+import BodyInputForm from "./BodyToForm/bodyInputForm"
+import DropDownMenu from "./BodyToForm/dropDownMenu"
+import MenuBoolean from "./InputFormsUI/menuBoolean"
+
 export default {
   name: "booleanInput",
-  props: {
-    rules: Array,
-    title: String,
-    inputString: Boolean,
-  },
+  components: {BodyInputForm, DropDownMenu, MenuBoolean},
   model: { prop: 'inputString', event: 'changeInputString', },
+  props: {
+    inputString: Boolean,
+    rules: {
+      type: Array,
+      default: function () {
+        return []
+      }
+    },
+    deletable: {
+      type: Boolean,
+      default: false,
+    },
+    title: {
+      type: String,
+      default: '',
+    },
+    hideDetails: {
+      type: Boolean,
+      default: false,
+    },
+    placeholder: {
+      type: String,
+      default: 'Выберете необходимое значение',
+    },
+  },
+  data: () => ({
+    booleanMenu: [{ text: 'ДА', value: true }, { text: 'НЕТ', value: false }]
+  }),
   computed: {
+    bodyInputClasses: function () { return this.title.length ? '' : 'pt-0' },
     value: {
-      get: function () { return this.inputString === null ? '' : this.inputString ? 'ДА' : 'НЕТ' },
+      get: function () {
+        if (this.inputString === null)
+          this.value = false
+        else
+          return this.booleanMenu.find(item => item.value === this.inputString).text
+      },
       set: function (value) { this.$emit('changeInputString', value) }
-    }
+    },
   },
 }
 </script>
 
 <style scoped>
-
+.boolean-input-form >>> input {
+  cursor: pointer;
+}
+.boolean-input-form >>> .v-input__slot {
+  cursor: pointer;
+}
+.action-icon {
+  cursor: pointer;
+}
+.boolean-input-form {
+  width: 100%;
+}
 </style>

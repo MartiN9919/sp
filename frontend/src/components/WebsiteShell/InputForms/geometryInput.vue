@@ -1,62 +1,97 @@
 <template>
-  <v-dialog
-    v-model="dialog"
-    @input="show_dialog"
-    @keydown.esc="dialog = false"
-    persistent
-  >
-    <template
-      v-slot:activator="{ on, attrs }"
+  <div class="geometry-input-form">
+    <v-dialog
+        v-model="dialog"
+        @input="show_dialog"
+        @keydown.esc="dialog = false"
+        persistent
+        style="z-index: 10000001"
     >
-      <v-textarea
-        v-on="on"
-        class="pt-0 mt-0 geometry-input-cursor"
-        type="text"
-        append-icon="mdi-map-marker-outline"
-        autocomplete="off"
-        row-height="1" auto-grow
-        color="teal"
-        placeholder="Выберете объект на карте"
-        hide-details
-        readonly
-        :label="title"
-        :rules="rules"
-        :value="show_text()"
-      ></v-textarea>
-    </template>
+      <template
+          v-slot:activator="{ on, attrs }"
+      >
+        <div v-on="on">
+          <body-input-form
+              :input-string="valueText"
+              @changeInputString="$emit('changeInputString', $event)"
+              :rules="rules"
+              :clearable="clearable"
+              :hide-details="hideDetails"
+              :class="bodyInputClasses"
+              :placeholder="placeholder"
+              readonly
+          >
+            <template v-slot:label>
+              {{title}}
+            </template>
+            <template v-slot:append="props" class="action-icon">
+              <v-icon v-if="deletable && props.hover" @click.stop="" size="24">mdi-delete</v-icon>
+              <v-icon v-else size="24">mdi-map-marker-outline</v-icon>
+            </template>
+            <template v-slot:message>
+              <slot name="message"></slot>
+            </template>
+          </body-input-form>
+        </div>
+      </template>
 
-    <v-card>
-      <v-card-title class="text-h7">{{ title }}</v-card-title>
-      <LeafletEditor
-        v-if="dialog"
-        v-model="fc"
-        :modeEnabled="modeEnabled"
-        :modeSelected="modeSelected"
-      />
-      <v-divider></v-divider>
-      <v-card-actions>
-        <v-spacer></v-spacer>
-        <v-btn color="teal" text @click="click_cancel">Отмена</v-btn>
-        <v-btn color="teal" text @click="click_ok">Ок</v-btn>
-      </v-card-actions>
-    </v-card>
-  </v-dialog>
+      <v-card>
+        <v-card-title class="text-h7">{{ title }}</v-card-title>
+        <LeafletEditor
+            v-if="dialog"
+            v-model="fc"
+            :modeEnabled="modeEnabled"
+            :modeSelected="modeSelected"
+        />
+        <v-divider></v-divider>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="teal" text @click="click_cancel">Отмена</v-btn>
+          <v-btn color="teal" text @click="click_ok">Ок</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  </div>
 </template>
 
 <script>
-import LeafletEditor from '@/components/Map/Leaflet/LeafletEditor';
+import LeafletEditor from '@/components/Map/Leaflet/LeafletEditor'
+import BodyInputForm from "./BodyToForm/bodyInputForm"
 
 export default {
   name: "geometryInput",
-  components: { LeafletEditor, },
+  components: {BodyInputForm, LeafletEditor, },
   props: {
-    rules: Array,
-    title: String,
     inputString: Object,
     modeEnabled: Object,      // доступные для создания элементы, например: { marker: true, line: true, polygon: true }
     modeSelected: String,     // включенный по умолчанию режим, например: 'Polygon'
+    rules: {
+      type: Array,
+      default: function () {
+        return []
+      }
+    },
+    deletable: {
+      type: Boolean,
+      default: false,
+    },
+    title: {
+      type: String,
+      default: '',
+    },
+    hideDetails: {
+      type: Boolean,
+      default: false,
+    },
+    placeholder: {
+      type: String,
+      default: 'Выберете объект на карте',
+    },
+    clearable: {
+      type: Boolean,
+      default: false,
+    }
   },
-  model: { prop: 'inputString', event: 'changeInputString', },
   data: () => ({
     dialog: false,
     fc_temp: undefined,       // не принятые изменения fc
@@ -70,12 +105,18 @@ export default {
       get()    { return this.value; },
       set(val) { this.fc_temp = val; },
     },
+    valueText: function () {
+      if (this.value == undefined) return ''
+      if (this.value.features.length == 0) return ''
+      return '[объект]'
+    },
+    bodyInputClasses: function () { return this.title.length ? '' : 'pt-0' },
   },
 
   methods: {
     show_dialog (e) {
-       if (this.value == undefined) this.value = { "type": "FeatureCollection", "features": [], }
-       this.fc = JSON.parse(JSON.stringify(this.value));
+      if (this.value == undefined) this.value = { "type": "FeatureCollection", "features": [], }
+      this.fc = JSON.parse(JSON.stringify(this.value));
     },
 
     click_ok() {
@@ -87,11 +128,6 @@ export default {
       this.dialog = false;
     },
 
-    show_text() {
-      if (this.value == undefined) return ''
-      if (this.value.features.length == 0) return ''
-      return '[объект]'
-    },
 
   },
 
@@ -135,6 +171,17 @@ export default {
 
 </script>
 
-<style>
-  .geometry-input-cursor * { cursor: pointer!important; }
+<style scoped>
+.geometry-input-form >>> input {
+  cursor: pointer;
+}
+.geometry-input-form >>> .v-input__slot {
+  cursor: pointer;
+}
+.action-icon {
+  cursor: pointer;
+}
+.geometry-input-form {
+  width: 100%;
+}
 </style>
