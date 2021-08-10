@@ -76,8 +76,8 @@ def aj_object(request):
     group_id = DAT_OWNER.DUMP.get_group(user_id=request.user.id)
     if request.method == 'GET':
         try:
-            return JsonResponse({'data': get_object_record_by_id_http(object_id=request.GET['object_id'],
-                                                                      rec_id=request.GET['record_id'],
+            return JsonResponse({'data': get_object_record_by_id_http(object_id=int(request.GET['object_id']),
+                                                                      rec_id=int(request.GET['record_id']),
                                                                       group_id=group_id)}, status=200)
         except:
             return JsonResponse({'status': 'неверный номер объекта'}, status=496)

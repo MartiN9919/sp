@@ -14,7 +14,7 @@
           <div
               v-if="hover" class="d-flex align-center list-icons"
               :class="hover ? ['list-icons-hover', 'list-icons'] : ['list-icons']">
-            <v-btn icon><v-icon>mdi-plus</v-icon></v-btn>
+            <v-btn icon @click="getObject(object)"><v-icon>mdi-plus</v-icon></v-btn>
             <v-btn icon><v-icon>mdi-check</v-icon></v-btn>
             <v-btn icon><v-icon>mdi-close</v-icon></v-btn>
           </div>
@@ -26,11 +26,19 @@
 </template>
 
 <script>
+import {mapActions} from "vuex";
+
 export default {
   name: "foundObjects",
   props: {
     objects: Array,
   },
+  methods: {
+    ...mapActions(['getObjectFromServer', ]),
+    getObject(object) {
+      this.getObjectFromServer({params: {record_id: object.rec_id, object_id: object.object_id}})
+    }
+  }
 }
 </script>
 

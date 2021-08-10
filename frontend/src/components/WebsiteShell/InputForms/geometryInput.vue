@@ -14,7 +14,7 @@
       >
         <div v-on="on">
           <body-input-form
-              :value="show_text()"
+              :input-string="show_text()"
               :rules="rules"
               :clearable="clearable"
               :hide-details="hideDetails"
@@ -36,23 +36,24 @@
         </div>
       </template>
 
-    <v-card>
-      <v-card-title class="text-h7">{{ title }}</v-card-title>
-      <v-divider></v-divider>
-      <LeafletEditor
-        v-if="dialog"
-        v-model="fc"
-        :modeEnabled="modeEnabled"
-        :modeSelected="modeSelected"
-      />
-      <v-divider></v-divider>
-      <v-card-actions>
-        <v-spacer></v-spacer>
-        <v-btn color="teal" text @click="click_cancel">Отмена</v-btn>
-        <v-btn color="teal" text @click="click_ok">Ок</v-btn>
-      </v-card-actions>
-    </v-card>
-  </v-dialog>
+      <v-card>
+        <v-card-title class="text-h7">{{ title }}</v-card-title>
+        <v-divider></v-divider>
+        <LeafletEditor
+          v-if="dialog"
+          v-model="fc"
+          :modeEnabled="modeEnabled"
+          :modeSelected="modeSelected"
+        />
+        <v-divider></v-divider>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="teal" text @click="click_cancel">Отмена</v-btn>
+          <v-btn color="teal" text @click="click_ok">Ок</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  </div>
 </template>
 
 <script>
@@ -62,6 +63,7 @@ import BodyInputForm from "./BodyToForm/bodyInputForm"
 export default {
   name: "geometryInput",
   components: {BodyInputForm, LeafletEditor, },
+  model: { prop: 'inputString', event: 'changeInputString', },
   props: {
     inputString: Object,
     modeEnabled: Object,      // доступные для создания элементы, например: { marker: true, line: true, polygon: true }
@@ -106,18 +108,13 @@ export default {
       get()    { return this.value; },
       set(val) { this.fc_temp = val; },
     },
-    valueText: function () {
-      if (this.value == undefined) return ''
-      if (this.value.features.length == 0) return ''
-      return '[объект]'
-    },
     bodyInputClasses: function () { return this.title.length ? '' : 'pt-0' },
   },
 
   methods: {
     show_dialog (e) {
-      if (this.value == undefined) this.value = { "type": "FeatureCollection", "features": [], }
-      this.fc = JSON.parse(JSON.stringify(this.value));
+       if (this.value == undefined) this.value = { "type": "FeatureCollection", "features": [], }
+       this.fc = JSON.parse(JSON.stringify(this.value));
     },
 
     click_ok() {
@@ -129,6 +126,11 @@ export default {
       this.dialog = false;
     },
 
+    show_text() {
+      if (this.value == undefined) return ''
+      if (this.value.features.length == 0) return ''
+      return '[объект]'
+    },
 
   },
 
