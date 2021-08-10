@@ -68,18 +68,23 @@ def get_object_record_by_id_http(object_id, rec_id, group_id=0):
     params.sort(key=lambda x: get_key_by_id(x['id'])['title'], reverse=True)
     params.sort(key=lambda x: get_key_by_id(x['id'])['need'], reverse=True)
     permission = get_permission_params(response, object_id)
-    return {'object_id': object_id, 'rec_id': rec_id, 'params': params, 'permission': permission}
+    title = get_record_title(object_id, rec_id, group_id,
+                             {'object_id': object_id, 'rec_id': rec_id, 'params': params, 'permission': permission})
+    return {'object_id': object_id, 'rec_id': rec_id, 'params': params, 'permission': permission,
+            'title': title['title']}
 
 
-def get_record_title(object_id, rec_id, group_id=0):
+def get_record_title(object_id, rec_id, group_id=0, record=None):
     """
     Функция для получения строки с краткой информацией о объекте
     @param object_id: тип объекта
     @param rec_id: идентификатору записи
     @param group_id: идентификатору группы пользователя
+    @param record: записи о объекте для формирования заголовка, по умолчанию None
     @return: словарь в формате {object_id, rec_id, title},...,{}]}
     """
-    record = get_object_record_by_id_http(object_id, rec_id, group_id)
+    if not record:
+        record = get_object_record_by_id_http(object_id, rec_id, group_id)
     if len(list(record['permission'].keys())) > 0:
         write_groups = [item['group_id'] for item in record['permission'][list(record['permission'].keys())[0]]]
         write = DAT_OWNER.DUMP.valid_io_group(group_id, write_groups)
@@ -87,5 +92,3 @@ def get_record_title(object_id, rec_id, group_id=0):
         write = True
     title = get_title(record['params'])
     return {'object_id': record['object_id'], 'rec_id': record['rec_id'], 'title': title, 'write': write}
-
-

@@ -13,6 +13,7 @@
     "ejs": "^3.1.6",
     "leaflet": "^1.7.1",
     "proj4leaflet": "^1.0.2",
+    "vnodes": "^1.1.9",
     "vue": "^2.6.11",
     "vue-axios": "^3.2.4",
     "vue-js-modal": "^2.0.0-rc.6",

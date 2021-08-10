@@ -13,6 +13,13 @@ export default {
     setListOfPrimaryObjects: (state, listObject) => { state.listOfPrimaryObjects = listObject },
   },
   actions: {
+    getObjectFromServer({ commit, dispatch }, config={}) {
+     return getResponseAxios('objects/object/', config)
+      .then(response => {
+        dispatch('addChoosingObject', response.data)
+      })
+      .catch(() => {})
+    },
     getListOfPrimaryObjects({ commit, dispatch }, config = {}) {
       return getResponseAxios('objects/list_type/', config)
         .then(response => {
