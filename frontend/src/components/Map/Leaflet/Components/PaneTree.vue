@@ -37,9 +37,9 @@ export default {
   name: 'PaneTree',
   model: { prop: 'item_sel_prop', event: 'item_sel_change', },
   props: {
-    items:         { type: Array,  default: () => [], },
-    item_sel_prop: { type: Number, default: () => 0, },
-    show_sel:      { type: Boolean, default: () => true, },
+    items:         { type: Array,   default: () => [], },
+    item_sel_prop: { type: Number,  default: () => 0, },
+    showSel:       { type: Boolean, default: () => true, },
   },
 
   data: () => ({
@@ -50,6 +50,7 @@ export default {
   watch: {
     items:    function(items)   { this.ini_items(); },
     item_sel: function(item_id) { this.activate_item(item_id); },
+    //showSel: function(val)     { },
   },
 
   computed: {
@@ -100,7 +101,11 @@ export default {
       return (
           (this.item_sel) &&
           (this.items_path[this.item_sel]) &&
-          (this.items_path[this.item_sel].indexOf(item.id) !== -1)
+          (this.items_path[this.item_sel].indexOf(item.id) !== -1) &&
+          (
+            (this.items_path[this.item_sel].slice(-1)[0] != item.id) ||
+            ((this.items_path[this.item_sel].slice(-1)[0] == item.id) && (this.showSel))
+          )
         ) ? this.$CONST.TREE.COLOR_SELECT : this.$CONST.TREE.COLOR_DEFAULT;
     },
 

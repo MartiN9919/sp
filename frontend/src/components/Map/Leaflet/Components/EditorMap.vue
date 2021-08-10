@@ -82,6 +82,8 @@
  *    :modeEnabled="modeEnabled"
  *    :modeSelected="modeSelected"
  *    @ok="on_edit_stop_ok"
+ *    @restore=""
+ *    @clear=""
  *  />
  *
  *  modeEnabled = {
@@ -99,6 +101,8 @@
  * @ok           - если задан - активна кнопка ОК
  *                 если задан - при обновлении fc включается режим редактирования
  *                 при нажатии на кнопку вызывается событие (возвращается копия fc) и редактирование завершается
+ * @restore      - событие при нажатии на кнопку restore
+ * @clear        - событие при нажатии на кнопку clear
  */
 
 import { LControl, } from "vue2-leaflet";
@@ -539,6 +543,7 @@ export default {
         [FC_KEY_NEW]:  true,
         [FC_KEY_COPY]: false,
       }
+      this.$emit('selReset');
     },
 
     // восстановить
@@ -548,6 +553,7 @@ export default {
         [FC_KEY_NEW]:  true,
         [FC_KEY_COPY]: false,
       };
+      this.$emit('selReset');
     },
 
     // изменение на карте
