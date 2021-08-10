@@ -1,6 +1,3 @@
-from data_base_driver.input_output.io import io_set, io_get_obj, io_get_rel, io_get_geometry_tree
-from data_base_driver.sys_key.get_object_info import obj_list, rel_rec_to_el, el_to_rec_id
-from data_base_driver.input_output.io_geo import rel_to_geo_fc, geo_id_to_fc
 from core.settings import BASE_DIR
 
 
@@ -11,7 +8,7 @@ ENVIRONMENT_VARIABLES = [
     "import"
 ]
 
-IMPORTS = "from data_base_driver.input_output.io import io_set, io_get_obj, io_get_rel, io_get_geometry_tree\n" \
+IMPORTS = "from data_base_driver.input_output.input_output import io_set, io_get_obj_mysql_tuple, io_get_rel_mysql_tuple, io_get_geometry_tree\n" \
           "from data_base_driver.sys_key.get_object_info import obj_list, rel_rec_to_el, el_to_rec_id\n" \
           "from data_base_driver.input_output.io_geo import rel_to_geo_fc, geo_id_to_fc\n"\
           "from data_base_driver.sys_notifications.set_notifications_info import add_notification\n"\
@@ -20,8 +17,8 @@ IMPORTS = "from data_base_driver.input_output.io import io_set, io_get_obj, io_g
 
 ENABLED_FUNCTIONS = [
     'io_set',
-    'io_get_obj',
-    'io_get_rel',
+    'io_get_obj_mysql_tuple',
+    'io_get_rel_mysql_tuple',
     'io_get_geometry_tree',
     'obj_list',
     'key_list',
@@ -41,5 +38,5 @@ ENABLED_FUNCTIONS = [
 
 PATH_TO_REPORTS_DIR = '/reports/'
 
-BASE_PATH_TO_USER_SCRIPTS =  str(BASE_DIR) + '/script/user_scripts/'
+BASE_PATH_TO_USER_SCRIPTS = str(BASE_DIR) + '/script/user_scripts/'
 

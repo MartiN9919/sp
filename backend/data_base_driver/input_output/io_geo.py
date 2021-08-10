@@ -2,7 +2,8 @@ import json
 import geojson
 
 from data_base_driver.constants.const_dat import DAT_SYS_OBJ, DAT_SYS_KEY
-from data_base_driver.input_output.io import io_get_obj, io_get_rel_generator, io_get_geometry_tree
+from data_base_driver.input_output.input_output_mysql import io_get_obj_mysql_tuple, io_get_rel_mysql_generator
+from data_base_driver.input_output.io_class import IO
 from data_base_driver.sys_key.get_object_info import rel_rec_to_el, el_to_rec_id
 
 
@@ -22,7 +23,7 @@ def rel_to_geo_fc(obj, group_id, keys_rel, keys_obj, where_dop=[]):
     obj_id = DAT_SYS_OBJ.DUMP.to_id(val=obj)
 
     # записи rel
-    rel_recs = io_get_rel_generator(
+    rel_recs = io_get_rel_mysql_generator(
         group_id=group_id,
         keys=keys_rel,
         obj_rel_1=(obj_id,),  # (DAT_SYS_OBJ.NAME_POINT,),
@@ -72,7 +73,7 @@ def geo_id_to_fc(obj, group_id, geo_ids, keys):
 
     # читать записи point по id
     # recs = ((42, 30303, 'Тест 41'), (42, 81, '-1', None), (42, 'location', '{"type": "GeometryCollection", "geometries": [{"type": "Polygon", "coordinates": []}]}'), ... )
-    recs = io_get_obj(
+    recs = io_get_obj_mysql_tuple(
         group_id=group_id,
         obj=obj_id,
         keys=keys,
@@ -103,10 +104,23 @@ def geo_id_to_fc(obj, group_id, geo_ids, keys):
     for d_key in d:
         feature = geojson.Feature(**d[d_key])
         features.append(feature)
-    # for temp in features:
-    #     temp['properties']['hint'] = 'что нибудь'
-    #     temp['properties']['date'] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
     return geojson.FeatureCollection(features)
+
+
+def io_get_geometry_tree_layer(group_id, parent_id, write=True,):
+    """
+    Функция для получения одного уровня дерева геометрий по идентификатору родителя
+    @param group_id: идентификатор группы пользователя
+    @param parent_id: идентификатор родителя
+    @param write: флаг записи
+    @return: список кортежей с информацией о отдельных геометриях
+    """
+    return tuple(IO(group_id=group_id).get_geometry_tree(
+        parent_id=parent_id,
+        write=write,
+    ))
+
+
 
 def get_geometry_tree(group_id, geometry=None, write=False):
     """
@@ -118,15 +132,11 @@ def get_geometry_tree(group_id, geometry=None, write=False):
     """
     if not geometry:
         geometry = {'id': 0}
-    geometry_list = io_get_geometry_tree(group_id, geometry['id'], write)
+    geometry_list = io_get_geometry_tree_layer(group_id, geometry['id'], write)
     for item in geometry_list:
         get_geometry_tree(group_id, item, write)
     if len(geometry_list) > 0:
         geometry['children'] = geometry_list
     return geometry_list
-
-#
-#
-# print(geo_id_to_fc(30, 0, [41], ['name', 'icon']))
 
 

@@ -4,8 +4,9 @@ from time import sleep
 from django.test import TestCase
 
 
-from data_base_driver.full_text_search.http_api.add_object_http import on_test_mode_manticore, off_test_mode_manticore
-from data_base_driver.input_output.io import io_set, io_get_obj, io_get_rel
+from data_base_driver.input_output.add_object_http import on_test_mode_manticore, off_test_mode_manticore
+from data_base_driver.input_output.input_output import io_set
+from data_base_driver.input_output.input_output_mysql import io_get_obj_mysql_tuple, io_get_rel_mysql_tuple
 from data_base_driver.connect.connect_mysql import db_reconnect, set_autocommit_on, set_autocommit_off, \
     roll_back
 from data_base_driver.constants.connect_db import TEST_DATA
@@ -38,13 +39,13 @@ class TestGetObject(TestInputOutputBase):
         io_set(group_id=0, obj='file', data=[['owner_del', 3], ['owner_add_ro_limit', 9]])
 
     def test_get_file(self):
-        file = io_get_obj(group_id=0, obj='file', keys=['owner_del'], where_dop_row=[], ids=[])
+        file = io_get_obj_mysql_tuple(group_id=0, obj='file', keys=['owner_del'], where_dop_row=[], ids=[])
         self.assertEqual('4', file[0][2])
 
     def test_get_file_2(self):
-        file = io_get_obj(group_id=0, obj='file', keys=['owner_add_ro_limit'], where_dop_row=[], ids=[])
+        file = io_get_obj_mysql_tuple(group_id=0, obj='file', keys=['owner_add_ro_limit'], where_dop_row=[], ids=[])
         sleep(0.01)
-        file = io_get_obj(group_id=0, obj='file', keys=['owner_del'], where_dop_row=[], ids=[])
+        file = io_get_obj_mysql_tuple(group_id=0, obj='file', keys=['owner_del'], where_dop_row=[], ids=[])
         self.assertEqual('3', file[2][2])
 
 
@@ -60,13 +61,13 @@ class TestGetRel(TestInputOutputBase):
         io_set(group_id=0, obj=1, data=[['key_id', 1301], ['transport', 12], ['geometry', 74]])
 
     def test_get_rel(self):
-        rel = io_get_rel(group_id=0, keys=[], where_dop=[])
+        rel = io_get_rel_mysql_tuple(group_id=0, keys=[], where_dop=[])
         self.assertEqual(200, rel[0][3])
 
     def test_get_rel_2(self):
-        rel = io_get_rel(group_id=0, keys=[1301], where_dop=[])
+        rel = io_get_rel_mysql_tuple(group_id=0, keys=[1301], where_dop=[])
         sleep(0.01)
-        rel_2 = io_get_rel(group_id=0, keys=['ngg_opg'], where_dop=[])
+        rel_2 = io_get_rel_mysql_tuple(group_id=0, keys=['ngg_opg'], where_dop=[])
         self.assertEqual(74, rel[0][3])
         self.assertEqual(398, rel_2[0][5])
 
@@ -82,7 +83,7 @@ class TestGetGeometry(TestInputOutputBase):
         roll_back()
 
     def test_get_fc_by_rel(self):
-        geo = io_get_obj(group_id=0, obj='geometry', keys=['ST_AsGeoJSON(location) AS location'])
+        geo = io_get_obj_mysql_tuple(group_id=0, obj='geometry', keys=['ST_AsGeoJSON(location) AS location'])
         geoCollections = GeometryCollection(
             [Polygon([[(36.475, 59.624), (42.535, 58.217), (45.175, 61.48), (36.475, 59.624)]])])
         geo = json.loads(geo[0][2])['geometries'][0]['coordinates']
@@ -99,9 +100,9 @@ class TestSetCase(TestInputOutputBase):
         io_set(group_id=0, obj='transport', data=[['color', 'красный'], [50005, '9']])
 
     def test_get_case(self):
-        case = io_get_obj(group_id=0, obj=45, keys=[45505])
+        case = io_get_obj_mysql_tuple(group_id=0, obj=45, keys=[45505])
         self.assertEqual(case[0][2], 'пример описания дела')
-        car = io_get_obj(group_id=0, obj='transport', keys=['color'])
+        car = io_get_obj_mysql_tuple(group_id=0, obj='transport', keys=['color'])
         self.assertEqual(car[0][2], 'красный')
-        car = io_get_obj(group_id=0, obj='transport', keys=[50005])
+        car = io_get_obj_mysql_tuple(group_id=0, obj='transport', keys=[50005])
         self.assertEqual(car[0][2], '9')

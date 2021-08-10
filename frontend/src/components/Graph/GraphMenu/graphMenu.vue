@@ -1,109 +1,84 @@
 <template>
-  <div v-if="positionNewGraphObject">
-    <v-select
-      :items="listOfPrimaryObjects" v-model="graphObject" :menu-props="{ offsetY: true }"
-      item-text="title" item-value="id" hide-no-data hide-details outlined
-      color="teal" item-color="teal" class="v-input--dense pa-2" label="Тип объекта"
-    >
-      <template v-slot:append-outer="" style="margin-top: 0">
-        <v-menu offset-x z-index="10001" max-height="50%">
-          <template v-slot:activator="{ on, value }">
-            <v-btn :loading="searchStatus" v-on="on" icon large>
-              <v-icon color="teal">mdi-cog-outline</v-icon>
-            </v-btn>
-          </template>
-          <v-list rounded>
-            <v-list-item v-if="modeInputMenu === 'search'" @click="modeInputMenu = 'create'">
-              <v-list-item-icon>
-                <v-icon>mdi-content-save-outline</v-icon>
-              </v-list-item-icon>
-              <v-list-item-title>Создать новый объект</v-list-item-title>
-            </v-list-item>
-            <v-list-item v-if="modeInputMenu === 'create'" @click="modeInputMenu = 'search'">
-              <v-list-item-icon>
-                <v-icon>mdi-magnify-plus-outline</v-icon>
-              </v-list-item-icon>
-              <v-list-item-title>Найти объект</v-list-item-title>
-            </v-list-item>
-            <v-list-item @click="setPositionNewGraphObject(null)">
-              <v-list-item-icon>
-                <v-icon>mdi-close-circle-outline</v-icon>
-              </v-list-item-icon>
-              <v-list-item-title>Отменить</v-list-item-title>
-            </v-list-item>
-          </v-list>
-        </v-menu>
-      </template>
-    </v-select>
-    <div v-if="modeInputMenu === 'search'" style="display: flex; flex-direction: column; height: calc(100% - 3em);">
-      <search-tree-view
-        :search-tree="searchTreeView"
-        :search-status="searchStatus"
-        @findObject="findObject"
-        style="max-height: 30%; overflow-y: auto; flex-shrink: 0" class="pb-2 px-2"
-      ></search-tree-view>
-      <list-found-objects
-        :object-id="graphObject"
-        :found-objects="foundObjects"
-        style="overflow-y: auto"
-      ></list-found-objects>
-    </div>
-    <creator-object
-      v-else-if="modeInputMenu === 'create'"
-      :object-id="graphObject"
-    ></creator-object>
-  </div>
+  <v-row no-gutters style="flex-wrap: nowrap; height: 100%;">
+    <v-col style="max-width: 56px">
+      <tools-menu></tools-menu>
+    </v-col>
+    <v-col v-if="activeWindow === 'dossierPage'" style="max-width: calc(100% - 56px)">
+      <dossier></dossier>
+    </v-col>
+    <v-col v-if="activeWindow === 'searchPage'" class="search-page" style="max-width: calc(100% - 56px)">
+      <search-tree v-model="searchTreeItems" @findObject="findObject" class="search-tree pb-2"></search-tree>
+      <found-objects v-if="foundObjects" :objects="foundObjects"></found-objects>
+    </v-col>
+    <v-col v-if="activeWindow === 'addPage'" style="max-width: calc(100% - 56px)">
+      <div style="height: calc(100% - 3em)">
+        <select-object
+          v-model="selectedEditableObject"
+          :items="listOfPrimaryObjects"
+          style="height: 3.3em"
+          class="py-2"
+        ></select-object>
+        <object-record-area
+          v-if="editableObject"
+          :classifiers="editableObject.params"
+          class="overflow-y-auto"
+          style="max-height: calc(100% - 3em)"
+        ></object-record-area>
+      </div>
+      <v-divider></v-divider>
+      <control-menu style="align-items: flex-end; height: 3em" @save="saveObject"></control-menu>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
+import ToolsMenu from "../../WebsiteShell/UI/toolsMenu"
+import SearchTree from "./searchTree/searchTree"
+import FoundObjects from "./searchTree/foundObjects"
+import router from '@/router'
 import { mapActions, mapGetters } from "vuex"
-import searchTreeView from "./searchTree/searchTreeView"
-import listFoundObjects from "./foundObjects/listFoundObjects"
-import creatorObject from "./createObject/creatorObject";
+import SelectObject from "./createObject/selectorObject";
+import ObjectRecordArea from "./createObject/objectRecordArea";
+import ControlMenu from "./createObject/controlMenu";
+import Dossier from "./dossierObject/dossier";
 
 export default {
   name: "graphMenu",
-  components: { searchTreeView, listFoundObjects, creatorObject, },
-  data: () => ({
-    searchTreeView: null,
-    searchStatus: false,
-    foundObjects: null,
-    modeInputMenu: 'search',
-  }),
+  components: {Dossier, ControlMenu, ObjectRecordArea, SelectObject, FoundObjects, SearchTree, ToolsMenu, },
   computed: {
-    ...mapGetters(['positionNewGraphObject', 'selectedGraphObjectId', 'listOfPrimaryObjects', ]),
-    graphObject: {
-      get: function () { return this.selectedGraphObjectId },
-      set: function (id) {
-        this.setSelectedGraphObjectId(id)
-        this.createSearchTreeView(id)
-        this.foundObjects = null
-        this.getListOfClassifiersOfObjects({ params: { object_id: this.graphObject } })
-      },
+    ...mapGetters(['activeTool', 'searchTreeGraph', 'foundObjects', 'primaryObject', 'listOfPrimaryObjects', 'editableObject', ]),
+    activeWindow: function () {
+      return this.activeTool(router.currentRoute.name)
     },
+    searchTreeItems: {
+      get: function () { return this.searchTreeGraph },
+      set: function (value) { this.setRootSearchTreeGraph(value) }
+    },
+    selectedEditableObject: {
+      get: function () { return this.primaryObject(this.editableObject?.object_id) },
+      set: function (object) {
+        this.getListOfClassifiersOfObjects({ params: { object_id: object.id } })
+        .then(() => {
+          this.setEditableObject({ object_id: object.id })
+        })
+      },
+    }
   },
   methods: {
-    ...mapActions(['findObjectsOnServer', 'setSelectedGraphObjectId', 'getListOfClassifiersOfObjects',
-      'setPositionNewGraphObject', ]),
+    ...mapActions(['setRootSearchTreeGraph', 'findObjectsOnServer', 'setEditableObject', 'getListOfClassifiersOfObjects', 'saveEditableObject']),
     findObject () {
-      this.searchStatus = true
-      this.findObjectsOnServer({ searchTree: this.searchTreeView })
-      .then(response => {
-        this.searchStatus = false
-        this.foundObjects = response.data
-      })
-      .catch(() => { this.searchStatus = false })
+      this.findObjectsOnServer({ searchTree: this.searchTreeItems })
     },
-    createSearchTreeView (id) {
-      this.searchTreeView = { object_id: id, rel: null, request: '', actual: false, rels: [] }
-    },
+    saveObject () {
+      this.saveEditableObject()
+    }
   },
 }
 </script>
 
-<style>
-.v-input__append-outer {
-  margin: 0 !important;
-  margin-left: 6px !important;
+<style scoped>
+.search-tree {
+  max-height: 100%;
+  overflow-y: auto
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
-  <div class="title text-center select_off" style="color: #00796B">
-    {{ textHeader }}
-  </div>
+<!--  <div >-->
+    <span class="title select_off" style="color: #00796B">{{ textHeader }}</span>
+<!--  </div>-->
 </template>
 
 <script>

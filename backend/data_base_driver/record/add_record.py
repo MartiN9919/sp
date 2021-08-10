@@ -1,8 +1,8 @@
 import datetime
 
-from data_base_driver.full_text_search.http_api.find_key_params import find_key_value_http
-from data_base_driver.full_text_search.http_api.find_object import get_object_record_by_id_http
-from data_base_driver.input_output.io import io_set
+from data_base_driver.record.find_object import find_key_value_http
+from data_base_driver.record.get_record import get_object_record_by_id_http
+from data_base_driver.input_output.input_output import io_set
 from data_base_driver.record.validate_record import validate_record, get_country_by_number, remove_special_chars
 from data_base_driver.sys_key.get_key_dump import get_key_by_id
 
@@ -32,10 +32,11 @@ def add_data(group_id, object):
     @return: идентификатор нового/измененного объекта в базе данных
     """
     try:
-        data = [[param['id'], param['value'], datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")]
+        data = [[param['id'], param['value'], param.get('date', datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))]
                 for param in object['params'] if validate_record(param)]
     except Exception as e:
         raise e
+
     # костыль для добавления классификатора телефона для страны, придумать как переделать-------------------------------
     if object.get('object_id') == 52:
         country = get_country_by_number([param for param in object['params'] if param['id'] == 50054][0]['value'])
@@ -48,14 +49,26 @@ def add_data(group_id, object):
                 fl = 1
         if fl == 0:
             data.append([50055, country, datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")])
+
+    #  костыль для переделывания формата точки -------------------------------------------------------------------------
+    if object.get('object_id') == 25:
+        coordinates = [param for param in data if param[0] == 25204]
+        if len(coordinates) > 0:
+            coordinate = coordinates[0]
+            lat = [25202, coordinate[1]['coordinates'][0], datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")]
+            lon = [25202, coordinate[1]['coordinates'][1], datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")]
+            data.remove(coordinate)
+            data.append(lat)
+            data.append(lon)
     # ------------------------------------------------------------------------------------------------------------------
-    if len(data) == 0: # проверка на пустой запрос
+
+    if len(data) == 0:  # проверка на пустой запрос
         return {'status': 1,
                 'object': get_object_record_by_id_http(object.get('object_id'), object.get('rec_id', 0))}
-    if object.get('rec_id', 0) != 0: # проверка на внесение новой записи
+    if object.get('rec_id', 0) != 0:  # проверка на внесение новой записи
         data.append(['id', object.get('rec_id')])
 
-    elif not object.get('force', False): # проверка на дублирование
+    elif not object.get('force', False):  # проверка на дублирование
         temp_set = None
         for item in data:
             if get_key_by_id(int(item[0])).get('need', 0) == 1:
@@ -64,13 +77,11 @@ def add_data(group_id, object):
                 else:
                     temp_set = set(find_key_value_http(object.get('object_id'), item[0], item[1]))
         if len(temp_set) != 0:
-            return {'status': 2, 'objects': [get_object_record_by_id_http(object.get('object_id'), item) for item in temp_set]}
+            return {'status': 2, 'objects': [get_object_record_by_id_http(object.get('object_id'), item) for item in
+                                             temp_set]}
     result = add_record(group_id=group_id, object_id=object.get('object_id'), object_info=data)
     if result != -1:
         return {'status': 1,
                 'object': get_object_record_by_id_http(object.get('object_id'), result)}
     else:
         return {'status': -1}
-
-
-

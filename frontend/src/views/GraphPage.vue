@@ -1,25 +1,30 @@
 <template>
-  <ResSplitPane
-    v-on:update:size="sizeNavigation = $event"
-    split-to="columns" :allow-resize="true" units="percents"
-    :min-size="15" :max-size="85" :size="drawer ? sizeNavigation : 0"
-    :resizerBorderThickness="1" :resizerThickness="1" resizer-border-thickness="">
-    <graph-menu slot="firstPane"></graph-menu>
-    <work-place slot="secondPane" :drawer="drawer"></work-place>
-  </ResSplitPane>
+  <split-panel shadow-effect>
+    <template v-slot:firstPane>
+      <graph-menu></graph-menu>
+    </template>
+    <template v-slot:secondPane>
+      <work-place></work-place>
+    </template>
+  </split-panel>
 </template>
 
 <script>
+import SplitPanel from "../components/WebsiteShell/UI/splitPanel"
 import workPlace from '../components/Graph/Graph/workPlace'
 import graphMenu from '../components/Graph/GraphMenu/graphMenu'
-import NavigationDrawer from '../components/WebsiteShell/Mixins/NavigationDrawer'
-import ResSplitPane from 'vue-resize-split-pane'
+import { mapActions } from "vuex";
 
 export default {
   name: 'GraphPage',
-  mixins: [ NavigationDrawer, ],
-  components: { ResSplitPane, workPlace, graphMenu,},
-  created() { this.$store.dispatch('getListOfPrimaryObjects') },
+  components: {SplitPanel, workPlace, graphMenu,},
+  methods: {
+    ...mapActions(['setDefaultValueActiveTool', 'getListOfPrimaryObjects', ]),
+  },
+  mounted() {
+    this.getListOfPrimaryObjects()
+    this.setDefaultValueActiveTool()
+  },
 }
 </script>
 

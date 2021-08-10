@@ -63,9 +63,9 @@ def get_relations_list(object1, object2):
 
 def get_keys_by_object(object):
     """
-    получение списка ключей по типу объекта
-    :param object: имя или тип объекта
-    :return: список словарей c информацией о искомых ключах
+    Получение списка ключей по типу объекта
+    @param object: имя или тип объекта
+    @return: список словарей c информацией о искомых ключах
     """
     if isinstance(object, str) and not (object.isdigit()):
         object = get_obj_id(object)
@@ -73,10 +73,12 @@ def get_keys_by_object(object):
     result = []
     for key in keys:
         temp = dict(key)
+        if key['id'] == 25202 or key['id'] == 25203: # проверка на lat, lon, если да то пропускаем - КОСТЫЛЬ
+            continue
         temp.pop('rel_obj_1_id')
         temp.pop('rel_obj_2_id')
         if temp.get('list_id'):
-            temp['list_id'] = [item['value'] for item in get_list_by_top_id(int(temp.get('list_id')))]
+            temp['list_id'] = get_list_by_top_id(int(temp.get('list_id')))
         result.append(temp)
     return result
 

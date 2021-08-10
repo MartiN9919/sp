@@ -256,5 +256,4 @@ def db_sql(sql, wait=False, read=True, database=VEC_DATA, connection=-1):
         if isOk: break
         db_reconnect = True
         time.sleep(0.03)
-
     return ret

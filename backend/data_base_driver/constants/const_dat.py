@@ -274,6 +274,7 @@ class DAT_OBJ_ROW:
     KEY_ID = 'key_id'
     VAL = 'val'
     DAT = 'dat'
+    SEC = 'sec'
     LIST = (KEY_ID, VAL, DAT,)
 
 
@@ -283,9 +284,10 @@ class DAT_OBJ_ROW:
 class DAT_REL:
     TABLE_SHORT = 'rel'
     TABLE = VEC_DATA['NAME'] + '.' + TABLE_SHORT
-    # ID               = 'id'
+    REC_ID = 'rec_id'
     KEY_ID = 'key_id'
     DAT = 'dat'
+    SEC = 'sec'
     OBJ_ID_1 = 'obj_id_1'
     REC_ID_1 = 'rec_id_1'
     OBJ_ID_2 = 'obj_id_2'
