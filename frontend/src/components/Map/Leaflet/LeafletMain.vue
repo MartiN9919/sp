@@ -177,7 +177,13 @@ export default {
   mounted: function() {
     this.map = this.$refs.map.mapObject;
     this.map.doubleClickZoom.disable();
+
+    // добавить обработчики событий
     this.key_mounted_after();
+
+    // добавить элемент контекстного меню
+    //this.$refs.menu_org.menu_items.unshift(this.menu_items_key);
+    this.$refs.menu_org.menu_items = [...this.menu_items_key, ...this.$refs.menu_org.menu_items];
   },
 
 

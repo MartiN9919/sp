@@ -197,7 +197,8 @@ export default {
       // ITEM: ACTION
       else if (item.action) {
         this.on_close_menu();
-        this.form[item.action](item);
+        if (item.action instanceof Object) { item.action(item) }
+        else                               { this.form[item.action](item) };
       }
     },
 

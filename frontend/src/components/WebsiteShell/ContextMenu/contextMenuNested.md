@@ -22,9 +22,9 @@ data() => {
           icon:     '...',
           title:    '...',
           subtitle: '...',
-          model:    'prop_range',
           color:    'red',
           disabled: true,
+          model:    'prop_range' || radio || action='fun_name' || action=this.fun_name
         },
         ...
       ],

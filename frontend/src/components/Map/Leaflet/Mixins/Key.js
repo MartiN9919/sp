@@ -5,6 +5,55 @@ const KEY_SEPARATOR   = '_';
 const KEY_POS_DEFAULT = '27.537231445312504_53.64138139745019_7';
 
 export default {
+  data() {
+    return {
+      // добавляется в контекстное меню
+      menu_items_key: [
+        {
+          icon:     'mdi-map-outline',
+          title:    'Фрагмент',
+          subtitle: 'Позиция и масштаб карты',
+          menu:     [
+            {
+              icon:     'mdi-download',
+              title:    'Сохранить',
+              menu:     [
+                { title:   'Слот 1 (по умолчанию)', slot: 1, action: this.key_action_save, },
+                { divider: true },
+                { title:   'Слот 2', slot: 2, action: this.key_action_save, },
+                { title:   'Слот 3', slot: 3, action: this.key_action_save, },
+                { title:   'Слот 4', slot: 4, action: this.key_action_save, },
+                { title:   'Слот 5', slot: 5, action: this.key_action_save, },
+                { title:   'Слот 6', slot: 6, action: this.key_action_save, },
+                { title:   'Слот 7', slot: 7, action: this.key_action_save, },
+                { title:   'Слот 8', slot: 8, action: this.key_action_save, },
+                { title:   'Слот 9', slot: 9, action: this.key_action_save, },
+                { title:   'Слот 0', slot: 0, action: this.key_action_save, },
+              ],
+            },
+            {
+              icon:     'mdi-upload',
+              title:    'Восстановить',
+              menu:     [
+                { title:   'Слот 1 (по умолчанию)', slot: 1, action: this.key_action_load, },
+                { divider: true },
+                { title:   'Слот 2', slot: 2, action: this.key_action_load, },
+                { title:   'Слот 3', slot: 3, action: this.key_action_load, },
+                { title:   'Слот 4', slot: 4, action: this.key_action_load, },
+                { title:   'Слот 5', slot: 5, action: this.key_action_load, },
+                { title:   'Слот 6', slot: 6, action: this.key_action_load, },
+                { title:   'Слот 7', slot: 7, action: this.key_action_load, },
+                { title:   'Слот 8', slot: 8, action: this.key_action_load, },
+                { title:   'Слот 9', slot: 9, action: this.key_action_load, },
+                { title:   'Слот 0', slot: 0, action: this.key_action_load, },
+              ],
+            },
+          ],
+        },
+      ],
+    }
+  },
+
   created: function() {
       this.key_press = [];
 
@@ -55,10 +104,11 @@ export default {
       if (this.key_press.indexOf('Backquote') > -1) { this.key_pos_load(key_press_ind) }
     },
 
-    key_up(e) {
-      // могут быть ситуации, когда keyup не вызывается
-      this.key_press.splice(this.key_press.indexOf(e.originalEvent.code), 1);
-    },
+    // могут быть ситуации, когда keyup не вызывается
+    key_up(e) { this.key_press.splice(this.key_press.indexOf(e.originalEvent.code), 1); },
+
+    key_action_save(item) { this.key_pos_save(item.slot); },
+    key_action_load(item) { this.key_pos_load(item.slot); },
 
     // cookies: сохранить позицию
     key_pos_save: function(ind) {
@@ -66,7 +116,7 @@ export default {
       let zoom   = this.map.getZoom();
       let s = center.lng.toString()+KEY_SEPARATOR+center.lat.toString()+KEY_SEPARATOR+zoom.toString();
       cook_set(KEY_POS_COOK+ind.toString(), s);
-      this.appendErrorAlert({status: 501, content: 'Карта сохранена под номером '+ind, show_time: 3, });
+      this.appendErrorAlert({status: 501, content: 'Карта сохранена в слот '+ind, show_time: 3, });
     },
 
     // cookies: загрузить позицию
