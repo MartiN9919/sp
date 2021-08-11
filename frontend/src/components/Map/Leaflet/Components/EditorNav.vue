@@ -8,7 +8,7 @@
 
 <script>
 /*
- * КОМПОНЕНТ: ДЕРЕВО ГЕОМЕТРИЙ
+ * КОМПОНЕНТ: ДЕРЕВО ГЕОМЕТРИЙ 2
  *  <EditorNav
  *    :selReset="selReset"
  *    @selectedGeometry="selected_geometry"
