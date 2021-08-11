@@ -77,4 +77,9 @@ export default {
 }
 </script>
 
-
+<style scoped>
+  .v-treeview {
+    overflow-y: auto !important;
+    height: 100%;
+  }
+</style>

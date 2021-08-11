@@ -1,5 +1,6 @@
 <template>
   <v-treeview
+    ref="tree_view"
     :items="items"
     :open="items_active"
     @update:active="activate_item"
@@ -13,7 +14,7 @@
   >
     <template v-slot:prepend="{ item, open }">
       <v-icon
-        :id="item.id"
+        :id="'id_'+_uid+'_'+item.id"
         :size="$CONST.TREE.ICON_SIZE"
         :color="get_color(item)"
       >
@@ -87,8 +88,14 @@ export default {
       }
     },
 
-    activate_item(val) {
-      this.item_sel = val;
+    activate_item(item_id) {
+      this.item_sel = item_id;
+      setTimeout(function() {
+        this.$vuetify.goTo(
+          '#id_'+this._uid+'_'+item_id,
+          { duration: 100, offset: 100, easing: 'easeInOutCubic', container: this.$refs.tree_view, }
+        )
+      }.bind(this), 100);
     },
 
     get_icon(item, open) {

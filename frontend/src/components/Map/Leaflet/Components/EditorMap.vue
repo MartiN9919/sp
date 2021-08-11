@@ -78,7 +78,6 @@
  * КОМПОНЕНТ: РЕДАКТОР ФИГУР
  *  <EditorMap
  *    v-model="fc"
- *    editorId="text"
  *    :modeEnabled="modeEnabled"
  *    :modeSelected="modeSelected"
  *    @ok="on_edit_stop_ok"
@@ -95,7 +94,6 @@
  * v-model       - fc с двунаправленной связью, куда складываются данные
  *                 пустая область - { "type": "FeatureCollection", "features": [], } или L.featureGroup().toGeoJSON()
  *                 undedined      - режим редактирования выключается
- * editorId      - идентификатор редактора (для одновременной работы нескольких редакторов)
  * mode_enabled  - доступные режимы редактирования (marker, line, polygon)
  * mode_selected - активизированный по умолчанию режим ('Marker', 'Line', 'Polygon')
  * @ok           - если задан - активна кнопка ОК
@@ -132,8 +130,6 @@ export default {
     modeEnabled: { type: Object,  default() { return { marker: true, line: true, polygon: true, } }, },
     // включенный по умолчанию режим, например: 'Polygon'
     modeSelected: { type: String, default: () => undefined, },
-    // идентификатор редактора (для одновременной работы нескольких редакторов)
-    editorId: { type: String, default: () => 'edit', },
   },
   components: { LControl, },
   data() {
@@ -357,8 +353,8 @@ export default {
     },
 
 
-    layer_editor_prop()    { return { editor: this.editorId, } },
-    layer_editor_is(layer) { return (layer.options.editor === this.editorId) },
+    layer_editor_prop()    { return { editor: this._uid, } },
+    layer_editor_is(layer) { return (layer.options.editor === this._uid) },
 
 
     // ======================================
