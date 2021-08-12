@@ -1,5 +1,6 @@
 <template>
   <v-treeview
+    ref="tree_view"
     :items="items"
     :open="items_active"
     @update:active="activate_item"
@@ -13,7 +14,7 @@
   >
     <template v-slot:prepend="{ item, open }">
       <v-icon
-        :id="item.id"
+        :id="'id_'+_uid+'_'+item.id"
         :size="$CONST.TREE.ICON_SIZE"
         :color="get_color(item)"
       >
@@ -32,13 +33,14 @@
 </template>
 
 <script>
-//     :active="items_active"
+// :active="items_active"
 export default {
   name: 'PaneTree',
   model: { prop: 'item_sel_prop', event: 'item_sel_change', },
   props: {
-    items:         { type: Array,  default() { return []; }, },
-    item_sel_prop: { type: Number, default() { return 0;  }, },
+    items:         { type: Array,   default: () => [], },
+    item_sel_prop: { type: Number,  default: () => 0, },
+    showSel:       { type: Boolean, default: () => true, },
   },
 
   data: () => ({
@@ -49,6 +51,7 @@ export default {
   watch: {
     items:    function(items)   { this.ini_items(); },
     item_sel: function(item_id) { this.activate_item(item_id); },
+    //showSel: function(val)     { },
   },
 
   computed: {
@@ -85,8 +88,14 @@ export default {
       }
     },
 
-    activate_item(val) {
-      this.item_sel = val;
+    activate_item(item_id) {
+      this.item_sel = item_id;
+      setTimeout(function() {
+        this.$vuetify.goTo(
+          '#id_'+this._uid+'_'+item_id,
+          { duration: 100, offset: 100, easing: 'easeInOutCubic', container: this.$refs.tree_view, }
+        )
+      }.bind(this), 100);
     },
 
     get_icon(item, open) {
@@ -99,7 +108,11 @@ export default {
       return (
           (this.item_sel) &&
           (this.items_path[this.item_sel]) &&
-          (this.items_path[this.item_sel].indexOf(item.id) !== -1)
+          (this.items_path[this.item_sel].indexOf(item.id) !== -1) &&
+          (
+            (this.items_path[this.item_sel].slice(-1)[0] != item.id) ||
+            ((this.items_path[this.item_sel].slice(-1)[0] == item.id) && (this.showSel))
+          )
         ) ? this.$CONST.TREE.COLOR_SELECT : this.$CONST.TREE.COLOR_DEFAULT;
     },
 
