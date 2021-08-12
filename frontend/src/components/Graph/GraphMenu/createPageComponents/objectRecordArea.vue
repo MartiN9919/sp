@@ -32,9 +32,9 @@
 <script>
 import TextInput from "../../../WebsiteShell/InputForms/textInput"
 import GeometryInput from "../../../WebsiteShell/InputForms/geometryInput"
-import DropDownMenu from "../../../WebsiteShell/InputForms/BodyToForm/dropDownMenu"
-import MenuDateTime from "../../../WebsiteShell/InputForms/InputFormsUI/menuDateTime"
-import SettingsAnalytics from "../../../Map/MapMenu/scriptsPage/settingsAnalytics"
+import DropDownMenu from "../../../WebsiteShell/UI/dropDownMenu"
+import MenuDateTime from "../../../WebsiteShell/UI/selectDateTime"
+import SettingsAnalytics from "../../../WebsiteShell/UI/responsiveInputForm"
 import {mapActions, mapGetters} from "vuex"
 import RecordTitle from "./objectRecordComponents/recordTitle";
 import RecordInput from "./objectRecordComponents/recordInput";

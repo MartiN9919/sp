@@ -1,7 +1,10 @@
 <template>
   <split-panel shadow-effect>
     <template v-slot:firstPane>
-      <graph-menu></graph-menu>
+      <v-row no-gutters class="graph-menu">
+        <tools-menu></tools-menu>
+        <component :is="changeComponent()" class="page"></component>
+      </v-row>
     </template>
     <template v-slot:secondPane>
       <work-place></work-place>
@@ -12,14 +15,32 @@
 <script>
 import SplitPanel from "../components/WebsiteShell/UI/splitPanel"
 import workPlace from '../components/Graph/Graph/workPlace'
-import graphMenu from '../components/Graph/GraphMenu/graphMenu'
-import { mapActions } from "vuex";
+import toolsMenu from "../components/WebsiteShell/UI/toolsMenu"
+import searchPage from "../components/Graph/GraphMenu/searchPage"
+import createPage from "../components/Graph/GraphMenu/createPage"
+import dossierPage from "../components/Graph/GraphMenu/dossierPage"
+import {mapActions, mapGetters} from "vuex"
+import router from '@/router'
 
 export default {
   name: 'GraphPage',
-  components: {SplitPanel, workPlace, graphMenu,},
+  components: {SplitPanel, workPlace, toolsMenu, searchPage, createPage, dossierPage},
+  computed: {
+    ...mapGetters(['activeTool']),
+    activeWindow: function () {
+      return this.activeTool(router.currentRoute.name)
+    },
+  },
   methods: {
-    ...mapActions(['setDefaultValueActiveTool', 'getListOfPrimaryObjects', ]),
+    ...mapActions(['setDefaultValueActiveTool', 'getListOfPrimaryObjects']),
+    changeComponent() {
+      if (this.activeWindow === 'searchPage')
+        return 'searchPage'
+      if (this.activeWindow === 'createPage')
+        return 'createPage'
+      if (this.activeWindow === 'dossierPage')
+        return 'dossierPage'
+    },
   },
   mounted() {
     this.getListOfPrimaryObjects()
@@ -28,6 +49,13 @@ export default {
 }
 </script>
 
-<style >
+<style>
+.graph-menu {
+  flex-wrap: nowrap;
+  height: 100%;
+}
 
+.page {
+  max-width: calc(100% - 56px)
+}
 </style>

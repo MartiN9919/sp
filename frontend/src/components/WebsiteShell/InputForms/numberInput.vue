@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import BodyInputForm from "./BodyToForm/bodyInputForm"
+import BodyInputForm from "../UI/bodyInputForm"
 
 export default {
   name: "numberInput",

@@ -9,7 +9,7 @@
 
 <script>
 export default {
-  name: "menuDate",
+  name: "selectDate",
   props: {
     inputString: String,
     closeMenu: Function,
