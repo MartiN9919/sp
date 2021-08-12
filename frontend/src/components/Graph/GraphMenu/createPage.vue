@@ -20,9 +20,9 @@
 </template>
 
 <script>
-import SelectorObject from "./createObject/selectorObject"
-import ObjectRecordArea from "./createObject/objectRecordArea"
-import ControlMenu from "./createObject/controlMenu"
+import SelectorObject from "./createPageComponents/selectorObject"
+import ObjectRecordArea from "./createPageComponents/objectRecordArea"
+import ControlMenu from "./createPageComponents/controlMenu"
 import {mapActions, mapGetters} from "vuex";
 
 export default {
