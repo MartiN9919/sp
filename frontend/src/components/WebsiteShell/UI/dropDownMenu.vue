@@ -18,6 +18,8 @@
 </template>
 
 <script>
+let menu = null
+
 export default {
   name: "dropDownMenu",
   inheritAttrs: false,
@@ -28,6 +30,15 @@ export default {
   mounted() {
     this.closeMenu = this.$refs.menuBoolean.save
   },
+  watch: {
+    menuModal: function (value) {
+      if (value) {
+        if (menu && menu !== this)
+          menu.menuModal = false
+        menu = this
+      }
+    }
+  }
 }
 </script>
 

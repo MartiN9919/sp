@@ -23,7 +23,7 @@
 
 <script>
 export default {
-  name: "menuDateTime",
+  name: "selectDateTime",
   props: {
     inputString: String,
     closeMenu: Function,

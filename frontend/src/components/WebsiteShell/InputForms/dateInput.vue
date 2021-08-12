@@ -26,20 +26,20 @@
         </div>
       </template>
       <template v-slot:body="{ closeMenu,  status }">
-        <menu-date v-if="status" v-model="value" :close-menu="closeMenu"></menu-date>
+        <select-date v-if="status" v-model="value" :close-menu="closeMenu"></select-date>
       </template>
     </drop-down-menu>
   </div>
 </template>
 
 <script>
-import BodyInputForm from "./BodyToForm/bodyInputForm"
-import DropDownMenu from "./BodyToForm/dropDownMenu"
-import MenuDate from "./InputFormsUI/menuDate"
+import BodyInputForm from "../UI/bodyInputForm"
+import DropDownMenu from "../UI/dropDownMenu"
+import SelectDate from "../UI/selectDate"
 
 export default {
   name: "dateInput",
-  components: {BodyInputForm, DropDownMenu, MenuDate},
+  components: {BodyInputForm, DropDownMenu, SelectDate},
   model: { prop: 'inputString', event: 'changeInputString', },
   props: {
     inputString: String,

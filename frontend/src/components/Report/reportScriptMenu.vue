@@ -14,10 +14,10 @@
       <v-divider></v-divider>
       <v-scroll-y-transition mode="out-in">
         <div v-if="'id' in selectedItem" :key="selectedItem.id" class="pa-4 py-1">
-          <settingsAnalytics
+          <responsive-input-form
             v-for="(variable, key) in selectedItem.variables" :key="key"
             :variable="variable"
-          ></settingsAnalytics>
+          ></responsive-input-form>
 
           <div class="text-center">
             <v-btn
@@ -35,7 +35,7 @@
 <script>
 import { mapActions } from 'vuex'
 import treeView from '../Map/MapMenu/scriptsPage/treeView'
-import settingsAnalytics from '../Map/MapMenu/scriptsPage/settingsAnalytics'
+import ResponsiveInputForm from '../WebsiteShell/UI/responsiveInputForm'
 import blockHeader from '../Map/MapMenu/scriptsPage/blockHeader'
 import CreatorTreeView from '../Map/MapMenu/Mixins/CreatorTreeView'
 import ExecutorScripts from '../Map/MapMenu/Mixins/ExecutorScripts'
@@ -45,7 +45,7 @@ import SplitPanel from "../WebsiteShell/UI/splitPanel"
 export default {
   name: 'reportScriptMenu',
   mixins: [CreatorTreeView, ExecutorScripts, SelectedScriptFormatter],
-  components: {SplitPanel, treeView, settingsAnalytics, blockHeader, },
+  components: {SplitPanel, treeView, ResponsiveInputForm, blockHeader, },
   methods: {
     ...mapActions(['changeSelectedTreeViewItem'])
   },

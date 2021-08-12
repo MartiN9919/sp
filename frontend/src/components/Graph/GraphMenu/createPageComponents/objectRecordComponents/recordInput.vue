@@ -1,9 +1,9 @@
 <template>
   <v-col>
-    <settings-analytics
+    <responsive-input-form
         v-model="param.value"
         :type="type"
-        :list="list"
+        :items="list"
         :rules="[ v => !!v || 'Поле должно быть заполнено', ]"
         :hide-details="false"
         deletable
@@ -18,22 +18,22 @@
             </div>
           </template>
           <template v-slot:body="{ closeMenu, status }">
-            <menu-date-time v-if="status" v-model="param.date" :close-menu="closeMenu"></menu-date-time>
+            <select-date-time v-if="status" v-model="param.date" :close-menu="closeMenu"></select-date-time>
           </template>
         </drop-down-menu>
       </template>
-    </settings-analytics>
+    </responsive-input-form>
   </v-col>
 </template>
 
 <script>
-import MenuDateTime from "../../../../WebsiteShell/InputForms/InputFormsUI/menuDateTime"
-import SettingsAnalytics from "../../../../Map/MapMenu/scriptsPage/settingsAnalytics"
-import DropDownMenu from "../../../../WebsiteShell/InputForms/BodyToForm/dropDownMenu"
+import ResponsiveInputForm from "../../../../WebsiteShell/UI/responsiveInputForm"
+import DropDownMenu from "../../../../WebsiteShell/UI/dropDownMenu"
+import SelectDateTime from "../../../../WebsiteShell/UI/selectDateTime"
 
 export default {
   name: "recordInput",
-  components: {DropDownMenu, MenuDateTime, SettingsAnalytics, },
+  components: {DropDownMenu, SelectDateTime, ResponsiveInputForm},
   props: {
     param: Object,
     type: String,

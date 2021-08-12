@@ -1,14 +1,15 @@
 <template>
   <v-combobox
     v-model="value"
-    :items="list"
+    :items="items"
     :item-text="itemText"
     :rules="rules"
     :clearable="clearable"
     :hide-details="hideDetails"
     :class="bodyInputClasses"
     :placeholder="placeholder"
-    :menu-props="{offsetY: true, allowOverflow: false}"
+    :disabled="disabled"
+    :menu-props="{ offsetY: true, zIndex: 1000001 }"
     class="customCombobox"
     autocomplete="off"
     messages=" "
@@ -28,67 +29,78 @@
       <slot name="message"></slot>
     </template>
     <template v-slot:item="{ item }">
-      <div class="py-1">{{item[itemText]}}</div>
+      <v-list-item-content>
+        <v-list-item-title class="selector-item">{{item[itemText]}}</v-list-item-title>
+      </v-list-item-content>
     </template>
   </v-combobox>
 </template>
 
 <script>
-  export default {
-    name: "selectorInput",
-    props: {
-      inputString: Number,
-      list: Array,
-      rules: {
-        type: Array,
-        default: function () {
-          return []
-        }
-      },
-      itemText: String,
-      deletable: {
-        type: Boolean,
-        default: false,
-      },
-      title: {
-        type: String,
-        default: '',
-      },
-      hideDetails: {
-        type: Boolean,
-        default: false,
-      },
-      clearable: {
-        type: Boolean,
-        default: false,
-      },
-      placeholder: {
-        type: String,
-        default: 'Введите необходимое значение',
-      },
+export default {
+  name: "selectorInput",
+  model: { prop: 'inputString', event: 'changeInputString', },
+  props: {
+    clearable: {
+      type: Boolean,
+      default: false,
     },
-    model: { prop: 'inputString', event: 'changeInputString', },
-    computed: {
-      bodyInputClasses: function () { return this.title.length ? 'pt-5' : '' },
-      menuProps: function () {
-        if (this?.$el?.clientWidth)
-          return {offsetY: true, maxWidth: this?.$el?.clientWidth, minWidth: this?.$el?.clientWidth}
-      },
-      value: {
-        get: function () { return this.list.find(item => item.id === this.inputString) },
-        set: function (value) { this.$emit('changeInputString', value.id) }
+    deletable: {
+      type: Boolean,
+      default: false,
+    },
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
+    hideDetails: {
+      type: Boolean,
+      default: false,
+    },
+    inputString: Number,
+    itemText: {
+      type: String,
+      default: 'value',
+    },
+    items: {
+      type: Array,
+      default: function () {
+        return []
       }
     },
-  }
+    placeholder: {
+      type: String,
+      default: 'Введите необходимое значение',
+    },
+    rules: {
+      type: Array,
+      default: function () {
+        return []
+      }
+    },
+    title: {
+      type: String,
+      default: '',
+    },
+  },
+  computed: {
+    bodyInputClasses: function () { return this.title.length ? 'pt-5' : 'pt-3' },
+    value: {
+      get: function () { return this.items.find(item => item.id === this.inputString) },
+      set: function (value) { this.$emit('changeInputString', value.id) }
+    }
+  },
+}
 </script>
 
 <style scoped>
 .v-text-field {
   margin-top: 0;
-  padding-top: 0;
+  padding-top: 12px;
 }
 .customCombobox >>> input {
   padding: 0;
+  cursor: pointer;
 }
 .customCombobox >>> .v-input__slot {
   align-items: flex-end;
@@ -103,9 +115,6 @@
 .customCombobox >>> .v-text-field__details {
   min-height: 0;
 }
-.customCombobox >>> input {
-  cursor: pointer;
-}
 .customCombobox >>> .v-select__slot {
   cursor: pointer;
 }
@@ -114,5 +123,11 @@
 }
 .customCombobox {
   width: 100%;
+}
+.selector-item {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 0;
 }
 </style>
