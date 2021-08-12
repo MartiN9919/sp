@@ -69,18 +69,19 @@ def get_object_record_by_id_http(object_id, rec_id, group_id=0):
     params.sort(key=lambda x: get_key_by_id(x['id'])['need'], reverse=True)
     permission = get_permission_params(response, object_id)
     title = get_record_title(object_id, rec_id, group_id,
-                             {'object_id': object_id, 'rec_id': rec_id, 'params': params, 'permission': permission})
+                             {'object_id': object_id, 'rec_id': rec_id, 'params': params, 'permission': permission}, 1)
     return {'object_id': object_id, 'rec_id': rec_id, 'params': params, 'permission': permission,
             'title': title['title']}
 
 
-def get_record_title(object_id, rec_id, group_id=0, record=None):
+def get_record_title(object_id, rec_id, group_id=0, record=None, length=3):
     """
     Функция для получения строки с краткой информацией о объекте
     @param object_id: тип объекта
     @param rec_id: идентификатору записи
     @param group_id: идентификатору группы пользователя
     @param record: записи о объекте для формирования заголовка, по умолчанию None
+    @param length: длинна названия, по умолчанию 3
     @return: словарь в формате {object_id, rec_id, title},...,{}]}
     """
     if not record:
@@ -90,5 +91,5 @@ def get_record_title(object_id, rec_id, group_id=0, record=None):
         write = DAT_OWNER.DUMP.valid_io_group(group_id, write_groups)
     else:
         write = True
-    title = get_title(record['params'])
+    title = get_title(record['params'], length)
     return {'object_id': record['object_id'], 'rec_id': record['rec_id'], 'title': title, 'write': write}

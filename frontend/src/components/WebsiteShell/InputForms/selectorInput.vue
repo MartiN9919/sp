@@ -38,7 +38,12 @@
     name: "selectorInput",
     props: {
       inputString: Number,
-      list: Array,
+      list: {
+        type: Array,
+        default: function () {
+          return []
+        }
+      },
       rules: {
         type: Array,
         default: function () {
