@@ -37,6 +37,7 @@
 </template>
 
 <script>
+
 export default {
   name: "selectorInput",
   model: { prop: 'inputString', event: 'changeInputString', },
