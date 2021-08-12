@@ -10,7 +10,7 @@ export default {
 
     toolsMenuGraph: [
       { name: 'searchPage', icon: 'mdi-magnify' },
-      { name: 'addPage', icon: 'mdi-plus' },
+      { name: 'createPage', icon: 'mdi-plus' },
       { name: 'dossierPage', icon: 'mdi-text-box-multiple-outline' },
     ],
     activeToolGraph: null,

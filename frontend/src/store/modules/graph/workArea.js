@@ -1,6 +1,6 @@
 import { postResponseAxios } from '@/plugins/axios_settings'
 
-function getDateTime () {
+function getDateTime() {
   let dateTime = new Date()
   let time = dateTime.toLocaleTimeString('ru-RU').split(':')
   let date = dateTime.toLocaleDateString('ru-RU').split('.')
@@ -21,6 +21,31 @@ export default {
   mutations: {
     setRootSearchTreeGraph: (state, rootObject) => { state.searchTreeGraph = rootObject },
     setActualRootSearchTree: (state, actual) => { state.searchTreeGraph.actual = actual },
+    setNewItemSearchTreeGraph: (state, {item, newItem}) => {
+      item.rels.unshift({
+        object_id: newItem.id,
+        actual: newItem.actual,
+        request: null,
+        rels: [],
+        rel: {
+          id: newItem.relId,
+          value: newItem.relValue,
+          date_time_start: newItem.relDateTimeStart,
+          date_time_end: newItem.relDateTimeEnd,
+        }
+      })
+    },
+    changeItemSearchTreeGraph: (state, {item, newItem}) =>{
+      item.object_id = newItem.id
+      item.actual = newItem.actual
+      item.rel.id = newItem.relId
+      item.rel.value = newItem.relValue
+      item.rel.date_time_start = newItem.relDateTimeStart
+      item.rel.date_time_end = newItem.relDateTimeEnd
+    },
+    removeItemSearchTreeGraph: (state, {item, removeItem}) =>{
+      item.rels.splice(item.rels.findIndex(i => i === removeItem), 1)
+    },
     setFoundObjects: (state, objects) => { state.foundObjects = objects },
     setEditableObject: (state, object) => { state.editableObject = object },
     addNewParamEditableObject: (state, classifierId) => {
@@ -55,6 +80,15 @@ export default {
           object.params.push({id: classifier.id, values: [], new_values: [] })
       commit('setEditableObject', object)
     },
+    removeItemSearchTreeGraph({ commit }, {item, removeItem}) {
+      commit('removeItemSearchTreeGraph', {item, removeItem})
+    },
+    changeItemSearchTreeGraph({ commit }, {item, newItem}) {
+      commit('changeItemSearchTreeGraph', {item, newItem})
+    },
+    setNewItemSearchTreeGraph({ commit }, {item, newItem}) {
+      commit('setNewItemSearchTreeGraph', {item, newItem})
+    },
     setRootSearchTreeGraph({ state, commit }, {objectId, actual=false}) {
       if (state.searchTreeGraph?.object_id !== objectId) {
         let rootObject = { object_id: objectId, rel: null, request: null, actual: actual, rels: [] }
@@ -68,8 +102,8 @@ export default {
       let searchDefaultId = parseInt(localStorage.getItem('searchDefaultIdGraph')) || rootGetters.listOfPrimaryObjects[0].id
       dispatch('setRootSearchTreeGraph', { objectId: searchDefaultId })
     },
-    findObjectsOnServer({ commit, rootState }, { searchTree, config={} }) {
-      return postResponseAxios('objects/search', searchTree, config)
+    findObjectsOnServer({ commit, state }, config={}) {
+      return postResponseAxios('objects/search', state.searchTreeGraph, config)
         .then(response => { commit('setFoundObjects', response.data) })
         .catch(error => {  })
     },

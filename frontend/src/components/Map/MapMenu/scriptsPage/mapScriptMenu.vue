@@ -39,16 +39,15 @@
             <custom-tooltip v-for="variable in selectedItem.variables" :key="variable.id">
               <template v-slot:activator="{ on }">
                 <div v-on="on">
-                  <settingsAnalytics
+                  <responsive-input-form
                     v-model="variable.value"
                     :type="variable.type"
                     :title="variable.title"
-                    :list="variable.list"
-                    item-text="value"
+                    :items="variable.list"
                     hide-details
                     :rules="[ v => !!v || 'Поле должно быть заполнено', ]"
                     class="pt-2"
-                  ></settingsAnalytics>
+                  ></responsive-input-form>
                 </div>
               </template>
               <template v-slot:body>
@@ -77,22 +76,22 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
 import treeView from './treeView'
 import chipAnalytics from './chipAnalytics'
-import settingsAnalytics from './settingsAnalytics'
+import ResponsiveInputForm from '../../../WebsiteShell/UI/responsiveInputForm'
 import menuTemplate from './menuTemplate'
 import blockHeader from './blockHeader'
 import CreatorTreeView from '../Mixins/CreatorTreeView'
 import ExecutorScripts from '../Mixins/ExecutorScripts'
 import SelectedScriptFormatter from '../Mixins/SelectedScriptFormatter'
-import CustomTooltip from "../../../WebsiteShell/UI/customTooltip";
-import SplitPanel from "../../../WebsiteShell/UI/splitPanel";
+import CustomTooltip from "../../../WebsiteShell/UI/customTooltip"
+import SplitPanel from "../../../WebsiteShell/UI/splitPanel"
+import { mapActions, mapGetters } from 'vuex'
 
 export default {
   name: 'mapScriptMenu',
   mixins: [ CreatorTreeView, ExecutorScripts, SelectedScriptFormatter, ],
-  components: {SplitPanel, CustomTooltip, treeView, chipAnalytics, settingsAnalytics, menuTemplate, blockHeader, },
+  components: {SplitPanel, CustomTooltip, treeView, chipAnalytics, ResponsiveInputForm, menuTemplate, blockHeader, },
   computed: {
     ...mapGetters(['templatesList', 'selectedTemplate'])
   },

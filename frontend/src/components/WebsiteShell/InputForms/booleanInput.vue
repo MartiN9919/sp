@@ -1,44 +1,42 @@
 <template>
-  <div class="boolean-input-form">
-    <drop-down-menu nudge-left="64" min-width="auto" close-on-click close-on-content-click>
-      <template v-slot:activator="{ on }">
-        <div v-on="on">
-          <body-input-form
-            v-model="value"
-            :rules="rules"
-            :hide-details="hideDetails"
-            :class="bodyInputClasses"
-            :placeholder="placeholder"
-            readonly
-          >
-            <template v-slot:label>
-              {{title}}
-            </template>
-            <template v-slot:append="{ hover }" class="action-icon">
-              <v-icon v-if="deletable && hover" @click.stop="" size="24">mdi-delete</v-icon>
-              <v-icon v-else size="24">mdi-order-bool-descending-variant</v-icon>
-            </template>
-            <template v-slot:message>
-              <slot name="message"></slot>
-            </template>
-          </body-input-form>
-        </div>
+  <div class="boolean-input-form" @click="value === 'ДА' ? value = false : value = true">
+    <body-input-form
+      v-model="value"
+      :rules="rules"
+      :hide-details="hideDetails"
+      :class="bodyInputClasses"
+      :placeholder="placeholder"
+      readonly
+    >
+      <template v-slot:label>
+        {{title}}
       </template>
-      <template v-slot:body="{ status, closeMenu }">
-        <menu-boolean v-if="status" v-model="value" :close-menu="closeMenu" :booleanMenu="booleanMenu"></menu-boolean>
+      <template v-slot:append="{ hover }" class="action-icon">
+        <v-icon v-if="deletable && hover" @click.stop="" size="24">mdi-delete</v-icon>
+        <v-checkbox
+          v-else
+          :value="value === 'ДА'"
+          :ripple="false"
+          class="mt-0 pt-0"
+          color="gray"
+          on-icon="mdi-checkbox-marked-outline"
+          off-icon="mdi-checkbox-blank-outline"
+        ></v-checkbox>
       </template>
-    </drop-down-menu>
+      <template v-slot:message>
+        <slot name="message"></slot>
+      </template>
+    </body-input-form>
   </div>
 </template>
 
 <script>
-import BodyInputForm from "./BodyToForm/bodyInputForm"
-import DropDownMenu from "./BodyToForm/dropDownMenu"
-import MenuBoolean from "./InputFormsUI/menuBoolean"
+import BodyInputForm from "../UI/bodyInputForm"
+import DropDownMenu from "../UI/dropDownMenu"
 
 export default {
   name: "booleanInput",
-  components: {BodyInputForm, DropDownMenu, MenuBoolean},
+  components: {BodyInputForm, DropDownMenu},
   model: { prop: 'inputString', event: 'changeInputString', },
   props: {
     inputString: Boolean,
@@ -95,5 +93,8 @@ export default {
 }
 .boolean-input-form {
   width: 100%;
+}
+.boolean-input-form >>> .v-input--selection-controls__input {
+  margin-right: 0;
 }
 </style>

@@ -3,17 +3,17 @@
 </template>
 
 <script>
-import geometryInput from "../../../WebsiteShell/InputForms/geometryInput"
-import booleanInput from "../../../WebsiteShell/InputForms/booleanInput"
-import dateInput from "../../../WebsiteShell/InputForms/dateInput"
-import dateTimeInput from "../../../WebsiteShell/InputForms/dateTimeInput"
-import numberInput from "../../../WebsiteShell/InputForms/numberInput"
-import textInput from "../../../WebsiteShell/InputForms/textInput"
-import selectorInput from "../../../WebsiteShell/InputForms/selectorInput"
-import phoneInput from "../../../WebsiteShell/InputForms/phoneInput"
+import geometryInput from "../InputForms/geometryInput"
+import booleanInput from "../InputForms/booleanInput"
+import dateInput from "../InputForms/dateInput"
+import dateTimeInput from "../InputForms/dateTimeInput"
+import numberInput from "../InputForms/numberInput"
+import textInput from "../InputForms/textInput"
+import selectorInput from "../InputForms/selectorInput"
+import phoneInput from "../InputForms/phoneInput"
 
 export default {
-  name: 'settingsAnalytics',
+  name: 'responsiveInputForm',
   inheritAttrs: false,
   components: {phoneInput, geometryInput, booleanInput, dateInput, dateTimeInput, numberInput, textInput, selectorInput, },
   props: {
@@ -29,7 +29,7 @@ export default {
   },
   methods: {
     selectComponent() {
-      if (this.$attrs.list) return 'selectorInput'
+      if (this.$attrs.items) return 'selectorInput'
       if (this.type === 'text') return 'textInput'
       if (this.type === 'geometry') return 'geometryInput'
       if (this.type === 'checkbox') return 'booleanInput'
