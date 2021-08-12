@@ -23,6 +23,7 @@ export default {
   computed: {
     form: vm => vm,
     menu_items: function () {
+      console.log(111)
       let menu = [
       ]
       if(!this.params?.node){
