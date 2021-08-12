@@ -70,6 +70,7 @@
     </l-map>
 
     <MenuOrg ref="menu_org"/>
+    <KeyDialog ref="key_dialog" @ok="key_save_ok"/>
 
   </div>
 </template>
@@ -182,8 +183,7 @@ export default {
     this.key_mounted_after();
 
     // добавить элемент контекстного меню
-    //this.$refs.menu_org.menu_items.unshift(this.menu_items_key);
-    this.$refs.menu_org.menu_items = [...this.menu_items_key, ...this.$refs.menu_org.menu_items];
+    this.menu_items_set();
   },
 
 
@@ -232,6 +232,10 @@ export default {
       e.originalEvent.preventDefault();
       e.originalEvent.stopPropagation();
       this.$refs.menu_org.menu_show(e.originalEvent.clientX, e.originalEvent.clientY);
+    },
+    menu_items_set() {
+      //this.$refs.menu_org.menu_items.unshift(this.menu_items_key);
+      this.$refs.menu_org.menu_items = [...this.menu_items_key, ...this.$refs.menu_org.menu_items];
     },
 
 

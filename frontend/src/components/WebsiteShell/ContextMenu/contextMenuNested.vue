@@ -2,6 +2,9 @@
   <v-menu
     class="select_off"
     style="z-index: 50000;"
+    min-width="0"
+    :value="open"
+    :absolute="root"
     :close-on-content-click="false"
     :offset-x="isOffsetX"
     :offset-y="isOffsetY"
@@ -9,8 +12,6 @@
     :position-y="positionY"
     :open-on-hover='isOpenOnHover'
     :transition="transition"
-    :value="open"
-    :absolute="root"
   >
     <!-- СЛОТ-АКТИВАТОР ПОДМЕНЮ -->
     <template v-if="!root" v-slot:activator="{ on }">

@@ -1,0 +1,6 @@
+#!/bin/bash
+# chmod ugo+x back.sh
+
+cd backend
+source env/bin/activate
+python3 manage.py runserver 0.0.0.0:8000

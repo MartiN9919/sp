@@ -1,0 +1,5 @@
+#!/bin/bash
+# chmod ugo+x front
+
+cd frontend
+npm run serve
