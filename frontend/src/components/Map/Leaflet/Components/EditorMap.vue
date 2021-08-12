@@ -78,10 +78,11 @@
  * КОМПОНЕНТ: РЕДАКТОР ФИГУР
  *  <EditorMap
  *    v-model="fc"
- *    editorId="text"
  *    :modeEnabled="modeEnabled"
  *    :modeSelected="modeSelected"
  *    @ok="on_edit_stop_ok"
+ *    @restore=""
+ *    @clear=""
  *  />
  *
  *  modeEnabled = {
@@ -93,12 +94,13 @@
  * v-model       - fc с двунаправленной связью, куда складываются данные
  *                 пустая область - { "type": "FeatureCollection", "features": [], } или L.featureGroup().toGeoJSON()
  *                 undedined      - режим редактирования выключается
- * editorId      - идентификатор редактора (для одновременной работы нескольких редакторов)
  * mode_enabled  - доступные режимы редактирования (marker, line, polygon)
  * mode_selected - активизированный по умолчанию режим ('Marker', 'Line', 'Polygon')
  * @ok           - если задан - активна кнопка ОК
  *                 если задан - при обновлении fc включается режим редактирования
  *                 при нажатии на кнопку вызывается событие (возвращается копия fc) и редактирование завершается
+ * @restore      - событие при нажатии на кнопку restore
+ * @clear        - событие при нажатии на кнопку clear
  */
 
 import { LControl, } from "vue2-leaflet";
@@ -123,13 +125,11 @@ export default {
   name: 'EditorMap',
   model: { prop:  ['fc_prop'], event: 'fc_change', },
   props: {
-    fc_prop: { type: Object, default: () => ( undefined ), },
+    fc_prop: { type: Object, default: () => undefined, },
     // доступные для создания элементы
     modeEnabled: { type: Object,  default() { return { marker: true, line: true, polygon: true, } }, },
     // включенный по умолчанию режим, например: 'Polygon'
-    modeSelected: { type: String, default: () => ( undefined ), },
-    // идентификатор редактора (для одновременной работы нескольких редакторов)
-    editorId: { type: String, default: () => ('edit'), },
+    modeSelected: { type: String, default: () => undefined, },
   },
   components: { LControl, },
   data() {
@@ -353,8 +353,8 @@ export default {
     },
 
 
-    layer_editor_prop()    { return { editor: this.editorId, } },
-    layer_editor_is(layer) { return (layer.options.editor === this.editorId) },
+    layer_editor_prop()    { return { editor: this._uid, } },
+    layer_editor_is(layer) { return (layer.options.editor === this._uid) },
 
 
     // ======================================
@@ -539,6 +539,7 @@ export default {
         [FC_KEY_NEW]:  true,
         [FC_KEY_COPY]: false,
       }
+      this.$emit('selReset');
     },
 
     // восстановить
@@ -548,6 +549,7 @@ export default {
         [FC_KEY_NEW]:  true,
         [FC_KEY_COPY]: false,
       };
+      this.$emit('selReset');
     },
 
     // изменение на карте

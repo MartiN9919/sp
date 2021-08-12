@@ -6,7 +6,8 @@
 
     <template v-slot:firstPane>
       <EditorNav
-        @loadGeometry="load_geometry"
+        :selReset="selReset"
+        @selectedGeometry="selected_geometry"
       />
     </template>
 
@@ -34,6 +35,7 @@
           v-model="fc_child"
           :modeEnabled="modeEnabled"
           :modeSelected="modeSelected"
+          @selReset="on_nav_sel_reset"
         />
 
         <!-- МАСШТАБ -->
@@ -75,10 +77,7 @@ export default {
   name: 'LeafletEditor',
   model: { prop:  ['fc_parent_prop'], event: 'fc_parent_change', },
   props: {
-    fc_parent_prop: {
-      type: Object,
-      default() { return undefined; },
-    },
+    fc_parent_prop: { type: Object, default: () => undefined, },
     modeEnabled: Object,      // доступные для создания элементы, например: { marker: true, line: true, polygon: true }
     modeSelected: String,     // включенный по умолчанию режим, например: 'Polygon'
   },
@@ -94,6 +93,7 @@ export default {
       zoomControl: false,
       zoomSnap: 0.5,
     },
+    selReset: true,
   }),
 
   created() {
@@ -138,8 +138,11 @@ export default {
       // this.appendErrorAlert({status: 501, content: e.latlng, show_time: 5, });
     },
 
-    load_geometry(fc) {
-      console.log('LeafletEditor.load_geometry', fc)
+    on_nav_sel_reset(e) {
+      this.selReset = !this.selReset; // сброс выделения: событие из child.map в свойство child.nav
+    },
+
+    selected_geometry(fc) {
       this.fc_child  = JSON.parse(JSON.stringify(fc))
       this.fc_parent = this.fc_child
     },
