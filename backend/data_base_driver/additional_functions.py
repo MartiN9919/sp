@@ -18,6 +18,9 @@ def get_title(params, title_len=3):
                                'priority': key['priority'],
                                'value': param['values'][0]['value']})
     title_list.sort(key=lambda x: x['priority'])
+    if len(title_list) > title_len:
+        title = ', '.join(str(title['title'] + ': ' + title['value']) for title in title_list[:title_len])
+        return title
     if len(title_list) == 0:
         title = ', '.join(str(get_key_by_id(param['id'])['title'] + ': ' + param['values'][0]['value'])
                           for param in params)
