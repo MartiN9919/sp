@@ -32,7 +32,12 @@
         </v-hover>
       </template>
     </v-treeview>
-    <found-objects v-if="foundObjects" :objects="foundObjects"></found-objects>
+    <found-objects
+        v-if="foundObjects"
+        :objects="foundObjects"
+        @change="changeObject"
+        @select="selectObject"
+    ></found-objects>
   </v-col>
 </template>
 
@@ -54,7 +59,29 @@ export default {
     searchTreeItems: function () { return this.searchTreeGraph ? [this.searchTreeGraph] : [] },
   },
   methods: {
-    ...mapActions(['setRootSearchTreeGraph', 'changeItemSearchTreeGraph', 'setNewItemSearchTreeGraph', 'findObjectsOnServer', 'removeItemSearchTreeGraph']),
+    ...mapActions(['setRootSearchTreeGraph', 'changeItemSearchTreeGraph', 'setNewItemSearchTreeGraph', 'setActiveTool',
+    'findObjectsOnServer', 'removeItemSearchTreeGraph', 'setEditableObject', 'getObjectFromServer', 'addChoosingObject',
+    'getListOfClassifiersOfObjects']),
+    selectObject(object) {
+      this.getObjectFromServer({params: {record_id: object.rec_id, object_id: object.object_id}})
+        .then(response => {
+          this.addChoosingObject(response)
+        })
+    },
+    changeObject(object) {
+      this.getObjectFromServer({params: {record_id: object.rec_id, object_id: object.object_id}})
+      .then(response => {
+        this.getListOfClassifiersOfObjects({ params: { object_id: object.object_id } })
+          .then(() => {
+            this.setEditableObject({
+              object_id: response.object_id,
+              rec_id: response.rec_id,
+              params: response.params,
+            })
+          })
+        this.setActiveTool('createPage')
+      })
+    },
     findObject () {
       this.findObjectsOnServer()
     },
