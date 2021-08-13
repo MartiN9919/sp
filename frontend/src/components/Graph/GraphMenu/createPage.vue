@@ -1,21 +1,25 @@
 <template>
   <v-col>
-    <div style="height: calc(100% - 3em)">
+    <div class="work-place">
       <selector-object
           v-model="selectedEditableObject"
           :items="listOfPrimaryObjects"
-          style="height: 3.3em"
-          class="py-2"
+          class="selector-object py-2"
       ></selector-object>
-      <object-record-area
-          v-if="editableObject"
-          :classifiers="editableObject.params"
-          class="overflow-y-auto"
-          style="max-height: calc(100% - 3em)"
-      ></object-record-area>
+      <v-form ref="form">
+        <object-record-area
+            v-if="editableObject"
+            :classifiers="editableObject.params"
+            class="object-record-area overflow-y-auto"
+        ></object-record-area>
+      </v-form>
     </div>
     <v-divider></v-divider>
-    <control-menu style="align-items: flex-end; height: 3em" @save="saveObject"></control-menu>
+    <control-menu
+      class="control-menu"
+      @save="saveObject"
+      :text-button="textButton"
+    ></control-menu>
   </v-col>
 </template>
 
@@ -30,6 +34,7 @@ export default {
   components: {ControlMenu, ObjectRecordArea, SelectorObject},
   computed: {
     ...mapGetters(['primaryObject', 'listOfPrimaryObjects', 'editableObject']),
+    textButton: function () { return this.editableObject?.rec_id ? 'Сохранить' : 'Создать' },
     selectedEditableObject: {
       get: function () { return this.primaryObject(this.editableObject?.object_id) },
       set: function (object) {
@@ -41,14 +46,27 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['getListOfClassifiersOfObjects', 'setEditableObject']),
+    ...mapActions(['getListOfClassifiersOfObjects', 'setEditableObject', 'saveEditableObject']),
     saveObject () {
-      this.saveEditableObject()
+      if(this.$refs.form.validate())
+        this.saveEditableObject()
     }
   }
 }
 </script>
 
 <style scoped>
-
+.work-place {
+  height: calc(100% - 3em);
+}
+.selector-object {
+  height: 3.3em;
+}
+.object-record-area {
+  max-height: calc(100% - 3em);
+}
+.control-menu {
+  height: 3em;
+  align-items: flex-end;
+}
 </style>

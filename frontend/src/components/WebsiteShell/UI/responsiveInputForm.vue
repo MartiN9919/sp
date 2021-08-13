@@ -1,5 +1,9 @@
 <template>
-  <component :is="selectComponent()" v-model="value" v-bind="$attrs"></component>
+  <component :is="selectComponent()" v-model="value" v-bind="$attrs" @deletable="$emit('deletable')">
+    <template v-slot:message>
+      <slot name="message"></slot>
+    </template>
+  </component>
 </template>
 
 <script>

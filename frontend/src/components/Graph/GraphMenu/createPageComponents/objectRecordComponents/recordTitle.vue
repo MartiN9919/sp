@@ -3,7 +3,8 @@
     <v-expansion-panel-header class="py-0 px-2" :color="opened ? '#bfbfbf' : '#f2f2f2'">
       <template v-slot:actions="">
         <v-icon
-          v-if="hover"
+          style="transform: none"
+          v-if="hover && opened"
           @click.stop="$emit('createNewParam')"
           :color="opened ? 'white' : 'black'"
         >mdi-plus</v-icon>

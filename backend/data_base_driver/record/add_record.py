@@ -32,7 +32,7 @@ def add_data(group_id, object):
     @return: идентификатор нового/измененного объекта в базе данных
     """
     try:
-        data = [[param['id'], param['value'], param.get('date', datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))]
+        data = [[param['id'], param['value'], param.get('date', datetime.datetime.now().strftime("%Y-%m-%d %H:%M")) + ':00']
                 for param in object['params'] if validate_record(param)]
     except Exception as e:
         raise e
