@@ -21,7 +21,7 @@
     </template>
     <template v-slot:append>
       <v-hover v-slot="{ hover }" class="action-icon">
-        <v-icon v-if="deletable && hover" @click.stop="" size="24">mdi-delete</v-icon>
+        <v-icon v-if="deletable && hover" @click.stop="$emit('deletable')" size="24">mdi-delete</v-icon>
         <v-icon v-else size="24">mdi-format-list-bulleted</v-icon>
       </v-hover>
     </template>
@@ -85,7 +85,7 @@ export default {
     },
   },
   computed: {
-    bodyInputClasses: function () { return this.title.length ? 'pt-5' : 'pt-3' },
+    bodyInputClasses: function () { return this.title.length ? 'pt-5' : '' },
     value: {
       get: function () { return this.items.find(item => item.id === this.inputString) },
       set: function (value) { this.$emit('changeInputString', value.id) }

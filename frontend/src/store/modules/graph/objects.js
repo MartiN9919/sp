@@ -16,7 +16,7 @@ export default {
     getObjectFromServer({ commit, dispatch }, config={}) {
      return getResponseAxios('objects/object/', config)
       .then(response => {
-        dispatch('addChoosingObject', response.data)
+        return Promise.resolve(response.data)
       })
       .catch(() => {})
     },
