@@ -1,7 +1,7 @@
 <template>
   <PaneTree
-   v-model.number="item_sel"
    :items="items"
+   :itemSel.number.sync="item_sel"
    :showSel.sync="show_sel"
   />
 </template>

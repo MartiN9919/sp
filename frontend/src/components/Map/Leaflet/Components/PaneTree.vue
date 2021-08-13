@@ -36,11 +36,10 @@
 // :active="items_active"
 export default {
   name: 'PaneTree',
-  model: { prop: 'item_sel_prop', event: 'item_sel_change', },
   props: {
-    items:         { type: Array,   default: () => [], },
-    item_sel_prop: { type: Number,  default: () => 0, },
-    showSel:       { type: Boolean, default: () => true, },
+    items:   { type: Array,   default: () => [], },
+    itemSel: { type: Number,  default: () => 0, },
+    showSel: { type: Boolean, default: () => true, },
   },
 
   data: () => ({
@@ -57,7 +56,7 @@ export default {
   computed: {
     item_sel: {
       get()   {
-        return this.item_sel_prop;
+        return this.itemSel;
       },
       set(val) {
         let id = 0;
@@ -66,8 +65,13 @@ export default {
         if (id == 0) return;
 
         if (this.items_path[id])   { this.items_active = this.items_path[id].slice(0, -1); } // .slice(0, -1) - нет эффекта
-        if (this.item_sel != id)   { this.$emit('item_sel_change', id); }
+        if (this.item_sel != id)   { this.$emit('update:itemSel', id); }
       },
+    },
+
+    show_sel: {
+      get()    { return this.showSel               },
+      set(val) { this.$emit('update:showSel', val) },
     },
   },
 
@@ -91,8 +95,8 @@ export default {
     activate_item(item_id) {
       // когда click на item, который выделен, но не подсвечивается (item_id==[])
       if ((item_id.length==0) && (this.item_sel>0)) {
-        item_id = this.item_sel;
-        this.$emit('update:showSel', true)
+        item_id       = this.item_sel;
+        this.show_sel = true;
       } else {
         this.item_sel = item_id;
       }
