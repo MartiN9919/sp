@@ -48,8 +48,8 @@
         <v-divider></v-divider>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="teal" text @click="click_cancel">Отмена</v-btn>
-          <v-btn color="teal" text @click="click_ok">Ок</v-btn>
+          <v-btn :color="$CONST.APP.COLOR_OBJ" text @click="click_cancel">Отмена</v-btn>
+          <v-btn :color="$CONST.APP.COLOR_OBJ" text @click="click_ok">Ок</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
