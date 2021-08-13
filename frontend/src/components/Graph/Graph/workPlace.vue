@@ -5,23 +5,31 @@
       <g v-for="node in nodes"
         @mousedown.capture.shift="startMoveGroupNodes(node)"
         @mouseup.shift="stopMoveGroupNodes()"
-        @mousemove.shift="movingGroupNodes(node)">
+        @mousemove.shift="movingGroupNodes(node)"
+        @wheel.prevent.stop="testScroll($event, node)"
+      >
         <node :data="node" class="node">
-          <v-icon x-large :class="getIconClass(node.id)"
-          @click.right.prevent.stop="menu_show($event, node)"
-          @click.ctrl.left.exact="addSelectedNodes(node)"
-          @click.left.exact="addSelectedNode(node)"
-          >{{ primaryObject(parseInt(node.id.split('_')[0])).icon }}
+          <v-icon
+            :size="node.width * 0.7"
+            :class="getIconClass(node.id)"
+            @click.right.prevent.stop="menu_show($event, node)"
+            @click.ctrl.left.exact="addSelectedNodes(node)"
+            @click.left.exact="addSelectedNode(node)"
+          >
+            {{ primaryObject(parseInt(node.id.split('_')[0])).icon }}
           </v-icon>
-          <v-card flat class="overflow-y-auto" style="background-color: rgba(0,0,0,0.05)">
-            <v-card-text class="pa-0 object-title">
+          <v-card flat class="overflow-y-auto" style="background-color: rgba(0,0,0,0.0)" :size="node.width * 0.3">
+            <p class="pa-0 object-title" :style="{ fontSize: node.width * 0.1}" style="height: auto">
               {{
                 choosingObjects.find(object => object.object_id.toString() + '_' + object.rec_id.toString() === node.id).title
               }}
-            </v-card-text>
+            </p>
           </v-card>
         </node>
       </g>
+<!--      <v-label v-for="edge in graph.edges" :perc="50" :offset="{x: 0, y: -50}">-->
+<!--        <h4>Content</h4>-->
+<!--      </v-label>-->
     </screen>
     <menu-graph ref="menuGraph" :params="menuParams"
      @startRelationCreate="startCreateRelation"
@@ -67,6 +75,8 @@ export default {
             id: object.object_id.toString() + '_' + object.rec_id.toString(),
             x: Math.floor(Math.random() * 500),
             y: Math.floor(Math.random() * 500),
+            width: 100,
+            height: 100,
           })
         }
       }
@@ -75,6 +85,23 @@ export default {
   },
   methods: {
     ...mapActions(['removeChoosingObject',]),
+    testScroll(event, node) {
+      let width = node.width
+      let height = node.height
+      if(event.deltaY < 0){
+        node.width = node.width * 1.1
+        node.height = node.height * 1.1
+      }
+      else{
+        node.width = node.width * 0.9
+        node.height = node.height * 0.9
+      }
+      let dx = (node.width - width)/2
+      let dy = (node.height - height)/2
+      node.x -= dx
+      node.y -= dy
+      console.log(node)
+    },
     test() {
       console.log('abc')
     },
@@ -105,8 +132,8 @@ export default {
     createEdge(node1, node2) {
       // this.createRelation(parseInt(node1.split('_')[0]), parseInt(node1.split('_')[1]), parseInt(node2.split('_')[0]), parseInt(node2.split('_')[1]))
       this.graph.createEdge(node1, node2, {
-        fromAnchor: {x: (node1.width * 0.5) - 10, y: '9%'},
-        toAnchor: {x: (node2.width * 0.5) - 10, y: '9%'}
+        fromAnchor: {x: '50%', y: '50%'},
+        toAnchor: {x: '50%', y: '50%'}
       })
     },
     menu_show(e, node) {
@@ -208,7 +235,8 @@ export default {
       this.moveNode = false
     },
     forceRedrawCluster(nodes, links) {
-      for (let j = 0; j < 100; j++) {
+      let n = 0
+      for (let j = 0; j < 200; j++) {
         for (let node of nodes) {
           for (let otherNode of nodes) {
             if (otherNode.id === node.id) {
@@ -221,36 +249,47 @@ export default {
                 let dx = otherNode.x - node.x;
                 let dy = otherNode.y - node.y;
                 let offset = Math.sqrt(dx * dx + dy * dy);
-                if (offset < 500 && offset > 450) {
-                  continue;
-                }
-                if (offset < 449) {
-                  if (offset < 200) {
-                    node.x -= dx;
-                    node.y -= dy;
+                if(offset < 500){
+                  if (offset < 400) {
+                    if (offset < 200) {
+                      node.x -= dx;
+                      node.y -= dy;
+                    } else {
+                        node.x -= dx / 3;
+                        node.y -= dy / 3;
+                      }
                   } else {
-                    node.x -= dx / 3;
-                    node.y -= dy / 3;
-                  }
-                } else {
-                  node.x += dx / 6;
-                  node.y += dy / 6;
+                      n++
+                      node.x += dx / 6;
+                      node.y += dy / 6;
+                    }
+                }
+                else{
+                  node.x += dx/3;
+                  node.y += dy/3;
                 }
               } else {
                 let dx = otherNode.x - node.x;
                 let dy = otherNode.y - node.y;
                 let offset = Math.sqrt(dx * dx + dy * dy);
-                if (offset < 1000) {
-                  node.x -= dx / 9;
-                  node.y -= dy / 9;
+                if(offset < 1000){
+                  if(offset < 100){
+                    node.x -= dx * 2;
+                    node.y -= dy * 2;
+                  }
+                  else{
+                    if(offset < 500){
+                      node.x -= dx / 3;
+                      node.y -= dy / 3;
+                    }
+                    else{
+                      node.x -= dx / 9;
+                      node.y -= dy / 9;
+                    }
+                  }
                 }
-                if (offset < 500) {
-                  node.x -= dx / 3;
-                  node.y -= dy / 3;
-                }
-                if (offset < 100) {
-                  node.x -= dx * 3;
-                  node.y -= dy * 3;
+                else {
+                  n++
                 }
               }
             }
@@ -260,7 +299,12 @@ export default {
           node.x += dx / 15
           node.y += dy / 15
         }
+        if(n / (this.nodes.length * this.nodes.length) > 0.7){
+          console.log('res', n)
+          break
+        }
       }
+      console.log(n)
     },
   }
 }
@@ -286,12 +330,10 @@ export default {
   display: flex;
   flex-direction: column;
   text-align: center;
-  width: 300px;
-  height: 150px;
 }
 
 .object-icon, .object-icon-selected {
-  border-radius: 90px;
+  border-radius: 90%;
   margin-top: 4px;
 }
 
@@ -300,7 +342,10 @@ export default {
 }
 
 .object-icon-selected {
-  background-color: red;
+  background-color: rgba(255, 0, 0, 0.3);
+}
+.v-icon.v-icon::after {
+  opacity: 0;
 }
 
 </style>

@@ -11,11 +11,11 @@ VEC_DATA = {
 }
 
 OSM = {
-    'HOST': '192.168.56.102',
+    'HOST': '200.200.200.231',
     'PORT': '5432',
     'NAME': 'gis',
-    'USER': 'pushkin',
-    'PASSWORD': '1111',
+    'USER': 'dev',
+    'PASSWORD': '1',
     'CHARSET': 'utf8',
 }
 
