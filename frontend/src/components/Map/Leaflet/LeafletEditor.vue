@@ -138,8 +138,9 @@ export default {
       // this.appendErrorAlert({status: 501, content: e.latlng, show_time: 5, });
     },
 
+    // !!! ВАЖНО !!! сброс выделения: событие из child.map в свойство child.nav
     on_nav_sel_reset(e) {
-      this.selReset = !this.selReset; // сброс выделения: событие из child.map в свойство child.nav
+      this.selReset = !this.selReset;
     },
 
     selected_geometry(fc) {
