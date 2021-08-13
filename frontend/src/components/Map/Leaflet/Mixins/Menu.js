@@ -15,22 +15,12 @@ import contextMenuNested from '@/components/WebsiteShell/ContextMenu/contextMenu
 import MixMenuStruct     from '@/components/Map/Leaflet/Mixins/Menu.struct';
 
 export default {
-  //name: 'MenuOrg',
   mixins: [ MixMenuStruct, ],
+  components: { contextMenuNested, },
 
-  components: {
-    contextMenuNested,
-  },
-
-  mounted() {
-  },
-
-  data() {
-    return {
-      //menu_items: undefined,
-    };
-  },
-
+  data: () => ({
+    menu_items: undefined,
+  }),
 
   computed: {
     ...mapGetters([
@@ -46,18 +36,6 @@ export default {
     ]),
 
     form: vm => vm,
-
-    // конструктор меню
-    menu_items: {
-      set: function() {},
-      get: function() {
-        console.log(555)
-        let ret = this.menu_struct;                         // основа
-        ret[0]['menu'][0]['radio'] = this.MAP_GET_TILES;    // добавить выбор тайлов
-        ret = [...this.menu_items_key, ...ret];             // добавить работу с фрагментами
-        return ret;
-      },
-    },
 
     prop_tile: {
       set: function(val) { this.MAP_ACT_TILE({ind: val}); },
@@ -117,13 +95,15 @@ export default {
     menu_show(e) {
       e.originalEvent.preventDefault();
       e.originalEvent.stopPropagation();
+
+      // обновить menu_items
+      let menu = this.menu_struct;                           // основа
+      menu[0]['menu'][0]['radio'] = this.MAP_GET_TILES  ;    // добавить выбор тайлов
+      this.menu_items = [...this.menu_items_key(), ...menu]; // добавить работу с фрагментами
+
+      // показать корневой уровень меню
       this.$refs.menu.show_root(e.originalEvent.clientX, e.originalEvent.clientY);
     },
-    // menu_items_set() {
-    //   // //this.$refs.menu_org.menu_items.unshift(this.menu_items_key);
-    //   // this.$refs.menu_org.menu_items = [...this.menu_items_key, ...this.$refs.menu_org.menu_items];
-    // },
-
 
 
     test_item_add_1() { this.MAP_ACT_ITEM_ADD(MAP_TEST_ITEM_1); },
