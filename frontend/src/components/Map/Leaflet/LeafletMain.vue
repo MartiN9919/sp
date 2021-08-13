@@ -69,8 +69,16 @@
 
     </l-map>
 
-    <MenuOrg ref="menu_org"/>
-    <KeyDialog ref="key_dialog" @ok="key_save_ok"/>
+    <KeyDialog
+      ref="key_dialog"
+      @ok="key_save_ok"
+    />
+
+    <contextMenuNested
+      ref="menu"
+      :form="form"
+      :items="menu_items"
+    />
 
   </div>
 </template>
@@ -106,7 +114,6 @@ import { marker_get }               from '@/components/Map/Leaflet/Markers/Fun';
 
 import                      '@/components/Map/Leaflet/Markers/Pulse';
 import EditorMap       from '@/components/Map/Leaflet/Components/EditorMap';
-import MenuOrg         from '@/components/Map/Leaflet/Components/Menu.org';
 import Range           from '@/components/Map/Leaflet/Components/Range';
 import Legend          from '@/components/Map/Leaflet/Components/Legend';
 import Logo            from '@/components/Map/Leaflet/Components/Logo';
@@ -114,6 +121,7 @@ import MixKey          from '@/components/Map/Leaflet/Mixins/Key';
 import MixFeatureColor from '@/components/Map/Leaflet/Mixins/FeatureColor';
 import MixControl      from '@/components/Map/Leaflet/Mixins/Control';
 import MixMeasure      from '@/components/Map/Leaflet/Mixins/Measure';
+import MixMenu         from '@/components/Map/Leaflet/Mixins/Menu';
 
 import { datesql_to_ts, } from '@/plugins/sys';
 
@@ -135,6 +143,7 @@ export default {
     MixFeatureColor,
     MixControl,
     MixMeasure,
+    MixMenu,
   ],
 
 
@@ -156,7 +165,6 @@ export default {
     LControlPolylineMeasure,
 
     EditorMap,
-    MenuOrg,
     Range,
     Legend,
     Logo,
@@ -179,11 +187,8 @@ export default {
     this.map = this.$refs.map.mapObject;
     this.map.doubleClickZoom.disable();
 
-    // добавить обработчики событий
+    // добавить обработчики событий клавиатуры
     this.key_mounted_after();
-
-    // добавить элемент контекстного меню
-    this.menu_items_set();
   },
 
 
@@ -223,20 +228,6 @@ export default {
       'setNavigationDrawerStatus',
       'setActiveTool',
     ]),
-
-
-    // ===============
-    // MENU
-    // ===============
-    menu_show(e) {
-      e.originalEvent.preventDefault();
-      e.originalEvent.stopPropagation();
-      this.$refs.menu_org.menu_show(e.originalEvent.clientX, e.originalEvent.clientY);
-    },
-    menu_items_set() {
-      //this.$refs.menu_org.menu_items.unshift(this.menu_items_key);
-      this.$refs.menu_org.menu_items = [...this.menu_items_key, ...this.$refs.menu_org.menu_items];
-    },
 
 
     // ===============

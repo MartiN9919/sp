@@ -208,7 +208,6 @@ export default {
       this.moveNode = false
     },
     forceRedrawCluster(nodes, links) {
-      console.log('update')
       for (let j = 0; j < 100; j++) {
         for (let node of nodes) {
           for (let otherNode of nodes) {
