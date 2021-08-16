@@ -8,7 +8,7 @@
       <EditorNav
         :options2.sync="options2"
         :selReset="selReset"
-        @selectedGeometry="selected_geometry"
+        @updateFc="update_fc"
       />
     </template>
 
@@ -152,8 +152,8 @@ export default {
       this.selReset = !this.selReset;
     },
 
-    selected_geometry(fc) {
-      console.log(111, 'selected_geometry', fc)
+    update_fc(fc) {
+      console.log(111, 'update_fc', fc)
       this.fc_child  = JSON.parse(JSON.stringify(fc))
       this.fc_parent = this.fc_child
     },

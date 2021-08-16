@@ -11,14 +11,14 @@
  * КОМПОНЕНТ: ДЕРЕВО ГЕОМЕТРИЙ
  *  <editor-nav-obj
  *    :selReset="selReset"
- *    @selectedGeometry="selected_geometry"
+ *    @updateFc="selected_fc"
  *  />
  *
  *  selReset: true,
- *  selected_geometry(fc) { },
+ *  update_fc(fc) { },
  *
- * selReset           - признак, изменение значения которого влечет сброс выделения выбранного item
- * @selected_geometry - событие при выборе геометрии, возвращает fc
+ * selReset   - признак, изменение значения которого влечет сброс выделения выбранного item
+ * @update_fc - событие при изменении на карте fc
  */
 
 import { getResponseAxios } from '@/plugins/axios_settings';
@@ -31,7 +31,7 @@ export default {
   props: {
     selReset: { type: Boolean, default: () => undefined, },
   },
-  emits: ['selectedGeometry'],  /// ?
+  //emits: ['updateFc'],  /// ?
 
   data: () => ({
     key_sel:  'sel_geometry',
@@ -55,7 +55,7 @@ export default {
         this.$watch('item_sel', function(id) {
           localStorage[this.key_sel] = id;
           this.show_sel = true;             // выделить выбранный item
-          this.selectedGeometry(id);
+          this.updateFc(id);
         });
 
         return Promise.resolve(response)
@@ -64,10 +64,10 @@ export default {
   },
 
   methods: {
-    selectedGeometry(id) {
+    updateFc(id) {
       getResponseAxios(this.$CONST.API.OBJ.GEOMETRY, {params: {rec_id: id,}})
         .then(response => {
-          this.$emit('selectedGeometry', response.data);
+          this.$emit('updateFc', response.data);
           return Promise.resolve(response)
         })
         .catch(error => { return Promise.reject(error) });
