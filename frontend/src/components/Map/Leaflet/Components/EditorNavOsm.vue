@@ -1,6 +1,5 @@
 <template>
   <div>
-  1321
   <v-btn @click="dd">1</v-btn>
   </div>
 </template>
@@ -15,10 +14,11 @@ export default {
 
   methods: {
     dd() {
-      console.log(555, this.options2)
-      this.$emit('update:options2', {dat1: 5})
-      //this.$emit('selectedGeometry', '111111');
-      this.$emit('update:showSel', false)
+      // console.log(555, this.options2)
+      //this.$emit('resetSelect');
+      // this.$emit('update:options2', {dat1: 5})
+      // //this.$emit('selectedGeometry', '111111');
+      // this.$emit('update:showSel', false)
     },
   },
 }

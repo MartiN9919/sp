@@ -9,7 +9,7 @@
 <script>
 /*
  * КОМПОНЕНТ: ДЕРЕВО ГЕОМЕТРИЙ
- *  <editor-nav-obj
+ *  <EditorNavObj
  *    :resetSelect="resetSelect"
  *    @updateFc="selected_fc"
  *  />
@@ -31,7 +31,9 @@ export default {
   props: {
     resetSelect: { type: Boolean, default: () => undefined, },
   },
-  //emits: ['updateFc'],  /// ?
+  emits: [
+    'updateFc',
+  ],
 
   data: () => ({
     key_sel:  'sel_geometry',
