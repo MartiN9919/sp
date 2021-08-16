@@ -9,7 +9,7 @@
 <script>
 /*
  * КОМПОНЕНТ: ДЕРЕВО ГЕОМЕТРИЙ
- *  <EditorNavObj
+ *  <editor-nav-obj
  *    :selReset="selReset"
  *    @selectedGeometry="selected_geometry"
  *  />
@@ -25,12 +25,13 @@ import { getResponseAxios } from '@/plugins/axios_settings';
 import PaneTree from '@/components/Map/Leaflet/Components/PaneTree';
 
 export default {
-  name: 'EditorNavObj',
+  name: 'editor-nav-obj',
   components: { PaneTree, },
 
   props: {
     selReset: { type: Boolean, default: () => undefined, },
   },
+  emits: ['selectedGeometry'],  /// ?
 
   data: () => ({
     key_sel:  'sel_geometry',

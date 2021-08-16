@@ -41,6 +41,7 @@ export default {
     itemSel: { type: Number,  default: () => 0, },
     showSel: { type: Boolean, default: () => true, },
   },
+  // emits: ['update:itemSel', 'update:showSel', ], /// ?
 
   data: () => ({
     items_path: {},             // список id родительских узлов: {1: [1, 2, ...], ...}

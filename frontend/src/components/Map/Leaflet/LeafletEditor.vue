@@ -5,7 +5,8 @@
   >
 
     <template v-slot:firstPane>
-      <EditorNavObj
+      <EditorNav
+        :options2.sync="options2"
         :selReset="selReset"
         @selectedGeometry="selected_geometry"
       />
@@ -68,7 +69,7 @@ import { LMap, LTileLayer, LControlScale, } from 'vue2-leaflet';
 import LControlPolylineMeasure from 'vue2-leaflet-polyline-measure';
 
 import EditorSplit  from '@/components/Map/Leaflet/Components/EditorSplit';
-import EditorNavObj from '@/components/Map/Leaflet/Components/EditorNavObj';
+import EditorNav    from '@/components/Map/Leaflet/Components/EditorNav';
 import EditorMap    from '@/components/Map/Leaflet/Components/EditorMap';
 import MixKey       from '@/components/Map/Leaflet/Mixins/Key';
 import MixMeasure   from '@/components/Map/Leaflet/Mixins/Measure';
@@ -85,9 +86,13 @@ export default {
 
   mixins: [ MixKey, MixMeasure, ],
 
-  components: { LMap, LTileLayer, LControlScale, LControlPolylineMeasure, EditorMap, EditorNavObj, EditorSplit, },
+  components: { LMap, LTileLayer, LControlScale, LControlPolylineMeasure, EditorMap, EditorNav, EditorSplit, },
 
   data: () => ({
+    options2: {
+      dat1: 2,
+      dat2: '55dd',
+    },
     fc_child: undefined,
     map_options: {
       zoomControl: false,
@@ -102,6 +107,9 @@ export default {
 
   watch: {
     fc_child: function(val) { this.fc_parent = val; },
+    options2: function(val) {
+      console.log('change options2', val)
+    }
   },
 
   computed: {
@@ -140,10 +148,12 @@ export default {
 
     // !!! ВАЖНО !!! сброс выделения: событие из child.map в свойство child.nav
     on_nav_sel_reset(e) {
+      console.log(111, 'on_nav_sel_reset')
       this.selReset = !this.selReset;
     },
 
     selected_geometry(fc) {
+      console.log(111, 'selected_geometry', fc)
       this.fc_child  = JSON.parse(JSON.stringify(fc))
       this.fc_parent = this.fc_child
     },
