@@ -5,7 +5,7 @@
   >
 
     <template v-slot:firstPane>
-      <EditorNav
+      <EditorNavObj
         :selReset="selReset"
         @selectedGeometry="selected_geometry"
       />
@@ -68,7 +68,7 @@ import { LMap, LTileLayer, LControlScale, } from 'vue2-leaflet';
 import LControlPolylineMeasure from 'vue2-leaflet-polyline-measure';
 
 import EditorSplit  from '@/components/Map/Leaflet/Components/EditorSplit';
-import EditorNav    from '@/components/Map/Leaflet/Components/EditorNav';
+import EditorNavObj from '@/components/Map/Leaflet/Components/EditorNavObj';
 import EditorMap    from '@/components/Map/Leaflet/Components/EditorMap';
 import MixKey       from '@/components/Map/Leaflet/Mixins/Key';
 import MixMeasure   from '@/components/Map/Leaflet/Mixins/Measure';
@@ -85,7 +85,7 @@ export default {
 
   mixins: [ MixKey, MixMeasure, ],
 
-  components: { LMap, LTileLayer, LControlScale, LControlPolylineMeasure, EditorMap, EditorNav, EditorSplit, },
+  components: { LMap, LTileLayer, LControlScale, LControlPolylineMeasure, EditorMap, EditorNavObj, EditorSplit, },
 
   data: () => ({
     fc_child: undefined,
