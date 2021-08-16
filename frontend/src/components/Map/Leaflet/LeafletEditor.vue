@@ -6,9 +6,8 @@
 
     <template v-slot:firstPane>
       <EditorNav
-        :options2.sync="options2"
-        :selReset="selReset"
-        @updateFc="update_fc"
+        :resetSelect="nav_reset_select"
+        @updateFc="on_nav_update_fc"
       />
     </template>
 
@@ -36,7 +35,7 @@
           v-model="fc_child"
           :modeEnabled="modeEnabled"
           :modeSelected="modeSelected"
-          @selReset="on_nav_sel_reset"
+          @resetSelect="on_map_reset_select"
         />
 
         <!-- МАСШТАБ -->
@@ -89,16 +88,12 @@ export default {
   components: { LMap, LTileLayer, LControlScale, LControlPolylineMeasure, EditorMap, EditorNav, EditorSplit, },
 
   data: () => ({
-    options2: {
-      dat1: 2,
-      dat2: '55dd',
-    },
     fc_child: undefined,
     map_options: {
       zoomControl: false,
       zoomSnap: 0.5,
     },
-    selReset: true,
+    nav_reset_select: true,
   }),
 
   created() {
@@ -107,9 +102,6 @@ export default {
 
   watch: {
     fc_child: function(val) { this.fc_parent = val; },
-    options2: function(val) {
-      console.log('change options2', val)
-    }
   },
 
   computed: {
@@ -146,14 +138,16 @@ export default {
       // this.appendErrorAlert({status: 501, content: e.latlng, show_time: 5, });
     },
 
-    // !!! ВАЖНО !!! сброс выделения: событие из child.map в свойство child.nav
-    on_nav_sel_reset(e) {
-      console.log(111, 'on_nav_sel_reset')
-      this.selReset = !this.selReset;
+
+
+
+    // сбросить выделение (obj, osm): из child.map в свойство child.nav
+    on_map_reset_select() {
+      this.nav_reset_select = !this.nav_reset_select;
     },
 
-    update_fc(fc) {
-      console.log(111, 'update_fc', fc)
+    // обновить на карте fc
+    on_nav_update_fc(fc) {
       this.fc_child  = JSON.parse(JSON.stringify(fc))
       this.fc_parent = this.fc_child
     },

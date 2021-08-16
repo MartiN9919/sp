@@ -10,15 +10,15 @@
 /*
  * КОМПОНЕНТ: ДЕРЕВО ГЕОМЕТРИЙ
  *  <editor-nav-obj
- *    :selReset="selReset"
+ *    :resetSelect="resetSelect"
  *    @updateFc="selected_fc"
  *  />
  *
- *  selReset: true,
+ *  resetSelect: true,
  *  update_fc(fc) { },
  *
- * selReset   - признак, изменение значения которого влечет сброс выделения выбранного item
- * @update_fc - событие при изменении на карте fc
+ * resetSelect - признак, изменение значения которого влечет сброс выделения выбранного item
+ * @update_fc  - событие при изменении на карте fc
  */
 
 import { getResponseAxios } from '@/plugins/axios_settings';
@@ -29,7 +29,7 @@ export default {
   components: { PaneTree, },
 
   props: {
-    selReset: { type: Boolean, default: () => undefined, },
+    resetSelect: { type: Boolean, default: () => undefined, },
   },
   //emits: ['updateFc'],  /// ?
 
@@ -41,7 +41,7 @@ export default {
   }),
 
   watch: {
-    selReset: function() { this.show_sel=false },  // изменение свойства влечет сброс выделения (через событие не нужно делать)
+    resetSelect: function() { this.show_sel=false },  // изменение свойства влечет сброс выделения (через событие не нужно делать)
   },
 
   created: function() {

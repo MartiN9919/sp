@@ -9,7 +9,6 @@
 export default {
   name: 'editor-nav-osm',
   props: {
-    options2: Object,
     showSel: { type: Boolean, default: () => true, },
   },
   //emits: ['selectedGeometry', 'update:showSel'],

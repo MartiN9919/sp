@@ -42,9 +42,9 @@ export default {
 
   methods: {
     dd() {
-      console.log('transit', this.options2)
-      this.$emit('update:options2', {ff: 5})
-      //this.$emit('selectedGeometry', '111111');
+      // console.log('transit', this.options2)
+      // this.$emit('update:options2', {ff: 5})
+      // //this.$emit('selectedGeometry', '111111');
     },
   },
 
