@@ -84,7 +84,7 @@ def io_get_obj_tuple(group_id, object_type, keys, ids, ids_max_block, where_dop_
                                    time_interval)]
 
 
-def io_get_rel(group_id, keys, obj_rel_1, obj_rel_2, val, time_interval, is_unique):
+def io_get_rel(group_id, keys, obj_rel_1, obj_rel_2, val, time_interval, is_unique, rec_id=0):
     """
     Функция для получения информации о связях в формате списка словарей
     @param group_id: идентификатор группы пользователя
@@ -96,6 +96,7 @@ def io_get_rel(group_id, keys, obj_rel_1, obj_rel_2, val, time_interval, is_uniq
     @param val: список с возможными идентификаторами значений закрепленных списков
     @param time_interval: словарь хранящий промежуток времени в секундах: {second_start, second_end}
     @param is_unique: флаг проверки результирующего списка на уникальность входящих элементов
+    @param rec_id: идентификатор связи, для проверки создания связи
     @return: список словарей в формате [{sec,key_id,obj_id_1,rec_id_1,obj_id_2,rec_id_2,val},{},...,{}]
     """
     if not keys:
@@ -105,7 +106,7 @@ def io_get_rel(group_id, keys, obj_rel_1, obj_rel_2, val, time_interval, is_uniq
     if not time_interval:
         time_interval = {}
     try:
-        return io_get_rel_manticore_dict(group_id, keys, obj_rel_1, obj_rel_2, val, time_interval, is_unique)
+        return io_get_rel_manticore_dict(group_id, keys, obj_rel_1, obj_rel_2, val, time_interval, is_unique, rec_id)
     except ConnectionError:
         where_dop_sql = []
         if time_interval.get('second_start', None):
