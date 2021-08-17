@@ -65,8 +65,6 @@ def add_data(group_id, object):
     if len(data) == 0:  # проверка на пустой запрос
         return {'status': 1,
                 'object': get_object_record_by_id_http(object.get('object_id'), object.get('rec_id', 0))}
-    if object.get('rec_id', 0) != 0:  # проверка на внесение новой записи
-        data.append(['id', object.get('rec_id')])
     if not object.get('force', False):  # проверка на дублирование
         temp_set = None
         for item in data:
@@ -78,6 +76,8 @@ def add_data(group_id, object):
         if len(temp_set) != 0:
             return {'status': 2, 'objects': [get_object_record_by_id_http(object.get('object_id'), item) for item in
                                              temp_set]}
+    if object.get('rec_id', 0) != 0:  # проверка на внесение новой записи
+        data.append(['id', object.get('rec_id')])
     result = add_record(group_id=group_id, object_id=object.get('object_id'), object_info=data)
     if result != -1:
         return {'status': 1,
