@@ -67,8 +67,7 @@ def add_data(group_id, object):
                 'object': get_object_record_by_id_http(object.get('object_id'), object.get('rec_id', 0))}
     if object.get('rec_id', 0) != 0:  # проверка на внесение новой записи
         data.append(['id', object.get('rec_id')])
-
-    elif not object.get('force', False):  # проверка на дублирование
+    if not object.get('force', False):  # проверка на дублирование
         temp_set = None
         for item in data:
             if get_key_by_id(int(item[0])).get('need', 0) == 1:
