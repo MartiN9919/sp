@@ -10,17 +10,19 @@
 /*
  * КОМПОНЕНТ: ДЕРЕВО ГЕОМЕТРИЙ
  *  <EditorNavObj
- *    :resetSelect="resetSelect"
+ *    localStoragePrefix="key_name"
+ *    :triggerResetSelect="triggerResetSelect"
  *    @updateFc="selected_fc"
  *  />
  *
- *  resetSelect: true,
+ *  triggerResetSelect: true,
  *  update_fc(fc) { },
  *
- * resetSelect - признак, изменение значения которого влечет сброс выделения выбранного item
+ * triggerResetSelect - признак, изменение значения которого влечет сброс выделения выбранного item
  * @update_fc  - событие при изменении на карте fc
  */
 
+import router from '@/router'
 import { getResponseAxios } from '@/plugins/axios_settings';
 import PaneTree from '@/components/Map/Leaflet/Components/PaneTree';
 
@@ -29,21 +31,21 @@ export default {
   components: { PaneTree, },
 
   props: {
-    resetSelect: { type: Boolean, default: () => undefined, },
+    localStoragePrefix: { type: String, default() { return '' } },
+    triggerResetSelect: { type: Boolean, default: () => undefined, },
   },
   emits: [
     'updateFc',
   ],
 
   data: () => ({
-    key_sel:  'sel_geometry',
     item_sel: 0,
     items:    [],
     show_sel: false,
   }),
 
   watch: {
-    resetSelect: function() { this.show_sel=false },  // изменение свойства влечет сброс выделения (через событие не нужно делать)
+    triggerResetSelect: function() { this.show_sel=false },  // изменение свойства влечет сброс выделения (через событие не нужно делать)
   },
 
   created: function() {
@@ -63,6 +65,10 @@ export default {
         return Promise.resolve(response)
       })
       .catch(error => { return Promise.reject(error) });
+  },
+
+  computed: {
+    key_sel() { return router.currentRoute.name + '_editor_nav_obj_sel_' + this.localStoragePrefix },
   },
 
   methods: {

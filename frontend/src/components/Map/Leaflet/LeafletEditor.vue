@@ -1,12 +1,15 @@
 <template>
   <EditorSplit
     style="height: 70vh;"
-    keySave="script_param"
+    localStorageKey="script_param"
+    @resize="on_nav_resize"
   >
 
     <template v-slot:firstPane>
       <EditorNav
-        :resetSelect="nav_reset_select"
+        localStorageKey="script_param"
+        :triggerResetSelect="nav_trigger_reset_select"
+        :triggerResize="nav_trigger_resize"
         @updateFc="on_nav_update_fc"
       />
     </template>
@@ -93,7 +96,8 @@ export default {
       zoomControl: false,
       zoomSnap: 0.5,
     },
-    nav_reset_select: true,
+    nav_trigger_reset_select: true,
+    nav_trigger_resize: true,
   }),
 
   created() {
@@ -143,13 +147,18 @@ export default {
 
     // сбросить выделение (obj, osm): из child.map в свойство child.nav
     on_map_reset_select() {
-      this.nav_reset_select = !this.nav_reset_select;
+      this.nav_trigger_reset_select = !this.nav_trigger_reset_select;
     },
 
     // обновить на карте fc
     on_nav_update_fc(fc) {
       this.fc_child  = JSON.parse(JSON.stringify(fc))
       this.fc_parent = this.fc_child
+    },
+
+    // изменение позиции сплиттера
+    on_nav_resize(size) {
+      this.nav_trigger_resize = !this.nav_trigger_resize;
     },
 
   },

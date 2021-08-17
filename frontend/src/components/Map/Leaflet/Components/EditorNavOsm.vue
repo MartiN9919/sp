@@ -14,6 +14,7 @@ export default {
 
   methods: {
     dd() {
+      this.$emit('updateFc', {});
       // console.log(555, this.options2)
       //this.$emit('resetSelect');
       // this.$emit('update:options2', {dat1: 5})
