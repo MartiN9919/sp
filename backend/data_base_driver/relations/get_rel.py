@@ -3,7 +3,7 @@ import datetime
 from data_base_driver.record.find_object import find_reliable_http
 from data_base_driver.record.get_record import get_object_record_by_id_http
 from data_base_driver.relations.find_rel import search_rel_with_key_http
-from data_base_driver.input_output.input_output import io_get_rel
+from data_base_driver.input_output.input_output import io_get_rel_tuple
 from data_base_driver.sys_key.get_object_dump import get_object_by_name
 
 
@@ -18,18 +18,29 @@ def get_rel_by_object(group_id, object, id, parents):
     """
     if not (isinstance(object, int)) and not (object.isdigit()):
         object = get_object_by_name(object)['id']
-    rels = io_get_rel(group_id, [], [int(object), id], [], [], {}, True)
-    first_data = [{'object_type': rel[2], 'rel_type': rel[0], 'rec_id': rel[3],
+    rels = io_get_rel_tuple(group_id, [], [int(object), id], [], [], {}, True)
+    first_data = [{'object_id': rel[2], 'rel_type': rel[0], 'val': rel[6], 'rec_id': rel[3], 'sec': rel[1],
                    'params': get_object_record_by_id_http(rel[2], rel[3])['params']} for rel in rels if
                   (rel[4] == object and rel[5] == id) and len(
                       [temp for temp in parents if int(temp[0]) == rel[2] and temp[1] == rel[3]]) == 0]
-    second_data = [{'object_type': rel[4], 'rel_type': rel[0], 'rec_id': rel[5],
+    second_data = [{'object_id': rel[4], 'rel_type': rel[0], 'val': rel[6], 'rec_id': rel[5], 'sec': rel[1],
                     'params': get_object_record_by_id_http(rel[4], rel[5])['params']} for rel in rels if
                    (rel[2] == object and rel[3] == id) and len(
                        [temp for temp in parents if int(temp[0]) == rel[4] and temp[1] == rel[5]]) == 0]
-    return {'object_type': object, 'rel_type': 'parent', 'rec_id': id,
+    relations = []
+    for relation in first_data + second_data:
+        old_relation = [item for item in relations if relation['object_id'] == item['object_id'] and
+                        relation['rec_id'] == item['rec_id']]
+        if len(old_relation) > 0:
+            old_relation[0]['relations'].append({'key_id': relation['rel_type'], 'val': relation['val'],
+                                                 'sec': relation['sec']})
+        else:
+            relations.append(
+                {'object_id': relation['object_id'], 'rec_id': relation['rec_id'], 'params': relation['params'],
+                 'relations': [{'key_id': relation['rel_type'], 'val': relation['val'], 'sec': relation['sec']}]})
+    return {'object_id': object, 'relations': [], 'rec_id': id,
             'params': get_object_record_by_id_http(object, id)['params'],
-            'rels': first_data + second_data}
+            'rels': relations}
 
 
 def get_rel_rec(group_id, rels, depth, parents):
@@ -43,8 +54,8 @@ def get_rel_rec(group_id, rels, depth, parents):
     if depth == 0 or len(rels) == 0: return rels
     for rel in rels:
         newParents = parents.copy()
-        newRels = get_rel_by_object(group_id, rel['object_type'], rel['rec_id'], newParents)
-        newParents.append([newRels['object_type'], newRels['rec_id']])
+        newRels = get_rel_by_object(group_id, rel['object_id'], rel['rec_id'], newParents)
+        newParents.append([newRels['object_id'], newRels['rec_id']])
         get_rel_rec(group_id, newRels['rels'], depth - 1, newParents)
         if rel.get('rels'):
             rel['rels'].append(newRels['rels'])
@@ -62,8 +73,46 @@ def get_rel_cascade(group_id, object, id, depth):
     """
     if depth <= 0: return []
     rels = get_rel_by_object(group_id, object, id, parents=[])
-    get_rel_rec(group_id, rels['rels'], depth - 1, parents=[[rels['object_type'], rels['rec_id']]])
+    get_rel_rec(group_id, rels['rels'], depth - 1, parents=[[rels['object_id'], rels['rec_id']]])
     return rels
+
+
+def get_object_relation(group_id, object_id, rec_id, objects):
+    """
+    Функция получения всех связей для объекта, с учетом уже имеющихся объектов
+    @param group_id: идентификатор группы пользователя
+    @param object_id: идентификатор типа объекта
+    @param rec_id: идентификатор объекта
+    @param objects: список объектов связи с которыми требуются в результате
+    @return: список словарей в формате [{object_id, rec_id, params, relations:[{key_id, sec, val},...,{}]},...,{}]
+    """
+    result = []
+    temp_result = get_rel_cascade(group_id, object_id, rec_id, 1)['rels']
+    for temp in temp_result:
+        if len([item for item in objects if item['object_id'] == temp['object_id'] and
+                item['rec_id'] == temp['rec_id']]) > 0:
+            temp.pop('params')
+            result.append(temp)
+    return result
+
+
+def get_objects_relation(group_id, object_id_1, rec_id_1, object_id_2, rec_id_2):
+    """
+    Функция для получения связей между двумя объектами
+    @param group_id: идентификатор группы пользователя
+    @param object_id_1: идентификатор типа первого объекта
+    @param rec_id_1: идентификатор первого объекта
+    @param object_id_2: идентификатор типа второго объекта
+    @param rec_id_2: идентификатор второго объекта
+    @return: список связей в формате [{key_id, val, sec},...,{}]
+    """
+    object_relation = get_rel_cascade(group_id, object_id_1, rec_id_1, 1)['rels']
+    result = [item['relations'] for item in object_relation if
+              item['object_type'] == object_id_2 and item['rec_id'] == rec_id_2]
+    if len(result) > 0:
+        return result[0]
+    else:
+        return []
 
 
 def check_relation(root, object_id, rec_id):
@@ -185,7 +234,6 @@ def search_relations(group_id, request):
         parent = get_object_record_by_id_http(request.get('object_id'), request.get('rec_id'))
         parent['rels'] = []
         return search_relations_recursive(group_id, request, parent, parent)
-
 
 # request = {'object_id': 35, 'rec_id': 1, 'rel': None, 'rels': [
 #     {'object_id': 35, 'rel': {'id': 0, 'value': 0, 'date_time_start': None, 'date_time_end': '2021-07-20 12:00'},

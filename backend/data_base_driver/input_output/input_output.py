@@ -24,16 +24,16 @@ def io_set(group_id, obj, data):
 
 def io_get_obj(group_id, object_type, keys, ids, ids_max_block, where_dop_row, time_interval):
     """
-        Функция для получения информации о объекте из мантикоры в формате списка словарей
-        @param group_id: идентификатор группы пользователя
-        @param object_type: идентификатор типа объекта, формат int
-        @param keys: список содержащий идентификаторы ключей
-        @param ids: список содержащий идентификаторы объектов
-        @param ids_max_block: максимальное количество записей в ответе
-        @param where_dop_row: аргументы полнотекстового поиска (блок match запроса sphinx/manticore)
-        @param time_interval: временной интервал записи в формате словаря с ключами second_start и second_end
-        @return: список словарей в формате [{rec_id,sec,key_id,val},{},...,{}]
-        """
+    Функция для получения информации о объекте из мантикоры в формате списка словарей
+    @param group_id: идентификатор группы пользователя
+    @param object_type: идентификатор типа объекта, формат int
+    @param keys: список содержащий идентификаторы ключей
+    @param ids: список содержащий идентификаторы объектов
+    @param ids_max_block: максимальное количество записей в ответе
+    @param where_dop_row: аргументы полнотекстового поиска (блок match запроса sphinx/manticore)
+    @param time_interval: временной интервал записи в формате словаря с ключами second_start и second_end
+    @return: список словарей в формате [{rec_id,sec,key_id,val},{},...,{}]
+    """
     if not ids:
         ids = []
     if not keys:

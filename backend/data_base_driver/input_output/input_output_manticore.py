@@ -166,6 +166,11 @@ def io_get_rel_manticore_dict(group_id, keys, obj_rel_1, obj_rel_2, val, time_in
     response_1 = json.loads(requests.post(FullTextSearch.SEARCH_URL, data=data_1).text)['hits']['hits']
     response_2 = json.loads(requests.post(FullTextSearch.SEARCH_URL, data=data_2).text)['hits']['hits']
     full_result = [item['_source'] for item in response_1 + response_2 if check_relation_permission(item, group_id)]
+    for relation in full_result:
+        if len(relation['val']) == 0:
+            relation['val'] = 0
+        else:
+            relation['val'] = int(relation['val'])
     unique_result = []
     for item in full_result:
         if len([x for x in unique_result if item[DAT_REL.SEC] == x[DAT_REL.SEC] and
