@@ -4,6 +4,7 @@ from data_base_driver.record.find_object import find_key_value_http
 from data_base_driver.record.get_record import get_object_record_by_id_http
 from data_base_driver.input_output.input_output import io_set
 from data_base_driver.record.validate_record import validate_record, get_country_by_number, remove_special_chars
+from data_base_driver.relations.add_rel import add_rel_by_other_object
 from data_base_driver.sys_key.get_key_dump import get_key_by_id
 
 
@@ -79,6 +80,9 @@ def add_data(group_id, object):
     if object.get('rec_id', 0) != 0:  # проверка на внесение новой записи
         data.append(['id', object.get('rec_id')])
     result = add_record(group_id=group_id, object_id=object.get('object_id'), object_info=data)
+    if object.get('old_object_id', 0) != 0:
+        add_rel_by_other_object(group_id, object.get('object_id', 0), object.get('rec_id', 0),
+                                object.get('old_object_id', 0), object.get('old_rec_id', 0))
     if result != -1:
         return {'status': 1,
                 'object': get_object_record_by_id_http(object.get('object_id'), result)}

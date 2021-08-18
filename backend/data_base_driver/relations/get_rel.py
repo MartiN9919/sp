@@ -108,7 +108,7 @@ def get_objects_relation(group_id, object_id_1, rec_id_1, object_id_2, rec_id_2)
     """
     object_relation = get_rel_cascade(group_id, object_id_1, rec_id_1, 1)['rels']
     result = [item['relations'] for item in object_relation if
-              item['object_type'] == object_id_2 and item['rec_id'] == rec_id_2]
+              item['object_id'] == object_id_2 and item['rec_id'] == rec_id_2]
     if len(result) > 0:
         return result[0]
     else:
