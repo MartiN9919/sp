@@ -110,7 +110,7 @@ def io_get_obj_manticore_dict(group_id, object_type, keys, ids, ids_max_block, w
     return result
 
 
-def io_get_rel_manticore_dict(group_id, keys, obj_rel_1, obj_rel_2, val, time_interval, is_unique):
+def io_get_rel_manticore_dict(group_id, keys, obj_rel_1, obj_rel_2, val, time_interval, is_unique, rec_id=0):
     """
     Функция для получения информации о связях в формате списка словарей
     @param group_id: идентификатор группы пользователя
@@ -122,8 +122,26 @@ def io_get_rel_manticore_dict(group_id, keys, obj_rel_1, obj_rel_2, val, time_in
     @param val: список с возможными идентификаторами значений закрепленных списков
     @param time_interval: словарь хранящий промежуток времени в секундах: {second_start, second_end}
     @param is_unique: флаг проверки результирующего списка на уникальность входящих элементов
+    @param rec_id: идентификатор связи, для проверки создания связи
     @return: список словарей в формате [{sec,key_id,obj_id_1,rec_id_1,obj_id_2,rec_id_2,val},{},...,{}]
     """
+    if rec_id != 0:
+        data = json.dumps({
+            'index': DAT_REL.TABLE_SHORT,
+            'query': {
+                'equals': {
+                    'id': rec_id
+                }
+            }
+        })
+        response = json.loads(requests.post(FullTextSearch.SEARCH_URL, data=data).text)['hits']['hits']
+        result = [item['_source'] for item in response if check_relation_permission(item, group_id)]
+        for relation in result:
+            if len(relation['val']) == 0:
+                relation['val'] = 0
+            else:
+                relation['val'] = int(relation['val'])
+        return result
     must = []
     must.append({'range': {DAT_REL.SEC: {'gte': time_interval.get('second_start', 0),
                                          'lte': time_interval.get('second_end', 100000000000)}}})
@@ -166,6 +184,11 @@ def io_get_rel_manticore_dict(group_id, keys, obj_rel_1, obj_rel_2, val, time_in
     response_1 = json.loads(requests.post(FullTextSearch.SEARCH_URL, data=data_1).text)['hits']['hits']
     response_2 = json.loads(requests.post(FullTextSearch.SEARCH_URL, data=data_2).text)['hits']['hits']
     full_result = [item['_source'] for item in response_1 + response_2 if check_relation_permission(item, group_id)]
+    for relation in full_result:
+        if len(relation['val']) == 0:
+            relation['val'] = 0
+        else:
+            relation['val'] = int(relation['val'])
     unique_result = []
     for item in full_result:
         if len([x for x in unique_result if item[DAT_REL.SEC] == x[DAT_REL.SEC] and
