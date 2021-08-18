@@ -4,7 +4,6 @@
       ref="tabs"
       v-model="tab"
       :color="$CONST.APP.COLOR_OBJ"
-      :show-arrows="false"
       background-color="transparent"
       grow
     >
