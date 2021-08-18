@@ -44,10 +44,14 @@
 import router       from '@/router'
 import editorNavOsm from '@/components/Map/Leaflet/Components/EditorNavOsm';
 import EditorNavObj from '@/components/Map/Leaflet/Components/EditorNavObj';
+import MixResize    from '@/components/Map/Leaflet/Mixins/Resize';
 
 export default {
   name: 'EditorNav',
+
   components: { EditorNavObj, editorNavOsm, },
+  mixins: [ MixResize, ],
+
   inheritAttrs: false,
   props: {
     localStorageKey: { type: String, default() { return '' } },
@@ -56,7 +60,6 @@ export default {
 
   data: () => ({
     tab: null,
-    ro:  null,
   }),
 
   watch: {
@@ -74,22 +77,18 @@ export default {
     key_tab() { return router.currentRoute.name + '_editor_nav_tab_sel_' + this.localStoragePrefix },
   },
 
+  mounted() {
+    this.tab = localStorage[this.key_tab]
+  },
+
   methods: {
+    // fire from MixResize
     onResize () {
       //this.$emit('resize', this.$refs.tabs.offsetHeight)
       this.$refs.tabs.callSlider();
     },
   },
 
-  mounted() {
-    this.tab = localStorage[this.key_tab]
-    this.ro  = new ResizeObserver(this.onResize)
-    this.ro.observe(this.$refs.tabs.$el)
-  },
-
-  beforeDestroy () {
-    this.ro.unobserve(this.$refs.tabs.$el)
-  },
 
 }
 
