@@ -74,7 +74,7 @@ def add_data(group_id, object):
                     temp_set.intersection_update(set(find_key_value_http(object.get('object_id'), item[0], item[1])))
                 else:
                     temp_set = set(find_key_value_http(object.get('object_id'), item[0], item[1]))
-        if len(temp_set) != 0:
+        if temp_set and len(temp_set) != 0:
             return {'status': 2, 'objects': [get_object_record_by_id_http(object.get('object_id'), item) for item in
                                              temp_set]}
     if object.get('rec_id', 0) != 0:  # проверка на внесение новой записи
