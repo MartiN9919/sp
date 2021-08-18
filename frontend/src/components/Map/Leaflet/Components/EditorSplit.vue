@@ -33,10 +33,6 @@ export default {
     localStorageKey: { type: String, default() { return '' } },
   },
 
-  emits: [
-    'resize',  // изменение позиции сплиттера
-  ],
-
   components: { ResSplitPane, },
   data: () => ({
     split_key: undefined,
@@ -54,7 +50,6 @@ export default {
   watch: {
     split_pos (newSize) {
       localStorage[this.split_key] = newSize
-      this.$emit('resize', newSize)
     },
   },
 

@@ -54,7 +54,6 @@ export default {
   inheritAttrs: false,
   props: {
     localStorageKey: { type: String, default() { return '' } },
-    triggerResize: Boolean,           // триггер изменения размера компонента
   },
 
   data: () => ({
@@ -64,11 +63,6 @@ export default {
   watch: {
     tab: function(val) {
       localStorage[this.key_tab] = val
-    },
-
-    triggerResize: function(val) {
-      //console.log(111)
-      this.$refs.tabs.callSlider(); // устранение бага со слайдером
     },
   },
 
@@ -81,10 +75,8 @@ export default {
   },
 
   methods: {
-    // fire from MixResize
-    onResize () {
-      //this.$emit('resize', this.$refs.tabs.offsetHeight)
-      this.$refs.tabs.callSlider();
+    on_resize () {                   // fire from MixResize
+      this.$refs.tabs.callSlider(); // устранение бага со слайдером
     },
   },
 

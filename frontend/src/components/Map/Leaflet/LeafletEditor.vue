@@ -2,14 +2,12 @@
   <EditorSplit
     style="height: 70vh;"
     localStorageKey="script_param"
-    @resize="on_nav_resize"
   >
 
     <template v-slot:firstPane>
       <EditorNav
         localStorageKey="script_param"
         :triggerResetSelect="nav_trigger_reset_select"
-        :triggerResize="nav_trigger_resize"
         @updateFc="on_nav_update_fc"
       />
     </template>
@@ -21,7 +19,6 @@
         :options="map_options"
         :crs="MAP_GET_TILES[MAP_GET_TILE].crs"
         @ready="on_map_ready"
-        @resize="on_map_resize"
         @contextmenu=""
         @dblclick="on_map_dblclick"
       >
@@ -75,6 +72,7 @@ import EditorNav    from '@/components/Map/Leaflet/Components/EditorNav';
 import EditorMap    from '@/components/Map/Leaflet/Components/EditorMap';
 import MixKey       from '@/components/Map/Leaflet/Mixins/Key';
 import MixMeasure   from '@/components/Map/Leaflet/Mixins/Measure';
+import MixResize    from '@/components/Map/Leaflet/Mixins/Resize';
 
 export default {
   name: 'LeafletEditor',
@@ -85,10 +83,8 @@ export default {
     modeSelected: String,     // включенный по умолчанию режим, например: 'Polygon'
   },
 
-
-  mixins: [ MixKey, MixMeasure, ],
-
   components: { LMap, LTileLayer, LControlScale, LControlPolylineMeasure, EditorMap, EditorNav, EditorSplit, },
+  mixins: [ MixKey, MixMeasure, MixResize, ],
 
   data: () => ({
     fc_child: undefined,
@@ -97,11 +93,15 @@ export default {
       zoomSnap: 0.5,
     },
     nav_trigger_reset_select: true,
-    nav_trigger_resize: true,
   }),
 
   created() {
     this.fc_child = this.fc_parent;
+  },
+
+  mounted() {
+    // установить слушатель map.on_resize
+    this.resize_add(this.$refs.map.$el, this.on_map_resize);
   },
 
   watch: {
@@ -134,16 +134,13 @@ export default {
       this.key_mounted_after();
     },
 
-    on_map_resize() {
+    on_map_resize () {                   // fire from MixResize
       if (this.map) this.map.invalidateSize();
     },
 
     on_map_dblclick(e) {
       // this.appendErrorAlert({status: 501, content: e.latlng, show_time: 5, });
     },
-
-
-
 
     // сбросить выделение (obj, osm): из child.map в свойство child.nav
     on_map_reset_select() {
@@ -154,12 +151,6 @@ export default {
     on_nav_update_fc(fc) {
       this.fc_child  = JSON.parse(JSON.stringify(fc))
       this.fc_parent = this.fc_child
-    },
-
-    // изменение позиции сплиттера
-    on_nav_resize(size) {
-      this.nav_trigger_resize = !this.nav_trigger_resize;
-      this.on_map_resize();
     },
 
   },
