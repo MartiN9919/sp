@@ -4,6 +4,7 @@
       ref="tabs"
       v-model="tab"
       :color="$CONST.APP.COLOR_OBJ"
+      :show-arrows="false"
       background-color="transparent"
       grow
     >
@@ -55,6 +56,7 @@ export default {
 
   data: () => ({
     tab: null,
+    ro:  null,
   }),
 
   watch: {
@@ -63,6 +65,7 @@ export default {
     },
 
     triggerResize: function(val) {
+      //console.log(111)
       this.$refs.tabs.callSlider(); // устранение бага со слайдером
     },
   },
@@ -71,11 +74,33 @@ export default {
     key_tab() { return router.currentRoute.name + '_editor_nav_tab_sel_' + this.localStoragePrefix },
   },
 
+  methods: {
+    onResize () {
+      //this.$emit('resize', this.$refs.tabs.offsetHeight)
+      this.$refs.tabs.callSlider();
+    },
+  },
+
   mounted() {
     this.tab = localStorage[this.key_tab]
+    this.ro  = new ResizeObserver(this.onResize)
+    this.ro.observe(this.$refs.tabs.$el)
+  },
+
+  beforeDestroy () {
+    this.ro.unobserve(this.$refs.tabs.$el)
   },
 
 }
 
 
 </script>
+
+<style scoped lang="scss">
+  /* fix bug: кнопка влево не нужна*/
+  div::v-deep .v-slide-group__prev { display: none !important; }
+
+  /* fix bug: tab не нужно сдвигать */
+  div::v-deep .v-slide-group__content { transform: translateX(0) !important; }
+</style>
+

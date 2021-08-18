@@ -135,7 +135,7 @@ export default {
     },
 
     on_map_resize() {
-      this.map.invalidateSize();
+      if (this.map) this.map.invalidateSize();
     },
 
     on_map_dblclick(e) {
@@ -159,6 +159,7 @@ export default {
     // изменение позиции сплиттера
     on_nav_resize(size) {
       this.nav_trigger_resize = !this.nav_trigger_resize;
+      this.on_map_resize();
     },
 
   },
