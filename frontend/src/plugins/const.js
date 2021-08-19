@@ -16,6 +16,7 @@ export default class CONST {
     static OBJ = class {
       static GEOMETRY_TREE = 'objects/geometry_tree/';
       static GEOMETRY      = 'objects/geometry/';
+      static OSM_SEARCH    = 'objects/osm_search/';
     };
   };
 

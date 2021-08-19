@@ -73,7 +73,7 @@ export default {
 
   methods: {
     updateFc(id) {
-      getResponseAxios(this.$CONST.API.OBJ.GEOMETRY, {params: {rec_id: id,}})
+      getResponseAxios(this.$CONST.API.OBJ.GEOMETRY, { params: {rec_id: id,} })
         .then(response => {
           this.$emit('updateFc', response.data);
           return Promise.resolve(response)

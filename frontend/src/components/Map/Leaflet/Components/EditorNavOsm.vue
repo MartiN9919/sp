@@ -55,7 +55,7 @@ export default {
 
     search() {
       console.log(555)
-      getResponseAxios(this.$CONST.API.OBJ.GEOMETRY_TREE)
+      getResponseAxios(this.$CONST.API.OBJ.OSM_SEARCH, { params: { text: 'поисковая строка',} })
         .then(response => {
           this.items = response.data;
           return Promise.resolve(response)
