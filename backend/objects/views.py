@@ -9,6 +9,7 @@ from data_base_driver.record.search import search
 from data_base_driver.input_output.input_output import io_set
 from data_base_driver.record.add_record import add_data
 from data_base_driver.relations.add_rel import add_rel
+from data_base_driver.relations.get_rel import get_object_relation
 from data_base_driver.sys_key.get_key_dump import get_keys_by_object, get_relations_list
 from data_base_driver.sys_key.get_object_info import obj_list
 
@@ -106,18 +107,27 @@ def aj_relation(request):
     @param request: запрос на действие со связями
     @return: статус выполнения или результат в зависимости от типа запроса
     POST запрос на добавление связи между двумя объектами, должен содержать в url key_id, object_1_id, rec_1_id,
-        object_2_id, rec_2_id
+        object_2_id, rec_2_id, val, date_time
+    GET запрос на получение связей для одного объекта со списком других объектов. должен содержать object_id, rec_id и
+    objects в формате [{object_id, key_id},...,{}]
     """
     group_id = DAT_OWNER.DUMP.get_group(user_id=request.user.id)
     if request.method == 'POST':
         data = json.loads(request.body)
         try:
-            add_rel(group_id=group_id, key_id=data.get('key_id'), object_1_id=data.get('object_1_id'),
+            result = add_rel(group_id=group_id, key_id=data.get('key_id'), object_1_id=data.get('object_1_id'),
                     rec_1_id=data.get('rec_1_id'), object_2_id=data.get('object_2_id'), rec_2_id=data.get('rec_2_id'),
                     val=data.get('val'), date_time=data.get('date_time'))
-            return JsonResponse({'data': 'связь добавлена'}, status=200)
+            return JsonResponse({'data': result}, status=200)
         except:
             return JsonResponse({'data': 'ошибка добавления'}, status=497)
+    if request.method == 'GET':
+        try:
+            result = get_object_relation(group_id, int(request.GET['object_id']), int(request.GET['rec_id']),
+                                         json.loads(request.GET['objects']))
+            return JsonResponse({'data': result}, status=200)
+        except:
+            return JsonResponse({'status': 'неверный номер объекта'}, status=496)
     else:
         return JsonResponse({'data': 'неизвестный тип запроса'}, status=480)
 

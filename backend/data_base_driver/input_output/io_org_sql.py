@@ -86,7 +86,9 @@ class IO_ORG_SQL():
 
         # REL
         else:
-            data_pars.row_dic[0]['rec_id'] = str(self.io_sql.obj_rec_id_new(obj_id=data_pars.obj_id))
+            rec_id = self.io_sql.obj_rec_id_new(obj_id=data_pars.obj_id)
+            data_pars.row_dic[0]['rec_id'] = str(rec_id)
+            data_pars.rec_id = rec_id
             # проверить на повтор записи в БД
             rec = self.io_sql.select(table=data_pars.row_table, select=['1'],
                                      where=data_pars.row_equ_flat(is_null=True), only_first=True)

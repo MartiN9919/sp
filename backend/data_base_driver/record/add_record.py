@@ -4,6 +4,7 @@ from data_base_driver.record.find_object import find_key_value_http
 from data_base_driver.record.get_record import get_object_record_by_id_http
 from data_base_driver.input_output.input_output import io_set
 from data_base_driver.record.validate_record import validate_record, get_country_by_number, remove_special_chars
+from data_base_driver.relations.add_rel import add_rel_by_other_object
 from data_base_driver.sys_key.get_key_dump import get_key_by_id
 
 
@@ -65,10 +66,7 @@ def add_data(group_id, object):
     if len(data) == 0:  # проверка на пустой запрос
         return {'status': 1,
                 'object': get_object_record_by_id_http(object.get('object_id'), object.get('rec_id', 0))}
-    if object.get('rec_id', 0) != 0:  # проверка на внесение новой записи
-        data.append(['id', object.get('rec_id')])
-
-    elif not object.get('force', False):  # проверка на дублирование
+    if not object.get('force', False):  # проверка на дублирование
         temp_set = None
         for item in data:
             if get_key_by_id(int(item[0])).get('need', 0) == 1:
@@ -76,10 +74,15 @@ def add_data(group_id, object):
                     temp_set.intersection_update(set(find_key_value_http(object.get('object_id'), item[0], item[1])))
                 else:
                     temp_set = set(find_key_value_http(object.get('object_id'), item[0], item[1]))
-        if len(temp_set) != 0:
+        if temp_set and len(temp_set) != 0:
             return {'status': 2, 'objects': [get_object_record_by_id_http(object.get('object_id'), item) for item in
                                              temp_set]}
+    if object.get('rec_id', 0) != 0:  # проверка на внесение новой записи
+        data.append(['id', object.get('rec_id')])
     result = add_record(group_id=group_id, object_id=object.get('object_id'), object_info=data)
+    if object.get('old_object_id', 0) != 0:
+        add_rel_by_other_object(group_id, object.get('object_id', 0), object.get('rec_id', 0),
+                                object.get('old_object_id', 0), object.get('old_rec_id', 0))
     if result != -1:
         return {'status': 1,
                 'object': get_object_record_by_id_http(object.get('object_id'), result)}

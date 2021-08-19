@@ -24,16 +24,16 @@ def io_set(group_id, obj, data):
 
 def io_get_obj(group_id, object_type, keys, ids, ids_max_block, where_dop_row, time_interval):
     """
-        Функция для получения информации о объекте из мантикоры в формате списка словарей
-        @param group_id: идентификатор группы пользователя
-        @param object_type: идентификатор типа объекта, формат int
-        @param keys: список содержащий идентификаторы ключей
-        @param ids: список содержащий идентификаторы объектов
-        @param ids_max_block: максимальное количество записей в ответе
-        @param where_dop_row: аргументы полнотекстового поиска (блок match запроса sphinx/manticore)
-        @param time_interval: временной интервал записи в формате словаря с ключами second_start и second_end
-        @return: список словарей в формате [{rec_id,sec,key_id,val},{},...,{}]
-        """
+    Функция для получения информации о объекте из мантикоры в формате списка словарей
+    @param group_id: идентификатор группы пользователя
+    @param object_type: идентификатор типа объекта, формат int
+    @param keys: список содержащий идентификаторы ключей
+    @param ids: список содержащий идентификаторы объектов
+    @param ids_max_block: максимальное количество записей в ответе
+    @param where_dop_row: аргументы полнотекстового поиска (блок match запроса sphinx/manticore)
+    @param time_interval: временной интервал записи в формате словаря с ключами second_start и second_end
+    @return: список словарей в формате [{rec_id,sec,key_id,val},{},...,{}]
+    """
     if not ids:
         ids = []
     if not keys:
@@ -84,7 +84,7 @@ def io_get_obj_tuple(group_id, object_type, keys, ids, ids_max_block, where_dop_
                                    time_interval)]
 
 
-def io_get_rel(group_id, keys, obj_rel_1, obj_rel_2, val, time_interval, is_unique):
+def io_get_rel(group_id, keys, obj_rel_1, obj_rel_2, val, time_interval, is_unique, rec_id=0):
     """
     Функция для получения информации о связях в формате списка словарей
     @param group_id: идентификатор группы пользователя
@@ -96,6 +96,7 @@ def io_get_rel(group_id, keys, obj_rel_1, obj_rel_2, val, time_interval, is_uniq
     @param val: список с возможными идентификаторами значений закрепленных списков
     @param time_interval: словарь хранящий промежуток времени в секундах: {second_start, second_end}
     @param is_unique: флаг проверки результирующего списка на уникальность входящих элементов
+    @param rec_id: идентификатор связи, для проверки создания связи
     @return: список словарей в формате [{sec,key_id,obj_id_1,rec_id_1,obj_id_2,rec_id_2,val},{},...,{}]
     """
     if not keys:
@@ -105,7 +106,7 @@ def io_get_rel(group_id, keys, obj_rel_1, obj_rel_2, val, time_interval, is_uniq
     if not time_interval:
         time_interval = {}
     try:
-        return io_get_rel_manticore_dict(group_id, keys, obj_rel_1, obj_rel_2, val, time_interval, is_unique)
+        return io_get_rel_manticore_dict(group_id, keys, obj_rel_1, obj_rel_2, val, time_interval, is_unique, rec_id)
     except ConnectionError:
         where_dop_sql = []
         if time_interval.get('second_start', None):
