@@ -28,7 +28,7 @@ class SingletonPgsql(metaclass=SingletonMeta):
                 free_connection = [connection for connection in self.connections_list if
                                    not (connection.get_connection_status())]
                 free_connection[0].set_busy()
-                free_connection[0].get_connection().ping(True)
+                # free_connection[0].get_connection().ping(True)
                 return free_connection[0]
             except:
                 print('not free connection')
@@ -52,7 +52,7 @@ def db_connect(database=OSM, dataOnServer=False):
     return connect_to_data_base(database)
 
 
-def db_sql(sql, wait=False, read=True, database=OSM, connection=-1):
+def db_pg_sql(sql, wait=False, read=True, database=OSM, connection=-1):
     def run(connection_pg_sql, dbOpened, dbReconnect):
         if ((not dbOpened) or dbReconnect):
             connection_pg_sql = db_connect(database=database)
@@ -91,5 +91,4 @@ def db_sql(sql, wait=False, read=True, database=OSM, connection=-1):
     return ret
 
 
-db_sql('')
-
+# print(db_pg_sql(sql='select * from planet_osm_polygon pop where osm_id = 319505558;'))
