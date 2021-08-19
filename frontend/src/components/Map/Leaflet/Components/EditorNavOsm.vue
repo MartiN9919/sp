@@ -1,26 +1,108 @@
 <template>
-  <div>
-  <v-btn @click="dd">1</v-btn>
-  </div>
+  <v-card>
+    <v-hover v-slot="{ hover }">
+      <v-text-field
+        style="margin: 15px;"
+        :color="$CONST.APP.COLOR_OBJ"
+        @input="on_input"
+        dense
+        outlined
+        hide-details
+        clearable
+        autocomplete="off"
+      >
+      </v-text-field>
+    </v-hover>
+
+    <v-divider class="mx-4"></v-divider>
+
+    <PaneTree
+      :items="items"
+    />
+  </v-card>
 </template>
 
 <script>
+
+/*
+      :itemSel.number.sync="item_sel"
+      :showSel.sync="show_sel"
+ */
+import { getResponseAxios } from '@/plugins/axios_settings';
+import PaneTree from '@/components/Map/Leaflet/Components/PaneTree';
+
 export default {
   name: 'editor-nav-osm',
+  components: { PaneTree, },
+
   props: {
     showSel: { type: Boolean, default: () => true, },
   },
   //emits: ['selectedGeometry', 'update:showSel'],
+  data: () => ({
+    // item_sel: 0,
+    items: undefined,
+    timer_input: undefined,
+  }),
+
+  beforeDestroy () {
+    this.timer_abort();
+  },
 
   methods: {
-    dd() {
-      this.$emit('updateFc', {});
-      // console.log(555, this.options2)
-      //this.$emit('resetSelect');
-      // this.$emit('update:options2', {dat1: 5})
-      // //this.$emit('selectedGeometry', '111111');
-      // this.$emit('update:showSel', false)
+    on_input() { this.timer_abort(); this.timer_input = setTimeout(this.search, 1000); },
+    timer_abort() { if (this.timer_input) { clearTimeout(this.timer_input); this.timer_input = undefined; } },
+
+    search() {
+      console.log(555)
+      getResponseAxios(this.$CONST.API.OBJ.GEOMETRY_TREE)
+        .then(response => {
+          this.items = response.data;
+          return Promise.resolve(response)
+        })
+        .catch(error => { return Promise.reject(error) });
     },
+
   },
 }
+
+/*
+        <template v-slot:append="">
+          <div v-show="hover" style="margin-top: -6 !important;">
+            <v-btn icon @click="dd" :color="$CONST.APP.COLOR_OBJ">
+              <v-icon>mdi-delete</v-icon>
+            </v-btn>
+          </div>
+        </template>
+
+    <v-list-item-group>
+      <v-list-item>
+        <v-list-item-content>
+          <v-list-item-title>Single-line item</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+
+      <v-list-item two-line>
+        <v-list-item-content>
+          <v-list-item-title>Two-line item</v-list-item-title>
+          <v-list-item-subtitle>Secondary text</v-list-item-subtitle>
+        </v-list-item-content>
+      </v-list-item>
+
+      <v-list-item three-line>
+        <v-list-item-content>
+          <v-list-item-title>Three-line item</v-list-item-title>
+          <v-list-item-subtitle>
+            Secondary line text Lorem ipsum dolor sit amet,
+          </v-list-item-subtitle>
+          <v-list-item-subtitle>
+            consectetur adipiscing elit.
+          </v-list-item-subtitle>
+        </v-list-item-content>
+      </v-list-item>
+
+    </v-list-item-group>
+
+ */
+
 </script>
