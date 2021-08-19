@@ -5,7 +5,7 @@ from core.projectSettings.decoraters import login_check, decor_log_request
 from data_base_driver.constants.const_dat import DAT_OWNER
 from data_base_driver.record.get_record import get_object_record_by_id_http
 from data_base_driver.input_output.io_geo import get_geometry_tree, geo_id_to_fc
-from data_base_driver.osm.osm_lib import osm_search
+from data_base_driver.osm.osm_lib import osm_search, osm_get_fc
 from data_base_driver.record.search import search
 from data_base_driver.input_output.input_output import io_set
 from data_base_driver.record.add_record import add_data
@@ -225,13 +225,30 @@ def aj_groups(request):
 @decor_log_request
 def aj_osm_search(request):
     """
-    Функция API для поиска osm-записей
+    Поиск osm-записей
     @param request: text - поисковая строка
-    @return:  json [{id,name,icon,},...]
+    @return: json [{id,name,icon,},...]
     """
     if request.method == 'GET':
         try:
             return JsonResponse({'data': osm_search(text=request.GET['text'])}, status=200)
+        except:
+            return JsonResponse({'status': ' ошибка выполнения запроса'}, status=496)
+    else:
+        return JsonResponse({'data': 'неизвестный тип запроса'}, status=480)
+
+
+@login_check
+@decor_log_request
+def aj_osm_fc(request):
+    """
+    OSM: по id вернуть геометрию
+    @param request: id - идентификатор геометрии
+    @return: fc
+    """
+    if request.method == 'GET':
+        try:
+            return JsonResponse({'data': osm_fc(id=request.GET['id'])}, status=200)
         except:
             return JsonResponse({'status': ' ошибка выполнения запроса'}, status=496)
     else:
