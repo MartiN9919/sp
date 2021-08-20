@@ -32,12 +32,17 @@ def get_rel_by_object(group_id, object, id, parents):
         old_relation = [item for item in relations if relation['object_id'] == item['object_id'] and
                         relation['rec_id'] == item['rec_id']]
         if len(old_relation) > 0:
-            old_relation[0]['relations'].append({'key_id': relation['rel_type'], 'val': relation['val'],
-                                                 'sec': relation['sec']})
+            temp_relation = [item for item in old_relation[0]['relations'] if item['id'] == relation['rel_type']]
+            if len(temp_relation) > 0:
+                temp_relation[0]['values'].append({'val': relation['val'], 'sec': relation['sec']})
+            else:
+                old_relation[0]['relations'].append({'id': relation['rel_type'], 'values': [{ 'val': relation['val'],
+                                                     'sec': relation['sec']}]})
         else:
             relations.append(
                 {'object_id': relation['object_id'], 'rec_id': relation['rec_id'], 'params': relation['params'],
-                 'relations': [{'key_id': relation['rel_type'], 'val': relation['val'], 'sec': relation['sec']}]})
+                 'relations': [{'id': relation['rel_type'],
+                                'values': [{'val': relation['val'], 'sec': relation['sec']}]}]})
     return {'object_id': object, 'relations': [], 'rec_id': id,
             'params': get_object_record_by_id_http(object, id)['params'],
             'rels': relations}
