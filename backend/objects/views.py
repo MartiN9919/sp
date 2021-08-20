@@ -134,6 +134,22 @@ def aj_relation(request):
 
 @login_check
 @decor_log_request
+def aj_object_relation(request):
+    group_id = DAT_OWNER.DUMP.get_group(user_id=request.user.id)
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            result = get_object_relation(group_id, int(data.get('object_id')), int(data.get('rec_id')),
+                                         data.get('objects'))
+            return JsonResponse({'data': result}, status=200)
+        except:
+            return JsonResponse({'status': 'неверный номер объекта'}, status=496)
+    else:
+        return JsonResponse({'data': 'неизвестный тип запроса'}, status=480)
+
+
+@login_check
+@decor_log_request
 def aj_search_objects(request):
     """
     Функция API для поиска объектов в базе данных
