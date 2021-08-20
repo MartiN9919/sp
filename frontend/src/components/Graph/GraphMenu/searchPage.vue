@@ -1,5 +1,5 @@
 <template>
-  <v-col>
+  <v-col class="d-flex flex-column">
     <v-treeview :items="searchTreeItems" :open="openObject" item-children="rels" return-object class="search-tree pb-2">
       <template v-slot:label="{ item }">
         <tree-item-info :object="item"></tree-item-info>
@@ -33,10 +33,11 @@
       </template>
     </v-treeview>
     <found-objects
-        v-if="foundObjects"
-        :objects="foundObjects"
-        @change="changeObject"
-        @select="selectObject"
+      v-if="foundObjects"
+      :objects="foundObjects"
+      @change="changeObject"
+      @select="selectObject"
+      class="overflow-y-hidden"
     ></found-objects>
   </v-col>
 </template>
@@ -116,6 +117,7 @@ export default {
 .search-tree {
   max-height: 100%;
   overflow-y: auto;
+  flex-shrink: 0;
 }
 
 .treeItemInput >>> .v-input__append-inner {
