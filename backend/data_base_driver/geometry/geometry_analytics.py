@@ -8,7 +8,7 @@ from data_base_driver.input_output.input_output import io_get_obj
 from data_base_driver.input_output.valid_permission_manticore import check_object_permission
 
 
-def get_point_inside_polygon(polygon, points, group_id):
+def get_points_inside_polygon(polygon, points, group_id):
     """
     Функция для получения точек лежащих в пределах полигона
     @param polygon: список точек полигона в формате: [x1, y1, x2, y2, ..., xn, yn]

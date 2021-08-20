@@ -59,8 +59,7 @@ def find_key_value_http(object_id, key_id, value, group_id=0):
     @return: список идентификатор объектов
     """
     value = str(value).replace('-', '<<')
-    response = io_get_obj(group_id, object_id, [], [], 500, '@key_id ' + str(key_id) + ' @val ' + value,
-                                         {})
+    response = io_get_obj(group_id, object_id, [], [], 500, '@key_id ' + str(key_id) + ' @val ' + value, {})
     remove_list = []
     for item in response:
         temp_word = '@key_id ' + str(key_id)
@@ -69,6 +68,6 @@ def find_key_value_http(object_id, key_id, value, group_id=0):
             if item['sec'] == temp_item['sec']:
                 continue
             else:
-                if item['sec'] < temp_item['sec']:
+                if item['sec'] < temp_item['sec'] and item['val'] != temp_item['val']:
                     remove_list.append(int(item['rec_id']))
     return [int(item['rec_id']) for item in response if not int(item['rec_id']) in remove_list]
