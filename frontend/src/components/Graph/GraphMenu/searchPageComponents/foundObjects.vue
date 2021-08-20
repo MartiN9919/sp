@@ -50,7 +50,7 @@ export default {
 }
 .body-table {
   overflow-y: auto;
-  height: calc(100% - 2em);
+  height: calc(100% - 2.5em);
 }
 .body-content {
   display: flex;

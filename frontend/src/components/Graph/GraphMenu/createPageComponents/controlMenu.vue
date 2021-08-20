@@ -1,15 +1,23 @@
 <template>
-  <v-row no-gutters justify="center" class="flex-nowrap">
-    <v-btn color="teal" text right width="10em" height="3.5em" @click="$emit('save')">{{textButton}}</v-btn>
-  </v-row>
+  <div class="d-flex flex-row justify-space-between flex-nowrap">
+    <v-btn
+      v-for="button in buttons"
+      :key="button.action"
+      :disabled="!button.disabled"
+      @click="$emit(button.action)"
+      color="teal"
+      text
+      right
+      width="40%"
+      height="3.5em"
+    >{{button.title}}</v-btn>
+  </div>
 </template>
 
 <script>
 export default {
   name: "controlMenu",
-  props: {
-    textButton: String,
-  }
+  props: { buttons: Array, }
 }
 </script>
 

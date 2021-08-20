@@ -1,5 +1,5 @@
 <template>
-  <v-expansion-panels v-model="openedPanels" multiple accordion hover focusable tile class="expansion-panels">
+  <v-expansion-panels v-model="openedPanels" multiple accordion hover focusable tile>
     <v-expansion-panel v-for="(classifier, key) in classifiers" :key="key">
       <record-title
         :title="getClassifierObject(classifier.id).title"
@@ -31,29 +31,29 @@ import RecordTitle from "./objectRecordComponents/recordTitle"
 import RecordInput from "./objectRecordComponents/recordInput"
 import DropDownMenu from "../../../WebsiteShell/UI/dropDownMenu"
 import MenuDateTime from "../../../WebsiteShell/UI/selectDateTime"
-import {mapActions, mapGetters} from "vuex"
-import TableOldValues from "./objectRecordComponents/tableOldValues";
+import TableOldValues from "./objectRecordComponents/tableOldValues"
+import {mapGetters} from "vuex"
 
 export default {
   name: "objectRecordArea",
   components: {TableOldValues, RecordInput, RecordTitle, MenuDateTime, DropDownMenu},
   props: {
     classifiers: Array,
+    objectId: Number,
   },
   data: () => ({
     openedPanels: []
   }),
-  computed: mapGetters(['classifierObject', 'editableObject']),
+  computed: mapGetters(['classifierObject']),
   methods: {
-    ...mapActions(['addNewParamEditableObject', 'deleteNewParamEditableObject']),
     getClassifierObject(classifierId) {
-      return this.classifierObject({ objectId: this.editableObject.object_id, classifierId: classifierId})
+      return this.classifierObject({ objectId: this.objectId, classifierId: classifierId})
     },
     createNewParam(classifierId) {
-      this.addNewParamEditableObject(classifierId)
+      this.$emit('createNewParam', classifierId)
     },
     deleteNewParam(classifierId, param) {
-      this.deleteNewParamEditableObject({classifierId: classifierId, param: param})
+      this.$emit('deleteNewParam', { classifierId: classifierId, param: param })
     }
   },
   mounted() {
@@ -66,9 +66,6 @@ export default {
 </script>
 
 <style scoped>
-.expansion-panels {
-  border-bottom: 1px solid rgba(0, 0, 0, 0.20);
-}
 .v-expansion-panel >>> .v-expansion-panel-header {
   min-height: 32px;
 }
