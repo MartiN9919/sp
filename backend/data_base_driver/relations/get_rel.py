@@ -91,6 +91,8 @@ def get_object_relation(group_id, object_id, rec_id, objects):
     @param objects: список объектов связи с которыми требуются в результате
     @return: список словарей в формате [{object_id, rec_id, params, relations:[{key_id, sec, val},...,{}]},...,{}]
     """
+    if len(objects) == 0:
+        return []
     result = []
     temp_result = get_rel_cascade(group_id, object_id, rec_id, 1)['rels']
     for temp in temp_result:
