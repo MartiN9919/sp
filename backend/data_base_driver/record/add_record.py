@@ -74,13 +74,13 @@ def add_data(group_id, object):
         if temp_set and len(temp_set) != 0:
             return {'status': 2, 'objects': [get_object_record_by_id_http(object.get('object_id'), item, group_id)
                                              for item in temp_set]}
-    if object.get('old_rec_id', 0) != 0:  # действия при слиянии объектов
-        old_object = get_object_record_by_id_http(object.get('object_id'), object.get('old_rec_id'), group_id)
+    if object.get('rec_id_old', 0) != 0:  # действия при слиянии объектов
+        old_object = get_object_record_by_id_http(object.get('object_id'), object.get('rec_id_old'), group_id)
         for param in old_object['params']:
             for value in param['values']:
                 data.append([param['id'], value['value'], value['date']])
         add_rel_by_other_object(group_id, object.get('object_id', 0), object.get('rec_id', 0),
-                                object.get('object_id', 0), object.get('old_rec_id', 0))
+                                object.get('object_id', 0), object.get('rec_id_old', 0))
 
     if len(data) == 0:  # проверка на пустой запрос
         return {'status': 1,
