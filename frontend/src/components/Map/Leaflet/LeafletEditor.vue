@@ -8,7 +8,7 @@
       <EditorNav
         localStorageKey="script_param"
         :triggerResetSelect="nav_trigger_reset_select"
-        @updateFc="on_nav_update_fc"
+        @selectedFc="on_nav_selected_fc"
       />
     </template>
 
@@ -148,7 +148,7 @@ export default {
     },
 
     // обновить на карте fc
-    on_nav_update_fc(fc) {
+    on_nav_selected_fc(fc) {
       this.fc_child  = JSON.parse(JSON.stringify(fc))
       this.fc_parent = this.fc_child
     },

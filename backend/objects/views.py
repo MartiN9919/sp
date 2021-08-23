@@ -5,7 +5,7 @@ from core.projectSettings.decoraters import login_check, decor_log_request
 from data_base_driver.constants.const_dat import DAT_OWNER
 from data_base_driver.record.get_record import get_object_record_by_id_http
 from data_base_driver.input_output.io_geo import get_geometry_tree, geo_id_to_fc
-from data_base_driver.osm.osm_lib import osm_search, osm_get_fc
+from data_base_driver.osm.osm_lib import osm_search, osm_fc
 from data_base_driver.record.search import search
 from data_base_driver.input_output.input_output import io_set
 from data_base_driver.record.add_record import add_data

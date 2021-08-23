@@ -12,7 +12,7 @@
  *  <EditorNavObj
  *    localStoragePrefix="key_name"
  *    :triggerResetSelect="triggerResetSelect"
- *    @updateFc="selected_fc"
+ *    @selectedFc="selected_fc"
  *  />
  *
  *  triggerResetSelect: true,
@@ -35,7 +35,7 @@ export default {
     triggerResetSelect: { type: Boolean, default: () => undefined, },
   },
   emits: [
-    'updateFc',
+    'selectedFc',
   ],
 
   data: () => ({
@@ -59,7 +59,7 @@ export default {
         this.$watch('item_sel', function(id) {
           localStorage[this.key_sel] = id;
           this.show_sel = true;             // выделить выбранный item
-          this.updateFc(id);
+          this.selectedFc(id);
         });
 
         return Promise.resolve(response)
@@ -72,10 +72,10 @@ export default {
   },
 
   methods: {
-    updateFc(id) {
+    selectedFc(id) {
       getResponseAxios(this.$CONST.API.OBJ.GEOMETRY, { params: {rec_id: id,} })
         .then(response => {
-          this.$emit('updateFc', response.data);
+          this.$emit('selectedFc', response.data);
           return Promise.resolve(response)
         })
         .catch(error => { return Promise.reject(error) });
