@@ -3,6 +3,7 @@ import json
 from django.http import JsonResponse
 from core.projectSettings.decoraters import login_check, decor_log_request
 from data_base_driver.constants.const_dat import DAT_OWNER
+from data_base_driver.global_map.search import get_geometry_hint_by_request, get_geometry_by_request, get_geometry_by_id
 from data_base_driver.record.get_record import get_object_record_by_id_http
 from data_base_driver.input_output.io_geo import get_geometry_tree, geo_id_to_fc
 from data_base_driver.record.search import search
@@ -230,6 +231,45 @@ def aj_groups(request):
     if request.method == 'GET':
         try:
             return JsonResponse({'data': DAT_OWNER.DUMP.get_groups_list()}, status=200)
+        except:
+            return JsonResponse({'status': ' ошибочный запрос'}, status=496)
+    else:
+        return JsonResponse({'data': 'неизвестный тип запроса'}, status=480)
+
+
+@login_check
+@decor_log_request
+def osm_geometry_hint(request):
+    if request.method == 'GET':
+        try:
+            geometry_hint = get_geometry_hint_by_request(request.GET['text'])
+            return JsonResponse({'data': geometry_hint}, status=200)
+        except:
+            return JsonResponse({'status': ' ошибочный запрос'}, status=496)
+    else:
+        return JsonResponse({'data': 'неизвестный тип запроса'}, status=480)
+
+
+@login_check
+@decor_log_request
+def osm_geometry_all(request):
+    if request.method == 'GET':
+        try:
+            geometry = get_geometry_by_request(request.GET['text'])
+            return JsonResponse({'data': geometry}, status=200)
+        except:
+            return JsonResponse({'status': ' ошибочный запрос'}, status=496)
+    else:
+        return JsonResponse({'data': 'неизвестный тип запроса'}, status=480)
+
+
+@login_check
+@decor_log_request
+def osm_geometry(request):
+    if request.method == 'GET':
+        try:
+            geometry = get_geometry_by_id(int(request.GET['id']))
+            return JsonResponse({'data': geometry}, status=200)
         except:
             return JsonResponse({'status': ' ошибочный запрос'}, status=496)
     else:
