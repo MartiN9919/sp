@@ -19,12 +19,12 @@ import phoneInput from "../InputForms/phoneInput"
 export default {
   name: 'responsiveInputForm',
   inheritAttrs: false,
-  components: {phoneInput, geometryInput, booleanInput, dateInput, dateTimeInput, numberInput, textInput, selectorInput, },
+  components: {phoneInput, geometryInput, booleanInput, dateInput, dateTimeInput, numberInput, textInput, selectorInput},
   props: {
-    inputString: [ String, Object, Boolean, Array, Number, ],
+    inputString: [ String, Object, Boolean, Array, Number],
     type: String,
   },
-  model: { prop: 'inputString', event: 'changeInputString', },
+  model: { prop: 'inputString', event: 'changeInputString'},
   computed: {
     value: {
       get: function () { return this.inputString },

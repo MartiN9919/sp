@@ -3,6 +3,7 @@ import json
 from django.http import JsonResponse
 from core.projectSettings.decoraters import login_check, decor_log_request
 from data_base_driver.constants.const_dat import DAT_OWNER
+from data_base_driver.global_map.search import get_geometry_hint_by_request, get_geometry_by_request, get_geometry_by_id
 from data_base_driver.record.get_record import get_object_record_by_id_http
 from data_base_driver.input_output.io_geo import get_geometry_tree, geo_id_to_fc
 from data_base_driver.osm.osm_lib import osm_search, osm_fc
@@ -135,6 +136,22 @@ def aj_relation(request):
 
 @login_check
 @decor_log_request
+def aj_object_relation(request):
+    group_id = DAT_OWNER.DUMP.get_group(user_id=request.user.id)
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            result = get_object_relation(group_id, int(data.get('object_id')), int(data.get('rec_id')),
+                                         data.get('objects'))
+            return JsonResponse({'data': result}, status=200)
+        except:
+            return JsonResponse({'status': 'неверный номер объекта'}, status=496)
+    else:
+        return JsonResponse({'data': 'неизвестный тип запроса'}, status=480)
+
+
+@login_check
+@decor_log_request
 def aj_search_objects(request):
     """
     Функция API для поиска объектов в базе данных
@@ -251,5 +268,44 @@ def aj_osm_fc(request):
             return JsonResponse({'data': osm_fc(id=request.GET['id'])}, status=200)
         except:
             return JsonResponse({'status': ' ошибка выполнения запроса'}, status=496)
+    else:
+        return JsonResponse({'data': 'неизвестный тип запроса'}, status=480)
+
+
+@login_check
+@decor_log_request
+def osm_geometry_hint(request):
+    if request.method == 'GET':
+        try:
+            geometry_hint = get_geometry_hint_by_request(request.GET['text'])
+            return JsonResponse({'data': geometry_hint}, status=200)
+        except:
+            return JsonResponse({'status': ' ошибочный запрос'}, status=496)
+    else:
+        return JsonResponse({'data': 'неизвестный тип запроса'}, status=480)
+
+
+@login_check
+@decor_log_request
+def osm_geometry_all(request):
+    if request.method == 'GET':
+        try:
+            geometry = get_geometry_by_request(request.GET['text'])
+            return JsonResponse({'data': geometry}, status=200)
+        except:
+            return JsonResponse({'status': ' ошибочный запрос'}, status=496)
+    else:
+        return JsonResponse({'data': 'неизвестный тип запроса'}, status=480)
+
+
+@login_check
+@decor_log_request
+def osm_geometry(request):
+    if request.method == 'GET':
+        try:
+            geometry = get_geometry_by_id(int(request.GET['id']))
+            return JsonResponse({'data': geometry}, status=200)
+        except:
+            return JsonResponse({'status': ' ошибочный запрос'}, status=496)
     else:
         return JsonResponse({'data': 'неизвестный тип запроса'}, status=480)

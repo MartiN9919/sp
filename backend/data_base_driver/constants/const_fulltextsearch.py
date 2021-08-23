@@ -27,5 +27,6 @@ class FullTextSearch:
 
     SEARCH_URL = 'http://200.200.200.235:9312/search'
     TEST_URL = 'http://200.200.200.235:9412/search'
+    OSM_SEARCH_URL = 'http://200.200.200.235:9512/search'
     LOCAL_SEARCH_URL = 'http://127.0.0.1:9312/search'
     INSERT_URL = 'http://200.200.200.235:9312/insert'

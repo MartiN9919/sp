@@ -88,19 +88,22 @@ export default {
     testScroll(event, node) {
       let width = node.width
       let height = node.height
+      let nX = 0
+      let nY = 0
       if(event.deltaY < 0){
-        node.width = node.width * 1.1
-        node.height = node.height * 1.1
+        nX = node.width * 1.1
+        nY = node.height * 1.1
       }
       else{
-        node.width = node.width * 0.9
-        node.height = node.height * 0.9
+        nX = node.width * 0.9
+        nY = node.height * 0.9
       }
-      let dx = (node.width - width)/2
-      let dy = (node.height - height)/2
+      let dx = (nX - width)/2
+      let dy = (nY - height)/2
       node.x -= dx
       node.y -= dy
-      console.log(node)
+      node.width = nX
+      node.height = nY
     },
     test() {
       console.log('abc')

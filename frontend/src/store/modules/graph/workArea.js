@@ -1,4 +1,5 @@
-import { postResponseAxios, getResponseAxios } from '@/plugins/axios_settings'
+import { postResponseAxios } from '@/plugins/axios_settings'
+import _ from 'lodash'
 
 function getDateTime() {
   let dateTime = new Date()
@@ -11,12 +12,12 @@ export default {
   state: {
     searchTreeGraph: null,
     foundObjects: null,
-    editableObject: null,
+    editableObjects: null,
   },
   getters: {
     searchTreeGraph: state => { return state.searchTreeGraph },
     foundObjects: state => { return state.foundObjects },
-    editableObject: state => { return state.editableObject },
+    editableObjects: state => { return state.editableObjects },
   },
   mutations: {
     setRootSearchTreeGraph: (state, rootObject) => { state.searchTreeGraph = rootObject },
@@ -47,67 +48,89 @@ export default {
       item.rels.splice(item.rels.findIndex(i => i === removeItem), 1)
     },
     setFoundObjects: (state, objects) => { state.foundObjects = objects },
-    setEditableObject: (state, object) => { state.editableObject = object },
-    addNewParamEditableObject: (state, classifierId) => {
-      let foundClassifier = state.editableObject.params.find(param => param.id === classifierId)
-      foundClassifier.new_values.push({ value: null, date: getDateTime()})
+    setEditableObjects: (state, object) => { state.editableObjects = [object] },
+    addEditableObjects: (state, object) => { state.editableObjects.push(object) },
+    addNewParamEditableObject: (state, {classifierId, positionEditableObject}) => {
+      let classifier = state.editableObjects[positionEditableObject].params.find(param => param.id === classifierId)
+      classifier.new_values.push({ value: null, date: getDateTime()})
     },
-    deleteNewParamEditableObject: (state, playLoad) => {
-      let foundClassifier = state.editableObject.params.find(param => param.id === playLoad.classifierId)
+    deleteNewParamEditableObject: (state, {classifierId, param, positionEditableObject}) => {
+      let foundClassifier = state.editableObjects[positionEditableObject].params.find(param => param.id === classifierId)
       if (foundClassifier) {
-        let foundIndexParam = foundClassifier.new_values.findIndex(par => par === playLoad.param)
+        let foundIndexParam = foundClassifier.new_values.findIndex(par => par === param)
         if (foundIndexParam !== -1)
           foundClassifier.new_values.splice(foundIndexParam, 1)
       }
     }
   },
   actions: {
-    saveEditableObject({ dispatch, getters, rootGetters }) {
-      let request = {
-        object_id: getters.editableObject.object_id,
-        rec_id: getters.editableObject.rec_id,
-        params: []
-      }
-      for (let param of getters.editableObject.params) {
+    saveEditableObject({ dispatch, rootGetters }, {object, force}) {
+      let request = {object_id: object.object_id, rec_id: object.rec_id, params: [], force: force}
+      if('rec_id_old' in object)
+        request.rec_id_old = object.rec_id_old
+      for (let param of object.params) {
         if (param.new_values.length) {
-          let classifierObject = rootGetters.classifierObject({
-            objectId: request.object_id,
-            classifierId: param.id,
-          })
+          let classifier = rootGetters.classifierObject({objectId: request.object_id, classifierId: param.id})
           for (let valueObject of param.new_values)
-            if (classifierObject.list_id)
-              request.params.push({
-                id: param.id,
-                value: classifierObject.list_id.find(item => item.id === valueObject.value).value,
-                date: valueObject.date
-              })
-            else request.params.push({id: param.id, value: valueObject.value, date: valueObject.date})
+            if (classifier.list_id) {
+              let value = classifier.list_id.find(item => item.id === valueObject.value).value
+              request.params.push({id: param.id, value: value, date: valueObject.date})
+            } else request.params.push({id: param.id, value: valueObject.value, date: valueObject.date})
         }
       }
       return postResponseAxios('objects/object', request, {})
-        .then(response => { dispatch('setEditableObject', {
-            object_id: response.data.object.object_id,
-            rec_id: response.data.object.rec_id,
-            params: response.data.object.params,
-          })
+        .then(response => {
+          switch (response.data.status) {
+            case 1:
+              let object = response.data.object
+              dispatch('setEditableObject', {
+                object_id: object.object_id,
+                rec_id: object.rec_id,
+                params: object.params
+              })
+              break
+            case 2:
+              for(let object of response.data.objects)
+                dispatch('addEditableObject', {
+                  object_id: object.object_id,
+                  rec_id: object.rec_id,
+                  params: object.params
+                })
+              break
+          }
         })
-        .catch(error => {  })
-    },
-    deleteNewParamEditableObject({ commit }, playLoad) {
-      commit('deleteNewParamEditableObject', playLoad)
-    },
-    addNewParamEditableObject({ commit }, classifierId ) {
-      commit('addNewParamEditableObject', classifierId)
+        .catch(error => {})
     },
     setEditableObject({ rootGetters, commit }, { object_id, rec_id=0, params=[] }) {
-      let object = { object_id: object_id, rec_id: rec_id, params: params }
+      let object = {object_id: object_id, rec_id: rec_id, params: params}
       if (object.params.length)
         for (let param of object.params)
           param.new_values = []
       for(let classifier of rootGetters.classifiersForObject(object.object_id))
         if(!object.params.find(param => param.id === classifier.id))
-          object.params.push({id: classifier.id, values: [], new_values: [] })
-      commit('setEditableObject', object)
+          object.params.push({id: classifier.id, values: [], new_values: []})
+      commit('setEditableObjects', object)
+    },
+    addEditableObject({ getters, commit }, { object_id, rec_id=0, params=[] }) {
+      let deepCopyParams = _.cloneDeep(getters.editableObjects[0].params)
+      let newObject = {
+        object_id: object_id,
+        rec_id: rec_id,
+        rec_id_old: getters.editableObjects[0].rec_id,
+        params: deepCopyParams
+      }
+      for (let param of newObject.params) {
+        let findParam = params.find(p => p.id === param.id)
+        if (findParam)
+          param.values = findParam.values.concat(param.values).sort(function (a, b) { return (a.date < b.date) ? 1 : -1 })
+      }
+      commit('addEditableObjects', newObject)
+    },
+    deleteNewParamEditableObject({ commit }, playLoad) {
+      commit('deleteNewParamEditableObject', playLoad)
+    },
+    addNewParamEditableObject({ commit }, {classifierId, positionEditableObject} ) {
+      commit('addNewParamEditableObject', {classifierId, positionEditableObject})
     },
     removeItemSearchTreeGraph({ commit }, {item, removeItem}) {
       commit('removeItemSearchTreeGraph', {item, removeItem})

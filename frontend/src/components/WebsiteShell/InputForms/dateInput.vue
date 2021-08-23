@@ -16,7 +16,11 @@
               {{title}}
             </template>
             <template v-slot:append="{ hover }" class="action-icon">
-              <v-icon v-if="deletable && hover" @click.stop="" size="24">mdi-delete</v-icon>
+              <v-icon
+                v-if="deletable && hover"
+                @click.stop="$emit('deletable')"
+                size="24"
+              >mdi-delete</v-icon>
               <v-icon v-else size="24" >mdi-calendar</v-icon>
             </template>
             <template v-slot:message>

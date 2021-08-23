@@ -26,7 +26,11 @@
               {{title}}
             </template>
             <template v-slot:append="props" class="action-icon">
-              <v-icon v-if="deletable && props.hover" @click.stop="" size="24">mdi-delete</v-icon>
+              <v-icon
+                v-if="deletable && props.hover"
+                @click.stop="$emit('deletable')"
+                size="24"
+              >mdi-delete</v-icon>
               <v-icon v-else size="24">mdi-map-marker-outline</v-icon>
             </template>
             <template v-slot:message>
