@@ -2,11 +2,11 @@ import json
 from django.contrib import auth
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from core.projectSettings.decoraters import decor_log_request, login_check
+from core.projectSettings.decoraters import request_log, login_check
 
 
 @csrf_exempt
-@decor_log_request
+@request_log
 def login_user(request):
     """
     Создание сеанса пользователя
@@ -37,7 +37,7 @@ def login_user(request):
 
 
 @login_check
-@decor_log_request
+@request_log
 def logout_user(request):
     """
     Удаление сеанса пользователя
@@ -47,7 +47,7 @@ def logout_user(request):
 
 
 @login_check
-@decor_log_request
+@request_log
 def authorization(request):
     """
     Получение данных пользователя и проверка его сеанса

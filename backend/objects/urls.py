@@ -15,7 +15,4 @@ urlpatterns = [
     url(r'^geometry_tree', views.aj_geometry_tree),
     url(r'^geometry', views.aj_geometry),
     url(r'^groups', views.aj_groups),
-    url(r'^osm_description', views.osm_geometry_hint),
-    url(r'^osm_all', views.osm_geometry_all),
-    url(r'^osm_geometry', views.osm_geometry),
 ]

@@ -1,31 +1,51 @@
+import json
+import requests
+
 from requests.exceptions import ConnectionError
 from data_base_driver.connect.connect_pgsql import db_pg_sql
+from data_base_driver.constants.const_fulltextsearch import FullTextSearch
 
-
-def osm_search(text):
+def osm_search(text, geometry=False):
     """
     Поиск osm-записей
     @param text: поисковая строка
-    @return: json [{id,name,icon,},...]
+    @return: json [{id,name,address,},...]
     """
     try:
-        print(999, text)
-        return [
-            { 'id': 1, 'name': 'Тест 1', },
-            { 'id': 2, 'name': 'Тест 2', },
-            { 'id': 3, 'name': 'Тест 3', },
-        ]
+        data = text.strip()
+        if data == '': return []
+        data = json.dumps({
+            'index': 'osm_polygon',
+            'query': { 'query_string': data, },
+        })
+        response = requests.post(FullTextSearch.OSM_SEARCH_URL, data=data)
+        result = [{'id': int(item['_id']), 'name': item['_source']['name'], 'address': item['_source']['addr']}
+            for item in json.loads(response.text)['hits']['hits']]
+
+        if geometry:
+            for item in geometry:
+                item['geometry'] = osm_fc(item['id'])
+
+        return result
     except ConnectionError:
         return []
 
 
-
 def osm_fc(id):
-    return {}
+    """
+    геомерия(geojson) по ее идентификатору
+    @param id: идентификатор геометрии
+    @return: geojson
+    """
+    sql = 'SELECT ST_AsGeoJSON(way) FROM planet_osm_polygon WHERE osm_id = ' + str(id) + ';'
+    return db_pg_sql(sql)[0][0]
 
-        #def db_pg_sql(sql, wait=False, read=True, database=OSM, connection=-1):
+
+
+
 
 """
+OLD
 def aj_polygon_get_osm(request):
     data              = json.loads(request.body)
     polygon_name_list = data.get('polygon_name_list', [])
