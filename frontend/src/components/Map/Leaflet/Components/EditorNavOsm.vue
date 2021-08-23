@@ -54,7 +54,6 @@ export default {
     timer_abort() { if (this.timer_input) { clearTimeout(this.timer_input); this.timer_input = undefined; } },
 
     search() {
-      console.log(555)
       getResponseAxios(this.$CONST.API.OBJ.OSM_SEARCH, { params: { text: 'поисковая строка',} })
         .then(response => {
           this.items = response.data;

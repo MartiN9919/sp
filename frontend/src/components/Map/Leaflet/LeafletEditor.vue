@@ -74,6 +74,8 @@ import MixKey       from '@/components/Map/Leaflet/Mixins/Key';
 import MixMeasure   from '@/components/Map/Leaflet/Mixins/Measure';
 import MixResize    from '@/components/Map/Leaflet/Mixins/Resize';
 
+import { fc_merge } from '@/components/Map/Leaflet/Lib/Lib';
+
 export default {
   name: 'LeafletEditor',
   model: { prop:  ['fc_parent_prop'], event: 'fc_parent_change', },
@@ -149,8 +151,10 @@ export default {
 
     // обновить на карте fc
     on_nav_selected_fc(fc) {
-      this.fc_child  = JSON.parse(JSON.stringify(fc))
-      this.fc_parent = this.fc_child
+      console.log(11);
+      this.fc_child  = JSON.parse(JSON.stringify(fc));
+      this.fc_parent = this.fc_child;
+      let dd = fc_merge([this.fc_child,]);
     },
 
   },
