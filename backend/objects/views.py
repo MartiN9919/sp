@@ -6,6 +6,7 @@ from data_base_driver.constants.const_dat import DAT_OWNER
 from data_base_driver.global_map.search import get_geometry_hint_by_request, get_geometry_by_request, get_geometry_by_id
 from data_base_driver.record.get_record import get_object_record_by_id_http
 from data_base_driver.input_output.io_geo import get_geometry_tree, geo_id_to_fc
+from data_base_driver.osm.osm_lib import osm_search, osm_fc
 from data_base_driver.record.search import search
 from data_base_driver.input_output.input_output import io_set
 from data_base_driver.record.add_record import add_data
@@ -164,7 +165,7 @@ def aj_search_objects(request):
             data = json.loads(request.body)
             return JsonResponse({'data': search(data, group_id)}, status=200)
         except:
-            return JsonResponse({'status': ' ошибочный запрос'}, status=496)
+            return JsonResponse({'status': ' ошибка выполнения запроса'}, status=496)
     else:
         return JsonResponse({'data': 'неизвестный тип запроса'}, status=480)
 
@@ -201,7 +202,7 @@ def aj_geometry_tree(request):
         try:
             return JsonResponse({'data': get_geometry_tree(group_id=group_id, geometry=None, write=False)}, status=200)
         except:
-            return JsonResponse({'status': ' ошибочный запрос'}, status=496)
+            return JsonResponse({'status': ' ошибка выполнения запроса'}, status=496)
     else:
         return JsonResponse({'data': 'неизвестный тип запроса'}, status=480)
 
@@ -220,7 +221,7 @@ def aj_geometry(request):
             geometry = geo_id_to_fc(30, group_id, [request.GET['rec_id']], ['name', 'icon'])
             return JsonResponse({'data': geometry}, status=200)
         except:
-            return JsonResponse({'status': ' ошибочный запрос'}, status=496)
+            return JsonResponse({'status': ' ошибка выполнения запроса'}, status=496)
     else:
         return JsonResponse({'data': 'неизвестный тип запроса'}, status=480)
 
@@ -232,7 +233,41 @@ def aj_groups(request):
         try:
             return JsonResponse({'data': DAT_OWNER.DUMP.get_groups_list()}, status=200)
         except:
-            return JsonResponse({'status': ' ошибочный запрос'}, status=496)
+            return JsonResponse({'status': ' ошибка выполнения запроса'}, status=496)
+    else:
+        return JsonResponse({'data': 'неизвестный тип запроса'}, status=480)
+
+
+@login_check
+@decor_log_request
+def aj_osm_search(request):
+    """
+    Поиск osm-записей
+    @param request: text - поисковая строка
+    @return: json [{id,name,icon,},...]
+    """
+    if request.method == 'GET':
+        try:
+            return JsonResponse({'data': osm_search(text=request.GET['text'])}, status=200)
+        except:
+            return JsonResponse({'status': ' ошибка выполнения запроса'}, status=496)
+    else:
+        return JsonResponse({'data': 'неизвестный тип запроса'}, status=480)
+
+
+@login_check
+@decor_log_request
+def aj_osm_fc(request):
+    """
+    OSM: по id вернуть геометрию
+    @param request: id - идентификатор геометрии
+    @return: fc
+    """
+    if request.method == 'GET':
+        try:
+            return JsonResponse({'data': osm_fc(id=request.GET['id'])}, status=200)
+        except:
+            return JsonResponse({'status': ' ошибка выполнения запроса'}, status=496)
     else:
         return JsonResponse({'data': 'неизвестный тип запроса'}, status=480)
 

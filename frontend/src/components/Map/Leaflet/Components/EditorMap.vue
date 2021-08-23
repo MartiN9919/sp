@@ -124,6 +124,7 @@ const FC_KEY_MODE = 'mode';               // признак необходимо
 export default {
   name: 'EditorMap',
   model: { prop:  ['fc_prop'], event: 'fc_change', },
+
   props: {
     fc_prop: { type: Object, default: () => undefined, },
     // доступные для создания элементы
@@ -131,6 +132,15 @@ export default {
     // включенный по умолчанию режим, например: 'Polygon'
     modeSelected: { type: String, default: () => undefined, },
   },
+  emits: [
+    // изменение fc пользователем
+    'fc_change',
+    // для сброса выбора в nav
+    'resetSelect',
+    // нажатие кнопки ок
+    'ok',
+  ],
+
   components: { LControl, },
   data() {
     return {
@@ -539,7 +549,7 @@ export default {
         [FC_KEY_NEW]:  true,
         [FC_KEY_COPY]: false,
       }
-      this.$emit('selReset');
+      this.$emit('resetSelect');
     },
 
     // восстановить
@@ -549,7 +559,7 @@ export default {
         [FC_KEY_NEW]:  true,
         [FC_KEY_COPY]: false,
       };
-      this.$emit('selReset');
+      this.$emit('resetSelect');
     },
 
     // изменение на карте

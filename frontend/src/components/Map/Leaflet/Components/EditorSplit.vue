@@ -28,26 +28,31 @@ import ResSplitPane  from 'vue-resize-split-pane'
 
 export default {
   name: 'EditorSplit',
+
   props: {
-    keySave: { type: String, default() { return '' } },
+    localStorageKey: { type: String, default() { return '' } },
   },
+
   components: { ResSplitPane, },
   data: () => ({
     split_key: undefined,
     split_pos: 30,
   }),
+
   mounted () {
-    this.split_key = router.currentRoute.name + '_editor_splitter_' + this.keySave+'_pos'
+    this.split_key = router.currentRoute.name + '_editor_splitter_' + this.localStorageKey+'_pos'
     if (localStorage[this.split_key]) {
       this.split_pos = parseInt(localStorage[this.split_key])
     }
     this.$refs.EditorSplit.$children[1].$el.classList.add('shadow-effect')
   },
+
   watch: {
     split_pos (newSize) {
       localStorage[this.split_key] = newSize
     },
   },
+
   computed: {
     //...mapGetters(['navigationDrawerStatus']),
 
@@ -60,6 +65,7 @@ export default {
       }
     }
   },
+
   methods: {
   //  ...mapActions(['changeNavigationDrawerStatus']),
   },
