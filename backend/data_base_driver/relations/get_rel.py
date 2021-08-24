@@ -1,5 +1,6 @@
 import datetime
 
+from data_base_driver.additional_functions import get_date_time_from_sec
 from data_base_driver.record.find_object import find_reliable_http
 from data_base_driver.record.get_record import get_object_record_by_id_http
 from data_base_driver.relations.find_rel import search_rel_with_key_http
@@ -37,12 +38,12 @@ def get_rel_by_object(group_id, object, id, parents):
                 temp_relation[0]['values'].append({'val': relation['val'], 'sec': relation['sec']})
             else:
                 old_relation[0]['relations'].append({'id': relation['rel_type'], 'values': [{ 'val': relation['val'],
-                                                     'sec': relation['sec']}]})
+                                                     'date': get_date_time_from_sec(relation['sec'])}]})
         else:
             relations.append(
                 {'object_id': relation['object_id'], 'rec_id': relation['rec_id'], 'params': relation['params'],
                  'relations': [{'id': relation['rel_type'],
-                                'values': [{'val': relation['val'], 'sec': relation['sec']}]}]})
+                                'values': [{'val': relation['val'], 'date': get_date_time_from_sec(relation['sec'])}]}]})
     return {'object_id': object, 'relations': [], 'rec_id': id,
             'params': get_object_record_by_id_http(object, id)['params'],
             'rels': relations}
@@ -172,7 +173,7 @@ def search_relations_recursive(group_id, request, parent, root):
     for relation in request.get('rels', []):
         if len(relation.get('request', '')) != 0:
             rec_ids = find_reliable_http(relation.get('object_id'), relation.get('request', ''),
-                                         relation.get('actual'))
+                                         relation.get('actual'), group_id)
             for rec_id in rec_ids:
                 temp_result = search_rel_with_key_http(relation.get('rel').get('id'),
                                                        parent.get('object_id'),
@@ -182,9 +183,10 @@ def search_relations_recursive(group_id, request, parent, root):
                                                        relation.get('rel').get('value'),
                                                        relation.get('rel').get('date_time_start'),
                                                        relation.get('rel').get('date_time_end'),
+                                                       group_id,
                                                        )
                 if len(temp_result) > 0:
-                    temp = get_object_record_by_id_http(relation.get('object_id'), rec_id)
+                    temp = get_object_record_by_id_http(relation.get('object_id'), rec_id, group_id)
                     temp['rels'] = []
                     temp['key_id'] = []
                     for result in temp_result:
@@ -200,6 +202,7 @@ def search_relations_recursive(group_id, request, parent, root):
                                                relation.get('rel').get('value'),
                                                relation.get('rel').get('date_time_start'),
                                                relation.get('rel').get('date_time_end'),
+                                               group_id,
                                                )
             for rec_id in rec_ids:
                 old_result = [item for item in parent['rels'] if item['rec_id'] == rec_id['rec_id']]
@@ -240,16 +243,21 @@ def search_relations(group_id, request):
     else:
         parent = get_object_record_by_id_http(request.get('object_id'), request.get('rec_id'))
         parent['rels'] = []
-        return search_relations_recursive(group_id, request, parent, parent)
+        return search_relations_recursive(group_id, request, parent, parent)['rels']
+
+
 
 # request = {'object_id': 35, 'rec_id': 1, 'rel': None, 'rels': [
 #     {'object_id': 35, 'rel': {'id': 0, 'value': 0, 'date_time_start': None, 'date_time_end': '2021-07-20 12:00'},
 #      'request': '', 'actual': True, 'rels': []},
 #     {'object_id': 45, 'rel': {'id': 1102, 'value': 0, 'date_time_start': None, 'date_time_end': '2021-07-20 12:00'},
-#      'request': 'АД', 'actual': True, 'rels': [
+#      'request': 'АД', 'actual': False, 'rels': [
 #         {'object_id': 30, 'rel': {'id': 0, 'value': 0, 'date_time_start': None, 'date_time_end': '2021-07-20 12:00'},
 #          'request': '', 'actual': False, 'rels': []}
 #     ]}
 # ]}
-# a = search_relations(0, request)
+#
+#
+# a = search_relations(1, request)
+# c = get_object_relation(1,  35, 1, [{'object_id': 35, 'rec_id': 2}])
 # b = 12
