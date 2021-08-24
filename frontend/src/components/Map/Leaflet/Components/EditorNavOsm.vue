@@ -17,9 +17,11 @@
 
     <v-divider class="mx-4"></v-divider>
 
-    <PaneTree
+    <Treeview
       :items="items"
       :itemSel.number.sync="item_sel"
+      :isIcon="false"
+      :isFlat="true"
     />
   </v-card>
 </template>
@@ -31,12 +33,12 @@
       :showSel.sync="show_sel"
  */
 import { getResponseAxios } from '@/plugins/axios_settings';
-import PaneTree from '@/components/Map/Leaflet/Components/PaneTree';
+import Treeview from '@/components/Map/Leaflet/Components/Treeview';
 import { fc_normalize, } from '@/components/Map/Leaflet/Lib/Lib';
 
 export default {
   name: 'editor-nav-osm',
-  components: { PaneTree, },
+  components: { Treeview, },
 
   props: {
     showSel: { type: Boolean, default: () => true, },

@@ -14,24 +14,24 @@ def osm_search(text, geometry=False):
     @param text: поисковая строка
     @return: json [{id,name,address,},...]
     """
-    try:
-        data = text.strip()
-        if data == '': return []
-        data = json.dumps({
-            'index': 'osm_polygon',
-            'query': { 'query_string': data, },
-        })
-        response = requests.post(FullTextSearch.OSM_SEARCH_URL, data=data)
-        result = [{'id': int(item['_id']), 'name': item['_source']['name'], 'address': item['_source']['addr']}
-            for item in json.loads(response.text)['hits']['hits']]
+    data = text.strip()
+    if data == '': return []
+    data = json.dumps({
+        'index': 'osm_polygon',
+        'query': { 'query_string': data, },
+    })
+    response = requests.post(FullTextSearch.OSM_SEARCH_URL, data=data)
+    result = [{
+        'id': int(item['_id']),
+        'name': item['_source']['name'],
+        'address': item['_source']['addr'],
+        } for item in json.loads(response.text)['hits']['hits']]
 
-        if geometry:
-            for item in geometry:
-                item['geometry'] = osm_fc(item['id'])
+    if geometry:
+        for item in geometry:
+            item['geometry'] = osm_fc(item['id'])
 
-        return result
-    except ConnectionError:
-        return []
+    return result
 
 
 def osm_fc(id):

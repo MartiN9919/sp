@@ -1,6 +1,7 @@
 <template>
   <v-treeview
     ref="tree_view"
+    :class="{ flat: isFlat }"
     :items="items"
     :open="items_active"
     @update:active="activate_item"
@@ -12,9 +13,8 @@
     active-class=""
     color=""
   >
-    <template v-slot:prepend="{ item, open }">
+    <template v-slot:prepend="{ item, open }" v-if="isIcon">
       <v-icon
-        :id="'id_'+_uid+'_'+item.id"
         :size="$CONST.TREE.ICON_SIZE"
         :color="get_color(item)"
       >
@@ -23,8 +23,9 @@
     </template>
     <template v-slot:label="{ item, open }">
       <div
-        class="v-treeview-node__label"
+        :id="'id_'+_uid+'_'+item.id"
         :style="{'color': get_color(item)}"
+        class="v-treeview-node__label"
       >
         {{ item.name }}
       </div>
@@ -35,11 +36,13 @@
 <script>
 // :active="items_active"
 export default {
-  name: 'PaneTree',
+  name: 'Treeview',
   props: {
     items:   { type: Array,   default: () => [], },
     itemSel: { type: Number,  default: () => 0, },
     showSel: { type: Boolean, default: () => true, },
+    isIcon:  { type: Boolean, default: () => true, },   // наличие иконок
+    isFlat:  { type: Boolean, default: () => false, },  // наличие отступов слева (как список)
   },
   // emits: ['update:itemSel', 'update:showSel', ], /// ?
 
@@ -131,3 +134,7 @@ export default {
   },
 }
 </script>
+
+<style scoped lang="scss">
+  div.flat::v-deep .v-treeview-node__level { display: none; width: 0 !important; }
+</style>

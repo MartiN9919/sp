@@ -1,5 +1,5 @@
 <template>
-  <PaneTree
+  <Treeview
    :items="items"
    :itemSel.number.sync="item_sel"
    :showSel.sync="show_sel"
@@ -24,11 +24,11 @@
 
 import router from '@/router'
 import { getResponseAxios } from '@/plugins/axios_settings';
-import PaneTree from '@/components/Map/Leaflet/Components/PaneTree';
+import Treeview from '@/components/Map/Leaflet/Components/Treeview';
 
 export default {
   name: 'editor-nav-obj',
-  components: { PaneTree, },
+  components: { Treeview, },
 
   props: {
     localStoragePrefix: { type: String, default() { return '' } },
