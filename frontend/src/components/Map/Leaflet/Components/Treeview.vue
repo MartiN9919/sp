@@ -28,8 +28,8 @@
         class="v-treeview-node__label"
       >
         <v-list-item-content>
-          <v-list-item-title v-text="item.name"/>
-          <v-list-item-subtitle v-text="item.address"/>
+          <v-list-item-title v-text="item.name" :style="{'color': get_color(item)}"/>
+          <v-list-item-subtitle v-text="item.address" :style="{'color': get_color(item)}"/>
         </v-list-item-content>
       </v-list-item>
     </template>
@@ -141,11 +141,12 @@ export default {
 </script>
 
 <style scoped lang="scss">
+  .v-treeview { overflow-y: auto !important; height: 100%; }
+
   div::v-deep .v-list-item { min-height: 24px; padding: 0 2px; }
 
   div.flat::v-deep .v-treeview-node__level { display: none; width: 0 !important; }
   div.flat::v-deep .v-list-item__content { padding: 6px 0 !important; }
   div.flat::v-deep .v-list-item { padding: 0 !important; }
   div.flat::v-deep .v-treeview-node__prepend { margin-right: 12px !important; }
-
 </style>
