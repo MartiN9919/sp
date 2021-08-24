@@ -1,9 +1,8 @@
 import json
 
 from django.http import JsonResponse
-from core.projectSettings.decoraters import login_check, decor_log_request
+from core.projectSettings.decoraters import login_check, request_log, request_wrap, request_get
 from data_base_driver.constants.const_dat import DAT_OWNER
-from data_base_driver.global_map.search import get_geometry_hint_by_request, get_geometry_by_request, get_geometry_by_id
 from data_base_driver.record.get_record import get_object_record_by_id_http
 from data_base_driver.input_output.io_geo import get_geometry_tree, geo_id_to_fc
 from data_base_driver.osm.osm_lib import osm_search, osm_fc
@@ -17,7 +16,7 @@ from data_base_driver.sys_key.get_object_info import obj_list
 
 
 @login_check
-@decor_log_request
+@request_log
 def aj_object_type_list(request):
     """
     Функция API для получения списка типов объектов с информацией о них
@@ -29,7 +28,9 @@ def aj_object_type_list(request):
 
 
 @login_check
-@decor_log_request
+@request_log
+@request_wrap
+@request_get
 def aj_list_classifier(request):
     """
     Функция API для получения списка классификаторов для отдельного объекта
@@ -37,17 +38,13 @@ def aj_list_classifier(request):
     @return: json содержащих информации по ключу data в формате:
     [{id,obj_id,col,need,type,list_id:{name,val:[]},name,title,hint,descript}, ...,{}]
     """
-    if request.method == 'GET':
-        try:
-            return JsonResponse({'data': get_keys_by_object(request.GET['object_id'])}, status=200)
-        except:
-            return JsonResponse({'status': 'неверный номер объекта'}, status=496)
-    else:
-        return JsonResponse({'status': 'неверный тип запроса'}, status=480)
+    return {'data': get_keys_by_object(request.GET['object_id'])}
 
 
 @login_check
-@decor_log_request
+@request_log
+@request_wrap
+@request_get
 def aj_list_rels(request):
     """
     Функция API для получения списка связей между двумя объектами
@@ -55,18 +52,11 @@ def aj_list_rels(request):
     @return: json содержащих информации по ключу data в формате:
     [{id,title,hint,list:{}},...,{}]
     """
-    if request.method == 'GET':
-        try:
-            return JsonResponse({'data': get_relations_list(request.GET['object_1_id'], request.GET['object_2_id'])},
-                                status=200)
-        except:
-            return JsonResponse({'status': 'некорректные id объектов'}, status=496)
-    else:
-        return JsonResponse({'status': 'неверный тип запроса'}, status=480)
+    return {'data': get_relations_list(request.GET['object_1_id'], request.GET['object_2_id'])}
 
 
 @login_check
-@decor_log_request
+@request_log
 def aj_object(request):
     """
     Функция API для работы с объектами
@@ -102,7 +92,7 @@ def aj_object(request):
 
 
 @login_check
-@decor_log_request
+@request_log
 def aj_relation(request):
     """
     Функция API для работы со связями
@@ -135,7 +125,7 @@ def aj_relation(request):
 
 
 @login_check
-@decor_log_request
+@request_log
 def aj_object_relation(request):
     group_id = DAT_OWNER.DUMP.get_group(user_id=request.user.id)
     if request.method == 'POST':
@@ -151,7 +141,7 @@ def aj_object_relation(request):
 
 
 @login_check
-@decor_log_request
+@request_log
 def aj_search_objects(request):
     """
     Функция API для поиска объектов в базе данных
@@ -171,7 +161,7 @@ def aj_search_objects(request):
 
 
 @login_check
-@decor_log_request
+@request_log
 def aj_set_geometry(request):
     """
 
@@ -190,7 +180,9 @@ def aj_set_geometry(request):
 
 
 @login_check
-@decor_log_request
+@request_log
+@request_wrap
+@request_get
 def aj_geometry_tree(request):
     """
     Функция API для получения дерева геометрий
@@ -198,17 +190,13 @@ def aj_geometry_tree(request):
     @return:  json дерево в формате: [{id,name,icon,child:[{},{},...,{}]},{},...,{}]
     """
     group_id = DAT_OWNER.DUMP.get_group(user_id=request.user.id)
-    if request.method == 'GET':
-        try:
-            return JsonResponse({'data': get_geometry_tree(group_id=group_id, geometry=None, write=False)}, status=200)
-        except:
-            return JsonResponse({'status': ' ошибка выполнения запроса'}, status=496)
-    else:
-        return JsonResponse({'data': 'неизвестный тип запроса'}, status=480)
+    return {'data': get_geometry_tree(group_id=group_id, geometry=None, write=False)}
 
 
 @login_check
-@decor_log_request
+@request_log
+@request_wrap
+@request_get
 def aj_geometry(request):
     """
     Функция API для получения геометрии по ее идентификатору
@@ -216,96 +204,42 @@ def aj_geometry(request):
     @return: feature collection из базы данных соответствующий данному идентификатору
     """
     group_id = DAT_OWNER.DUMP.get_group(user_id=request.user.id)
-    if request.method == 'GET':
-        try:
-            geometry = geo_id_to_fc(30, group_id, [request.GET['rec_id']], ['name', 'icon'])
-            return JsonResponse({'data': geometry}, status=200)
-        except:
-            return JsonResponse({'status': ' ошибка выполнения запроса'}, status=496)
-    else:
-        return JsonResponse({'data': 'неизвестный тип запроса'}, status=480)
+    geometry = geo_id_to_fc(30, group_id, [request.GET['rec_id']], ['name', 'icon'])
+    return {'data': geometry}
 
 
 @login_check
-@decor_log_request
+@request_log
+@request_wrap
+@request_get
 def aj_groups(request):
-    if request.method == 'GET':
-        try:
-            return JsonResponse({'data': DAT_OWNER.DUMP.get_groups_list()}, status=200)
-        except:
-            return JsonResponse({'status': ' ошибка выполнения запроса'}, status=496)
-    else:
-        return JsonResponse({'data': 'неизвестный тип запроса'}, status=480)
+    return {'data': DAT_OWNER.DUMP.get_groups_list()}
+
 
 
 @login_check
-@decor_log_request
+@request_log
+@request_wrap
+@request_get
 def aj_osm_search(request):
     """
     Поиск osm-записей
     @param request: text - поисковая строка
     @return: json [{id,name,icon,},...]
     """
-    if request.method == 'GET':
-        try:
-            return JsonResponse({'data': osm_search(text=request.GET['text'])}, status=200)
-        except:
-            return JsonResponse({'status': ' ошибка выполнения запроса'}, status=496)
-    else:
-        return JsonResponse({'data': 'неизвестный тип запроса'}, status=480)
+    return {'data': osm_search(text=request.GET.get('text', ''))}
+
 
 
 @login_check
-@decor_log_request
+@request_log
+@request_wrap
+@request_get
 def aj_osm_fc(request):
     """
     OSM: по id вернуть геометрию
     @param request: id - идентификатор геометрии
     @return: fc
     """
-    if request.method == 'GET':
-        try:
-            return JsonResponse({'data': osm_fc(id=request.GET['id'])}, status=200)
-        except:
-            return JsonResponse({'status': ' ошибка выполнения запроса'}, status=496)
-    else:
-        return JsonResponse({'data': 'неизвестный тип запроса'}, status=480)
+    return {'data': osm_fc(id=request.GET['id'])}
 
-
-@login_check
-@decor_log_request
-def osm_geometry_hint(request):
-    if request.method == 'GET':
-        try:
-            geometry_hint = get_geometry_hint_by_request(request.GET['text'])
-            return JsonResponse({'data': geometry_hint}, status=200)
-        except:
-            return JsonResponse({'status': ' ошибочный запрос'}, status=496)
-    else:
-        return JsonResponse({'data': 'неизвестный тип запроса'}, status=480)
-
-
-@login_check
-@decor_log_request
-def osm_geometry_all(request):
-    if request.method == 'GET':
-        try:
-            geometry = get_geometry_by_request(request.GET['text'])
-            return JsonResponse({'data': geometry}, status=200)
-        except:
-            return JsonResponse({'status': ' ошибочный запрос'}, status=496)
-    else:
-        return JsonResponse({'data': 'неизвестный тип запроса'}, status=480)
-
-
-@login_check
-@decor_log_request
-def osm_geometry(request):
-    if request.method == 'GET':
-        try:
-            geometry = get_geometry_by_id(int(request.GET['id']))
-            return JsonResponse({'data': geometry}, status=200)
-        except:
-            return JsonResponse({'status': ' ошибочный запрос'}, status=496)
-    else:
-        return JsonResponse({'data': 'неизвестный тип запроса'}, status=480)

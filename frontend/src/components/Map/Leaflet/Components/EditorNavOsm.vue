@@ -2,6 +2,7 @@
   <v-card>
     <v-hover v-slot="{ hover }">
       <v-text-field
+        v-model="value"
         style="margin: 15px;"
         :color="$CONST.APP.COLOR_OBJ"
         @input="on_input"
@@ -18,6 +19,7 @@
 
     <PaneTree
       :items="items"
+      :itemSel.number.sync="item_sel"
     />
   </v-card>
 </template>
@@ -40,10 +42,30 @@ export default {
   },
   //emits: ['selectedGeometry', 'update:showSel'],
   data: () => ({
-    // item_sel: 0,
-    items: undefined,
+    item_sel:    0,
+    value:       undefined,
+    items:       undefined,
     timer_input: undefined,
   }),
+
+
+  created: function() {
+    // watch fix bug
+    this.$watch('item_sel', function(id) {
+      console.log(id)
+      //this.show_sel = true;             // выделить выбранный item
+      //this.selectedFc(id);
+
+      getResponseAxios(this.$CONST.API.OBJ.OSM_FC, { params: { id: id,} })
+        .then(response => {
+          this.items = response.data;
+          console.log(this.items);
+          return Promise.resolve(response)
+        })
+        .catch(error => { return Promise.reject(error) });
+
+    });
+  },
 
   beforeDestroy () {
     this.timer_abort();
@@ -54,7 +76,7 @@ export default {
     timer_abort() { if (this.timer_input) { clearTimeout(this.timer_input); this.timer_input = undefined; } },
 
     search() {
-      getResponseAxios(this.$CONST.API.OBJ.OSM_SEARCH, { params: { text: 'поисковая строка',} })
+      getResponseAxios(this.$CONST.API.OBJ.OSM_SEARCH, { params: { text: this.value,} })
         .then(response => {
           this.items = response.data;
           return Promise.resolve(response)
