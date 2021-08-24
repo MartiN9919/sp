@@ -32,6 +32,7 @@
  */
 import { getResponseAxios } from '@/plugins/axios_settings';
 import PaneTree from '@/components/Map/Leaflet/Components/PaneTree';
+import { fc_normalize, } from '@/components/Map/Leaflet/Lib/Lib';
 
 export default {
   name: 'editor-nav-osm',
@@ -54,16 +55,7 @@ export default {
     this.$watch('item_sel', function(id) {
       console.log(id)
       //this.show_sel = true;             // выделить выбранный item
-      //this.selectedFc(id);
-
-      getResponseAxios(this.$CONST.API.OBJ.OSM_FC, { params: { id: id,} })
-        .then(response => {
-          this.items = response.data;
-          console.log(this.items);
-          return Promise.resolve(response)
-        })
-        .catch(error => { return Promise.reject(error) });
-
+      this.selectedFc(id);
     });
   },
 
@@ -83,6 +75,19 @@ export default {
         })
         .catch(error => { return Promise.reject(error) });
     },
+
+    selectedFc(id) {
+      getResponseAxios(this.$CONST.API.OBJ.OSM_FC, { params: {id: id,} })
+        .then(response => {
+          console.log(response.data);
+          let dd = fc_normalize(response.data);
+
+          this.$emit('selectedFc', dd);
+          return Promise.resolve(response)
+        })
+        .catch(error => { return Promise.reject(error) });
+    },
+
 
   },
 }
