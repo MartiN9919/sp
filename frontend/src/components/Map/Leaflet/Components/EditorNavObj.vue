@@ -59,7 +59,7 @@ export default {
         this.$watch('item_sel', function(id) {
           localStorage[this.key_sel] = id;
           this.show_sel = true;             // выделить выбранный item
-          this.selectedFc(id);
+          this.selected_fc(id);
         });
 
         return Promise.resolve(response)
@@ -72,13 +72,23 @@ export default {
   },
 
   methods: {
-    selectedFc(id) {
+    selected_fc(id) {
       getResponseAxios(this.$CONST.API.OBJ.GEOMETRY, { params: {rec_id: id,} })
         .then(response => {
-          this.$emit('selectedFc', response.data);
+          this.$emit('selectedFc', response.data, this.get_name(id, this.items));
           return Promise.resolve(response)
         })
         .catch(error => { return Promise.reject(error) });
+    },
+
+    get_name(id, items) {
+      let ret = undefined;
+      for(let ind=0; ind<items.length; ind++) {
+        if (items[ind].id == id) { ret = items[ind].name; }
+        if (items[ind].children) { ret = this.get_name(id, items[ind].children); }
+        if (ret) break;
+      }
+      return ret;
     },
 
   },

@@ -58,7 +58,7 @@ export default {
     this.$watch('item_sel', function(id) {
       console.log(id)
       //this.show_sel = true;             // выделить выбранный item
-      this.selectedFc(id);
+      this.selected_fc(id);
     });
   },
 
@@ -79,16 +79,26 @@ export default {
         .catch(error => { return Promise.reject(error) });
     },
 
-    selectedFc(id) {
+    selected_fc(id) {
       getResponseAxios(this.$CONST.API.OBJ.OSM_FC, { params: {id: id,} })
         .then(response => {
           console.log(response.data);
           let dd = fc_normalize(response.data);
 
-          this.$emit('selectedFc', dd);
+          this.$emit('selectedFc', dd, this.get_name(id, this.items));
           return Promise.resolve(response)
         })
         .catch(error => { return Promise.reject(error) });
+    },
+
+    get_name(id, items) {
+      let ret = undefined;
+      for(let ind=0; ind<items.length; ind++) {
+        if (items[ind].id == id) { ret = items[ind].name; }
+        if (items[ind].children) { ret = this.get_name(id, items[ind].children); }
+        if (ret) break;
+      }
+      return ret;
     },
 
 
