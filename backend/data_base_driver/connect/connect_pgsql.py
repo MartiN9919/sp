@@ -59,10 +59,14 @@ def db_pg_sql(sql, wait=False, read=True, database=OSM, connection=-1):
             connection_pg_sql = db_connect(database=database)
         connection = connection_pg_sql.get_connection()
         if read:
-            cursor = connection.cursor()
-            cursor.execute(sql)
-            ret = cursor.fetchall()
-            cursor.close()
+            try:
+                cursor = connection.cursor()
+                cursor.execute(sql)
+                ret = cursor.fetchall()
+                cursor.close()
+                connection_pg_sql.free_connection()
+            except:
+                connection_pg_sql.free_connection()
         else:
             connection.autocommit(True)
             connection.query(sql)

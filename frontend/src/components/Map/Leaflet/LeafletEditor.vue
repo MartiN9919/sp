@@ -1,13 +1,14 @@
 <template>
   <EditorSplit
     style="height: 70vh;"
-    keySave="script_param"
+    localStorageKey="script_param"
   >
 
     <template v-slot:firstPane>
       <EditorNav
-        :selReset="selReset"
-        @selectedGeometry="selected_geometry"
+        localStorageKey="script_param"
+        :triggerResetSelect="nav_trigger_reset_select"
+        @selectedFc="on_nav_selected_fc"
       />
     </template>
 
@@ -18,7 +19,6 @@
         :options="map_options"
         :crs="MAP_GET_TILES[MAP_GET_TILE].crs"
         @ready="on_map_ready"
-        @resize="on_map_resize"
         @contextmenu=""
         @dblclick="on_map_dblclick"
       >
@@ -35,7 +35,7 @@
           v-model="fc_child"
           :modeEnabled="modeEnabled"
           :modeSelected="modeSelected"
-          @selReset="on_nav_sel_reset"
+          @resetSelect="on_map_reset_select"
         />
 
         <!-- МАСШТАБ -->
@@ -72,6 +72,9 @@ import EditorNav    from '@/components/Map/Leaflet/Components/EditorNav';
 import EditorMap    from '@/components/Map/Leaflet/Components/EditorMap';
 import MixKey       from '@/components/Map/Leaflet/Mixins/Key';
 import MixMeasure   from '@/components/Map/Leaflet/Mixins/Measure';
+import MixResize    from '@/components/Map/Leaflet/Mixins/Resize';
+
+import { fc_merge } from '@/components/Map/Leaflet/Lib/Lib';
 
 export default {
   name: 'LeafletEditor',
@@ -82,10 +85,8 @@ export default {
     modeSelected: String,     // включенный по умолчанию режим, например: 'Polygon'
   },
 
-
-  mixins: [ MixKey, MixMeasure, ],
-
   components: { LMap, LTileLayer, LControlScale, LControlPolylineMeasure, EditorMap, EditorNav, EditorSplit, },
+  mixins: [ MixKey, MixMeasure, MixResize, ],
 
   data: () => ({
     fc_child: undefined,
@@ -93,11 +94,16 @@ export default {
       zoomControl: false,
       zoomSnap: 0.5,
     },
-    selReset: true,
+    nav_trigger_reset_select: true,
   }),
 
   created() {
     this.fc_child = this.fc_parent;
+  },
+
+  mounted() {
+    // установить слушатель map.on_resize
+    this.resize_add(this.$refs.map.$el, this.on_map_resize);
   },
 
   watch: {
@@ -130,22 +136,25 @@ export default {
       this.key_mounted_after();
     },
 
-    on_map_resize() {
-      this.map.invalidateSize();
+    on_map_resize () {                   // fire from MixResize
+      if (this.map) this.map.invalidateSize();
     },
 
     on_map_dblclick(e) {
       // this.appendErrorAlert({status: 501, content: e.latlng, show_time: 5, });
     },
 
-    // !!! ВАЖНО !!! сброс выделения: событие из child.map в свойство child.nav
-    on_nav_sel_reset(e) {
-      this.selReset = !this.selReset;
+    // сбросить выделение (obj, osm): из child.map в свойство child.nav
+    on_map_reset_select() {
+      this.nav_trigger_reset_select = !this.nav_trigger_reset_select;
     },
 
-    selected_geometry(fc) {
-      this.fc_child  = JSON.parse(JSON.stringify(fc))
-      this.fc_parent = this.fc_child
+    // обновить на карте fc
+    on_nav_selected_fc(fc) {
+      console.log(11);
+      this.fc_child  = JSON.parse(JSON.stringify(fc));
+      this.fc_parent = this.fc_child;
+      let dd = fc_merge([this.fc_child,]);
     },
 
   },

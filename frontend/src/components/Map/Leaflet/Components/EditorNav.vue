@@ -1,85 +1,96 @@
 <template>
-  <PaneTree
-   :items="items"
-   :itemSel.number.sync="item_sel"
-   :showSel.sync="show_sel"
-  />
+  <v-card height="100%">
+    <v-tabs
+      ref="tabs"
+      v-model="tab"
+      :color="$CONST.APP.COLOR_OBJ"
+      background-color="transparent"
+      grow
+    >
+      <v-tabs-slider :color="$CONST.APP.COLOR_OBJ"/>
+      <v-tab href="#tab-obj">
+        <v-icon left>mdi-vector-polygon</v-icon>
+        Объекты
+      </v-tab>
+      <v-tab href="#tab-osm">
+        <v-icon left>mdi-web</v-icon>
+        Поиск
+      </v-tab>
+
+
+
+      <v-tab-item value="tab-obj">
+        <EditorNavObj
+          v-bind="$attrs"
+          v-on="$listeners"
+        />
+      </v-tab-item>
+
+      <v-tab-item value="tab-osm">
+        <editorNavOsm
+          v-bind="$attrs"
+          v-on="$listeners"
+        />
+      </v-tab-item>
+
+    </v-tabs>
+
+  </v-card>
 </template>
 
 <script>
-/*
- * КОМПОНЕНТ: ДЕРЕВО ГЕОМЕТРИЙ
- *  <EditorNav
- *    :selReset="selReset"
- *    @selectedGeometry="selected_geometry"
- *  />
- *
- *  selReset: true,
- *  selected_geometry(fc) { },
- *
- * selReset           - признак, изменение значения которого влечет сброс выделения выбранного item
- * @selected_geometry - событие при выборе геометрии, возвращает fc
- */
 
-import { getResponseAxios } from '@/plugins/axios_settings';
-import PaneTree from '@/components/Map/Leaflet/Components/PaneTree';
+import router       from '@/router'
+import editorNavOsm from '@/components/Map/Leaflet/Components/EditorNavOsm';
+import EditorNavObj from '@/components/Map/Leaflet/Components/EditorNavObj';
+import MixResize    from '@/components/Map/Leaflet/Mixins/Resize';
 
 export default {
   name: 'EditorNav',
-  components: { PaneTree, },
 
+  components: { EditorNavObj, editorNavOsm, },
+  mixins: [ MixResize, ],
+
+  inheritAttrs: false,
   props: {
-    selReset: { type: Boolean, default: () => undefined, },
+    localStorageKey: { type: String, default() { return '' } },
   },
 
   data: () => ({
-    key_sel:  'sel_geometry',
-    item_sel: 0,
-    items:    [],
-    show_sel: false,
+    tab: null,
   }),
 
   watch: {
-    selReset: function() { this.show_sel=false },  // изменение свойства влечет сброс выделения (через событие не нужно делать)
+    tab: function(val) {
+      localStorage[this.key_tab] = val
+    },
   },
 
-  created: function() {
-    getResponseAxios(this.$CONST.API.OBJ.GEOMETRY_TREE)
-      .then(response => {
-        // get data
-        this.items = response.data;
-        if (localStorage[this.key_sel]) { this.item_sel = parseInt(localStorage[this.key_sel]); }
+  computed: {
+    key_tab() { return router.currentRoute.name + '_editor_nav_tab_sel_' + this.localStoragePrefix },
+  },
 
-        // watch fix bug
-        this.$watch('item_sel', function(id) {
-          localStorage[this.key_sel] = id;
-          this.show_sel = true;             // выделить выбранный item
-          this.selectedGeometry(id);
-        });
-
-        return Promise.resolve(response)
-      })
-      .catch(error => { return Promise.reject(error) });
+  mounted() {
+    this.tab = localStorage[this.key_tab]
   },
 
   methods: {
-    selectedGeometry(id) {
-      getResponseAxios(this.$CONST.API.OBJ.GEOMETRY, {params: {rec_id: id,}})
-        .then(response => {
-          this.$emit('selectedGeometry', response.data);
-          return Promise.resolve(response)
-        })
-        .catch(error => { return Promise.reject(error) });
+    on_resize () {                   // fire from MixResize
+      this.$refs.tabs.callSlider(); // устранение бага со слайдером
     },
-
   },
 
+
 }
+
+
 </script>
 
-<style scoped>
-  .v-treeview {
-    overflow-y: auto !important;
-    height: 100%;
-  }
+<style scoped lang="scss">
+  /* fix bug: кнопка влево не нужна*/
+  div::v-deep .v-slide-group__prev { display: none !important; }
+
+  /* fix bug: tab не нужно сдвигать */
+  div::v-deep .v-slide-group__content { transform: translateX(0) !important; }
 </style>
+
