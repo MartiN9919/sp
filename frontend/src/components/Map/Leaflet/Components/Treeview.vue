@@ -22,13 +22,16 @@
       </v-icon>
     </template>
     <template v-slot:label="{ item, open }">
-      <div
+      <v-list-item
         :id="'id_'+_uid+'_'+item.id"
         :style="{'color': get_color(item)}"
         class="v-treeview-node__label"
       >
-        {{ item.name }}
-      </div>
+        <v-list-item-content>
+          <v-list-item-title v-text="item.name"/>
+          <v-list-item-subtitle v-text="item.address"/>
+        </v-list-item-content>
+      </v-list-item>
     </template>
   </v-treeview>
 </template>
@@ -41,8 +44,9 @@ export default {
     items:   { type: Array,   default: () => [], },
     itemSel: { type: Number,  default: () => 0, },
     showSel: { type: Boolean, default: () => true, },
-    isIcon:  { type: Boolean, default: () => true, },   // наличие иконок
-    isFlat:  { type: Boolean, default: () => false, },  // наличие отступов слева (как список)
+    iconDef: { type: String,  default: () => 'mdi-vector-polygon', }, // иконка по умолчанию
+    isIcon:  { type: Boolean, default: () => true, },                 // наличие иконок
+    isFlat:  { type: Boolean, default: () => false, },                // наличие отступов слева (как список)
   },
   // emits: ['update:itemSel', 'update:showSel', ], /// ?
 
@@ -114,7 +118,7 @@ export default {
     },
 
     get_icon(item, open) {
-      if (!item.children) return (item.icon)?item.icon:'mdi-vector-polygon';
+      if (!item.children) return (item.icon)?item.icon:this.iconDef;
       if (open)           return this.$CONST.TREE.ICON_FOLDER_OPEN;
       return this.$CONST.TREE.ICON_FOLDER_CLOSE;
     },
@@ -133,8 +137,15 @@ export default {
 
   },
 }
+//div::v-deep .v-list-item { min-height: 24px !important; }
 </script>
 
 <style scoped lang="scss">
+  div::v-deep .v-list-item { min-height: 24px; padding: 0 2px; }
+
   div.flat::v-deep .v-treeview-node__level { display: none; width: 0 !important; }
+  div.flat::v-deep .v-list-item__content { padding: 6px 0 !important; }
+  div.flat::v-deep .v-list-item { padding: 0 !important; }
+  div.flat::v-deep .v-treeview-node__prepend { margin-right: 12px !important; }
+
 </style>

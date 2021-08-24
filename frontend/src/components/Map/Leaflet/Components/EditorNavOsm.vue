@@ -20,7 +20,8 @@
     <Treeview
       :items="items"
       :itemSel.number.sync="item_sel"
-      :isIcon="false"
+      iconDef="mdi-web"
+      :isIcon="true"
       :isFlat="true"
     />
   </v-card>
