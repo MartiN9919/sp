@@ -60,7 +60,11 @@ export default {
     isIcon:  { type: Boolean, default: () => true, },                 // наличие иконок
     isFlat:  { type: Boolean, default: () => false, },                // наличие отступов слева (как список)
   },
-  // emits: ['update:itemSel', ], /// ?
+  emits: [
+    'actionAdd',
+    'actionNew',
+    //'update:itemSel',
+  ],
 
   data: () => ({
     items_path: {},             // список id родительских узлов: {1: [1, 2, ...], ...}
@@ -123,11 +127,11 @@ export default {
     },
 
     add_action(item_id) {
-
+      this.$emit('actionAdd', item_id);
     },
 
     new_action(item_id) {
-
+      this.$emit('actionNew', item_id);
     },
 
 
@@ -142,8 +146,7 @@ export default {
       return (
           (this.item_sel) &&
           (this.items_path[this.item_sel]) &&
-          (this.items_path[this.item_sel].indexOf(item.id) !== -1) &&
-          (this.items_path[this.item_sel].slice(-1)[0] == item.id)
+          (this.items_path[this.item_sel].indexOf(item.id) !== -1)
         ) ? this.$CONST.TREE.COLOR_SELECT : this.$CONST.TREE.COLOR_DEFAULT;
     },
 

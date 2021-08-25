@@ -8,6 +8,7 @@
       <EditorNav
         localStorageKey="script_param"
         @selectedFc="on_nav_selected_fc"
+        @actionNew="on_nav_new"
       />
     </template>
 
@@ -160,6 +161,10 @@ export default {
       this.fc_parent = this.fc_child;
       let dd = fc_merge([this.fc_child,]);
       this.$refs.notify.notify_set(name);
+    },
+
+    on_nav_new(id) {
+      console.log(22);
     },
 
   },

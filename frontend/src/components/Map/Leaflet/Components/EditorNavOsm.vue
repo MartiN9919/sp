@@ -18,6 +18,7 @@
     <v-divider class="mx-4"></v-divider>
 
     <Treeview
+      v-on="$listeners"
       :items="items"
       :itemSel.number.sync="item_sel"
       iconDef="mdi-web"

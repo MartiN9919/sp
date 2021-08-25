@@ -1,5 +1,6 @@
 <template>
   <Treeview
+   v-on="$listeners"
    :items="items"
    :itemSel.number.sync="item_sel"
   />
