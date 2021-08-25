@@ -285,8 +285,15 @@ export default {
           }
         }
       }.bind(this));
+
+      // fix bug missing properties when cut features
+      let fc = fg.toGeoJSON();
+      fc.features.forEach(function(item) {
+        if (!item.properties) item.properties = {}
+      });
+
       this.fc = {
-        [FC_KEY_VAL ]: fg.toGeoJSON(),
+        [FC_KEY_VAL ]: fc,
         [FC_KEY_NEW ]: false,
         [FC_KEY_COPY]: false,
       };

@@ -37,10 +37,10 @@
             class="btns"
           >
             <v-btn class="btn" small icon>
-              <v-icon @click.stop="activate_item(item.id)">mdi-plus-circle-outline</v-icon>
+              <v-icon @click.stop="add_action(item.id)">mdi-plus-circle-outline</v-icon>
             </v-btn>
             <v-btn class="btn" small icon>
-              <v-icon @click.stop="">mdi-chevron-right</v-icon>
+              <v-icon @click.stop="new_action(item.id)">mdi-chevron-right</v-icon>
             </v-btn>
           </v-list-item-action>
         </v-list-item>
@@ -113,6 +113,9 @@ export default {
       }
     },
 
+
+
+
     activate_item(item_id) {
       // когда click на item, который выделен, но не подсвечивается (item_id==[])
       if ((item_id.length==0) && (this.item_sel>0)) {
@@ -129,6 +132,16 @@ export default {
         )
       }.bind(this), 100);
     },
+
+    add_action(item_id) {
+
+    },
+
+    new_action(item_id) {
+
+    },
+
+
 
     get_icon(item, open) {
       if (!item.children) return (item.icon)?item.icon:this.iconDef;
