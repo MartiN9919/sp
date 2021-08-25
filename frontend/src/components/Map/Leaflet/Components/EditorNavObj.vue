@@ -23,6 +23,7 @@
 import router from '@/router'
 import { getResponseAxios } from '@/plugins/axios_settings';
 import Treeview from '@/components/Map/Leaflet/Components/Treeview';
+import { fc_normalize, } from '@/components/Map/Leaflet/Lib/Lib';
 
 export default {
   name: 'editor-nav-obj',
@@ -68,7 +69,7 @@ export default {
     emit_fc(id, name, emit_name) {
       getResponseAxios(this.$CONST.API.OBJ.GEOMETRY, { params: {rec_id: id,} })
         .then(response => {
-          this.$emit(emit_name, id, name, response.data);
+          this.$emit(emit_name, id, name, fc_normalize(response.data));
           return Promise.resolve(response)
         })
         .catch(error => { return Promise.reject(error) });

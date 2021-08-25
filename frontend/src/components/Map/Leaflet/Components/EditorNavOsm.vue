@@ -18,12 +18,13 @@
     <v-divider class="mx-4"></v-divider>
 
     <Treeview
-      v-on="$listeners"
       :items="items"
       :itemSel.number.sync="item_sel"
       iconDef="mdi-web"
       :isIcon="true"
       :isFlat="true"
+      @onNew="on_new"
+      @onAdd="on_add"
     />
   </v-card>
 </template>
@@ -41,10 +42,11 @@ export default {
   name: 'editor-nav-osm',
   components: { Treeview, },
 
-  props: {
-    showSel: { type: Boolean, default: () => true, },
-  },
-  //emits: ['selectedGeometry', 'update:showSel'],
+  emits: [
+    'onNew',
+    'onAdd',
+  ],
+
   data: () => ({
     item_sel:    0,
     value:       undefined,
@@ -52,14 +54,12 @@ export default {
     timer_input: undefined,
   }),
 
-
-  created: function() {
-    // watch fix bug
-    this.$watch('item_sel', function(id) {
-      console.log(id)
-      this.selected_fc(id);
-    });
-  },
+  // created: function() {
+  //   // watch fix bug
+  //   this.$watch('item_sel', function(id) {
+  //     console.log(id)
+  //   });
+  // },
 
   beforeDestroy () {
     this.timer_abort();
@@ -78,69 +78,19 @@ export default {
         .catch(error => { return Promise.reject(error) });
     },
 
-    selected_fc(id) {
+    on_new(id, name) { this.emit_fc(id, name, 'onNew') },
+    on_add(id, name) { this.emit_fc(id, name, 'onAdd') },
+    emit_fc(id, name, emit_name) {
       getResponseAxios(this.$CONST.API.OBJ.OSM_FC, { params: {id: id,} })
         .then(response => {
-          console.log(response.data);
-          let dd = fc_normalize(response.data);
-
-          this.$emit('selectedFc', dd, this.get_name(id, this.items));
+          this.$emit(emit_name, id, name, fc_normalize(response.data));
           return Promise.resolve(response)
         })
         .catch(error => { return Promise.reject(error) });
     },
 
-    get_name(id, items) {
-      let ret = undefined;
-      for(let ind=0; ind<items.length; ind++) {
-        if (items[ind].id == id) { ret = items[ind].name; }
-        if (items[ind].children) { ret = this.get_name(id, items[ind].children); }
-        if (ret) break;
-      }
-      return ret;
-    },
-
 
   },
 }
-
-/*
-        <template v-slot:append="">
-          <div v-show="hover" style="margin-top: -6 !important;">
-            <v-btn icon @click="dd" :color="$CONST.APP.COLOR_OBJ">
-              <v-icon>mdi-delete</v-icon>
-            </v-btn>
-          </div>
-        </template>
-
-    <v-list-item-group>
-      <v-list-item>
-        <v-list-item-content>
-          <v-list-item-title>Single-line item</v-list-item-title>
-        </v-list-item-content>
-      </v-list-item>
-
-      <v-list-item two-line>
-        <v-list-item-content>
-          <v-list-item-title>Two-line item</v-list-item-title>
-          <v-list-item-subtitle>Secondary text</v-list-item-subtitle>
-        </v-list-item-content>
-      </v-list-item>
-
-      <v-list-item three-line>
-        <v-list-item-content>
-          <v-list-item-title>Three-line item</v-list-item-title>
-          <v-list-item-subtitle>
-            Secondary line text Lorem ipsum dolor sit amet,
-          </v-list-item-subtitle>
-          <v-list-item-subtitle>
-            consectetur adipiscing elit.
-          </v-list-item-subtitle>
-        </v-list-item-content>
-      </v-list-item>
-
-    </v-list-item-group>
-
- */
 
 </script>
