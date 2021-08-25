@@ -17,9 +17,13 @@
 
     <v-divider class="mx-4"></v-divider>
 
-    <PaneTree
+    <Treeview
+      v-on="$listeners"
       :items="items"
       :itemSel.number.sync="item_sel"
+      iconDef="mdi-web"
+      :isIcon="true"
+      :isFlat="true"
     />
   </v-card>
 </template>
@@ -28,14 +32,14 @@
 
 /*
       :itemSel.number.sync="item_sel"
-      :showSel.sync="show_sel"
  */
 import { getResponseAxios } from '@/plugins/axios_settings';
-import PaneTree from '@/components/Map/Leaflet/Components/PaneTree';
+import Treeview from '@/components/Map/Leaflet/Components/Treeview';
+import { fc_normalize, } from '@/components/Map/Leaflet/Lib/Lib';
 
 export default {
   name: 'editor-nav-osm',
-  components: { PaneTree, },
+  components: { Treeview, },
 
   props: {
     showSel: { type: Boolean, default: () => true, },
@@ -53,17 +57,7 @@ export default {
     // watch fix bug
     this.$watch('item_sel', function(id) {
       console.log(id)
-      //this.show_sel = true;             // выделить выбранный item
-      //this.selectedFc(id);
-
-      getResponseAxios(this.$CONST.API.OBJ.OSM_FC, { params: { id: id,} })
-        .then(response => {
-          this.items = response.data;
-          console.log(this.items);
-          return Promise.resolve(response)
-        })
-        .catch(error => { return Promise.reject(error) });
-
+      this.selected_fc(id);
     });
   },
 
@@ -83,6 +77,29 @@ export default {
         })
         .catch(error => { return Promise.reject(error) });
     },
+
+    selected_fc(id) {
+      getResponseAxios(this.$CONST.API.OBJ.OSM_FC, { params: {id: id,} })
+        .then(response => {
+          console.log(response.data);
+          let dd = fc_normalize(response.data);
+
+          this.$emit('selectedFc', dd, this.get_name(id, this.items));
+          return Promise.resolve(response)
+        })
+        .catch(error => { return Promise.reject(error) });
+    },
+
+    get_name(id, items) {
+      let ret = undefined;
+      for(let ind=0; ind<items.length; ind++) {
+        if (items[ind].id == id) { ret = items[ind].name; }
+        if (items[ind].children) { ret = this.get_name(id, items[ind].children); }
+        if (ret) break;
+      }
+      return ret;
+    },
+
 
   },
 }

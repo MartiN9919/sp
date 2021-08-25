@@ -1,8 +1,8 @@
 <template>
-  <PaneTree
+  <Treeview
+   v-on="$listeners"
    :items="items"
    :itemSel.number.sync="item_sel"
-   :showSel.sync="show_sel"
   />
 </template>
 
@@ -11,28 +11,23 @@
  * КОМПОНЕНТ: ДЕРЕВО ГЕОМЕТРИЙ
  *  <EditorNavObj
  *    localStoragePrefix="key_name"
- *    :triggerResetSelect="triggerResetSelect"
  *    @selectedFc="selected_fc"
  *  />
  *
- *  triggerResetSelect: true,
  *  update_fc(fc) { },
- *
- * triggerResetSelect - признак, изменение значения которого влечет сброс выделения выбранного item
- * @update_fc  - событие при изменении на карте fc
+ *  @update_fc  - событие при изменении на карте fc
  */
 
 import router from '@/router'
 import { getResponseAxios } from '@/plugins/axios_settings';
-import PaneTree from '@/components/Map/Leaflet/Components/PaneTree';
+import Treeview from '@/components/Map/Leaflet/Components/Treeview';
 
 export default {
   name: 'editor-nav-obj',
-  components: { PaneTree, },
+  components: { Treeview, },
 
   props: {
     localStoragePrefix: { type: String, default() { return '' } },
-    triggerResetSelect: { type: Boolean, default: () => undefined, },
   },
   emits: [
     'selectedFc',
@@ -41,12 +36,7 @@ export default {
   data: () => ({
     item_sel: 0,
     items:    [],
-    show_sel: false,
   }),
-
-  watch: {
-    triggerResetSelect: function() { this.show_sel=false },  // изменение свойства влечет сброс выделения (через событие не нужно делать)
-  },
 
   created: function() {
     getResponseAxios(this.$CONST.API.OBJ.GEOMETRY_TREE)
@@ -58,8 +48,7 @@ export default {
         // watch fix bug
         this.$watch('item_sel', function(id) {
           localStorage[this.key_sel] = id;
-          this.show_sel = true;             // выделить выбранный item
-          this.selectedFc(id);
+          this.selected_fc(id);
         });
 
         return Promise.resolve(response)
@@ -72,23 +61,26 @@ export default {
   },
 
   methods: {
-    selectedFc(id) {
+    selected_fc(id) {
       getResponseAxios(this.$CONST.API.OBJ.GEOMETRY, { params: {rec_id: id,} })
         .then(response => {
-          this.$emit('selectedFc', response.data);
+          this.$emit('selectedFc', response.data, this.get_name(id, this.items));
           return Promise.resolve(response)
         })
         .catch(error => { return Promise.reject(error) });
+    },
+
+    get_name(id, items) {
+      let ret = undefined;
+      for(let ind=0; ind<items.length; ind++) {
+        if (items[ind].id == id) { ret = items[ind].name; }
+        if (items[ind].children) { ret = this.get_name(id, items[ind].children); }
+        if (ret) break;
+      }
+      return ret;
     },
 
   },
 
 }
 </script>
-
-<style scoped>
-  .v-treeview {
-    overflow-y: auto !important;
-    height: 100%;
-  }
-</style>

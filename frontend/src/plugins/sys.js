@@ -10,7 +10,7 @@ export function cook_get_str(name, valueEmpty) {
   return matches ? decodeURIComponent(matches[1]) : valueEmpty;
 }
 export function cook_get_int (name, valueEmpty) { return parseInt(cook_get_str(name, valueEmpty))  }
-export function cook_get_bool(name, valueEmpty) { return (cook_get_str(name, valueEmpty)==='true') }
+export function cook_get_bool(name, valueEmpty) { return (cook_get_str(name, String(valueEmpty)) === 'true') }
 
 
 
