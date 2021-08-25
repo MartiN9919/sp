@@ -66,10 +66,10 @@ def add_col_record_http(index_title, id, params):
     for param in params:
         param_list = param.split('=')
         key = param_list[0]
-        if key == 'location':
+        if key == 'location' or key == 'point':
             value = param_list[1][20:-2]
         else:
-            value = param_list[1]
+            value = param_list[1].replace('\'','')
         doc[key] = value
     doc['rec_id'] = id
     data = json.dumps({'index': index_title,
@@ -78,6 +78,39 @@ def add_col_record_http(index_title, id, params):
                        })
     response = requests.post(FullTextSearch.INSERT_URL, data=data)
     if response.status_code != 201:
+        return False
+    else:
+        return True
+
+
+def update_col_record_http(index_title, id, params):
+    """
+    Функция для изменения записи в col index мантикоры
+    @param index_title: название таблицы
+    @param id: идентификатор записи
+    @param params: параметры для записи
+    @return: если добавление прошло успешно True, если нет False
+    """
+    if TEST_MODE:
+        return False
+    doc = {}
+    for param in params:
+        param_list = param.split('=')
+        key = param_list[0]
+        if key == 'location' or key == 'point':
+            value = param_list[1][20:-2]
+        elif key == 'rec_id':
+            value = int(param_list[1])
+        else:
+            value = param_list[1]
+        doc[key] = value
+    rec_id = int(id)
+    data = json.dumps({'index': index_title,
+                       'doc': doc,
+                       'equals': {'rec_id': rec_id}
+                       })
+    response = requests.post(FullTextSearch.UPDATE_URL, data=data)
+    if response.status_code != 201 or response.status_code != 200:
         return False
     else:
         return True
@@ -99,7 +132,7 @@ def add_relation_http(rec_id, date_time, key_id, obj_id_1, rec_id_1, obj_id_2, r
     if TEST_MODE:
         return False
     date_time = datetime.datetime.strptime(date_time, "%Y-%m-%d %H:%M:%S")
-    days = date_time.date().toordinal()
+    days = date_time.date().toordinal() + 365
     seconds = date_time.time().second + date_time.time().minute * 60 + date_time.time().hour * 3600 + days * 86400
     data = json.dumps({
         "index": "rel",

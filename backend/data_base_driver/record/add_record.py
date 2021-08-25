@@ -1,4 +1,5 @@
 import datetime
+import json
 
 from data_base_driver.record.find_object import find_key_value_http
 from data_base_driver.record.get_record import get_object_record_by_id_http
@@ -50,17 +51,18 @@ def add_data(group_id, object):
                 fl = 1
         if fl == 0:
             data.append([50055, country, datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")])
-
-    #  костыль для переделывания формата точки -------------------------------------------------------------------------
+    # костыль для добавления геометрических объектов, придумать как переделать------------------------------------------
     if object.get('object_id') == 25:
-        coordinates = [param for param in data if param[0] == 25204]
-        if len(coordinates) > 0:
-            coordinate = coordinates[0]
-            lat = [25202, coordinate[1]['coordinates'][0], datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")]
-            lon = [25202, coordinate[1]['coordinates'][1], datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")]
-            data.remove(coordinate)
-            data.append(lat)
-            data.append(lon)
+        point = [item for item in data if item[0] == 25204]
+        if len(point) > 0:
+            point[0][1] = json.dumps(point[0][1]['features'][0]['geometry'])
+    if object.get('object_id') == 30:
+        location = [item for item in data if item[0] == 30304]
+        if len(location) > 0:
+            geometry = {"type": "GeometryCollection", "geometries": []}
+            for feature in location[0][1]['features']:
+                geometry['geometries'].append(feature['geometry'])
+            location[0][1] = json.dumps(geometry)
     # ------------------------------------------------------------------------------------------------------------------
 
     if not object.get('force', False):  # проверка на дублирование
