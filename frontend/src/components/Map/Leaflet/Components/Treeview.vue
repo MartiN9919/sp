@@ -56,12 +56,11 @@ export default {
   props: {
     items:   { type: Array,   default: () => [], },
     itemSel: { type: Number,  default: () => 0, },
-    showSel: { type: Boolean, default: () => true, },
     iconDef: { type: String,  default: () => 'mdi-vector-polygon', }, // иконка по умолчанию
     isIcon:  { type: Boolean, default: () => true, },                 // наличие иконок
     isFlat:  { type: Boolean, default: () => false, },                // наличие отступов слева (как список)
   },
-  // emits: ['update:itemSel', 'update:showSel', ], /// ?
+  // emits: ['update:itemSel', ], /// ?
 
   data: () => ({
     items_path: {},             // список id родительских узлов: {1: [1, 2, ...], ...}
@@ -71,7 +70,6 @@ export default {
   watch: {
     items:    function(items)   { this.ini_items(); },
     item_sel: function(item_id) { this.activate_item(item_id); },
-    //showSel: function(val)     { },
   },
 
   computed: {
@@ -88,11 +86,6 @@ export default {
         if (this.items_path[id])   { this.items_active = this.items_path[id].slice(0, -1); } // .slice(0, -1) - нет эффекта
         if (this.item_sel != id)   { this.$emit('update:itemSel', id); }
       },
-    },
-
-    show_sel: {
-      get()    { return this.showSel               },
-      set(val) { this.$emit('update:showSel', val) },
     },
   },
 
@@ -119,8 +112,7 @@ export default {
     activate_item(item_id) {
       // когда click на item, который выделен, но не подсвечивается (item_id==[])
       if ((item_id.length==0) && (this.item_sel>0)) {
-        item_id       = this.item_sel;
-        this.show_sel = true;
+        item_id = this.item_sel;
       } else {
         this.item_sel = item_id;
       }
@@ -153,11 +145,7 @@ export default {
       return (
           (this.item_sel) &&
           (this.items_path[this.item_sel]) &&
-          (this.items_path[this.item_sel].indexOf(item.id) !== -1) &&
-          (
-            (this.items_path[this.item_sel].slice(-1)[0] != item.id) ||
-            ((this.items_path[this.item_sel].slice(-1)[0] == item.id) && (this.showSel))
-          )
+          (this.items_path[this.item_sel].indexOf(item.id) !== -1)
         ) ? this.$CONST.TREE.COLOR_SELECT : this.$CONST.TREE.COLOR_DEFAULT;
     },
 

@@ -7,7 +7,6 @@
     <template v-slot:firstPane>
       <EditorNav
         localStorageKey="script_param"
-        :triggerResetSelect="nav_trigger_reset_select"
         @selectedFc="on_nav_selected_fc"
       />
     </template>
@@ -100,7 +99,6 @@ export default {
       zoomControl: false,
       zoomSnap: 0.5,
     },
-    nav_trigger_reset_select: true,
   }),
 
   created() {
@@ -152,7 +150,6 @@ export default {
 
     // сбросить выделение (obj, osm): из child.map в свойство child.nav
     on_map_reset_select() {
-      this.nav_trigger_reset_select = !this.nav_trigger_reset_select;
       this.$refs.notify.notify_del();
     },
 

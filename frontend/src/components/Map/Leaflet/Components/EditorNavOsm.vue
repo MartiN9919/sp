@@ -31,7 +31,6 @@
 
 /*
       :itemSel.number.sync="item_sel"
-      :showSel.sync="show_sel"
  */
 import { getResponseAxios } from '@/plugins/axios_settings';
 import Treeview from '@/components/Map/Leaflet/Components/Treeview';
@@ -57,7 +56,6 @@ export default {
     // watch fix bug
     this.$watch('item_sel', function(id) {
       console.log(id)
-      //this.show_sel = true;             // выделить выбранный item
       this.selected_fc(id);
     });
   },
