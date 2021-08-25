@@ -117,10 +117,11 @@ const TYPES = class {
   static POLYGON  = 'Polygon';
   static CUT      = 'Cut';
 };
-const FC_KEY_VAL  = 'val';                // fc
-const FC_KEY_NEW  = 'new';                // признак новых данных на замену старых
-const FC_KEY_COPY = 'copy';               // признак необходимости копирования данных в fc_copy
-const FC_KEY_MODE = 'mode';               // признак необходимости установки режима редактирования (линия, точка, ...)
+const FC_KEY_VAL    = 'val';              // fc
+const FC_KEY_ORIGIN = 'origin';           // признак данных как не измененных (в черном, а не красном)
+const FC_KEY_NEW    = 'new';              // признак новых данных на замену старых
+const FC_KEY_COPY   = 'copy';             // признак необходимости копирования данных в fc_copy
+const FC_KEY_MODE   = 'mode';             // признак необходимости установки режима редактирования (линия, точка, ...)
 
 export default {
   name: 'EditorMap',
@@ -163,10 +164,11 @@ export default {
     fc: {
       get() { return this.fc_prop },
       set(obj) {
-        let val     = (obj) ? ((FC_KEY_VAL  in obj) ? obj[FC_KEY_VAL]  : obj  ) : obj;
-        let is_new  = (obj) ? ((FC_KEY_NEW  in obj) ? obj[FC_KEY_NEW]  : false) : false;
-        let is_copy = (obj) ? ((FC_KEY_COPY in obj) ? obj[FC_KEY_COPY] : false) : false;
-        let is_mode = (obj) ? ((FC_KEY_MODE in obj) ? obj[FC_KEY_MODE] : false) : false;
+        let val       = (obj) ? ((FC_KEY_VAL    in obj) ? obj[FC_KEY_VAL]    : obj  ) : obj;
+        let is_origin = (obj) ? ((FC_KEY_ORIGIN in obj) ? obj[FC_KEY_ORIGIN] : true)  : true;
+        let is_new    = (obj) ? ((FC_KEY_NEW    in obj) ? obj[FC_KEY_NEW]    : false) : false;
+        let is_copy   = (obj) ? ((FC_KEY_COPY   in obj) ? obj[FC_KEY_COPY]   : false) : false;
+        let is_mode   = (obj) ? ((FC_KEY_MODE   in obj) ? obj[FC_KEY_MODE]   : false) : false;
 
         if (is_copy) {
           this.fc_copy = val?JSON.parse(JSON.stringify(val)):undefined; // глубокая копия для возможного восстановления
@@ -176,7 +178,7 @@ export default {
         this.$emit('fc_change', val);       // вызывает отложенный watch.fc
 
         if (is_new) {
-          this.map_load(val);
+          this.map_load(val, is_origin);
           this.editor_set(is_mode);
         }
       },
@@ -194,9 +196,10 @@ export default {
 
         // вызвать fc.set
         this.fc = {
-          [FC_KEY_VAL]:  val?JSON.parse(JSON.stringify(val)):undefined,
-          [FC_KEY_NEW]:  true,
-          [FC_KEY_COPY]: false,
+          [FC_KEY_VAL]:    val?JSON.parse(JSON.stringify(val)):undefined,
+          [FC_KEY_ORIGIN]: false,
+          [FC_KEY_NEW]:    true,
+          [FC_KEY_COPY]:   false,
         };
       },
       deep: true,
@@ -249,10 +252,11 @@ export default {
 
     // установка данных
     this.fc = {
-      [FC_KEY_VAL]:  this.fc,
-      [FC_KEY_NEW]:  true,
-      [FC_KEY_COPY]: true,
-      [FC_KEY_MODE]: true,
+      [FC_KEY_VAL]:    this.fc,
+      [FC_KEY_ORIGIN]: true,
+      [FC_KEY_NEW]:    true,
+      [FC_KEY_COPY]:   true,
+      [FC_KEY_MODE]:   true,
     };
   },
 
@@ -288,16 +292,18 @@ export default {
       }.bind(this));
 
       this.fc = {
-        [FC_KEY_VAL ]: fc_normalize(fg.toGeoJSON()), // fc_normalize: fix bug missing properties when cut features
-        [FC_KEY_NEW ]: false,
-        [FC_KEY_COPY]: false,
+        [FC_KEY_VAL ]:   fc_normalize(fg.toGeoJSON()), // fc_normalize: fix bug missing properties when cut features
+        [FC_KEY_ORIGIN]: true,
+        [FC_KEY_NEW ]:   false,
+        [FC_KEY_COPY]:   false,
       };
     },
 
 
     // загрузить на карту из fc
     // fc указывается как аргумент, т.к. функция вызывается из fc.set, когда значение this.fc еще старое
-    map_load(fc) {
+    // mode_origin - загрузить как уже неизмененное (черное, а не красное)
+    map_load(fc, mode_origin=true) {
       // отключить возможный режим редактирования
       this.mode_selected_off();
 
@@ -309,15 +315,21 @@ export default {
 
       // стили исходные
       let self  = this;
-      let style = {
-        pointToLayer:  function(feature, latlng) { return self.marker_origin(latlng); },
-        style:         function(feature)         { return self.path_origin(); },
-        // onEachFeature: function(feature, layer)  { },
-      };
+      let style = (mode_origin) ?
+        {
+          pointToLayer:  function(feature, latlng) { return self.marker_origin(latlng); },
+          style:         function(feature)         { return self.path_origin(); },
+          // onEachFeature: function(feature, layer)  { },
+        } :
+        {
+          pointToLayer:  function(feature, latlng) { return self.marker_modify(latlng); },
+          style:         function(feature)         { return self.path_modify(); },
+        };
       let layer = (fc.type=='FeatureCollection')?L.geoJSON(fc, style):L.GeoJSON.geometryToLayer(fc, style);
 
       // слой: настроить
       this.layer_set(layer);
+      // if (!mode_origin) { this.layer_style_modify(layer) } - маркеры не реагируют
 
       // слой: добавить на карту
       layer.addTo(this.map);
@@ -493,6 +505,12 @@ export default {
     // СТИЛИ
     // ======================================
 
+    // установить слою измененное состояние
+    layer_style_modify(layer) {
+      if (layer.setIcon)  layer.setIcon (this.icon_modify());
+      if (layer.setStyle) layer.setStyle(this.path_modify());
+    },
+
     // иконки
     icon_origin() {
       return icon_get({
@@ -513,29 +531,35 @@ export default {
     marker_origin(latlng) {
       return icon_2_marker(latlng, this.icon_origin(), this.layer_editor_prop());
     },
-    // marker_modify(latlng) {
-    //   return icon_2_marker(latlng, this.icon_modify(), this.layer_editor_prop());
-    // },
+    marker_modify(latlng) {
+      return icon_2_marker(latlng, this.icon_modify(), this.layer_editor_prop());
+    },
 
     // фигуры
+    path_common() {
+      return {
+        weight:      5,
+        opacity:     .5,
+        fillOpacity: .3,
+        dashArray:   '4, 8',
+        //className: 'ddd',
+      }
+    },
     path_origin() {
       return {
-          ...this.layer_editor_prop(),
-          weight:      5,
-          opacity:     .5,
-          fillOpacity: .3,
-          color:       COLOR_ORIGIN,
-          fillColor:   COLOR_ORIGIN,
-          dashArray:   '4, 8',
-          //className: 'ddd',
-        }
+        ...this.layer_editor_prop(),
+        ...this.path_common(),
+        color:       COLOR_ORIGIN,
+        fillColor:   COLOR_ORIGIN,
+      }
     },
     path_modify() {
       return {
-          ...this.layer_editor_prop(),
-          color:       COLOR_MODIFY,
-          fillColor:   COLOR_MODIFY,
-        }
+        ...this.layer_editor_prop(),
+        ...this.path_common(),
+        color:       COLOR_MODIFY,
+        fillColor:   COLOR_MODIFY,
+      }
     },
 
 
@@ -547,9 +571,10 @@ export default {
     // очистить
     on_click_clear() {
       this.fc = {
-        [FC_KEY_VAL]:  L.featureGroup().toGeoJSON(),
-        [FC_KEY_NEW]:  true,
-        [FC_KEY_COPY]: false,
+        [FC_KEY_VAL]:    L.featureGroup().toGeoJSON(),
+        [FC_KEY_ORIGIN]: true,
+        [FC_KEY_NEW]:    true,
+        [FC_KEY_COPY]:   false,
       }
       // сбросить map.notify
       this.$emit('resetSelect');
@@ -558,9 +583,10 @@ export default {
     // восстановить
     on_click_restore() {
       this.fc = {
-        [FC_KEY_VAL]:  this.fc_copy?JSON.parse(JSON.stringify(this.fc_copy)):undefined,
-        [FC_KEY_NEW]:  true,
-        [FC_KEY_COPY]: false,
+        [FC_KEY_VAL]:    this.fc_copy?JSON.parse(JSON.stringify(this.fc_copy)):undefined,
+        [FC_KEY_ORIGIN]: true,
+        [FC_KEY_NEW]:    true,
+        [FC_KEY_COPY]:   false,
       };
       // сбросить map.notify
       this.$emit('resetSelect');
@@ -569,8 +595,7 @@ export default {
     // изменение на карте
     on_modify(e) {
       // изменить стили после редактирования
-      if (e.layer.setIcon)  e.layer.setIcon (this.icon_modify());
-      if (e.layer.setStyle) e.layer.setStyle(this.path_modify());
+      this.layer_style_modify(e.layer);
 
       // настроить новый слой при резке
       if (e.shape == 'Cut') {
