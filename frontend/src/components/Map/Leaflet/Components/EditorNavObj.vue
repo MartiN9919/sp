@@ -1,8 +1,9 @@
 <template>
   <Treeview
-   v-on="$listeners"
-   :items="items"
-   :itemSel.number.sync="item_sel"
+    :items="items"
+    :itemSel.number.sync="item_sel"
+    @onNew="on_new"
+    @onAdd="on_add"
   />
 </template>
 
@@ -11,7 +12,8 @@
  * КОМПОНЕНТ: ДЕРЕВО ГЕОМЕТРИЙ
  *  <EditorNavObj
  *    localStoragePrefix="key_name"
- *    @selectedFc="selected_fc"
+ *    @onNew=""
+ *    @onAdd=""
  *  />
  *
  *  update_fc(fc) { },
@@ -30,7 +32,8 @@ export default {
     localStoragePrefix: { type: String, default() { return '' } },
   },
   emits: [
-    'selectedFc',
+    'onNew',
+    'onAdd',
   ],
 
   data: () => ({
@@ -48,7 +51,6 @@ export default {
         // watch fix bug
         this.$watch('item_sel', function(id) {
           localStorage[this.key_sel] = id;
-          this.selected_fc(id);
         });
 
         return Promise.resolve(response)
@@ -61,23 +63,15 @@ export default {
   },
 
   methods: {
-    selected_fc(id) {
+    on_new(id, name) { this.emit_fc(id, name, 'onNew') },
+    on_add(id, name) { this.emit_fc(id, name, 'onAdd') },
+    emit_fc(id, name, emit_name) {
       getResponseAxios(this.$CONST.API.OBJ.GEOMETRY, { params: {rec_id: id,} })
         .then(response => {
-          this.$emit('selectedFc', response.data, this.get_name(id, this.items));
+          this.$emit(emit_name, id, name, response.data);
           return Promise.resolve(response)
         })
         .catch(error => { return Promise.reject(error) });
-    },
-
-    get_name(id, items) {
-      let ret = undefined;
-      for(let ind=0; ind<items.length; ind++) {
-        if (items[ind].id == id) { ret = items[ind].name; }
-        if (items[ind].children) { ret = this.get_name(id, items[ind].children); }
-        if (ret) break;
-      }
-      return ret;
     },
 
   },

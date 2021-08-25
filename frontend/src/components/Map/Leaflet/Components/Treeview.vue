@@ -37,10 +37,10 @@
             class="btns"
           >
             <v-btn class="btn" small icon>
-              <v-icon @click="add_action(item.id)">mdi-plus-circle-outline</v-icon>
+              <v-icon @click="on_add(item)">mdi-plus-circle-outline</v-icon>
             </v-btn>
             <v-btn class="btn" small icon>
-              <v-icon @click="new_action(item.id)">mdi-chevron-right</v-icon>
+              <v-icon @click="on_new(item)">mdi-chevron-right</v-icon>
             </v-btn>
           </v-list-item-action>
         </v-list-item>
@@ -61,8 +61,8 @@ export default {
     isFlat:  { type: Boolean, default: () => false, },                // наличие отступов слева (как список)
   },
   emits: [
-    'actionAdd',
-    'actionNew',
+    'onNew',
+    'onAdd',
     //'update:itemSel',
   ],
 
@@ -126,13 +126,14 @@ export default {
       }.bind(this), 100);
     },
 
-    add_action(item_id) {
-      this.$emit('actionAdd', item_id);
+    on_new(item) {
+      this.$emit('onNew', item.id, item.name);
     },
 
-    new_action(item_id) {
-      this.$emit('actionNew', item_id);
+    on_add(item) {
+      this.$emit('onAdd', item.id, item.name);
     },
+
 
 
 

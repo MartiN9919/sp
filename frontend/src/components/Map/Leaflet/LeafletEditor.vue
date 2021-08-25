@@ -7,8 +7,8 @@
     <template v-slot:firstPane>
       <EditorNav
         localStorageKey="script_param"
-        @selectedFc="on_nav_selected_fc"
-        @actionNew="on_nav_new"
+        @onNew="on_nav_new"
+        @onAdd="on_nav_add"
       />
     </template>
 
@@ -155,16 +155,17 @@ export default {
     },
 
     // обновить на карте fc
-    on_nav_selected_fc(fc, name) {
-      console.log(11);
+    on_nav_new(id, name, fc) {
+      console.log(22, id, name, fc);
       this.fc_child  = JSON.parse(JSON.stringify(fc));
       this.fc_parent = this.fc_child;
-      let dd = fc_merge([this.fc_child,]);
       this.$refs.notify.notify_set(name);
     },
-
-    on_nav_new(id) {
-      console.log(22);
+    on_nav_add(id, name, fc) {
+      console.log(33, id, name, fc);
+      this.fc_child  = JSON.parse(JSON.stringify(fc));
+      this.fc_parent = fc_merge([this.fc_parent, this.fc_child,]);
+      this.$refs.notify.notify_add(name);
     },
 
   },

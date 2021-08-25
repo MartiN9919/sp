@@ -32,19 +32,10 @@ export default {
     messages: [],
   }),
 
-  mounted() {
-
-  },
-
   computed: {
     ...mapGetters([
       'MAP_GET_NOTIFY',
     ]),
-
-    // prop_sel: {
-    //   set: function(lst) { this.MAP_ACT_RANGE_SEL({lst: lst}); },
-    //   get: function()    { return this.MAP_GET_RANGE_SEL;      },
-    // },
 
     visible() { return (this.messages.length > 0) },
   },
