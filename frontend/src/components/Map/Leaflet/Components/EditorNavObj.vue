@@ -1,5 +1,6 @@
 <template>
   <Treeview
+    class="tree"
     :items="items"
     :itemSel.number.sync="item_sel"
     @onNew="on_new"
@@ -79,3 +80,7 @@ export default {
 
 }
 </script>
+
+<style scoped lang="scss">
+  div.tree::v-deep { overflow-y: auto !important; height: calc( 100% - 50px ); }
+</style>

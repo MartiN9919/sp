@@ -156,8 +156,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-  .v-treeview { overflow-y: auto !important; height: 100%; }
-
   div::v-deep .btns { margin: 0 !important; display: block; }
   div::v-deep .btn { display: inline-block; top: 50%; transform: translate(0, -50%); }
 

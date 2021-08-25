@@ -18,6 +18,7 @@
     <v-divider class="mx-4"></v-divider>
 
     <Treeview
+      class="tree"
       :items="items"
       :itemSel.number.sync="item_sel"
       iconDef="mdi-web"
@@ -94,3 +95,7 @@ export default {
 }
 
 </script>
+
+<style scoped lang="scss">
+  div.tree::v-deep { overflow-y: auto !important; height: calc( 100% - 120px ); }
+</style>

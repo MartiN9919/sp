@@ -551,6 +551,7 @@ export default {
         [FC_KEY_NEW]:  true,
         [FC_KEY_COPY]: false,
       }
+      // сбросить map.notify
       this.$emit('resetSelect');
     },
 
@@ -561,6 +562,7 @@ export default {
         [FC_KEY_NEW]:  true,
         [FC_KEY_COPY]: false,
       };
+      // сбросить map.notify
       this.$emit('resetSelect');
     },
 
@@ -578,6 +580,9 @@ export default {
 
       // сохранить данные из карты в fc
       this.map_save();
+
+      // сбросить map.notify
+      this.$emit('resetSelect');
     },
 
     // операции с фигурами
@@ -590,6 +595,9 @@ export default {
       this.mode_selected_off();
       this.map_save();
       this.editor_on();
+
+      // сбросить map.notify
+      // this.$emit('resetSelect');
     },
 
     // нажатие клавиши

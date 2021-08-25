@@ -43,7 +43,7 @@ export default {
   methods: {
     notify_add(message) {
       this.messages.unshift(message)
-      this.messages.splice(3)
+      this.messages.splice(5)
     },
     notify_set(message) {
       this.messages=[message]

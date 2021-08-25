@@ -156,13 +156,11 @@ export default {
 
     // обновить на карте fc
     on_nav_new(id, name, fc) {
-      console.log(22, id, name, fc);
       this.fc_child  = JSON.parse(JSON.stringify(fc));
       this.fc_parent = this.fc_child;
       this.$refs.notify.notify_set(name);
     },
     on_nav_add(id, name, fc) {
-      console.log(33, id, name, fc);
       let fc_temp  = JSON.parse(JSON.stringify(fc));
       this.fc_child = fc_merge([this.fc_child, fc_temp,]);
       this.fc_parent = this.fc_child;
