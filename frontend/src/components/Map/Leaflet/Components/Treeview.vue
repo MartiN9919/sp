@@ -4,7 +4,7 @@
     :class="{ flat: isFlat }"
     :items="items"
     :open="items_active"
-    @update:active="activate_item"
+    @update:active="sel_item"
     hoverable
     activatable
     transition
@@ -37,10 +37,10 @@
             class="btns"
           >
             <v-btn class="btn" small icon>
-              <v-icon @click.stop="add_action(item.id)">mdi-plus-circle-outline</v-icon>
+              <v-icon @click="add_action(item.id)">mdi-plus-circle-outline</v-icon>
             </v-btn>
             <v-btn class="btn" small icon>
-              <v-icon @click.stop="new_action(item.id)">mdi-chevron-right</v-icon>
+              <v-icon @click="new_action(item.id)">mdi-chevron-right</v-icon>
             </v-btn>
           </v-list-item-action>
         </v-list-item>
@@ -69,7 +69,7 @@ export default {
 
   watch: {
     items:    function(items)   { this.ini_items(); },
-    item_sel: function(item_id) { this.activate_item(item_id); },
+    item_sel: function(item_id) { this.sel_item(item_id); },
   },
 
   computed: {
@@ -109,13 +109,10 @@ export default {
 
 
 
-    activate_item(item_id) {
-      // когда click на item, который выделен, но не подсвечивается (item_id==[])
-      if ((item_id.length==0) && (this.item_sel>0)) {
-        item_id = this.item_sel;
-      } else {
-        this.item_sel = item_id;
-      }
+    sel_item(item_id) {
+      // click на выделенном item ==> item_id=[]
+      if ((item_id.length==0) && (this.item_sel>0)) { item_id = this.item_sel }
+      else                                          { this.item_sel = item_id }
 
       setTimeout(function() {
         this.$vuetify.goTo(
@@ -145,13 +142,13 @@ export default {
       return (
           (this.item_sel) &&
           (this.items_path[this.item_sel]) &&
-          (this.items_path[this.item_sel].indexOf(item.id) !== -1)
+          (this.items_path[this.item_sel].indexOf(item.id) !== -1) &&
+          (this.items_path[this.item_sel].slice(-1)[0] == item.id)
         ) ? this.$CONST.TREE.COLOR_SELECT : this.$CONST.TREE.COLOR_DEFAULT;
     },
 
   },
 }
-//div::v-deep .v-list-item { min-height: 24px !important; }
 </script>
 
 <style scoped lang="scss">
