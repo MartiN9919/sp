@@ -36,7 +36,16 @@ export function fc_normalize(gj) {
       features: [gj],
     };
   } else if (type === 'featurecollection') {
-    return gj;
+
+    // fix bug missing properties when cut features
+    let gj_copy = JSON.parse(JSON.stringify(gj));
+    if (gj_copy.features) {
+      gj_copy.features.forEach(function(item) {
+        if (!item.properties) item.properties = {}
+      });
+    }
+
+    return gj_copy;
   }
 }
 

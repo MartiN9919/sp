@@ -106,6 +106,7 @@
 import { LControl, } from "vue2-leaflet";
 import { MAP_ITEM, } from '@/components/Map/Leaflet/Lib/Const';
 import { icon_get, icon_2_marker, } from '@/components/Map/Leaflet/Markers/Fun';
+import { fc_normalize, } from '@/components/Map/Leaflet/Lib/Lib';
 import '@geoman-io/leaflet-geoman-free';
 
 const COLOR_ORIGIN = 'black';             // цвет маркеров и фигур ДО    ИЗМЕНЕНИЯ
@@ -286,14 +287,8 @@ export default {
         }
       }.bind(this));
 
-      // fix bug missing properties when cut features
-      let fc = fg.toGeoJSON();
-      fc.features.forEach(function(item) {
-        if (!item.properties) item.properties = {}
-      });
-
       this.fc = {
-        [FC_KEY_VAL ]: fc,
+        [FC_KEY_VAL ]: fc_normalize(fg.toGeoJSON()), // fc_normalize: fix bug missing properties when cut features
         [FC_KEY_NEW ]: false,
         [FC_KEY_COPY]: false,
       };
