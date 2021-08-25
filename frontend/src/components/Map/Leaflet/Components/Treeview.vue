@@ -22,16 +22,29 @@
       </v-icon>
     </template>
     <template v-slot:label="{ item, open }">
-      <v-list-item
-        :id="'id_'+_uid+'_'+item.id"
-        :style="{'color': get_color(item)}"
-        class="v-treeview-node__label"
-      >
-        <v-list-item-content>
-          <v-list-item-title v-text="item.name" :style="{'color': get_color(item)}"/>
-          <v-list-item-subtitle v-text="item.address" :style="{'color': get_color(item)}"/>
-        </v-list-item-content>
-      </v-list-item>
+      <v-hover v-slot="{ hover }">
+        <v-list-item
+          :id="'id_'+_uid+'_'+item.id"
+          :style="{'color': get_color(item)}"
+          class="v-treeview-node__label"
+        >
+          <v-list-item-content>
+            <v-list-item-title v-text="item.name" :style="{'color': get_color(item)}"/>
+            <v-list-item-subtitle v-text="item.address" :style="{'color': get_color(item)}"/>
+          </v-list-item-content>
+          <v-list-item-action
+            v-if="hover && !item.children"
+            class="btns"
+          >
+            <v-btn class="btn" small icon>
+              <v-icon @click.stop="">mdi-plus-circle-outline</v-icon>
+            </v-btn>
+            <v-btn class="btn" small icon>
+              <v-icon @click.stop="">mdi-chevron-right</v-icon>
+            </v-btn>
+          </v-list-item-action>
+        </v-list-item>
+      </v-hover>
     </template>
   </v-treeview>
 </template>
@@ -142,6 +155,9 @@ export default {
 
 <style scoped lang="scss">
   .v-treeview { overflow-y: auto !important; height: 100%; }
+
+  div::v-deep .btns { margin: 0 !important; display: block; }
+  div::v-deep .btn { display: inline-block; top: 50%; transform: translate(0, -50%); }
 
   div::v-deep .v-list-item { min-height: 24px; padding: 0 2px; }
 
