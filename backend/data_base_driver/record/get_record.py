@@ -1,5 +1,3 @@
-import json
-
 from data_base_driver.additional_functions import get_date_time_from_sec, get_title
 from data_base_driver.constants.const_dat import DAT_SYS_KEY, DAT_OWNER
 from data_base_driver.input_output.input_output import io_get_obj
@@ -29,6 +27,27 @@ def get_permission_params(params, object_id):
     return permission
 
 
+def get_record_title(object_id, rec_id, group_id=0, record=None, length=3):
+    """
+    Функция для получения строки с краткой информацией о объекте
+    @param object_id: тип объекта
+    @param rec_id: идентификатору записи
+    @param group_id: идентификатору группы пользователя
+    @param record: записи о объекте для формирования заголовка, по умолчанию None
+    @param length: длинна названия, по умолчанию 3
+    @return: словарь в формате {object_id, rec_id, title},...,{}]}
+    """
+    if not record:
+        record = get_object_record_by_id_http(object_id, rec_id, group_id)
+    if len(list(record['permission'].keys())) > 0:
+        write_groups = [item['group_id'] for item in record['permission'][list(record['permission'].keys())[0]]]
+        write = DAT_OWNER.DUMP.valid_io_group(group_id, write_groups)
+    else:
+        write = True
+    title = get_title(record['params'], length)
+    return {'object_id': record['object_id'], 'rec_id': record['rec_id'], 'title': title, 'write': write}
+
+
 def get_object_record_by_id_http(object_id, rec_id, group_id=0):
     """
     Функция для получения информации о объекте по его типу и идентификатору записи
@@ -38,20 +57,6 @@ def get_object_record_by_id_http(object_id, rec_id, group_id=0):
     @return: словарь в формате {object_id, rec_id, params:[{id,val},...,{}]}
     """
     response = io_get_obj(group_id, object_id, [], [rec_id], 500, '', {})
-
-    # костыль для точек-------------------------------------------------------------------------------------------------
-    point_temp = [item for item in response if item['key_id'] == 25202 or item['key_id'] == 25203]
-    point = {'type': 'Point', 'coordinates': []}
-    if len(point_temp) > 1:
-        lat = float([item['val'] for item in point_temp if item['key_id'] == 25202][0])
-        lon = float([item['val'] for item in point_temp if item['key_id'] == 25203][0])
-        point['coordinates'].append(lat)
-        point['coordinates'].append(lon)
-        response.append({'rec_id': point_temp[0]['rec_id'], 'sec': point_temp[0]['sec'],
-                         'key_id': 25204, 'val': json.dumps(point)})
-        response.remove(point_temp[0])
-        response.remove(point_temp[1])
-    # ------------------------------------------------------------------------------------------------------------------
 
     temp = [(int(item['key_id']), item['val'], int(item['sec'])) for item in response
             if int(item['key_id']) not in DAT_SYS_KEY.DUMP.owners.get(object_id, [])]
@@ -74,22 +79,4 @@ def get_object_record_by_id_http(object_id, rec_id, group_id=0):
             'title': title['title']}
 
 
-def get_record_title(object_id, rec_id, group_id=0, record=None, length=3):
-    """
-    Функция для получения строки с краткой информацией о объекте
-    @param object_id: тип объекта
-    @param rec_id: идентификатору записи
-    @param group_id: идентификатору группы пользователя
-    @param record: записи о объекте для формирования заголовка, по умолчанию None
-    @param length: длинна названия, по умолчанию 3
-    @return: словарь в формате {object_id, rec_id, title},...,{}]}
-    """
-    if not record:
-        record = get_object_record_by_id_http(object_id, rec_id, group_id)
-    if len(list(record['permission'].keys())) > 0:
-        write_groups = [item['group_id'] for item in record['permission'][list(record['permission'].keys())[0]]]
-        write = DAT_OWNER.DUMP.valid_io_group(group_id, write_groups)
-    else:
-        write = True
-    title = get_title(record['params'], length)
-    return {'object_id': record['object_id'], 'rec_id': record['rec_id'], 'title': title, 'write': write}
+

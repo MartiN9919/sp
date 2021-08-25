@@ -2,11 +2,10 @@ import json
 import geojson
 import requests
 
-from requests.exceptions import ConnectionError
-
 from data_base_driver.constants.const_osm import OSM_POLYGON
 from data_base_driver.connect.connect_pgsql import db_pg_sql
 from data_base_driver.constants.const_fulltextsearch import FullTextSearch
+
 
 def osm_search(text, geometry=False):
     """
@@ -28,7 +27,7 @@ def osm_search(text, geometry=False):
         } for item in json.loads(response.text)['hits']['hits']]
 
     if geometry:
-        for item in geometry:
+        for item in result:
             item['geometry'] = osm_fc(item['id'])
 
     return result

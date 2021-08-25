@@ -41,13 +41,13 @@ class IO_ORG_SQL():
         else:
             # проверить на повтор записи в БД
             rec = self.io_sql.select(table=data_pars.col_table, select=['1'],
-                                     where=['id=' + data_pars.rec_id, ] + data_pars.col_equ_flat(), only_first=True)
+                                     where=['rec_id=' + data_pars.rec_id, ] + data_pars.col_equ_flat(), only_first=True)
             if len(rec) > 0:
                 if DEBUG: print('Skip set col-obj: RECORD EXIST')
                 return
 
             # проверить на повтор id: если есть - update, иначе insert (col-записи еще может не быть, только row)
-            rec = self.io_sql.select(table=data_pars.col_table, select=['1'], where=['id=' + data_pars.rec_id, ],
+            rec = self.io_sql.select(table=data_pars.col_table, select=['1'], where=['rec_id=' + data_pars.rec_id, ],
                                      only_first=True)
             if len(rec) > 0:
                 if self.io_sql.obj_update_col_all(data_pars=data_pars) == 0:
