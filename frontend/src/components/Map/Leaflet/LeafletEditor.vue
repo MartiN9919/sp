@@ -52,7 +52,7 @@
           :options="measure_options()"
         />
 
-        <!-- УВЕДОМЛЕНИЯ -->
+        <!-- ЗАМЕТКИ -->
         <Notify ref="notify"/>
 
       </l-map>
@@ -153,6 +153,7 @@ export default {
     // сбросить выделение (obj, osm): из child.map в свойство child.nav
     on_map_reset_select() {
       this.nav_trigger_reset_select = !this.nav_trigger_reset_select;
+      this.$refs.notify.notify_del();
     },
 
     // обновить на карте fc
@@ -161,7 +162,7 @@ export default {
       this.fc_child  = JSON.parse(JSON.stringify(fc));
       this.fc_parent = this.fc_child;
       let dd = fc_merge([this.fc_child,]);
-      this.$refs.notify.notify_add(name);
+      this.$refs.notify.notify_set(name);
     },
 
   },

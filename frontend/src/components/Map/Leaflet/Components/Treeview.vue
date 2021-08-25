@@ -146,7 +146,7 @@ export default {
   div::v-deep .v-list-item { min-height: 24px; padding: 0 2px; }
 
   div.flat::v-deep .v-treeview-node__level { display: none; width: 0 !important; }
-  div.flat::v-deep .v-list-item__content { padding: 6px 0 !important; }
   div.flat::v-deep .v-list-item { padding: 0 !important; }
   div.flat::v-deep .v-treeview-node__prepend { margin-right: 12px !important; }
+  /* div.flat::v-deep .v-list-item__content { padding: 6px 0 !important; } */
 </style>
