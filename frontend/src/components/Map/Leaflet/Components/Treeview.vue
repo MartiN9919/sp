@@ -37,7 +37,7 @@
             class="btns"
           >
             <v-btn class="btn" small icon>
-              <v-icon @click.stop="">mdi-plus-circle-outline</v-icon>
+              <v-icon @click.stop="activate_item(item.id)">mdi-plus-circle-outline</v-icon>
             </v-btn>
             <v-btn class="btn" small icon>
               <v-icon @click.stop="">mdi-chevron-right</v-icon>
