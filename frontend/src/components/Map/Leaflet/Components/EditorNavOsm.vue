@@ -5,6 +5,7 @@
         v-model="value"
         style="margin: 15px;"
         :color="$CONST.APP.COLOR_OBJ"
+        label="Искать"
         @input="on_input"
         dense
         outlined

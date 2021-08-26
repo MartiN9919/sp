@@ -336,6 +336,11 @@ export default {
 
       // разрешить редактирование каждой редактируемой фигуры
       this.editor_on();
+
+      // позиционирование карты на layer
+      if (Object.keys(layer._layers).length > 0) {
+        this.map.fitBounds(layer.getBounds(), { padding: [30, 30], });
+      }
     },
 
 
@@ -637,9 +642,8 @@ export default {
       case 'Escape':
         if (this.mode_selected_if()) {
           this.mode_selected_off();
-          e.originalEvent.stopPropagation();
+          e.originalEvent.stopPropagation();  // чтобы по ESC не закрылось окно
           this.$emit('setFocus');
-          //this.$el.focus();
         }
         break;
 
