@@ -115,8 +115,8 @@ export default {
 
     sel_item(item_id) {
       // click на выделенном item ==> item_id=[]
-      if ((item_id.length==0) && (this.item_sel>0)) { item_id = this.item_sel }
-      else                                          { this.item_sel = item_id }
+      if ((item_id.length==0) && (this.item_sel!=0)) { item_id = this.item_sel }
+      else                                           { this.item_sel = item_id }
 
       setTimeout(function() {
         this.$vuetify.goTo(
