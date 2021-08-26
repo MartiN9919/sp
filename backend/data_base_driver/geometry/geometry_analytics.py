@@ -24,7 +24,8 @@ def get_points_inside_polygon(polygon, points, group_id):
         'script_fields': {
             'inside': {
                 'script': {
-                    'inline': 'CONTAINS(GEOPOLY2D(' + str(polygon)[1:-1] + '), lat, lon)'
+                    'inline': 'CONTAINS(GEOPOLY2D(' + str(polygon)[1:-1] + '), '
+                                                                           'point.coordinates[1], point.coordinates[0])'
                 }
             }
         },
@@ -67,7 +68,8 @@ def get_distance_between_point(point1, point2, group_id):
         'script_fields': {
             'distance': {
                 'script': {
-                    'inline': 'GEODIST(' + str(lat) + ', ' + str(lon) + ', lat, lon, {in=degrees, out=km})'
+                    'inline': 'GEODIST(' + str(lat) + ', ' + str(lon) + ', point.coordinates[1], point.coordinates[0], '
+                                                                        '{in=degrees, out=km})'
                 }
             }
         }

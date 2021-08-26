@@ -266,6 +266,7 @@ class DAT_SYS_FILES:
 class DAT_OBJ_COL:
     table_name = lambda group: 'obj_' + group + '_col'
     ID = 'rec_id'
+    DAT = 'dat'
 
 
 class DAT_OBJ_ROW:

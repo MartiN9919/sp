@@ -1,0 +1,84 @@
+<template>
+  <l-control
+    v-if="MAP_GET_NOTIFY"
+    v-show="visible"
+    position="topcenterhorizontal"
+    class="leaflet-bar leaflet-control control_notify select_off"
+  >
+    <v-card
+      v-for="(message_item, message_ind) in messages"
+      :key="message_ind"
+      class="item"
+    >
+      {{ message_item }}
+    </v-card>
+  </l-control>
+</template>
+
+
+
+<script>
+
+import { mapGetters, } from 'vuex';
+import { LControl, } from "vue2-leaflet";
+
+
+export default {
+  name: 'Notify',
+  components: {
+    LControl,
+  },
+  data: () => ({
+    messages: [],
+  }),
+
+  mounted() {
+
+  },
+
+  computed: {
+    ...mapGetters([
+      'MAP_GET_NOTIFY',
+    ]),
+
+    // prop_sel: {
+    //   set: function(lst) { this.MAP_ACT_RANGE_SEL({lst: lst}); },
+    //   get: function()    { return this.MAP_GET_RANGE_SEL;      },
+    // },
+
+    visible() { return (this.messages.length > 0) },
+  },
+
+  methods: {
+    notify_add(message) {
+      this.messages.unshift(message)
+      this.messages.splice(3)
+    },
+    notify_set(message) {
+      this.messages=[message]
+    },
+    notify_del(message) {
+      this.messages=[]
+    },
+  },
+
+}
+
+</script>
+
+
+
+<style scoped lang="scss">
+  .control_notify {
+    border: 2px solid rgba(0,0,0,0.2);
+    background-color: white;
+    opacity: .7;
+  }
+
+  div::v-deep.control_notify .item {
+    height: 30px !important;
+    line-height: 30px !important;
+    text-align: center;
+    padding: 0 8px;
+  }
+</style>

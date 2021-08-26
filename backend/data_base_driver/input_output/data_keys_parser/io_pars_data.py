@@ -151,7 +151,7 @@ class IO_PARS_DATA(dict):
             # COL
             if key_rec[DAT_SYS_KEY.COL]:
                 if add.get(self.ADD_SYS_KEY, False): self.col_key.append(key_rec)
-                self.col_dic.append({key_name: val, })
+                self.col_dic.append({key_name: val, DAT_OBJ_COL.DAT: '\'' + data_item[DATA_DAT] + '\''})
             # ROW
             else:
                 if add.get(self.ADD_SYS_KEY, False): self.row_key.append(key_rec)
@@ -197,8 +197,9 @@ class IO_PARS_DATA(dict):
             # ['val', 'УД'] дописать с учетом появления значения у связи
             if data_key == DAT_REL.VAL:
                 if data_val1 == '':
-                    continue
-                vals[DAT_REL.VAL] = '\'' + str(data_val1) + '\''
+                    vals[DAT_REL.VAL] = '\'\''
+                else:
+                    vals[DAT_REL.VAL] = '\'' + str(data_val1) + '\''
                 continue
 
             # ['obj_1',5,100], ['obj_2','file']

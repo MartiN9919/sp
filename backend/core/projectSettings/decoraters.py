@@ -47,7 +47,7 @@ def request_get(f):
 
 def request_post(f):
     """
-    Доступ только get-запросам
+    Доступ только post-запросам
     """
     def wrap(request, *args, **kwargs):
         if request.method!='POST':

@@ -7,8 +7,8 @@
     <template v-slot:firstPane>
       <EditorNav
         localStorageKey="script_param"
-        :triggerResetSelect="nav_trigger_reset_select"
         @selectedFc="on_nav_selected_fc"
+        @actionNew="on_nav_new"
       />
     </template>
 
@@ -52,6 +52,9 @@
           :options="measure_options()"
         />
 
+        <!-- ЗАМЕТКИ -->
+        <Notify ref="notify"/>
+
       </l-map>
      </template>
 
@@ -70,9 +73,12 @@ import LControlPolylineMeasure from 'vue2-leaflet-polyline-measure';
 import EditorSplit  from '@/components/Map/Leaflet/Components/EditorSplit';
 import EditorNav    from '@/components/Map/Leaflet/Components/EditorNav';
 import EditorMap    from '@/components/Map/Leaflet/Components/EditorMap';
+import Notify       from '@/components/Map/Leaflet/Components/Notify';
 import MixKey       from '@/components/Map/Leaflet/Mixins/Key';
 import MixMeasure   from '@/components/Map/Leaflet/Mixins/Measure';
 import MixResize    from '@/components/Map/Leaflet/Mixins/Resize';
+import MixControl   from '@/components/Map/Leaflet/Mixins/Control';
+
 
 import { fc_merge } from '@/components/Map/Leaflet/Lib/Lib';
 
@@ -85,8 +91,8 @@ export default {
     modeSelected: String,     // включенный по умолчанию режим, например: 'Polygon'
   },
 
-  components: { LMap, LTileLayer, LControlScale, LControlPolylineMeasure, EditorMap, EditorNav, EditorSplit, },
-  mixins: [ MixKey, MixMeasure, MixResize, ],
+  components: { LMap, LTileLayer, LControlScale, LControlPolylineMeasure, EditorMap, EditorNav, EditorSplit, Notify, },
+  mixins: [ MixKey, MixMeasure, MixResize, MixControl, ],
 
   data: () => ({
     fc_child: undefined,
@@ -94,7 +100,6 @@ export default {
       zoomControl: false,
       zoomSnap: 0.5,
     },
-    nav_trigger_reset_select: true,
   }),
 
   created() {
@@ -146,15 +151,20 @@ export default {
 
     // сбросить выделение (obj, osm): из child.map в свойство child.nav
     on_map_reset_select() {
-      this.nav_trigger_reset_select = !this.nav_trigger_reset_select;
+      this.$refs.notify.notify_del();
     },
 
     // обновить на карте fc
-    on_nav_selected_fc(fc) {
+    on_nav_selected_fc(fc, name) {
       console.log(11);
       this.fc_child  = JSON.parse(JSON.stringify(fc));
       this.fc_parent = this.fc_child;
       let dd = fc_merge([this.fc_child,]);
+      this.$refs.notify.notify_set(name);
+    },
+
+    on_nav_new(id) {
+      console.log(22);
     },
 
   },

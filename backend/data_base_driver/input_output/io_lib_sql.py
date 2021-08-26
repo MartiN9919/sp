@@ -2,7 +2,8 @@ import datetime
 from data_base_driver.connect.connect_manticore import db_shinxql
 from data_base_driver.connect.connect_mysql import db_sql, db_connect
 from data_base_driver.constants.const_dat import DAT_SYS_ID, DAT_OBJ_ROW
-from data_base_driver.input_output.add_object_http import add_row_record_http, add_relation_http, add_col_record_http
+from data_base_driver.input_output.add_object_http import add_row_record_http, add_relation_http, add_col_record_http, \
+    update_col_record_http
 
 DEBUG = False
 
@@ -115,8 +116,9 @@ class IO_LIB_SQL():
     # + обновление всех col-ключей: ОДНОЙ sql-операцией
     def obj_update_col_all(self, data_pars):
         if not data_pars.rec_id: raise Exception('Unknow rec_id: data_pars = ' + str(data_pars))
+        update_col_record_http(data_pars.col_table, data_pars.rec_id, data_pars.col_equ_flat())
         self.__sql_exec__(sql="UPDATE IGNORE " + data_pars.col_table + " SET " + ', '.join(
-            data_pars.col_equ_flat()) + " WHERE id=" + data_pars.rec_id + " LIMIT 1", read=False)
+            data_pars.col_equ_flat()) + " WHERE rec_id=" + data_pars.rec_id + " LIMIT 1", read=False)
         return self.connection.get_connection().affected_rows() == 1
 
     ###########################################

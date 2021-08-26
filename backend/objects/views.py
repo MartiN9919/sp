@@ -107,9 +107,9 @@ def aj_relation(request):
     if request.method == 'POST':
         data = json.loads(request.body)
         try:
-            result = add_rel(group_id=group_id, key_id=data.get('key_id'), object_1_id=data.get('object_1_id'),
-                    rec_1_id=data.get('rec_1_id'), object_2_id=data.get('object_2_id'), rec_2_id=data.get('rec_2_id'),
-                    val=data.get('val'), date_time=data.get('date_time'))
+            result = add_rel(group_id=group_id, object_1_id=data.get('object_1_id'), rec_1_id=data.get('rec_1_id'),
+                             object_2_id=data.get('object_2_id'), rec_2_id=data.get('rec_2_id'),
+                             params=data.get('relations'))
             return JsonResponse({'data': result}, status=200)
         except:
             return JsonResponse({'data': 'ошибка добавления'}, status=497)
@@ -227,7 +227,10 @@ def aj_osm_search(request):
     @param request: text - поисковая строка
     @return: json [{id,name,icon,},...]
     """
-    return {'data': osm_search(text=request.GET.get('text', ''))}
+    geometry = False
+    if request.GET.get('geometry', 'False') == 'true':
+        geometry = True
+    return {'data': osm_search(text=request.GET.get('text', ''), geometry=geometry)}
 
 
 
@@ -242,4 +245,5 @@ def aj_osm_fc(request):
     @return: fc
     """
     return {'data': osm_fc(id=request.GET['id'])}
+
 

@@ -23,7 +23,8 @@ def get_title(params, title_len=3):
         return title
     if len(title_list) == 0:
         title = ', '.join(str(get_key_by_id(param['id'])['title'] + ': ' + param['values'][0]['value'])
-                          for param in params)
+                          for param in params[:title_len])
+        return title
     else:
         title = ', '.join(str(title['title'] + ': ' + title['value']) for title in title_list)
     if len(title_list) < title_len:
