@@ -68,8 +68,13 @@ def add_col_record_http(index_title, id, params):
         key = param_list[0]
         if key == 'location' or key == 'point':
             value = param_list[1][20:-2]
+        elif key == 'dat':
+            key = 'sec'
+            date_time = datetime.datetime.strptime(param_list[1][1:-1], "%Y-%m-%d %H:%M:%S")
+            days = date_time.date().toordinal() + 365
+            value = date_time.time().second + date_time.time().minute * 60 + date_time.time().hour * 3600 + days * 86400
         else:
-            value = param_list[1].replace('\'','')
+            value = param_list[1].replace('\'', '')
         doc[key] = value
     doc['rec_id'] = id
     data = json.dumps({'index': index_title,
