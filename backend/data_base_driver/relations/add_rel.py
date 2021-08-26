@@ -56,7 +56,11 @@ def add_rel_by_other_object(group_id, object_id, rec_id, other_object_id, other_
     @param other_rec_id: идентификатор объекта источника связей
     """
     other_object_relations = get_rel_cascade(group_id, other_object_id, other_rec_id, 1)['rels']
+    result = []
     for relation_object in other_object_relations:
         for relation in relation_object['relations']:
-            add_rel(group_id, relation['key_id'], object_id, rec_id, relation_object['object_id'],
-                    relation_object['rec_id'], relation['val'], get_date_time_from_sec(relation['sec']))
+            params = [{'id': relation['id'], 'val': item['val'],
+                       'date': item['date'][:-3]} for item in relation['values']]
+            result += add_rel(group_id, object_id, rec_id, relation_object['object_id'],
+                    relation_object['rec_id'], params)
+    return result
