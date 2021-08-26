@@ -12,7 +12,7 @@
 /*
  * КОМПОНЕНТ: ДЕРЕВО ГЕОМЕТРИЙ
  *  <EditorNavObj
- *    localStoragePrefix="key_name"
+ *    localStorageKeyPostfix="key_name"
  *    @onNew=""
  *    @onAdd=""
  *  />
@@ -21,7 +21,7 @@
  *  @update_fc  - событие при изменении на карте fc
  */
 
-import router from '@/router'
+import router from '@/router';
 import { getResponseAxios } from '@/plugins/axios_settings';
 import Treeview from '@/components/Map/Leaflet/Components/Treeview';
 import { fc_normalize, } from '@/components/Map/Leaflet/Lib/Lib';
@@ -31,7 +31,7 @@ export default {
   components: { Treeview, },
 
   props: {
-    localStoragePrefix: { type: String, default() { return '' } },
+    localStorageKeyPostfix: { type: String, default() { return '' } },
   },
   emits: [
     'onNew',
@@ -61,7 +61,7 @@ export default {
   },
 
   computed: {
-    key_sel() { return router.currentRoute.name + '_editor_nav_obj_sel_' + this.localStoragePrefix },
+    key_sel() { return router.currentRoute.name + '_editor_nav_obj_sel_' + this.localStorageKeyPostfix },
   },
 
   methods: {

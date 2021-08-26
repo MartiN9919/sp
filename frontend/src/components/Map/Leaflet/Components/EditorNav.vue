@@ -40,7 +40,7 @@
 
 <script>
 
-import router       from '@/router'
+import router       from '@/router';
 import editorNavOsm from '@/components/Map/Leaflet/Components/EditorNavOsm';
 import EditorNavObj from '@/components/Map/Leaflet/Components/EditorNavObj';
 import MixResize    from '@/components/Map/Leaflet/Mixins/Resize';
@@ -53,7 +53,7 @@ export default {
 
   inheritAttrs: false,
   props: {
-    localStorageKey: { type: String, default() { return '' } },
+    localStorageKeyPostfix: { type: String, default() { return '' } },
   },
 
   data: () => ({
@@ -67,7 +67,7 @@ export default {
   },
 
   computed: {
-    key_tab() { return router.currentRoute.name + '_editor_nav_tab_sel_' + this.localStoragePrefix },
+    key_tab() { return router.currentRoute.name + '_editor_nav_tab_sel_' + this.localStorageKeyPostfix },
   },
 
   mounted() {

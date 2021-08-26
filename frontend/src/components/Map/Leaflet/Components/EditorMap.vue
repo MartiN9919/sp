@@ -408,7 +408,7 @@ export default {
         if (this.layer_editor_is(layer)) {
           layer.pm.enable({
             allowSelfIntersection: false,     // запретить самопересечения линий
-            limitMarkersToCount:   20,        // количество редактируемых точек на линии
+            limitMarkersToCount:   5,         // количество редактируемых точек на линии
           });
         }
       }.bind(this));

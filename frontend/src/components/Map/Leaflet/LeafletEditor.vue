@@ -1,12 +1,12 @@
 <template>
   <EditorSplit
     style="height: 70vh;"
-    localStorageKey="script_param"
+    :localStorageKeyPostfix="LOCAL_STORAGE_KEY_POSTFIX"
   >
 
     <template v-slot:firstPane>
       <EditorNav
-        localStorageKey="script_param"
+        :localStorageKeyPostfix="LOCAL_STORAGE_KEY_POSTFIX"
         @onNew="on_nav_new"
         @onAdd="on_nav_add"
       />
@@ -80,7 +80,6 @@ import MixMeasure   from '@/components/Map/Leaflet/Mixins/Measure';
 import MixResize    from '@/components/Map/Leaflet/Mixins/Resize';
 import MixControl   from '@/components/Map/Leaflet/Mixins/Control';
 
-
 import { fc_merge } from '@/components/Map/Leaflet/Lib/Lib';
 
 export default {
@@ -96,6 +95,7 @@ export default {
   mixins: [ MixKey, MixMeasure, MixResize, MixControl, ],
 
   data: () => ({
+    LOCAL_STORAGE_KEY_POSTFIX: 'geometry',
     fc_child: undefined,
     map_options: {
       zoomControl: false,
