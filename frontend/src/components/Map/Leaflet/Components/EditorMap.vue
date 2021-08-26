@@ -488,6 +488,12 @@ export default {
     },
 
     // проверить режим
+    mode_selected_if() { return (
+      this.mode_selected_if_marker()  ||
+      this.mode_selected_if_line()    ||
+      this.mode_selected_if_polygon() ||
+      this.mode_selected_if_cut()
+    )},
     mode_selected_if_marker()  { return this.mode_selected == TYPES.MARKER;  },
     mode_selected_if_line()    { return this.mode_selected == TYPES.LINE;    },
     mode_selected_if_polygon() { return this.mode_selected == TYPES.POLYGON; },
@@ -629,7 +635,12 @@ export default {
     on_key_down(e)  {
       switch (e.originalEvent.key) {
       case 'Escape':
-        this.mode_selected_off();
+        if (this.mode_selected_if()) {
+          this.mode_selected_off();
+          e.originalEvent.stopPropagation();
+          this.$emit('setFocus');
+          //this.$el.focus();
+        }
         break;
 
       case 'M': case 'm': // латиница

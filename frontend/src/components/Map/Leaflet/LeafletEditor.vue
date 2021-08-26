@@ -36,6 +36,7 @@
           :modeEnabled="modeEnabled"
           :modeSelected="modeSelected"
           @resetSelect="on_map_reset_select"
+          @setFocus="on_map_set_focus"
         />
 
         <!-- МАСШТАБ -->
@@ -152,6 +153,10 @@ export default {
     // сбросить выделение (obj, osm): из child.map в свойство child.nav
     on_map_reset_select() {
       this.$refs.notify.notify_del();
+    },
+
+    on_map_set_focus() {
+      this.$refs.map.$el.focus()
     },
 
     // обновить на карте fc
