@@ -4,6 +4,7 @@
       v-model="value"
       :hide-details="hideDetails"
       :class="bodyInputClasses"
+      :rules="rules"
       readonly
     >
       <template v-slot:label>
@@ -31,7 +32,9 @@ import BodyInputForm from "../UI/bodyInputForm"
 export default {
   name: "unknownInput",
   components: {BodyInputForm},
+  model: { prop: 'inputString', event: 'changeInputString', },
   props: {
+    inputString: Number,
     deletable: {
       type: Boolean,
       default: false,
@@ -42,17 +45,27 @@ export default {
     },
     unknownText: {
       type: String,
-      default: 'Создана'
+      default: 'Создана',
     },
     hideDetails: {
       type: Boolean,
       default: false,
     },
+    rules: {
+      type: Array,
+      default: function () {
+        return []
+      }
+    },
   },
   computed: {
     bodyInputClasses: function () { return this.title.length ? '' : 'pt-0' },
     value: {
-      get: function () { return this.unknownText },
+      get: function () {
+        if(this.inputString !== null)
+          return this.unknownText
+        else this.value = 0
+      },
       set: function (value) { this.$emit('changeInputString', value) }
     }
   },

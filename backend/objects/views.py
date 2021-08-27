@@ -109,7 +109,7 @@ def aj_relation(request):
         try:
             result = add_rel(group_id=group_id, object_1_id=data.get('object_1_id'), rec_1_id=data.get('rec_1_id'),
                              object_2_id=data.get('object_2_id'), rec_2_id=data.get('rec_2_id'),
-                             params=data.get('relations'))
+                             params=data.get('params'))
             return JsonResponse({'data': result}, status=200)
         except:
             return JsonResponse({'data': 'ошибка добавления'}, status=497)

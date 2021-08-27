@@ -76,16 +76,22 @@ class SearchTreeRootItem {
     return this.actualIcon.find(i => i.status === this.actual)
   }
 
-  getTree(item=this) {
-    let tree = {actual: item.actual, object_id: item.object.id, request: item.request, rels: []}
-    for(let rel of item.rels)
-      tree.rels.push(this.getTree(rel))
+  getTree() {
+    let tree = {actual: this.actual, object_id: this.object.id, request: this.request, rels: []}
+    if(this.hasOwnProperty('rel'))
+      tree.rel = {
+        id: this.rel?.id || 0,
+        value: this.relValue || 0,
+        date_time_start: this.relDateTimeStart,
+        date_time_end: this.relDateTimeEnd,
+      }
+    for(let rel of this.rels)
+      tree.rels.push(rel.getTree())
     return tree
   }
 }
 
-class SearchTreeItem extends SearchTreeRootItem{
-
+class SearchTreeItem extends SearchTreeRootItem {
   constructor(item) {
     super({object: item.object, actual: item.actual})
     this.rel = item.rel

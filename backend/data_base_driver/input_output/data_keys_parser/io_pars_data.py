@@ -196,7 +196,7 @@ class IO_PARS_DATA(dict):
 
             # ['val', 'УД'] дописать с учетом появления значения у связи
             if data_key == DAT_REL.VAL:
-                if data_val1 == '':
+                if data_val1 == 0:
                     vals[DAT_REL.VAL] = '\'\''
                 else:
                     vals[DAT_REL.VAL] = '\'' + str(data_val1) + '\''
