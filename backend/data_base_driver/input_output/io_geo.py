@@ -26,6 +26,8 @@ def feature_collection_by_geometry(group_id, object_type, rec_id, keys, time_int
         keys.append(25204)
     elif object_type == 30:
         keys.append(30304)
+    if len(rec_id) == 0:
+        return geojson.FeatureCollection(features=[])
     records = io_get_obj(group_id, object_type, keys, rec_id, 1000, '', time_interval)
     objects = {}
     for record in records:
@@ -58,13 +60,16 @@ def feature_collection_by_geometry(group_id, object_type, rec_id, keys, time_int
     return geojson.FeatureCollection(temp)
 
 
-def relations_to_feature_collection(group_id, geometry_type, object_type, rec_id, keys_relation, keys_object,
-                                    time_interval):
-    relations = io_get_rel(group_id, keys_relation, [object_type, rec_id], [geometry_type, ], [], time_interval, True)
+def relations_to_geometry_id(group_id, geometry_type, object_type, rec_id, keys_relation, time_interval):
+    if rec_id == 0:
+        object = [object_type]
+    else:
+        object = [object_type, rec_id]
+    relations = io_get_rel(group_id, keys_relation, object, [geometry_type, ], [], time_interval, True)
     objects = [(int(item['obj_id_1']), int(item['rec_id_1'])) for item in relations] + \
               [(int(item['obj_id_2']), int(item['rec_id_2'])) for item in relations]
     geo_ids = el_to_rec_id(obj=geometry_type, els=objects)
-    return feature_collection_by_geometry(group_id, geometry_type, geo_ids, keys_object, {})
+    return geo_ids
 
 
 def io_get_geometry_tree_layer(parent_id):

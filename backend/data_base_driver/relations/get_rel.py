@@ -38,12 +38,13 @@ def get_rel_by_object(group_id, object, id, parents):
                 temp_relation[0]['values'].append({'val': relation['val'], 'sec': relation['sec']})
             else:
                 old_relation[0]['relations'].append({'id': relation['rel_type'], 'values': [{ 'val': relation['val'],
-                                                     'date': get_date_time_from_sec(relation['sec'])}]})
+                                                     'date': get_date_time_from_sec(relation['sec'])[:-3]}]})
         else:
             relations.append(
                 {'object_id': relation['object_id'], 'rec_id': relation['rec_id'], 'params': relation['params'],
                  'relations': [{'id': relation['rel_type'],
-                                'values': [{'val': relation['val'], 'date': get_date_time_from_sec(relation['sec'])}]}]})
+                                'values': [{'val': relation['val'],
+                                            'date': get_date_time_from_sec(relation['sec'])[:-3]}]}]})
     return {'object_id': object, 'relations': [], 'rec_id': id,
             'params': get_object_record_by_id_http(object, id)['params'],
             'rels': relations}

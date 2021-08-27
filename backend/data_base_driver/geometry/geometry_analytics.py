@@ -1,6 +1,7 @@
 import json
 
 import requests
+from functools import reduce
 
 from data_base_driver.constants.const_dat import DAT_OBJ_COL
 from data_base_driver.constants.const_fulltextsearch import FullTextSearch
@@ -19,13 +20,15 @@ def get_points_inside_polygon(polygon, points, group_id):
     must = [{'equals': {'inside': 1}}]
     if len(points) > 0:
         must.append({'in': {DAT_OBJ_COL.ID: [int(rec_id) for rec_id in points]}})
+    else:
+        return []
     data = json.dumps({
         'index': DAT_OBJ_COL.table_name('point'),
         'script_fields': {
             'inside': {
                 'script': {
                     'inline': 'CONTAINS(GEOPOLY2D(' + str(polygon)[1:-1] + '), '
-                                                                           'point.coordinates[1], point.coordinates[0])'
+                                                                           'point.coordinates[0], point.coordinates[1])'
                 }
             }
         },
@@ -78,3 +81,26 @@ def get_distance_between_point(point1, point2, group_id):
     if len(response) == 0:
         return 0
     return response[0]['_source']['distance']
+
+
+def feature_collection_to_manticore_polygon(feature_collection):
+    temp_list = []
+    for feature in feature_collection['features']:
+        if feature['geometry']['type'] == 'GeometryCollection':
+            for geometry in feature['geometry']['geometries']:
+                if geometry['type'] == 'Polygon':
+                    temp_list.append(geometry['coordinates'])
+        else:
+            if feature['geometry']['type'] == 'Polygon':
+                temp_list.append(feature['geometry']['coordinates'])
+    in_polygon = []
+    out_polygon = []
+    for temp in temp_list:
+        in_polygon.append(reduce(lambda x, y: x+y, temp[0]))
+        for out in temp[1:]:
+            out_polygon.append(reduce(lambda x, y: x+y, out))
+    return {'in_polygon': in_polygon, 'out_polygon': out_polygon}
+
+
+
+# print(relations_to_feature_collection(1, 25, 45, 0, [50141], [], {}))
