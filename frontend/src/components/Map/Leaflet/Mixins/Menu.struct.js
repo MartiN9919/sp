@@ -44,6 +44,12 @@ export default {
               model:    'prop_legend',
             },
             {
+              icon:     'mdi-message-outline',
+              title:    'Заметки',
+              subtitle: 'Показывать заметки',
+              model:    'prop_notify',
+            },
+            {
               icon:     'mdi-ruler',
               title:    'Масштаб',
               subtitle: 'Показывать масштабную линейку',

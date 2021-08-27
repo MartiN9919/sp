@@ -30,6 +30,7 @@ export default {
       'MAP_GET_CLUSTER',
       'MAP_GET_HINT',
       'MAP_GET_LEGEND',
+      'MAP_GET_NOTIFY',
       'MAP_GET_SCALE',
       'MAP_GET_MEASURE',
       'MAP_GET_LOGO',
@@ -57,6 +58,10 @@ export default {
       set: function(val) { this.MAP_ACT_LEGEND({on: val}); },
       get: function()    { return this.MAP_GET_LEGEND; },
     },
+    prop_notify: {
+      set: function(val) { this.MAP_ACT_NOTIFY({on: val}); },
+      get: function()    { return this.MAP_GET_NOTIFY; },
+    },
     prop_scale: {
       set: function(val) { this.MAP_ACT_SCALE({on: val}); },
       get: function()    { return this.MAP_GET_SCALE; },
@@ -80,6 +85,7 @@ export default {
       'MAP_ACT_CLUSTER',
       'MAP_ACT_HINT',
       'MAP_ACT_LEGEND',
+      'MAP_ACT_NOTIFY',
       'MAP_ACT_SCALE',
       'MAP_ACT_MEASURE',
       'MAP_ACT_LOGO',
@@ -92,14 +98,22 @@ export default {
 
 
     // Показать первый уровень меню, вызывается из родителя
-    menu_show(e) {
+    menu_show(e, mode) {
       e.originalEvent.preventDefault();
       e.originalEvent.stopPropagation();
 
       // обновить menu_items
-      let menu = this.menu_struct;                           // основа
-      menu[0]['menu'][0]['radio'] = this.MAP_GET_TILES  ;    // добавить выбор тайлов
-      this.menu_items = [...this.menu_items_key(), ...menu]; // добавить работу с фрагментами
+      let menu = JSON.parse(JSON.stringify(this.menu_struct));  // основа - глубокая копия
+      menu[0]['menu'][0]['radio'] = this.MAP_GET_TILES  ;       // добавить выбор тайлов
+      this.menu_items = [...this.menu_items_key(), ...menu];    // добавить работу с фрагментами
+
+      if (mode=='editor') {
+        this.menu_items[2]['menu'].splice(0, 4);                // удалить некоторые настройки оформления
+        this.menu_items.splice(4, 1);                           // удалить тесты
+        this.menu_items.splice(3, 1);                           // удалить сепаратор
+      } else {
+        //this.menu_items[2]['menu'].splice(4, 1);              // удалить некоторые настройки оформления
+      }
 
       // показать корневой уровень меню
       this.$refs.menu.show_root(e.originalEvent.clientX, e.originalEvent.clientY);
@@ -116,6 +130,7 @@ export default {
     test_edit_1()     { this.MAP_ACT_EDIT(MAP_TEST_EDIT_1); },
     test_edit_2()     { this.MAP_ACT_EDIT(MAP_TEST_EDIT_2); },
 
+    // тест action
     dd(item) {
       console.log(1, item)
     },

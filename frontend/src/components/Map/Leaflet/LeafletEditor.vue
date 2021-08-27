@@ -19,7 +19,7 @@
         :options="map_options"
         :crs="MAP_GET_TILES[MAP_GET_TILE].crs"
         @ready="on_map_ready"
-        @contextmenu="menu_show"
+        @contextmenu="menu_show($event,'editor')"
         @dblclick="on_map_dblclick"
       >
 
