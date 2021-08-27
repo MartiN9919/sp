@@ -19,7 +19,7 @@
         :options="map_options"
         :crs="MAP_GET_TILES[MAP_GET_TILE].crs"
         @ready="on_map_ready"
-        @contextmenu=""
+        @contextmenu="menu_show"
         @dblclick="on_map_dblclick"
       >
 
@@ -53,10 +53,20 @@
           :options="measure_options()"
         />
 
+        <!-- ЛОГОТИП -->
+        <Logo/>
+
         <!-- ЗАМЕТКИ -->
         <Notify ref="notify"/>
 
       </l-map>
+
+      <contextMenuNested
+        ref="menu"
+        :form="form"
+        :items="menu_items"
+      />
+
      </template>
 
   </EditorSplit>
@@ -74,11 +84,13 @@ import LControlPolylineMeasure from 'vue2-leaflet-polyline-measure';
 import EditorSplit  from '@/components/Map/Leaflet/Components/EditorSplit';
 import EditorNav    from '@/components/Map/Leaflet/Components/EditorNav';
 import EditorMap    from '@/components/Map/Leaflet/Components/EditorMap';
+import Logo         from '@/components/Map/Leaflet/Components/Logo';
 import Notify       from '@/components/Map/Leaflet/Components/Notify';
 import MixKey       from '@/components/Map/Leaflet/Mixins/Key';
-import MixMeasure   from '@/components/Map/Leaflet/Mixins/Measure';
 import MixResize    from '@/components/Map/Leaflet/Mixins/Resize';
 import MixControl   from '@/components/Map/Leaflet/Mixins/Control';
+import MixMeasure   from '@/components/Map/Leaflet/Mixins/Measure';
+import MixMenu      from '@/components/Map/Leaflet/Mixins/Menu';
 
 import { fc_merge } from '@/components/Map/Leaflet/Lib/Lib';
 
@@ -91,8 +103,8 @@ export default {
     modeSelected: String,     // включенный по умолчанию режим, например: 'Polygon'
   },
 
-  components: { LMap, LTileLayer, LControlScale, LControlPolylineMeasure, EditorMap, EditorNav, EditorSplit, Notify, },
-  mixins: [ MixKey, MixMeasure, MixResize, MixControl, ],
+  components: { LMap, LTileLayer, LControlScale, Logo, LControlPolylineMeasure, EditorMap, EditorNav, EditorSplit, Notify, },
+  mixins: [ MixKey, MixMeasure, MixMenu, MixResize, MixControl, ],
 
   data: () => ({
     LOCAL_STORAGE_KEY_POSTFIX: 'geometry',

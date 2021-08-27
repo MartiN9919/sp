@@ -96,7 +96,6 @@ export default {
           if (item_id.length>0) { item_id = item_id[0]; }
           else                  { item_id = this.item_sel_id; }
         }
-
         this.$emit('update:itemSel', item_id);  // вызывает watch.item_sel_id
       },
     },
