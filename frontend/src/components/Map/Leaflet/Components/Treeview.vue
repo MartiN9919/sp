@@ -73,7 +73,10 @@ export default {
 
   watch: {
     items:    function(items)   { this.ini_items(); },
-    item_sel: function(item_id) { this.sel_item(item_id); },
+    item_sel: function(item_id) {
+      console.log(1)
+      this.sel_item(item_id);
+    },
   },
 
   computed: {
@@ -115,12 +118,10 @@ export default {
 
     sel_item(item_id) {
       // click на выделенном item ==> item_id=[]
+      //if (this.item_sel == item_id) return;
       if (item_id.length>0) { this.item_sel = item_id }
       else                  { item_id = this.item_sel }
       if (item_id.length==0) return;
-
-      // if ((item_id.length==0) && (this.item_sel!=0)) { item_id = this.item_sel }
-      // else                                           { this.item_sel = item_id }
 
       setTimeout(function() {
         this.$vuetify.goTo(

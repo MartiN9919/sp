@@ -23,13 +23,13 @@
     <Treeview
       class="tree"
       :items="found_items"
+      :itemSel.number.sync="found_item_sel"
       iconDef="mdi-web"
       :isIcon="true"
       :isFlat="true"
       @onNew="on_new"
       @onAdd="on_add"
     />
-    <-- :itemSel.number.sync="found_item_sel" -->
 
   </v-card>
 </template>
@@ -54,11 +54,11 @@ export default {
   ],
 
   data: () => ({
-    // found_item_sel:  0,
     search_value: undefined,
     search_items: [],
     search_wait:  false,
     found_items:  undefined,
+    found_item_sel: 0,
   }),
 
   created: function() {

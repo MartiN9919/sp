@@ -39,8 +39,8 @@ export default {
   ],
 
   data: () => ({
-    item_sel: 0,
     items:    [],
+    item_sel: 0,
   }),
 
   created: function() {
