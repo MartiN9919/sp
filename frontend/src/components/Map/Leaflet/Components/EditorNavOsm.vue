@@ -14,6 +14,7 @@
         outlined
         hide-details
         clearable
+        autofocus
       >
       </v-combobox>
     </v-hover>
@@ -57,6 +58,7 @@ export default {
     search_value: undefined,
     search_items: [],
     search_wait:  false,
+    search_timer: undefined,
     found_items:  undefined,
     found_item_sel: 0,
   }),
@@ -69,17 +71,22 @@ export default {
     this.search_items = JSON.parse(localStorage.getItem(this.key_sel, []))
   },
 
-  beforeDestroy () {
-    //this.timer_abort();
-  },
+  // beforeDestroy () {
+  //   this.timer_abort();
+  // },
+
+  // watch: {
+  //   tab(val) { if (val == 'tab-osm') this.on_tab(); },
+  // },
 
   computed: {
     key_sel() { return router.currentRoute.name + '_editor_nav_osm_items_' + this.localStorageKeyPostfix },
   },
 
   methods: {
-    // on_input() { this.timer_abort(); this.timer_input = setTimeout(this.on_search, 1000); },
+    // on_tab()      { this.timer_abort(); this.timer_input = setTimeout(this.setFocus, 1000); },
     // timer_abort() { if (this.timer_input) { clearTimeout(this.timer_input); this.timer_input = undefined; } },
+    // setFocus()    { this.$refs.inp.$el.focus(); },
 
     on_search() {
       this.$refs.inp.isMenuActive = false;
@@ -98,7 +105,7 @@ export default {
             (!this.search_items.find((item) => (item==name)))
           ) {
             this.search_items.unshift(name);
-            this.search_items.splice(100);
+            this.search_items.splice(256);
             localStorage.setItem(this.key_sel, JSON.stringify(this.search_items).toLowerCase());
           }
 

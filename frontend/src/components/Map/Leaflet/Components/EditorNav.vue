@@ -76,7 +76,7 @@ export default {
 
   methods: {
     on_resize () {                   // fire from MixResize
-      this.$refs.tabs.callSlider(); // устранение бага со слайдером
+      this.$refs.tabs.callSlider();  // устранение бага со слайдером
     },
   },
 
