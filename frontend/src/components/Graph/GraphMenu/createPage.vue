@@ -17,7 +17,7 @@
         <v-tab-item v-for="(object, key) in editableObjects" :key="key" eager>
           <v-form :ref="'form' + key" v-model="valid">
             <object-record-area
-              :classifiers="object.params"
+              :params="object.params"
               @createNewParam="createNewParam"
               @deleteNewParam="deleteNewParam"
             ></object-record-area>
@@ -106,17 +106,10 @@ export default {
         this.saveEditableObject(this.activeTab)
     },
     createNewParam(event) {
-      this.addNewParamEditableObject({
-        classifierId: event,
-        positionEditableObject: this.activeTab
-      })
+      this.addNewParamEditableObject({id: event, position: this.activeTab})
     },
     deleteNewParam(event) {
-      this.deleteNewParamEditableObject({
-        param: event.param,
-        classifierId: event.classifierId,
-        positionEditableObject: this.activeTab
-      })
+      this.deleteNewParamEditableObject({param: event.param, id: event.id, position: this.activeTab})
     },
     tabStatus(objects) {
       this.$el.querySelector('#tabs > .v-item-group').style.display = objects.length <= 1 ? 'none' : 'flex'

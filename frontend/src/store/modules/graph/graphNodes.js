@@ -44,7 +44,7 @@ export default {
           (relations.object_id2 === objectsRelation.object_id1 && relations.rec_id2 === objectsRelation.rec_id1))
       )
       if (findRelation)
-        findRelation.relation.push(objectsRelation.relations)
+        findRelation.relations.push(objectsRelation.relations)
       else state.objectsRelations.push(objectsRelation)
     },
     removeChoosingObject: (state, {object_id, rec_id}) => {
@@ -66,7 +66,17 @@ export default {
         })
       }
       commit('addChoosingObject', choosingObject)
-      dispatch('getObjectRelations', {params: request})
+      dispatch('getRelationFromServer', {params: request})
+    },
+    addChoosingRelation({commit}, {object, relations}) {
+      for(let relation of relations)
+        commit('addObjectsRelation', {
+          object_id1: object.o1,
+          rec_id1: object.r1,
+          object_id2: object.o2,
+          rec_id2: object.r2,
+          relations: relation,
+        })
     },
     getObjectRelations({commit}, {params, config = {}}) {
       return postResponseAxios('objects/object_relation/', params, config)

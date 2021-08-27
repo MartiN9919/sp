@@ -7,8 +7,9 @@
       </div>
       <v-form ref="form" v-model="valid">
         <object-record-area
-          :classifiers="editableRelation.params"
+          :params="editableRelation.params"
           @createNewParam="createNewParam"
+          @deleteNewParam="deleteNewParam"
         ></object-record-area>
       </v-form>
     </div>
@@ -16,6 +17,7 @@
     <control-menu
       v-if="editableRelation"
       :buttons="controlButtons"
+      @create="create"
       class="control-menu"
     ></control-menu>
   </v-col>
@@ -35,22 +37,25 @@ export default {
   computed: {
     ...mapGetters(['editableRelation']),
     controlButtons: function () {
-      console.log(!!(this.valid))
-      console.log(('form' in this.$refs && !!(this.$refs.form.inputs.length)))
-      console.log(this.$refs.form)
       return [
         {
           title: 'Создать',
-          action: 'recreate',
+          action: 'create',
           disabled: !!(this.valid && 'form' in this.$refs && this.$refs.form.inputs.length)
         },
       ]
     }
   },
   methods: {
-    ...mapActions(['addNewParamEditableRelation']),
+    ...mapActions(['addNewParamEditableRelation', 'deleteNewParamEditableRelation', 'saveEditableRelation']),
     createNewParam(event) {
       this.addNewParamEditableRelation(event)
+    },
+    deleteNewParam(event) {
+      this.deleteNewParamEditableRelation({param: event.param, id: event.id})
+    },
+    create() {
+      this.saveEditableRelation()
     }
   }
 }

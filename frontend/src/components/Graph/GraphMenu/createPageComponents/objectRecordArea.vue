@@ -1,19 +1,19 @@
 <template>
   <v-expansion-panels v-model="openedPanels" multiple accordion hover focusable tile>
-    <v-expansion-panel v-for="(item, key) in classifiers" :key="key">
+    <v-expansion-panel v-for="(item, key) in params" :key="key">
       <record-title
-        :title="item.classifier.title"
+        :title="item.baseParam.title"
         :opened="openedPanels.includes(key)"
-        @createNewParam="createNewParam(item.classifier.id)"
+        @createNewParam="createNewParam(item.baseParam.id)"
       ></record-title>
       <v-expansion-panel-content eager class="expansion-panel-content-custom">
         <v-card  tile flat>
           <v-row v-for="param in item.new_values" no-gutters class="flex-nowrap">
             <record-input
               :param="param"
-              :type="item.classifier.type"
-              :list="item.classifier.list"
-              @deletable="deleteNewParam(item.classifier.id, param)"
+              :type="item.baseParam.type"
+              :list="item.baseParam.list"
+              @deletable="deleteNewParam(item.baseParam.id, param)"
             ></record-input>
           </v-row>
           <table>
@@ -42,7 +42,7 @@ export default {
   name: "objectRecordArea",
   components: {TableOldValues, RecordInput, RecordTitle, MenuDateTime, DropDownMenu},
   props: {
-    classifiers: Array,
+    params: Array,
     type: {
       type: Boolean,
       default: false
@@ -52,18 +52,18 @@ export default {
     openedPanels: []
   }),
   methods: {
-    createNewParam(classifierId) {
-      this.$emit('createNewParam', classifierId)
+    createNewParam(id) {
+      this.$emit('createNewParam', id)
     },
-    deleteNewParam(classifierId, param) {
-      this.$emit('deleteNewParam', { classifierId: classifierId, param: param })
+    deleteNewParam(id, param) {
+      this.$emit('deleteNewParam', { id: id, param: param })
     }
   },
   mounted() {
-    this.openedPanels = [...Array(this.classifiers.length).keys()]
+    this.openedPanels = [...Array(this.params.length).keys()]
   },
   watch: {
-    classifiers: function (value) { this.openedPanels = [...Array(value.length).keys()] }
+    params: function (value) { this.openedPanels = [...Array(value.length).keys()] }
   }
 }
 </script>
