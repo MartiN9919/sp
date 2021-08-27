@@ -4,7 +4,7 @@
     :class="{ flat: isFlat }"
     :items="items"
     :open="items_active"
-    @update:active="sel_item"
+    @update:active="item_sel_id = $event"
     hoverable
     activatable
     transition
@@ -72,26 +72,32 @@ export default {
   }),
 
   watch: {
-    items:    function(items)   { this.ini_items(); },
-    item_sel: function(item_id) {
-      console.log(1)
-      this.sel_item(item_id);
+    items: function(items)   { this.ini_items(); },
+    item_sel_id: function(item_id) {
+      // развернуть tree
+      if (this.items_path[item_id]) { this.items_active = this.items_path[item_id]; }
+      setTimeout(function() {
+        this.$vuetify.goTo(
+          '#id_'+this._uid+'_'+item_id,
+          { duration: 100, offset: 100, easing: 'easeInOutCubic', container: this.$refs.tree_view, }
+        )
+      }.bind(this), 100);
     },
   },
 
   computed: {
-    item_sel: {
+    item_sel_id: {
       get()   {
         return this.itemSel;
       },
-      set(val) {
-        let id = 0;
-        if (val instanceof Object) { id = (val.length > 0) ? val[0] : 0; }
-        else                       { id = val; }
-        if (id == 0) return;
+      set(item_id) {
+        // click на выделенном item ==> item_id=[]
+        if (item_id instanceof Object) {
+          if (item_id.length>0) { item_id = item_id[0]; }
+          else                  { item_id = this.item_sel_id; }
+        }
 
-        if (this.items_path[id])   { this.items_active = this.items_path[id].slice(0, -1); } // .slice(0, -1) - нет эффекта
-        if (this.item_sel != id)   { this.$emit('update:itemSel', id); }
+        this.$emit('update:itemSel', item_id);  // вызывает watch.item_sel_id
       },
     },
   },
@@ -113,24 +119,6 @@ export default {
       }
     },
 
-
-
-
-    sel_item(item_id) {
-      // click на выделенном item ==> item_id=[]
-      //if (this.item_sel == item_id) return;
-      if (item_id.length>0) { this.item_sel = item_id }
-      else                  { item_id = this.item_sel }
-      if (item_id.length==0) return;
-
-      setTimeout(function() {
-        this.$vuetify.goTo(
-          '#id_'+this._uid+'_'+item_id,
-          { duration: 100, offset: 100, easing: 'easeInOutCubic', container: this.$refs.tree_view, }
-        )
-      }.bind(this), 100);
-    },
-
     on_new(item) {
       this.$emit('onNew', item.id, item.name);
     },
@@ -150,9 +138,9 @@ export default {
 
     get_color(item) {
       return (
-          (this.item_sel) &&
-          (this.items_path[this.item_sel]) &&
-          (this.items_path[this.item_sel].indexOf(item.id) !== -1)
+          (this.item_sel_id) &&
+          (this.items_path[this.item_sel_id]) &&
+          (this.items_path[this.item_sel_id].indexOf(item.id) !== -1)
         ) ? this.$CONST.TREE.COLOR_SELECT : this.$CONST.TREE.COLOR_DEFAULT;
     },
 
