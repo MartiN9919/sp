@@ -17,6 +17,7 @@
       <v-icon
         :size="$CONST.TREE.ICON_SIZE"
         :color="get_color(item)"
+        @contextmenu="$emit('onMenuShow', $event, item)"
       >
         {{ get_icon(item, open) }}
       </v-icon>
@@ -27,7 +28,7 @@
           :id="'id_'+_uid+'_'+item.id"
           :style="{'color': get_color(item)}"
           class="v-treeview-node__label"
-          @contextmenu="$emit('onMenuItem', $event, item)"
+          @contextmenu="$emit('onMenuShow', $event, item)"
         >
           <v-list-item-content>
             <v-list-item-title v-text="item.name" :style="{'color': get_color(item)}"/>
@@ -64,7 +65,7 @@ export default {
   emits: [
     'onFcNew',
     'onFcAdd',
-    'onMenuItem',
+    'onMenuShow',
     //'update:itemSel',
   ],
 

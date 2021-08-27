@@ -1,5 +1,7 @@
 <template>
-  <div>
+  <div
+    @contextmenu="on_menu_show($event)"
+  >
 
     <Treeview
       class="tree"
@@ -7,7 +9,7 @@
       :itemSel.number.sync="item_sel"
       @onFcNew="on_fc_new"
       @onFcAdd="on_fc_add"
-      @onMenuItem="on_menu_show"
+      @onMenuShow="on_menu_show"
     />
 
     <contextMenuNested
@@ -89,8 +91,6 @@ export default {
         })
         .catch(error => { return Promise.reject(error) });
     },
-
-    on_menu_show(e, item) { this.on_menu_show(e, item) },
   },
 
 }

@@ -24,13 +24,19 @@ export default {
       {
         icon:     'mdi-new-box',
         title:    'Создать',
-        subtitle: 'Создать объект типа "Геометрия"',
+        subtitle: 'Создать объект',
         action:   'on_obj_create',
       },
       {
-        icon:     'mdi-content-save-outline',
+        icon:     'mdi-content-save',
         title:    'Сохранить',
         subtitle: 'Сохранить объект',
+        action:   'on_obj_save',
+      },
+      {
+        icon:     'mdi-delete',
+        title:    'Отключить',
+        subtitle: 'Сделать объект неактуальным',
         action:   'on_obj_save',
       },
     ],
@@ -54,13 +60,15 @@ export default {
 
 
     // Показать первый уровень меню, вызывается из родителя
-    on_menu_show(e, mode) {
+    on_menu_show(e, item) {
       e.preventDefault();
       e.stopPropagation();
 
       // скорректировать базовое меню
       this.menu_struct = JSON.parse(JSON.stringify(this.menu_struct_base));
-      this.menu_struct[1].disabled = true;
+      let is_obj = ((item !== undefined) && (item?.children === undefined));
+      this.menu_struct[1].disabled = !is_obj;
+      this.menu_struct[2].disabled = !is_obj;
 
       // показать корневой уровень меню
       this.$refs.menu_obj.show_root(e.clientX, e.clientY);
