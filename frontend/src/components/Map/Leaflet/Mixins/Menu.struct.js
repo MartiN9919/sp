@@ -1,7 +1,7 @@
 export default {
   data() {
     return {
-      menu_struct: [
+      menu_struct_base: [
         {
           icon:     'mdi-map-outline',
           title:    'Подложка',

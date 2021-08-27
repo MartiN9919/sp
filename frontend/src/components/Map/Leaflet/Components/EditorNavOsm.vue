@@ -28,8 +28,8 @@
       iconDef="mdi-web"
       :isIcon="true"
       :isFlat="true"
-      @onNew="on_new"
-      @onAdd="on_add"
+      @onFcNew="on_fc_new"
+      @onFcAdd="on_fc_add"
     />
 
   </v-card>
@@ -50,8 +50,8 @@ export default {
     localStorageKeyPostfix: { type: String, default() { return '' } },
   },
   emits: [
-    'onNew',
-    'onAdd',
+    'onFcNew',
+    'onFcAdd',
   ],
 
   data: () => ({
@@ -114,8 +114,8 @@ export default {
         .catch(error => { return Promise.reject(error) });
     },
 
-    on_new(id, name) { this.emit_fc(id, name, 'onNew') },
-    on_add(id, name) { this.emit_fc(id, name, 'onAdd') },
+    on_fc_new(id, name) { this.emit_fc(id, name, 'onFcNew') },
+    on_fc_add(id, name) { this.emit_fc(id, name, 'onFcAdd') },
     emit_fc(id, name, emit_name) {
       this.search_wait = true;
 

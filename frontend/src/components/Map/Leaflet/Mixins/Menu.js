@@ -19,7 +19,7 @@ export default {
   components: { contextMenuNested, },
 
   data: () => ({
-    menu_items: undefined,
+    menu_struct: undefined,
   }),
 
   computed: {
@@ -98,21 +98,21 @@ export default {
 
 
     // Показать первый уровень меню, вызывается из родителя
-    menu_show(e, mode) {
+    on_menu_show(e, mode) {
       e.originalEvent.preventDefault();
       e.originalEvent.stopPropagation();
 
-      // обновить menu_items
-      let menu = JSON.parse(JSON.stringify(this.menu_struct));  // основа - глубокая копия
-      menu[0]['menu'][0]['radio'] = this.MAP_GET_TILES  ;       // добавить выбор тайлов
-      this.menu_items = [...this.menu_items_key(), ...menu];    // добавить работу с фрагментами
+      // обновить menu_struct
+      this.menu_struct = JSON.parse(JSON.stringify(this.menu_struct_base)); // основа - глубокая копия
+      this.menu_struct[0]['menu'][0]['radio'] = this.MAP_GET_TILES  ;       // добавить выбор тайлов
+      this.menu_struct = [...this.menu_items_key(), ...this.menu_struct];   // добавить работу с фрагментами
 
       if (mode=='editor') {
-        this.menu_items[2]['menu'].splice(0, 4);                // удалить некоторые настройки оформления
-        this.menu_items.splice(4, 1);                           // удалить тесты
-        this.menu_items.splice(3, 1);                           // удалить сепаратор
+        this.menu_struct[2]['menu'].splice(0, 4);                           // удалить некоторые настройки оформления
+        this.menu_struct.splice(4, 1);                                      // удалить тесты
+        this.menu_struct.splice(3, 1);                                      // удалить сепаратор
       } else {
-        //this.menu_items[2]['menu'].splice(4, 1);              // удалить некоторые настройки оформления
+        //this.menu_struct[2]['menu'].splice(4, 1);                         // удалить некоторые настройки оформления
       }
 
       // показать корневой уровень меню

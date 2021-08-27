@@ -1,11 +1,22 @@
 <template>
-  <Treeview
-    class="tree"
-    :items="items"
-    :itemSel.number.sync="item_sel"
-    @onNew="on_new"
-    @onAdd="on_add"
-  />
+  <div>
+
+    <Treeview
+      class="tree"
+      :items="items"
+      :itemSel.number.sync="item_sel"
+      @onFcNew="on_fc_new"
+      @onFcAdd="on_fc_add"
+      @onMenuItem="on_menu_show"
+    />
+
+    <contextMenuNested
+      ref="menu_obj"
+      :form="form"
+      :items="menu_struct"
+    />
+
+  </div>
 </template>
 
 <script>
@@ -13,8 +24,8 @@
  * КОМПОНЕНТ: ДЕРЕВО ГЕОМЕТРИЙ
  *  <EditorNavObj
  *    localStorageKeyPostfix="key_name"
- *    @onNew=""
- *    @onAdd=""
+ *    @onFcNew=""
+ *    @onFcAdd=""
  *  />
  *
  *  update_fc(fc) { },
@@ -24,18 +35,21 @@
 import router from '@/router';
 import { getResponseAxios } from '@/plugins/axios_settings';
 import Treeview from '@/components/Map/Leaflet/Components/Treeview';
+import MixMenuObj from '@/components/Map/Leaflet/Mixins/MenuObj';
 import { fc_normalize, } from '@/components/Map/Leaflet/Lib/Lib';
+
 
 export default {
   name: 'editor-nav-obj',
   components: { Treeview, },
+  mixins: [ MixMenuObj, ],
 
   props: {
     localStorageKeyPostfix: { type: String, default() { return '' } },
   },
   emits: [
-    'onNew',
-    'onAdd',
+    'onFcNew',
+    'onFcAdd',
   ],
 
   data: () => ({
@@ -65,8 +79,8 @@ export default {
   },
 
   methods: {
-    on_new(id, name) { this.emit_fc(id, name, 'onNew') },
-    on_add(id, name) { this.emit_fc(id, name, 'onAdd') },
+    on_fc_new(id, name) { this.emit_fc(id, name, 'onFcNew') },
+    on_fc_add(id, name) { this.emit_fc(id, name, 'onFcAdd') },
     emit_fc(id, name, emit_name) {
       getResponseAxios(this.$CONST.API.OBJ.GEOMETRY, { params: {rec_id: id,} })
         .then(response => {
@@ -76,6 +90,7 @@ export default {
         .catch(error => { return Promise.reject(error) });
     },
 
+    on_menu_show(e, item) { this.on_menu_show(e, item) },
   },
 
 }

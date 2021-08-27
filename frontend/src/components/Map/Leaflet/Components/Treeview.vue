@@ -27,6 +27,7 @@
           :id="'id_'+_uid+'_'+item.id"
           :style="{'color': get_color(item)}"
           class="v-treeview-node__label"
+          @contextmenu="$emit('onMenuItem', $event, item)"
         >
           <v-list-item-content>
             <v-list-item-title v-text="item.name" :style="{'color': get_color(item)}"/>
@@ -61,8 +62,9 @@ export default {
     isFlat:  { type: Boolean, default: () => false, },                // наличие отступов слева (как список)
   },
   emits: [
-    'onNew',
-    'onAdd',
+    'onFcNew',
+    'onFcAdd',
+    'onMenuItem',
     //'update:itemSel',
   ],
 
@@ -119,11 +121,11 @@ export default {
     },
 
     on_new(item) {
-      this.$emit('onNew', item.id, item.name);
+      this.$emit('onFcNew', item.id, item.name);
     },
 
     on_add(item) {
-      this.$emit('onAdd', item.id, item.name);
+      this.$emit('onFcAdd', item.id, item.name);
     },
 
 

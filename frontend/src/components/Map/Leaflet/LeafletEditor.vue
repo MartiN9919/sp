@@ -7,8 +7,8 @@
     <template v-slot:firstPane>
       <EditorNav
         :localStorageKeyPostfix="LOCAL_STORAGE_KEY_POSTFIX"
-        @onNew="on_nav_new"
-        @onAdd="on_nav_add"
+        @onFcNew="on_nav_new"
+        @onFcAdd="on_nav_add"
       />
     </template>
 
@@ -19,7 +19,7 @@
         :options="map_options"
         :crs="MAP_GET_TILES[MAP_GET_TILE].crs"
         @ready="on_map_ready"
-        @contextmenu="menu_show($event,'editor')"
+        @contextmenu="on_menu_show($event,'editor')"
         @dblclick="on_map_dblclick"
       >
 
@@ -64,7 +64,7 @@
       <contextMenuNested
         ref="menu"
         :form="form"
-        :items="menu_items"
+        :items="menu_struct"
       />
 
      </template>
