@@ -3,19 +3,20 @@
     <div class="work-place">
       <selector-object
         v-model="selectedEditableObject"
-        :items="listOfPrimaryObjects"
+        :items="baseObjects"
         class="selector-object py-2"
       ></selector-object>
-      <span v-if="conflictStatus" class="px-2 conflict-title">Схожие объекты</span>
-      <v-tabs v-model="activeTab" :color="sliderColor" grow class="object-record-area">
+      <v-tabs id="tabs" v-model="activeTab" :color="sliderColor" grow show-arrows center-active :class="tabClasses">
         <v-tab v-for="(object, key) in editableObjects" :key="key">
-          <v-icon :color="tabColor(key)">{{ primaryObject(object.object_id).icon }}</v-icon>
-          <span :style="{color: tabColor(key)}">{{key + 1}}</span>
+          <v-icon :color="tabColor(key)">{{ object.object.id.icon }}</v-icon>
+          <span :style="{color: tabColor(key)}">
+            {{key === 1 ? 'Исходныйобъект' : 'Схожий объект'}}
+            {{key + 1}}
+          </span>
         </v-tab>
         <v-tab-item v-for="(object, key) in editableObjects" :key="key" eager>
-          <v-form ref="form" v-model="valid">
+          <v-form :ref="'form' + key" v-model="valid">
             <object-record-area
-              :object-id="object.object_id"
               :classifiers="object.params"
               @createNewParam="createNewParam"
               @deleteNewParam="deleteNewParam"
@@ -49,8 +50,7 @@ export default {
     activeTab: 0,
   }),
   computed: {
-    ...mapGetters(['primaryObject', 'listOfPrimaryObjects', 'editableObjects']),
-    conflictStatus: function () { if(this.editableObjects) return this.editableObjects.length > 1 },
+    ...mapGetters(['baseObjects', 'editableObjects']),
     sliderColor: function () { return this.activeTab ? '#FF0000' : '#009688' },
     controlButtons: function () {
       return [
@@ -70,8 +70,8 @@ export default {
           disabled: !!(
             this.valid
             && this.editableObjects[this.activeTab]
-            && 'form' in this.$refs
-            && this.$refs.form[0].inputs.length
+            && 'form'+ this.activeTab in this.$refs
+            && this.$refs['form' + this.activeTab][0].inputs.length
           )
         },
       ]
@@ -79,26 +79,31 @@ export default {
     selectedEditableObject: {
       get: function () {
         if(this.editableObjects)
-          return this.primaryObject(this.editableObjects[0].object_id)
+          return this.editableObjects[0].object
       },
       set: function (object) {
-        this.getListOfClassifiersOfObjects({params: {object_id: object.id}})
-          .then(() => { this.setEditableObject({object_id: object.id}) })
+        this.getBaseClassifiers({params: {object_id: object.id}})
+          .then(() => {
+            this.setEditableObject({object_id: object.id})
+          })
       },
     },
+    tabClasses: function () {
+      if(this.editableObjects)
+        if(this.editableObjects.length > 1)
+          return 'height-with-tabs'
+      return 'height-without-tabs'
+    }
   },
   methods: {
-    ...mapActions(['getListOfClassifiersOfObjects', 'addNewParamEditableObject', 'deleteNewParamEditableObject',
+    ...mapActions(['getBaseClassifiers', 'addNewParamEditableObject', 'deleteNewParamEditableObject',
       'saveEditableObject', 'setEditableObject', ]),
     tabColor(key) {
       return key ? '#FF0000' : '#009688'
     },
     saveObject () {
-      if(this.$refs.form[0].validate())
-        this.saveEditableObject({
-          object: this.editableObjects[this.activeTab],
-          force: this.conflictStatus,
-        })
+      if(this.$refs['form' + this.activeTab][0].validate())
+        this.saveEditableObject(this.activeTab)
     },
     createNewParam(event) {
       this.addNewParamEditableObject({
@@ -112,13 +117,20 @@ export default {
         classifierId: event.classifierId,
         positionEditableObject: this.activeTab
       })
+    },
+    tabStatus(objects) {
+      this.$el.querySelector('#tabs > .v-item-group').style.display = objects.length <= 1 ? 'none' : 'flex'
     }
   },
   watch: {
     editableObjects: function (objects) {
-      this.$el.querySelector('.object-record-area > .v-item-group').style.display = objects.length <= 1 ? 'none' : 'flex'
+      this.tabStatus(objects)
     },
   },
+  mounted() {
+    if(this.editableObjects)
+      this.tabStatus(this.editableObjects)
+  }
 }
 </script>
 
@@ -129,20 +141,26 @@ export default {
 .selector-object {
   height: 3.3em;
 }
-.object-record-area {
+.height-with-tabs, .height-without-tabs  {
   max-height: calc(100% - 3.3em);
 }
 .control-menu {
   height: 3em;
   align-items: flex-end;
 }
-.object-record-area >>> .v-tab {
+.height-with-tabs >>> .v-tab, .height-without-tabs >>> .v-tab {
   min-height: 48px;
 }
-.object-record-area >>> .v-tabs-items {
+.height-with-tabs >>> .v-tabs-items, .height-without-tabs >>> .v-tabs-items {
   overflow-y: auto;
 }
-.object-record-area >>> .v-slide-group__wrapper {
+.height-with-tabs >>> .v-tabs-items {
+ max-height: calc(100% - 3.3em - 48px);
+}
+.height-without-tabs >>> .v-tabs-items {
+  max-height: calc(100% - 3.3em);
+}
+.height-with-tabs >>> .v-slide-group__wrapper, .height-without-tabs  >>> .v-slide-group__wrapper {
   overflow-y: auto;
 }
 .conflict-title {

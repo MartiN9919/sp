@@ -17,7 +17,7 @@
 <script>
 export default {
   name: "controlMenu",
-  props: { buttons: Array, }
+  props: { buttons: Array},
 }
 </script>
 

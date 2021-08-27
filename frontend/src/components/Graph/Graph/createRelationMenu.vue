@@ -33,10 +33,10 @@ export default {
 
   }),
   methods: {
-    ...mapActions(['getRelationsForObjects', ])
+    ...mapActions(['getBaseRelations', ])
   },
   computed : {
-    ...mapGetters(['primaryObject', 'listOfPrimaryObjects', 'relationsTwoObjects', 'relationObject', ]),
+    ...mapGetters(['baseRelations']),
     selectedRelationId: {
       get: function () { return this.relation },
       set: function (id) {
@@ -47,7 +47,8 @@ export default {
     listRelations () {
       console.log(this.params)
       let relations = []
-      relations = this.relationsTwoObjects({ firstId: this.params.object1_id, secondId: this.params.object2_id })
+      relations = this.baseRelations({ f_id: this.params.object1_id, s_id: this.params.object2_id })
+      console.log(relations)
       let defaultRelations = [{ id: 0, title: 'Без связи' }]
       return Array.isArray(relations) ? defaultRelations.concat(relations) : defaultRelations
     },
@@ -58,7 +59,7 @@ export default {
     },
   },
   mounted() {
-    this.getRelationsForObjects({ params: { object_1_id: this.params.object1_id, object_2_id: this.params.object2_id, }, })
+    this.getBaseRelations({ params: { object_1_id: this.params.object1_id, object_2_id: this.params.object2_id, }, })
     this.relation = this.listRelations[0].id
     this.selectedRelationItemId = this.listRelationItems[0].id
   }

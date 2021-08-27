@@ -3,9 +3,9 @@
     <v-card-text>
       <selector-input
         v-model="objectId"
-        :items="listOfPrimaryObjects"
+        :items="baseObjects"
         :title="selectorTitle"
-        item-text="title"
+        item-text="titleSingle"
       ></selector-input>
       <boolean-input
         v-model="objectActual"
@@ -46,7 +46,7 @@ export default {
     ],
   }),
   computed: {
-    ...mapGetters(['listOfPrimaryObjects']),
+    ...mapGetters(['baseObjects']),
     objectId: {
       get: function () { return this.newSettingsObject ? this.newSettingsObject.object_id : null },
       set: function (newObjectId) { this.newSettingsObject.object_id = newObjectId },

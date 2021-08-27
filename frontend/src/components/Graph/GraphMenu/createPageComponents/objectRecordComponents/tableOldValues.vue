@@ -1,16 +1,5 @@
 <template>
-  <table>
-    <tbody class="py-2">
-    <tr v-for="item in values">
-      <td>
-        <span :class="textColorStyle(item)">{{item.value}}</span>
-      </td>
-      <td class="text-end text-no-wrap pl-3">
-        <span :class="textColorStyle(item)">{{item.date}}</span>
-      </td>
-    </tr>
-    </tbody>
-  </table>
+
 </template>
 
 <script>
@@ -22,16 +11,14 @@ export default {
     values: Array,
   },
   computed: {
-    ...mapGetters(['editableObjects']),
+    ...mapGetters(['editableObjects', 'editableRelation']),
   },
   methods: {
     textColorStyle(item) {
-      if(!this.editableObjects[0].params.find(
-          param => param.values.find(
-              value => value.value === item.value && value.date === item.date
-          )
-      ))
-        return 'conflict-span'
+      for(let param of this.editableObjects[0].params) {
+        if (!param.values.find(value => value.value === item.value && value.date === item.date))
+          return 'red--text'
+      }
     }
   }
 }
