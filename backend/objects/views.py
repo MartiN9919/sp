@@ -78,7 +78,7 @@ def aj_object(request):
         try:
             data = json.loads(request.body)
             result = add_data(group_id=group_id, object=data)
-            if result.get('status', -1) != -1:
+            if not result.get('object') or not result.get('objects'):
                 return JsonResponse({'data': result}, status=200)
             else:
                 return JsonResponse({'data': 'ошибка добавления'}, status=497)

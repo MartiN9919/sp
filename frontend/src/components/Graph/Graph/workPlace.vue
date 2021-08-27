@@ -1,7 +1,7 @@
 <template>
   <div @click.right.prevent.stop="menu_show($event, null)">
     <screen ref="screen">
-      <edge v-for="edge in graph.edges" :key="edge.id.toString() + 'edge'" :data="edge" :nodes="graph.nodes"></edge>
+      <edge v-for="edge in relations" :key="edge.id.toString() + 'edge'" :data="edge" :nodes="nodes"></edge>
       <g v-for="node in nodes"
         @mousedown.capture.shift="startMoveGroupNodes(node)"
         @mouseup.shift="stopMoveGroupNodes()"
@@ -16,13 +16,11 @@
             @click.ctrl.left.exact="addSelectedNodes(node)"
             @click.left.exact="addSelectedNode(node)"
           >
-            {{ primaryObject(parseInt(node.id.split('_')[0])).icon }}
+            {{ baseObject(parseInt(node.id.split('_')[0])).icon }}
           </v-icon>
           <v-card flat class="overflow-y-auto" style="background-color: rgba(0,0,0,0.0)" :size="node.width * 0.3">
             <p class="pa-0 object-title" :style="{ fontSize: node.width * 0.1}" style="height: auto">
-              {{
-                choosingObjects.find(object => object.object_id.toString() + '_' + object.rec_id.toString() === node.id).title
-              }}
+              {{ getNodeTitle(node.id) }}
             </p>
           </v-card>
         </node>
@@ -49,11 +47,13 @@ import Edge from 'vnodes/src/components/Edge'
 import VLabel from 'vnodes/src/components/Label'
 import graph from 'vnodes/src/graph'
 import {mapActions, mapGetters} from "vuex";
-import menuGraph from "./contextMenuGraph";
-import CreateRelationMenu from "./createRelationMenu";
+import menuGraph from "./contextMenuGraph"
+import CreateRelationMenu from "./createRelationMenu"
+import NavigationDrawer from "../../WebsiteShell/Mixins/NavigationDrawer";
 
 export default {
   name: "workPlace",
+  mixins: [NavigationDrawer],
   components: {CreateRelationMenu, menuGraph, Screen, Node, Edge, VLabel},
   data: () => ({
     menuParams: null,
@@ -67,24 +67,35 @@ export default {
     moveNode: false,
   }),
   computed: {
-    ...mapGetters(['choosingObjects', 'lastObject', 'primaryObject']),
+    ...mapGetters(['choosingObjects', 'objectsRelations', 'lastObject', 'baseObject']),
+
     nodes: function () {
       for (let object of this.choosingObjects) {
-        if (this.graph.nodes.find(node => node.id === object.object_id.toString() + '_' + object.rec_id.toString()) === undefined) {
-          this.graph.createNode({
-            id: object.object_id.toString() + '_' + object.rec_id.toString(),
-            x: Math.floor(Math.random() * 500),
-            y: Math.floor(Math.random() * 500),
-            width: 100,
-            height: 100,
-          })
+        let id = object.object_id.toString() + '_' + object.rec_id.toString()
+        let findNode = this.graph.nodes.find(node => node.id === id)
+        if (!findNode) {
+          let x = Math.floor(Math.random() * 500)
+          let y = Math.floor(Math.random() * 500)
+          this.graph.createNode({ id: id, x: x, y: y, width: 100, height: 100,})
         }
       }
       return this.graph.nodes
     },
+    relations: function () {
+      for (let relation of this.objectsRelations) {
+        let id1 = relation.object_id1.toString() + '_' + relation.rec_id1.toString()
+        let id2 = relation.object_id2.toString() + '_' + relation.rec_id2.toString()
+        if(!this.graph.edges.find(edge => edge.id === id1 + '@' + id2))
+          this.graph.createEdge(id1, id2)
+      }
+      return this.graph.edges
+    },
   },
   methods: {
-    ...mapActions(['removeChoosingObject',]),
+    ...mapActions(['removeChoosingObject', 'setToolStatus', 'setActiveTool', 'setEditableRelation', 'getBaseRelations']),
+    getNodeTitle(id){
+      return this.choosingObjects.find(object => object.object_id.toString() + '_' + object.rec_id.toString() === id).title
+    },
     testScroll(event, node) {
       let width = node.width
       let height = node.height
@@ -128,15 +139,17 @@ export default {
     getIconClass(id) {
       return this.selectedNodes.find(node => node.id === id) ? 'object-icon-selected' : 'object-icon'
     },
-    createRelation(object1, id1, object2, id2) {
-      this.relationParams = {object1_id: object1, rec_id1: id1, object2_id: object2, rec_id2: id2}
-      this.isCreateRelation = true
-    },
-    createEdge(node1, node2) {
-      // this.createRelation(parseInt(node1.split('_')[0]), parseInt(node1.split('_')[1]), parseInt(node2.split('_')[0]), parseInt(node2.split('_')[1]))
-      this.graph.createEdge(node1, node2, {
-        fromAnchor: {x: '50%', y: '50%'},
-        toAnchor: {x: '50%', y: '50%'}
+    createRelation(node1, node2) {
+      let object_id1 = parseInt(node1.id.split('_')[0])
+      let rec_id1 = parseInt(node1.id.split('_')[1])
+      let object_id2 = parseInt(node2.id.split('_')[0])
+      let rec_id2 = parseInt(node2.id.split('_')[1])
+      this.getBaseRelations({params: {object_1_id: object_id1, object_2_id: object_id2}})
+      .then(() => {
+        this.setToolStatus({tool: 'createRelationPage', status: false})
+        this.setActiveTool('createRelationPage')
+        this.drawer = true
+        this.setEditableRelation({object_id1: object_id1, rec_id1: rec_id1, object_id2: object_id2, rec_id2: rec_id2})
       })
     },
     menu_show(e, node) {
@@ -158,10 +171,10 @@ export default {
     },
     startCreateRelation() {
       if (this.selectedNodes.length === 2) {
-        this.createEdge(this.selectedNodes[0], this.selectedNodes[1])
+        this.createRelation(this.selectedNodes[0], this.selectedNodes[1])
         this.selectedNodes = []
       } else {
-        this.createEdge(this.selectedNodes[0], this.tempNode)
+        this.createRelation(this.selectedNodes[0], this.tempNode)
         this.selectedNodes = []
       }
     },

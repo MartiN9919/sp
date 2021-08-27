@@ -5,7 +5,7 @@
     color="#00796B"
   >
     <v-app-bar-nav-icon
-      @click="changeNavigationDrawerStatus($router.currentRoute.name)"
+      @click="changeNavigationDrawerStatus"
     ></v-app-bar-nav-icon>
 
     <v-tabs fixed-tabs hide-slider>
@@ -29,7 +29,7 @@
       </template>
 
       <v-list rounded>
-        <v-list-item @click="deauthenticateUser({})" link>
+        <v-list-item @click="logOutUser" link>
           <v-list-item-icon><v-icon left>mdi-logout</v-icon></v-list-item-icon>
           <v-list-item-title>Выйти из системы</v-list-item-title>
         </v-list-item>
@@ -39,10 +39,12 @@
 </template>
 
 <script>
+import NavigationDrawer from "../Mixins/NavigationDrawer"
 import { mapActions, mapGetters } from 'vuex'
 
 export default {
   name: 'appBar',
+  mixins: [NavigationDrawer],
   data () {
     return {
       tabs: [
@@ -52,12 +54,8 @@ export default {
       ]
     }
   },
-  computed: {
-    ...mapGetters(['userInformation', 'navigationDrawerStatus'])
-  },
-  methods: {
-    ...mapActions(['changeNavigationDrawerStatus', 'deauthenticateUser'])
-  }
+  computed: mapGetters(['userInformation']),
+  methods: mapActions(['logOutUser'])
 }
 </script>
 

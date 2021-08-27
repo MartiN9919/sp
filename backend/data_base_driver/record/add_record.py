@@ -74,7 +74,7 @@ def add_data(group_id, object):
                 else:
                     temp_set = set(find_key_value_http(object.get('object_id'), item[0], item[1]))
         if temp_set and len(temp_set) != 0:
-            return {'status': 2, 'objects': [get_object_record_by_id_http(object.get('object_id'), item, group_id)
+            return {'objects': [get_object_record_by_id_http(object.get('object_id'), item, group_id)
                                              for item in temp_set]}
     if object.get('rec_id_old', 0) != 0:  # действия при слиянии объектов
         old_object = get_object_record_by_id_http(object.get('object_id'), object.get('rec_id_old'), group_id)
@@ -85,13 +85,11 @@ def add_data(group_id, object):
                                 object.get('object_id', 0), object.get('rec_id_old', 0))
 
     if len(data) == 0:  # проверка на пустой запрос
-        return {'status': 1,
-                'object': get_object_record_by_id_http(object.get('object_id'), object.get('rec_id', 0))}
+        return {'object': get_object_record_by_id_http(object.get('object_id'), object.get('rec_id', 0))}
     if object.get('rec_id', 0) != 0:  # проверка на внесение новой записи
         data.append(['id', object.get('rec_id')])
     result = add_record(group_id=group_id, object_id=object.get('object_id'), object_info=data)
     if result != -1:
-        return {'status': 1,
-                'object': get_object_record_by_id_http(object.get('object_id'), result)}
+        return {'object': get_object_record_by_id_http(object.get('object_id'), result)}
     else:
-        return {'status': -1}
+        return {'result': -1}

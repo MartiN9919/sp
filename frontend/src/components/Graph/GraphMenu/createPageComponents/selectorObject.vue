@@ -6,7 +6,7 @@
     item-color="teal"
     hide-details
     return-object
-    item-text="title"
+    item-text="titleSingle"
     solo color="teal"
     class="v-input--dense selector-objects"
     label="Выбор типа создоваемого объекта"
