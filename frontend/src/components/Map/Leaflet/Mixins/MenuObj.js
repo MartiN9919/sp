@@ -64,23 +64,36 @@ export default {
       e.preventDefault();
       e.stopPropagation();
 
+      // нет прав
+      if (!this.is_right()) return;
+
       // скорректировать базовое меню
       this.menu_struct = JSON.parse(JSON.stringify(this.menu_struct_base));
       let is_obj = ((item !== undefined) && (item?.children === undefined));
-      this.menu_struct[1].disabled = !is_obj;
-      this.menu_struct[2].disabled = !is_obj;
+      this.menu_struct[0].disabled = !this.is_fc();
+      this.menu_struct[1].disabled = !this.is_fc() || !is_obj;
+      this.menu_struct[2].disabled = !this.is_fc() || !is_obj;
 
       // показать корневой уровень меню
       this.$refs.menu_obj.show_root(e.clientX, e.clientY);
     },
 
     on_obj_create(item){
-      console.log(item)
+      console.log(item, !this.is_fc())
     },
 
     on_obj_save(item){
-      console.log(item)
+      console.log(item, this.is_fc())
     },
+
+    is_right() {
+      return true;
+    },
+
+    is_fc() {
+      if (!this.fc.features) return false;
+      return (this.fc.features.length > 0)
+    }
 
   },
 

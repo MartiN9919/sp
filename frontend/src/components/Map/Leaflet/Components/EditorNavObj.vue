@@ -7,8 +7,8 @@
       class="tree"
       :items="items"
       :itemSel.number.sync="item_sel"
-      @onFcNew="on_fc_new"
-      @onFcAdd="on_fc_add"
+      @onNavNew="on_nal_new"
+      @onNavAdd="on_nav_add"
       @onMenuShow="on_menu_show"
     />
 
@@ -26,8 +26,8 @@
  * КОМПОНЕНТ: ДЕРЕВО ГЕОМЕТРИЙ
  *  <EditorNavObj
  *    localStorageKeyPostfix="key_name"
- *    @onFcNew=""
- *    @onFcAdd=""
+ *    @onNavNew=""
+ *    @onNavAdd=""
  *  />
  *
  *  update_fc(fc) { },
@@ -48,10 +48,11 @@ export default {
 
   props: {
     localStorageKeyPostfix: { type: String, default() { return '' } },
+    fc: Object,
   },
   emits: [
-    'onFcNew',
-    'onFcAdd',
+    'onNavNew',
+    'onNavAdd',
   ],
 
   data: () => ({
@@ -81,8 +82,8 @@ export default {
   },
 
   methods: {
-    on_fc_new(id, name) { this.emit_fc(id, name, 'onFcNew') },
-    on_fc_add(id, name) { this.emit_fc(id, name, 'onFcAdd') },
+    on_nal_new(id, name) { this.emit_fc(id, name, 'onNavNew') },
+    on_nav_add(id, name) { this.emit_fc(id, name, 'onNavAdd') },
     emit_fc(id, name, emit_name) {
       getResponseAxios(this.$CONST.API.OBJ.GEOMETRY, { params: {rec_id: id,} })
         .then(response => {

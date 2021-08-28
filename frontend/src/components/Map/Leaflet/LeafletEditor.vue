@@ -7,8 +7,9 @@
     <template v-slot:firstPane>
       <EditorNav
         :localStorageKeyPostfix="LOCAL_STORAGE_KEY_POSTFIX"
-        @onFcNew="on_nav_new"
-        @onFcAdd="on_nav_add"
+        :fc="fc_child"
+        @onNavNew="on_nav_new"
+        @onNavAdd="on_nav_add"
       />
     </template>
 

@@ -63,8 +63,8 @@ export default {
     isFlat:  { type: Boolean, default: () => false, },                // наличие отступов слева (как список)
   },
   emits: [
-    'onFcNew',
-    'onFcAdd',
+    'onNavNew',
+    'onNavAdd',
     'onMenuShow',
     //'update:itemSel',
   ],
@@ -122,11 +122,11 @@ export default {
     },
 
     on_new(item) {
-      this.$emit('onFcNew', item.id, item.name);
+      this.$emit('onNavNew', item.id, item.name);
     },
 
     on_add(item) {
-      this.$emit('onFcAdd', item.id, item.name);
+      this.$emit('onNavAdd', item.id, item.name);
     },
 
 
