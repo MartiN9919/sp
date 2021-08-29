@@ -109,6 +109,13 @@ export function fc_types_del(FC, types_del) {
 }
 
 
+// задан ли FC
+export function fc_exist(FC) {
+  return ((FC) && (FC.features) && (FC.features.length > 0));
+}
+
+
+
 // ЛОГАРИФМИЧЕСКАЯ ШКАЛА ДЛЯ data
 export function scale_log(data) {
     const data_log = [

@@ -337,14 +337,16 @@ export default {
       // разрешить редактирование каждой редактируемой фигуры
       this.editor_on();
 
-      // позиционирование карты на layer
-      if (Object.keys(layer._layers).length > 0) {
-        this.map.fitBounds(layer.getBounds(), { padding: [30, 30], });
-      }
+      // позиционирование карты на layer (отложено, так как сначала позиционируется по key[1])
+      this.$nextTick(function() {
+        if (Object.keys(layer._layers).length > 0) {
+          this.map.fitBounds(layer.getBounds(), { padding: [30, 30], });
+        }
+      });
     },
 
 
-    // очистить карту
+    // карта: очистить
     map_clear() {
       this.mode_selected_off();
       this.map.pm.getGeomanLayers(true).eachLayer(function(layer) {

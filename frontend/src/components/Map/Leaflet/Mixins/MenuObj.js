@@ -13,6 +13,13 @@ import {
 
 import contextMenuNested from '@/components/WebsiteShell/ContextMenu/contextMenuNested';
 import MixMenuStruct     from '@/components/Map/Leaflet/Mixins/Menu.struct';
+import { fc_exist, }     from '@/components/Map/Leaflet/Lib/Lib';
+
+const
+  MENU_IND_NEW    = 0,
+  MENU_IND_SAVE   = 1,
+  MENU_IND_RENAME = 2,
+  MENU_IND_DEL    = 4;
 
 export default {
   mixins: [ MixMenuStruct, ],
@@ -22,21 +29,25 @@ export default {
     menu_struct: undefined,
     menu_struct_base: [
       {
-        icon:     'mdi-new-box',
-        title:    'Создать',
+        icon:     'mdi-vector-polyline-plus',
+        title:    'Создать ...',
         subtitle: 'Создать объект',
         action:   'on_obj_create',
       },
       {
-        icon:     'mdi-content-save',
+        icon:     'mdi-vector-polyline-edit',
         title:    'Сохранить',
-        subtitle: 'Сохранить объект',
         action:   'on_obj_save',
       },
       {
-        icon:     'mdi-delete',
+        icon:     'mdi-vector-polyline-edit',
+        title:    'Переименовать ...',
+        action:   'on_obj_rename',
+      },
+      { divider: true },
+      {
+        icon:     'mdi-vector-polyline-remove',
         title:    'Отключить',
-        subtitle: 'Сделать объект неактуальным',
         action:   'on_obj_save',
       },
     ],
@@ -70,30 +81,34 @@ export default {
       // скорректировать базовое меню
       this.menu_struct = JSON.parse(JSON.stringify(this.menu_struct_base));
       let is_obj = ((item !== undefined) && (item?.children === undefined));
-      this.menu_struct[0].disabled = !this.is_fc();
-      this.menu_struct[1].disabled = !this.is_fc() || !is_obj;
-      this.menu_struct[2].disabled = !this.is_fc() || !is_obj;
+      let is_fc  = fc_exist(this.fc);
+      this.menu_struct[MENU_IND_NEW   ].disabled = !is_fc;
+      this.menu_struct[MENU_IND_SAVE  ].disabled = !is_fc || !is_obj;
+      this.menu_struct[MENU_IND_RENAME].disabled =           !is_obj;
+      this.menu_struct[MENU_IND_DEL   ].disabled = !is_fc || !is_obj;
+
+      if (is_fc && item) {
+        let obj_name = item?.name;
+        this.menu_struct[MENU_IND_SAVE  ].subtitle = "Сохранить объект как [ "+obj_name+" ]";
+        this.menu_struct[MENU_IND_RENAME].subtitle = "Переименовать объект [ "+obj_name+" ]";
+        this.menu_struct[MENU_IND_DEL   ].subtitle = "Отключить объект [ "+obj_name+" ]";
+      }
 
       // показать корневой уровень меню
       this.$refs.menu_obj.show_root(e.clientX, e.clientY);
     },
 
     on_obj_create(item){
-      console.log(item, !this.is_fc())
+      console.log(item, fc_exist(this.fc))
     },
 
     on_obj_save(item){
-      console.log(item, this.is_fc())
+      console.log(item, fc_exist(this.fc))
     },
 
     is_right() {
       return true;
     },
-
-    is_fc() {
-      if (!this.fc.features) return false;
-      return (this.fc.features.length > 0)
-    }
 
   },
 
