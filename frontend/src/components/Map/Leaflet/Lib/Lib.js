@@ -14,3 +14,7 @@ export function str_cut(str, len, word=false) {
 
   return str_ret + str_end;
 }
+
+export function str_copy_deep(str) {
+  return (str) ? (' '+str).slice(1) : str;
+}

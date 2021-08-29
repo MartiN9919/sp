@@ -13,7 +13,7 @@ import {
 
 import contextMenuNested from '@/components/WebsiteShell/ContextMenu/contextMenuNested';
 import MixMenuStruct     from '@/components/Map/Leaflet/Mixins/Menu.struct';
-import { str_cut, }      from '@/components/Map/Leaflet/Lib/Lib';
+import { str_cut, str_copy_deep, } from '@/components/Map/Leaflet/Lib/Lib';
 import { fc_exist, }     from '@/components/Map/Leaflet/Lib/LibFc';
 
 const
@@ -27,28 +27,34 @@ export default {
   components: { contextMenuNested, },
 
   data: () => ({
+    menu_item_name:       undefined,    // наименование item, на котором открыто меню
+    menu_dialog_show:     false,        // отображение диалога
+    menu_dialog_name:     undefined,    // редактируемое имя
+    menu_dialog_name_old: undefined,    // редактируемое имя: начальное значение
+    menu_dialog_type:     undefined,    // тип операции
+
     menu_struct: undefined,
     menu_struct_base: [
       {
         icon:     'mdi-vector-polyline-plus',
         title:    'Создать ...',
-        action:   'on_obj_create',
+        action:   'action_obj_create',
       },
       {
         icon:     'mdi-vector-polyline-edit',
         title:    'Сохранить',
-        action:   'on_obj_save',
+        action:   'action_obj_save',
       },
       {
         icon:     'mdi-vector-polyline-edit',
         title:    'Переименовать ...',
-        action:   'on_obj_rename',
+        action:   'action_obj_rename',
       },
       { divider: true },
       {
         icon:     'mdi-vector-polyline-remove',
         title:    'Отключить',
-        action:   'on_obj_save',
+        action:   'action_obj_del',
       },
     ],
   }),
@@ -67,6 +73,7 @@ export default {
       'MAP_ACT_ITEM_DEL',
       'MAP_ACT_ITEM_COLOR',
       'MAP_ACT_EDIT',
+      'appendErrorAlert',
     ]),
 
 
@@ -87,6 +94,7 @@ export default {
       this.menu_struct[MENU_IND_RENAME].disabled =           !is_obj;
       this.menu_struct[MENU_IND_DEL   ].disabled =           !is_obj;
 
+      this.menu_item_name = str_copy_deep(item?.name);
       let obj_name = str_cut(item?.name, 25, true);
       if              (is_fc)  this.menu_struct[MENU_IND_NEW   ].subtitle = "Создать объект";
       if ((is_obj) && (is_fc)) this.menu_struct[MENU_IND_SAVE  ].subtitle = "Сохранить объект как [ "+obj_name+" ]";
@@ -97,14 +105,64 @@ export default {
       this.$refs.menu_obj.show_root(e.clientX, e.clientY);
     },
 
-    on_obj_create(item){
-      console.log(item, fc_exist(this.fc))
+
+
+    on_menu_dialog_show(item_type) {
+      this.menu_dialog_type     = item_type;
+      this.menu_dialog_name     = (item_type != MENU_IND_NEW)?str_copy_deep(this.menu_item_name):'';
+      this.menu_dialog_name_old = str_copy_deep(this.menu_item_name);
+      this.menu_dialog_show     = true;
+    },
+    is_disabled_menu_dialog_ok() {
+      return (
+        (!this.menu_dialog_name) ||
+        (this.menu_dialog_name.trim()=='') ||
+        (this.menu_dialog_name.trim()==this.menu_dialog_name_old)
+      );
+    },
+    on_menu_dialog_ok() {
+      if (this.is_disabled_menu_dialog_ok()) return;
+
+      this.menu_dialog_show = false;
+      this.menu_dialog_name = this.menu_dialog_name.trim();
+
+      if (this.menu_dialog_type == MENU_IND_NEW) {
+        this.on_menu_msg('Объект сохранен под именем [ '+this.menu_dialog_name+' ]');
+      };
+
+      if (this.menu_dialog_type == MENU_IND_RENAME) {
+        this.on_menu_msg('Объект пересохранен под именем [ '+this.menu_dialog_name+' ]');
+      };
+    },
+    on_menu_msg(str) {
+      this.appendErrorAlert({status: 501, content: str , show_time: 3, });
     },
 
-    on_obj_save(item){
-      console.log(item, fc_exist(this.fc))
+
+
+    // action: create
+    action_obj_create(item) {
+      this.on_menu_dialog_show(MENU_IND_NEW);
     },
 
+    // action: save
+    action_obj_save(item) {
+      this.on_menu_msg('Объект сохранен [ '+this.menu_dialog_name+' ]');
+    },
+
+    // action: rename
+    action_obj_rename(item) {
+      this.on_menu_dialog_show(MENU_IND_RENAME);
+    },
+
+    // action: del
+    action_obj_del(item) {
+      this.on_menu_msg('Объект отключен [ '+this.menu_dialog_name+' ]');
+    },
+
+
+
+    // наличие права редактирования объектов
     is_right() {
       return true;
     },

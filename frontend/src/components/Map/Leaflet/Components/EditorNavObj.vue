@@ -18,6 +18,33 @@
       :items="menu_struct"
     />
 
+    <v-dialog
+      v-model="menu_dialog_show"
+      max-width="400px"
+      style="z-index: 10000002"
+      @keydown.enter="on_menu_dialog_ok"
+      @keydown.esc="menu_dialog_show = false"
+      persistent
+    >
+      <v-card>
+        <v-card-title>Название объекта</v-card-title>
+        <v-divider></v-divider>
+        <v-card-text>
+          <v-text-field
+            v-model="menu_dialog_name"
+            required
+            autofocus
+          ></v-text-field>
+        </v-card-text>
+        <v-divider></v-divider>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn :color="$CONST.APP.COLOR_OBJ" text @click="menu_dialog_show = false">Отмена</v-btn>
+          <v-btn :color="$CONST.APP.COLOR_OBJ" text @click="on_menu_dialog_ok" :disabled="is_disabled_menu_dialog_ok()">Ок</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
   </div>
 </template>
 
@@ -37,14 +64,14 @@
 import router from '@/router';
 import { getResponseAxios } from '@/plugins/axios_settings';
 import Treeview from '@/components/Map/Leaflet/Components/Treeview';
-import MixMenuObj from '@/components/Map/Leaflet/Mixins/MenuObj';
+import MixMenuNavObj from '@/components/Map/Leaflet/Mixins/MenuNavObj';
 import { fc_normalize, } from '@/components/Map/Leaflet/Lib/LibFc';
 
 
 export default {
   name: 'editor-nav-obj',
   components: { Treeview, },
-  mixins: [ MixMenuObj, ],
+  mixins: [ MixMenuNavObj, ],
 
   props: {
     localStorageKeyPostfix: { type: String, default() { return '' } },
