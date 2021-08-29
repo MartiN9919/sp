@@ -40,7 +40,7 @@
 import router from '@/router';
 import { getResponseAxios } from '@/plugins/axios_settings';
 import Treeview from '@/components/Map/Leaflet/Components/Treeview';
-import { fc_normalize, } from '@/components/Map/Leaflet/Lib/Lib';
+import { fc_normalize, } from '@/components/Map/Leaflet/Lib/LibFc';
 
 export default {
   name: 'editor-nav-osm',

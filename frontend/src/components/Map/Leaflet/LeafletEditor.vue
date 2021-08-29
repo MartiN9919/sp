@@ -93,7 +93,7 @@ import MixControl   from '@/components/Map/Leaflet/Mixins/Control';
 import MixMeasure   from '@/components/Map/Leaflet/Mixins/Measure';
 import MixMenu      from '@/components/Map/Leaflet/Mixins/Menu';
 
-import { fc_merge } from '@/components/Map/Leaflet/Lib/Lib';
+import { fc_merge } from '@/components/Map/Leaflet/Lib/LibFc';
 
 export default {
   name: 'LeafletEditor',

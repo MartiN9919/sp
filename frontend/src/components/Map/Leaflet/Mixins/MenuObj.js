@@ -13,7 +13,8 @@ import {
 
 import contextMenuNested from '@/components/WebsiteShell/ContextMenu/contextMenuNested';
 import MixMenuStruct     from '@/components/Map/Leaflet/Mixins/Menu.struct';
-import { fc_exist, }     from '@/components/Map/Leaflet/Lib/Lib';
+import { str_cut, }      from '@/components/Map/Leaflet/Lib/Lib';
+import { fc_exist, }     from '@/components/Map/Leaflet/Lib/LibFc';
 
 const
   MENU_IND_NEW    = 0,
@@ -31,7 +32,6 @@ export default {
       {
         icon:     'mdi-vector-polyline-plus',
         title:    'Создать ...',
-        subtitle: 'Создать объект',
         action:   'on_obj_create',
       },
       {
@@ -85,14 +85,13 @@ export default {
       this.menu_struct[MENU_IND_NEW   ].disabled = !is_fc;
       this.menu_struct[MENU_IND_SAVE  ].disabled = !is_fc || !is_obj;
       this.menu_struct[MENU_IND_RENAME].disabled =           !is_obj;
-      this.menu_struct[MENU_IND_DEL   ].disabled = !is_fc || !is_obj;
+      this.menu_struct[MENU_IND_DEL   ].disabled =           !is_obj;
 
-      if (is_fc && item) {
-        let obj_name = item?.name;
-        this.menu_struct[MENU_IND_SAVE  ].subtitle = "Сохранить объект как [ "+obj_name+" ]";
-        this.menu_struct[MENU_IND_RENAME].subtitle = "Переименовать объект [ "+obj_name+" ]";
-        this.menu_struct[MENU_IND_DEL   ].subtitle = "Отключить объект [ "+obj_name+" ]";
-      }
+      let obj_name = str_cut(item?.name, 25, true);
+      if              (is_fc)  this.menu_struct[MENU_IND_NEW   ].subtitle = "Создать объект";
+      if ((is_obj) && (is_fc)) this.menu_struct[MENU_IND_SAVE  ].subtitle = "Сохранить объект как [ "+obj_name+" ]";
+      if  (is_obj)             this.menu_struct[MENU_IND_RENAME].subtitle = "Переименовать объект [ "+obj_name+" ]";
+      if  (is_obj)             this.menu_struct[MENU_IND_DEL   ].subtitle = "Отключить объект [ "    +obj_name+" ]";
 
       // показать корневой уровень меню
       this.$refs.menu_obj.show_root(e.clientX, e.clientY);

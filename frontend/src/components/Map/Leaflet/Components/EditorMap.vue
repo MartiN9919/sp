@@ -106,7 +106,7 @@
 import { LControl, } from "vue2-leaflet";
 import { MAP_ITEM, } from '@/components/Map/Leaflet/Lib/Const';
 import { icon_get, icon_2_marker, } from '@/components/Map/Leaflet/Markers/Fun';
-import { fc_normalize, } from '@/components/Map/Leaflet/Lib/Lib';
+import { fc_normalize, } from '@/components/Map/Leaflet/Lib/LibFc';
 import '@geoman-io/leaflet-geoman-free';
 
 const COLOR_ORIGIN = 'black';             // цвет маркеров и фигур ДО    ИЗМЕНЕНИЯ
