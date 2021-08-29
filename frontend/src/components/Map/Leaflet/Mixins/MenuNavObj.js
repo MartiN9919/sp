@@ -176,7 +176,7 @@ export default {
     action_obj_new(item) {
       this.on_menu_dialog_show(MENU_IND_NEW);
     },
-    action_obj_save_execute() {
+    action_obj_new_execute() {
       this.on_menu_msg('Объект сохранен под именем [ '+this.menu_dialog_name+' ]');
     },
 
