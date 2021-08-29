@@ -24,6 +24,7 @@
       style="z-index: 10000002"
       @keydown.enter="on_menu_dialog_ok"
       @keydown.esc="menu_dialog_show = false"
+      transition="dialog-bottom-transition"
       persistent
     >
       <v-card>
@@ -31,6 +32,7 @@
         <v-divider></v-divider>
         <v-card-text>
           <v-text-field
+            ref="input_nam"
             v-model="menu_dialog_name"
             required
             autofocus
@@ -44,6 +46,40 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+
+    <v-dialog
+      v-model="menu_dialog_agree_show"
+      max-width="600px"
+      style="z-index: 10000003"
+      @keydown.enter=""
+      @keydown.esc="menu_dialog_agree_show = false"
+      transition="dialog-bottom-transition"
+      persistent
+    >
+      <v-card>
+        <v-card-title>Подтвердите операцию</v-card-title>
+        <v-divider></v-divider>
+        <v-card-text>
+
+          <v-checkbox
+            ref="input_agree"
+            v-model="menu_dialog_agree_val"
+            :label="menu_dialog_agree_title"
+            color="warning"
+            value="true"
+            hide-details
+          ></v-checkbox>
+
+        </v-card-text>
+        <v-divider></v-divider>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn :color="$CONST.APP.COLOR_OBJ" text @click="menu_dialog_agree_show = false">Отмена</v-btn>
+          <v-btn :color="$CONST.APP.COLOR_OBJ" text @click="on_menu_dialog_agree_ok" :disabled="!menu_dialog_agree_val">Ок</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
 
   </div>
 </template>

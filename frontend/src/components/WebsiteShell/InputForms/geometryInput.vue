@@ -8,6 +8,7 @@
         @keydown.esc="dialog = false"
         persistent
         style="z-index: 10000001"
+        transition="dialog-bottom-transition"
     >
       <template
           v-slot:activator="{ on, attrs }"

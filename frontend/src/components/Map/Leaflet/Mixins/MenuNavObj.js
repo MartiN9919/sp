@@ -27,18 +27,22 @@ export default {
   components: { contextMenuNested, },
 
   data: () => ({
-    menu_item_name:       undefined,    // наименование item, на котором открыто меню
-    menu_dialog_show:     false,        // отображение диалога
-    menu_dialog_name:     undefined,    // редактируемое имя
-    menu_dialog_name_old: undefined,    // редактируемое имя: начальное значение
-    menu_dialog_type:     undefined,    // тип операции
+    menu_item_name:           undefined,    // наименование item, на котором открыто меню
+    menu_dialog_show:         false,        // отображение диалога
+    menu_dialog_name:         undefined,    // редактируемое имя
+    menu_dialog_name_old:     undefined,    // редактируемое имя: начальное значение
+    menu_dialog_type:         undefined,    // тип операции
+
+    menu_dialog_agree_show:   false,        // отображение диалога
+    menu_dialog_agree_title:  '',           // текст согласия
+    menu_dialog_agree_val:    false,        // подтверждение согласия
 
     menu_struct: undefined,
     menu_struct_base: [
       {
         icon:     'mdi-vector-polyline-plus',
         title:    'Создать ...',
-        action:   'action_obj_create',
+        action:   'action_obj_new',
       },
       {
         icon:     'mdi-vector-polyline-edit',
@@ -53,7 +57,7 @@ export default {
       { divider: true },
       {
         icon:     'mdi-vector-polyline-remove',
-        title:    'Отключить',
+        title:    'Отключить ...',
         action:   'action_obj_del',
       },
     ],
@@ -107,11 +111,15 @@ export default {
 
 
 
+    //
+    // DIALOG: NAME
+    //
     on_menu_dialog_show(item_type) {
       this.menu_dialog_type     = item_type;
       this.menu_dialog_name     = (item_type != MENU_IND_NEW)?str_copy_deep(this.menu_item_name):'';
       this.menu_dialog_name_old = str_copy_deep(this.menu_item_name);
       this.menu_dialog_show     = true;
+      //this.$nextTick(function() { this.$refs.input_nam.onFocus(); });
     },
     is_disabled_menu_dialog_ok() {
       return (
@@ -126,13 +134,8 @@ export default {
       this.menu_dialog_show = false;
       this.menu_dialog_name = this.menu_dialog_name.trim();
 
-      if (this.menu_dialog_type == MENU_IND_NEW) {
-        this.on_menu_msg('Объект сохранен под именем [ '+this.menu_dialog_name+' ]');
-      };
-
-      if (this.menu_dialog_type == MENU_IND_RENAME) {
-        this.on_menu_msg('Объект пересохранен под именем [ '+this.menu_dialog_name+' ]');
-      };
+      if (this.menu_dialog_type == MENU_IND_NEW)    this.action_obj_new_execute();
+      if (this.menu_dialog_type == MENU_IND_RENAME) this.action_obj_rename_execute();
     },
     on_menu_msg(str) {
       this.appendErrorAlert({status: 501, content: str , show_time: 3, });
@@ -140,24 +143,20 @@ export default {
 
 
 
-    // action: create
-    action_obj_create(item) {
-      this.on_menu_dialog_show(MENU_IND_NEW);
-    },
 
-    // action: save
-    action_obj_save(item) {
-      this.on_menu_msg('Объект сохранен [ '+this.menu_dialog_name+' ]');
+    //
+    // DIALOG: AGREE
+    //
+    on_menu_dialog_agree_show() {
+      this.menu_dialog_agree_val   = false;
+      this.menu_dialog_agree_title = "Я подтверждаю отключение объекта [ "+this.menu_item_name+" ]";
+      this.menu_dialog_agree_show  = true;
+      // this.$nextTick(function() { this.$refs.input_agree.onFocus(); });
     },
-
-    // action: rename
-    action_obj_rename(item) {
-      this.on_menu_dialog_show(MENU_IND_RENAME);
-    },
-
-    // action: del
-    action_obj_del(item) {
-      this.on_menu_msg('Объект отключен [ '+this.menu_dialog_name+' ]');
+    on_menu_dialog_agree_ok() {
+      if (!this.menu_dialog_agree_val) return;
+      this.menu_dialog_agree_show = false;
+      this.action_obj_del_execute();
     },
 
 
@@ -166,6 +165,46 @@ export default {
     is_right() {
       return true;
     },
+
+
+
+    //
+    // ACTION
+    //
+
+    // action: create
+    action_obj_new(item) {
+      this.on_menu_dialog_show(MENU_IND_NEW);
+    },
+    action_obj_save_execute() {
+      this.on_menu_msg('Объект сохранен под именем [ '+this.menu_dialog_name+' ]');
+    },
+
+
+    // action: save
+    action_obj_save(item) {
+      this.on_menu_msg('Объект сохранен [ '+this.menu_dialog_name+' ]');
+    },
+
+
+    // action: rename
+    action_obj_rename(item) {
+      this.on_menu_dialog_show(MENU_IND_RENAME);
+    },
+    action_obj_rename_execute() {
+      this.on_menu_msg('Объект пересохранен под именем [ '+this.menu_dialog_name+' ]');
+    },
+
+
+    // action: del
+    action_obj_del(item) {
+      this.on_menu_dialog_agree_show();
+    },
+    action_obj_del_execute() {
+      this.on_menu_msg('Объект отключен [ '+this.menu_item_name+' ]');
+    },
+
+
 
   },
 
