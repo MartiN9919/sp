@@ -1,14 +1,15 @@
 <template>
   <EditorSplit
     style="height: 70vh;"
-    localStorageKey="script_param"
+    :localStorageKeyPostfix="LOCAL_STORAGE_KEY_POSTFIX"
   >
 
     <template v-slot:firstPane>
       <EditorNav
-        localStorageKey="script_param"
-        @selectedFc="on_nav_selected_fc"
-        @actionNew="on_nav_new"
+        :localStorageKeyPostfix="LOCAL_STORAGE_KEY_POSTFIX"
+        :fc="fc_child"
+        @onNavNew="on_nav_new"
+        @onNavAdd="on_nav_add"
       />
     </template>
 
@@ -19,7 +20,7 @@
         :options="map_options"
         :crs="MAP_GET_TILES[MAP_GET_TILE].crs"
         @ready="on_map_ready"
-        @contextmenu=""
+        @contextmenu="on_menu_show($event,'editor')"
         @dblclick="on_map_dblclick"
       >
 
@@ -36,6 +37,7 @@
           :modeEnabled="modeEnabled"
           :modeSelected="modeSelected"
           @resetSelect="on_map_reset_select"
+          @setFocus="on_map_set_focus"
         />
 
         <!-- МАСШТАБ -->
@@ -52,10 +54,20 @@
           :options="measure_options()"
         />
 
+        <!-- ЛОГОТИП -->
+        <Logo/>
+
         <!-- ЗАМЕТКИ -->
         <Notify ref="notify"/>
 
       </l-map>
+
+      <contextMenuNested
+        ref="menu"
+        :form="form"
+        :items="menu_struct"
+      />
+
      </template>
 
   </EditorSplit>
@@ -73,14 +85,15 @@ import LControlPolylineMeasure from 'vue2-leaflet-polyline-measure';
 import EditorSplit  from '@/components/Map/Leaflet/Components/EditorSplit';
 import EditorNav    from '@/components/Map/Leaflet/Components/EditorNav';
 import EditorMap    from '@/components/Map/Leaflet/Components/EditorMap';
+import Logo         from '@/components/Map/Leaflet/Components/Logo';
 import Notify       from '@/components/Map/Leaflet/Components/Notify';
 import MixKey       from '@/components/Map/Leaflet/Mixins/Key';
-import MixMeasure   from '@/components/Map/Leaflet/Mixins/Measure';
 import MixResize    from '@/components/Map/Leaflet/Mixins/Resize';
 import MixControl   from '@/components/Map/Leaflet/Mixins/Control';
+import MixMeasure   from '@/components/Map/Leaflet/Mixins/Measure';
+import MixMenu      from '@/components/Map/Leaflet/Mixins/Menu';
 
-
-import { fc_merge } from '@/components/Map/Leaflet/Lib/Lib';
+import { fc_merge } from '@/components/Map/Leaflet/Lib/LibFc';
 
 export default {
   name: 'LeafletEditor',
@@ -91,10 +104,11 @@ export default {
     modeSelected: String,     // включенный по умолчанию режим, например: 'Polygon'
   },
 
-  components: { LMap, LTileLayer, LControlScale, LControlPolylineMeasure, EditorMap, EditorNav, EditorSplit, Notify, },
-  mixins: [ MixKey, MixMeasure, MixResize, MixControl, ],
+  components: { LMap, LTileLayer, LControlScale, Logo, LControlPolylineMeasure, EditorMap, EditorNav, EditorSplit, Notify, },
+  mixins: [ MixKey, MixMeasure, MixMenu, MixResize, MixControl, ],
 
   data: () => ({
+    LOCAL_STORAGE_KEY_POSTFIX: 'geometry',
     fc_child: undefined,
     map_options: {
       zoomControl: false,
@@ -154,17 +168,21 @@ export default {
       this.$refs.notify.notify_del();
     },
 
-    // обновить на карте fc
-    on_nav_selected_fc(fc, name) {
-      console.log(11);
-      this.fc_child  = JSON.parse(JSON.stringify(fc));
-      this.fc_parent = this.fc_child;
-      let dd = fc_merge([this.fc_child,]);
-      this.$refs.notify.notify_set(name);
+    on_map_set_focus() {
+      this.$refs.map.$el.focus()
     },
 
-    on_nav_new(id) {
-      console.log(22);
+    // обновить на карте fc
+    on_nav_new(id, name, fc) {
+      this.fc_child  = JSON.parse(JSON.stringify(fc));
+      this.fc_parent = this.fc_child;
+      this.$refs.notify.notify_set(name);
+    },
+    on_nav_add(id, name, fc) {
+      let fc_temp  = JSON.parse(JSON.stringify(fc));
+      this.fc_child = fc_merge([this.fc_child, fc_temp,]);
+      this.fc_parent = this.fc_child;
+      this.$refs.notify.notify_add(name);
     },
 
   },

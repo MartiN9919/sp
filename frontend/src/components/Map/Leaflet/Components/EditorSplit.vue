@@ -30,7 +30,7 @@ export default {
   name: 'EditorSplit',
 
   props: {
-    localStorageKey: { type: String, default() { return '' } },
+    localStorageKeyPostfix: { type: String, default() { return '' } },
   },
 
   components: { ResSplitPane, },
@@ -40,7 +40,7 @@ export default {
   }),
 
   mounted () {
-    this.split_key = router.currentRoute.name + '_editor_splitter_' + this.localStorageKey+'_pos'
+    this.split_key = router.currentRoute.name + '_editor_splitter_' + this.localStorageKeyPostfix+'_pos'
     if (localStorage[this.split_key]) {
       this.split_pos = parseInt(localStorage[this.split_key])
     }

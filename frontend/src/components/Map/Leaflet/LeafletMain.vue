@@ -10,7 +10,7 @@
       @ready="on_map_ready"
       @resize="on_map_resize"
       @dblclick="on_map_dblclick"
-      @contextmenu="menu_show"
+      @contextmenu="on_menu_show"
     >
 
       <!-- ПОДЛОЖКА -->
@@ -77,7 +77,7 @@
     <contextMenuNested
       ref="menu"
       :form="form"
-      :items="menu_items"
+      :items="menu_struct"
     />
 
   </div>
