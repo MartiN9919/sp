@@ -31,7 +31,7 @@ def add_rel(group_id, object_1_id, rec_1_id, object_2_id, rec_2_id, params):
         if key['rel_obj_1_id'] != object_1_id or key['rel_obj_2_id'] != object_2_id:
             raise (2, 'Не верный тип связи')
         data = [['key_id', key_id], [object_1_id, rec_1_id], [object_2_id, rec_2_id],
-                [DAT_REL.DAT, date_time_str], [DAT_REL.VAL, param.get('val', '')]]
+                [DAT_REL.DAT, date_time_str], [DAT_REL.VAL, param.get('value', '')]]
         result = io_set(group_id=group_id, obj=1, data=data)
         if result[0]:
             temp_result_list.append(io_get_rel(group_id, [], [], [], [], {}, False, result[1])[0])
@@ -56,7 +56,11 @@ def add_rel_by_other_object(group_id, object_id, rec_id, other_object_id, other_
     @param other_rec_id: идентификатор объекта источника связей
     """
     other_object_relations = get_rel_cascade(group_id, other_object_id, other_rec_id, 1)['rels']
+    result = []
     for relation_object in other_object_relations:
         for relation in relation_object['relations']:
-            add_rel(group_id, relation['key_id'], object_id, rec_id, relation_object['object_id'],
-                    relation_object['rec_id'], relation['val'], get_date_time_from_sec(relation['sec']))
+            params = [{'id': relation['id'], 'val': item['val'],
+                       'date': item['date'][:-3]} for item in relation['values']]
+            result += add_rel(group_id, object_id, rec_id, relation_object['object_id'],
+                              relation_object['rec_id'], params)
+    return result

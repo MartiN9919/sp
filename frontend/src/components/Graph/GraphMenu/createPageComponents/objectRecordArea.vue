@@ -1,25 +1,29 @@
 <template>
   <v-expansion-panels v-model="openedPanels" multiple accordion hover focusable tile>
-    <v-expansion-panel v-for="(classifier, key) in classifiers" :key="key">
+    <v-expansion-panel v-for="(item, key) in params" :key="key">
       <record-title
-        :title="getClassifierObject(classifier.id).title"
+        :title="item.baseParam.title"
         :opened="openedPanels.includes(key)"
-        @createNewParam="createNewParam(classifier.id)"
+        @createNewParam="createNewParam(item.baseParam.id)"
       ></record-title>
-      <v-expansion-panel-content
-
-        eager class="expansion-panel-content-custom"
-      >
+      <v-expansion-panel-content eager class="expansion-panel-content-custom">
         <v-card  tile flat>
-          <v-row v-for="param in classifier.new_values" no-gutters class="flex-nowrap">
+          <v-row v-for="param in item.new_values" no-gutters class="flex-nowrap">
             <record-input
               :param="param"
-              @deletable="deleteNewParam(classifier.id, param)"
-              :type="getClassifierObject(classifier.id).type"
-              :list="getClassifierObject(classifier.id).list_id"
+              :type="item.baseParam.type"
+              :list="item.baseParam.list"
+              @deletable="deleteNewParam(item.baseParam.id, param)"
             ></record-input>
           </v-row>
-          <table-old-values :values="classifier.values"></table-old-values>
+          <table>
+            <tbody class="py-2">
+            <tr v-for="item in item.values">
+              <td><span>{{item.value ? item.value : 'Создана'}}</span></td>
+              <td class="text-end text-no-wrap pl-3"><span>{{item.date}}</span></td>
+            </tr>
+            </tbody>
+          </table>
         </v-card>
       </v-expansion-panel-content>
     </v-expansion-panel>
@@ -38,34 +42,44 @@ export default {
   name: "objectRecordArea",
   components: {TableOldValues, RecordInput, RecordTitle, MenuDateTime, DropDownMenu},
   props: {
-    classifiers: Array,
-    objectId: Number,
+    params: Array,
+    type: {
+      type: Boolean,
+      default: false
+    }
   },
   data: () => ({
     openedPanels: []
   }),
-  computed: mapGetters(['classifierObject']),
   methods: {
-    getClassifierObject(classifierId) {
-      return this.classifierObject({ objectId: this.objectId, classifierId: classifierId})
+    createNewParam(id) {
+      this.$emit('createNewParam', id)
     },
-    createNewParam(classifierId) {
-      this.$emit('createNewParam', classifierId)
-    },
-    deleteNewParam(classifierId, param) {
-      this.$emit('deleteNewParam', { classifierId: classifierId, param: param })
+    deleteNewParam(id, param) {
+      this.$emit('deleteNewParam', { id: id, param: param })
     }
   },
   mounted() {
-    this.openedPanels = [...Array(this.classifiers.length).keys()]
+    this.openedPanels = [...Array(this.params.length).keys()]
   },
   watch: {
-    classifiers: function (value) { this.openedPanels = [...Array(value.length).keys()] }
+    params: function (value) { this.openedPanels = [...Array(value.length).keys()] }
   }
 }
 </script>
 
 <style scoped>
+table {
+  width: 100%;
+  color: #757575;
+  border-spacing: initial;
+}
+td {
+  height: 0.9em
+}
+span {
+  font-size: 0.8em
+}
 .v-expansion-panel >>> .v-expansion-panel-header {
   min-height: 32px;
 }

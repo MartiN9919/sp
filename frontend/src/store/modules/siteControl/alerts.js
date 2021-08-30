@@ -20,12 +20,15 @@ function addVerifiedAlert (idAlert) {
 
 export default {
   state: {
-    alertsList: []
+    alertsList: [],
+    loadStatus: false
   },
   getters: {
-    alertsList: state => state.alertsList
+    alertsList: state => state.alertsList,
+    loadStatus: state => state.loadStatus,
   },
   mutations: {
+    changeLoadStatus: (state, status) => state.loadStatus = status,
     removeAlertFromList: (state, alert) => state.alertsList.splice(state.alertsList.indexOf(alert), 1),
     removeVerifiedAlert: (state, alertId) => {
       const indexVerifiedAlerts = findArrayVerifiedAlerts().indexOf(parseInt(alertId))

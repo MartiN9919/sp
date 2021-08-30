@@ -64,11 +64,13 @@
 </template>
 
 <script>
+import NavigationDrawer from "../WebsiteShell/Mixins/NavigationDrawer"
 import {mapActions, mapGetters} from 'vuex'
 import router from '@/router'
 
 export default {
   name: 'reportsList',
+  mixins:[NavigationDrawer],
   data() {
     return {
       search: '',
@@ -86,20 +88,16 @@ export default {
       ]
     }
   },
-  props: {
-    drawer: Boolean,
-  },
   computed: {
     ...mapGetters(['listFiles', 'selectedTreeViewItem']),
-
     selectReport() { return this.selectedTreeViewItem(router.currentRoute.name) },
   },
   methods: {
-    ...mapActions(['getListFiles', 'changeSelectedTreeViewItem', 'changeNavigationDrawerStatus', ]),
+    ...mapActions(['getListFiles', 'changeSelectedTreeViewItem']),
 
     downloadFile: (id) => console.log(id),
     changeSelectedReport: function (item) {
-      if (!this.drawer) this.changeNavigationDrawerStatus()
+      this.drawer = true
       if (this.selectReport && this.selectReport === item.params)
         this.changeSelectedTreeViewItem()
       else this.changeSelectedTreeViewItem(item.params)

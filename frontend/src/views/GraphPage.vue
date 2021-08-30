@@ -19,12 +19,13 @@ import toolsMenu from "../components/WebsiteShell/UI/toolsMenu"
 import searchPage from "../components/Graph/GraphMenu/searchPage"
 import createPage from "../components/Graph/GraphMenu/createPage"
 import dossierPage from "../components/Graph/GraphMenu/dossierPage"
+import createRelationPage from "../components/Graph/GraphMenu/createRelationPage"
 import {mapActions, mapGetters} from "vuex"
 import router from '@/router'
 
 export default {
   name: 'GraphPage',
-  components: {SplitPanel, workPlace, toolsMenu, searchPage, createPage, dossierPage},
+  components: {SplitPanel, workPlace, toolsMenu, searchPage, createPage, dossierPage, createRelationPage},
   computed: {
     ...mapGetters(['activeTool']),
     activeWindow: function () {
@@ -32,7 +33,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['setDefaultValueActiveTool', 'getListOfPrimaryObjects']),
+    ...mapActions(['setDefaultValueActiveTool', 'getBaseObjects', 'setRootSearchTreeItem']),
     changeComponent() {
       if (this.activeWindow === 'searchPage')
         return 'searchPage'
@@ -40,11 +41,16 @@ export default {
         return 'createPage'
       if (this.activeWindow === 'dossierPage')
         return 'dossierPage'
+      if (this.activeWindow === 'createRelationPage')
+        return 'createRelationPage'
     },
   },
   mounted() {
-    this.getListOfPrimaryObjects()
-    this.setDefaultValueActiveTool()
+    this.getBaseObjects()
+    .then(() => {
+      this.setDefaultValueActiveTool()
+      this.setRootSearchTreeItem({})
+    })
   },
 }
 </script>

@@ -4,7 +4,7 @@ from django.http import JsonResponse
 from core.projectSettings.decoraters import login_check, request_log, request_wrap, request_get
 from data_base_driver.constants.const_dat import DAT_OWNER
 from data_base_driver.record.get_record import get_object_record_by_id_http
-from data_base_driver.input_output.io_geo import get_geometry_tree, geo_id_to_fc
+from data_base_driver.input_output.io_geo import get_geometry_tree, geo_id_to_fc, feature_collection_by_geometry
 from data_base_driver.osm.osm_lib import osm_search, osm_fc
 from data_base_driver.record.search import search
 from data_base_driver.input_output.input_output import io_set
@@ -78,7 +78,7 @@ def aj_object(request):
         try:
             data = json.loads(request.body)
             result = add_data(group_id=group_id, object=data)
-            if result.get('status', -1) != -1:
+            if not result.get('object') or not result.get('objects'):
                 return JsonResponse({'data': result}, status=200)
             else:
                 return JsonResponse({'data': 'ошибка добавления'}, status=497)
@@ -109,7 +109,7 @@ def aj_relation(request):
         try:
             result = add_rel(group_id=group_id, object_1_id=data.get('object_1_id'), rec_1_id=data.get('rec_1_id'),
                              object_2_id=data.get('object_2_id'), rec_2_id=data.get('rec_2_id'),
-                             params=data.get('relations'))
+                             params=data.get('params'))
             return JsonResponse({'data': result}, status=200)
         except:
             return JsonResponse({'data': 'ошибка добавления'}, status=497)
@@ -204,7 +204,7 @@ def aj_geometry(request):
     @return: feature collection из базы данных соответствующий данному идентификатору
     """
     group_id = DAT_OWNER.DUMP.get_group(user_id=request.user.id)
-    geometry = geo_id_to_fc(30, group_id, [request.GET['rec_id']], ['name', 'icon'])
+    geometry = feature_collection_by_geometry(group_id, 30, [request.GET['rec_id']], [30301, 30303], {})
     return {'data': geometry}
 
 

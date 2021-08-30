@@ -1,12 +1,11 @@
 <template>
-  <div class="text-input-form">
+  <div class="unknown-form">
     <body-input-form
       v-model="value"
-      :rules="rules"
-      :clearable="clearable"
       :hide-details="hideDetails"
       :class="bodyInputClasses"
-      :placeholder="placeholder"
+      :rules="rules"
+      readonly
     >
       <template v-slot:label>
         {{title}}
@@ -18,7 +17,7 @@
           size="24"
           class="action-icon"
         >mdi-delete</v-icon>
-        <v-icon v-else size="24">mdi-format-color-text</v-icon>
+        <v-icon v-else size="24">mdi-alert-circle-outline</v-icon>
       </template>
       <template v-slot:message>
         <slot name="message"></slot>
@@ -31,17 +30,11 @@
 import BodyInputForm from "../UI/bodyInputForm"
 
 export default {
-  name: "textInput",
+  name: "unknownInput",
   components: {BodyInputForm},
   model: { prop: 'inputString', event: 'changeInputString', },
   props: {
-    inputString: String,
-    rules: {
-      type: Array,
-      default: function () {
-        return []
-      }
-    },
+    inputString: Number,
     deletable: {
       type: Boolean,
       default: false,
@@ -50,23 +43,29 @@ export default {
       type: String,
       default: '',
     },
+    unknownText: {
+      type: String,
+      default: 'Создана',
+    },
     hideDetails: {
       type: Boolean,
       default: false,
     },
-    clearable: {
-      type: Boolean,
-      default: false,
-    },
-    placeholder: {
-      type: String,
-      default: 'Введите необходимое значение',
+    rules: {
+      type: Array,
+      default: function () {
+        return []
+      }
     },
   },
   computed: {
     bodyInputClasses: function () { return this.title.length ? '' : 'pt-0' },
     value: {
-      get: function () { return this.inputString },
+      get: function () {
+        if(this.inputString !== null)
+          return this.unknownText
+        else this.value = 0
+      },
       set: function (value) { this.$emit('changeInputString', value) }
     }
   },

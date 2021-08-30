@@ -90,6 +90,10 @@ def date_time_to_sec(date_time):
     return date_time.time().second + date_time.time().minute * 60 + date_time.time().hour * 3600 + days * 86400
 
 
+def str_to_sec(date_time_str):
+    return date_time_to_sec(datetime.datetime.strptime(date_time_str, "%Y-%m-%d %H:%M:%S"))
+
+
 def intercept_sort_list(elements):
     """
     Функция для пересечения списков с сохранением сортировки

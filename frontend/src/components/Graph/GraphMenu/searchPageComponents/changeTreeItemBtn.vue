@@ -7,15 +7,15 @@
     </template>
     <template v-slot:body="{ status, closeMenu }">
       <creator-object
-        v-if="status && !!parentObject"
-        :object-id="parentObject.object_id"
-        :change-object="object"
+        v-if="status && !!parentItem"
+        :object-id="parentItem.object.id"
+        :change-object="item"
         @confirm="$emit('change', $event)"
         @cancel="closeMenu()"
       ></creator-object>
       <change-root-object
-        v-else-if="status && !parentObject"
-        :object-settings="{ object_id: object.object_id, actual: object.actual }"
+        v-else-if="status && !parentItem"
+        :object-settings="{ object_id: item.object.id, actual: item.actual }"
         @confirm="$emit('change', $event)"
         @cancel="closeMenu()"
       ></change-root-object>
@@ -32,8 +32,8 @@ export default {
   name: "changeTreeItemBtn",
   components: {DropDownMenu, CreatorObject, ChangeRootObject},
   props: {
-    object: Object,
-    parentObject: {
+    item: Object,
+    parentItem: {
       type: Object,
       default: function () { return null },
     },

@@ -249,7 +249,8 @@ class ModelKey(models.Model):
     priority = models.IntegerField(
         verbose_name='Приоритет',
         help_text=' Приоритет при именовании',
-        null=False,
+        blank=True,
+        null=True,
     )
 
     def __str__(self):

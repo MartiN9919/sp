@@ -91,7 +91,7 @@ export default {
     },
   }),
   computed: {
-    ...mapGetters(['listOfPrimaryObjects', 'relationsTwoObjects']),
+    ...mapGetters(['baseObjects', 'baseRelations']),
     selectedObjectId: {
       get: function () {
         return this.newObject.id
@@ -99,7 +99,7 @@ export default {
       set: function (id) {
         this.newObject.id = id
         this.selectedRelationId = this.listRelations[0].id
-        this.getRelationsForObjects({params: {object_1_id: this.objectId, object_2_id: id}})
+        this.getBaseRelations({params: {object_1_id: this.objectId, object_2_id: id}})
       },
     },
     selectedRelationId: {
@@ -121,13 +121,13 @@ export default {
     },
     filteredObjects () {
       let listObjects = []
-      for (let item of this.listOfPrimaryObjects)
+      for (let item of this.baseObjects)
         if (item.rels.includes(this.objectId))
           listObjects.push(item)
       return listObjects
     },
     listRelations () {
-      let relations = this.relationsTwoObjects({ firstId: this.objectId, secondId: this.selectedObjectId })
+      let relations = this.baseRelations({ f_id: this.objectId, s_id: this.selectedObjectId })
       let defaultRelations = [{ id: 0, title: 'Без связи' }]
       return Array.isArray(relations) ? defaultRelations.concat(relations) : defaultRelations
     },
@@ -143,7 +143,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['getRelationsForObjects']),
+    ...mapActions(['getBaseRelations']),
     buttonHandler(event) {
       if (event === 'confirm')
         this.$emit('confirm', this.newObject)
@@ -152,12 +152,12 @@ export default {
   },
   mounted() {
     if(this.changeObject) {
-      this.selectedObjectId =  this.changeObject.object_id
-      this.selectedRelationId = this.changeObject.rel.id
-      this.selectedRelationItemId = this.changeObject.rel.value
+      this.selectedObjectId =  this.changeObject.object.id
+      this.selectedRelationId = this.changeObject.rel?.id | 0
+      this.selectedRelationItemId = this.changeObject.relValue
       this.newObject.actual = this.changeObject.actual
-      this.newObject.relDateTimeStart = this.changeObject.rel.date_time_start
-      this.newObject.relDateTimeEnd = this.changeObject.rel.date_time_end
+      this.newObject.relDateTimeStart = this.changeObject.relDateTimeStart
+      this.newObject.relDateTimeEnd = this.changeObject.relDateTimeStart
     }
     else {
       this.selectedObjectId =  this.filteredObjects[0].id

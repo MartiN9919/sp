@@ -151,7 +151,7 @@ class IO_PARS_DATA(dict):
             # COL
             if key_rec[DAT_SYS_KEY.COL]:
                 if add.get(self.ADD_SYS_KEY, False): self.col_key.append(key_rec)
-                self.col_dic.append({key_name: val, })
+                self.col_dic.append({key_name: val, DAT_OBJ_COL.DAT: '\'' + data_item[DATA_DAT] + '\''})
             # ROW
             else:
                 if add.get(self.ADD_SYS_KEY, False): self.row_key.append(key_rec)
@@ -196,7 +196,7 @@ class IO_PARS_DATA(dict):
 
             # ['val', 'УД'] дописать с учетом появления значения у связи
             if data_key == DAT_REL.VAL:
-                if data_val1 == '':
+                if data_val1 == 0:
                     vals[DAT_REL.VAL] = '\'\''
                 else:
                     vals[DAT_REL.VAL] = '\'' + str(data_val1) + '\''
@@ -292,7 +292,7 @@ class IO_PARS_DATA(dict):
     # проверка на уникальность ключ-значение
     def __valid_uniq__(self, dic, fun):
         lst = fun(dic=dic, is_null=True)
-        tmp = [str(item) for item in lst]
+        tmp = [str(item) for item in lst if item[0:3] != 'dat']
         if len(tmp) != len(set(tmp)): raise Exception('Found of dublicates key: ' + str(tmp))
 
     # проверка на присутствие обязательных ключей

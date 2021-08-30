@@ -20,10 +20,8 @@ import MapDossier from "./dossierPage/dossierPage";
 export default {
   name: "mapMenu",
   components: {MapScriptMenu, ToolsMenu, MapDossier, },
-  data: () => ({
-  }),
   computed: {
-    ...mapGetters(['activeTool', ]),
+    ...mapGetters(['activeTool']),
     activeWindow: function () {
       return this.activeTool(router.currentRoute.name)
     }

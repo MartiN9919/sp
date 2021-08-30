@@ -6,18 +6,16 @@ export default {
   name: 'NavigationDrawer',
   computed: {
     ...mapGetters(['navigationDrawerStatus']),
-
     drawer: {
-      get: function () {
-        return this.navigationDrawerStatus(router.currentRoute.name)
-      },
-      set: function (val) {
-        if (val !== this.navigationDrawerStatus(router.currentRoute.name)) { this.changeNavigationDrawerStatus() }
-      }
+      get: function () { return this.navigationDrawerStatus(router.currentRoute.name) },
+      set: function (val) { this.setNavigationDrawerStatus(val) }
     }
   },
   methods: {
-    ...mapActions(['changeNavigationDrawerStatus']),
+    ...mapActions(['setNavigationDrawerStatus']),
+    changeNavigationDrawerStatus() {
+      this.drawer = !this.drawer;
+    }
   },
 }
 </script>

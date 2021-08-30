@@ -65,9 +65,9 @@ def get_object_record_by_id_http(object_id, rec_id, group_id=0):
         keys = [key for key in params if key['id'] == int(item[0])]
         if len(keys) > 0:
             for key in keys:
-                key['values'].append({'value': item[1], 'date': get_date_time_from_sec(item[2])})
+                key['values'].append({'value': item[1], 'date': get_date_time_from_sec(item[2])[:-3]})
             continue
-        params.append({'id': int(item[0]), 'values': [{'value': item[1], 'date': get_date_time_from_sec(item[2])}]})
+        params.append({'id': int(item[0]), 'values': [{'value': item[1], 'date': get_date_time_from_sec(item[2])[:-3]}]})
     for item in params:
         item['values'].sort(key=lambda x: x['date'], reverse=True)
     params.sort(key=lambda x: get_key_by_id(x['id'])['title'], reverse=True)
