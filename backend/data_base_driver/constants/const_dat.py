@@ -43,6 +43,17 @@ class DAT_SYS_SCRIPT():
     ]
 
 
+class DAT_SYS_TRIGGER:
+    TABLE_SHORT = 'sys_trigger'
+    TABLE = VEC_DATA['NAME'] + '.' + TABLE_SHORT
+    ID = 'id'
+    OBJECT_ID = 'object_id'
+    TITLE = 'title'
+    CONTENT = 'content'
+    VARIABLES = 'variables'
+    HINT = 'hint'
+
+
 ##################################################################################
 # DAT_SYS_ID
 ##################################################################################

@@ -3,10 +3,13 @@ import os
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Q
-from data_base_driver.constants.const_dat import DAT_SYS_SCRIPT
+
+from classifier.models import ModelObject
+from data_base_driver.constants.const_dat import DAT_SYS_SCRIPT, DAT_SYS_TRIGGER
 from data_base_driver.constants.const_script import BASE_PATH_TO_USER_SCRIPTS
 from data_base_driver.script.script_parsec import parse_text_to_python
 from authentication.models import ModelOwnerLines
+from data_base_driver.trigger.trigger_parser import parse_trigger_text_to_python
 
 
 class ModelScript(models.Model):
@@ -129,3 +132,50 @@ class ModelScript(models.Model):
         db_table = DAT_SYS_SCRIPT.TABLE_SHORT
         verbose_name = "Скрипт"
         verbose_name_plural = "Скрипты"
+
+
+class ModelTrigger(models.Model):
+    object = models.ForeignKey(
+        ModelObject,
+        on_delete=models.CASCADE,
+    )
+    title = models.CharField(
+        max_length=50,
+        verbose_name='Название Триггера',
+        help_text='Данное название будет отображаться в меню настройки триггеров',
+        unique=True,
+    )
+    content = models.TextField(
+        verbose_name='Текст скрипта триггера',
+        help_text='Поле ввода скрипта триггера',
+        blank=True,
+        default='',
+    )
+    variables = models.TextField(
+        verbose_name='Переменные',
+        help_text='Введите переменные формата (name variables):(type variables)',
+        blank=True,
+        default='',
+    )
+    hint = models.CharField(
+        max_length=255,
+        verbose_name='Всплывающая подсказка',
+        help_text='Ввод текста подсказки, которая будет отображаться в меню выбора анализа',
+        blank=True,
+        default='',
+    )
+
+    def save(self, *args, **kwargs):
+        """
+        Функция для переопределения сохранения модели, добавлено сохранение файла в папку пользовательских скриптов
+        @param args: стандартный список параметров
+        @param kwargs: стандартный список параметров
+        """
+        super().save(*args, **kwargs)
+        parse_trigger_text_to_python('trigger_' + str(self.id), self.content, self.variables)
+
+    class Meta:
+        managed = False
+        db_table = DAT_SYS_TRIGGER.TABLE_SHORT
+        verbose_name = "Тригеры"
+        verbose_name_plural = "Триггеры"
