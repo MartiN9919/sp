@@ -4,6 +4,8 @@ from data_base_driver.connect.connect_mysql import db_sql
 
 
 def parse_variables(variables):
+    if not variables:
+        return []
     variables = variables.replace('\r', '').split('\n')
     variables_list = []
     for variable in variables:
@@ -23,10 +25,11 @@ def get_triggers_list():
     sql = 'SELECT ' + DAT_SYS_TRIGGER.ID + ', '\
                     + DAT_SYS_TRIGGER.OBJECT_ID + ', '\
                     + DAT_SYS_TRIGGER.TITLE + ', '\
+                    + DAT_SYS_TRIGGER.HINT + ', '\
                     + DAT_SYS_TRIGGER.VARIABLES + '  FROM ' + DAT_SYS_TRIGGER.TABLE + ';'
     temp_result = db_sql(sql)
     for temp in temp_result:
         if not result.get(temp[1]):
             result[temp[1]] = []
-        result[temp[1]].append({'id': temp[0], 'name': temp[2], 'hint': '', 'variables': parse_variables(temp[3])})
+        result[temp[1]].append({'id': temp[0], 'name': temp[2], 'hint': temp[3], 'variables': parse_variables(temp[4])})
     return result
