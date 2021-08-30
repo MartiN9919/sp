@@ -12,6 +12,7 @@ from core.projectSettings.decoraters import request_log, login_check
 from data_base_driver.sys_reports.set_file_info import add_file
 from data_base_driver.sys_templates.get_template_info import get_templates_list, get_template
 from data_base_driver.sys_templates.set_templates_info import add_template, remove_template, update_template
+from data_base_driver.trigger.trigger_list import get_triggers_list
 
 
 @login_check
@@ -25,6 +26,12 @@ def aj_script_list(request):
     script_type = request.GET['script_type']
     group_id = DAT_OWNER.DUMP.get_group(user_id=request.user.id)
     return JsonResponse({'data': get_script_tree(group_id, script_type)}, status=200)
+
+
+@login_check
+@request_log
+def aj_trigger_list(request):
+    return JsonResponse({'data': get_triggers_list()}, status=200)
 
 
 @login_check

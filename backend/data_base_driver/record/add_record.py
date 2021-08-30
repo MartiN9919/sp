@@ -4,7 +4,8 @@ import json
 from data_base_driver.record.find_object import find_key_value_http
 from data_base_driver.record.get_record import get_object_record_by_id_http
 from data_base_driver.input_output.input_output import io_set
-from data_base_driver.record.validate_record import validate_record, get_country_by_number, remove_special_chars
+from data_base_driver.record.validate_record import validate_record, get_country_by_number, remove_special_chars, \
+    validate_geometry_permission
 from data_base_driver.relations.add_rel import add_rel_by_other_object
 from data_base_driver.sys_key.get_key_dump import get_key_by_id
 
@@ -57,6 +58,8 @@ def add_data(group_id, object):
         if len(point) > 0:
             point[0][1] = json.dumps(point[0][1]['features'][0]['geometry'])
     if object.get('object_id') == 30:
+        if not validate_geometry_permission(group_id):
+            raise Exception(2, 'Нет прав на изменение геометрии')
         location = [item for item in data if item[0] == 30304]
         if len(location) > 0:
             geometry = {"type": "GeometryCollection", "geometries": []}
