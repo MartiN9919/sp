@@ -32,30 +32,24 @@ export default {
     messages: [],
   }),
 
-  mounted() {
-
-  },
-
   computed: {
     ...mapGetters([
       'MAP_GET_NOTIFY',
     ]),
-
-    // prop_sel: {
-    //   set: function(lst) { this.MAP_ACT_RANGE_SEL({lst: lst}); },
-    //   get: function()    { return this.MAP_GET_RANGE_SEL;      },
-    // },
 
     visible() { return (this.messages.length > 0) },
   },
 
   methods: {
     notify_add(message) {
-      this.messages.unshift(message)
-      this.messages.splice(3)
+      if (message.length > 0) {
+        this.messages.unshift(message)
+        this.messages.splice(5)
+      }
     },
     notify_set(message) {
-      this.messages=[message]
+      if (message.length > 0) { this.messages=[message] }
+      else                    { this.messages=[] }
     },
     notify_del(message) {
       this.messages=[]

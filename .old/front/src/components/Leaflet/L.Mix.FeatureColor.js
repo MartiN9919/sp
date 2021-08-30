@@ -1,20 +1,10 @@
 
 
-import {
-  mapGetters,
-  mapActions,
-} from 'vuex';
+import { mapGetters, mapActions, } from 'vuex';
 
-import {
-  MAP_ITEM,
-} from '@/components/Leaflet/L.Const';
-
-import {
-  fc_key,
-  fc_types_del,
-  scale_log,
-  color_array,
-} from '@/components/Leaflet/L.Lib'
+import { MAP_ITEM, } from '@/components/Leaflet/L.Const';
+import { scale_log, color_array, } from '@/components/Leaflet/L.Lib'
+import { fc_key, fc_types_del, } from '@/components/Leaflet/L.LibFc'
 
 const COLOR_BEGIN = '00FF00';       // цвет: начальный
 const COLOR_END   = 'FF0000';       // цвет: конечный

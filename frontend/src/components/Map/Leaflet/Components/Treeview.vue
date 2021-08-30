@@ -4,7 +4,7 @@
     :class="{ flat: isFlat }"
     :items="items"
     :open="items_active"
-    @update:active="sel_item"
+    @update:active="item_sel_id = $event"
     hoverable
     activatable
     transition
@@ -17,6 +17,7 @@
       <v-icon
         :size="$CONST.TREE.ICON_SIZE"
         :color="get_color(item)"
+        @contextmenu="$emit('onMenuShow', $event, item)"
       >
         {{ get_icon(item, open) }}
       </v-icon>
@@ -27,6 +28,7 @@
           :id="'id_'+_uid+'_'+item.id"
           :style="{'color': get_color(item)}"
           class="v-treeview-node__label"
+          @contextmenu="$emit('onMenuShow', $event, item)"
         >
           <v-list-item-content>
             <v-list-item-title v-text="item.name" :style="{'color': get_color(item)}"/>
@@ -37,10 +39,10 @@
             class="btns"
           >
             <v-btn class="btn" small icon>
-              <v-icon @click="add_action(item.id)">mdi-plus-circle-outline</v-icon>
+              <v-icon @click="on_add(item)">mdi-plus-circle-outline</v-icon>
             </v-btn>
             <v-btn class="btn" small icon>
-              <v-icon @click="new_action(item.id)">mdi-chevron-right</v-icon>
+              <v-icon @click="on_new(item)">mdi-chevron-right</v-icon>
             </v-btn>
           </v-list-item-action>
         </v-list-item>
@@ -61,8 +63,9 @@ export default {
     isFlat:  { type: Boolean, default: () => false, },                // наличие отступов слева (как список)
   },
   emits: [
-    'actionAdd',
-    'actionNew',
+    'onNavNew',
+    'onNavAdd',
+    'onMenuShow',
     //'update:itemSel',
   ],
 
@@ -72,23 +75,31 @@ export default {
   }),
 
   watch: {
-    items:    function(items)   { this.ini_items(); },
-    item_sel: function(item_id) { this.sel_item(item_id); },
+    items: function(items)   { this.ini_items(); },
+    item_sel_id: function(item_id) {
+      // развернуть tree
+      if (this.items_path[item_id]) { this.items_active = this.items_path[item_id]; }
+      setTimeout(function() {
+        this.$vuetify.goTo(
+          '#id_'+this._uid+'_'+item_id,
+          { duration: 100, offset: 100, easing: 'easeInOutCubic', container: this.$refs.tree_view, }
+        )
+      }.bind(this), 100);
+    },
   },
 
   computed: {
-    item_sel: {
+    item_sel_id: {
       get()   {
         return this.itemSel;
       },
-      set(val) {
-        let id = 0;
-        if (val instanceof Object) { id = (val.length > 0) ? val[0] : 0; }
-        else                       { id = val; }
-        if (id == 0) return;
-
-        if (this.items_path[id])   { this.items_active = this.items_path[id].slice(0, -1); } // .slice(0, -1) - нет эффекта
-        if (this.item_sel != id)   { this.$emit('update:itemSel', id); }
+      set(item_id) {
+        // click на выделенном item ==> item_id=[]
+        if (item_id instanceof Object) {
+          if (item_id.length>0) { item_id = item_id[0]; }
+          else                  { item_id = this.item_sel_id; }
+        }
+        this.$emit('update:itemSel', item_id);  // вызывает watch.item_sel_id
       },
     },
   },
@@ -110,29 +121,14 @@ export default {
       }
     },
 
-
-
-
-    sel_item(item_id) {
-      // click на выделенном item ==> item_id=[]
-      if ((item_id.length==0) && (this.item_sel>0)) { item_id = this.item_sel }
-      else                                          { this.item_sel = item_id }
-
-      setTimeout(function() {
-        this.$vuetify.goTo(
-          '#id_'+this._uid+'_'+item_id,
-          { duration: 100, offset: 100, easing: 'easeInOutCubic', container: this.$refs.tree_view, }
-        )
-      }.bind(this), 100);
+    on_new(item) {
+      this.$emit('onNavNew', item.id, item.name);
     },
 
-    add_action(item_id) {
-      this.$emit('actionAdd', item_id);
+    on_add(item) {
+      this.$emit('onNavAdd', item.id, item.name);
     },
 
-    new_action(item_id) {
-      this.$emit('actionNew', item_id);
-    },
 
 
 
@@ -144,9 +140,9 @@ export default {
 
     get_color(item) {
       return (
-          (this.item_sel) &&
-          (this.items_path[this.item_sel]) &&
-          (this.items_path[this.item_sel].indexOf(item.id) !== -1)
+          (this.item_sel_id) &&
+          (this.items_path[this.item_sel_id]) &&
+          (this.items_path[this.item_sel_id].indexOf(item.id) !== -1)
         ) ? this.$CONST.TREE.COLOR_SELECT : this.$CONST.TREE.COLOR_DEFAULT;
     },
 
@@ -155,8 +151,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-  .v-treeview { overflow-y: auto !important; height: 100%; }
-
   div::v-deep .btns { margin: 0 !important; display: block; }
   div::v-deep .btn { display: inline-block; top: 50%; transform: translate(0, -50%); }
 

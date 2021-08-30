@@ -77,7 +77,7 @@ def io_get_obj_col_manticore(group_id, object_type, keys, ids, ids_max_block):
         params = item['_source']
         for key in result_keys:
             if params.get(key['name']):
-                if key['name'] == 'location':
+                if key['name'] == 'location' or key['name'] == 'point':
                     value = json.dumps(params.get(key['name']))
                 else:
                     value = str(params.get(key['name']))
@@ -90,7 +90,7 @@ def io_get_obj_col_manticore(group_id, object_type, keys, ids, ids_max_block):
 
 def io_get_obj_manticore_dict(group_id, object_type, keys, ids, ids_max_block, where_dop_row, time_interval):
     """
-    Функция для получения информации о объекте из мантикоры в формате списка словарей
+    Функция для получения информации о объекте из manticore в формате списка словарей
     @param group_id: идентификатор группы пользователя
     @param object_type: идентификатор типа объекта, формат int
     @param keys: список содержащий идентификаторы ключей

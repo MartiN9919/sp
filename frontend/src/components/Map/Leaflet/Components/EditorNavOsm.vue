@@ -1,146 +1,138 @@
 <template>
   <v-card>
     <v-hover v-slot="{ hover }">
-      <v-text-field
-        v-model="value"
+      <v-combobox
+        ref="inp"
+        v-model="search_value"
         style="margin: 15px;"
         :color="$CONST.APP.COLOR_OBJ"
-        @input="on_input"
+        :items="search_items"
+        :loading="search_wait"
+        label="Искать"
+        @input="on_search"
         dense
         outlined
         hide-details
         clearable
-        autocomplete="off"
+        autofocus
       >
-      </v-text-field>
+      </v-combobox>
     </v-hover>
 
     <v-divider class="mx-4"></v-divider>
 
     <Treeview
-      v-on="$listeners"
-      :items="items"
-      :itemSel.number.sync="item_sel"
+      class="tree"
+      :items="found_items"
+      :itemSel.number.sync="found_item_sel"
       iconDef="mdi-web"
       :isIcon="true"
       :isFlat="true"
+      @onNavNew="on_nav_new"
+      @onNavAdd="on_nav_add"
     />
+
   </v-card>
 </template>
 
 <script>
 
-/*
-      :itemSel.number.sync="item_sel"
- */
+import router from '@/router';
 import { getResponseAxios } from '@/plugins/axios_settings';
 import Treeview from '@/components/Map/Leaflet/Components/Treeview';
-import { fc_normalize, } from '@/components/Map/Leaflet/Lib/Lib';
+import { fc_normalize, } from '@/components/Map/Leaflet/Lib/LibFc';
 
 export default {
   name: 'editor-nav-osm',
   components: { Treeview, },
 
   props: {
-    showSel: { type: Boolean, default: () => true, },
+    localStorageKeyPostfix: { type: String, default() { return '' } },
   },
-  //emits: ['selectedGeometry', 'update:showSel'],
+  emits: [
+    'onNavNew',
+    'onNavAdd',
+  ],
+
   data: () => ({
-    item_sel:    0,
-    value:       undefined,
-    items:       undefined,
-    timer_input: undefined,
+    search_value: undefined,
+    search_items: [],
+    search_wait:  false,
+    search_timer: undefined,
+    found_items:  undefined,
+    found_item_sel: 0,
   }),
 
-
   created: function() {
-    // watch fix bug
-    this.$watch('item_sel', function(id) {
-      console.log(id)
-      this.selected_fc(id);
-    });
+  //   // watch fix bug
+  //   this.$watch('found_item_sel', function(id) {
+  //     console.log(id)
+  //   });
+    this.search_items = JSON.parse(localStorage.getItem(this.key_sel, []))
   },
 
-  beforeDestroy () {
-    this.timer_abort();
+  // beforeDestroy () {
+  //   this.timer_abort();
+  // },
+
+  // watch: {
+  //   tab(val) { if (val == 'tab-osm') this.on_tab(); },
+  // },
+
+  computed: {
+    key_sel() { return router.currentRoute.name + '_editor_nav_osm_items_' + this.localStorageKeyPostfix },
   },
 
   methods: {
-    on_input() { this.timer_abort(); this.timer_input = setTimeout(this.search, 1000); },
-    timer_abort() { if (this.timer_input) { clearTimeout(this.timer_input); this.timer_input = undefined; } },
+    // on_tab()      { this.timer_abort(); this.timer_input = setTimeout(this.setFocus, 1000); },
+    // timer_abort() { if (this.timer_input) { clearTimeout(this.timer_input); this.timer_input = undefined; } },
+    // setFocus()    { this.$refs.inp.$el.focus(); },
 
-    search() {
-      getResponseAxios(this.$CONST.API.OBJ.OSM_SEARCH, { params: { text: this.value,} })
+    on_search() {
+      this.$refs.inp.isMenuActive = false;
+      let name = this.search_value;
+      if (name) { name = name.trim().toLowerCase() }
+
+      getResponseAxios(this.$CONST.API.OBJ.OSM_SEARCH, { params: { text: name, } })
         .then(response => {
-          this.items = response.data;
+          this.found_items = response.data;
+
+          // корректировать историю выбора
+          if (
+            (response.data.length > 0) &&
+            (name) &&
+            (name!='') &&
+            (!this.search_items.find((item) => (item==name)))
+          ) {
+            this.search_items.unshift(name);
+            this.search_items.splice(256);
+            localStorage.setItem(this.key_sel, JSON.stringify(this.search_items).toLowerCase());
+          }
+
           return Promise.resolve(response)
         })
         .catch(error => { return Promise.reject(error) });
     },
 
-    selected_fc(id) {
+    on_nav_new(id, name) { this.emit_fc(id, name, 'onNavNew') },
+    on_nav_add(id, name) { this.emit_fc(id, name, 'onNavAdd') },
+    emit_fc(id, name, emit_name) {
+      this.search_wait = true;
+
       getResponseAxios(this.$CONST.API.OBJ.OSM_FC, { params: {id: id,} })
         .then(response => {
-          console.log(response.data);
-          let dd = fc_normalize(response.data);
-
-          this.$emit('selectedFc', dd, this.get_name(id, this.items));
+          this.$emit(emit_name, id, name, fc_normalize(response.data));
+          this.search_wait = false;
           return Promise.resolve(response)
         })
         .catch(error => { return Promise.reject(error) });
     },
-
-    get_name(id, items) {
-      let ret = undefined;
-      for(let ind=0; ind<items.length; ind++) {
-        if (items[ind].id == id) { ret = items[ind].name; }
-        if (items[ind].children) { ret = this.get_name(id, items[ind].children); }
-        if (ret) break;
-      }
-      return ret;
-    },
-
 
   },
 }
 
-/*
-        <template v-slot:append="">
-          <div v-show="hover" style="margin-top: -6 !important;">
-            <v-btn icon @click="dd" :color="$CONST.APP.COLOR_OBJ">
-              <v-icon>mdi-delete</v-icon>
-            </v-btn>
-          </div>
-        </template>
-
-    <v-list-item-group>
-      <v-list-item>
-        <v-list-item-content>
-          <v-list-item-title>Single-line item</v-list-item-title>
-        </v-list-item-content>
-      </v-list-item>
-
-      <v-list-item two-line>
-        <v-list-item-content>
-          <v-list-item-title>Two-line item</v-list-item-title>
-          <v-list-item-subtitle>Secondary text</v-list-item-subtitle>
-        </v-list-item-content>
-      </v-list-item>
-
-      <v-list-item three-line>
-        <v-list-item-content>
-          <v-list-item-title>Three-line item</v-list-item-title>
-          <v-list-item-subtitle>
-            Secondary line text Lorem ipsum dolor sit amet,
-          </v-list-item-subtitle>
-          <v-list-item-subtitle>
-            consectetur adipiscing elit.
-          </v-list-item-subtitle>
-        </v-list-item-content>
-      </v-list-item>
-
-    </v-list-item-group>
-
- */
-
 </script>
+
+<style scoped lang="scss">
+  div.tree::v-deep { overflow-y: auto !important; height: calc( 100% - 120px ); }
+</style>

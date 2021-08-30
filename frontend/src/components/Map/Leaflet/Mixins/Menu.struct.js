@@ -1,7 +1,7 @@
 export default {
   data() {
     return {
-      menu_struct: [
+      menu_struct_base: [
         {
           icon:     'mdi-map-outline',
           title:    'Подложка',
@@ -42,6 +42,12 @@ export default {
               title:    'Легенды',
               subtitle: 'Показывать всплывающие легенды',
               model:    'prop_legend',
+            },
+            {
+              icon:     'mdi-message-outline',
+              title:    'Заметки',
+              subtitle: 'Показывать заметки',
+              model:    'prop_notify',
             },
             {
               icon:     'mdi-ruler',

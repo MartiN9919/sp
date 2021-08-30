@@ -36,12 +36,13 @@ def aj_script_execute_map(request):
     @return: json с результатом выполнения скрипта и статусом выполнения
     или текстом и кодом ошибки
     """
+    group_id = DAT_OWNER.DUMP.get_group(user_id=request.user.id)
     data = json.loads(request.body)
     method_name = 'script_' + str(data.get('id'))
     importlib.invalidate_caches()
     try:
         my_module = importlib.import_module('script.user_scripts.' + method_name)
-        result = getattr(my_module, method_name)(data.get('variables'))
+        result = getattr(my_module, method_name)(data.get('variables'), group_id)
         if result == 'error':
             return JsonResponse({}, status=470)
         else:
