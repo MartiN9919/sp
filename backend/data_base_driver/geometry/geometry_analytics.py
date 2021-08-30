@@ -84,6 +84,11 @@ def get_distance_between_point(point1, point2, group_id):
 
 
 def feature_collection_to_manticore_polygon(feature_collection):
+    """
+    Фунция для преобразования feature collection в формат полигона manticore/sphinx
+    @param feature_collection: feature collection одержащий информацию о полигонах
+    @return: полигон в формате [x1,y1,x2,y2,...,xn,yn]
+    """
     temp_list = []
     for feature in feature_collection['features']:
         if feature['geometry']['type'] == 'GeometryCollection':
@@ -100,7 +105,3 @@ def feature_collection_to_manticore_polygon(feature_collection):
         for out in temp[1:]:
             out_polygon.append(reduce(lambda x, y: x+y, out))
     return {'in_polygon': in_polygon, 'out_polygon': out_polygon}
-
-
-
-# print(relations_to_feature_collection(1, 25, 45, 0, [50141], [], {}))
