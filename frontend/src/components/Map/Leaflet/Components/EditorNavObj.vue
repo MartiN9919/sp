@@ -1,87 +1,105 @@
 <template>
-  <div
-    @contextmenu="on_menu_show($event)"
-  >
 
-    <Treeview
-      class="tree"
-      :items="items"
-      :itemSel.number.sync="item_sel"
-      @onNavNew="on_nav_new"
-      @onNavAdd="on_nav_add"
-      @onMenuShow="on_menu_show"
+  <v-card>
+    <v-text-field
+      ref="inp"
+      style="margin: 15px;"
+      :color="$CONST.APP.COLOR_OBJ"
+      label="Искать"
+      @input="on_search"
+      dense
+      outlined
+      hide-details
+      clearable
+      autofocus
     />
 
-    <contextMenuNested
-      ref="menu_obj"
-      :form="form"
-      :items="menu_struct"
-    />
+    <v-divider class="mx-4"></v-divider>
 
-    <v-dialog
-      v-model="menu_dialog_show"
-      max-width="400px"
-      style="z-index: 10000002"
-      @keydown.enter="on_menu_dialog_ok"
-      @keydown.esc="menu_dialog_show = false"
-      transition="dialog-bottom-transition"
-      persistent
+    <div
+      @contextmenu="on_menu_show($event)"
     >
-      <v-card>
-        <v-card-title>Название объекта</v-card-title>
-        <v-divider></v-divider>
-        <v-card-text>
-          <v-text-field
-            ref="input_nam"
-            v-model="menu_dialog_name"
-            required
-            autofocus
-          ></v-text-field>
-        </v-card-text>
-        <v-divider></v-divider>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn :color="$CONST.APP.COLOR_OBJ" text @click="menu_dialog_show = false">Отмена</v-btn>
-          <v-btn :color="$CONST.APP.COLOR_OBJ" text @click="on_menu_dialog_ok" :disabled="is_disabled_menu_dialog_ok()">Ок</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
 
-    <v-dialog
-      v-model="menu_dialog_agree_show"
-      max-width="600px"
-      style="z-index: 10000003"
-      @keydown.enter=""
-      @keydown.esc="menu_dialog_agree_show = false"
-      transition="dialog-bottom-transition"
-      persistent
-    >
-      <v-card>
-        <v-card-title>Подтвердите операцию</v-card-title>
-        <v-divider></v-divider>
-        <v-card-text>
+      <Treeview
+        class="tree"
+        :items="items"
+        :itemSel.number.sync="item_sel"
+        @onNavNew="on_nav_new"
+        @onNavAdd="on_nav_add"
+        @onMenuShow="on_menu_show"
+      />
 
-          <v-checkbox
-            ref="input_agree"
-            v-model="menu_dialog_agree_val"
-            :label="menu_dialog_agree_title"
-            color="warning"
-            value="true"
-            hide-details
-          ></v-checkbox>
+      <contextMenuNested
+        ref="menu_obj"
+        :form="form"
+        :items="menu_struct"
+      />
 
-        </v-card-text>
-        <v-divider></v-divider>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn :color="$CONST.APP.COLOR_OBJ" text @click="menu_dialog_agree_show = false">Отмена</v-btn>
-          <v-btn :color="$CONST.APP.COLOR_OBJ" text @click="on_menu_dialog_agree_ok" :disabled="!menu_dialog_agree_val">Ок</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+      <v-dialog
+        v-model="menu_dialog_show"
+        max-width="400px"
+        style="z-index: 10000002"
+        @keydown.enter="on_menu_dialog_ok"
+        @keydown.esc="menu_dialog_show = false"
+        transition="dialog-bottom-transition"
+        persistent
+      >
+        <v-card>
+          <v-card-title>Название объекта</v-card-title>
+          <v-divider></v-divider>
+          <v-card-text>
+            <v-text-field
+              ref="input_nam"
+              v-model="menu_dialog_name"
+              required
+              autofocus
+            ></v-text-field>
+          </v-card-text>
+          <v-divider></v-divider>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn :color="$CONST.APP.COLOR_OBJ" text @click="menu_dialog_show = false">Отмена</v-btn>
+            <v-btn :color="$CONST.APP.COLOR_OBJ" text @click="on_menu_dialog_ok" :disabled="is_disabled_menu_dialog_ok()">Ок</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
 
+      <v-dialog
+        v-model="menu_dialog_agree_show"
+        max-width="600px"
+        style="z-index: 10000003"
+        @keydown.enter=""
+        @keydown.esc="menu_dialog_agree_show = false"
+        transition="dialog-bottom-transition"
+        persistent
+      >
+        <v-card>
+          <v-card-title>Подтвердите операцию</v-card-title>
+          <v-divider></v-divider>
+          <v-card-text>
 
-  </div>
+            <v-checkbox
+              ref="input_agree"
+              v-model="menu_dialog_agree_val"
+              :label="menu_dialog_agree_title"
+              color="warning"
+              value="true"
+              hide-details
+            ></v-checkbox>
+
+          </v-card-text>
+          <v-divider></v-divider>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn :color="$CONST.APP.COLOR_OBJ" text @click="menu_dialog_agree_show = false">Отмена</v-btn>
+            <v-btn :color="$CONST.APP.COLOR_OBJ" text @click="on_menu_dialog_agree_ok" :disabled="!menu_dialog_agree_val">Ок</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+
+    </div>
+
+  </v-card>
 </template>
 
 <script>
@@ -157,11 +175,16 @@ export default {
         })
         .catch(error => { return Promise.reject(error) });
     },
+
+    on_search() {
+      console.log()
+    },
+
   },
 
 }
 </script>
 
 <style scoped lang="scss">
-  div.tree::v-deep { overflow-y: auto !important; height: calc( 100% - 50px ); }
+  div.tree::v-deep { overflow-y: auto !important; height: calc( 100% - 120px ); } /*calc( 100% - 50px );*/
 </style>
