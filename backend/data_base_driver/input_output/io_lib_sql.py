@@ -38,7 +38,9 @@ class IO_LIB_SQL():
     def obj_insert_col_one(self, data_pars):
         if not data_pars.rec_id: raise Exception('Unknow rec_id: data_pars = ' + str(data_pars))
         sql = "INSERT IGNORE INTO " + data_pars.col_table + " " + \
-            "SET " + ', '.join(['rec_id=' + data_pars.rec_id] + data_pars.col_equ_flat())
+            "SET " + ', '.join(['rec_id=' + data_pars.rec_id] + [item for item in data_pars.col_equ_flat()
+                                                                 if not item.startswith('dat')] +
+                               [[item for item in data_pars.col_equ_flat() if item.startswith('dat')][0]])
         add_col_record_http(data_pars.col_table, data_pars.rec_id, data_pars.col_equ_flat())
         self.__sql_exec__(sql, read=False)
 

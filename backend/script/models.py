@@ -137,6 +137,7 @@ class ModelScript(models.Model):
 class ModelTrigger(models.Model):
     object = models.ForeignKey(
         ModelObject,
+        verbose_name='объект',
         on_delete=models.CASCADE,
     )
     title = models.CharField(

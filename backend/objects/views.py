@@ -1,10 +1,10 @@
 import json
 
 from django.http import JsonResponse
-from core.projectSettings.decoraters import login_check, request_log, request_wrap, request_get
+from core.projectSettings.decoraters import login_check, request_log, request_wrap, request_get, write_permission
 from data_base_driver.constants.const_dat import DAT_OWNER
 from data_base_driver.record.get_record import get_object_record_by_id_http
-from data_base_driver.input_output.io_geo import get_geometry_tree, geo_id_to_fc, feature_collection_by_geometry
+from data_base_driver.input_output.io_geo import get_geometry_tree, feature_collection_by_geometry
 from data_base_driver.osm.osm_lib import osm_search, osm_fc
 from data_base_driver.record.search import search
 from data_base_driver.input_output.input_output import io_set
@@ -56,6 +56,7 @@ def aj_list_rels(request):
 
 
 @login_check
+@write_permission
 @request_log
 def aj_object(request):
     """
@@ -77,7 +78,7 @@ def aj_object(request):
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
-            result = add_data(group_id=group_id, object=data)
+            result = add_data(user=request.user, group_id=group_id, object=data)
             if not result.get('object') or not result.get('objects'):
                 return JsonResponse({'data': result}, status=200)
             else:
@@ -192,7 +193,7 @@ def aj_geometry_tree(request):
     @return:  json дерево в формате: [{id,name,icon,child:[{},{},...,{}]},{},...,{}]
     """
     group_id = DAT_OWNER.DUMP.get_group(user_id=request.user.id)
-    return {'data': get_geometry_tree(group_id=group_id, geometry=None, write=False)}
+    return {'data': get_geometry_tree(group_id=group_id)}
 
 
 @login_check
