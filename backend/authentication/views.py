@@ -56,17 +56,9 @@ def authorization(request):
         'username': request.user.username,
         'first_name': request.user.first_name,
         'last_name': request.user.last_name,
+        'admin': request.user.is_superuser,
+        'staff': request.user.is_staff,
     }}, status=200)
 
 
-@request_get
-@login_check
-@request_log
-def is_staff(request):
-    """
-    Проверка статуса персонала
-    @param request: GET запрос без параметров
-    @return: json в формате {is_staff: true/false}
-    """
-    is_staff = request.user.is_staff
-    return JsonResponse({'is_staff': is_staff}, status=200)
+
