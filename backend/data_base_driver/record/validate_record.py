@@ -55,13 +55,13 @@ def validate_record(record):
     return True
 
 
-def validate_geometry_permission(group_id):
+def validate_geometry_permission(user):
     """
     Прототип функции для проверки доступа к изменению геометрии
     @param group_id: идентификатор группы пользователя
     @return: True - если есть доступ, False - если нет доступа
     """
-    if group_id != 1:
+    if not user.is_staff:
         return False
     else:
         return True

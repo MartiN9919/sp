@@ -48,16 +48,16 @@ def get_record_title(object_id, rec_id, group_id=0, record=None, length=3):
     return {'object_id': record['object_id'], 'rec_id': record['rec_id'], 'title': title, 'write': write}
 
 
-def get_object_record_by_id_http(object_id, rec_id, group_id=0):
+def get_object_record_by_id_http(object_id, rec_id, group_id=0, triggers=None):
     """
     Функция для получения информации о объекте по его типу и идентификатору записи
     @param object_id: тип объекта
     @param rec_id: идентификатору записи
     @param group_id: идентификатору группы пользователя
+    @param triggers: объект содержащий триггеры, если есть
     @return: словарь в формате {object_id, rec_id, params:[{id,val},...,{}]}
     """
     response = io_get_obj(group_id, object_id, [], [rec_id], 500, '', {})
-
     temp = [(int(item['key_id']), item['val'], int(item['sec'])) for item in response
             if int(item['key_id']) not in DAT_SYS_KEY.DUMP.owners.get(object_id, [])]
     params = []

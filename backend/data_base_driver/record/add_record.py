@@ -27,9 +27,10 @@ def add_record(group_id, object_id, object_info):
         return -1
 
 
-def add_data(group_id, object):
+def add_data(user, group_id, object):
     """
     Функция для добавления(слияния) информации в базу данных
+    @param user: объект пользователя
     @param group_id: идентификационный номер группы пользователя
     @param object: вносимая информация в формате {object_id, rec_id, params:[{id,val},...,{}]}
     @return: идентификатор нового/измененного объекта в базе данных
@@ -58,7 +59,7 @@ def add_data(group_id, object):
         if len(point) > 0:
             point[0][1] = json.dumps(point[0][1]['features'][0]['geometry'])
     if object.get('object_id') == 30:
-        if not validate_geometry_permission(group_id):
+        if not validate_geometry_permission(user):
             raise Exception(2, 'Нет прав на изменение геометрии')
         location = [item for item in data if item[0] == 30304]
         if len(location) > 0:

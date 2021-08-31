@@ -58,6 +58,7 @@ def authorization(request):
         'last_name': request.user.last_name,
         'admin': request.user.is_superuser,
         'staff': request.user.is_staff,
+        'write': request.user.is_write,
     }}, status=200)
 
 
