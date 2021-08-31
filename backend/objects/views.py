@@ -85,6 +85,8 @@ def aj_object(request):
         except Exception as e:
             if e.args[0] == 1:
                 return JsonResponse({'data': ''}, status=452)
+            elif e.args[0] == 2:
+                return JsonResponse({'data': ''}, status=453)
             else:
                 return JsonResponse({'data': 'ошибка добавления'}, status=498)
     else:

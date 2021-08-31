@@ -2,7 +2,7 @@ import json
 from django.contrib import auth
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from core.projectSettings.decoraters import request_log, login_check
+from core.projectSettings.decoraters import request_log, login_check, request_get
 
 
 @csrf_exempt
@@ -57,3 +57,16 @@ def authorization(request):
         'first_name': request.user.first_name,
         'last_name': request.user.last_name,
     }}, status=200)
+
+
+@request_get
+@login_check
+@request_log
+def is_staff(request):
+    """
+    Проверка статуса персонала
+    @param request: GET запрос без параметров
+    @return: json в формате {is_staff: true/false}
+    """
+    is_staff = request.user.is_staff
+    return JsonResponse({'is_staff': is_staff}, status=200)
