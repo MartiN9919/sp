@@ -7,7 +7,7 @@ from data_base_driver.input_output.input_output import io_set
 from data_base_driver.record.validate_record import validate_record, get_country_by_number, remove_special_chars, \
     validate_geometry_permission
 from data_base_driver.relations.add_rel import add_rel_by_other_object
-from data_base_driver.sys_key.get_key_dump import get_key_by_id
+from data_base_driver.sys_key.get_key_dump import get_key_by_id, get_keys_by_object
 
 
 def add_record(group_id, object_id, object_info):
@@ -36,8 +36,9 @@ def add_data(user, group_id, object):
     @return: идентификатор нового/измененного объекта в базе данных
     """
     try:
-        data = [[param['id'], param['value'], param.get('date', datetime.datetime.now().strftime("%Y-%m-%d %H:%M")) + ':00']
-                for param in object['params'] if validate_record(param)]
+        data = [
+            [param['id'], param['value'], param.get('date', datetime.datetime.now().strftime("%Y-%m-%d %H:%M")) + ':00']
+            for param in object['params'] if validate_record(param)]
     except Exception as e:
         raise e
 
@@ -77,9 +78,10 @@ def add_data(user, group_id, object):
                     temp_set.intersection_update(set(find_key_value_http(object.get('object_id'), item[0], item[1])))
                 else:
                     temp_set = set(find_key_value_http(object.get('object_id'), item[0], item[1]))
-        if temp_set and len(temp_set) != 0:
+        if temp_set and len(temp_set) == len(
+                [item for item in get_keys_by_object(object.get('object_id')) if item['need'] == 1]):
             return {'objects': [get_object_record_by_id_http(object.get('object_id'), item, group_id)
-                                             for item in temp_set]}
+                                for item in temp_set]}
     if object.get('rec_id_old', 0) != 0:  # действия при слиянии объектов
         old_object = get_object_record_by_id_http(object.get('object_id'), object.get('rec_id_old'), group_id)
         for param in old_object['params']:

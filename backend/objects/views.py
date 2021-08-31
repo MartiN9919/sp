@@ -184,6 +184,7 @@ def aj_geometry(request):
     """
     Функция API для получения геометрии по ее идентификатору
     @param request: GET запрос содержащий идентификатор геометрии по ключу rec_id
+                    POST запрос для создания/изменения геометрии
     @return: feature collection из базы данных соответствующий данному идентификатору
     """
     group_id = DAT_OWNER.DUMP.get_group(user_id=request.user.id)
@@ -213,7 +214,6 @@ def aj_groups(request):
     return {'data': DAT_OWNER.DUMP.get_groups_list()}
 
 
-
 @login_check
 @request_log
 @request_wrap
@@ -228,7 +228,6 @@ def aj_osm_search(request):
     if request.GET.get('geometry', 'False') == 'true':
         geometry = True
     return {'data': osm_search(text=request.GET.get('text', ''), geometry=geometry)}
-
 
 
 @login_check
