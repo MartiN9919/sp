@@ -65,6 +65,7 @@ export default {
 
   computed: {
     ...mapGetters([
+      'userInformation',
     ]),
 
     form: vm => vm,
@@ -163,7 +164,7 @@ export default {
 
     // наличие права редактирования объектов
     is_right() {
-      return true;
+      return (this.userInformation.admin || this.userInformation.staff);
     },
 
 
