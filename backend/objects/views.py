@@ -7,8 +7,7 @@ from data_base_driver.record.get_record import get_object_record_by_id_http
 from data_base_driver.input_output.io_geo import get_geometry_tree, feature_collection_by_geometry
 from data_base_driver.osm.osm_lib import osm_search, osm_fc
 from data_base_driver.record.search import search
-from data_base_driver.input_output.input_output import io_set
-from data_base_driver.record.add_record import add_data
+from data_base_driver.record.add_record import add_data, add_geometry
 from data_base_driver.relations.add_rel import add_rel
 from data_base_driver.relations.get_rel import get_object_relation
 from data_base_driver.sys_key.get_key_dump import get_keys_by_object, get_relations_list
@@ -165,25 +164,6 @@ def aj_search_objects(request):
 
 @login_check
 @request_log
-def aj_set_geometry(request):
-    """
-
-    @param request:
-    @return:
-    """
-    group_id = DAT_OWNER.DUMP.get_group(user_id=request.user.id)
-    data = json.loads(request.body)
-    try:
-        for geometry_object in data['data']['features']:
-            io_set(group_id=group_id, obj='geometry', data=[['id', geometry_object['id']],
-                                                            ['location', geometry_object['geometry']]])
-        return JsonResponse({'data': 'изменено'}, status=200)
-    except:
-        return JsonResponse({'data': 'ошибка добавления'}, status=480)
-
-
-@login_check
-@request_log
 @request_wrap
 @request_get
 def aj_geometry_tree(request):
@@ -199,7 +179,7 @@ def aj_geometry_tree(request):
 @login_check
 @request_log
 @request_wrap
-@request_get
+@write_permission
 def aj_geometry(request):
     """
     Функция API для получения геометрии по ее идентификатору
@@ -207,8 +187,22 @@ def aj_geometry(request):
     @return: feature collection из базы данных соответствующий данному идентификатору
     """
     group_id = DAT_OWNER.DUMP.get_group(user_id=request.user.id)
-    geometry = feature_collection_by_geometry(group_id, 30, [request.GET['rec_id']], [30301, 30303], {})
-    return {'data': geometry}
+    if request.method == 'GET':
+        try:
+            geometry = feature_collection_by_geometry(group_id, 30, [request.GET['rec_id']], [30301, 30303], {})
+            return {'data': geometry}
+        except:
+            return JsonResponse({'status': ' ошибка выполнения запроса'}, status=496)
+    elif request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            result = add_geometry(request.user, group_id, data.get('rec_id'), data.get('location'), data.get('name'),
+                                  data.get('parent_id'), data.get('icon'))
+            return {'data': result}
+        except:
+            return JsonResponse({'status': ' ошибка выполнения запроса'}, status=496)
+    else:
+        return JsonResponse({'data': 'неизвестный тип запроса'}, status=480)
 
 
 @login_check
