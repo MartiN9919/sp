@@ -32,7 +32,7 @@ def add_data(user, group_id, object):
     Функция для добавления(слияния) информации в базу данных
     @param user: объект пользователя
     @param group_id: идентификационный номер группы пользователя
-    @param object: вносимая информация в формате {object_id, rec_id, params:[{id,val},...,{}]}
+    @param object: вносимая информация в формате {object_id, rec_id, params:[{id,val,date},...,{}]}
     @return: идентификатор нового/измененного объекта в базе данных
     """
     try:
@@ -97,3 +97,28 @@ def add_data(user, group_id, object):
         return {'object': get_object_record_by_id_http(object.get('object_id'), result)}
     else:
         return {'result': -1}
+
+
+def add_geometry(user, group_id, rec_id, location, name, parent_id, icon):
+    """
+    Функция для добавления геометрии
+    @param user: объект пользователя
+    @param group_id: идентификатор группы пользователя
+    @param rec_id: идентификатор добавляемой геометрии, если новая, то 0
+    @param location: feature collection содержащая информацию о вносимой геометрии
+    @param name: имя новой геометрии
+    @param parent_id: идентификатор родительской папки
+    @param icon: название иконки геометрии
+    @return: словарь содержащий информацию о геометрии
+    """
+    date_time_str = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+    data = []
+    if location:
+        data.append({'id': 30304, 'value': location, 'date': date_time_str})
+    if name:
+        data.append({'id': 30303, 'value': str(name), 'date': date_time_str})
+    if parent_id:
+        data.append({'id': 30302, 'value': str(parent_id), 'date': date_time_str})
+    if icon:
+        data.append({'id': 30301, 'value': str(icon), 'date': date_time_str})
+    return add_data(user, group_id, {'object_id': 30, 'rec_id': rec_id, 'params': data})
