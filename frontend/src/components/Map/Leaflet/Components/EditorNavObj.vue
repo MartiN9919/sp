@@ -7,7 +7,7 @@
       class="tree"
       :items="items"
       :itemSel.number.sync="item_sel"
-      @onNavNew="on_nal_new"
+      @onNavNew="on_nav_new"
       @onNavAdd="on_nav_add"
       @onMenuShow="on_menu_show"
     />
@@ -123,31 +123,33 @@ export default {
     item_sel: 0,
   }),
 
-  created: function() {
-    getResponseAxios(this.$CONST.API.OBJ.GEOMETRY_TREE)
-      .then(response => {
-        // get data
-        this.items = response.data;
-        if (localStorage[this.key_sel]) { this.item_sel = parseInt(localStorage[this.key_sel]); }
-
-        // watch fix bug
-        this.$watch('item_sel', function(id) {
-          localStorage[this.key_sel] = id;
-        });
-
-        return Promise.resolve(response)
-      })
-      .catch(error => { return Promise.reject(error) });
-  },
+  created: function() { this.refresh_items(); },
 
   computed: {
     key_sel() { return router.currentRoute.name + '_editor_nav_obj_sel_' + this.localStorageKeyPostfix },
   },
 
   methods: {
-    on_nal_new(id, name) { this.emit_fc(id, name, 'onNavNew') },
-    on_nav_add(id, name) { this.emit_fc(id, name, 'onNavAdd') },
-    emit_fc(id, name, emit_name) {
+    refresh_items() {
+      getResponseAxios(this.$CONST.API.OBJ.GEOMETRY_TREE)
+        .then(response => {
+          // get data
+          this.items = response.data;
+          if (localStorage[this.key_sel]) { this.item_sel = parseInt(localStorage[this.key_sel]); }
+
+          // watch fix bug
+          this.$watch('item_sel', function(id) {
+            localStorage[this.key_sel] = id;
+          });
+
+          return Promise.resolve(response)
+        })
+        .catch(error => { return Promise.reject(error) });
+    },
+
+    on_nav_new(id, name) { this.on_nav(id, name, 'onNavNew') },
+    on_nav_add(id, name) { this.on_nav(id, name, 'onNavAdd') },
+    on_nav(id, name, emit_name) {
       getResponseAxios(this.$CONST.API.OBJ.GEOMETRY, { params: {rec_id: id,} })
         .then(response => {
           this.$emit(emit_name, id, name, fc_normalize(response.data));

@@ -80,6 +80,7 @@ export default {
       // развернуть tree
       if (this.items_path[item_id]) { this.items_active = this.items_path[item_id]; }
       setTimeout(function() {
+        if (!this.find_item(item_id, this.items)) return;
         this.$vuetify.goTo(
           '#id_'+this._uid+'_'+item_id,
           { duration: 100, offset: 100, easing: 'easeInOutCubic', container: this.$refs.tree_view, }
@@ -119,6 +120,17 @@ export default {
         fun(item, path_id_new)
         if (item.children) this._loop_items_(item.children, path_id_new, fun)
       }
+    },
+
+    // найти узел с id в items
+    find_item(id, items) {
+      let ret = undefined;
+      for (const item of items) {
+        if (item.id == id) { ret = item; break; }
+        if (item.children) { ret = this.find_item(id, item.children); }
+        if (ret)           { break; }
+      }
+      return ret;
     },
 
     on_new(item) {

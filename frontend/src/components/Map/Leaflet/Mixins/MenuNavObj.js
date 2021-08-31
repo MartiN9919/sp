@@ -164,7 +164,7 @@ export default {
 
     // наличие права редактирования объектов
     is_right() {
-      return (this.userInformation.admin || this.userInformation.staff);
+      return (this.userInformation.admin || this.userInformation.write);
     },
 
 
@@ -178,12 +178,14 @@ export default {
       this.on_menu_dialog_show(MENU_IND_NEW);
     },
     action_obj_new_execute() {
+      this.refresh_items();
       this.on_menu_msg('Объект сохранен под именем [ '+this.menu_dialog_name+' ]');
     },
 
 
     // action: save
     action_obj_save(item) {
+      this.refresh_items();
       this.on_menu_msg('Объект сохранен [ '+this.menu_dialog_name+' ]');
     },
 
@@ -193,6 +195,7 @@ export default {
       this.on_menu_dialog_show(MENU_IND_RENAME);
     },
     action_obj_rename_execute() {
+      this.refresh_items();
       this.on_menu_msg('Объект пересохранен под именем [ '+this.menu_dialog_name+' ]');
     },
 
@@ -202,6 +205,7 @@ export default {
       this.on_menu_dialog_agree_show();
     },
     action_obj_del_execute() {
+      this.refresh_items();
       this.on_menu_msg('Объект отключен [ '+this.menu_item_name+' ]');
     },
 
