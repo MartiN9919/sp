@@ -128,19 +128,14 @@ export default {
   model: { prop:  ['fc_prop'], event: 'fc_change', },
 
   props: {
-    fc_prop: { type: Object, default: () => undefined, },
-    // доступные для создания элементы
-    modeEnabled: { type: Object,  default() { return { marker: true, line: true, polygon: true, } }, },
-    // включенный по умолчанию режим, например: 'Polygon'
-    modeSelected: { type: String, default: () => undefined, },
+    fc_prop:      { type: Object, default: () => undefined, },
+    modeSelected: { type: String, default: () => undefined, }, // включенный по умолчанию режим: 'polygon', 'line', 'marker', 'cut'
+    modeEnabled:  { type: Object, default: () => ({ marker: true, line: true, polygon: true, }), }, // доступные для создания элементы
   },
   emits: [
-    // изменение fc пользователем
-    'fc_change',
-    // для сброса выбора в nav
-    'resetSelect',
-    // нажатие кнопки ок
-    'ok',
+    'fc_change',                          // изменение fc пользователем
+    'resetSelect',                        // для сброса выбора в nav
+    'ok',                                 // нажатие кнопки ок
   ],
 
   components: { LControl, },
@@ -462,11 +457,14 @@ export default {
     // ======================================
     // режим по умолчанию
     mode_selected_set() {
-      switch(this.modeSelected) {
-        case TYPES.MARKER:  this.mode_selected_on_marker();  break;
-        case TYPES.LINE:    this.mode_selected_on_line();    break;
-        case TYPES.POLYGON: this.mode_selected_on_polygon(); break;
-        case TYPES.CUT:     this.mode_selected_on_cut();     break;
+      if (!this.modeSelected) return;
+
+      let mode = this.modeSelected.trim().toLowerCase();
+      switch(mode) {
+        case 'marker':  this.mode_selected_on_marker();  break;
+        case 'line':    this.mode_selected_on_line();    break;
+        case 'polygon': this.mode_selected_on_polygon(); break;
+        case 'cut':     this.mode_selected_on_cut();     break;
       }
     },
 
