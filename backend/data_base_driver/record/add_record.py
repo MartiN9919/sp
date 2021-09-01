@@ -9,6 +9,7 @@ from data_base_driver.record.validate_record import validate_record, get_country
     validate_geometry_permission
 from data_base_driver.relations.add_rel import add_rel_by_other_object
 from data_base_driver.sys_key.get_key_dump import get_key_by_id
+from data_base_driver.sys_key.get_list import get_item_list_value
 
 
 def add_record(group_id, object_id, object_info):
@@ -60,9 +61,14 @@ def additional_processing(user, object, data):
             for feature in location[0][1]['features']:
                 geometry['geometries'].append(feature['geometry'])
             location[0][1] = json.dumps(geometry)
-        parent = [item for item in data if item[0] == 30302]
-        if len(parent) > 0:
-            parent[0][1] = str(get_geometry_id_by_name(parent[0][1]))
+
+
+def parse_value(param):
+    value = param['value']
+    key = get_key_by_id(param['id'])
+    if key.get('list_id') != 0 and key['id'] != 30302:
+        value = str(get_item_list_value(value))
+    return [param['id'], value, param.get('date', datetime.datetime.now().strftime("%Y-%m-%d %H:%M")) + ':00']
 
 
 def add_data(user, group_id, object):
@@ -74,9 +80,7 @@ def add_data(user, group_id, object):
     @return: идентификатор нового/измененного объекта в базе данных
     """
     try:
-        data = [
-            [param['id'], param['value'], param.get('date', datetime.datetime.now().strftime("%Y-%m-%d %H:%M")) + ':00']
-            for param in object['params'] if validate_record(param)]
+        data = [parse_value(param) for param in object['params'] if validate_record(param)]
     except Exception as e:
         raise e
     # костыль для добавления классификатора телефона для страны, придумать как переделать-------------------------------
@@ -131,7 +135,7 @@ def add_geometry(user, group_id, rec_id, location, name, parent_id, icon):
     if name:
         data.append({'id': 30303, 'value': str(name), 'date': date_time_str})
     if parent_id:
-        data.append({'id': 30302, 'value': get_geometry_by_id(int(parent_id))['name'], 'date': date_time_str})
+        data.append({'id': 30302, 'value': parent_id, 'date': date_time_str})
     if icon:
         data.append({'id': 30301, 'value': str(icon), 'date': date_time_str})
     return add_data(user, group_id, {'object_id': 30, 'rec_id': rec_id, 'params': data})

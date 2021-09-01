@@ -41,7 +41,7 @@ def io_get_obj_row_manticore(group_id, object_type, keys, ids, ids_max_block, wh
                                group_id, False)
 
 
-def io_get_obj_col_manticore(group_id, object_type, keys, ids, ids_max_block):
+def io_get_obj_col_manticore(group_id, object_type, keys, ids, ids_max_block, where_dop):
     """
     Функция для получения информации о объекте из col индексов мантикоры в формате списка словарей
     @param group_id: идентификатор группы пользователя
@@ -49,6 +49,7 @@ def io_get_obj_col_manticore(group_id, object_type, keys, ids, ids_max_block):
     @param keys: список содержащий идентификаторы ключей
     @param ids: список содержащий идентификаторы объектов
     @param ids_max_block: максимальное количество записей в ответе
+    @param where_dop: строка вставляемая в match часть запроса manticore
     @return: список словарей в формате [{rec_id,sec,key_id,val},{},...,{}]
     """
     col_keys = DAT_SYS_KEY.DUMP.get_rec(obj_id=object_type, col=True, only_first=False)
@@ -65,6 +66,7 @@ def io_get_obj_col_manticore(group_id, object_type, keys, ids, ids_max_block):
     data = json.dumps({
         'index': index,
         'query': {
+            'query_string': where_dop,
             'bool': {
                 'must': must
             }
@@ -76,7 +78,7 @@ def io_get_obj_col_manticore(group_id, object_type, keys, ids, ids_max_block):
     for item in response:
         params = item['_source']
         for key in result_keys:
-            if params.get(key['name']) != None:
+            if params.get(key['name']) != None and len(str(params.get(key['name']))) > 0:
                 if key['name'] == 'location' or key['name'] == 'point':
                     value = json.dumps(params.get(key['name']))
                 else:
@@ -104,7 +106,7 @@ def io_get_obj_manticore_dict(group_id, object_type, keys, ids, ids_max_block, w
                                            time_interval)
     if len(where_dop_row) > 0:
         ids = [item[DAT_OBJ_ROW.ID] for item in row_records]
-    col_records = io_get_obj_col_manticore(group_id, object_type, keys, ids, ids_max_block)
+    col_records = io_get_obj_col_manticore(group_id, object_type, keys, ids, ids_max_block, where_dop_row)
     result = row_records + col_records
     result.sort(key=lambda x: x[DAT_OBJ_ROW.ID])
     return result

@@ -31,3 +31,13 @@ def get_list_by_name(name):
     return get_list_by_top_id(top_list_id)
 
 
+def get_item_list_value(id):
+    sql = 'SELECT ' + DAT_SYS_LIST_DOP.VAL + ' FROM ' \
+          + DAT_SYS_LIST_DOP.TABLE_SHORT + ' WHERE ' \
+          + DAT_SYS_LIST_DOP.ID + ' = ' + str(id) + ';'
+    value = db_sql(sql)[0][0]
+    return value
+
+
+
+
