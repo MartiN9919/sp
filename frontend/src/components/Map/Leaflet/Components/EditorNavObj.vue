@@ -57,29 +57,34 @@
       />
 
       <v-dialog
-        v-model="menu_dialog_show"
+        v-model="menu_dialog_param_show"
         max-width="400px"
         style="z-index: 10000002"
         @keydown.enter="on_menu_dialog_ok"
-        @keydown.esc="menu_dialog_show = false"
+        @keydown.esc="menu_dialog_param_show = false"
         transition="dialog-bottom-transition"
         persistent
       >
         <v-card>
-          <v-card-title>Название объекта</v-card-title>
+          <v-card-title>{{menu_dialog_param_title}}</v-card-title>
           <v-divider></v-divider>
           <v-card-text>
             <v-text-field
-              ref="input_nam"
-              v-model="menu_dialog_name"
+              ref="input_name"
+              v-model="menu_dialog_param_name"
+              label="Название*"
               required
               autofocus
+            />
+            <v-text-field
+              v-model="menu_dialog_param_icon"
+              label="Иконка"
             />
           </v-card-text>
           <v-divider></v-divider>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn :color="$CONST.APP.COLOR_OBJ" text @click="menu_dialog_show = false">Отмена</v-btn>
+            <v-btn :color="$CONST.APP.COLOR_OBJ" text @click="menu_dialog_param_show = false">Отмена</v-btn>
             <v-btn :color="$CONST.APP.COLOR_OBJ" text @click="on_menu_dialog_ok" :disabled="is_disabled_menu_dialog_ok()">Ок</v-btn>
           </v-card-actions>
         </v-card>
@@ -95,7 +100,7 @@
         persistent
       >
         <v-card>
-          <v-card-title>Подтвердите операцию</v-card-title>
+          <v-card-title>Отключить объект</v-card-title>
           <v-divider></v-divider>
           <v-card-text>
 
@@ -137,7 +142,7 @@
  */
 
 import router from '@/router';
-import { getResponseAxios } from '@/plugins/axios_settings';
+import { getResponseAxios, } from '@/plugins/axios_settings';
 import Treeview from '@/components/Map/Leaflet/Components/Treeview';
 import MixMenuNavObj from '@/components/Map/Leaflet/Mixins/MenuNavObj';
 import { fc_normalize, } from '@/components/Map/Leaflet/Lib/LibFc';
