@@ -182,15 +182,8 @@ export default {
     refresh_items() {
       getResponseAxios(this.$CONST.API.OBJ.GEOMETRY_TREE)
         .then(response => {
-          // get data
           this.items = response.data;
           if (localStorage[this.key_sel]) { this.item_sel_id = parseInt(localStorage[this.key_sel]); }
-
-          // // watch fix bug
-          // this.$watch('item_sel_id', function(id) {
-          //   localStorage[this.key_sel] = id;
-          // });
-
           return Promise.resolve(response)
         })
         .catch(error => { return Promise.reject(error) });
