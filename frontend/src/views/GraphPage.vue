@@ -7,7 +7,7 @@
       </v-row>
     </template>
     <template v-slot:secondPane>
-      <work-place></work-place>
+<!--      <work-place></work-place>-->
     </template>
   </split-panel>
 </template>
@@ -20,12 +20,13 @@ import searchPage from "../components/Graph/GraphMenu/searchPage"
 import createPage from "../components/Graph/GraphMenu/createPage"
 import dossierPage from "../components/Graph/GraphMenu/dossierPage"
 import createRelationPage from "../components/Graph/GraphMenu/createRelationPage"
+import settingsPage from "../components/Graph/GraphMenu/settingsPage"
 import {mapActions, mapGetters} from "vuex"
 import router from '@/router'
 
 export default {
   name: 'GraphPage',
-  components: {SplitPanel, workPlace, toolsMenu, searchPage, createPage, dossierPage, createRelationPage},
+  components: {SplitPanel, workPlace, toolsMenu, searchPage, createPage, dossierPage, createRelationPage, settingsPage},
   computed: {
     ...mapGetters(['activeTool']),
     activeWindow: function () {
@@ -43,10 +44,12 @@ export default {
         return 'dossierPage'
       if (this.activeWindow === 'createRelationPage')
         return 'createRelationPage'
+      if (this.activeWindow === 'settingsPage')
+        return 'settingsPage'
     },
   },
   mounted() {
-    this.getBaseObjects()
+    this.getBaseObjects({})
     .then(() => {
       this.setDefaultValueActiveTool()
       this.setRootSearchTreeItem({})

@@ -16,7 +16,9 @@ export default {
     addNewParamEditableRelation: (state, id) => state.editableRelation.addParam(id),
     deleteNewParamEditableRelation: (state, {id, param}) => state.editableRelation.deleteParam(id, param),
 
-    setEditableObjects: (state, object) => state.editableObjects = [object],
+    setEditableObjects: (state, object) => {
+      state.editableObjects = [object]
+    },
     resetEditableObjects: (state) => state.editableObjects = [state.editableObjects[0]],
     addEditableObjects: (state, object) => state.editableObjects.push(object),
     addNewParamEditableObject: (state, {id, position}) => {
@@ -29,10 +31,7 @@ export default {
   actions: {
     setEditableRelation({getters, commit}, relation) {
       commit('setEditableRelation', new DataBaseRelation(
-        relation.object_id1,
-        relation.object_id2,
-        relation.rec_id1,
-        relation.rec_id2,
+        relation.o1, relation.o2, relation.r1, relation.r2,
         getters.relations(relation)?.relations
       ))
     },
@@ -41,23 +40,6 @@ export default {
     },
     deleteNewParamEditableRelation({commit}, playLoad) {
       commit('deleteNewParamEditableRelation', playLoad)
-    },
-    async getObjectFromServer({commit, dispatch}, config = {}) {
-      return await getResponseAxios('objects/object/', config)
-        .then(r => { return Promise.resolve(r.data) })
-        .catch(e => { return Promise.reject(e) })
-    },
-    async getRelationFromServer({commit, dispatch}, {params, config}) {
-      return await postResponseAxios('objects/object_relation/', params, config)
-        .then(r => {
-          for(let relation of r.data) {
-            let object = {o1: params.object_id, r1: params.rec_id, o2: relation.object_id, r2: relation.rec_id}
-            dispatch('addChoosingRelation', {object: object, relations: relation.relations})
-          }
-          return Promise.resolve(r.data)
-        })
-        .catch(e => { return Promise.reject(e) })
-
     },
     setEditableObject({commit}, object) {
       commit('setEditableObjects', new DataBaseObject(object.object_id, object.rec_id, object.title, object.params))
@@ -77,6 +59,29 @@ export default {
     deleteNewParamEditableObject({commit}, playLoad) {
       commit('deleteNewParamEditableObject', playLoad)
     },
+    async getObjectFromServer({commit, dispatch}, config = {}) {
+      let cookies = []
+      for (let [name, value] of Object.entries(localStorage))
+        if (name.startsWith('trigger')) {
+          cookies.push({id: name.split('_')[2], variables: JSON.parse(value)})
+        }
+      config.headers = {'set-cookie': JSON.stringify(cookies)}
+      return await getResponseAxios('objects/object/', config)
+        .then(r => { return Promise.resolve(r.data) })
+        .catch(e => { return Promise.reject(e) })
+    },
+    async getRelationFromServer({commit, dispatch}, {params, config}) {
+      return await postResponseAxios('objects/object_relation/', params, config)
+        .then(r => {
+          for(let relation of r.data) {
+            let object = {o1: params.object_id, r1: params.rec_id, o2: relation.object_id, r2: relation.rec_id}
+            dispatch('addChoosingRelation', {object: object, relations: relation.relations})
+          }
+          return Promise.resolve(r.data)
+        })
+        .catch(e => { return Promise.reject(e) })
+
+    },
     async saveEditableObject({getters, dispatch}, positionObject) {
       return await postResponseAxios('objects/object', getters.editableObjects[positionObject].getRequestStructure(), {})
         .then(r => {
@@ -94,8 +99,9 @@ export default {
       let relation = getters.editableRelation
       return await postResponseAxios('objects/relation', relation.getRequestStructure(), {})
         .then(r => {
-          let object = {o1: relation.o1, r1: relation.r1, o2: relation.o2, r2: relation.r2}
+          let object = {o1: relation.o1.id, r1: relation.o1Object.rec_id, o2: relation.o2.id, r2: relation.o2Object.rec_id}
           dispatch('addChoosingRelation', {object: object, relations: r.data})
+          dispatch('setEditableRelation', Object.assign({}, object, r.data))
           return Promise.resolve(r.data)
         })
         .catch(e => { return Promise.reject(e) })

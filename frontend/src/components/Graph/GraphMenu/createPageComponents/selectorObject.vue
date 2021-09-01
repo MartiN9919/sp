@@ -1,11 +1,11 @@
 <template>
   <v-select
     v-model="selected"
-    :items="items"
+    :items="baseObjects"
     :menu-props="{offsetY: true}"
     item-color="teal"
     hide-details
-    return-object
+    item-value="id"
     item-text="titleSingle"
     solo color="teal"
     class="v-input--dense selector-objects"
@@ -15,27 +15,43 @@
 </template>
 
 <script>
+import {mapActions, mapGetters} from "vuex"
+
 export default {
   name: "selectorObject",
   props: {
-    items: Array,
-    selectedObject: Object,
+    selectedObject: Number,
+    startObject: {
+      type: Boolean,
+      default: false,
+    },
   },
   model: {
     prop: 'selectedObject',
-    event: 'changeSelectedObject',
+    event: 'changeSelectedObject'
   },
   computed: {
+    ...mapGetters(['baseObjects']),
     selected: {
-      get: function () { return this.selectedObject },
-      set: function (object) { this.$emit('changeSelectedObject', object) }
+      get: function () { if (this.selectedObject) return this.selectedObject },
+      set: function (id) { this.getClassifiers(id) }
     }
+  },
+  methods: {
+    ...mapActions(['getBaseClassifiers']),
+    getClassifiers(id) {
+      this.getBaseClassifiers({params: {object_id: id}})
+        .then(() => { return this.$emit('changeSelectedObject', id) })
+    }
+  },
+  mounted() {
+    if(this.startObject) this.selected = this.baseObjects[0].id
   }
 }
 </script>
 
 <style scoped>
 .selector-objects >>> .v-input__slot {
-  padding: 8 !important;
+  padding: 8px !important;
 }
 </style>
