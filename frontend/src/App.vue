@@ -26,25 +26,5 @@ export default {
 </script>
 
 <style>
-  /***** отключить выделение текста  *****/
-  .select_off {
-    -moz-user-select: none;
-    -webkit-user-select: none;
-    -ms-user-select: none;
-    -khtml-user-select: none;
-    user-select: none;
-    cursor: default;
-  }
-  ::-webkit-scrollbar {
-    width: 10px;
-  }
-  ::-webkit-scrollbar-track {
-    background: #FFFFFF;
-  }
-  ::-webkit-scrollbar-thumb {
-    background : rgba(0, 0, 0, .1);
-  }
-  #app, #main {
-    height: 100%;
-  }
+  @import "~@/main.css";
 </style>

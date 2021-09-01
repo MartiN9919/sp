@@ -7,6 +7,8 @@
       :color="$CONST.APP.COLOR_OBJ"
       label="Искать"
       @input="on_search"
+      @focus="on_focus(true)"
+      @blur="on_focus(false)"
       dense
       outlined
       hide-details
@@ -20,7 +22,7 @@
           @click="on_click_btn_prev"
           icon
         >
-          <v-icon size="24" :color="$CONST.APP.COLOR_OBJ">mdi-arrow-left-bold</v-icon>
+          <v-icon size="24" :color="btn_color">mdi-arrow-left-bold</v-icon>
         </v-btn>
         <v-btn
           v-show="btn_show"
@@ -28,7 +30,7 @@
           @click="on_click_btn_next"
           icon
         >
-          <v-icon size="24" :color="$CONST.APP.COLOR_OBJ">mdi-arrow-right-bold</v-icon>
+          <v-icon size="24" :color="btn_color">mdi-arrow-right-bold</v-icon>
         </v-btn>
     </template>
     </v-text-field>
@@ -162,6 +164,7 @@ export default {
     items_search_id:   undefined,
 
     btn_show:          false,
+    btn_color:         undefined,
     btn_prev_disabled: true,
     btn_next_disabled: true,
   }),
@@ -248,6 +251,13 @@ export default {
         this.items_search_list.length-1
       );
     },
+
+
+
+    on_focus(val) {
+      this.btn_color = (val) ? this.$CONST.APP.COLOR_OBJ : 'grey darken-1';
+    },
+
 
   },
 
