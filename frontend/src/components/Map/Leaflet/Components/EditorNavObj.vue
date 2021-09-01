@@ -83,6 +83,16 @@
               :items="menu_dialog_param_icons"
               @update:search-input="menu_dialog_param_icon = $event"
             >
+              <template v-slot:item="{ attrs, item, parent, selected }">
+                <v-list-item dense>
+                  <v-list-item-icon>
+                    <v-icon size="20">{{ item }}</v-icon>
+                  </v-list-item-icon>
+                  <v-list-item-content>
+                    <v-list-item-title v-text="item"/>
+                  </v-list-item-content>
+                </v-list-item>
+              </template>
               <template v-slot:append-outer>
                 <div style="min-width: 24px;">
                   <v-icon size="24">{{ menu_dialog_param_icon }}</v-icon>
