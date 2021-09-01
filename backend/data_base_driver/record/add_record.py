@@ -1,13 +1,14 @@
 import datetime
 import json
 
+from data_base_driver.input_output.io_geo import get_geometry_id_by_name, get_geometry_by_id
 from data_base_driver.record.find_object import find_key_value_http
-from data_base_driver.record.get_record import get_object_record_by_id_http
+from data_base_driver.record.get_record import get_object_record_by_id_http, get_keys_by_object
 from data_base_driver.input_output.input_output import io_set
 from data_base_driver.record.validate_record import validate_record, get_country_by_number, remove_special_chars, \
     validate_geometry_permission
 from data_base_driver.relations.add_rel import add_rel_by_other_object
-from data_base_driver.sys_key.get_key_dump import get_key_by_id, get_keys_by_object
+from data_base_driver.sys_key.get_key_dump import get_key_by_id
 
 
 def add_record(group_id, object_id, object_info):
@@ -27,22 +28,13 @@ def add_record(group_id, object_id, object_info):
         return -1
 
 
-def add_data(user, group_id, object):
+def additional_processing(user, object, data):
     """
-    Функция для добавления(слияния) информации в базу данных
+    Функция для дополнительной обработки входящих параметров с учетом особенностей системы
     @param user: объект пользователя
-    @param group_id: идентификационный номер группы пользователя
-    @param object: вносимая информация в формате {object_id, rec_id, params:[{id,val,date},...,{}]}
-    @return: идентификатор нового/измененного объекта в базе данных
+    @param object: объект для добавления
+    @param data: данные для добавления
     """
-    try:
-        data = [
-            [param['id'], param['value'], param.get('date', datetime.datetime.now().strftime("%Y-%m-%d %H:%M")) + ':00']
-            for param in object['params'] if validate_record(param)]
-    except Exception as e:
-        raise e
-
-    # костыль для добавления классификатора телефона для страны, придумать как переделать-------------------------------
     if object.get('object_id') == 52:
         country = get_country_by_number([param for param in object['params'] if param['id'] == 50054][0]['value'])
         fl = 0
@@ -68,8 +60,28 @@ def add_data(user, group_id, object):
             for feature in location[0][1]['features']:
                 geometry['geometries'].append(feature['geometry'])
             location[0][1] = json.dumps(geometry)
-    # ------------------------------------------------------------------------------------------------------------------
+        parent = [item for item in data if item[0] == 30302]
+        if len(parent) > 0:
+            parent[0][1] = str(get_geometry_id_by_name(parent[0][1]))
 
+
+def add_data(user, group_id, object):
+    """
+    Функция для добавления(слияния) информации в базу данных
+    @param user: объект пользователя
+    @param group_id: идентификационный номер группы пользователя
+    @param object: вносимая информация в формате {object_id, rec_id, params:[{id,val,date},...,{}]}
+    @return: идентификатор нового/измененного объекта в базе данных
+    """
+    try:
+        data = [
+            [param['id'], param['value'], param.get('date', datetime.datetime.now().strftime("%Y-%m-%d %H:%M")) + ':00']
+            for param in object['params'] if validate_record(param)]
+    except Exception as e:
+        raise e
+    # костыль для добавления классификатора телефона для страны, придумать как переделать-------------------------------
+    additional_processing(user, object, data)
+    # ------------------------------------------------------------------------------------------------------------------
     if not object.get('force', False):  # проверка на дублирование
         temp_set = None
         for item in data:
@@ -89,14 +101,13 @@ def add_data(user, group_id, object):
                 data.append([param['id'], value['value'], value['date']])
         add_rel_by_other_object(group_id, object.get('object_id', 0), object.get('rec_id', 0),
                                 object.get('object_id', 0), object.get('rec_id_old', 0))
-
     if len(data) == 0:  # проверка на пустой запрос
-        return {'object': get_object_record_by_id_http(object.get('object_id'), object.get('rec_id', 0))}
+        return {'object': object.get('rec_id', 0)}
     if object.get('rec_id', 0) != 0:  # проверка на внесение новой записи
         data.append(['id', object.get('rec_id')])
     result = add_record(group_id=group_id, object_id=object.get('object_id'), object_info=data)
     if result != -1:
-        return {'object': get_object_record_by_id_http(object.get('object_id'), result)}
+        return {'object': result}
     else:
         return {'result': -1}
 
@@ -120,7 +131,7 @@ def add_geometry(user, group_id, rec_id, location, name, parent_id, icon):
     if name:
         data.append({'id': 30303, 'value': str(name), 'date': date_time_str})
     if parent_id:
-        data.append({'id': 30302, 'value': str(parent_id), 'date': date_time_str})
+        data.append({'id': 30302, 'value': get_geometry_by_id(int(parent_id))['name'], 'date': date_time_str})
     if icon:
         data.append({'id': 30301, 'value': str(icon), 'date': date_time_str})
     return add_data(user, group_id, {'object_id': 30, 'rec_id': rec_id, 'params': data})

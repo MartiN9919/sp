@@ -9,8 +9,8 @@ from data_base_driver.osm.osm_lib import osm_search, osm_fc
 from data_base_driver.record.search import search
 from data_base_driver.record.add_record import add_data, add_geometry
 from data_base_driver.relations.add_rel import add_rel
-from data_base_driver.relations.get_rel import get_object_relation
-from data_base_driver.sys_key.get_key_dump import get_keys_by_object, get_relations_list
+from data_base_driver.relations.get_rel import get_object_relation, get_relations_list
+from data_base_driver.record.get_record import get_keys_by_object
 from data_base_driver.sys_key.get_object_info import obj_list
 
 
@@ -67,19 +67,26 @@ def aj_object(request):
     {rec_id, obj_id, params:[{id,val},...,{}]} если объект новый rec_id не задается
     """
     group_id = DAT_OWNER.DUMP.get_group(user_id=request.user.id)
+    triggers = json.loads(request.headers.get('Set-Cookie'))
     if request.method == 'GET':
         try:
             return JsonResponse({'data': get_object_record_by_id_http(object_id=int(request.GET['object_id']),
                                                                       rec_id=int(request.GET['record_id']),
-                                                                      group_id=group_id)}, status=200)
+                                                                      group_id=group_id,
+                                                                      triggers=triggers)}, status=200)
         except:
             return JsonResponse({'status': 'неверный номер объекта'}, status=496)
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
             result = add_data(user=request.user, group_id=group_id, object=data)
-            if not result.get('object') or not result.get('objects'):
+            if result.get('objects'):
                 return JsonResponse({'data': result}, status=200)
+            elif result.get('object'):
+                return JsonResponse({'data': {'object': get_object_record_by_id_http(object_id=data.get('object_id'),
+                                                                                     rec_id=result.get('object'),
+                                                                                     group_id=group_id,
+                                                                                     triggers=triggers)}}, status=200)
             else:
                 return JsonResponse({'data': 'ошибка добавления'}, status=497)
         except Exception as e:
@@ -115,13 +122,6 @@ def aj_relation(request):
             return JsonResponse({'data': result}, status=200)
         except:
             return JsonResponse({'data': 'ошибка добавления'}, status=497)
-    if request.method == 'GET':
-        try:
-            result = get_object_relation(group_id, int(request.GET['object_id']), int(request.GET['rec_id']),
-                                         json.loads(request.GET['objects']))
-            return JsonResponse({'data': result}, status=200)
-        except:
-            return JsonResponse({'status': 'неверный номер объекта'}, status=496)
     else:
         return JsonResponse({'data': 'неизвестный тип запроса'}, status=480)
 
@@ -241,5 +241,3 @@ def aj_osm_fc(request):
     @return: fc
     """
     return {'data': osm_fc(id=request.GET['id'])}
-
-

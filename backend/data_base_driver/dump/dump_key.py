@@ -1,8 +1,8 @@
 import threading
 import time
-from ..constants.const_dat import DAT_SYS_OBJ, DAT_SYS_KEY
-from ..connect.connect_mysql import DB_sql
-from .transform_functions import tuple_to_dict_many, dict_filter
+from data_base_driver.constants.const_dat import DAT_SYS_OBJ, DAT_SYS_KEY
+from data_base_driver.connect.connect_mysql import DB_sql
+from data_base_driver.dump.transform_functions import tuple_to_dict_many, dict_filter
 
 
 ##################################################################################

@@ -76,7 +76,7 @@ def io_get_obj_col_manticore(group_id, object_type, keys, ids, ids_max_block):
     for item in response:
         params = item['_source']
         for key in result_keys:
-            if params.get(key['name']):
+            if params.get(key['name']) != None:
                 if key['name'] == 'location' or key['name'] == 'point':
                     value = json.dumps(params.get(key['name']))
                 else:

@@ -5,6 +5,7 @@ import threading
 
 from authentication.models import ModelCustomUser
 from data_base_driver.script.get_script_info import get_script_title
+from data_base_driver.script.script_execute import execute_script_map
 from data_base_driver.script.script_list import get_script_tree
 from data_base_driver.constants.const_dat import DAT_OWNER
 from django.http import JsonResponse
@@ -47,16 +48,11 @@ def aj_script_execute_map(request):
     data = json.loads(request.body)
     method_name = 'script_' + str(data.get('id'))
     importlib.invalidate_caches()
-    try:
-        my_module = importlib.import_module('script.user_scripts.' + method_name)
-        result = getattr(my_module, method_name)(data.get('variables'), group_id)
-        if result == 'error':
-            return JsonResponse({}, status=470)
-        else:
-            return JsonResponse({'data': result}, status=200)
-
-    except:
+    result = execute_script_map(method_name, group_id, data.get('variables'))
+    if result == 'error':
         return JsonResponse({}, status=470)
+    else:
+        return JsonResponse({'data': result}, status=200)
 
 
 @login_check

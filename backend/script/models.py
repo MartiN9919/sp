@@ -7,6 +7,7 @@ from django.db.models import Q
 from classifier.models import ModelObject
 from data_base_driver.constants.const_dat import DAT_SYS_SCRIPT, DAT_SYS_TRIGGER
 from data_base_driver.constants.const_script import BASE_PATH_TO_USER_SCRIPTS
+from data_base_driver.constants.const_trigger import BASE_PATH_TO_USER_TRIGGERS
 from data_base_driver.script.script_parsec import parse_text_to_python
 from authentication.models import ModelOwnerLines
 from data_base_driver.trigger.trigger_parser import parse_trigger_text_to_python
@@ -158,7 +159,7 @@ class ModelTrigger(models.Model):
         blank=True,
         default='',
     )
-    hint = models.CharField(
+    hint = models.TextField(
         max_length=255,
         verbose_name='Всплывающая подсказка',
         help_text='Ввод текста подсказки, которая будет отображаться в меню выбора анализа',
@@ -168,12 +169,21 @@ class ModelTrigger(models.Model):
 
     def save(self, *args, **kwargs):
         """
-        Функция для переопределения сохранения модели, добавлено сохранение файла в папку пользовательских скриптов
+        Функция для переопределения сохранения модели, добавлено сохранение файла в папку пользовательских триггеров
         @param args: стандартный список параметров
         @param kwargs: стандартный список параметров
         """
         super().save(*args, **kwargs)
         parse_trigger_text_to_python('trigger_' + str(self.id), self.content, self.variables)
+
+    def delete(self, using=None, keep_parents=False):
+        """
+        Функция для удаления триггера, удаляет как из базы данных, так и из файловой системы
+        @param using:
+        @param keep_parents:
+        """
+        os.remove(BASE_PATH_TO_USER_TRIGGERS + 'trigger_' + str(self.id) + '.py')
+        super().delete()
 
     class Meta:
         managed = False
