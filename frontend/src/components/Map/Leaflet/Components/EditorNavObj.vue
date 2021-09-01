@@ -15,7 +15,7 @@
       clearable
       autofocus
     >
-      <template v-slot:append >
+      <template v-slot:append>
         <v-btn
           v-show="btn_show"
           :disabled="btn_prev_disabled"
@@ -60,7 +60,7 @@
         v-model="menu_dialog_param_show"
         max-width="400px"
         style="z-index: 10000002"
-        @keydown.enter="on_menu_dialog_ok"
+        @keydown.enter="on_menu_dialog_param_ok"
         @keydown.esc="menu_dialog_param_show = false"
         transition="dialog-bottom-transition"
         persistent
@@ -76,16 +76,25 @@
               required
               autofocus
             />
-            <v-text-field
+            <v-combobox
+              ref="dd"
               v-model="menu_dialog_param_icon"
               label="Иконка"
-            />
+              :items="menu_dialog_param_icons"
+              @update:search-input="menu_dialog_param_icon = $event"
+            >
+              <template v-slot:append-outer>
+                <div style="min-width: 24px;">
+                  <v-icon size="24">{{ menu_dialog_param_icon }}</v-icon>
+                </div>
+              </template>
+            </v-combobox>
           </v-card-text>
           <v-divider></v-divider>
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn :color="$CONST.APP.COLOR_OBJ" text @click="menu_dialog_param_show = false">Отмена</v-btn>
-            <v-btn :color="$CONST.APP.COLOR_OBJ" text @click="on_menu_dialog_ok" :disabled="is_disabled_menu_dialog_ok()">Ок</v-btn>
+            <v-btn :color="$CONST.APP.COLOR_OBJ" text @click="on_menu_dialog_param_ok" :disabled="is_disabled_menu_dialog_param_ok()">Ок</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
