@@ -60,12 +60,7 @@ export default {
       commit('deleteNewParamEditableObject', playLoad)
     },
     async getObjectFromServer({commit, dispatch}, config = {}) {
-      let cookies = []
-      for (let [name, value] of Object.entries(localStorage))
-        if (name.startsWith('trigger')) {
-          cookies.push({id: name.split('_')[2], variables: JSON.parse(value)})
-        }
-      config.headers = {'set-cookie': JSON.stringify(cookies)}
+      config.headers = {'set-cookie': JSON.stringify(getTriggers(config.params.object_id))}
       return await getResponseAxios('objects/object/', config)
         .then(r => { return Promise.resolve(r.data) })
         .catch(e => { return Promise.reject(e) })
@@ -83,7 +78,10 @@ export default {
 
     },
     async saveEditableObject({getters, dispatch}, positionObject) {
-      return await postResponseAxios('objects/object', getters.editableObjects[positionObject].getRequestStructure(), {})
+      return await postResponseAxios('objects/object',
+        getters.editableObjects[positionObject].getRequestStructure(),
+        {headers: {'set-cookie': JSON.stringify(getTriggers(getters.editableObjects[positionObject].object.id))}}
+      )
         .then(r => {
           if(r.data.hasOwnProperty('object')) {
             dispatch('setEditableObject', r.data.object)
@@ -107,6 +105,14 @@ export default {
         .catch(e => { return Promise.reject(e) })
     }
   }
+}
+
+function getTriggers(id) {
+  let cookies = []
+  for (let [name, value] of Object.entries(localStorage))
+    if (name.startsWith('trigger') && name.split('_')[1] === id.toString())
+      cookies.push({id: name.split('_')[2], variables: JSON.parse(value)})
+  return cookies
 }
 
 
