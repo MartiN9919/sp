@@ -115,7 +115,6 @@ function getTriggers(id) {
   return cookies
 }
 
-
 class BaseDbObject {
   constructor(getter, baseObjects, params, recIdOld=null) {
     this.params = []
@@ -178,7 +177,7 @@ class DataBaseObject extends BaseDbObject {
     let params = []
     for(let param of this.params)
       for (let newValue of param.new_values) {
-        let value = param.baseParam.list ? param.baseParam.list.find(item => item.id === newValue.value).value : newValue.value
+        let value = newValue.value
         params.push({id: param.baseParam.id, value: value, date: newValue.date})
       }
     let request = {

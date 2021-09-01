@@ -2,7 +2,7 @@
   <body-block-settings :icon="icon" :title="title" :sub-title="subTitle">
     <slot></slot>
     <v-card v-for="trigger of triggers" class="ma-2">
-      <v-list>
+      <v-list class="pt-0">
         <v-list-item @click="activateTrigger(trigger)" dense v-ripple="{ class: 'teal--text' }">
           <v-list-item-content>
             <v-list-item-title>{{trigger.title}}</v-list-item-title>
@@ -12,7 +12,7 @@
             <v-switch v-model="trigger.state" disabled color="teal"></v-switch>
           </v-list-item-action>
         </v-list-item>
-        <v-divider></v-divider>
+        <v-divider v-if="trigger.variables.length" class="pb-2"></v-divider>
         <v-form :ref="'form' + trigger.id">
           <v-list-item v-for="param in trigger.variables">
             <responsive-input-form
@@ -26,6 +26,9 @@
           </v-list-item>
         </v-form>
       </v-list>
+    </v-card>
+    <v-card v-if="!triggers.length" flat class="ma-2">
+      <v-card-title class="justify-center py-0" style="white-space: normal">У данного объекта триггеры отсутствуют</v-card-title>
     </v-card>
   </body-block-settings>
 </template>
