@@ -1,14 +1,14 @@
 <template>
   <v-col>
     <responsive-input-form
-        v-model="param.value"
-        :type="type"
-        :items="list"
-        :rules="[ v => !!v || 'Поле должно быть заполнено', ]"
-        :hide-details="false"
-        deletable
-        class="pt-1"
-        @deletable="$emit('deletable')"
+      v-model="param.value"
+      :type="type"
+      :items="list"
+      :rules="[ v => !!v || 'Поле должно быть заполнено', ]"
+      :hide-details="false"
+      deletable
+      class="pt-1"
+      @deletable="$emit('deletable')"
     >
       <template v-slot:message>
         <drop-down-menu nudge-left="290" min-width="auto" close-on-click :close-on-content-click="false">

@@ -21,6 +21,7 @@ export default {
         { name: 'createPage', icon: 'mdi-text-box-plus-outline', disabled: false },
         { name: 'createRelationPage', icon: 'mdi-link-variant-plus', disabled: true },
         { name: 'dossierPage', icon: 'mdi-file-document-outline', disabled: true },
+        { name: 'settingsPage', icon: 'mdi-cog-outline', disabled: false },
       ]
     }
   },

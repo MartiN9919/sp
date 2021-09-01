@@ -67,11 +67,10 @@ export default {
   },
   methods: {
     ...mapActions(['setRootSearchTreeItem', 'changeSearchTreeItem', 'setActiveTool', 'addSearchTreeItem',
-    'findObjectsOnServer', 'removeSearchTreeItem', 'setEditableObject', 'getObjectFromServer', 'addChoosingObject',
-    'getBaseClassifiers']),
+    'findObjectsOnServer', 'removeSearchTreeItem', 'setEditableObject', 'getObjectFromServer', 'getBaseClassifiers']),
     selectObject(object) {
       this.getObjectFromServer({params: {record_id: object.rec_id, object_id: object.object_id}})
-        .then(response => { this.addChoosingObject(response) })
+        .then(response => {})
     },
     changeObject(object) {
       this.getObjectFromServer({params: {record_id: object.rec_id, object_id: object.object_id}})

@@ -149,7 +149,7 @@ export default {
         this.setToolStatus({tool: 'createRelationPage', status: false})
         this.setActiveTool('createRelationPage')
         this.drawer = true
-        this.setEditableRelation({object_id1: object_id1, rec_id1: rec_id1, object_id2: object_id2, rec_id2: rec_id2})
+        this.setEditableRelation({o1: object_id1, r1: rec_id1, o2: object_id2, r2: rec_id2})
       })
     },
     menu_show(e, node) {
