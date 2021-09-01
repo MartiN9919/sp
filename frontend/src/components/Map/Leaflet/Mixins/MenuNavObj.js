@@ -108,9 +108,9 @@ export default {
       this.menu_item = (menu_item !== undefined) ? JSON.parse(JSON.stringify(menu_item)) : undefined;
       let obj_name = str_cut(menu_item?.name, 25, true);
       if              (is_fc)  this.menu_struct[MENU_IND_NEW   ].subtitle = "Создать объект";
-      if ((is_obj) && (is_fc)) this.menu_struct[MENU_IND_SAVE  ].subtitle = "Сохранить объект как [ "+obj_name+" ]";
-      if  (is_obj)             this.menu_struct[MENU_IND_CHANGE].subtitle = "Изменить объект [ "+obj_name+" ]";
-      if  (is_obj)             this.menu_struct[MENU_IND_DEL   ].subtitle = "Отключить объект [ "    +obj_name+" ]";
+      if ((is_obj) && (is_fc)) this.menu_struct[MENU_IND_SAVE  ].subtitle = "Сохранить объект [ "+obj_name+" ]";
+      if  (is_obj)             this.menu_struct[MENU_IND_CHANGE].subtitle = "Изменить объект [ " +obj_name+" ]";
+      if  (is_obj)             this.menu_struct[MENU_IND_DEL   ].subtitle = "Отключить объект [ "+obj_name+" ]";
 
       // показать корневой уровень меню
       this.$refs.menu_obj.show_root(e.clientX, e.clientY);
@@ -154,7 +154,7 @@ export default {
       if (this.menu_dialog_param_type == MENU_IND_CHANGE) this.action_obj_change_execute();
     },
 
-    // найти все иконки узлов
+    // найти все уникальные иконки узлов
     menu_dialog_param_icons_set() {
       this.menu_dialog_param_icons = new Set();
       this.menu_dialog_param_icons_step(this.items);
