@@ -210,12 +210,12 @@ export default {
 
 
     on_search(val) {
-      val = (val) ? val.trim() : val;
+      val = ((val === undefined) || (val == null)) ? '' : val.trim();
 
-      this.items_search_list = this.find_items_name(val, this.items);
+      this.items_search_list = (val != '') ? this.find_items_name(val, this.items) : [];
       this.set_items_search_id(0);
 
-      this.btn_show          = (val != undefined);
+      this.btn_show          = (val != '');
       this.btn_prev_disabled = (this.items_search_list.length < 2);
       this.btn_next_disabled = (this.items_search_list.length < 2);
     },
