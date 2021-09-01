@@ -12,7 +12,26 @@
       hide-details
       clearable
       autofocus
-    />
+    >
+      <template v-slot:append >
+        <v-btn
+          v-show="btn_show"
+          :disabled="btn_prev_disabled"
+          @click="on_click_btn_prev"
+          icon
+        >
+          <v-icon size="24" :color="$CONST.APP.COLOR_OBJ">mdi-arrow-left-bold</v-icon>
+        </v-btn>
+        <v-btn
+          v-show="btn_show"
+          :disabled="btn_next_disabled"
+          @click="on_click_btn_next"
+          icon
+        >
+          <v-icon size="24" :color="$CONST.APP.COLOR_OBJ">mdi-arrow-right-bold</v-icon>
+        </v-btn>
+    </template>
+    </v-text-field>
 
     <v-divider class="mx-4"></v-divider>
 
@@ -23,7 +42,7 @@
       <Treeview
         class="tree"
         :items="items"
-        :itemSel.number.sync="item_sel"
+        :itemSelId.number.sync="item_sel_id"
         @onNavNew="on_nav_new"
         @onNavAdd="on_nav_add"
         @onMenuShow="on_menu_show"
@@ -53,7 +72,7 @@
               v-model="menu_dialog_name"
               required
               autofocus
-            ></v-text-field>
+            />
           </v-card-text>
           <v-divider></v-divider>
           <v-card-actions>
@@ -137,15 +156,27 @@ export default {
   ],
 
   data: () => ({
-    items:    [],
-    item_sel: 0,
-  }),
+    items:             [],
+    item_sel_id:       0,
+    items_search_list: [],
+    items_search_id:   undefined,
 
-  created: function() { this.refresh_items(); },
+    btn_show:          false,
+    btn_prev_disabled: true,
+    btn_next_disabled: true,
+  }),
 
   computed: {
     key_sel() { return router.currentRoute.name + '_editor_nav_obj_sel_' + this.localStorageKeyPostfix },
   },
+
+  watch: {
+    item_sel_id: function(id) {
+      localStorage[this.key_sel] = id;
+    },
+  },
+
+  created: function() { this.refresh_items(); },
 
   methods: {
     refresh_items() {
@@ -153,12 +184,12 @@ export default {
         .then(response => {
           // get data
           this.items = response.data;
-          if (localStorage[this.key_sel]) { this.item_sel = parseInt(localStorage[this.key_sel]); }
+          if (localStorage[this.key_sel]) { this.item_sel_id = parseInt(localStorage[this.key_sel]); }
 
-          // watch fix bug
-          this.$watch('item_sel', function(id) {
-            localStorage[this.key_sel] = id;
-          });
+          // // watch fix bug
+          // this.$watch('item_sel_id', function(id) {
+          //   localStorage[this.key_sel] = id;
+          // });
 
           return Promise.resolve(response)
         })
@@ -176,8 +207,53 @@ export default {
         .catch(error => { return Promise.reject(error) });
     },
 
-    on_search() {
-      console.log()
+
+
+    on_search(val) {
+      val = (val) ? val.trim() : val;
+
+      this.items_search_list = this.find_items_name(val, this.items);
+      this.set_items_search_id(0);
+
+      this.btn_show          = (val != undefined);
+      this.btn_prev_disabled = (this.items_search_list.length < 2);
+      this.btn_next_disabled = (this.items_search_list.length < 2);
+    },
+    // найти все узлы с *name* в items
+    find_items_name(name, items) {
+      let ret = [];
+      let r = RegExp(name, 'i')
+      for (const item of items) {
+        if (item.name.match(r)) { ret.push(item); }
+        if (item.children)      { ret = ret.concat(this.find_items_name(name, item.children)); }
+      }
+      return ret;
+    },
+
+    set_items_search_id(val) {
+      if ((this.items_search_list.length == 0) || (val == undefined)) {
+        this.items_search_id = undefined;
+        return;
+      }
+      this.items_search_id = val;
+      if ((this.items_search_id >= 0) && (this.items_search_id < this.items_search_list.length)) {
+        this.item_sel_id = this.items_search_list[this.items_search_id].id;
+      }
+    },
+
+    on_click_btn_next() {
+      this.set_items_search_id(
+        (this.items_search_id < this.items_search_list.length-1) ?
+        this.items_search_id+1 :
+        0
+      );
+    },
+    on_click_btn_prev() {
+      this.set_items_search_id(
+        (this.items_search_id > 0) ?
+        this.items_search_id-1 :
+        this.items_search_list.length-1
+      );
     },
 
   },
@@ -186,5 +262,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
+  div::v-deep .v-input__append-inner:nth-of-type(3) { margin-top: 2px !important; }
   div.tree::v-deep { overflow-y: auto !important; height: calc( 100% - 120px ); } /*calc( 100% - 50px );*/
 </style>

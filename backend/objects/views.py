@@ -196,7 +196,7 @@ def aj_geometry(request):
     elif request.method == 'POST':
         try:
             data = json.loads(request.body)
-            result = add_geometry(request.user, group_id, data.get('rec_id'), data.get('location'), data.get('name'),
+            result = add_geometry(request.user, group_id, data.get('rec_id', 0), data.get('location'), data.get('name'),
                                   data.get('parent_id'), data.get('icon'))
             return {'data': result}
         except:
