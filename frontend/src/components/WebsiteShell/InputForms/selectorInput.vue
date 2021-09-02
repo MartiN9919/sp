@@ -19,6 +19,11 @@
     <template v-slot:label>
       {{title}}
     </template>
+    <template v-slot:prepend-inner>
+      <v-icon v-if="value && checkIcon(value[itemText])">
+        {{ getIcon(value[itemText]) }}
+      </v-icon>
+    </template>
     <template v-slot:append>
       <v-hover v-slot="{ hover }" class="action-icon">
         <v-icon
@@ -32,10 +37,21 @@
     <template v-slot:message>
       <slot name="message"></slot>
     </template>
-    <template v-slot:item="{ item }">
-      <v-list-item-content>
-        <v-list-item-title class="selector-item">{{item[itemText]}}</v-list-item-title>
-      </v-list-item-content>
+    <template v-slot:item="{ item, on, attrs }">
+      <v-list-item v-if="checkIcon(item[itemText])" v-on="on" v-bind="attrs" dense>
+        <v-list-item-icon>
+          <v-icon size="20">{{ getIcon(item[itemText]) }}</v-icon>
+        </v-list-item-icon>
+        <v-list-item-content>
+          <v-list-item-title v-text="item[itemText]"/>
+        </v-list-item-content>
+
+      </v-list-item>
+      <v-list-item v-else v-on="on" v-bind="attrs" dense>
+        <v-list-item-content>
+          <v-list-item-title class="selector-item">{{item[itemText]}}</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
     </template>
   </v-combobox>
 </template>
@@ -93,6 +109,14 @@ export default {
     value: {
       get: function () { return this.items.find(item => item.id === this.inputString) },
       set: function (value) { this.$emit('changeInputString', value.id) }
+    }
+  },
+  methods: {
+    checkIcon(value) {
+      return value.indexOf('mdi') !== -1
+    },
+    getIcon(value) {
+      return value.slice(value.indexOf('mdi'), value.length - 1)
     }
   },
 }

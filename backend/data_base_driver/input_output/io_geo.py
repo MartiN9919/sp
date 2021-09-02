@@ -2,14 +2,14 @@ import json
 import geojson
 import requests
 
-from data_base_driver.additional_functions import get_date_time_from_sec
 from data_base_driver.constants.const_dat import DAT_SYS_OBJ, DAT_SYS_KEY, DAT_OBJ_ROW
 from data_base_driver.constants.const_fulltextsearch import FullTextSearch
 from data_base_driver.input_output.input_output import io_get_obj, io_get_rel
 from data_base_driver.input_output.input_output_mysql import io_get_obj_mysql_tuple, io_get_rel_mysql_generator
 from data_base_driver.input_output.io_class import IO
-from data_base_driver.sys_key.get_key_dump import get_key_by_id
 from data_base_driver.sys_key.get_object_info import rel_rec_to_el, el_to_rec_id
+from data_base_driver.additional_functions import get_date_time_from_sec
+from data_base_driver.sys_key.get_key_dump import get_key_by_id
 
 
 def feature_collection_by_geometry(group_id, object_type, rec_id, keys, time_interval):
@@ -142,6 +142,53 @@ def get_geometry_tree(group_id):
                 temp_item[0]['sec'] = geometry['sec']
     return build_tree_from_list(temp_result)
 
+
+def get_geometry_folders(group_id):
+    data = json.dumps({
+        'index': 'obj_geometry_col',
+        'limit': 10000
+    })
+    response = requests.post(FullTextSearch.SEARCH_URL, data=data)
+    geometries = [{'id': item['_source']['rec_id'], 'name': item['_source']['name'],
+                   'parent_id': item['_source']['parent_id']}
+                  for item in json.loads(response.text)['hits']['hits']]
+    geometries.sort(key=lambda x: x['id'])
+    result = [{'id': 0, 'value': 'Корень'}]
+    for geometry in geometries:
+        if len([item for item in result if item['id'] == geometry['parent_id']]) == 0 and geometry['parent_id'] != 0:
+            result.append({'id': geometry['parent_id'], 'value': [item['name'] for item in geometries if item['id'] == geometry['parent_id']][0]})
+    return result
+
+
+def get_geometry_id_by_name(name):
+    data = json.dumps({
+        'index': 'obj_geometry_col',
+        'limit': 10000
+    })
+    response = requests.post(FullTextSearch.SEARCH_URL, data=data)
+    geometries = [{'id': item['_source']['rec_id'], 'name': item['_source']['name'],
+                   'parent_id': item['_source']['parent_id']}
+                  for item in json.loads(response.text)['hits']['hits']]
+    geometries.sort(key=lambda x: x['id'])
+    for folder in geometries:
+        if folder['name'] == name:
+            return folder['id']
+    return 0
+
+
+def get_geometry_by_id(id):
+    data = json.dumps({
+        'index': 'obj_geometry_col',
+        'limit': 10000
+    })
+    response = requests.post(FullTextSearch.SEARCH_URL, data=data)
+    geometries = [{'id': item['_source']['rec_id'], 'name': item['_source']['name'],
+                   'parent_id': item['_source']['parent_id']}
+                  for item in json.loads(response.text)['hits']['hits']]
+    geometries.sort(key=lambda x: x['id'])
+    for folder in geometries:
+        if folder['id'] == id:
+            return folder
 
 
 

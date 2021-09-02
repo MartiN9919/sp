@@ -7,10 +7,10 @@
         class="selector-object py-2"
       ></selector-object>
       <v-tabs id="tabs" v-model="activeTab" :color="sliderColor" grow show-arrows center-active :class="tabClasses">
-        <v-tab v-for="(object, key) in editableObjects" :key="key">
-          <v-icon :color="tabColor(key)">{{ object.object.id.icon }}</v-icon>
+        <v-tab v-for="(item, key) in editableObjects" :key="key">
+          <v-icon :color="tabColor(key)">{{ item.object.id.icon }}</v-icon>
           <span :style="{color: tabColor(key)}">
-            {{key === 1 ? 'Исходныйобъект' : 'Схожий объект'}}
+            {{key === 0 ? 'Исходныйобъект' : 'Схожий объект'}}
             {{key + 1}}
           </span>
         </v-tab>
@@ -78,15 +78,8 @@ export default {
     },
     selectedEditableObject: {
       get: function () {
-        if(this.editableObjects)
-          return this.editableObjects[0].object
-      },
-      set: function (object) {
-        this.getBaseClassifiers({params: {object_id: object.id}})
-          .then(() => {
-            this.setEditableObject({object_id: object.id})
-          })
-      },
+        if(this.editableObjects) return this.editableObjects[0].object.id },
+      set: function (id) { this.setEditableObject({object_id: id}) },
     },
     tabClasses: function () {
       if(this.editableObjects)

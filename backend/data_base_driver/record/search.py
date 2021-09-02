@@ -53,7 +53,7 @@ def recursion_search(request, group_id):
                                                          request.get(FullTextSearch.ACTUAL, False))
             else:
                 main_object_ids = [0]
-            temp = recursion_search(rel)
+            temp = recursion_search(rel, group_id)
             result['old_result'].append({'object_id': temp['object_id'],
                                          'rec_ids': temp['rec_ids']})
             result['pre_old_result'] = temp['old_result']

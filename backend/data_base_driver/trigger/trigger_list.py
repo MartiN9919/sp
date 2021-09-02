@@ -4,7 +4,12 @@ from data_base_driver.connect.connect_mysql import db_sql
 
 
 def parse_variables(variables):
-    if not variables:
+    """
+    Функция для парсинга списка переменных из текста в список словарей
+    @param variables: текст содержащий список переменных в формате "name;title;hint;type;list\n..."
+    @return: список словарей в формате  [{name,title,hint,type,list},...,{}]
+    """
+    if not variables or len(variables) == 0:
         return []
     variables = variables.replace('\r', '').split('\n')
     variables_list = []
@@ -21,6 +26,10 @@ def parse_variables(variables):
 
 
 def get_triggers_list():
+    """
+    Функция для формирования списка триггеров
+    @return: список триггеров в формате [{id,name,hint,variables:[{name,title,hint,type,list},...,{}]},...,{}]
+    """
     result = {}
     sql = 'SELECT ' + DAT_SYS_TRIGGER.ID + ', '\
                     + DAT_SYS_TRIGGER.OBJECT_ID + ', '\

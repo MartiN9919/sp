@@ -69,12 +69,6 @@ class BaseClassifier {
 
     this.type = baseClassifier.type
     this.list = baseClassifier.list_id
-
-    // if(baseClassifier.list_id) {
-    //   this.type = 'selector'
-    //   this.list = baseClassifier.list_id
-    // }
-    // else this.type = baseClassifier.type
   }
 }
 
