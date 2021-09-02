@@ -11,7 +11,7 @@ def check_triggers(triggers, group_id, object_id, rec_id):
             continue
         name = 'trigger_' + str(trigger.get('id'))
         if execute_trigger(name, group_id, object_id, rec_id, trigger.get('variables')):
-            result.append(trigger['id'])
+            result.append(int(trigger['id']))
     return result
 
 
