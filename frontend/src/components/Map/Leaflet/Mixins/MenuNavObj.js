@@ -212,7 +212,7 @@ export default {
       await postResponseAxios(this.$CONST.API.OBJ.GEOMETRY, {
         parent_id: (this.menu_item?.parent_id) ? this.menu_item?.parent_id : 0,
         name:      this.menu_dialog_param_name,
-        icon:      (this.menu_dialog_param_icon!='')?this.menu_dialog_param_icon:undefined,
+        //icon:      (this.menu_dialog_param_icon!='')?this.menu_dialog_param_icon:undefined,
         location:  this.fc,
       })
         .then (r => { return Promise.resolve(r) })  // r.data?.object
@@ -243,7 +243,7 @@ export default {
       await postResponseAxios(this.$CONST.API.OBJ.GEOMETRY, {
         rec_id:    this.menu_item.id,
         name:      this.menu_dialog_param_name,
-        icon:      (this.menu_dialog_param_icon!='')?this.menu_dialog_param_icon:undefined,
+        //icon:      (this.menu_dialog_param_icon!='')?this.menu_dialog_param_icon:undefined,
       })
         .then (r => { return Promise.resolve(r) })
         .catch(e => { return Promise.reject(e) });
