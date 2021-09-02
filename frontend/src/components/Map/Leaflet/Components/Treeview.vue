@@ -56,17 +56,17 @@
 export default {
   name: 'Treeview',
   props: {
-    items:   { type: Array,   default: () => [], },
-    itemSel: { type: Number,  default: () => 0, },
-    iconDef: { type: String,  default: () => 'mdi-vector-polygon', }, // иконка по умолчанию
-    isIcon:  { type: Boolean, default: () => true, },                 // наличие иконок
-    isFlat:  { type: Boolean, default: () => false, },                // наличие отступов слева (как список)
+    items:     { type: Array,   default: () => [], },
+    itemSelId: { type: Number,  default: () => 0, },
+    iconDef:   { type: String,  default: () => 'mdi-vector-polygon', }, // иконка по умолчанию
+    isIcon:    { type: Boolean, default: () => true, },                 // наличие иконок
+    isFlat:    { type: Boolean, default: () => false, },                // наличие отступов слева (как список)
   },
   emits: [
     'onNavNew',
     'onNavAdd',
     'onMenuShow',
-    //'update:itemSel',
+    'update:itemSelId',
   ],
 
   data: () => ({
@@ -80,6 +80,7 @@ export default {
       // развернуть tree
       if (this.items_path[item_id]) { this.items_active = this.items_path[item_id]; }
       setTimeout(function() {
+        if (!this.find_item_id(item_id, this.items)) return;
         this.$vuetify.goTo(
           '#id_'+this._uid+'_'+item_id,
           { duration: 100, offset: 100, easing: 'easeInOutCubic', container: this.$refs.tree_view, }
@@ -91,7 +92,7 @@ export default {
   computed: {
     item_sel_id: {
       get()   {
-        return this.itemSel;
+        return this.itemSelId;
       },
       set(item_id) {
         // click на выделенном item ==> item_id=[]
@@ -99,7 +100,7 @@ export default {
           if (item_id.length>0) { item_id = item_id[0]; }
           else                  { item_id = this.item_sel_id; }
         }
-        this.$emit('update:itemSel', item_id);  // вызывает watch.item_sel_id
+        this.$emit('update:itemSelId', item_id);  // вызывает watch.item_sel_id
       },
     },
   },
@@ -119,6 +120,17 @@ export default {
         fun(item, path_id_new)
         if (item.children) this._loop_items_(item.children, path_id_new, fun)
       }
+    },
+
+    // найти узел с id в items
+    find_item_id(id, items) {
+      let ret = undefined;
+      for (const item of items) {
+        if (item.id == id) { ret = item; break; }
+        if (item.children) { ret = this.find_item_id(id, item.children); }
+        if (ret)           { break; }
+      }
+      return ret;
     },
 
     on_new(item) {
