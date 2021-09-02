@@ -9,20 +9,18 @@ from data_base_driver.additional_functions import str_to_sec
 
 
 
-def script_15(request, group_id):
+def script_42(request, group_id):
 	try:
-		obj = request.get('obj',{}).get('value',[])
-		keys_rel = request.get('keys_rel',{}).get('value',[])
 		geometry = request.get('geometry',{}).get('value',[])
-		checkbox = request.get('checkbox',{}).get('value',[])
-		date = request.get('date',{}).get('value',[])
-		datatime = request.get('datatime',{}).get('value',[])
-		phone_number = request.get('phone_number',{}).get('value',[])
-		list = request.get('list',{}).get('value',[])
-		unknow = request.get('unknow',{}).get('value',[])
-		keys_rel = [int(keys_rel)]
-		
-		
-		return rel_to_geo_fc(obj,0,keys_rel=keys_rel,keys_obj=['parent_id'], where_dop=[])
+		datatime_start = request.get('datatime_start',{}).get('value',[])
+		datatime_end = request.get('datatime_end',{}).get('value',[])
+		time_interval = {'second_start': str_to_sec(datatime_start + ':00'),'second_end': str_to_sec(datatime_end + ':00')}
+		ids = relations_to_geometry_id(group_id, 25, 45, 0, [50141], time_interval)
+		polygons = feature_collection_to_manticore_polygon(geometry)
+		temp_result = []
+		for polygon in polygons['in_polygon']:
+		    temp_result += get_points_inside_polygon(polygon, ids, group_id)
+		fc_new = feature_collection_by_geometry(group_id, 25, temp_result, [], {})
+		return fc_new
 	except BaseException:
 		return 'error'

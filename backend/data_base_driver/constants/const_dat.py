@@ -186,6 +186,7 @@ class DAT_OWNER_USERS:
     LAST_NAME = 'last_name'
     IS_STAFF = 'is_staff'
     IS_ACTIVE = 'is_active'
+    IS_WRITE = 'is_write'
     OWNER_GROUPS_ID = 'owner_groups_id'
     OWNER_GROUPS = 'owner_groups'
     ENABLED = 'is_active'

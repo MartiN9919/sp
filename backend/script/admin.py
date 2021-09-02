@@ -77,6 +77,10 @@ class ModelTriggerAdmin(admin.ModelAdmin):
         DAT_SYS_TRIGGER.TITLE,
     )
 
+    ordering = (
+        DAT_SYS_TRIGGER.OBJECT_ID,
+    )
+
     @admin.display(description='объект')
     def get_object_title(self, obj):
         return obj.object

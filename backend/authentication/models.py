@@ -120,6 +120,11 @@ class ModelCustomUser(AbstractBaseUser, PermissionsMixin):
             'Unselect this instead of deleting accounts.'
         ),
     )
+    is_write = models.BooleanField(
+        default=False,
+        verbose_name='Право на запись',
+        help_text='Имеет ли пользователь права на запись/изменеие данных'
+    )
     owner_groups = models.ForeignKey(
         ModelOwnerGroups,
         on_delete=models.CASCADE,

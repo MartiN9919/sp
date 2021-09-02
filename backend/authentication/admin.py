@@ -46,7 +46,7 @@ class ModelCustomUserAdmin(UserAdmin):
         (_('Personal info'), {'fields': (DAT_OWNER_USERS.FIRST_NAME, DAT_OWNER_USERS.LAST_NAME)}),
         (_('Permissions'), {
             'fields': (DAT_OWNER_USERS.IS_ACTIVE, DAT_OWNER_USERS.IS_STAFF, DAT_OWNER_USERS.IS_SUPERUSER,
-                       DAT_OWNER_USERS.OWNER_GROUPS, DAT_OWNER_USERS.USER_PERMISSION),
+                       DAT_OWNER_USERS.IS_WRITE, DAT_OWNER_USERS.OWNER_GROUPS, DAT_OWNER_USERS.USER_PERMISSION),
         }),
     )
     list_display = (

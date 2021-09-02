@@ -59,6 +59,22 @@ def request_post(f):
     return wrap
 
 
+def write_permission(f):
+    """
+    Функция декоратор для проверки прав на запись в базу данных
+    @param f: оборачиваемая функция
+    @return: результат оборачиваемой функции или  json с кодом 454
+    """
+    def wrap(request, *args, **kwargs):
+        if request.method == 'POST' and not request.user.is_write:
+            return JsonResponse({'data': 'ошибка добавления'}, status=454)
+        return f(request, *args, **kwargs)
+
+    wrap.__doc__ =f.__doc__
+    wrap.__name__=f.__name__
+    return wrap
+
+
 
 #########################################################################
 # ДЕКОРАТОР

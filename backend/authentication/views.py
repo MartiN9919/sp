@@ -2,7 +2,7 @@ import json
 from django.contrib import auth
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from core.projectSettings.decoraters import request_log, login_check
+from core.projectSettings.decoraters import request_log, login_check, request_get
 
 
 @csrf_exempt
@@ -56,4 +56,10 @@ def authorization(request):
         'username': request.user.username,
         'first_name': request.user.first_name,
         'last_name': request.user.last_name,
+        'admin': request.user.is_superuser,
+        'staff': request.user.is_staff,
+        'write': request.user.is_write,
     }}, status=200)
+
+
+
