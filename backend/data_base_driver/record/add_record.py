@@ -1,7 +1,6 @@
 import datetime
 import json
 
-from data_base_driver.input_output.io_geo import get_geometry_id_by_name, get_geometry_by_id
 from data_base_driver.record.find_object import find_key_value_http
 from data_base_driver.record.get_record import get_object_record_by_id_http, get_keys_by_object
 from data_base_driver.input_output.input_output import io_set
@@ -67,7 +66,11 @@ def parse_value(param):
     value = param['value']
     key = get_key_by_id(param['id'])
     if key.get('list_id') != 0 and key['id'] != 30302 and key.get('list_id') != None:
-        value = str(get_item_list_value(value))
+        if key['id'] == 30301:
+            temp_value = str(get_item_list_value(value))
+            value = temp_value[temp_value.index('(')+1:temp_value.index(')')]
+        else:
+            value = str(get_item_list_value(value))
     return [param['id'], value, param.get('date', datetime.datetime.now().strftime("%Y-%m-%d %H:%M")) + ':00']
 
 
@@ -88,13 +91,15 @@ def add_data(user, group_id, object):
     # ------------------------------------------------------------------------------------------------------------------
     if not object.get('force', False):  # проверка на дублирование
         temp_set = None
+        nums_needed = 0
         for item in data:
             if get_key_by_id(int(item[0])).get('need', 0) == 1:
+                nums_needed += 1
                 if type(temp_set) == set:
                     temp_set.intersection_update(set(find_key_value_http(object.get('object_id'), item[0], item[1])))
                 else:
                     temp_set = set(find_key_value_http(object.get('object_id'), item[0], item[1]))
-        if temp_set and len(temp_set) == len(
+        if temp_set and nums_needed == len(
                 [item for item in get_keys_by_object(object.get('object_id')) if item['need'] == 1]):
             return {'objects': [get_object_record_by_id_http(object.get('object_id'), item, group_id)
                                 for item in temp_set]}
