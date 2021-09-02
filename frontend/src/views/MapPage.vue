@@ -1,33 +1,29 @@
 <template>
-  <ResSplitPane
-    split-to="columns"
-    :allow-resize="true"
-    :min-size="15"
-    :max-size="85"
-    :resizerBorderThickness="1"
-    :resizerThickness="1"
-    :size="drawer ? sizeNavigation : 0"
-    v-on:update:size="sizeNavigation = $event"
-    units="percents">
-    <v-col class="pa-0" slot="firstPane">
-      <map-script-menu></map-script-menu>
-    </v-col>
-    <v-col class="pa-0" slot="secondPane">
+  <split-panel shadow-effect>
+    <template v-slot:firstPane>
+      <map-menu></map-menu>
+    </template>
+    <template v-slot:secondPane>
       <LeafletMain></LeafletMain>
-    </v-col>
-  </ResSplitPane>
+    </template>
+  </split-panel>
 </template>
 
 <script>
+import SplitPanel from "../components/WebsiteShell/UI/splitPanel"
 import LeafletMain from '../components/Map/Leaflet/LeafletMain'
-import mapScriptMenu from '../components/Map/MapMenu/mapScriptMenu'
-import ResSplitPane from 'vue-resize-split-pane'
-import NavigationDrawer from '../components/WebsiteShell/Mixins/NavigationDrawer'
+import MapMenu from "../components/Map/MapMenu/mapMenu"
+import { mapActions } from "vuex"
 
 export default {
   name: 'MapPage',
-  components: { LeafletMain, mapScriptMenu, ResSplitPane },
-  mixins: [NavigationDrawer]
+  components: { SplitPanel, MapMenu, LeafletMain, },
+  methods: {
+    ...mapActions(['setDefaultValueActiveTool', ]),
+  },
+  mounted() {
+    this.setDefaultValueActiveTool()
+  },
 }
 </script>
 

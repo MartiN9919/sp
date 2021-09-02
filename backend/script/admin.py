@@ -1,8 +1,8 @@
 from django.contrib import admin
-from .models import ModelScript
+from .models import ModelScript, ModelTrigger
 
 from data_base_driver.constants.const_admin import PROJECT_TITLE_ADMIN
-from data_base_driver.constants.const_dat import DAT_SYS_SCRIPT
+from data_base_driver.constants.const_dat import DAT_SYS_SCRIPT, DAT_SYS_TRIGGER
 
 admin.site.site_header = PROJECT_TITLE_ADMIN
 
@@ -68,3 +68,19 @@ class ModelScriptAdmin(admin.ModelAdmin):
         Функция, взвращающая родительскую папку
         """
         return obj.parent
+
+
+@admin.register(ModelTrigger)
+class ModelTriggerAdmin(admin.ModelAdmin):
+    list_display = (
+        'get_object_title',
+        DAT_SYS_TRIGGER.TITLE,
+    )
+
+    ordering = (
+        DAT_SYS_TRIGGER.OBJECT_ID,
+    )
+
+    @admin.display(description='объект')
+    def get_object_title(self, obj):
+        return obj.object

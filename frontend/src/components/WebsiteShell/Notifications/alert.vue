@@ -4,7 +4,7 @@
       @click="$emit('removeAlert', alert)"
       :icon="this.icon"
       border="left" dark
-      style="cursor: default"
+      style="cursor: default;"
       elevation="20"
     >
       <v-row no-gutters class="noselect">
@@ -13,15 +13,15 @@
           <v-divider light></v-divider>
           <div>{{alertText[alert.status]}}</div>
         </div>
-        <v-col v-else-if="[501, 502, 503].indexOf(alert.status) !== -1">
-          <v-row no-gutters>
-            <v-col class="d-flex justify-start" >{{alert.date_time}} <br> </v-col>
-            <v-col class="d-flex justify-end "><p class="font-weight-thin mb-0" style="font-size: 12px">Отправитель {{alert.from}}</p></v-col>
+        <v-col v-else-if="[501, 502, 503, 504].indexOf(alert.status) !== -1">
+          <v-row v-if="(alert.date_time || alert.from)" no-gutters>
+            <v-col v-if="alert.date_time" class="d-flex justify-start" >{{alert.date_time}}<br></v-col>
+            <v-col v-if="alert.from"      class="d-flex justify-end "><p class="font-weight-thin mb-0" style="font-size: 12px">Отправитель {{alert.from}}</p></v-col>
           </v-row>
 
-          <v-divider dark></v-divider>
+          <v-divider dark v-if="(alert.date_time || alert.from)"></v-divider>
 
-          <div>Сообщение - {{alert.content}}</div>
+          <div>{{alert.content}}</div>
 
         </v-col>
       </v-row>
@@ -42,6 +42,8 @@ export default {
       405: 'Некорректный запрос',
       408: 'Истекло время ожидания ответа от сервера',
       452: 'Неверный формат номера телефона',
+      453: 'Нет прав на добавление/изменение геометрии',
+      454: 'Нет прав на добавление/изменение данных',
       470: 'Ошибка выполнения пользовательского сценария',
       480: 'Некорректный тип запроса',
       496: 'Ошибка базы данных(чтение)',
@@ -51,9 +53,10 @@ export default {
       'no connect': 'Нет соединения с сервером. Проверьте ваше соединение с сетью, либо подождите некоторое время.'
     },
     alertType: {
-      '501': 'green darken-1',
-      '502': 'blue darken-1',
-      '503': 'purple darken-1'
+      501: 'green darken-1',
+      502: 'blue darken-1',
+      503: 'purple darken-1',
+      504: 'red darken-2',
     }
   }),
   props: {
@@ -72,6 +75,10 @@ export default {
     }
   },
   created () {
+    if (this.alert.show_time) {
+      setTimeout(() => { this.$emit('removeAlert', this.alert) }, this.alert.show_time*1000);
+      return;
+    }
     if (this.status === 'red darken-1') setTimeout(() => { this.$emit('removeAlert', this.alert) }, 5000)
   }
 }

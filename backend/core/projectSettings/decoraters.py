@@ -3,12 +3,76 @@
 import time
 import json
 import logging
+import traceback
 
 from django.contrib.auth.decorators import user_passes_test
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponseBadRequest, HttpResponse, JsonResponse
 from django.conf import settings
 from .logging_settings import PROJECT_LOG_REQUESTS
+
+
+
+
+
+def request_wrap(f):
+    """
+    Обертка для упрощения функции
+    """
+    def wrap(request, *args, **kwargs):
+        try:
+            return JsonResponse(f(request, *args, **kwargs), status=200)
+        except Exception as e:
+            traceback.print_exc()  # DEBUG
+            return JsonResponse({'status': ' '+str(e)}, status=496)
+
+    wrap.__doc__ =f.__doc__
+    wrap.__name__=f.__name__
+    return wrap
+
+
+def request_get(f):
+    """
+    Доступ только get-запросам
+    """
+    def wrap(request, *args, **kwargs):
+        if request.method!='GET':
+            raise Exception('доступен только GET-запрос')
+        return f(request, *args, **kwargs)
+
+    wrap.__doc__ =f.__doc__
+    wrap.__name__=f.__name__
+    return wrap
+
+
+def request_post(f):
+    """
+    Доступ только post-запросам
+    """
+    def wrap(request, *args, **kwargs):
+        if request.method!='POST':
+            raise Exception('доступен только POST-запрос')
+        return f(request, *args, **kwargs)
+
+    wrap.__doc__ =f.__doc__
+    wrap.__name__=f.__name__
+    return wrap
+
+
+def write_permission(f):
+    """
+    Функция декоратор для проверки прав на запись в базу данных
+    @param f: оборачиваемая функция
+    @return: результат оборачиваемой функции или  json с кодом 454
+    """
+    def wrap(request, *args, **kwargs):
+        if request.method == 'POST' and not request.user.is_write:
+            return JsonResponse({'data': 'ошибка добавления'}, status=454)
+        return f(request, *args, **kwargs)
+
+    wrap.__doc__ =f.__doc__
+    wrap.__name__=f.__name__
+    return wrap
 
 
 
@@ -78,12 +142,12 @@ def decor_required_ajax(f):
 #########################################################################
 # ДЕКОРАТОР
 # Логирует request.param для ajax
-# @decor_log_request
+# @request_log
 #########################################################################
 logger = logging.getLogger(PROJECT_LOG_REQUESTS)
 
 
-def decor_log_request(function):
+def request_log(function):
     def _inner(request, *args, **kwargs):
         logger.info(
             str(request.user) + '.' +

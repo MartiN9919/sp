@@ -43,6 +43,17 @@ class DAT_SYS_SCRIPT():
     ]
 
 
+class DAT_SYS_TRIGGER:
+    TABLE_SHORT = 'sys_trigger'
+    TABLE = VEC_DATA['NAME'] + '.' + TABLE_SHORT
+    ID = 'id'
+    OBJECT_ID = 'object_id'
+    TITLE = 'title'
+    CONTENT = 'content'
+    VARIABLES = 'variables'
+    HINT = 'hint'
+
+
 ##################################################################################
 # DAT_SYS_ID
 ##################################################################################
@@ -77,16 +88,6 @@ class DAT_SYS_OBJ:
     NAME_POINT = 'point'
     NAME_GEOMETRY = 'geometry'
     NAME_VAL = 'val'  # ?????
-
-
-class DAT_SYS_KEY_GROUP:
-    TABLE_SHORT = 'sys_key_group'
-    TABLE = VEC_DATA['NAME'] + '.' + TABLE_SHORT
-    ID = 'id'
-    OBJ = 'obj'
-    OBJ_ID = 'obj_id'
-    NAME = 'name'
-    POS = 'pos'
 
 
 class DAT_SYS_PHONE_NUMBER_FORMAT:
@@ -129,6 +130,7 @@ class DAT_SYS_KEY:
     GROUP = 'group'
     GROUP_ID = 'group_id'
     PATH = 'path'
+    PRIORITY = 'priority'
 
     TYPE_STR = 'text'
     TYPE_INT = 'number'
@@ -184,6 +186,7 @@ class DAT_OWNER_USERS:
     LAST_NAME = 'last_name'
     IS_STAFF = 'is_staff'
     IS_ACTIVE = 'is_active'
+    IS_WRITE = 'is_write'
     OWNER_GROUPS_ID = 'owner_groups_id'
     OWNER_GROUPS = 'owner_groups'
     ENABLED = 'is_active'
@@ -275,6 +278,7 @@ class DAT_SYS_FILES:
 class DAT_OBJ_COL:
     table_name = lambda group: 'obj_' + group + '_col'
     ID = 'rec_id'
+    DAT = 'dat'
 
 
 class DAT_OBJ_ROW:
@@ -283,6 +287,7 @@ class DAT_OBJ_ROW:
     KEY_ID = 'key_id'
     VAL = 'val'
     DAT = 'dat'
+    SEC = 'sec'
     LIST = (KEY_ID, VAL, DAT,)
 
 
@@ -292,9 +297,10 @@ class DAT_OBJ_ROW:
 class DAT_REL:
     TABLE_SHORT = 'rel'
     TABLE = VEC_DATA['NAME'] + '.' + TABLE_SHORT
-    # ID               = 'id'
+    REC_ID = 'rec_id'
     KEY_ID = 'key_id'
     DAT = 'dat'
+    SEC = 'sec'
     OBJ_ID_1 = 'obj_id_1'
     REC_ID_1 = 'rec_id_1'
     OBJ_ID_2 = 'obj_id_2'

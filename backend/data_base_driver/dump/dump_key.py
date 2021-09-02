@@ -1,8 +1,8 @@
 import threading
 import time
-from ..constants.const_dat import DAT_SYS_OBJ, DAT_SYS_KEY
-from ..connect.connect_mysql import DB_sql
-from .transform_functions import tuple_to_dict_many, dict_filter
+from data_base_driver.constants.const_dat import DAT_SYS_OBJ, DAT_SYS_KEY
+from data_base_driver.connect.connect_mysql import DB_sql
+from data_base_driver.dump.transform_functions import tuple_to_dict_many, dict_filter
 
 
 ##################################################################################
@@ -17,7 +17,6 @@ class DUMP_KEY:
         self.refreshTime = time.time() - 1
         self._lock = threading.Lock()
         self._refresh_()
-
 
     def _refresh_(self, force=False):
         if not force and (self.refreshTime > time.time()): return
@@ -35,7 +34,8 @@ class DUMP_KEY:
                   DAT_SYS_KEY.HINT + ", " + \
                   DAT_SYS_KEY.DESCRIPT + ", " + \
                   DAT_SYS_KEY.REL_OBJ_1_ID + ", " + \
-                  DAT_SYS_KEY.REL_OBJ_2_ID + " " + \
+                  DAT_SYS_KEY.REL_OBJ_2_ID + ", " + \
+                  DAT_SYS_KEY.PRIORITY + " " + \
                   "FROM " + \
                   DAT_SYS_KEY.TABLE_SHORT + " " + \
                   "ORDER BY " + \
@@ -58,6 +58,7 @@ class DUMP_KEY:
                 DAT_SYS_KEY.DESCRIPT,
                 DAT_SYS_KEY.REL_OBJ_1_ID,
                 DAT_SYS_KEY.REL_OBJ_2_ID,
+                DAT_SYS_KEY.PRIORITY,
             ])
             # если name==None -> name=str(id) - только dop
             for ind, item in enumerate(self.dump):
@@ -76,7 +77,6 @@ class DUMP_KEY:
             for item in self.dump:
                 ind = find_element_in_list(list_element=DAT_SYS_KEY.NAME_OWNER_LIST, element=item[DAT_SYS_KEY.NAME])
                 if ind < 0: continue
-
                 val = self.owners.get(item[DAT_SYS_KEY.OBJ_ID], [-1, -1, -1, -1])
                 val[ind] = item[DAT_SYS_KEY.ID]
                 self.owners[item[DAT_SYS_KEY.OBJ_ID]] = val

@@ -1,10 +1,5 @@
 
 import {
-  mapState,
-  mapMutations,
-} from 'vuex';
-
-import {
   MAP_ITEM,
 } from '@/components/Map/Leaflet/Lib/Const';
 
@@ -38,6 +33,7 @@ export default {
     scale:      cook_get_bool('MAP_SCALE',   true),  // (bool) отображать ли шкалу масштаба
     measure:    cook_get_bool('MAP_MEASURE', false), // (bool) отображать ли рулетку
     logo:       cook_get_bool('MAP_LOGO',    false), // (bool) показывать ли логотип
+    notify:     cook_get_bool('MAP_NOTIFY',  true),  // (bool) показывать ли заметки
 
     edit:       undefined,                           // FeatureCollection РЕДАКТИРУЕМЫХ фигур и маркеров
   },
@@ -68,6 +64,7 @@ export default {
     MAP_GET_SCALE:             (state) =>  state.scale,
     MAP_GET_MEASURE:           (state) =>  state.measure,
     MAP_GET_LOGO:              (state) =>  state.logo,
+    MAP_GET_NOTIFY:            (state) =>  state.notify,
 
     MAP_GET_EDIT:              (state) =>  state.edit,
   },
@@ -85,6 +82,7 @@ export default {
     MAP_MUT_SCALE:             (state, on)   => state.scale      = on,
     MAP_MUT_MEASURE:           (state, on)   => state.measure    = on,
     MAP_MUT_LOGO:              (state, on)   => state.logo       = on,
+    MAP_MUT_NOTIFY:            (state, on)   => state.notify     = on,
 
     MAP_MUT_CENTER_X:          (state, val)  => state.center_x   = val,
     MAP_MUT_CENTER_Y:          (state, val)  => state.center_y   = val,
@@ -104,6 +102,7 @@ export default {
     MAP_ACT_SCALE:          ({commit}, param={}) => { commit('MAP_MUT_SCALE',      param.on);  cook_set('MAP_SCALE',      param.on ); },
     MAP_ACT_MEASURE:        ({commit}, param={}) => { commit('MAP_MUT_MEASURE',    param.on);  cook_set('MAP_MEASURE',    param.on ); },
     MAP_ACT_LOGO:           ({commit}, param={}) => { commit('MAP_MUT_LOGO',       param.on);  cook_set('MAP_LOGO',       param.on ); },
+    MAP_ACT_NOTIFY:         ({commit}, param={}) => { commit('MAP_MUT_NOTIFY',     param.on);  cook_set('MAP_NOTIFY',     param.on ); },
 
     MAP_ACT_ITEM_ADD:       ({commit, dispatch}, param={}) => { commit('SCRIPT_MUT_ITEM_ADD',   param);    dispatch('MAP_ACT_RANGE_TS'); },
     MAP_ACT_ITEM_COLOR:     ({commit}, param={})           =>   commit('SCRIPT_MUT_ITEM_COLOR', param),

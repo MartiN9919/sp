@@ -100,6 +100,3 @@ STATIC_ROOT = 'var/static_root'
 STATICFILES_DIRS = [
     "static",
 ]
-
-"""Настройка для рендеринга фронтенда. Будет только во время разработки"""
-

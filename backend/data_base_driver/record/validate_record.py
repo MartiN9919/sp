@@ -33,8 +33,6 @@ def validate_phone_number(phone_number):
     @return: True - если формат допустимый, False - если нет
     """
     phone_number_format = DAT_SYS_PHONE_NUMBER_FORMAT.DUMP.get_all()
-    if phone_number[0] != '+':
-        return False
     phone_number = remove_special_chars(phone_number)[1:]
     for format in phone_number_format:
         code, length = str(format['country_code']), format['length']
@@ -49,12 +47,24 @@ def validate_record(record):
     @param record: вносимая запись
     @return: True - если запись корректна, исключение с тестом объясняющим ошибку
     """
-    if len(record['value']) == 0:
+    if len(str(record['value'])) == 0:
         return False
     key = get_key_by_id(record['id'])
     if key['type'] == 'phone_number' and not validate_phone_number(record['value']):
         raise Exception(1, 'Некорректный формат номера телефона')
     return True
+
+
+def validate_geometry_permission(user):
+    """
+    Прототип функции для проверки доступа к изменению геометрии
+    @param group_id: идентификатор группы пользователя
+    @return: True - если есть доступ, False - если нет доступа
+    """
+    if not user.is_staff:
+        return False
+    else:
+        return True
 
 
 

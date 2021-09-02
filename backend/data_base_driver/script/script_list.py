@@ -1,5 +1,6 @@
 from data_base_driver.connect import connect_mysql
 from data_base_driver.constants.const_dat import DAT_SYS_SCRIPT, DAT_OWNER
+from data_base_driver.sys_key.get_list import get_list_by_name
 
 
 def sort_by_type(item):
@@ -67,9 +68,16 @@ def script_list(parent_id, group_id, script_type):
             })
         else:
             variables = row[2].replace('\r', '').split('\n')
-            variables_list = [
-                {'name': variable.split(';')[0], 'title': variable.split(';')[1], 'hint': variable.split(';')[2],
-                 'type': variable.split(';')[3]} for variable in variables]
+            variables_list = []
+            for variable in variables:
+                variable_params = variable.split(';')
+                variable_dict = {'name': variable_params[0], 'title': variable_params[1], 'hint': variable_params[2],
+                                 'type': variable_params[3]}
+                if len(variable_params) > 4:
+                    variable_dict['list'] = get_list_by_name(variable_params[4])
+                else:
+                    variable_dict['list'] = None
+                variables_list.append(variable_dict)
             response_with_scripts.append({
                 "id": row[0],
                 "name": row[1],

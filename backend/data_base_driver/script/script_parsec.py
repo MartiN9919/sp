@@ -63,9 +63,9 @@ def parse_text_to_python(name, text, params, type):
     file = open(path, 'w')
     file.write(IMPORTS + '\n\n')
     if type == 'map':
-        file.write('def ' + name + '(request):\n')
+        file.write('def ' + name + '(request, group_id):\n')
     elif type == 'report':
-        file.write('def ' + name + '(request, file_id, user_id, title, lock):\n')
+        file.write('def ' + name + '(request, group_id, file_id, user_id, title, lock):\n')
     file.write('\ttry:\n')
     if type == 'report':
         file.write('\t\tlock.acquire()\n\t\tlock.release()\n')

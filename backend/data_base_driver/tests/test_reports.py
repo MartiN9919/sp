@@ -2,7 +2,7 @@ import json
 
 from django.test import TestCase
 
-from data_base_driver.full_text_search.http_api.add_object_http import on_test_mode_manticore, off_test_mode_manticore
+from data_base_driver.input_output.add_object_http import on_test_mode_manticore, off_test_mode_manticore
 from data_base_driver.sys_reports.get_files_info import get_list_files_by_user
 from data_base_driver.sys_reports.set_file_info import add_file
 

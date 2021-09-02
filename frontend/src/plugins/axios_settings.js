@@ -1,9 +1,9 @@
 import axios from 'axios'
 import store from '../store/index'
+import CONST from '@/plugins/const'
 
-const SERVER_IP = '127.0.0.1:8000/'
-export const WS_SERVER_IP = 'ws://' + SERVER_IP
-export const HTTP_SERVER_IP = 'http://' + SERVER_IP
+export const WS_SERVER_IP = 'ws://' + CONST.URL.SERVER_IP
+export const HTTP_SERVER_IP = 'http://' + CONST.URL.SERVER_IP
 
 const http = axios.create({
   withCredentials: true,
@@ -22,7 +22,7 @@ export function checkErrorStatusCode(statusCode){
 }
 
 function processingErrorResponse(error){
-  store.commit('changeProgressLinearStatus', false)
+  store.commit('changeLoadStatus', false)
   if(error.response === undefined)
     store.dispatch('appendErrorAlert', { status: 'no connect' })
   else if(!checkErrorStatusCode(error.response.status))
@@ -31,33 +31,33 @@ function processingErrorResponse(error){
 }
 
 function processingSuccessResponse(response){
-  store.commit('changeProgressLinearStatus', false)
+  store.commit('changeLoadStatus', false)
   return response.data
 }
 
 export async function getResponseAxios (url, config = {}) {
-  store.commit('changeProgressLinearStatus', true)
+  store.commit('changeLoadStatus', true)
   return await http.get(url, config)
     .then((response) => { return processingSuccessResponse(response) })
     .catch(error => { return processingErrorResponse(error) })
 }
 
 export async function postResponseAxios (url, data, config = {}) {
-  store.commit('changeProgressLinearStatus', true)
+  store.commit('changeLoadStatus', true)
   return await http.post(url, data, config)
     .then((response) => { return processingSuccessResponse(response) })
     .catch(error => { return processingErrorResponse(error) })
 }
 
 export async function putResponseAxios (url, data, config = {}) {
-  store.commit('changeProgressLinearStatus', true)
+  store.commit('changeLoadStatus', true)
   return await http.put(url, data, config)
     .then((response) => { return processingSuccessResponse(response) })
     .catch(error => { return processingErrorResponse(error) })
 }
 
 export async function deleteResponseAxios (url, config = {}) {
-  store.commit('changeProgressLinearStatus', true)
+  store.commit('changeLoadStatus', true)
   return await http.delete(url, config)
     .then((response) => { return processingSuccessResponse(response) })
     .catch(error => { return processingErrorResponse(error) })

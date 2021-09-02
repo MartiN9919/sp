@@ -2,7 +2,7 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.db import models
 from data_base_driver.constants.const_dat import DAT_SYS_OBJ, DAT_SYS_LIST_TOP, DAT_SYS_KEY, DAT_SYS_LIST_DOP, \
-    DAT_SYS_KEY_GROUP, DAT_SYS_PHONE_NUMBER_FORMAT
+     DAT_SYS_PHONE_NUMBER_FORMAT
 
 
 class ModelObject(models.Model):
@@ -60,6 +60,9 @@ class ModelList(models.Model):
         return self.title
 
     def clean(self):
+        """
+        Функция дял установи режима проверки списка
+        """
         self.fl = 0  # костыль, потом изменить
         try:
             self.save()
@@ -67,6 +70,11 @@ class ModelList(models.Model):
             raise e
 
     def save(self, *args, **kwargs):
+        """
+        Функция сохранения списка с проверкой на дублирование названия
+        @param args: стандартный параметр
+        @param kwargs: стандартный параметр
+        """
         if len(ModelList.objects.filter(title=self.title)) != 0 and self.fl == 0 and not self.id:
             raise ValidationError('список с таким именем уже существует')
         else:
@@ -96,6 +104,9 @@ class ModelListDop(models.Model):
     )
 
     def clean(self):
+        """
+        Функция для валидации списка
+        """
         if not self.key_id:
             ModelList.save(self.key)
         self.fl = 0  # костыль, потом изменить
@@ -106,12 +117,16 @@ class ModelListDop(models.Model):
                 raise e
 
     def save(self, *args, **kwargs):
+        """
+        Функция для сохранения подсписка с проверкой на дублирование
+        @param args: стандартный параметр
+        @param kwargs: стандартный параметр
+        """
         if len(ModelListDop.objects.filter(key=self.key).filter(val=self.val)) > 0 and self.fl == 0:
             raise ValidationError('в данном списке уже есть такой элемент')
         else:
             self.fl = 1
             super().save(*args, **kwargs)
-
 
     class Meta:
         managed = False
@@ -120,39 +135,10 @@ class ModelListDop(models.Model):
         db_table = DAT_SYS_LIST_DOP.TABLE_SHORT
 
 
-class ModelKeyGroup(models.Model):
-    obj = models.ForeignKey(
-        ModelObject,
-        verbose_name='Объект',
-        related_name='ind_obj_пкщгз',
-        on_delete=models.CASCADE,
-        help_text='К какому объекту относится данная группа',
-    )
-    name = models.CharField(
-        max_length=255,
-        verbose_name='Название группы',
-        help_text='Название группы',
-        blank=True,
-        null=True,
-    )
-    pos = models.IntegerField(
-        verbose_name='Приоритет группы',
-        help_text='Необходим для сортировки',
-        blank=True,
-        null=True,
-    )
-
-    def __str__(self):
-        return self.name
-
-    class Meta:
-        managed = False
-        db_table = DAT_SYS_KEY_GROUP.TABLE_SHORT
-        verbose_name = "Группа классификатора"
-        verbose_name_plural = "Группа классификатора"
-
-
 class ModelPhoneNumberFormat(models.Model):
+    """
+    Класс для модели формата телефонного номера
+    """
     country = models.CharField(
         max_length=50,
         verbose_name='Страна принадлежности',
@@ -178,7 +164,6 @@ class ModelKey(models.Model):
     """
     Модель таблицы sys_key для хранения классификаторов.
     """
-
     obj = models.ForeignKey(
         ModelObject,
         verbose_name='Объект',
@@ -261,11 +246,22 @@ class ModelKey(models.Model):
         blank=True,
         null=True,
     )
+    priority = models.IntegerField(
+        verbose_name='Приоритет',
+        help_text=' Приоритет при именовании',
+        blank=True,
+        null=True,
+    )
 
     def __str__(self):
         return self.title
 
     def save(self, *args, **kwargs):
+        """
+        Переопределенная функция сохранения для переупорядочивания объектов в связи в зависимости от их идентификатора
+        @param args: стандартный параметр
+        @param kwargs: стандартный параметр
+        """
         if self.obj_id == 1:
             if self.rel_obj_1_id > self.rel_obj_2_id:
                 temp_id = self.rel_obj_1_id

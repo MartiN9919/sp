@@ -2,16 +2,16 @@ import json
 from django.contrib import auth
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from core.projectSettings.decoraters import decor_log_request, login_check
+from core.projectSettings.decoraters import request_log, login_check, request_get
 
 
 @csrf_exempt
-@decor_log_request
+@request_log
 def login_user(request):
     """
     Создание сеанса пользователя
     """
-    # если пользователь уже залогинен, чего не может быть, но всеже возвращаем положительный результат аутентификации
+    # если пользователь уже залогинен, чего не может быть, но все же возвращаем положительный результат аутентификации
     if request.user.is_authenticated:
         return JsonResponse({}, status=200)
 
@@ -37,7 +37,7 @@ def login_user(request):
 
 
 @login_check
-@decor_log_request
+@request_log
 def logout_user(request):
     """
     Удаление сеанса пользователя
@@ -46,9 +46,8 @@ def logout_user(request):
     return JsonResponse({}, status=200)
 
 
-
 @login_check
-@decor_log_request
+@request_log
 def authorization(request):
     """
     Получение данных пользователя и проверка его сеанса
@@ -57,4 +56,10 @@ def authorization(request):
         'username': request.user.username,
         'first_name': request.user.first_name,
         'last_name': request.user.last_name,
+        'admin': request.user.is_superuser,
+        'staff': request.user.is_staff,
+        'write': request.user.is_write,
     }}, status=200)
+
+
+

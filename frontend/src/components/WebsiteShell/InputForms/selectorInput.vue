@@ -1,35 +1,162 @@
 <template>
-  <v-autocomplete
-    :items="list" autocomplete="off" :label="title" v-model="value" :rules="rules"
-    :menu-props="{ offsetY: true, maxWidth: '100%', minWidth: '100%' }" attach
-    append-icon="mdi-format-list-bulleted" placeholder="Выберете необходимое значение"
-    hide-details class="pt-0 mt-0" color="teal" type="text" item-color="teal"
+  <v-combobox
+    v-model="value"
+    :items="items"
+    :item-text="itemText"
+    :rules="rules"
+    :clearable="clearable"
+    :hide-details="hideDetails"
+    :class="bodyInputClasses"
+    :placeholder="placeholder"
+    :disabled="disabled"
+    :menu-props="{ offsetY: true, zIndex: 1000001 }"
+    class="customCombobox"
+    autocomplete="off"
+    messages=" "
+    color="teal"
+    item-color="teal"
   >
-    <template v-slot:item="{ item }">
-      <div class="py-1">{{item}}</div>
+    <template v-slot:label>
+      {{title}}
     </template>
-  </v-autocomplete>
+    <template v-slot:prepend-inner>
+      <v-icon v-if="value && checkIcon(value[itemText])">
+        {{ getIcon(value[itemText]) }}
+      </v-icon>
+    </template>
+    <template v-slot:append>
+      <v-hover v-slot="{ hover }" class="action-icon">
+        <v-icon
+          v-if="deletable && hover"
+          @click.stop="$emit('deletable')"
+          size="24"
+        >mdi-delete</v-icon>
+        <v-icon v-else size="24">mdi-format-list-bulleted</v-icon>
+      </v-hover>
+    </template>
+    <template v-slot:message>
+      <slot name="message"></slot>
+    </template>
+    <template v-slot:item="{ item, on, attrs }">
+      <v-list-item v-if="checkIcon(item[itemText])" v-on="on" v-bind="attrs" dense>
+        <v-list-item-icon>
+          <v-icon size="20">{{ getIcon(item[itemText]) }}</v-icon>
+        </v-list-item-icon>
+        <v-list-item-content>
+          <v-list-item-title v-text="item[itemText]"/>
+        </v-list-item-content>
+
+      </v-list-item>
+      <v-list-item v-else v-on="on" v-bind="attrs" dense>
+        <v-list-item-content>
+          <v-list-item-title class="selector-item">{{item[itemText]}}</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+    </template>
+  </v-combobox>
 </template>
 
 <script>
-  export default {
-    name: "selectorInput",
-    props: {
-      rules: Array,
-      title: String,
-      list: Array,
-      inputString: String,
+
+export default {
+  name: "selectorInput",
+  model: { prop: 'inputString', event: 'changeInputString', },
+  props: {
+    clearable: {
+      type: Boolean,
+      default: false,
     },
-    model: { prop: 'inputString', event: 'changeInputString', },
-    computed: {
-      value: {
-        get: function () { return this.inputString },
-        set: function (value) { this.$emit('changeInputString', value) }
+    deletable: {
+      type: Boolean,
+      default: false,
+    },
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
+    hideDetails: {
+      type: Boolean,
+      default: false,
+    },
+    inputString: Number,
+    itemText: {
+      type: String,
+      default: 'value',
+    },
+    items: {
+      type: Array,
+      default: function () {
+        return []
       }
     },
-  }
+    placeholder: {
+      type: String,
+      default: 'Введите необходимое значение',
+    },
+    rules: {
+      type: Array,
+      default: function () {
+        return []
+      }
+    },
+    title: {
+      type: String,
+      default: '',
+    },
+  },
+  computed: {
+    bodyInputClasses: function () { return this.title.length ? 'pt-5' : '' },
+    value: {
+      get: function () { return this.items.find(item => item.id === this.inputString) },
+      set: function (value) { this.$emit('changeInputString', value.id) }
+    }
+  },
+  methods: {
+    checkIcon(value) {
+      return value.indexOf('mdi') !== -1
+    },
+    getIcon(value) {
+      return value.slice(value.indexOf('mdi'), value.length - 1)
+    }
+  },
+}
 </script>
 
 <style scoped>
-
+.v-text-field {
+  margin-top: 0;
+  padding-top: 12px;
+}
+.customCombobox >>> input {
+  padding: 0;
+  cursor: pointer;
+}
+.customCombobox >>> .v-input__slot {
+  align-items: flex-end;
+  margin-bottom: 0;
+}
+.customCombobox >>> .v-input__append-inner {
+  margin-top: 0 !important;
+}
+.customCombobox >>> .v-messages {
+  min-height: 0;
+}
+.customCombobox >>> .v-text-field__details {
+  min-height: 0;
+}
+.customCombobox >>> .v-select__slot {
+  cursor: pointer;
+}
+.action-icon {
+  cursor: pointer;
+}
+.customCombobox {
+  width: 100%;
+}
+.selector-item {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 0;
+}
 </style>

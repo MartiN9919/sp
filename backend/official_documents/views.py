@@ -1,12 +1,12 @@
 import json
 from django.http import JsonResponse, HttpResponse
-from core.projectSettings.decoraters import decor_log_request, login_check
+from core.projectSettings.decoraters import request_log, login_check
 from data_base_driver.sys_reports.get_files_info import get_file_path, get_list_files_by_user
 from data_base_driver.sys_reports.check_file_permission import check_file_permission
 
 
 @login_check
-@decor_log_request
+@request_log
 def aj_reports_list(request):
     """
     Функция для обработки запроса на получение списка файлов доступных пользователю
@@ -17,7 +17,7 @@ def aj_reports_list(request):
 
 
 @login_check
-@decor_log_request
+@request_log
 def aj_file_download(request):
     """
     Функция для обработки запроса на скачивание файла

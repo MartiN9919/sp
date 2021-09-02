@@ -1,5 +1,4 @@
 from data_base_driver.constants.const_dat import DAT_SYS_KEY, DAT_SYS_OBJ
-from data_base_driver.sys_key.get_list import get_list_by_top_id
 
 
 def get_obj_id(name):
@@ -43,42 +42,6 @@ def get_keys_by_rel(object1, object2):
         object2 = tmp
     return [item for item in DAT_SYS_KEY.DUMP.get_rec(obj_id=1, only_first=False) if
             filter_rel(item, int(object1), int(object2))]
-
-
-def get_relations_list(object1, object2):
-    """
-    Функция для получения списка возможных связей по типу связываемых объектов
-    @param object1: имя или id первого объекта
-    @param object2: имя или id второго объекта
-    @return: список в формате [{id,title,hint,list},...,{}]
-    """
-    result = []
-    for item in get_keys_by_rel(object1, object2):
-        list_item = None
-        if item.get('list_id'):
-            list_item = get_list_by_top_id(int(item.get('list_id')))
-        result.append({'id': item['id'], 'title': item['title'], 'hint': item['hint'], 'list': list_item})
-    return result
-
-
-def get_keys_by_object(object):
-    """
-    получение списка ключей по типу объекта
-    :param object: имя или тип объекта
-    :return: список словарей c информацией о искомых ключах
-    """
-    if isinstance(object, str) and not (object.isdigit()):
-        object = get_obj_id(object)
-    keys = DAT_SYS_KEY.DUMP.get_rec(obj_id=int(object), only_first=False)
-    result = []
-    for key in keys:
-        temp = dict(key)
-        temp.pop('rel_obj_1_id')
-        temp.pop('rel_obj_2_id')
-        if temp.get('list_id'):
-            temp['list_id'] = [item['value'] for item in get_list_by_top_id(int(temp.get('list_id')))]
-        result.append(temp)
-    return result
 
 
 def get_key_by_id(id):

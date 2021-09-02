@@ -3,7 +3,7 @@
     v-if="MAP_GET_RANGE_SHOW"
     v-show="visible"
     position="bottomcenterhorizontal"
-    class="control_range select_off"
+    class="leaflet-bar leaflet-control control_range select_off"
   >
     <table>
       <tr>

@@ -1,28 +1,70 @@
 <template>
-  <ResSplitPane
-    v-on:update:size="sizeNavigation = $event"
-    split-to="columns" :allow-resize="true" units="percents"
-    :min-size="15" :max-size="85" :size="drawer ? sizeNavigation : 0"
-    :resizerBorderThickness="1" :resizerThickness="1" resizer-border-thickness="">
-    <graph-menu slot="firstPane" class="select_off"></graph-menu>
-    <d3-field slot="secondPane" :drawer="drawer"></d3-field>
-  </ResSplitPane>
+  <split-panel shadow-effect>
+    <template v-slot:firstPane>
+      <v-row no-gutters class="graph-menu">
+        <tools-menu></tools-menu>
+        <component :is="changeComponent()" class="page"></component>
+      </v-row>
+    </template>
+    <template v-slot:secondPane>
+<!--      <work-place></work-place>-->
+    </template>
+  </split-panel>
 </template>
 
 <script>
-import d3Field from '../components/Graph/D3/d3Field'
-import graphMenu from '../components/Graph/GraphMenu/graphMenu'
-import NavigationDrawer from '../components/WebsiteShell/Mixins/NavigationDrawer'
-import ResSplitPane from 'vue-resize-split-pane'
+import SplitPanel from "../components/WebsiteShell/UI/splitPanel"
+import workPlace from '../components/Graph/Graph/workPlace'
+import toolsMenu from "../components/WebsiteShell/UI/toolsMenu"
+import searchPage from "../components/Graph/GraphMenu/searchPage"
+import createPage from "../components/Graph/GraphMenu/createPage"
+import dossierPage from "../components/Graph/GraphMenu/dossierPage"
+import createRelationPage from "../components/Graph/GraphMenu/createRelationPage"
+import settingsPage from "../components/Graph/GraphMenu/settingsPage"
+import {mapActions, mapGetters} from "vuex"
+import router from '@/router'
 
 export default {
   name: 'GraphPage',
-  mixins: [ NavigationDrawer, ],
-  components: { ResSplitPane, d3Field, graphMenu,},
-  created() { this.$store.dispatch('getListOfPrimaryObjects') },
+  components: {SplitPanel, workPlace, toolsMenu, searchPage, createPage, dossierPage, createRelationPage, settingsPage},
+  computed: {
+    ...mapGetters(['activeTool']),
+    activeWindow: function () {
+      return this.activeTool(router.currentRoute.name)
+    },
+  },
+  methods: {
+    ...mapActions(['setDefaultValueActiveTool', 'getBaseObjects', 'setRootSearchTreeItem']),
+    changeComponent() {
+      if (this.activeWindow === 'searchPage')
+        return 'searchPage'
+      if (this.activeWindow === 'createPage')
+        return 'createPage'
+      if (this.activeWindow === 'dossierPage')
+        return 'dossierPage'
+      if (this.activeWindow === 'createRelationPage')
+        return 'createRelationPage'
+      if (this.activeWindow === 'settingsPage')
+        return 'settingsPage'
+    },
+  },
+  mounted() {
+    this.getBaseObjects({})
+    .then(() => {
+      this.setDefaultValueActiveTool()
+      this.setRootSearchTreeItem({})
+    })
+  },
 }
 </script>
 
-<style >
+<style>
+.graph-menu {
+  flex-wrap: nowrap;
+  height: 100%;
+}
 
+.page {
+  max-width: calc(100% - 56px)
+}
 </style>

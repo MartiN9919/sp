@@ -5,17 +5,19 @@ import threading
 
 from authentication.models import ModelCustomUser
 from data_base_driver.script.get_script_info import get_script_title
+from data_base_driver.script.script_execute import execute_script_map
 from data_base_driver.script.script_list import get_script_tree
 from data_base_driver.constants.const_dat import DAT_OWNER
 from django.http import JsonResponse
-from core.projectSettings.decoraters import decor_log_request, login_check
+from core.projectSettings.decoraters import request_log, login_check
 from data_base_driver.sys_reports.set_file_info import add_file
 from data_base_driver.sys_templates.get_template_info import get_templates_list, get_template
 from data_base_driver.sys_templates.set_templates_info import add_template, remove_template, update_template
+from data_base_driver.trigger.trigger_list import get_triggers_list
 
 
 @login_check
-@decor_log_request
+@request_log
 def aj_script_list(request):
     """
     Функция для обработки запроса на получение списка скриптов
@@ -28,7 +30,13 @@ def aj_script_list(request):
 
 
 @login_check
-@decor_log_request
+@request_log
+def aj_trigger_list(request):
+    return JsonResponse({'data': get_triggers_list()}, status=200)
+
+
+@login_check
+@request_log
 def aj_script_execute_map(request):
     """
     Функция обработки запроса на исполнение скрипта анализа для карты
@@ -36,23 +44,19 @@ def aj_script_execute_map(request):
     @return: json с результатом выполнения скрипта и статусом выполнения
     или текстом и кодом ошибки
     """
+    group_id = DAT_OWNER.DUMP.get_group(user_id=request.user.id)
     data = json.loads(request.body)
     method_name = 'script_' + str(data.get('id'))
     importlib.invalidate_caches()
-    try:
-        my_module = importlib.import_module('script.user_scripts.' + method_name)
-        result = getattr(my_module, method_name)(data.get('variables'))
-        if result == 'error':
-            return JsonResponse({}, status=470)
-        else:
-            return JsonResponse({'data': result}, status=200)
-
-    except:
+    result = execute_script_map(method_name, group_id, data.get('variables'))
+    if result == 'error':
         return JsonResponse({}, status=470)
+    else:
+        return JsonResponse({'data': result}, status=200)
 
 
 @login_check
-@decor_log_request
+@request_log
 def aj_script_execute_report(request):
     """
     Функция для обработки запросов анализа с получением отчета
@@ -87,7 +91,7 @@ def aj_script_execute_report(request):
 
 
 @login_check
-@decor_log_request
+@request_log
 def aj_templates_list(request):
     """
     Функция для обработки запроса на получение списка шаблонов
@@ -98,7 +102,7 @@ def aj_templates_list(request):
 
 
 @login_check
-@decor_log_request
+@request_log
 def aj_template(request):
     """
     Функция для обработки запросов CRUD для шаблона

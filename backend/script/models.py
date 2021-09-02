@@ -3,10 +3,14 @@ import os
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Q
-from data_base_driver.constants.const_dat import DAT_SYS_SCRIPT
+
+from classifier.models import ModelObject
+from data_base_driver.constants.const_dat import DAT_SYS_SCRIPT, DAT_SYS_TRIGGER
 from data_base_driver.constants.const_script import BASE_PATH_TO_USER_SCRIPTS
+from data_base_driver.constants.const_trigger import BASE_PATH_TO_USER_TRIGGERS
 from data_base_driver.script.script_parsec import parse_text_to_python
 from authentication.models import ModelOwnerLines
+from data_base_driver.trigger.trigger_parser import parse_trigger_text_to_python
 
 
 class ModelScript(models.Model):
@@ -89,6 +93,11 @@ class ModelScript(models.Model):
         return self.title
 
     def clean(self, *args, **kwargs):
+        """
+        Функция для проверки правильности синтаксиса написанного скрипта
+        @param args: стандартный список параметров
+        @param kwargs: стандартный список параметров
+        """
         if not self.icon:
             status, error_str, error_code, error_type = parse_text_to_python('script_test', self.content,
                                                                              self.variables, self.type)
@@ -99,13 +108,22 @@ class ModelScript(models.Model):
                 os.remove(BASE_PATH_TO_USER_SCRIPTS + 'script_test.py')
 
     def save(self, *args, **kwargs):
-        """Парсинг поля контента в исполняемый файл"""
+        """
+        Функция для переопределения сохранения модели, добавлено сохранение файла в папку пользовательских скриптов
+        @param args: стандартный список параметров
+        @param kwargs: стандартный список параметров
+        """
         super().save(*args, **kwargs)
         if not self.icon:
             parse_text_to_python('script_' + str(ModelScript.objects.get(title=self.title).id), self.content,
                                  self.variables, self.type)
 
     def delete(self, using=None, keep_parents=False):
+        """
+        Функция для удаления скрипта, удаляет как из базы данных, так и из файловой системы
+        @param using:
+        @param keep_parents:
+        """
         if not self.icon:
             os.remove(BASE_PATH_TO_USER_SCRIPTS + 'script_' + str(self.id) + '.py')
         super().delete()
@@ -115,3 +133,60 @@ class ModelScript(models.Model):
         db_table = DAT_SYS_SCRIPT.TABLE_SHORT
         verbose_name = "Скрипт"
         verbose_name_plural = "Скрипты"
+
+
+class ModelTrigger(models.Model):
+    object = models.ForeignKey(
+        ModelObject,
+        verbose_name='объект',
+        on_delete=models.CASCADE,
+    )
+    title = models.CharField(
+        max_length=50,
+        verbose_name='Название Триггера',
+        help_text='Данное название будет отображаться в меню настройки триггеров',
+        unique=True,
+    )
+    content = models.TextField(
+        verbose_name='Текст скрипта триггера',
+        help_text='Поле ввода скрипта триггера',
+        blank=True,
+        default='',
+    )
+    variables = models.TextField(
+        verbose_name='Переменные',
+        help_text='Введите переменные формата (name variables):(type variables)',
+        blank=True,
+        default='',
+    )
+    hint = models.TextField(
+        max_length=255,
+        verbose_name='Всплывающая подсказка',
+        help_text='Ввод текста подсказки, которая будет отображаться в меню выбора анализа',
+        blank=True,
+        default='',
+    )
+
+    def save(self, *args, **kwargs):
+        """
+        Функция для переопределения сохранения модели, добавлено сохранение файла в папку пользовательских триггеров
+        @param args: стандартный список параметров
+        @param kwargs: стандартный список параметров
+        """
+        super().save(*args, **kwargs)
+        parse_trigger_text_to_python('trigger_' + str(self.id), self.content, self.variables)
+
+    def delete(self, using=None, keep_parents=False):
+        """
+        Функция для удаления триггера, удаляет как из базы данных, так и из файловой системы
+        @param using:
+        @param keep_parents:
+        """
+        os.remove(BASE_PATH_TO_USER_TRIGGERS + 'trigger_' + str(self.id) + '.py')
+        super().delete()
+
+    class Meta:
+        managed = False
+        db_table = DAT_SYS_TRIGGER.TABLE_SHORT
+        verbose_name = "Тригеры"
+        verbose_name_plural = "Триггеры"

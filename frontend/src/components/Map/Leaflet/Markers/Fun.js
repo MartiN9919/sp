@@ -8,9 +8,9 @@ export function marker_get(latlng, options={}) {
   return icon_2_marker(latlng, icon);
 }
 
-export function icon_2_marker(latlng, icon) {
-  let param = (icon)?{icon:icon,}:{};
-  return L.marker(latlng, param);
+export function icon_2_marker(latlng, icon, options={}) {
+  let param = (icon) ? { icon:icon, } : {};
+  return L.marker(latlng, {...param, ...options});
 }
 
 export function icon_get(options={}) {
