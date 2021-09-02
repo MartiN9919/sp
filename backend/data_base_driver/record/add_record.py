@@ -142,5 +142,7 @@ def add_geometry(user, group_id, rec_id, location, name, parent_id, icon):
     if parent_id:
         data.append({'id': 30302, 'value': parent_id, 'date': date_time_str})
     if icon:
-        data.append({'id': 30301, 'value': str(icon), 'date': date_time_str})
+        temp_value = str(get_item_list_value(int(icon)))
+        value = temp_value[temp_value.index('(') + 1:temp_value.index(')')]
+        data.append({'id': 30301, 'value': str(value), 'date': date_time_str})
     return add_data(user, group_id, {'object_id': 30, 'rec_id': rec_id, 'params': data})

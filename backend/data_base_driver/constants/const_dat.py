@@ -139,6 +139,8 @@ class DAT_SYS_KEY:
     TYPE_DATATIME = 'datetime'
     TYPE_GEOMETRY = 'geometry'
     TYPE_PHONE_NUMBER = 'phone_number'
+    TYPE_FILE_PHOTO = 'file_photo'
+    TYPE_FILE_ANY = 'file_any'
 
     TYPE_LIST = (
         (TYPE_INT, "Число"),
@@ -148,6 +150,8 @@ class DAT_SYS_KEY:
         (TYPE_PHONE_NUMBER, 'Номер телефона'),
         (TYPE_BIT, 'Да/Нет'),
         (TYPE_GEOMETRY, 'Точка/Путь/Полигон'),
+        (TYPE_FILE_PHOTO, 'Фала-фотография'),
+        (TYPE_FILE_ANY, 'Фала-любой тип'),
     )
 
     NAME_REL_KEY_ID = 'key_id'
