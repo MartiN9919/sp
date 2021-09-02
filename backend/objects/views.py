@@ -11,6 +11,7 @@ from data_base_driver.record.add_record import add_data, add_geometry
 from data_base_driver.relations.add_rel import add_rel
 from data_base_driver.relations.get_rel import get_object_relation, get_relations_list
 from data_base_driver.record.get_record import get_keys_by_object
+from data_base_driver.sys_key.get_list import get_list_by_top_id
 from data_base_driver.sys_key.get_object_info import obj_list
 
 
@@ -24,6 +25,14 @@ def aj_object_type_list(request):
     [{id, name, title, title_single, icon, descript},...{}]
     """
     return JsonResponse({'data': obj_list()}, status=200)
+
+
+@login_check
+@request_log
+@request_wrap
+@request_get
+def aj_list_icons(request):
+    return {'data': get_list_by_top_id(49)}
 
 
 @login_check
