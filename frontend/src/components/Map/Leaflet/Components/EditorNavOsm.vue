@@ -65,7 +65,7 @@ export default {
   //   this.$watch('found_item_sel', function(id) {
   //     console.log(id)
   //   });
-    this.search_items = JSON.parse(localStorage.getItem(this.key_sel, []))
+    this.search_items = JSON.parse(localStorage.getItem(this.key_sel) || "[]")
   },
 
   // beforeDestroy () {
