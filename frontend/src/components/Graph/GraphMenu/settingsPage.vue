@@ -4,14 +4,14 @@
       :settings="globalDisplaySettings"
       @changeSettings="changeGlobalSettingState"
     ></global-settings>
-    <object-settings :classifiers="getClassifiers">
+    <object-settings :classifiers="getClassifiers" @setClassifier="setClassifier">
       <v-list-item class="px-2">
         <selector-object v-model="idObjectSettings" start-object></selector-object>
       </v-list-item>
     </object-settings>
     <trigger-settings :triggers="getTriggers" @setTrigger="setTrigger">
       <v-list-item class="px-2">
-        <selector-object v-model="idTriggerSettings" start-object></selector-object>
+        <selector-object v-model="idTriggerSettings" start-object :is-get-classifiers="false"></selector-object>
       </v-list-item>
     </trigger-settings>
   </v-container>
@@ -33,14 +33,23 @@ export default {
     idTriggerSettings: null,
   }),
   computed: {
-    ...mapGetters(['globalDisplaySettings', 'baseClassifiers', 'objectTriggers']),
-    getClassifiers: function () { return this.baseClassifiers(this.idObjectSettings) },
+    ...mapGetters(['globalDisplaySettings', 'baseClassifiers', 'objectTriggers', 'objectClassifiersSettings']),
+    getClassifiers: function () {
+      let classifiers = []
+      let activeClassifiers = this.objectClassifiersSettings(this.idObjectSettings)
+      for (let baseClassifier of this.baseClassifiers(this.idObjectSettings))
+        classifiers.push(Object.assign({status: activeClassifiers.includes(baseClassifier.id)}, baseClassifier))
+      return classifiers
+    },
     getTriggers: function() { return this.objectTriggers(this.idTriggerSettings) },
   },
   methods: {
-    ...mapActions(['changeGlobalSettingState', 'getBaseTriggers', 'setTriggerState']),
+    ...mapActions(['changeGlobalSettingState', 'getBaseTriggers', 'setTriggerState', 'setClassifiersSettings']),
     setTrigger(event) {
       this.setTriggerState(event)
+    },
+    setClassifier(classifierId) {
+      this.setClassifiersSettings({objectId: this.idObjectSettings, classifierId: classifierId})
     }
   },
   mounted() {

@@ -1,4 +1,5 @@
 import { getResponseAxios } from '@/plugins/axios_settings'
+import Vue from 'vue'
 
 class GlobalSettings {
   constructor() {
@@ -38,21 +39,34 @@ class GlobalSettings {
 export default {
   state: {
     triggers: [],
+    classifiersSettings: getClassifiersSettings(),
     globalDisplaySettings: new GlobalSettings()
   },
   getters: {
     triggers: state => { return state.triggers },
     objectTriggers: state => objectId => { return state.triggers.filter(trigger => trigger.objectId === objectId) },
+    classifiersSettings: state => { return state.classifiersSettings },
+    objectClassifiersSettings: state => objectId => { return state.classifiersSettings[objectId] || [] },
     globalDisplaySettings: state => { return state.globalDisplaySettings },
   },
   mutations: {
     addTrigger: (state, trigger) => state.triggers.push(trigger),
     changeGlobalSettingState: (state, {id, value}) => state.globalDisplaySettings.changeState(id, value),
     setTriggerState: (state, {triggerId, value}) => state.triggers.find(t => t.id === triggerId).setState(value),
+    setClassifiersSettings: (state, {objectId, classifierId}) => {
+      if(state.classifiersSettings.hasOwnProperty(objectId)) {
+        let classifierIndex = state.classifiersSettings[objectId].findIndex(id => id === classifierId)
+        if (classifierIndex !== -1) {
+          state.classifiersSettings[objectId].splice(classifierIndex, 1)
+        } else state.classifiersSettings[objectId].push(classifierId)
+      } else Vue.set(state.classifiersSettings, objectId, [classifierId])
+      localStorage.setItem('objectClassifiersSettings', JSON.stringify(state.classifiersSettings))
+    }
   },
   actions: {
     changeGlobalSettingState({ commit }, payload) { commit('changeGlobalSettingState', payload) },
     setTriggerState({ commit }, payload) { commit('setTriggerState', payload) },
+    setClassifiersSettings({ commit }, payload) { commit('setClassifiersSettings', payload) },
     async getBaseTriggers({getters, commit}, config = {}) {
       if(!getters.triggers.length)
         return await getResponseAxios('script/trigger_list/', config)
@@ -70,6 +84,14 @@ export default {
     },
   }
 }
+
+function getClassifiersSettings() {
+  let settings = localStorage.getItem('objectClassifiersSettings')
+  if(settings) return JSON.parse(settings)
+  localStorage.setItem('objectClassifiersSettings', JSON.stringify({}))
+  return {}
+}
+
 
 class DisplaySettingsObject {
   constructor(nodeObject, title) {

@@ -6,8 +6,8 @@
         :opened="openedPanels.includes(key)"
         @createNewParam="createNewParam(item.baseParam.id)"
       ></record-title>
-      <v-expansion-panel-content eager class="expansion-panel-content-custom">
-        <v-card  tile flat>
+      <v-expansion-panel-content class="expansion-panel-content-custom">
+        <v-card tile flat>
           <v-row v-for="param in item.new_values" no-gutters class="flex-nowrap">
             <record-input
               :param="param"

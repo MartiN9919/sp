@@ -10,7 +10,7 @@
         <v-tab v-for="(item, key) in editableObjects" :key="key">
           <v-icon :color="tabColor(key)">{{ item.object.id.icon }}</v-icon>
           <span :style="{color: tabColor(key)}">
-            {{key === 1 ? 'Исходныйобъект' : 'Схожий объект'}}
+            {{key === 0 ? 'Исходныйобъект' : 'Схожий объект'}}
             {{key + 1}}
           </span>
         </v-tab>
