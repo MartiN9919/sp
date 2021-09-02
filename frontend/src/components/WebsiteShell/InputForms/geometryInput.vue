@@ -70,9 +70,7 @@ export default {
   components: {BodyInputForm, LeafletEditor, },
   model: { prop: 'inputString', event: 'changeInputString', },
   props: {
-    inputString: Object,
-    // modeEnabled: Object,      // доступные для создания элементы, например: { marker: true, line: true, polygon: true }
-    // modeSelected: String,     // включенный по умолчанию режим, например: 'Polygon'
+    inputString:  Object,
     modeEnabled:  { type: Object, default: () => ({ line: true, polygon: true }) }, // доступные элементы
     modeSelected: { type: String, default: () => undefined},                        // режим ввода по умолчанию
 

@@ -1,23 +1,20 @@
 <template>
   <v-card>
-    <v-hover v-slot="{ hover }">
-      <v-combobox
-        ref="inp"
-        v-model="search_value"
-        style="margin: 15px;"
-        :color="$CONST.APP.COLOR_OBJ"
-        :items="search_items"
-        :loading="search_wait"
-        label="Искать"
-        @input="on_search"
-        dense
-        outlined
-        hide-details
-        clearable
-        autofocus
-      >
-      </v-combobox>
-    </v-hover>
+    <v-combobox
+      ref="inp"
+      v-model="search_value"
+      style="margin: 15px;"
+      :color="$CONST.APP.COLOR_OBJ"
+      :items="search_items"
+      :loading="search_wait"
+      label="Искать"
+      @input="on_search"
+      dense
+      outlined
+      hide-details
+      clearable
+      autofocus
+    />
 
     <v-divider class="mx-4"></v-divider>
 

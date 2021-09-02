@@ -197,8 +197,15 @@ def aj_geometry(request):
     elif request.method == 'POST':
         try:
             data = json.loads(request.body)
-            result = add_geometry(request.user, group_id, data.get('rec_id'), data.get('location'), data.get('name'),
-                                  data.get('parent_id'), data.get('icon'))
+            result = add_geometry(
+                user = request.user,
+                group_id = group_id,
+                rec_id = data.get('rec_id', 0),
+                location = data.get('location'),
+                name = data.get('name'),
+                parent_id = data.get('parent_id'),
+                icon = data.get('icon'),
+            )
             return {'data': result}
         except:
             return JsonResponse({'status': ' ошибка выполнения запроса'}, status=496)
