@@ -66,7 +66,7 @@ def additional_processing(user, object, data):
 def parse_value(param):
     value = param['value']
     key = get_key_by_id(param['id'])
-    if key.get('list_id') != 0 and key['id'] != 30302:
+    if key.get('list_id') != 0 and key['id'] != 30302 and key.get('list_id') != None:
         value = str(get_item_list_value(value))
     return [param['id'], value, param.get('date', datetime.datetime.now().strftime("%Y-%m-%d %H:%M")) + ':00']
 
