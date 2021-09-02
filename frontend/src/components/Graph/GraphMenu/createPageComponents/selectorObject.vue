@@ -21,6 +21,10 @@ export default {
   name: "selectorObject",
   props: {
     selectedObject: Number,
+    isGetClassifiers: {
+      type: Boolean,
+      default: true,
+    },
     startObject: {
       type: Boolean,
       default: false,
@@ -34,7 +38,10 @@ export default {
     ...mapGetters(['baseObjects']),
     selected: {
       get: function () { if (this.selectedObject) return this.selectedObject },
-      set: function (id) { this.getClassifiers(id) }
+      set: function (id) {
+        if(this.isGetClassifiers) this.getClassifiers(id)
+        else this.$emit('changeSelectedObject', id)
+      }
     }
   },
   methods: {
