@@ -18,7 +18,7 @@
       </v-chip>
     </template>
     <template v-slot:body>
-      <div class="my-2">
+      <div class="ma-2">
         <table>
           <tr>
             <th>Название переменной</th>

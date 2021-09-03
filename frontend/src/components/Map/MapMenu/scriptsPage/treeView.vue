@@ -14,7 +14,7 @@
           </div>
         </template>
         <template v-slot:body>
-          <span class="text-justify">{{ checkHintInItem(item) }}</span>
+          <div class="ma-2">{{ checkHintInItem(item) }}</div>
         </template>
       </custom-tooltip>
     </template>

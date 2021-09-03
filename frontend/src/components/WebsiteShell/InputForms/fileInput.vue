@@ -7,7 +7,7 @@
     :class="bodyInputClasses"
     :placeholder="placeholder"
     :disabled="disabled"
-    accept="image/png, image/jpeg, image/bmp"
+    :accept="accept"
     prepend-icon=""
     truncate-length="200"
     show-size
@@ -27,7 +27,7 @@
             @click.stop="$emit('deletable')"
             size="24"
         >mdi-delete</v-icon>
-        <v-icon v-else size="24">mdi-camera</v-icon>
+        <v-icon v-else size="24">{{icon}}</v-icon>
       </v-hover>
     </template>
     <template v-slot:message>
@@ -42,6 +42,7 @@ export default {
   model: { prop: 'inputString', event: 'changeInputString', },
   props: {
     inputString: Object,
+    type: String,
     clearable: {
       type: Boolean,
       default: false,
@@ -71,10 +72,12 @@ export default {
     title: {
       type: String,
       default: '',
-    },
+    }
   },
   computed: {
     bodyInputClasses: function () { return this.title.length ? 'pt-5' : '' },
+    accept: function () { return this.type === 'file_photo' ? 'image/*' : '' },
+    icon: function () { return this.type === 'file_photo' ? 'mdi-file-image-outline' : 'mdi-file-outline' },
     value: {
       get: function () { return this.inputString?.file },
       set: function (value) { this.$emit('changeInputString', {'file': value}) }
@@ -88,16 +91,9 @@ export default {
   margin-top: 0;
   padding-top: 12px;
 }
-/*.customInputFile >>> input {*/
-/*  padding: 0;*/
-/*  cursor: pointer;*/
-/*}*/
 .customInputFile >>> .v-input__slot {
   align-items: flex-end;
   margin-bottom: 0;
-}
-.customInputFile >>> .v-input__append-inner {
-  margin-top: 0 !important;
   cursor: pointer;
 }
 .customInputFile >>> .v-messages {
@@ -107,8 +103,7 @@ export default {
   min-height: 0;
 }
 .customInputFile >>> .v-text-field__slot {
-  min-height: 0;
-  cursor: pointer;
+  min-height: 20px;
 }
 .action-icon {
   cursor: pointer;
