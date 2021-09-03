@@ -1,6 +1,7 @@
 import datetime
 import json
 
+from data_base_driver.constants.const_dat import DAT_SYS_KEY
 from data_base_driver.record.find_object import find_key_value_http
 from data_base_driver.record.get_record import get_object_record_by_id_http, get_keys_by_object
 from data_base_driver.input_output.input_output import io_set
@@ -71,6 +72,8 @@ def parse_value(param):
             value = temp_value[temp_value.index('(')+1:temp_value.index(')')]
         else:
             value = str(get_item_list_value(value))
+    if key.get('type') == DAT_SYS_KEY.TYPE_FILE_PHOTO or key.get('type') == DAT_SYS_KEY.TYPE_FILE_ANY:
+        pass
     return [param['id'], value, param.get('date', datetime.datetime.now().strftime("%Y-%m-%d %H:%M")) + ':00']
 
 
