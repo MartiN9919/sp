@@ -76,6 +76,24 @@
               required
               autofocus
             />
+            <!--
+            <selector-input
+              ref="dd"
+              v-model="menu_dialog_param_icon"
+              label="Иконка"
+              placeholder="Иконка"
+              :items="menu_dialog_param_icons"
+              @update:search-input="menu_dialog_param_icon = $event"
+            >
+              <template v-slot:append-outer>
+                <div style="min-width: 24px;">
+                  <v-icon size="24">{{ menu_dialog_param_icon }}</v-icon>
+                </div>
+              </template>
+            </selector-input>
+            -->
+
+            <!--
             <v-combobox
               ref="dd"
               v-model="menu_dialog_param_icon"
@@ -94,17 +112,13 @@
                 </v-list-item>
               </template>
 
-              <!--
-                <template v-slot:selection="{ item }">
-                  <span v-text="item"></span>
-                </template>
-              -->
               <template v-slot:append-outer>
                 <div style="min-width: 24px;">
                   <v-icon size="24">{{ menu_dialog_param_icon }}</v-icon>
                 </div>
               </template>
             </v-combobox>
+            -->
           </v-card-text>
           <v-divider></v-divider>
           <v-card-actions>
@@ -169,13 +183,14 @@
 import router from '@/router';
 import { getResponseAxios, } from '@/plugins/axios_settings';
 import Treeview from '@/components/Map/Leaflet/Components/Treeview';
+import SelectorInput from "@/components/WebsiteShell/InputForms/selectorInput"
 import MixMenuNavObj from '@/components/Map/Leaflet/Mixins/MenuNavObj';
 import { fc_normalize, } from '@/components/Map/Leaflet/Lib/LibFc';
 
 
 export default {
   name: 'editor-nav-obj',
-  components: { Treeview, },
+  components: { Treeview, SelectorInput, },
   mixins: [ MixMenuNavObj, ],
 
   props: {

@@ -1,6 +1,7 @@
 import datetime
 import json
 
+from data_base_driver.constants.const_dat import DAT_SYS_KEY
 from data_base_driver.record.find_object import find_key_value_http
 from data_base_driver.record.get_record import get_object_record_by_id_http, get_keys_by_object
 from data_base_driver.input_output.input_output import io_set
@@ -71,6 +72,8 @@ def parse_value(param):
             value = temp_value[temp_value.index('(')+1:temp_value.index(')')]
         else:
             value = str(get_item_list_value(value))
+    if key.get('type') == DAT_SYS_KEY.TYPE_FILE_PHOTO or key.get('type') == DAT_SYS_KEY.TYPE_FILE_ANY:
+        pass
     return [param['id'], value, param.get('date', datetime.datetime.now().strftime("%Y-%m-%d %H:%M")) + ':00']
 
 
@@ -142,5 +145,7 @@ def add_geometry(user, group_id, rec_id, location, name, parent_id, icon):
     if parent_id:
         data.append({'id': 30302, 'value': parent_id, 'date': date_time_str})
     if icon:
-        data.append({'id': 30301, 'value': str(icon), 'date': date_time_str})
+        temp_value = str(get_item_list_value(int(icon)))
+        value = temp_value[temp_value.index('(') + 1:temp_value.index(')')]
+        data.append({'id': 30301, 'value': str(value), 'date': date_time_str})
     return add_data(user, group_id, {'object_id': 30, 'rec_id': rec_id, 'params': data})

@@ -117,6 +117,7 @@ import EditorMap       from '@/components/Map/Leaflet/Components/EditorMap';
 import Range           from '@/components/Map/Leaflet/Components/Range';
 import Legend          from '@/components/Map/Leaflet/Components/Legend';
 import Logo            from '@/components/Map/Leaflet/Components/Logo';
+import MixResize       from '@/components/Map/Leaflet/Mixins/Resize';
 import MixKey          from '@/components/Map/Leaflet/Mixins/Key';
 import MixFeatureColor from '@/components/Map/Leaflet/Mixins/FeatureColor';
 import MixControl      from '@/components/Map/Leaflet/Mixins/Control';
@@ -139,6 +140,7 @@ export default {
 
 
   mixins: [
+    MixResize,
     MixKey,
     MixFeatureColor,
     MixControl,
@@ -186,6 +188,9 @@ export default {
   mounted: function() {
     this.map = this.$refs.map.mapObject;
     this.map.doubleClickZoom.disable();
+
+    // установить слушатель map.on_resize
+    this.resize_add(this.$refs.map.$el, this.on_map_resize);
 
     // добавить обработчики событий клавиатуры
     this.key_mounted_after();
