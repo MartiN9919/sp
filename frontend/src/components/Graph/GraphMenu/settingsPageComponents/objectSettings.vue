@@ -1,7 +1,12 @@
 <template>
   <body-block-settings :icon="icon" :title="title" :sub-title="subTitle">
     <slot></slot>
-    <v-list-item v-for="classifier in classifiers" @click="setClassifier(classifier.id)" dense v-ripple="{ class: 'teal--text' }">
+    <v-list-item
+      v-for="classifier in classifiers" :key="classifier.id"
+      @click="setClassifier(classifier.id)"
+      v-ripple="{ class: 'teal--text' }"
+      dense
+    >
       <v-list-item-subtitle>{{classifier.title}}</v-list-item-subtitle>
       <v-list-item-action>
         <v-switch disabled color="teal" v-model="classifier.status"></v-switch>

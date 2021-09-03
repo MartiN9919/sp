@@ -65,7 +65,7 @@ export default {
           ),
         },
         {
-          title: this.editableObjects[this.activeTab]?.rec_id ? 'Сохранить' : 'Создать',
+          title: this.editableObjects[this.activeTab]?.recId ? 'Сохранить' : 'Создать',
           action: 'save',
           disabled: !!(
             this.valid

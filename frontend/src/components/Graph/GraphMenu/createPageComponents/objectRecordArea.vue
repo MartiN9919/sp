@@ -81,7 +81,7 @@ span {
   font-size: 0.8em
 }
 .v-expansion-panel >>> .v-expansion-panel-header {
-  min-height: 32px;
+  min-height: 35px;
 }
 .expansion-panel-content-custom >>> .v-expansion-panel-content__wrap {
   padding: 0 8;
