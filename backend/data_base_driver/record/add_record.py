@@ -1,6 +1,11 @@
 import datetime
 import json
+import os
 
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
+
+from core.settings import MEDIA_ROOT
 from data_base_driver.constants.const_dat import DAT_SYS_KEY
 from data_base_driver.record.find_object import find_key_value_http
 from data_base_driver.record.get_record import get_object_record_by_id_http, get_keys_by_object
@@ -63,7 +68,7 @@ def additional_processing(user, object, data):
             location[0][1] = json.dumps(geometry)
 
 
-def parse_value(param):
+def parse_value(param, object, files):
     value = param['value']
     key = get_key_by_id(param['id'])
     if key.get('list_id') != 0 and key['id'] != 30302 and key.get('list_id') != None:
@@ -73,11 +78,15 @@ def parse_value(param):
         else:
             value = str(get_item_list_value(value))
     if key.get('type') == DAT_SYS_KEY.TYPE_FILE_PHOTO or key.get('type') == DAT_SYS_KEY.TYPE_FILE_ANY:
-        pass
+        path = 'open_files/' + str(object['object_id']) + '/' + str(object['rec_id']) + '/'
+        if not os.path.exists(MEDIA_ROOT + '/' + path):
+            os.makedirs(MEDIA_ROOT + '/' + path, exist_ok=True)
+        file = files[value]
+        value = default_storage.save(path + file.name, ContentFile(file.read()))
     return [param['id'], value, param.get('date', datetime.datetime.now().strftime("%Y-%m-%d %H:%M")) + ':00']
 
 
-def add_data(user, group_id, object):
+def add_data(user, group_id, object, files=None):
     """
     Функция для добавления(слияния) информации в базу данных
     @param user: объект пользователя
@@ -86,7 +95,7 @@ def add_data(user, group_id, object):
     @return: идентификатор нового/измененного объекта в базе данных
     """
     try:
-        data = [parse_value(param) for param in object['params'] if validate_record(param)]
+        data = [parse_value(param, object, files) for param in object['params'] if validate_record(param)]
     except Exception as e:
         raise e
     # костыль для добавления классификатора телефона для страны, придумать как переделать-------------------------------

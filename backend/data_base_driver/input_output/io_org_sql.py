@@ -70,11 +70,11 @@ class IO_ORG_SQL():
                 # проверка на повтор и вставка КАЖДОГО ключа/записи в отдельности (обновлять не нужно)
                 # row_equ: {'key_id': '40403', 'val': '255', 'dat': 'null'}
                 for ind, item in enumerate(data_pars.row_equ(is_null=True)):
-                    rec = self.io_sql.select(table=data_pars.row_table, select=['1'],
-                                             where=['rec_id=' + data_pars.rec_id, ] + item, only_first=True)
-                    if len(rec) > 0:
-                        if DEBUG: print('Skip set row-obj: RECORD EXIST')
-                        continue
+                    # rec = self.io_sql.select(table=data_pars.row_table, select=['1'],
+                    #                          where=['rec_id=' + data_pars.rec_id, ] + item, only_first=True)
+                    # if len(rec) > 0:
+                    #     if DEBUG: print('Skip set row-obj: RECORD EXIST')
+                    #     continue
                     self.io_sql.obj_insert_row_one(data_pars=data_pars, ind=ind)
 
         # REL

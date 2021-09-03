@@ -76,7 +76,8 @@ class IO_PARS_DATA(dict):
     # КОРРЕКТНОЕ ЗНАЧЕНИЕ VAL ДЛЯ SQL
     ###########################################
     def val(self, type, val):
-        if type in [DAT_SYS_KEY.TYPE_STR, DAT_SYS_KEY.TYPE_DATA, DAT_SYS_KEY.TYPE_PHONE_NUMBER]:
+        if type in [DAT_SYS_KEY.TYPE_STR, DAT_SYS_KEY.TYPE_DATA, DAT_SYS_KEY.TYPE_PHONE_NUMBER,
+                    DAT_SYS_KEY.TYPE_FILE_PHOTO, DAT_SYS_KEY.TYPE_FILE_ANY]:
             ret = "'" + str(val) + "'"
         elif type == DAT_SYS_KEY.TYPE_GEOMETRY:
             ret = "ST_GeomFromGeoJson('" + val + "')"
