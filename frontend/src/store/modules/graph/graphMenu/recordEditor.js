@@ -181,12 +181,12 @@ class DataBaseObject extends BaseDbObject {
     let params = []
     for(let param of this.params) {
       for (let newValue of param.new_values) {
-        if(param.baseParam.type !== "file_photo") {
-          let value = newValue.value
-          params.push({id: param.baseParam.id, value: value, date: newValue.date})
-        } else {
+        if(param.baseParam.type.startsWith('file')){
           params.push({id: param.baseParam.id, value: newValue.value.file.name, date: newValue.date})
           formData.append(newValue.value.file.name, newValue.value.file)
+        } else {
+          let value = newValue.value
+          params.push({id: param.baseParam.id, value: value, date: newValue.date})
         }
       }
     }
