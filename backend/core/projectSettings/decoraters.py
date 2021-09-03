@@ -149,14 +149,24 @@ logger = logging.getLogger(PROJECT_LOG_REQUESTS)
 
 def request_log(function):
     def _inner(request, *args, **kwargs):
-        logger.info(
-            str(request.user) + '.' +
-            str(request.user.id) + '|' +
-            request.get_host() + '|' +
-            request.method + ':' +
-            request.path + '|' +
-            str(request.body.decode("utf-8"))
-        )
+        try:
+            logger.info(
+                str(request.user) + '.' +
+                str(request.user.id) + '|' +
+                request.get_host() + '|' +
+                request.method + ':' +
+                request.path + '|' +
+                str(request.body.decode("utf-8"))
+            )
+        except:
+            logger.info(
+                str(request.user) + '.' +
+                str(request.user.id) + '|' +
+                request.get_host() + '|' +
+                request.method + ':' +
+                request.path + '|' +
+                request.POST['data']
+            )
         return function(request, *args, **kwargs)
 
     return _inner
