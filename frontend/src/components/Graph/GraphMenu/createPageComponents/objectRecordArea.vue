@@ -1,25 +1,35 @@
 <template>
   <v-expansion-panels v-model="openedPanels" multiple accordion hover focusable tile>
-    <v-expansion-panel v-for="(item, key) in params" :key="key">
+    <v-expansion-panel v-for="(param, key) in params" :key="key">
       <record-title
-        :title="item.baseParam.title"
+        :title="param.baseParam.title"
         :opened="openedPanels.includes(key)"
-        @createNewParam="createNewParam(item.baseParam.id)"
+        @createNewParam="createNewParam(param.baseParam.id)"
       ></record-title>
       <v-expansion-panel-content class="expansion-panel-content-custom">
         <v-card tile flat>
-          <v-row v-for="param in item.new_values" no-gutters class="flex-nowrap">
+          <v-row v-for="value in param.new_values" no-gutters class="flex-nowrap">
             <record-input
-              :param="param"
-              :type="item.baseParam.type"
-              :list="item.baseParam.list"
-              @deletable="deleteNewParam(item.baseParam.id, param)"
+              :param="value"
+              :type="param.baseParam.type"
+              :list="param.baseParam.list"
+              @deletable="deleteNewParam(param.baseParam.id, value)"
             ></record-input>
           </v-row>
           <table>
             <tbody class="py-2">
-            <tr v-for="item in item.values">
-              <td><span>{{item.value ? item.value : 'Создана'}}</span></td>
+            <tr v-for="item in param.values">
+              <td>
+                <custom-tooltip v-if="param.baseParam.type.startsWith('file')">
+                  <template v-slot:activator="{ on }">
+                    <span v-on="on" class="activator-tooltip">{{item.value}}</span>
+                  </template>
+                  <template v-slot:body>
+                    <v-img :src="'http://127.0.0.1:8000/api/files/download/' + item.value"></v-img>
+                  </template>
+                </custom-tooltip>
+                <span v-else>{{item.value ? item.value : 'Создана'}}</span>
+              </td>
               <td class="text-end text-no-wrap pl-3"><span>{{item.date}}</span></td>
             </tr>
             </tbody>
@@ -35,12 +45,11 @@ import RecordTitle from "./objectRecordComponents/recordTitle"
 import RecordInput from "./objectRecordComponents/recordInput"
 import DropDownMenu from "../../../WebsiteShell/UI/dropDownMenu"
 import MenuDateTime from "../../../WebsiteShell/UI/selectDateTime"
-import TableOldValues from "./objectRecordComponents/tableOldValues"
-import {mapGetters} from "vuex"
+import CustomTooltip from "../../../WebsiteShell/UI/customTooltip";
 
 export default {
   name: "objectRecordArea",
-  components: {TableOldValues, RecordInput, RecordTitle, MenuDateTime, DropDownMenu},
+  components: {CustomTooltip, RecordInput, RecordTitle, MenuDateTime, DropDownMenu},
   props: {
     params: Array,
     type: {
@@ -79,6 +88,12 @@ td {
 }
 span {
   font-size: 0.8em
+}
+.activator-tooltip {
+  cursor: pointer;
+}
+.activator-tooltip:hover {
+  color: teal;
 }
 .v-expansion-panel >>> .v-expansion-panel-header {
   min-height: 35px;

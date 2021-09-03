@@ -1,5 +1,5 @@
 <template>
-  <component :is="selectComponent()" v-model="value" v-bind="$attrs" @deletable="$emit('deletable')">
+  <component :is="selectComponent()" v-model="value" :type="type" v-bind="$attrs" @deletable="$emit('deletable')">
     <template v-slot:message>
       <slot name="message"></slot>
     </template>
@@ -43,7 +43,7 @@ export default {
       if (this.type === 'datetime') return 'dateTimeInput'
       if (this.type === 'number') return 'numberInput'
       if (this.type === 'phone_number') return 'phoneInput'
-      if (this.type === 'file_photo') return 'fileInput'
+      if (this.type.startsWith('file')) return 'fileInput'
       return 'unknownInput'
     }
   }

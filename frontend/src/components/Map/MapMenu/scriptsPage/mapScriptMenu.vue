@@ -51,9 +51,9 @@
                 </div>
               </template>
               <template v-slot:body>
-                <p class="text-formatter-for-window-size additional-text text-justify ma-0">
+                <div class="ma-2">
                   {{variable.hint ? variable.hint : 'Описание отсутствует'}}
-                </p>
+                </div>
               </template>
             </custom-tooltip>
             <div class="py-2 d-flex flex-nowrap flex-row justify-center">
