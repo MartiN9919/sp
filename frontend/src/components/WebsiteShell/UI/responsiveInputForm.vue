@@ -15,14 +15,15 @@ import numberInput from "../InputForms/numberInput"
 import textInput from "../InputForms/textInput"
 import selectorInput from "../InputForms/selectorInput"
 import phoneInput from "../InputForms/phoneInput"
+import fileInput from "../InputForms/fileInput"
 import unknownInput from "../InputForms/unknownInput"
 
 export default {
   name: 'responsiveInputForm',
   inheritAttrs: false,
-  components: {phoneInput, geometryInput, booleanInput, dateInput, dateTimeInput, numberInput, textInput, selectorInput, unknownInput},
+  components: {phoneInput, geometryInput, booleanInput, dateInput, dateTimeInput, numberInput, textInput, selectorInput, fileInput, unknownInput},
   props: {
-    inputString: [ String, Object, Boolean, Array, Number],
+    inputString: [ String, Object, Boolean, Array, Number, Function],
     type: String,
   },
   model: { prop: 'inputString', event: 'changeInputString'},
@@ -42,6 +43,7 @@ export default {
       if (this.type === 'datetime') return 'dateTimeInput'
       if (this.type === 'number') return 'numberInput'
       if (this.type === 'phone_number') return 'phoneInput'
+      if (this.type === 'file_photo') return 'fileInput'
       return 'unknownInput'
     }
   }

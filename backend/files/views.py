@@ -11,7 +11,7 @@ from data_base_driver.input_output.input_output import io_set
 
 def aj_object_file(request):
     group_id = DAT_OWNER.DUMP.get_group(user_id=request.user.id)
-    data = request.POST
+    data = json.loads(request.POST['data'])
     object_id = data.get('object_id')
     rec_id = data.get('rec_id')
     key_id = int(data.get('key_id'))

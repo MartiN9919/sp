@@ -80,12 +80,15 @@ export default {
     async saveEditableObject({getters, dispatch}, positionObject) {
       return await postResponseAxios('objects/object',
         getters.editableObjects[positionObject].getRequestStructure(),
-        {headers: {'set-cookie': JSON.stringify(getTriggers(getters.editableObjects[positionObject].object.id))}}
+        {headers: {
+          'Content-Type': 'multipart/form-data',
+          'set-cookie': JSON.stringify(getTriggers(getters.editableObjects[positionObject].object.id))
+        }}
       )
         .then(r => {
           if(r.data.hasOwnProperty('object')) {
             dispatch('setEditableObject', r.data.object)
-            dispatch('addChoosingObject', r.data.object)
+            // dispatch('addChoosingObject', r.data.object)
           }
           if(r.data.hasOwnProperty('objects'))
             dispatch('addEditableObjects', r.data.objects)
@@ -174,12 +177,19 @@ class DataBaseObject extends BaseDbObject {
   }
 
   getRequestStructure() {
+    let formData = new FormData()
     let params = []
-    for(let param of this.params)
+    for(let param of this.params) {
       for (let newValue of param.new_values) {
-        let value = newValue.value
-        params.push({id: param.baseParam.id, value: value, date: newValue.date})
+        if(param.baseParam.type !== "file_photo") {
+          let value = newValue.value
+          params.push({value: value, date: newValue.date})
+        } else {
+          params.push({value: newValue.value.file.name, date: newValue.date})
+          formData.append(newValue.value.file.name, newValue.value.file)
+        }
       }
+    }
     let request = {
       rec_id: this.recId,
       object_id: this.object.id,
@@ -188,7 +198,8 @@ class DataBaseObject extends BaseDbObject {
     }
     if(this.hasOwnProperty('recIdOld'))
       request.rec_id_old = this.recIdOld
-    return request
+    formData.append('data', JSON.stringify(request))
+    return formData
   }
 
   concatParams(concatObject) {
