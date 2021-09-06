@@ -8,7 +8,7 @@
       ></record-title>
       <v-expansion-panel-content class="expansion-panel-content-custom">
         <v-card tile flat>
-          <v-row v-for="value in param.new_values" no-gutters class="flex-nowrap">
+          <v-row v-for="(value, key) in param.new_values" :key="key" no-gutters class="flex-nowrap">
             <record-input
               :param="value"
               :type="param.baseParam.type"
@@ -18,18 +18,22 @@
           </v-row>
           <table>
             <tbody class="py-2">
-            <tr v-for="item in param.values">
-              <td>
-                <custom-tooltip v-if="param.baseParam.type.startsWith('file')">
-                  <template v-slot:activator="{ on }">
-                    <span v-on="on" class="activator-tooltip">{{item.value}}</span>
-                  </template>
-                  <template v-slot:body>
-                    <v-img :src="'http://127.0.0.1:8000/api/files/download/' + item.value"></v-img>
-                  </template>
-                </custom-tooltip>
-                <span v-else>{{item.value ? item.value : 'Создана'}}</span>
-              </td>
+              <custom-tooltip
+                  v-for="(item, key) in param.values" :key="key"
+                  :body-text="item.value"
+                  :settings="settings"
+                  v-if="param.baseParam.type.startsWith('file')" >
+                <template v-slot:activator="{ on }">
+                  <tr v-on="on">
+                    <td>
+                      <a :href="getDownloadLink(item.value)">{{item.value}}</a>
+                    </td>
+                    <td class="text-end text-no-wrap pl-3"><span>{{item.date}}</span></td>
+                  </tr>
+                </template>
+              </custom-tooltip>
+            <tr v-for="item in param.values" v-if="!param.baseParam.type.startsWith('file')">
+              <td><span>{{item.value ? item.value : 'Создана'}}</span></td>
               <td class="text-end text-no-wrap pl-3"><span>{{item.date}}</span></td>
             </tr>
             </tbody>
@@ -45,12 +49,14 @@ import RecordTitle from "./objectRecordComponents/recordTitle"
 import RecordInput from "./objectRecordComponents/recordInput"
 import DropDownMenu from "../../../WebsiteShell/UI/dropDownMenu"
 import MenuDateTime from "../../../WebsiteShell/UI/selectDateTime"
-import CustomTooltip from "../../../WebsiteShell/UI/customTooltip";
+import CustomTooltip from "../../../WebsiteShell/UI/customTooltip"
+import {getDownloadFileLink} from '@/plugins/axios_settings'
 
 export default {
   name: "objectRecordArea",
   components: {CustomTooltip, RecordInput, RecordTitle, MenuDateTime, DropDownMenu},
   props: {
+    settings: Object,
     params: Array,
     type: {
       type: Boolean,
@@ -66,6 +72,9 @@ export default {
     },
     deleteNewParam(id, param) {
       this.$emit('deleteNewParam', { id: id, param: param })
+    },
+    getDownloadLink(fileName) {
+      return getDownloadFileLink(this.settings.objectId, this.settings.recId, fileName)
     }
   },
   mounted() {
@@ -80,25 +89,21 @@ export default {
 <style scoped>
 table {
   width: 100%;
-  color: #757575;
   border-spacing: initial;
+  cursor: default;
 }
-td {
-  height: 0.9em
+span, a {
+  color: #555555;
+  font-size: 0.8em;
+  text-decoration: none;
 }
-span {
-  font-size: 0.8em
-}
-.activator-tooltip {
-  cursor: pointer;
-}
-.activator-tooltip:hover {
-  color: teal;
+tr:hover a, tr:hover span {
+  color: #009688;
 }
 .v-expansion-panel >>> .v-expansion-panel-header {
   min-height: 35px;
 }
 .expansion-panel-content-custom >>> .v-expansion-panel-content__wrap {
-  padding: 0 8;
+  padding: 0 8px;
 }
 </style>

@@ -18,6 +18,7 @@
           <v-form :ref="'form' + key" v-model="valid">
             <object-record-area
               :params="object.params"
+              :settings="{objectId: object.object.id, recId: object.recId}"
               @createNewParam="createNewParam"
               @deleteNewParam="deleteNewParam"
             ></object-record-area>

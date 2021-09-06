@@ -24,7 +24,7 @@ def aj_download(request):
     # временно пока не развернут nginx
     file_path = MEDIA_ROOT + '/' + path
     if os.path.exists(file_path):
-        return FileResponse(open(file_path, 'rb'))
+        return FileResponse(open(file_path, 'rb'), as_attachment=True)
     else:
         return JsonResponse({}, status=404)
 

@@ -36,7 +36,7 @@
 
         <v-scroll-y-transition mode="out-in">
           <v-form ref="form" v-if="'id' in selectedItem" :key="selectedItem.id" class="px-2">
-            <custom-tooltip v-for="variable in selectedItem.variables" :key="variable.id">
+            <custom-tooltip v-for="variable in selectedItem.variables" :key="variable.id" :body-text="variable.hint">
               <template v-slot:activator="{ on }">
                 <div v-on="on">
                   <responsive-input-form
@@ -48,11 +48,6 @@
                     :rules="[ v => !!v || 'Поле должно быть заполнено', ]"
                     class="pt-2"
                   ></responsive-input-form>
-                </div>
-              </template>
-              <template v-slot:body>
-                <div class="ma-2">
-                  {{variable.hint ? variable.hint : 'Описание отсутствует'}}
                 </div>
               </template>
             </custom-tooltip>

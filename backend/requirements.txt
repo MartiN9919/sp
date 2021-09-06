@@ -19,6 +19,7 @@ incremental==21.3.0
 iniconfig==1.1.1
 mysqlclient==2.0.3
 packaging==20.9
+Pillow==8.3.2
 pluggy==0.13.1
 psycopg2-binary==2.8.6
 py==1.10.0
