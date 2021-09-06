@@ -47,7 +47,7 @@ def aj_download_condense_image(request):
         new_width = 250
         new_height = height/(width/new_width)
         resized_image = original_image.resize((int(new_width), int(new_height)))
-        new_file_path = 'temp.' + file_path.split('/')[-1].split('.')[1]
+        new_file_path = 'temp.' + file_path.split('/')[-1].split('.')[-1]
         resized_image.save(new_file_path)
         temp_file = open(new_file_path, 'rb')
         os.remove(new_file_path)
