@@ -168,7 +168,7 @@ class DataBaseRelation extends BaseDbObject {
 }
 
 
-class DataBaseObject extends BaseDbObject {
+export class DataBaseObject extends BaseDbObject {
   constructor(object_id, rec_id=0, title='', params=[], recIdOld=null) {
     super(store.getters.baseClassifier, store.getters.baseClassifiers(object_id), params, recIdOld)
     this.object = store.getters.baseObject(object_id)
@@ -208,6 +208,10 @@ class DataBaseObject extends BaseDbObject {
       findParam.values = findParam.values.concat(_.cloneDeep(param.values))
       findParam.new_values = findParam.new_values.concat(_.cloneDeep(param.new_values))
     }
+  }
+
+  getGeneratedId() {
+    return `${this.object.id}-${this.recId}`
   }
 }
 

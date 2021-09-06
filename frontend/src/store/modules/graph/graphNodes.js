@@ -1,4 +1,6 @@
 import { getResponseAxios } from '@/plugins/axios_settings'
+import Graph from "vnodes/src/graph"
+import {DataBaseObject} from '@/store/modules/graph/graphMenu/recordEditor'
 import Vue from 'vue'
 
 class GlobalSettings {
@@ -40,12 +42,15 @@ export default {
   state: {
     triggers: [],
     classifiersSettings: getClassifiersSettings(),
-    globalDisplaySettings: new GlobalSettings()
+    globalDisplaySettings: new GlobalSettings(),
+    graph: new Graph(),
+    graphObjects: {},
   },
   getters: {
+    graphObjects: state => { return state.graph.nodes },
+    graphRelations: state => { return state.graph.edges },
     triggers: state => { return state.triggers },
     objectTriggers: state => objectId => { return state.triggers.filter(trigger => trigger.objectId === objectId) },
-    classifiersSettings: state => { return state.classifiersSettings },
     objectClassifiersSettings: state => objectId => { return state.classifiersSettings[objectId] || [] },
     globalDisplaySettings: state => { return state.globalDisplaySettings },
   },
@@ -61,12 +66,24 @@ export default {
         } else state.classifiersSettings[objectId].push(classifierId)
       } else Vue.set(state.classifiersSettings, objectId, [classifierId])
       localStorage.setItem('objectClassifiersSettings', JSON.stringify(state.classifiersSettings))
-    }
+    },
+    addObjectToGraph: (state, editableObject) => {
+      let x = Math.floor(Math.random() * 500)
+      let y = Math.floor(Math.random() * 500)
+      state.graph.createNode({ id: editableObject.getGeneratedId(), x: x, y: y, width: 100, height: 100, object: editableObject})
+      if(state.graph.nodes.length === 2)
+        state.graph.createEdge(state.graph.nodes[0].id, state.graph.nodes[1].id)
+    },
   },
   actions: {
     changeGlobalSettingState({ commit }, payload) { commit('changeGlobalSettingState', payload) },
     setTriggerState({ commit }, payload) { commit('setTriggerState', payload) },
     setClassifiersSettings({ commit }, payload) { commit('setClassifiersSettings', payload) },
+    addObjectToGraph({ getters, commit }, object) {
+      let editableObject = new DataBaseObject(object.object_id, object.rec_id, object.title, object.params)
+      if(!getters.graphObjects.find(o => o.id === editableObject.getGeneratedId()))
+        commit('addObjectToGraph', editableObject)
+    },
     async getBaseTriggers({getters, commit}, config = {}) {
       if(!getters.triggers.length)
         return await getResponseAxios('script/trigger_list/', config)
@@ -90,26 +107,6 @@ function getClassifiersSettings() {
   if(settings) return JSON.parse(settings)
   localStorage.setItem('objectClassifiersSettings', JSON.stringify({}))
   return {}
-}
-
-
-class DisplaySettingsObject {
-  constructor(nodeObject, title) {
-    this.nodeObject = nodeObject
-    this.title = title
-    this.showTooltip = false
-    this.showTitle = true
-    this.typeTooltop = 'fixed'
-    this.showParams = []
-  }
-
-  get titleStatus() {
-    return this.showGlobalTitle ? this.showTitle : this.showGlobalTitle
-  }
-
-  get tooltipStatus() {
-    return this.showGlobalTooltip ? this.showTooltip : this.showGlobalTooltip
-  }
 }
 
 class Trigger {

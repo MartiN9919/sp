@@ -28,7 +28,7 @@ function generateFileLink(objectId, recId, fileName) {
   return `${objectId}/${recId}/${fileName}`
 }
 
-function checkErrorStatusCode(statusCode){
+export function checkErrorStatusCode(statusCode){
   const CRITICAL_STATUS_CODE = [401, ]
   return CRITICAL_STATUS_CODE.includes(statusCode)
 }

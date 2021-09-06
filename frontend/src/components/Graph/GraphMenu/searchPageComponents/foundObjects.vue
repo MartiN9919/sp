@@ -33,9 +33,6 @@ export default {
   props: {
     objects: Array,
   },
-  methods: {
-    ...mapActions(['getObjectFromServer', ]),
-  }
 }
 </script>
 

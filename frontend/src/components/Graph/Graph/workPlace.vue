@@ -1,42 +1,54 @@
 <template>
-  <div @click.right.prevent.stop="menu_show($event, null)">
+<!--  <div @click.right.prevent.stop="menu_show($event, null)">-->
+  <div>
     <screen ref="screen">
-      <edge v-for="edge in relations" :key="edge.id.toString() + 'edge'" :data="edge" :nodes="nodes"></edge>
-      <g v-for="node in nodes"
-        @mousedown.capture.shift="startMoveGroupNodes(node)"
-        @mouseup.shift="stopMoveGroupNodes()"
-        @mousemove.shift="movingGroupNodes(node)"
-        @wheel.prevent.stop="testScroll($event, node)"
-      >
-        <node :data="node" class="node">
-          <v-icon
-            :size="node.width * 0.7"
-            :class="getIconClass(node.id)"
-            @click.right.prevent.stop="menu_show($event, node)"
-            @click.ctrl.left.exact="addSelectedNodes(node)"
-            @click.left.exact="addSelectedNode(node)"
-          >
-            {{ baseObject(parseInt(node.id.split('_')[0])).icon }}
-          </v-icon>
-          <v-card flat class="overflow-y-auto" style="background-color: rgba(0,0,0,0.0)" :size="node.width * 0.3">
-            <p class="pa-0 object-title" :style="{ fontSize: node.width * 0.1}" style="height: auto">
-              {{ getNodeTitle(node.id) }}
-            </p>
-          </v-card>
+      <edge v-for="edge in graphRelations" :data="edge" :nodes="graphObjects"></edge>
+      <g v-for="node in graphObjects" class="graph-object">
+        <v-card>
+          <v-card-title>asd</v-card-title>
+          <v-card-text>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusantium ad aspernatur, aut blanditiis cupiditate ea ex impedit laboriosam magnam maxime natus pariatur quidem quis sed similique sunt suscipit ullam vel.</v-card-text>
+        </v-card>
+        <node :data="node">
+          <v-icon size="36">{{ node.object.object.icon }}</v-icon>
         </node>
       </g>
+
+<!--      <edge v-for="edge in relations" :key="edge.id.toString() + 'edge'" :data="edge" :nodes="nodes"></edge>-->
+<!--      <g v-for="node in nodes"-->
+<!--        @mousedown.capture.shift="startMoveGroupNodes(node)"-->
+<!--        @mouseup.shift="stopMoveGroupNodes()"-->
+<!--        @mousemove.shift="movingGroupNodes(node)"-->
+<!--        @wheel.prevent.stop="testScroll($event, node)"-->
+<!--      >-->
+<!--        <node :data="node" class="node">-->
+<!--          <v-icon-->
+<!--            :size="node.width * 0.7"-->
+<!--            :class="getIconClass(node.id)"-->
+<!--            @click.right.prevent.stop="menu_show($event, node)"-->
+<!--            @click.ctrl.left.exact="addSelectedNodes(node)"-->
+<!--            @click.left.exact="addSelectedNode(node)"-->
+<!--          >-->
+<!--            {{ baseObject(parseInt(node.id.split('_')[0])).icon }}-->
+<!--          </v-icon>-->
+<!--          <v-card flat class="overflow-y-auto" style="background-color: rgba(0,0,0,0.0)" :size="node.width * 0.3">-->
+<!--            <p class="pa-0 object-title" :style="{ fontSize: node.width * 0.1}" style="height: auto">-->
+<!--              {{ getNodeTitle(node.id) }}-->
+<!--            </p>-->
+<!--          </v-card>-->
+<!--        </node>-->
+<!--      </g>-->
 <!--      <v-label v-for="edge in graph.edges" :perc="50" :offset="{x: 0, y: -50}">-->
 <!--        <h4>Content</h4>-->
 <!--      </v-label>-->
     </screen>
-    <menu-graph ref="menuGraph" :params="menuParams"
-     @startRelationCreate="startCreateRelation"
-     @removeNode="removeNodes"
-     @updateGraph="forceRedrawCluster(graph.nodes, graph.edges)"></menu-graph>
-    <v-menu v-if="isCreateRelation" v-model="isCreateRelation" :position-x="menuParams.x"
-            :position-y="menuParams.y" absolute offset-y :close-on-content-click="false">
-      <create-relation-menu :params="relationParams"></create-relation-menu>
-    </v-menu>
+<!--    <menu-graph ref="menuGraph" :params="menuParams"-->
+<!--     @startRelationCreate="startCreateRelation"-->
+<!--     @removeNode="removeNodes"-->
+<!--     @updateGraph="forceRedrawCluster(graph.nodes, graph.edges)"></menu-graph>-->
+<!--    <v-menu v-if="isCreateRelation" v-model="isCreateRelation" :position-x="menuParams.x"-->
+<!--            :position-y="menuParams.y" absolute offset-y :close-on-content-click="false">-->
+<!--      <create-relation-menu :params="relationParams"></create-relation-menu>-->
+<!--    </v-menu>-->
   </div>
 </template>
 
@@ -46,10 +58,10 @@ import Node from 'vnodes/src/components/Node'
 import Edge from 'vnodes/src/components/Edge'
 import VLabel from 'vnodes/src/components/Label'
 import graph from 'vnodes/src/graph'
-import {mapActions, mapGetters} from "vuex";
 import menuGraph from "./contextMenuGraph"
 import CreateRelationMenu from "./createRelationMenu"
-import NavigationDrawer from "../../WebsiteShell/Mixins/NavigationDrawer";
+import NavigationDrawer from "../../WebsiteShell/Mixins/NavigationDrawer"
+import {mapActions, mapGetters} from "vuex"
 
 export default {
   name: "workPlace",
@@ -67,29 +79,8 @@ export default {
     moveNode: false,
   }),
   computed: {
-    ...mapGetters(['choosingObjects', 'objectsRelations', 'lastObject', 'baseObject']),
+    ...mapGetters(['graphObjects', 'graphRelations', 'lastObject', 'baseObject']),
 
-    nodes: function () {
-      for (let object of this.choosingObjects) {
-        let id = object.object_id.toString() + '_' + object.rec_id.toString()
-        let findNode = this.graph.nodes.find(node => node.id === id)
-        if (!findNode) {
-          let x = Math.floor(Math.random() * 500)
-          let y = Math.floor(Math.random() * 500)
-          this.graph.createNode({ id: id, x: x, y: y, width: 100, height: 100,})
-        }
-      }
-      return this.graph.nodes
-    },
-    relations: function () {
-      for (let relation of this.objectsRelations) {
-        let id1 = relation.object_id1.toString() + '_' + relation.rec_id1.toString()
-        let id2 = relation.object_id2.toString() + '_' + relation.rec_id2.toString()
-        if(!this.graph.edges.find(edge => edge.id === id1 + '@' + id2))
-          this.graph.createEdge(id1, id2)
-      }
-      return this.graph.edges
-    },
   },
   methods: {
     ...mapActions(['removeChoosingObject', 'setToolStatus', 'setActiveTool', 'setEditableRelation', 'getBaseRelations']),
@@ -327,41 +318,18 @@ export default {
 </script>
 
 <style scoped>
-.node >>> .outer {
-  padding: 0 !important;
+.graph-object >>> .outer {
+  /*padding: 0 !important;*/
 }
-
-.node >>> .content {
-  background-color: rgba(0, 0, 0, 0);
-  width: 100%;
-  height: 100%;
+.graph-object >>> .content {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
 }
-
-.edge {
-  stroke-width: 2;
-  marker-end: none;
+.graph-object {
+  height: min-content;
+  width: min-content;
+  /*height: 1px;*/
+  /*width: 1px;*/
+  /*overflow: visible;*/
 }
-
-.node {
-  display: flex;
-  flex-direction: column;
-  text-align: center;
-}
-
-.object-icon, .object-icon-selected {
-  border-radius: 90%;
-  margin-top: 4px;
-}
-
-.object-icon {
-  background-color: white;
-}
-
-.object-icon-selected {
-  background-color: rgba(255, 0, 0, 0.3);
-}
-.v-icon.v-icon::after {
-  opacity: 0;
-}
-
 </style>
