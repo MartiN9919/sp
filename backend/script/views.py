@@ -8,8 +8,7 @@ from data_base_driver.script.get_script_info import get_script_title
 from data_base_driver.script.script_execute import execute_script_map
 from data_base_driver.script.script_list import get_script_tree
 from data_base_driver.constants.const_dat import DAT_OWNER
-from django.http import JsonResponse
-from core.projectSettings.decoraters import request_log, login_check
+from core.projectSettings.decoraters import request_log, login_check, request_wrap
 from data_base_driver.sys_reports.set_file_info import add_file
 from data_base_driver.sys_templates.get_template_info import get_templates_list, get_template
 from data_base_driver.sys_templates.set_templates_info import add_template, remove_template, update_template
@@ -18,6 +17,7 @@ from data_base_driver.trigger.trigger_list import get_triggers_list
 
 @login_check
 @request_log
+@request_wrap
 def aj_script_list(request):
     """
     Функция для обработки запроса на получение списка скриптов
@@ -26,17 +26,19 @@ def aj_script_list(request):
     """
     script_type = request.GET['script_type']
     group_id = DAT_OWNER.DUMP.get_group(user_id=request.user.id)
-    return JsonResponse({'data': get_script_tree(group_id, script_type)}, status=200)
+    return {'data': get_script_tree(group_id, script_type)}
 
 
 @login_check
 @request_log
+@request_wrap
 def aj_trigger_list(request):
-    return JsonResponse({'data': get_triggers_list()}, status=200)
+    return {'data': get_triggers_list()}
 
 
 @login_check
 @request_log
+@request_wrap
 def aj_script_execute_map(request):
     """
     Функция обработки запроса на исполнение скрипта анализа для карты
@@ -50,13 +52,14 @@ def aj_script_execute_map(request):
     importlib.invalidate_caches()
     result = execute_script_map(method_name, group_id, data.get('variables'))
     if result == 'error':
-        return JsonResponse({}, status=470)
+        raise Exception(470, '')
     else:
-        return JsonResponse({'data': result}, status=200)
+        return {'data': result}
 
 
 @login_check
 @request_log
+@request_wrap
 def aj_script_execute_report(request):
     """
     Функция для обработки запросов анализа с получением отчета
@@ -83,26 +86,28 @@ def aj_script_execute_report(request):
             thread = threading.Thread(target=script_function,
                                       args=(data.get('variables'), file_id, request.user.id, title, lock))
             thread.start()
-            return JsonResponse({'data': {'id': file_id, 'name': title,
-                                          'date': date_time.replace(microsecond=0, tzinfo=None).isoformat(sep=' '),
-                                          'status': 'in_progress', 'params': data}}, status=200)
-    except:
-        return JsonResponse({}, status=470)
+            return {'data': {'id': file_id, 'name': title,
+                             'date': date_time.replace(microsecond=0, tzinfo=None).isoformat(sep=' '),
+                             'status': 'in_progress', 'params': data}}
+    except Exception as e:
+        raise e
 
 
 @login_check
 @request_log
+@request_wrap
 def aj_templates_list(request):
     """
     Функция для обработки запроса на получение списка шаблонов
     @param request: POST запрос на получение списка шаблонов
     @return: список шаблонов в формате json
     """
-    return JsonResponse({'data': get_templates_list(request.user.id)}, status=200)
+    return {'data': get_templates_list(request.user.id)}
 
 
 @login_check
 @request_log
+@request_wrap
 def aj_template(request):
     """
     Функция для обработки запросов CRUD для шаблона
@@ -112,31 +117,29 @@ def aj_template(request):
 
     if request.method == 'GET':
         try:
-            return JsonResponse({'data': get_template(request.GET['template_id'], request.user.id)},
-                                status=200)
+            return {'data': get_template(request.GET['template_id'], request.user.id)}
         except:
-            return JsonResponse({}, status=497)
+            raise Exception(497, '')
     elif request.method == 'POST':
         group_id = DAT_OWNER.DUMP.get_group(user_id=request.user.id)
         data = json.loads(request.body)
         id = add_template(group_id, data.get('title', 'Неизвестное имя'), data.get('activeAnalysts', ''),
                           data.get('passiveAnalysts', ''))
-        return JsonResponse({'data': id}, status=200)
+        return {'data': id}
 
     elif request.method == 'PUT':
         data = json.loads(request.body)
         try:
             update_template(data.get('id'), request.user.id, data.get('title'), data.get('activeAnalysts', ''),
                             data.get('passiveAnalysts', ''))
-            return JsonResponse({}, status=200)
-        except:
-            return JsonResponse({}, status=498)
-
+            return {}
+        except Exception as e:
+            raise e
     elif request.method == 'DELETE':
         try:
             remove_template(request.user.id, request.GET['template_id'])
-            return JsonResponse({}, status=200)
-        except:
-            return JsonResponse({}, status=498)
+            return {}
+        except Exception as e:
+            raise e
     else:
-        return JsonResponse({}, status=470)
+        raise Exception(470, '')
