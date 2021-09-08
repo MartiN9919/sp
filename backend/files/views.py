@@ -29,6 +29,9 @@ def aj_download(request):
         return JsonResponse({}, status=404)
 
 
+@login_check
+@request_log
+@request_get
 def aj_download_condense_image(request):
     """
     GET запрос для скачивания не защищаемого файла, характеризующего объект

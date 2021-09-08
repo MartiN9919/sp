@@ -84,6 +84,15 @@ def get_record_title(object_id, rec_id, group_id=0, record=None, length=3):
     return {'object_id': record['object_id'], 'rec_id': record['rec_id'], 'title': title, 'write': write}
 
 
+def get_record_photo(object_id, params):
+    if object_id == 35:
+        for param in params:
+            if param['id'] == 50142:
+                return param['values'][0]['value']
+        return None
+    else:
+        return None
+
 def get_value_by_key(key, value):
     if key == 30302:
         if int(value) == 0:
@@ -125,8 +134,9 @@ def get_object_record_by_id_http(object_id, rec_id, group_id=0, triggers=None):
         triggers = []
     title = get_record_title(object_id, rec_id, group_id,
                              {'object_id': object_id, 'rec_id': rec_id, 'params': params, 'permission': permission}, 1)
+    photo = get_record_photo(object_id, params)
     return {'object_id': object_id, 'rec_id': rec_id, 'params': params, 'permission': permission,
-            'title': title['title'], 'triggers': triggers}
+            'title': title['title'], 'triggers': triggers, 'photo': photo}
 
 
 def get_keys_by_object(object):
