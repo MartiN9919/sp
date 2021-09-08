@@ -26,16 +26,11 @@
 </template>
 
 <script>
-import {mapActions} from "vuex";
-
 export default {
   name: "foundObjects",
   props: {
     objects: Array,
   },
-  methods: {
-    ...mapActions(['getObjectFromServer', ]),
-  }
 }
 </script>
 

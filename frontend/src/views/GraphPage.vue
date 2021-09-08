@@ -7,7 +7,7 @@
       </v-row>
     </template>
     <template v-slot:secondPane>
-<!--      <work-place></work-place>-->
+      <work-place></work-place>
     </template>
   </split-panel>
 </template>

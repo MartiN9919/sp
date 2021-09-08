@@ -42,13 +42,24 @@ export default {
       commit('deleteNewParamEditableRelation', playLoad)
     },
     setEditableObject({commit}, object) {
-      commit('setEditableObjects', new DataBaseObject(object.object_id, object.rec_id, object.title, object.params))
+      commit('setEditableObjects', new DataBaseObject({
+        object_id: object.object_id,
+        rec_id: object.rec_id,
+        title: object.title,
+        params: object.params
+      }))
     },
     addEditableObjects({getters, commit}, objects) {
       commit('resetEditableObjects')
       for(let object of objects) {
         let zeroObject = getters.editableObjects[0]
-        let newObject = new DataBaseObject(object.object_id, object.rec_id, object.title, object.params, zeroObject.recId)
+        let newObject = new DataBaseObject({
+          object_id: object.object_id,
+          rec_id: object.rec_id,
+          title: object.title,
+          params: object.params,
+          recIdOld: zeroObject.recId
+        })
         newObject.concatParams(zeroObject)
         commit('addEditableObjects', newObject)
       }
@@ -60,6 +71,9 @@ export default {
       commit('deleteNewParamEditableObject', playLoad)
     },
     async getObjectFromServer({commit, dispatch}, config = {}) {
+      await dispatch('getBaseClassifiers', config)
+        .then(() => {})
+        .catch(e => { return Promise.reject(e) })
       config.headers = {'set-cookie': JSON.stringify(getTriggers(config.params.object_id))}
       return await getResponseAxios('objects/object/', config)
         .then(r => { return Promise.resolve(r.data) })
@@ -168,12 +182,14 @@ class DataBaseRelation extends BaseDbObject {
 }
 
 
-class DataBaseObject extends BaseDbObject {
-  constructor(object_id, rec_id=0, title='', params=[], recIdOld=null) {
+export class DataBaseObject extends BaseDbObject {
+  constructor({object_id, rec_id = 0, title = '', photo = null, params = [], recIdOld = null}) {
     super(store.getters.baseClassifier, store.getters.baseClassifiers(object_id), params, recIdOld)
     this.object = store.getters.baseObject(object_id)
     this.recId = rec_id
     this.title = title
+    if(photo)
+      this.photo = photo
   }
 
   getRequestStructure() {
@@ -208,6 +224,10 @@ class DataBaseObject extends BaseDbObject {
       findParam.values = findParam.values.concat(_.cloneDeep(param.values))
       findParam.new_values = findParam.new_values.concat(_.cloneDeep(param.new_values))
     }
+  }
+
+  getGeneratedId() {
+    return `${this.object.id}-${this.recId}`
   }
 }
 

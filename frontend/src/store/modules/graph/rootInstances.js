@@ -66,7 +66,6 @@ class BaseClassifier {
     this.objectId = baseClassifier.obj_id
     this.name = baseClassifier.name
     this.title = baseClassifier.title
-
     this.type = baseClassifier.type
     this.list = baseClassifier.list_id
   }

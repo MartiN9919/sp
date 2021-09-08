@@ -89,8 +89,8 @@ def aj_object(request):
             raise e
     if request.method == 'POST':
         try:
-            data = json.loads(request.body)
-            result = add_data(user=request.user, group_id=group_id, object=data)
+            data = json.loads(request.POST['data'])
+            result = add_data(user=request.user, group_id=group_id, object=data, files=request.FILES)
             if result.get('objects'):
                 return {'data': result}
             elif result.get('object'):
