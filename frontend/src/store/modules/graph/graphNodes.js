@@ -1,5 +1,5 @@
 import { getResponseAxios } from '@/plugins/axios_settings'
-import Graph from "vnodes/src/graph"
+import Graph from "@/components/Graph/lib/graph"
 import {DataBaseObject} from '@/store/modules/graph/graphMenu/recordEditor'
 import Vue from 'vue'
 
@@ -68,9 +68,15 @@ export default {
       localStorage.setItem('objectClassifiersSettings', JSON.stringify(state.classifiersSettings))
     },
     addObjectToGraph: (state, editableObject) => {
-      let x = Math.floor(Math.random() * 500)
-      let y = Math.floor(Math.random() * 500)
-      state.graph.createNode({ id: editableObject.getGeneratedId(), x: x, y: y, width: 100, height: 100, object: editableObject})
+      let node = state.graph.createNode({
+        id: editableObject.getGeneratedId(),
+        x: 100000, y: 100000,
+        object: editableObject
+      })
+      setTimeout(() => {
+        node.x = Math.floor(Math.random() * 1000)
+        node.y = Math.floor(Math.random() * 1000)
+      }, 25)
       if(state.graph.nodes.length === 2)
         state.graph.createEdge(state.graph.nodes[0].id, state.graph.nodes[1].id)
     },
@@ -80,7 +86,13 @@ export default {
     setTriggerState({ commit }, payload) { commit('setTriggerState', payload) },
     setClassifiersSettings({ commit }, payload) { commit('setClassifiersSettings', payload) },
     addObjectToGraph({ getters, commit }, object) {
-      let editableObject = new DataBaseObject(object.object_id, object.rec_id, object.title, object.params)
+      let editableObject = new DataBaseObject({
+        object_id: object.object_id,
+        rec_id: object.rec_id,
+        title: object.title,
+        photo: object.photo,
+        params: object.params
+      })
       if(!getters.graphObjects.find(o => o.id === editableObject.getGeneratedId()))
         commit('addObjectToGraph', editableObject)
     },

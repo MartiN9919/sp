@@ -74,8 +74,8 @@ export default {
     },
     changeObject(object) {
       this.getObjectFromServer({params: {record_id: object.rec_id, object_id: object.object_id}})
-      .then(response => { this.getBaseClassifiers({params: {object_id: object.object_id}})
-          .then(() => { this.setEditableObject(response) })
+      .then(response => {
+        this.setEditableObject(response)
         this.setActiveTool('createPage')
       })
     },

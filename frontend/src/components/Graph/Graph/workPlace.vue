@@ -1,335 +1,37 @@
 <template>
-<!--  <div @click.right.prevent.stop="menu_show($event, null)">-->
   <div>
-    <screen ref="screen">
-      <edge v-for="edge in graphRelations" :data="edge" :nodes="graphObjects"></edge>
-      <g v-for="node in graphObjects" class="graph-object">
-        <v-card>
-          <v-card-title>asd</v-card-title>
-          <v-card-text>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusantium ad aspernatur, aut blanditiis cupiditate ea ex impedit laboriosam magnam maxime natus pariatur quidem quis sed similique sunt suscipit ullam vel.</v-card-text>
-        </v-card>
-        <node :data="node">
-          <v-icon size="36">{{ node.object.object.icon }}</v-icon>
-        </node>
-      </g>
-
-<!--      <edge v-for="edge in relations" :key="edge.id.toString() + 'edge'" :data="edge" :nodes="nodes"></edge>-->
-<!--      <g v-for="node in nodes"-->
-<!--        @mousedown.capture.shift="startMoveGroupNodes(node)"-->
-<!--        @mouseup.shift="stopMoveGroupNodes()"-->
-<!--        @mousemove.shift="movingGroupNodes(node)"-->
-<!--        @wheel.prevent.stop="testScroll($event, node)"-->
-<!--      >-->
-<!--        <node :data="node" class="node">-->
-<!--          <v-icon-->
-<!--            :size="node.width * 0.7"-->
-<!--            :class="getIconClass(node.id)"-->
-<!--            @click.right.prevent.stop="menu_show($event, node)"-->
-<!--            @click.ctrl.left.exact="addSelectedNodes(node)"-->
-<!--            @click.left.exact="addSelectedNode(node)"-->
-<!--          >-->
-<!--            {{ baseObject(parseInt(node.id.split('_')[0])).icon }}-->
-<!--          </v-icon>-->
-<!--          <v-card flat class="overflow-y-auto" style="background-color: rgba(0,0,0,0.0)" :size="node.width * 0.3">-->
-<!--            <p class="pa-0 object-title" :style="{ fontSize: node.width * 0.1}" style="height: auto">-->
-<!--              {{ getNodeTitle(node.id) }}-->
-<!--            </p>-->
-<!--          </v-card>-->
-<!--        </node>-->
-<!--      </g>-->
-<!--      <v-label v-for="edge in graph.edges" :perc="50" :offset="{x: 0, y: -50}">-->
-<!--        <h4>Content</h4>-->
-<!--      </v-label>-->
+    <screen ref="screen" class="screen">
+      <edge v-for="edge in graphRelations" :key="`edge-${edge.id}`" :data="edge" :nodes="graphObjects"></edge>
+      <graph-object v-for="node in graphObjects" :key="node.id" :node="node"></graph-object>
     </screen>
-<!--    <menu-graph ref="menuGraph" :params="menuParams"-->
-<!--     @startRelationCreate="startCreateRelation"-->
-<!--     @removeNode="removeNodes"-->
-<!--     @updateGraph="forceRedrawCluster(graph.nodes, graph.edges)"></menu-graph>-->
-<!--    <v-menu v-if="isCreateRelation" v-model="isCreateRelation" :position-x="menuParams.x"-->
-<!--            :position-y="menuParams.y" absolute offset-y :close-on-content-click="false">-->
-<!--      <create-relation-menu :params="relationParams"></create-relation-menu>-->
-<!--    </v-menu>-->
   </div>
 </template>
 
 <script>
-import Screen from 'vnodes/src/components/Screen'
-import Node from 'vnodes/src/components/Node'
-import Edge from 'vnodes/src/components/Edge'
-import VLabel from 'vnodes/src/components/Label'
-import graph from 'vnodes/src/graph'
-import menuGraph from "./contextMenuGraph"
-import CreateRelationMenu from "./createRelationMenu"
-import NavigationDrawer from "../../WebsiteShell/Mixins/NavigationDrawer"
-import {mapActions, mapGetters} from "vuex"
+import Screen from '../lib/components/Screen'
+import Edge from '../lib/components/Edge'
+import GraphObject from "@/components/Graph/Graph/graphObject"
+import {mapGetters} from "vuex"
 
 export default {
   name: "workPlace",
-  mixins: [NavigationDrawer],
-  components: {CreateRelationMenu, menuGraph, Screen, Node, Edge, VLabel},
-  data: () => ({
-    menuParams: null,
-    relationParams: null,
-    graph: new graph(),
-    createRelationStatus: false,
-    tempNode: null,
-    isCreateRelation: false,
-    selectedNodes: [],
-    movingNode: {x0:0, y:0, node:null},
-    moveNode: false,
-  }),
-  computed: {
-    ...mapGetters(['graphObjects', 'graphRelations', 'lastObject', 'baseObject']),
-
-  },
+  components: {GraphObject, Screen, Edge},
+  computed: mapGetters(['graphObjects', 'graphRelations']),
   methods: {
-    ...mapActions(['removeChoosingObject', 'setToolStatus', 'setActiveTool', 'setEditableRelation', 'getBaseRelations']),
-    getNodeTitle(id){
-      return this.choosingObjects.find(object => object.object_id.toString() + '_' + object.rec_id.toString() === id).title
-    },
-    testScroll(event, node) {
-      let width = node.width
-      let height = node.height
-      let nX = 0
-      let nY = 0
-      if(event.deltaY < 0){
-        nX = node.width * 1.1
-        nY = node.height * 1.1
-      }
-      else{
-        nX = node.width * 0.9
-        nY = node.height * 0.9
-      }
-      let dx = (nX - width)/2
-      let dy = (nY - height)/2
-      node.x -= dx
-      node.y -= dy
-      node.width = nX
-      node.height = nY
-    },
-    test() {
-      console.log('abc')
-    },
-    addSelectedNode(node) {
-      if (this.selectedNodes.length === 1 && this.selectedNodes[0].id === node.id) {
-        this.selectedNodes = []
-      } else {
-        this.selectedNodes = []
-        this.selectedNodes.push(node)
-      }
-    },
-    addSelectedNodes(node) {
-      if (this.selectedNodes.find(item => item.id === node.id)) {
-        let removeIndex = this.selectedNodes.findIndex(item => item.id === node.id)
-        this.selectedNodes.splice(removeIndex, 1)
-      } else {
-        this.selectedNodes.push(node)
-      }
-
-    },
-    getIconClass(id) {
-      return this.selectedNodes.find(node => node.id === id) ? 'object-icon-selected' : 'object-icon'
-    },
-    createRelation(node1, node2) {
-      let object_id1 = parseInt(node1.id.split('_')[0])
-      let rec_id1 = parseInt(node1.id.split('_')[1])
-      let object_id2 = parseInt(node2.id.split('_')[0])
-      let rec_id2 = parseInt(node2.id.split('_')[1])
-      this.getBaseRelations({params: {object_1_id: object_id1, object_2_id: object_id2}})
-      .then(() => {
-        this.setToolStatus({tool: 'createRelationPage', status: false})
-        this.setActiveTool('createRelationPage')
-        this.drawer = true
-        this.setEditableRelation({o1: object_id1, r1: rec_id1, o2: object_id2, r2: rec_id2})
-      })
-    },
-    menu_show(e, node) {
-      if (node === null) {
-        this.menuParams = {x: e.clientX, y: e.clientY}
-        return
-      }
-      this.tempNode = node
-      if (this.selectedNodes.length === 0 || this.selectedNodes.length > 2) {
-        this.menuParams = {x: e.clientX, y: e.clientY, creationEdge: 'no', node: true}
-      }
-      if (this.selectedNodes.length === 1) {
-        this.menuParams = {x: e.clientX, y: e.clientY, creationEdge: 'oneNode', node: true}
-      }
-      if (this.selectedNodes.length === 2) {
-        this.menuParams = {x: e.clientX, y: e.clientY, creationEdge: 'twoNodes', node: true}
-      }
-
-    },
-    startCreateRelation() {
-      if (this.selectedNodes.length === 2) {
-        this.createRelation(this.selectedNodes[0], this.selectedNodes[1])
-        this.selectedNodes = []
-      } else {
-        this.createRelation(this.selectedNodes[0], this.tempNode)
-        this.selectedNodes = []
-      }
-    },
-    removeNodes() {
-      if (this.selectedNodes.length > 0 && this.selectedNodes.find(item => item.id === this.tempNode.id)) {
-        for (let node of this.selectedNodes) {
-          this.removeNode(node)
-        }
-        this.selectedNodes = []
-      } else {
-        this.removeNode(this.tempNode)
-      }
-    },
-    removeNode(node) {
-      let object_id = parseInt(node.id.split('_')[0])
-      let rec_id = parseInt(node.id.split('_')[1])
-      this.removeChoosingObject({object_id, rec_id})
-      let removeEdges = []
-      for (let edge of this.graph.edges) {
-        if (edge.from === node.id || edge.to === node.id) {
-          removeEdges.push(edge)
-        }
-      }
-      for (let removeEdge of removeEdges) {
-        this.graph.removeEdge(removeEdge)
-      }
-      this.graph.removeNode(node)
-    },
-    getRelationByNode(node){
-      let tempResultList = []
-      for(let edge of this.graph.edges){
-        if(edge.from === node.id){
-          tempResultList.push(edge.to)
-        }
-        if(edge.to === node.id){
-          tempResultList.push(edge.from)
-        }
-      }
-      let resultList = []
-      for(let node of this.graph.nodes){
-        if(tempResultList.indexOf(node.id) !== -1){
-          resultList.push(node)
-        }
-      }
-      return resultList
-    },
-    movingGroupNodes(node){
-      if(this.moveNode){
-        let dx = node.x - this.movingNode.x0
-        let dy = node.y - this.movingNode.y0
-        this.movingNode.x0 = node.x
-        this.movingNode.y0 = node.y
-        let nodesToMove = this.getRelationByNode(node)
-        for(let tempNode of nodesToMove){
-          tempNode.x += dx
-          tempNode.y += dy
-          let tempSubNodes = this.getRelationByNode(tempNode)
-          for(let tempSubNode of tempSubNodes){
-            if(tempSubNode.id !== node.id && nodesToMove.indexOf(tempSubNode) === -1){
-              tempSubNode.x += dx/2
-              tempSubNode.y += dy/2
-            }
-          }
-        }
-      }
-    },
-    startMoveGroupNodes(node){
-      this.moveNode = true
-      this.movingNode.node = node
-      this.movingNode.x0 = node.x
-      this.movingNode.y0 = node.y
-    },
-    stopMoveGroupNodes(){
-      this.moveNode = false
-    },
-    forceRedrawCluster(nodes, links) {
-      let n = 0
-      for (let j = 0; j < 200; j++) {
-        for (let node of nodes) {
-          for (let otherNode of nodes) {
-            if (otherNode.id === node.id) {
-              continue;
-            } else {
-              if (links.find((link) => {
-                return (link.to === node.id && link.from === otherNode.id) ||
-                    (link.from === node.id && link.to === otherNode.id)
-              })) {
-                let dx = otherNode.x - node.x;
-                let dy = otherNode.y - node.y;
-                let offset = Math.sqrt(dx * dx + dy * dy);
-                if(offset < 500){
-                  if (offset < 400) {
-                    if (offset < 200) {
-                      node.x -= dx;
-                      node.y -= dy;
-                    } else {
-                        node.x -= dx / 3;
-                        node.y -= dy / 3;
-                      }
-                  } else {
-                      n++
-                      node.x += dx / 6;
-                      node.y += dy / 6;
-                    }
-                }
-                else{
-                  node.x += dx/3;
-                  node.y += dy/3;
-                }
-              } else {
-                let dx = otherNode.x - node.x;
-                let dy = otherNode.y - node.y;
-                let offset = Math.sqrt(dx * dx + dy * dy);
-                if(offset < 1000){
-                  if(offset < 100){
-                    node.x -= dx * 2;
-                    node.y -= dy * 2;
-                  }
-                  else{
-                    if(offset < 500){
-                      node.x -= dx / 3;
-                      node.y -= dy / 3;
-                    }
-                    else{
-                      node.x -= dx / 9;
-                      node.y -= dy / 9;
-                    }
-                  }
-                }
-                else {
-                  n++
-                }
-              }
-            }
-          }
-          let dx = 0 - node.x
-          let dy = 0 - node.y
-          node.x += dx / 15
-          node.y += dy / 15
-        }
-        if(n / (this.nodes.length * this.nodes.length) > 0.7){
-          console.log('res', n)
-          break
-        }
-      }
-      console.log(n)
-    },
+    onDrag (node, d) {
+      node.offsetX += d.x || 0
+      node.offsetY += d.y || 0
+      node.offsetX = Math.max(Math.min(node.offsetX, 200), -200)
+      node.offsetY = Math.max(Math.min(node.offsetY, 200), -200)
+    }
   }
 }
 </script>
 
 <style scoped>
-.graph-object >>> .outer {
-  /*padding: 0 !important;*/
-}
-.graph-object >>> .content {
-  background-color: rgba(255, 255, 255, 0.1);
-  border-radius: 50%;
-}
-.graph-object {
-  height: min-content;
-  width: min-content;
-  /*height: 1px;*/
-  /*width: 1px;*/
-  /*overflow: visible;*/
+.screen >>> .edge {
+  marker-end: none;
+  stroke: #aaaaaa;
+  stroke-width: 2px;
 }
 </style>
