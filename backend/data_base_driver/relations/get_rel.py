@@ -5,7 +5,7 @@ from data_base_driver.record.find_object import find_reliable_http
 from data_base_driver.record.get_record import get_object_record_by_id_http
 from data_base_driver.relations.find_rel import search_rel_with_key_http
 from data_base_driver.input_output.input_output import io_get_rel_tuple
-from data_base_driver.sys_key.get_key_dump import get_keys_by_rel
+from data_base_driver.sys_key.get_key_dump import get_relation_keys
 from data_base_driver.sys_key.get_list import get_list_by_top_id
 from data_base_driver.sys_key.get_object_dump import get_object_by_name
 
@@ -249,7 +249,7 @@ def search_relations(group_id, request):
         return search_relations_recursive(group_id, request, parent, parent)['rels']
 
 
-def get_relations_list(object1, object2):
+def get_relations_list():
     """
     Функция для получения списка возможных связей по типу связываемых объектов
     @param object1: имя или id первого объекта
@@ -257,13 +257,13 @@ def get_relations_list(object1, object2):
     @return: список в формате [{id,title,hint,list},...,{}]
     """
     result = []
-    for item in get_keys_by_rel(object1, object2):
+    for item in get_relation_keys():
         list_item = None
         if item.get('list_id'):
             list_item = get_list_by_top_id(int(item.get('list_id')))
-        result.append({'id': item['id'], 'title': item['title'], 'hint': item['hint'], 'list': list_item})
+        result.append({'id': item['id'], 'title': item['title'], 'hint': item['hint'], 'list': list_item,
+                       'object_id_1': item['rel_obj_1_id'], 'object_id_2': item['rel_obj_2_id']})
     return result
-
 
 
 # request = {'object_id': 35, 'rec_id': 1, 'rel': None, 'rels': [
