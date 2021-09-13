@@ -62,7 +62,7 @@ def aj_list_rels(request):
     @return: json содержащих информации по ключу data в формате:
     [{id,title,hint,list:{}},...,{}]
     """
-    return {'data': get_relations_list(request.GET['object_1_id'], request.GET['object_2_id'])}
+    return {'data': get_relations_list()}
 
 
 @login_check

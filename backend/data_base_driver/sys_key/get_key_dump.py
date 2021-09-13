@@ -44,6 +44,11 @@ def get_keys_by_rel(object1, object2):
             filter_rel(item, int(object1), int(object2))]
 
 
+def get_relation_keys():
+    return [item for item in DAT_SYS_KEY.DUMP.get_rec(obj_id=1, only_first=False) if
+            item['rel_obj_1_id'] and item['rel_obj_2_id']]
+
+
 def get_key_by_id(id):
     """
     Функция для получения ключа классификатора по его идентификационному номеру
