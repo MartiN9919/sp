@@ -76,17 +76,14 @@ def get_record_title(object_id, rec_id, group_id=0, record=None, length=3, trigg
     @return: словарь в формате {object_id, rec_id, title},...,{}]}
     """
     if not record:
-        record = get_object_record_by_id_http(object_id, rec_id, group_id)
+        record = get_object_record_by_id_http(object_id, rec_id, group_id, triggers=triggers)
     if len(list(record['permission'].keys())) > 0:
         write_groups = [item['group_id'] for item in record['permission'][list(record['permission'].keys())[0]]]
         write = DAT_OWNER.DUMP.valid_io_group(group_id, write_groups)
     else:
         write = True
     title = get_title(record['params'], length)
-    if triggers:
-        triggers = check_triggers(triggers, group_id, object_id, rec_id)
-    else:
-        triggers = []
+    triggers = record['triggers']
     return {'object_id': record['object_id'], 'rec_id': record['rec_id'], 'title': title, 'write': write,
             'triggers': triggers}
 
