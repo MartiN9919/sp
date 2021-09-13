@@ -83,18 +83,19 @@ def recursion_search(request, group_id):
     return result
 
 
-def search(request, group_id):
+def search(request, group_id, triggers):
     """
     Функция точка входа для рекурсивного поиска объекта по древовидному запросу
     @param request: древовидный запрос
     @param group_id: идентификатор группы пользователя
+    @param triggers: установленные пользователем триггеры
     @return: список найденных объектов в формате [{object_id, rec_id, params:[{id,val},...,{}]},...,{}]
     """
     if len(request.get(FullTextSearch.RELATIONS, None)) != 0:
-        return [get_record_title(request.get(FullTextSearch.OBJECT_ID, None), item, group_id) for item in
+        return [get_record_title(request.get(FullTextSearch.OBJECT_ID, None), item, group_id, triggers) for item in
                 recursion_search(request, group_id)['rec_ids']]
     else:
-        return [get_record_title(request.get(FullTextSearch.OBJECT_ID, None), item, group_id) for item in
+        return [get_record_title(request.get(FullTextSearch.OBJECT_ID, None), item, group_id, triggers) for item in
                 find_reliable_http(request.get(FullTextSearch.OBJECT_ID, None),
                                    request.get(FullTextSearch.REQUEST, ''),
                                    request.get(FullTextSearch.ACTUAL, False),

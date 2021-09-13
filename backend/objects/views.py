@@ -2,6 +2,7 @@ import json
 
 from core.projectSettings.decoraters import login_check, request_log, request_wrap, request_get, write_permission
 from data_base_driver.constants.const_dat import DAT_OWNER
+from data_base_driver.constants.const_key import SYS_KEY_CONSTANT
 from data_base_driver.record.get_record import get_object_record_by_id_http
 from data_base_driver.input_output.io_geo import get_geometry_tree, feature_collection_by_geometry
 from data_base_driver.osm.osm_lib import osm_search, osm_fc
@@ -33,7 +34,7 @@ def aj_object_type_list(request):
 @request_wrap
 @request_get
 def aj_list_icons(request):
-    return {'data': get_list_by_top_id(49)}
+    return {'data': get_list_by_top_id(SYS_KEY_CONSTANT.LIST_ICONS_ID)}
 
 
 @login_check
@@ -166,10 +167,11 @@ def aj_search_objects(request):
     @return: json с информацией о объекте в формате [{rec_id, obj_id, params:[{id,val},...,{}]},...,{}]
     """
     group_id = DAT_OWNER.DUMP.get_group(user_id=request.user.id)
+    triggers = json.loads(request.headers.get('Set-Cookie'))
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
-            return {'data': search(data, group_id)}
+            return {'data': search(data, group_id, triggers)}
         except Exception as e:
             raise e
     else:
