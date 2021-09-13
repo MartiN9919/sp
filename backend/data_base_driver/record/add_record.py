@@ -7,6 +7,7 @@ from django.core.files.base import ContentFile
 
 from core.settings import MEDIA_ROOT
 from data_base_driver.constants.const_dat import DAT_SYS_KEY
+from data_base_driver.constants.const_key import SYS_KEY_CONSTANT
 from data_base_driver.record.find_object import find_key_value_http
 from data_base_driver.record.get_record import get_object_record_by_id_http, get_keys_by_object
 from data_base_driver.input_output.input_output import io_set
@@ -41,26 +42,29 @@ def additional_processing(user, object, data):
     @param object: объект для добавления
     @param data: данные для добавления
     """
-    if object.get('object_id') == 52:
-        country = get_country_by_number([param for param in object['params'] if param['id'] == 50054][0]['value'])
+    if object.get('object_id') == SYS_KEY_CONSTANT.TELEFON_ID:
+        country = get_country_by_number(
+            [param for param in object['params'] if param['id'] == SYS_KEY_CONSTANT.PHONE_NUMBER_CLASSIFIER_ID][0][
+                'value'])
         fl = 0
         for temp in data:
-            if temp[0] == 50054:
+            if temp[0] == SYS_KEY_CONSTANT.PHONE_NUMBER_CLASSIFIER_ID:
                 temp[1] = remove_special_chars(temp[1])
-            if temp[0] == 50055:
+            if temp[0] == SYS_KEY_CONSTANT.PHONE_NUMBER_COUNTRY_ID:
                 temp[1] = country
                 fl = 1
         if fl == 0:
-            data.append([50055, country, datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")])
+            data.append([SYS_KEY_CONSTANT.PHONE_NUMBER_COUNTRY_ID, country,
+                         datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")])
     # костыль для добавления геометрических объектов, придумать как переделать------------------------------------------
-    if object.get('object_id') == 25:
-        point = [item for item in data if item[0] == 25204]
+    if object.get('object_id') == SYS_KEY_CONSTANT.POINT_ID:
+        point = [item for item in data if item[0] == SYS_KEY_CONSTANT.POINT_CLASSIFIER_ID]
         if len(point) > 0:
             point[0][1] = json.dumps(point[0][1]['features'][0]['geometry'])
-    if object.get('object_id') == 30:
+    if object.get('object_id') == SYS_KEY_CONSTANT.GEOMETRY_ID:
         if not validate_geometry_permission(user):
             raise Exception(2, 'Нет прав на изменение геометрии')
-        location = [item for item in data if item[0] == 30304]
+        location = [item for item in data if item[0] == SYS_KEY_CONSTANT.GEOMETRY_CLASSIFIER_ID]
         if len(location) > 0:
             geometry = {"type": "GeometryCollection", "geometries": []}
             for feature in location[0][1]['features']:
@@ -69,12 +73,19 @@ def additional_processing(user, object, data):
 
 
 def parse_value(param, object, files):
+    """
+    Функция для приведения некоторых параметров в правильному виду
+    @param param: параметр заносимый в базу данных
+    @param object: объект для которого создается новая запись
+    @param files: файлы которые возможно несет в себе запись
+    @return: список содержащий информацию о параметре в формате  [id, val, datetime]
+    """
     value = param['value']
     key = get_key_by_id(param['id'])
-    if key.get('list_id') != 0 and key['id'] != 30302 and key.get('list_id') != None:
-        if key['id'] == 30301:
+    if key.get('list_id') != 0 and key['id'] != SYS_KEY_CONSTANT.PARENT_ID_CLASSIFIER_ID and key.get('list_id') != None:
+        if key['id'] == SYS_KEY_CONSTANT.ICON_CLASSIFIER_ID:
             temp_value = str(get_item_list_value(value))
-            value = temp_value[temp_value.index('(')+1:temp_value.index(')')]
+            value = temp_value[temp_value.index('(') + 1:temp_value.index(')')]
         else:
             value = str(get_item_list_value(value))
     if key.get('type') == DAT_SYS_KEY.TYPE_FILE_PHOTO or key.get('type') == DAT_SYS_KEY.TYPE_FILE_ANY:
