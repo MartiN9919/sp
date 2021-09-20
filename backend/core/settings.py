@@ -39,8 +39,6 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-
-
 ROOT_URLCONF = 'core.urls'
 
 TEMPLATES = [
@@ -101,4 +99,4 @@ STATIC_ROOT = 'var/static_root'
 STATICFILES_DIRS = [
     "static",
 ]
-MEDIA_ROOT = '/home/pushkin/saphir_data'
+MEDIA_ROOT = '/devstorage/saphir_data'

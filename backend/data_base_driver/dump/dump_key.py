@@ -35,7 +35,8 @@ class DUMP_KEY:
                   DAT_SYS_KEY.DESCRIPT + ", " + \
                   DAT_SYS_KEY.REL_OBJ_1_ID + ", " + \
                   DAT_SYS_KEY.REL_OBJ_2_ID + ", " + \
-                  DAT_SYS_KEY.PRIORITY + " " + \
+                  DAT_SYS_KEY.PRIORITY + ", " + \
+                  DAT_SYS_KEY.VISIBLE + " " + \
                   "FROM " + \
                   DAT_SYS_KEY.TABLE_SHORT + " " + \
                   "ORDER BY " + \
@@ -59,6 +60,7 @@ class DUMP_KEY:
                 DAT_SYS_KEY.REL_OBJ_1_ID,
                 DAT_SYS_KEY.REL_OBJ_2_ID,
                 DAT_SYS_KEY.PRIORITY,
+                DAT_SYS_KEY.VISIBLE,
             ])
             # если name==None -> name=str(id) - только dop
             for ind, item in enumerate(self.dump):
@@ -88,7 +90,7 @@ class DUMP_KEY:
         self._refresh_(force=True)
 
     # и/или id, и/или name, и/или val (val может быть id или name), и/или col
-    def get_rec(self, obj_id=None, id=None, name=None, val=None, col=None, only_first=True):
+    def get_rec(self, obj_id=None, id=None, name=None, val=None, col=None, only_first=True, visible=True):
         self._refresh_()
         list_key_val = []
         if obj_id != None:        list_key_val.append((DAT_SYS_KEY.OBJ_ID, obj_id))
