@@ -172,7 +172,6 @@ class ModelKeyAdminObject(admin.ModelAdmin):
         DAT_SYS_KEY.PATH,
         DAT_SYS_KEY.OBJ,
         DAT_SYS_KEY.TYPE_VAL,
-        DAT_SYS_KEY.COL,
         DAT_SYS_KEY.NEED,
         DAT_SYS_KEY.DESCRIPT,
         DAT_SYS_KEY.PRIORITY,
@@ -188,7 +187,7 @@ class ModelKeyAdminObject(admin.ModelAdmin):
                                                                                          DAT_SYS_KEY.PRIORITY, ),)}),
         ("Основные настройки классификатора", {'fields': (DAT_SYS_KEY.OBJ, DAT_SYS_KEY.TYPE_VAL, DAT_SYS_KEY.LIST, ), }),
         ("Описания для классификатора", {'fields': ((DAT_SYS_KEY.HINT,),), }),
-        (None, {'fields': ((DAT_SYS_KEY.COL, DAT_SYS_KEY.NEED, DAT_SYS_KEY.VISIBLE),), }),
+        (None, {'fields': ((DAT_SYS_KEY.NEED, DAT_SYS_KEY.VISIBLE),), }),
         ("Дополнительная информация", {'fields': (DAT_SYS_KEY.DESCRIPT,), }),
     )
 

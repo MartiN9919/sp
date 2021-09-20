@@ -143,6 +143,10 @@ class DAT_SYS_KEY:
     TYPE_FILE_PHOTO = 'file_photo'
     TYPE_FILE_ANY = 'file_any'
 
+    VISIBLE_NONE = 'none'
+    VISIBLE_ONLY_VALUE = 'only_value'
+    VISIBLE_ALL = 'all'
+
     TYPE_LIST = (
         (TYPE_INT, "Число"),
         (TYPE_STR, 'Текст'),
@@ -153,6 +157,12 @@ class DAT_SYS_KEY:
         (TYPE_GEOMETRY, 'Точка/Путь/Полигон'),
         (TYPE_FILE_PHOTO, 'Файл-фотография'),
         (TYPE_FILE_ANY, 'Файл-любой тип'),
+    )
+
+    VISIBLE_LIST = (
+        (VISIBLE_NONE, 'Не отображать'),
+        (VISIBLE_ONLY_VALUE, 'Отображать только значение'),
+        (VISIBLE_ALL, 'Отображать все')
     )
 
     NAME_REL_KEY_ID = 'key_id'

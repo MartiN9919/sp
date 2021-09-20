@@ -7,7 +7,7 @@ from data_base_driver.relations.get_rel import get_rel_cascade
 from data_base_driver.sys_key.get_key_dump import get_key_by_id
 
 
-def add_rel(group_id, object_1_id, rec_1_id, object_2_id, rec_2_id, params):
+def add_rel(group_id, object_1_id, rec_1_id, object_2_id, rec_2_id, params, doc_rec_id=None):
     """
     Функция для добавления связи между двумя объектами
     @param group_id: группа пользователя
@@ -16,6 +16,7 @@ def add_rel(group_id, object_1_id, rec_1_id, object_2_id, rec_2_id, params):
     @param object_2_id: тип второго объекта для связи
     @param rec_2_id: идентификационный номер второго объекта дял связи
     @param params: список словарей содержащих информацию о связях в формате [{id,val,date},...,{}]
+    @param doc_rec_id: идентификатор документа описывающего связь, если нет None
     """
     temp_result_list = []
     if object_1_id > object_2_id:
@@ -34,6 +35,9 @@ def add_rel(group_id, object_1_id, rec_1_id, object_2_id, rec_2_id, params):
                 [DAT_REL.DAT, date_time_str], [DAT_REL.VAL, param.get('value', '')]]
         result = io_set(group_id=group_id, obj=1, data=data)
         if result[0]:
+            if doc_rec_id:
+                io_set(group_id=group_id, obj=1, data=[['key_id', 1], [1, int(result[1])], [20, doc_rec_id],
+                                                       [DAT_REL.DAT, date_time_str], [DAT_REL.VAL, 0]])
             temp_result_list.append(io_get_rel(group_id, [], [], [], [], {}, False, result[1])[0])
     result_list = []
     for temp in temp_result_list:
