@@ -252,6 +252,12 @@ class ModelKey(models.Model):
         blank=True,
         null=True,
     )
+    visible = models.BooleanField(
+        default=False,
+        verbose_name='Отображение в названии',
+        help_text='Отображается ли данный классификатов в названии',
+    )
+
 
     def __str__(self):
         return self.title

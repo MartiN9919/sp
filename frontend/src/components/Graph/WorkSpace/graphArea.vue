@@ -8,6 +8,12 @@
         @click.right="menuShow(object, $event)"
         @mousedown.capture="selectObject(object)"
       >
+        <node :ref="`node-${object.id}`" :data="object">
+          <body-object
+            :node="object"
+            :show-triggers="getTriggersStateObject(object)"
+          ></body-object>
+        </node>
         <v-label
           :ref="`label-${object.id}`"
           v-show="getTooltipStateObject(object)"
@@ -19,12 +25,6 @@
             @update="updateLabel(object.id)"
           ></information-label>
         </v-label>
-        <node :ref="`node-${object.id}`" :data="object">
-          <body-object
-            :node="object"
-            :show-triggers="getTriggersStateObject(object)"
-          ></body-object>
-        </node>
         <name-object
           :visible="getTitleStateObject(object)"
           :position="getTitlePosition(object)"
