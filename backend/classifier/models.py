@@ -252,12 +252,13 @@ class ModelKey(models.Model):
         blank=True,
         null=True,
     )
-    visible = models.BooleanField(
-        default=False,
-        verbose_name='Отображение в названии',
-        help_text='Отображается ли данный классификатов в названии',
+    visible = models.CharField(
+        max_length=20,
+        verbose_name='Режим отображения',
+        choices=DAT_SYS_KEY.VISIBLE_LIST,
+        help_text='Как будет отображаться данный классификатор в заоголовках',
+        default='all'
     )
-
 
     def __str__(self):
         return self.title

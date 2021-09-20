@@ -26,23 +26,24 @@ def get_title(params, title_len=3):
     title_list.sort(key=lambda x: x['priority'])
     if len(title_list) > title_len:
         title = ', '.join(
-            str(str(title['title'] + ': ' + title['value']) if title['visible'] else title['value']) for title in
-            title_list[:title_len])
+            str(str(title['title'] + ': ' + title['value']) if title['visible'] == 'all' else title['value']) for title
+            in title_list[:title_len])
         return title
     if len(title_list) == 0:
         title = ', '.join(str(str(get_key_by_id(param['id'])['title'] + ': ' + param['values'][0]['value']) if
-                              get_key_by_id(param['id'])['visible'] else param['values'][0]['value']) for param in
-                          params[:title_len])
+                              get_key_by_id(param['id'])['visible'] == 'all' else param['values'][0]['value']) for param
+                          in params[:title_len] if get_key_by_id(param['id'])['visible'] != 'none')
         return title
     else:
         title = ', '.join(
-            str(str(title['title'] + ': ' + title['value']) if title['visible'] else title['value']) for title in
-            title_list)
+            str(str(title['title'] + ': ' + title['value']) if title['visible'] == 'all' else title['value']) for title
+            in title_list)
     if len(title_list) < title_len:
-        sub_title = ', '.join(
-            str(str(get_key_by_id(param['id'])['title'] + ': ' + param['values'][0]['value']) if
-                get_key_by_id(param['id'])['visible'] else param['values'][0]['value']) for param in
-            [param for param in params if not get_key_by_id(param['id'])['priority']][:(title_len - len(title_list))])
+        sub_title = ', '.join(str(str(get_key_by_id(param['id'])['title'] + ': ' + param['values'][0]['value']) if
+                                  get_key_by_id(param['id'])['visible'] == 'all' else param['values'][0]['value']) for
+                              param in [param for param in params if
+                                        not get_key_by_id(param['id'])['priority'] and get_key_by_id(param['id'])[
+                                            'visible'] != 'none'][:(title_len - len(title_list))])
         if len(sub_title) > 0:
             title += ', ' + sub_title
     return title

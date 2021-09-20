@@ -176,9 +176,9 @@ export default class Graph {
               return (edge.to === node.id && edge.from === otherNode.id) ||
                      (edge.from === node.id && edge.to === otherNode.id)
             })){
-              if(offset < 500){
-                if (offset < 400) {
-                  if (offset < 200) {
+              if(offset < 500 + node.width/2 + otherNode.width/2){
+                if (offset < 400 + node.width/2 + otherNode.width/2) {
+                  if (offset < 200 + node.width/2 + otherNode.width/2) {
                     // if linked nodes is so close, up distance between them
                     node.x -= dx;
                     node.y -= dy;
@@ -201,15 +201,15 @@ export default class Graph {
             }
             // if nodes isn't linked
             else{
-              if(offset < 1000){
-                if(offset < 100){
+              if(offset < 1000 + node.width/2 + otherNode.width/2){
+                if(offset < 100 + node.width/2 + otherNode.width/2){
                   // if unlinked nodes is very close, make them much further
                   node.x -= dx * 3;
                   node.y -= dy * 3;
                 }
                 else{
                   // if unlinked nodes is medium close, make them further
-                  if(offset < 500){
+                  if(offset < 500 + node.width/2 + otherNode.width/2){
                     node.x -= dx / 3;
                     node.y -= dy / 3;
                   }
