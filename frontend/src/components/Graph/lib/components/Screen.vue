@@ -1,9 +1,5 @@
 <template>
   <svg class="screen" ref="screen">
-    <defs>
-      <markers :markers="markers">
-      </markers>
-    </defs>
     <g>
       <slot>
       </slot>
@@ -12,21 +8,13 @@
 </template>
 
 <script>
-import Markers from './Markers'
 import SvgPanZoom from '../../lib/svg-pan-zoom/svg-pan-zoom'
 export default {
   props: {
-    markers: {
-      type: Array, // { id:String, type: 'arrow|circle|square|diamond', scale: Number, style: String }
-      default: () => []
-    },
     options: {
       type: Object,
       default: () => ({})
     }
-  },
-  components: {
-    Markers
   },
   data() {
     return {
@@ -131,18 +119,12 @@ export default {
       this.panzoom.pan({ x, y })
     }
   },
-
 }
 </script>
 
 <style scoped>
-#arrow-end {
-  fill: red !important
-}
 .screen {
   width: 100%;
   height: 100%;
-  outline: none;
-  border: 1px solid #ccc;
 }
 </style>

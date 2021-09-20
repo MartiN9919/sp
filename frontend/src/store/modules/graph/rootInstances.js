@@ -38,45 +38,46 @@ export default {
       return Promise.resolve()
     },
     async getBaseRelations({getters, commit}, config = {}) {
-      let body = {f_id: config.params.object_1_id, s_id: config.params.object_2_id}
-      if (getters.baseRelations(body).length)
-        return Promise.resolve()
       await getResponseAxios('objects/relations/', config)
-        .then(r => { commit('setBaseRelations', r.data.map(l => new BaseRelation({...l, ...body}))) })
+        .then(r => { commit('setBaseRelations', r.data.map(l => new BaseRelation(l))) })
         .catch(e => { return Promise.reject(e) })
       return Promise.resolve()
     },
   }
 }
 
-class BaseObject {
+class BaseInstanceToObject {
+  constructor(id, title) {
+    this.id = id
+    this.title = title
+  }
+}
+
+class BaseObject extends BaseInstanceToObject {
   constructor(baseObject) {
-    this.id = baseObject.id
+    super(baseObject.id, baseObject.title)
     this.name = baseObject.name
     this.rels = baseObject.rels
-    this.title = baseObject.title
     this.titleSingle = baseObject.title_single
     this.icon = baseObject.icon
   }
 }
 
-class BaseClassifier {
+class BaseClassifier extends BaseInstanceToObject {
   constructor(baseClassifier) {
-    this.id = baseClassifier.id
+    super(baseClassifier.id, baseClassifier.title)
     this.objectId = baseClassifier.obj_id
     this.name = baseClassifier.name
-    this.title = baseClassifier.title
     this.type = baseClassifier.type
     this.list = baseClassifier.list_id
   }
 }
 
-class BaseRelation {
+class BaseRelation extends BaseInstanceToObject {
   constructor(baseRelation) {
-    this.id = baseRelation.id
-    this.f_id = baseRelation.f_id
-    this.s_id = baseRelation.s_id
-    this.title = baseRelation.title
+    super(baseRelation.id, baseRelation.title)
+    this.f_id = baseRelation.object_id_1
+    this.s_id = baseRelation.object_id_2
     this.hint = baseRelation.hint
     this.list = baseRelation.list
   }

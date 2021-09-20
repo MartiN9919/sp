@@ -1,6 +1,6 @@
 import { getResponseAxios } from '@/plugins/axios_settings'
 import Graph from "@/components/Graph/lib/graph"
-import {DataBaseObject} from '@/store/modules/graph/graphMenu/recordEditor'
+import {DataBaseObject, DataBaseRelation} from '@/store/modules/graph/graphMenu/recordEditor'
 import Vue from 'vue'
 
 class GlobalSettings {
@@ -14,6 +14,11 @@ class GlobalSettings {
       title: 'Заголовки объектов',
       subTitle: 'Отображение заголовка над объектами',
       state: this.getGlobalSettings('showGlobalTooltipObject', false)
+    }
+    this.showGlobalTriggers = {
+      title: 'Уведомления о триггерах',
+      subTitle: 'Управление отображением значка уведомления о срабатывании триггеров',
+      state: this.getGlobalSettings('showGlobalTriggers', false)
     }
     this.showGlobalTooltipRelation = {
       title: 'Заголовоки связей',
@@ -68,33 +73,49 @@ export default {
       localStorage.setItem('objectClassifiersSettings', JSON.stringify(state.classifiersSettings))
     },
     addObjectToGraph: (state, editableObject) => {
-      let node = state.graph.createNode({
+      state.graph.createNode({
         id: editableObject.getGeneratedId(),
-        x: 100000, y: 100000,
+        offsetX: 0, offsetY: 0, size: 600,
+        x: Math.random() * 1000, y: Math.random() * 1000,
         object: editableObject
       })
-      setTimeout(() => {
-        node.x = Math.floor(Math.random() * 1000)
-        node.y = Math.floor(Math.random() * 1000)
-      }, 25)
-      if(state.graph.nodes.length === 2)
-        state.graph.createEdge(state.graph.nodes[0].id, state.graph.nodes[1].id)
+    },
+    addRelationToGraph: (state, {objects, relation}) => {
+      state.graph.createEdge(objects[0], objects[1],{relation: relation, size: 600})
     },
   },
   actions: {
     changeGlobalSettingState({ commit }, payload) { commit('changeGlobalSettingState', payload) },
     setTriggerState({ commit }, payload) { commit('setTriggerState', payload) },
     setClassifiersSettings({ commit }, payload) { commit('setClassifiersSettings', payload) },
-    addObjectToGraph({ getters, commit }, object) {
-      let editableObject = new DataBaseObject({
+    addRelationToGraph({getters, commit}, {object, relations}) {
+      let object1 = getters.graphObjects.find(r => r.object.object.id === object.o1 && r.object.recId === object.r1)
+      let object2 = getters.graphObjects.find(r => r.object.object.id === object.o2 && r.object.recId === object.r2)
+      let relation = new DataBaseRelation(object1, object2, relations)
+      commit('addRelationToGraph', {objects: [object1, object2], relation: relation})
+    },
+    addObjectToGraph({ getters, commit, dispatch }, object) {
+      let editableObject = new GraphObject({
         object_id: object.object_id,
         rec_id: object.rec_id,
         title: object.title,
         photo: object.photo,
-        params: object.params
+        params: object.params,
+        triggers: object.triggers
       })
-      if(!getters.graphObjects.find(o => o.id === editableObject.getGeneratedId()))
+      if(!getters.graphObjects.find(o => o.id === editableObject.getGeneratedId())) {
+        for(let graphObject of getters.graphObjects) {
+
+        }
+        dispatch('getRelationFromServer', {
+          object_id: object.object_id,
+          rec_id: object.rec_id,
+          objects: Array.from(getters.graphObjects, o =>
+            Object.assign({object_id: o.object.object.id, rec_id: o.object.recId})
+          )
+        })
         commit('addObjectToGraph', editableObject)
+      }
     },
     async getBaseTriggers({getters, commit}, config = {}) {
       if(!getters.triggers.length)
@@ -114,11 +135,28 @@ export default {
   }
 }
 
+export function getTriggers(id) {
+  let cookies = []
+  for (let [name, value] of Object.entries(localStorage))
+    if (name.startsWith('trigger') && name.split('_')[1] === id.toString())
+      cookies.push({id: name.split('_')[2], variables: JSON.parse(value)})
+  return cookies
+}
+
 function getClassifiersSettings() {
   let settings = localStorage.getItem('objectClassifiersSettings')
   if(settings) return JSON.parse(settings)
   localStorage.setItem('objectClassifiersSettings', JSON.stringify({}))
   return {}
+}
+
+class GraphObject extends DataBaseObject {
+  constructor(object) {
+    super(object)
+    this.showTitle = true
+    this.showTooltip = true
+    this.showTriggers = true
+  }
 }
 
 class Trigger {

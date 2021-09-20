@@ -7,14 +7,14 @@
       </v-row>
     </template>
     <template v-slot:secondPane>
-      <work-place></work-place>
+      <graph-area></graph-area>
     </template>
   </split-panel>
 </template>
 
 <script>
 import SplitPanel from "../components/WebsiteShell/UI/splitPanel"
-import workPlace from '../components/Graph/Graph/workPlace'
+import graphArea from '../components/Graph/WorkSpace/graphArea'
 import toolsMenu from "../components/WebsiteShell/UI/toolsMenu"
 import searchPage from "../components/Graph/GraphMenu/searchPage"
 import createPage from "../components/Graph/GraphMenu/createPage"
@@ -26,7 +26,7 @@ import router from '@/router'
 
 export default {
   name: 'GraphPage',
-  components: {SplitPanel, workPlace, toolsMenu, searchPage, createPage, dossierPage, createRelationPage, settingsPage},
+  components: {SplitPanel, graphArea, toolsMenu, searchPage, createPage, dossierPage, createRelationPage, settingsPage},
   computed: {
     ...mapGetters(['activeTool']),
     activeWindow: function () {
@@ -34,7 +34,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['setDefaultValueActiveTool', 'getBaseObjects', 'setRootSearchTreeItem']),
+    ...mapActions(['setDefaultValueActiveTool', 'getBaseObjects', 'setRootSearchTreeItem', 'getBaseTriggers', "getBaseRelations"]),
     changeComponent() {
       if (this.activeWindow === 'searchPage')
         return 'searchPage'
@@ -54,6 +54,8 @@ export default {
       this.setDefaultValueActiveTool()
       this.setRootSearchTreeItem({})
     })
+    this.getBaseTriggers()
+    this.getBaseRelations()
   },
 }
 </script>
