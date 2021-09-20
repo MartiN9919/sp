@@ -1,15 +1,8 @@
 <template>
-  <g class="label">
-    <path v-if="connector" class="edge"
-      :d="`M ${pos.x} ${pos.y} L ${node.x + node.width / 2} ${node.y + node.height / 2}`">
-    </path>
-    <node ref="node"
-      :data="node"
-      :useDrag="useDrag"
-      :style="nodeTransform"
-          @drag="e => $emit('drag', e)">
-        <slot>
-        </slot>
+  <g>
+    <path v-if="connector" :d="getLineCoordinates" class="connector"></path>
+    <node ref="node" :data="node" @drag="onDrag">
+      <slot></slot>
     </node>
   </g>
 </template>
@@ -17,49 +10,28 @@
 <script>
 import uuid from 'uuid'
 import Node from './Node'
+
 export default {
-  components: {
-    Node,
-  },
+  components: {Node},
   props: {
-    element: {
-      type: Object,
-      required: true // { id, pathd } required
-    },
-    perc: {
-      type: Number,
-      default: 50
-    },
-    offset: {
-      type: Object,
-      default: () => ({x: 0, y: 0})
-    },
-    align: {
-      type: String,
-      default: 'center'
-    },
-    rotate: {
-      type: Boolean,
-      default: false
-    },
-    useDrag: {
-      type: Boolean,
-      default: false
-    },
-    connector: {
-      type: Boolean,
-      default: false,
-    }
+    element: {type: Object, required: true},
+    useDrag: {type: Boolean, default: false},
+    connector: {type: Boolean, default: false},
+    edgeCoordinates: {type: Object, default: null},
   },
   data() {
     return {
       pos: { x: 0, y: 0 },
       node: { id: uuid() ,x: 250, y: 0, width: 100, height: 100},
-      angle: 0,
+      offset: {x: 0, y: 0},
+      oldNodeSize: {width: 0, height: 0},
+      perc: 50,
     }
   },
   mounted () {
     this.checkTypeElement()
+    this.offset = {x: -this.node.width/2, y: -((this.element.height || 0)*4 + this.node.height)}
+    this.oldNodeSize = {width: this.node.width, height: this.node.height}
   },
   methods: {
     checkTypeElement() {
@@ -68,66 +40,82 @@ export default {
       else this.$nextTick(this.getPositionForNode)
     },
     getPositionForNode () {
-      this.pos = {x: this.element.x + this.element.width / 2, y: this.element.y}
+      this.pos = {x: this.element.x + this.element.width / 2, y: this.element.y + this.element.height / 2}
     },
     getPositionForEdge () {
       const el = document.getElementById(this.element.id)
-      if (!el) {
-        throw `element not found: ${this.element.id}`
-      }
-      const length = el.getTotalLength() * this.perc / 100
+      const length = el.getTotalLength() * (this.perc/100)
       this.pos = el.getPointAtLength(length)
-
-      if (this.rotate) {
-        const delta = el.getPointAtLength(Math.min(length + 0.01), el.getTotalLength)
-        this.angle = Math.atan2(delta.y - this.pos.y, delta.x - this.pos.x);
-      } else {
-        this.angle = 0
+    },
+    updatePos(x=0, y=0){
+      let offsetX = this.offset.x + (x || 0) + (this.node.width/2)
+      let offsetY = this.offset.y + (y || 0) + (this.node.height/2)
+      let totalOffset = Math.sqrt(Math.pow(offsetX,2) + Math.pow(offsetY,2))
+      if(this.element.hasOwnProperty('type')){
+        this.updateEdgeOffset(x,y,totalOffset)
+      }
+      else{
+        this.updateNodeOffset(x,y,totalOffset, offsetX, offsetY)
+      }
+      this.updateOffsetBySize()
+      this.node.x = this.pos.x + this.offset.x
+      this.node.y = this.pos.y + this.offset.y
+    },
+    updateOffsetBySize(){
+      if(this.oldNodeSize.height - this.node.height !== 0){
+        this.offset.x += (this.oldNodeSize.width - this.node.width)/2
+        if(this.oldNodeSize.height - this.node.height > 0 && !this.element.hasOwnProperty('type')){
+          this.offset.y /= 1.05
+        }
+        if(this.oldNodeSize.height - this.node.height < 0 && !this.element.hasOwnProperty('type')){
+          this.offset.y *= 1.05
+        }
+        this.oldNodeSize.height = this.node.height
+        this.oldNodeSize.width = this.node.width
       }
     },
-    updateNodePos () {
-      const align =  { x: 0, y: 0}
-      if (this.align === 'center') { align.x = this.node.width / 2; align.y = this.node.height / 2; }
-      else if (this.align === 'top') align.x = this.node.width / 2
-      else if (this.align === 'top-right') align.x = this.node.width;
-      else if (this.align === 'left') align.y = this.node.height / 2;
-      else if (this.align === 'right') { align.x = this.node.width; align.y = this.node.height / 2; }
-      else if (this.align === 'bottom-left') { align.y = this.node.height }
-      else if (this.align === 'bottom') { align.x = this.node.width / 2; align.y = this.node.height }
-      else if (this.align === 'bottom-right') { align.x = this.node.width; align.y = this.node.height }
-
-      this.node.x = this.pos.x + this.offset.x - align.x
-      this.node.y = this.pos.y + this.offset.y - align.y
+    updateNodeOffset (x=0, y=0, totalOffset, offsetX, offsetY) {
+      if(totalOffset < this.element.width *3){
+          this.offset.x += (x || 0)
+          this.offset.y += (y || 0)
+        }
     },
+    updateEdgeOffset (x=0, y=0, totalOffset) {
+      if(totalOffset < this.node.width*2){
+        this.offset.x += (x || 0)
+        this.offset.y += (y || 0)
+      }
+      else{
+        const el = document.getElementById(this.element.id)
+        if(this.edgeCoordinates){
+          if(typeof(x) === "number" && x !== 0 && y !== 0){
+            console.log(x, y)
+            console.log(this.edgeCoordinates.x2 - this.edgeCoordinates.x1, this.edgeCoordinates.y2 - this.edgeCoordinates.y1)
+          }
+        }
+      }
+    },
+    onDrag (d) {
+      this.updatePos(d.x || 0, d.y || 0)
+    }
   },
   computed: {
-    nodeTransform: vm => `
-        transform-origin: ${vm.node.x + vm.node.width / 2}px ${vm.node.y + vm.node.height}px;
-        transform: rotate(${vm.angle}rad);`,
+    getLineCoordinates() {
+      return `M ${this.pos.x} ${this.pos.y} L ${this.node.x + this.node.width / 2} ${this.node.y + this.node.height / 2}`
+    }
   },
   watch: {
-    element: {
-      deep: true,
-      handler: 'checkTypeElement'
-    },
-    perc: 'checkTypeElement',
-    pos: 'updateNodePos',
-    'node.width': 'updateNodePos',
-    'node.height': 'updateNodePos',
-    'offset': 'updateNodePos',
-    'align': 'updateNodePos',
-    'rotate': 'checkTypeElement'
+    element: {deep: true, handler: 'checkTypeElement'},
+    pos: {deep: true, handler: 'updatePos'},
   },
 }
 </script>
 
 <style>
-.label .node .content {
-  background-color: #bbe4bb;
-}
-.label .edge {
-  stroke: #286f28;
-  stroke-width: 3;
-  stroke-dasharray: 4;
+.connector {
+  stroke-width: 1px;
+  stroke: #aaaaaa;
+  stroke-dasharray: 1em;
+
 }
 </style>

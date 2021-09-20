@@ -99,7 +99,6 @@ export default {
       set: function (id) {
         this.newObject.id = id
         this.selectedRelationId = this.listRelations[0].id
-        this.getBaseRelations({params: {object_1_id: this.objectId, object_2_id: id}})
       },
     },
     selectedRelationId: {
@@ -143,7 +142,6 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['getBaseRelations']),
     buttonHandler(event) {
       if (event === 'confirm')
         this.$emit('confirm', this.newObject)

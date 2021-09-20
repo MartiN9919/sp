@@ -1,4 +1,5 @@
 import { postResponseAxios } from '@/plugins/axios_settings'
+import {getTriggers} from "@/store/modules/graph/graphNodes"
 
 function createSearchItem(getters, item) {
   return {
@@ -48,6 +49,7 @@ export default {
       }
     },
     findObjectsOnServer({ commit, state }, config={}) {
+      config.headers = {'set-cookie': JSON.stringify(getTriggers(state.searchTreeGraph.object.id))}
       return postResponseAxios('objects/search', state.searchTreeGraph.getTree(), config)
         .then(response => { commit('setFoundObjects', response.data) })
         .catch(error => {  })

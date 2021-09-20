@@ -1,12 +1,12 @@
 <template>
-  <v-tooltip bottom transition="false" color="#00796B" z-index="10001" max-width="30%" content-class='custom-tooltip'>
+  <v-tooltip v-bind="$attrs" transition="false" color="#00796B" z-index="10001" max-width="30%" content-class='custom-tooltip'>
     <template v-slot:activator="{ on }">
       <slot name="activator" :on="on"></slot>
     </template>
     <slot name="body">
-      <v-img width="250" max-width="auto" v-if="typeTooltip==='picture'" :src="fileLink"></v-img>
-      <v-img width="250" v-else-if="typeTooltip" :src="typeTooltip"></v-img>
-      <div class="ma-2" v-else>{{bodyText || alternativeString}}</div>
+<!--      <v-img width="250" max-width="auto" v-if="typeTooltip==='picture'" :src="fileLink"></v-img>-->
+<!--      <v-img width="250" v-else-if="typeTooltip" :src="typeTooltip"></v-img>-->
+      <div class="ma-2">{{bodyText || alternativeString}}</div>
     </slot>
   </v-tooltip>
 </template>

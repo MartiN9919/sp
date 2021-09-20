@@ -1,4 +1,5 @@
 import { getResponseAxios, postResponseAxios } from '@/plugins/axios_settings'
+import {getTriggers} from "@/store/modules/graph/graphNodes"
 import store from "@/store"
 import _ from 'lodash'
 
@@ -79,12 +80,12 @@ export default {
         .then(r => { return Promise.resolve(r.data) })
         .catch(e => { return Promise.reject(e) })
     },
-    async getRelationFromServer({commit, dispatch}, {params, config}) {
+    async getRelationFromServer({commit, dispatch}, params, config={}) {
       return await postResponseAxios('objects/object_relation/', params, config)
         .then(r => {
           for(let relation of r.data) {
             let object = {o1: params.object_id, r1: params.rec_id, o2: relation.object_id, r2: relation.rec_id}
-            dispatch('addChoosingRelation', {object: object, relations: relation.relations})
+            dispatch('addRelationToGraph', {object: object, relations: relation.relations})
           }
           return Promise.resolve(r.data)
         })
@@ -102,7 +103,6 @@ export default {
         .then(r => {
           if(r.data.hasOwnProperty('object')) {
             dispatch('setEditableObject', r.data.object)
-            // dispatch('addChoosingObject', r.data.object)
           }
           if(r.data.hasOwnProperty('objects'))
             dispatch('addEditableObjects', r.data.objects)
@@ -115,21 +115,13 @@ export default {
       return await postResponseAxios('objects/relation', relation.getRequestStructure(), {})
         .then(r => {
           let object = {o1: relation.o1.id, r1: relation.o1Object.rec_id, o2: relation.o2.id, r2: relation.o2Object.rec_id}
-          dispatch('addChoosingRelation', {object: object, relations: r.data})
+          // dispatch('addChoosingRelation', {object: object, relations: r.data})
           dispatch('setEditableRelation', Object.assign({}, object, r.data))
           return Promise.resolve(r.data)
         })
         .catch(e => { return Promise.reject(e) })
     }
   }
-}
-
-function getTriggers(id) {
-  let cookies = []
-  for (let [name, value] of Object.entries(localStorage))
-    if (name.startsWith('trigger') && name.split('_')[1] === id.toString())
-      cookies.push({id: name.split('_')[2], variables: JSON.parse(value)})
-  return cookies
 }
 
 class BaseDbObject {
@@ -155,13 +147,13 @@ class BaseDbObject {
 }
 
 
-class DataBaseRelation extends BaseDbObject {
-  constructor(object_id_1, object_id_2, rec_id_1, rec_id_2, params=[]) {
-    super(store.getters.baseRelation, store.getters.baseRelations({f_id: object_id_1, s_id: object_id_2}), params)
-    this.o1 = store.getters.baseObject(object_id_1)
-    this.o2 = store.getters.baseObject(object_id_2)
-    this.o1Object = store.getters.choosingObject(rec_id_1)
-    this.o2Object = store.getters.choosingObject(rec_id_2)
+export class DataBaseRelation extends BaseDbObject {
+  constructor(o1, o2, params=[]) {
+    let getter = store.getters.baseRelation
+    let baseObject = store.getters.baseRelations({f_id: o1.object.id, s_id: o2.object.id})
+    super(getter, baseObject, params)
+    this.o1 = o1
+    this.o2 = o2
   }
 
   getRequestStructure() {
@@ -172,10 +164,10 @@ class DataBaseRelation extends BaseDbObject {
         params.push({id: param.baseParam.id, value: value, date: newValue.date})
       }
     return {
-      object_1_id: this.o1.id,
-      object_2_id: this.o2.id,
-      rec_1_id: this.o1Object.rec_id,
-      rec_2_id: this.o2Object.rec_id,
+      object_1_id: this.o1.object.id,
+      object_2_id: this.o2.object.id,
+      rec_1_id: this.o1.recId,
+      rec_2_id: this.o2.recId,
       params: params,
     }
   }
@@ -183,11 +175,12 @@ class DataBaseRelation extends BaseDbObject {
 
 
 export class DataBaseObject extends BaseDbObject {
-  constructor({object_id, rec_id = 0, title = '', photo = null, params = [], recIdOld = null}) {
+  constructor({object_id, rec_id = 0, title = '', photo = null, params = [], triggers = [], recIdOld = null}) {
     super(store.getters.baseClassifier, store.getters.baseClassifiers(object_id), params, recIdOld)
     this.object = store.getters.baseObject(object_id)
     this.recId = rec_id
     this.title = title
+    this.triggers = triggers
     if(photo)
       this.photo = photo
   }

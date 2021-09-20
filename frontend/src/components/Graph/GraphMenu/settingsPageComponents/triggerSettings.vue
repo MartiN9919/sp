@@ -8,7 +8,7 @@
             <v-list-item-title>{{trigger.title}}</v-list-item-title>
             <v-list-item-subtitle>{{trigger.subTitle}}</v-list-item-subtitle>
           </v-list-item-content>
-          <v-list-item-action>
+          <v-list-item-action class="flex-row">
             <v-switch v-model="trigger.state" disabled color="teal"></v-switch>
           </v-list-item-action>
         </v-list-item>

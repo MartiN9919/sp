@@ -144,7 +144,8 @@ def get_object_record_by_id_http(object_id, rec_id, group_id=0, triggers=None):
     else:
         triggers = []
     title = get_record_title(object_id, rec_id, group_id,
-                             {'object_id': object_id, 'rec_id': rec_id, 'params': params, 'permission': permission}, 1)
+                             {'object_id': object_id, 'rec_id': rec_id, 'params': params, 'permission': permission,
+                              'triggers': None}, 1)
     photo = get_record_photo(object_id, params)
     return {'object_id': object_id, 'rec_id': rec_id, 'params': params, 'permission': permission,
             'title': title['title'], 'triggers': triggers, 'photo': photo}

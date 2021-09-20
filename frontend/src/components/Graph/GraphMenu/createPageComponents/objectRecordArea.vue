@@ -19,10 +19,12 @@
           <table>
             <tbody class="py-2">
               <custom-tooltip
-                  v-for="(item, key) in param.values" :key="key"
-                  :body-text="item.value"
-                  :settings="settings"
-                  v-if="param.baseParam.type.startsWith('file')" >
+                v-for="(item, key) in param.values" :key="key"
+                v-if="param.baseParam.type.startsWith('file')"
+                :body-text="item.value"
+                :settings="settings"
+                bottom
+              >
                 <template v-slot:activator="{ on }">
                   <tr v-on="on">
                     <td>
