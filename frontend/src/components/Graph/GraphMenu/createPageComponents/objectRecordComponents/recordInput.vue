@@ -13,7 +13,7 @@
       <template v-slot:message>
         <drop-down-menu nudge-left="290" min-width="auto" close-on-click :close-on-content-click="false">
           <template v-slot:activator="{ on }">
-            <div style="width: 100%" class="text-end text-no-wrap">
+            <div style="width: 100%; font-size: 1.2em; padding-top: 1px;" class="text-end text-no-wrap">
               <span v-on="on" class="v-messages" style="cursor: pointer; color: #004D40; font-size: 0.9em">{{param.date}}</span>
             </div>
           </template>
