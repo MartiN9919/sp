@@ -1,11 +1,11 @@
 <template>
-  <div>
+  <div @click.right="menuShow($event)">
     <screen ref="screen">
       <g
         :ref="`object-${object.id}`"
         v-for="object in graphObjects" :key="object.id"
         @wheel.prevent.stop="scroll(object, $event)"
-        @click.right="menuShow(object, $event)"
+        @click.right="menuShow($event, object)"
         @mousedown.capture="selectObject(object)"
       >
         <node :ref="`node-${object.id}`" :data="object">
@@ -64,7 +64,6 @@
 </template>
 
 <script>
-import Graph from "@/components/Graph/lib/graph"
 import Screen from '@/components/Graph/lib/components/Screen'
 import Node from '@/components/Graph/lib/components/Node'
 import Edge from "@/components/Graph/lib/components/Edge"
@@ -73,75 +72,27 @@ import BodyObject from "@/components/Graph/WorkSpace/object/bodyObject"
 import NameObject from "@/components/Graph/WorkSpace/object/nameObject"
 import InformationLabel from "@/components/Graph/WorkSpace/object/informationLabel"
 import ContextMenuNested from "@/components/WebsiteShell/ContextMenu/contextMenuNested"
+import bodyContextMenu from "./bodyContextMenu"
 import {mapActions, mapGetters} from "vuex"
+
 
 export default {
   name: "graphArea",
   components: {ContextMenuNested, Screen, Node, Edge, VLabel, BodyObject, NameObject, InformationLabel},
   data: () => ({
-    graph: new Graph(),
-    objectWithActivatedMenu: null,
+    activeObjects: [],
   }),
+  mixins : [
+      bodyContextMenu
+  ],
   computed: {
     ...mapGetters(['graphObjects', 'graphRelations', 'globalDisplaySettings', 'objectClassifiersSettings']),
     allowRelations() { return Array.from(this.$store.state.graph.rootInstances.relations, r => {return r.id}) },
-    changeTitle: {
-      get: function () { return this.objectWithActivatedMenu.object.showTitle },
-      set: function (value) { this.objectWithActivatedMenu.object.showTitle = value }
-    },
-    changeTooltip: {
-      get: function () { return this.objectWithActivatedMenu.object.showTooltip },
-      set: function (value) { this.objectWithActivatedMenu.object.showTooltip = value }
-    },
-    changeTriggers: {
-      get: function () { return this.objectWithActivatedMenu.object.showTriggers },
-      set: function (value) { this.objectWithActivatedMenu.object.showTriggers = value }
-    },
-    contextMenu: function () {
-      return [
-        {
-          icon: 'mdi-pencil',
-          title: 'Изменить',
-          subtitle: 'Редактировать данный объект',
-          action: 'setChangeObject'
-        },
-        {
-          icon: 'mdi-cog-outline',
-          title: 'Настройки',
-          subtitle: 'Индивидуальные настройки объекта',
-          menu: [
-            {
-              title: 'Отображение',
-              menu: [
-                {
-                  title: 'Подпись',
-                  model: 'changeTitle',
-                },
-                {
-                  title: 'Заголовок',
-                  model: 'changeTooltip'
-                },
-                {
-                  title: 'Триггеры',
-                  model: 'changeTriggers'
-                }
-              ]
-            },
-            {
-              title: 'Классификаторы',
-            },
-          ],
-        }
-      ]
-    }
   },
   methods: {
     selectObject(object) {
       this.graphObjects.push(object)
       this.graphObjects.splice(this.graphObjects.findIndex(o => o === object), 1)
-    },
-    setChangeObject(event) {
-      console.log(event)
     },
     getObjectClassifiers(object) {
       let enabledClassifiers = this.objectClassifiersSettings(object.object.object.id)
@@ -170,10 +121,6 @@ export default {
     },
     getTriggersStateObject(object) {
       return this.globalDisplaySettings.showGlobalTriggers.state && object.object.showTriggers
-    },
-    menuShow(object, event) {
-      this.objectWithActivatedMenu = object
-      this.$refs.contextMenu.show_root(event.x, event.y)
     },
     scrollRelation(relation, event) {
       if(event.deltaY > 0 && relation.size / 1.05 > 300){

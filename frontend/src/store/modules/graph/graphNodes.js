@@ -85,6 +85,7 @@ export default {
     },
   },
   actions: {
+    reorderGraph({ state }) { state.graph.reorderGraph() },
     changeGlobalSettingState({ commit }, payload) { commit('changeGlobalSettingState', payload) },
     setTriggerState({ commit }, payload) { commit('setTriggerState', payload) },
     setClassifiersSettings({ commit }, payload) { commit('setClassifiersSettings', payload) },
