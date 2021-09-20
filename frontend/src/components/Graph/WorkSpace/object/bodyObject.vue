@@ -3,10 +3,12 @@
     <template v-slot:badge>
       <trigger-information :active-triggers="triggers" :size="triggerSize"></trigger-information>
     </template>
-    <v-avatar :size="bodySize" :class="status ? 'body-active' : 'body'">
-      <v-img v-if="getPhoto" :src="getPhoto"></v-img>
-      <i v-else :class="bodyIconClass" :style="bodyIconStyle"></i>
-    </v-avatar>
+    <v-hover v-slot="{ hover }">
+      <v-avatar :size="bodySize" :class="hover ? 'elevation-12' : 'elevation-6'">
+        <v-img v-if="getPhoto" :src="getPhoto"></v-img>
+        <i v-else :class="bodyIconClass" :style="bodyIconStyle"></i>
+      </v-avatar>
+    </v-hover>
   </v-badge>
 </template>
 
@@ -18,7 +20,6 @@ export default {
   name: "bodyObject",
   components: {TriggerInformation},
   props: {
-    status: Boolean,
     node: Object,
     showTriggers: Boolean,
   },
@@ -33,7 +34,7 @@ export default {
     },
     bodySize: function () { return this.node.size / 3 },
     triggerSize: function () { return this.bodySize / 6 },
-    bodyIconStyle: function () { return {fontSize: this.bodySize, color: '#aaaaaa'} },
+    bodyIconStyle: function () { return {fontSize: this.bodySize, color: '#aaaaaa', backgroundColor: 'white'} },
     bodyIconClass: function () { return 'mdi ' + this.node.object.object.icon },
     triggers: function () { return this.showTriggers ? this.node.object.triggers : []}
   },

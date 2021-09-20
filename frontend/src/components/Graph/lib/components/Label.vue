@@ -16,7 +16,7 @@ export default {
   props: {
     element: {type: Object, required: true},
     useDrag: {type: Boolean, default: false},
-    connector: {type: Boolean, default: false},
+    connector: {type: Boolean, default: true},
     edgeCoordinates: {type: Object, default: null},
   },
   data() {
