@@ -4,17 +4,12 @@
     return-object open-on-click activatable dense active-class="" color=""
   >
     <template v-slot:label="{ item, open }">
-      <custom-tooltip>
+      <custom-tooltip :body-text="item.hint" bottom>
         <template v-slot:activator="{ on }">
           <div v-on="on">
-            <v-icon :id="iconId(item.id)" :color="colorIcon(item)">
-              {{ typeIcon(item, open) }}
-            </v-icon>
+            <v-icon :id="iconId(item.id)" :color="colorIcon(item)">{{ typeIcon(item, open) }}</v-icon>
             <span :class="itemTextStyle(item.icon)" :style="itemTextColor(item)">{{ item.name }}</span>
           </div>
-        </template>
-        <template v-slot:body>
-          <span class="text-justify">{{ checkHintInItem(item) }}</span>
         </template>
       </custom-tooltip>
     </template>
@@ -55,9 +50,6 @@ export default {
     }
   },
   methods: {
-    checkHintInItem(item) {
-      return item.hint ? item.hint : 'Описание отсутствует'
-    },
     itemTextColor(item) {
       return this.checkForSelectedItem(item) ? { color: '#00796B' } : {}
     },

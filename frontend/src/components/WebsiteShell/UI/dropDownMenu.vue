@@ -2,7 +2,7 @@
   <v-menu
     v-model="status"
     v-bind="$attrs"
-    ref="menuBoolean"
+    ref="menu"
     transition="slide-x-reverse-transition"
     offset-x
     offset-y
@@ -28,7 +28,7 @@ export default {
     status: false,
   }),
   mounted() {
-    this.closeMenu = this.$refs.menuBoolean.save
+    this.closeMenu = this.$refs.menu.save
   },
   watch: {
     menuModal: function (value) {

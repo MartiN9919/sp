@@ -150,8 +150,8 @@ class DAT_SYS_KEY:
         (TYPE_PHONE_NUMBER, 'Номер телефона'),
         (TYPE_BIT, 'Да/Нет'),
         (TYPE_GEOMETRY, 'Точка/Путь/Полигон'),
-        (TYPE_FILE_PHOTO, 'Фала-фотография'),
-        (TYPE_FILE_ANY, 'Фала-любой тип'),
+        (TYPE_FILE_PHOTO, 'Файл-фотография'),
+        (TYPE_FILE_ANY, 'Файл-любой тип'),
     )
 
     NAME_REL_KEY_ID = 'key_id'

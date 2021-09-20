@@ -4,38 +4,32 @@
       <v-list-item-subtitle class="text-title-table">Найдено объектов: {{objects.length}}</v-list-item-subtitle>
     </v-list-item>
     <div class="body-table">
-    <v-list-item v-for="object in objects" :key="object.rel_id" class="px-0" @click="">
-      <v-hover v-slot="{ hover }">
-        <v-card
-          tile flat width="100%" height="100%"
-          :class="hover ? ['body-content-hover', 'body-content'] : ['body-content']"
-        >
-          <v-card-text class="pr-0">{{object.title}}</v-card-text>
-          <div
-              v-if="hover" class="d-flex align-center list-icons"
-              :class="hover ? ['list-icons-hover', 'list-icons'] : ['list-icons']">
-            <v-btn icon @click="$emit('select', object)"><v-icon>mdi-plus</v-icon></v-btn>
-            <v-btn icon @click="$emit('change', object)"><v-icon>mdi-pencil-outline</v-icon></v-btn>
-            <v-btn icon><v-icon>mdi-close</v-icon></v-btn>
-          </div>
-        </v-card>
-      </v-hover>
-    </v-list-item>
+    <v-hover v-for="object in objects" :key="object.rel_id" v-slot="{ hover }">
+      <v-list-item class="px-0 py-1" @click="">
+        <v-list-item-icon class="mx-1 my-0">
+          <trigger-information :active-triggers="object.triggers"></trigger-information>
+        </v-list-item-icon>
+        <v-list-item-subtitle class="text-pre-wrap mx-1 text-info">{{object.title}}</v-list-item-subtitle>
+        <v-list-item-action v-show="hover" class="flex-row ma-0 action-buttons">
+          <v-btn icon @click="$emit('select', object)"><v-icon>mdi-plus</v-icon></v-btn>
+          <v-btn icon @click="$emit('change', object)"><v-icon>mdi-pencil-outline</v-icon></v-btn>
+          <v-btn icon><v-icon>mdi-close</v-icon></v-btn>
+        </v-list-item-action>
+      </v-list-item>
+    </v-hover>
     </div>
   </v-list>
 </template>
 
 <script>
-import {mapActions} from "vuex";
-
+import CustomTooltip from "@/components/WebsiteShell/UI/customTooltip";
+import TriggerInformation from "@/components/WebsiteShell/UI/triggerInformation";
 export default {
   name: "foundObjects",
+  components: {TriggerInformation, CustomTooltip},
   props: {
     objects: Array,
   },
-  methods: {
-    ...mapActions(['getObjectFromServer', ]),
-  }
 }
 </script>
 
@@ -52,21 +46,21 @@ export default {
   overflow-y: auto;
   height: calc(100% - 2.5em);
 }
-.body-content {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-}
 .list-icons {
   position:absolute;
-  background-color: white;
   right: 0;
-  height: 100%
 }
-.list-icons-hover  {
-  background-color: #f5f5f5;
+.v-list-item {
+  min-height: 36px;
 }
-.body-content-hover {
-  background-color: #f5f5f5;
+.text-info {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+.action-buttons {
+  min-width: auto;
 }
 </style>

@@ -7,7 +7,7 @@ export const HTTP_SERVER_IP = 'http://' + CONST.URL.SERVER_IP
 
 const http = axios.create({
   withCredentials: true,
-  baseURL: HTTP_SERVER_IP + 'api',
+  baseURL: HTTP_SERVER_IP + CONST.API.BASE_PREFIX,
   xsrfCookieName: 'csrftoken',
   xsrfHeaderName: 'X-CSRFToken',
   headers: {
@@ -15,6 +15,18 @@ const http = axios.create({
     'X-Frame-Options': 'DENY'
   }
 })
+
+export function getFileLink(objectId, recId, fileName) {
+  return `${CONST.API.BASE_PREFIX}/files/download_condense_image/open_files/${generateFileLink(objectId, recId, fileName)}`
+}
+
+export function getDownloadFileLink(objectId, recId, fileName) {
+  return `${CONST.API.BASE_PREFIX}/files/download/open_files/${generateFileLink(objectId, recId, fileName)}`
+}
+
+function generateFileLink(objectId, recId, fileName) {
+  return `${objectId}/${recId}/${fileName}`
+}
 
 export function checkErrorStatusCode(statusCode){
   const CRITICAL_STATUS_CODE = [401, ]
@@ -61,8 +73,4 @@ export async function deleteResponseAxios (url, config = {}) {
   return await http.delete(url, config)
     .then((response) => { return processingSuccessResponse(response) })
     .catch(error => { return processingErrorResponse(error) })
-}
-
-export default () => {
-  return http
 }

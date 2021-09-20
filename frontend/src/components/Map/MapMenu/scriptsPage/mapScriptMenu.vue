@@ -36,7 +36,7 @@
 
         <v-scroll-y-transition mode="out-in">
           <v-form ref="form" v-if="'id' in selectedItem" :key="selectedItem.id" class="px-2">
-            <custom-tooltip v-for="variable in selectedItem.variables" :key="variable.id">
+            <custom-tooltip v-for="variable in selectedItem.variables" :key="variable.id" :body-text="variable.hint" bottom>
               <template v-slot:activator="{ on }">
                 <div v-on="on">
                   <responsive-input-form
@@ -49,11 +49,6 @@
                     class="pt-2"
                   ></responsive-input-form>
                 </div>
-              </template>
-              <template v-slot:body>
-                <p class="text-formatter-for-window-size additional-text text-justify ma-0">
-                  {{variable.hint ? variable.hint : 'Описание отсутствует'}}
-                </p>
               </template>
             </custom-tooltip>
             <div class="py-2 d-flex flex-nowrap flex-row justify-center">

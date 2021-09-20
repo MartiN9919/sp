@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     'official_documents',
     'notifications',
     'objects',
+    'files',
 ]
 
 MIDDLEWARE = [
@@ -100,3 +101,4 @@ STATIC_ROOT = 'var/static_root'
 STATICFILES_DIRS = [
     "static",
 ]
+MEDIA_ROOT = '/home/pushkin/saphir_data'

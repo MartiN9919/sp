@@ -1,5 +1,6 @@
 from data_base_driver.additional_functions import get_date_time_from_sec
 from data_base_driver.constants.const_dat import DAT_SYS_KEY, DAT_OWNER
+from data_base_driver.constants.const_key import SYS_KEY_CONSTANT
 from data_base_driver.input_output.input_output import io_get_obj
 from data_base_driver.input_output.io_geo import get_geometry_by_id
 from data_base_driver.sys_key.get_key_dump import get_key_by_id, get_obj_id
@@ -63,7 +64,7 @@ def get_permission_params(params, object_id):
     return permission
 
 
-def get_record_title(object_id, rec_id, group_id=0, record=None, length=3):
+def get_record_title(object_id, rec_id, group_id=0, record=None, length=3, triggers=None):
     """
     Функция для получения строки с краткой информацией о объекте
     @param object_id: тип объекта
@@ -71,21 +72,40 @@ def get_record_title(object_id, rec_id, group_id=0, record=None, length=3):
     @param group_id: идентификатору группы пользователя
     @param record: записи о объекте для формирования заголовка, по умолчанию None
     @param length: длинна названия, по умолчанию 3
+    @param triggers: проверять ли триггеры у указанных объектов
     @return: словарь в формате {object_id, rec_id, title},...,{}]}
     """
     if not record:
-        record = get_object_record_by_id_http(object_id, rec_id, group_id)
+        record = get_object_record_by_id_http(object_id, rec_id, group_id, triggers=triggers)
     if len(list(record['permission'].keys())) > 0:
         write_groups = [item['group_id'] for item in record['permission'][list(record['permission'].keys())[0]]]
         write = DAT_OWNER.DUMP.valid_io_group(group_id, write_groups)
     else:
         write = True
     title = get_title(record['params'], length)
-    return {'object_id': record['object_id'], 'rec_id': record['rec_id'], 'title': title, 'write': write}
+    triggers = record['triggers']
+    return {'object_id': record['object_id'], 'rec_id': record['rec_id'], 'title': title, 'write': write,
+            'triggers': triggers}
+
+
+def get_record_photo(object_id, params):
+    """
+    Функция для получения фотографии объекта
+    @param object_id: идентфификатор типа объекта
+    @param params: список параметров объекта
+    @return: название файла фотографии или None если фото нет
+    """
+    if object_id == SYS_KEY_CONSTANT.PERSON_P_ID:
+        for param in params:
+            if param['id'] == SYS_KEY_CONSTANT.PHOTO_CLASSIFIER_ID:
+                return param['values'][0]['value']
+        return None
+    else:
+        return None
 
 
 def get_value_by_key(key, value):
-    if key == 30302:
+    if key == SYS_KEY_CONSTANT.PARENT_ID_CLASSIFIER_ID:
         if int(value) == 0:
             return 'корень'
         else:
@@ -124,9 +144,11 @@ def get_object_record_by_id_http(object_id, rec_id, group_id=0, triggers=None):
     else:
         triggers = []
     title = get_record_title(object_id, rec_id, group_id,
-                             {'object_id': object_id, 'rec_id': rec_id, 'params': params, 'permission': permission}, 1)
+                             {'object_id': object_id, 'rec_id': rec_id, 'params': params, 'permission': permission,
+                              'triggers': None}, 1)
+    photo = get_record_photo(object_id, params)
     return {'object_id': object_id, 'rec_id': rec_id, 'params': params, 'permission': permission,
-            'title': title['title'], 'triggers': triggers}
+            'title': title['title'], 'triggers': triggers, 'photo': photo}
 
 
 def get_keys_by_object(object):
@@ -141,12 +163,9 @@ def get_keys_by_object(object):
     result = []
     for key in keys:
         temp = dict(key)
-        if key['id'] == 25202 or key['id'] == 25203: # проверка на lat, lon, если да то пропускаем - КОСТЫЛЬ
-            continue
         temp.pop('rel_obj_1_id')
         temp.pop('rel_obj_2_id')
         if temp.get('list_id'):
             temp['list_id'] = get_list_by_top_id(int(temp.get('list_id')))
         result.append(temp)
     return result
-

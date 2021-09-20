@@ -44,7 +44,7 @@ export default {
     getTriggers: function() { return this.objectTriggers(this.idTriggerSettings) },
   },
   methods: {
-    ...mapActions(['changeGlobalSettingState', 'getBaseTriggers', 'setTriggerState', 'setClassifiersSettings']),
+    ...mapActions(['changeGlobalSettingState', 'setTriggerState', 'setClassifiersSettings']),
     setTrigger(event) {
       this.setTriggerState(event)
     },
@@ -52,8 +52,5 @@ export default {
       this.setClassifiersSettings({objectId: this.idObjectSettings, classifierId: classifierId})
     }
   },
-  mounted() {
-    this.getBaseTriggers()
-  }
 }
 </script>

@@ -1,4 +1,5 @@
 import { getResponseAxios, postResponseAxios } from '@/plugins/axios_settings'
+import {getTriggers} from "@/store/modules/graph/graphNodes"
 import store from "@/store"
 import _ from 'lodash'
 
@@ -42,13 +43,24 @@ export default {
       commit('deleteNewParamEditableRelation', playLoad)
     },
     setEditableObject({commit}, object) {
-      commit('setEditableObjects', new DataBaseObject(object.object_id, object.rec_id, object.title, object.params))
+      commit('setEditableObjects', new DataBaseObject({
+        object_id: object.object_id,
+        rec_id: object.rec_id,
+        title: object.title,
+        params: object.params
+      }))
     },
     addEditableObjects({getters, commit}, objects) {
       commit('resetEditableObjects')
       for(let object of objects) {
         let zeroObject = getters.editableObjects[0]
-        let newObject = new DataBaseObject(object.object_id, object.rec_id, object.title, object.params, zeroObject.recId)
+        let newObject = new DataBaseObject({
+          object_id: object.object_id,
+          rec_id: object.rec_id,
+          title: object.title,
+          params: object.params,
+          recIdOld: zeroObject.recId
+        })
         newObject.concatParams(zeroObject)
         commit('addEditableObjects', newObject)
       }
@@ -60,17 +72,20 @@ export default {
       commit('deleteNewParamEditableObject', playLoad)
     },
     async getObjectFromServer({commit, dispatch}, config = {}) {
+      await dispatch('getBaseClassifiers', config)
+        .then(() => {})
+        .catch(e => { return Promise.reject(e) })
       config.headers = {'set-cookie': JSON.stringify(getTriggers(config.params.object_id))}
       return await getResponseAxios('objects/object/', config)
         .then(r => { return Promise.resolve(r.data) })
         .catch(e => { return Promise.reject(e) })
     },
-    async getRelationFromServer({commit, dispatch}, {params, config}) {
+    async getRelationFromServer({commit, dispatch}, params, config={}) {
       return await postResponseAxios('objects/object_relation/', params, config)
         .then(r => {
           for(let relation of r.data) {
             let object = {o1: params.object_id, r1: params.rec_id, o2: relation.object_id, r2: relation.rec_id}
-            dispatch('addChoosingRelation', {object: object, relations: relation.relations})
+            dispatch('addRelationToGraph', {object: object, relations: relation.relations})
           }
           return Promise.resolve(r.data)
         })
@@ -80,12 +95,14 @@ export default {
     async saveEditableObject({getters, dispatch}, positionObject) {
       return await postResponseAxios('objects/object',
         getters.editableObjects[positionObject].getRequestStructure(),
-        {headers: {'set-cookie': JSON.stringify(getTriggers(getters.editableObjects[positionObject].object.id))}}
+        {headers: {
+          'Content-Type': 'multipart/form-data',
+          'set-cookie': JSON.stringify(getTriggers(getters.editableObjects[positionObject].object.id))
+        }}
       )
         .then(r => {
           if(r.data.hasOwnProperty('object')) {
             dispatch('setEditableObject', r.data.object)
-            dispatch('addChoosingObject', r.data.object)
           }
           if(r.data.hasOwnProperty('objects'))
             dispatch('addEditableObjects', r.data.objects)
@@ -98,21 +115,13 @@ export default {
       return await postResponseAxios('objects/relation', relation.getRequestStructure(), {})
         .then(r => {
           let object = {o1: relation.o1.id, r1: relation.o1Object.rec_id, o2: relation.o2.id, r2: relation.o2Object.rec_id}
-          dispatch('addChoosingRelation', {object: object, relations: r.data})
+          // dispatch('addChoosingRelation', {object: object, relations: r.data})
           dispatch('setEditableRelation', Object.assign({}, object, r.data))
           return Promise.resolve(r.data)
         })
         .catch(e => { return Promise.reject(e) })
     }
   }
-}
-
-function getTriggers(id) {
-  let cookies = []
-  for (let [name, value] of Object.entries(localStorage))
-    if (name.startsWith('trigger') && name.split('_')[1] === id.toString())
-      cookies.push({id: name.split('_')[2], variables: JSON.parse(value)})
-  return cookies
 }
 
 class BaseDbObject {
@@ -138,13 +147,13 @@ class BaseDbObject {
 }
 
 
-class DataBaseRelation extends BaseDbObject {
-  constructor(object_id_1, object_id_2, rec_id_1, rec_id_2, params=[]) {
-    super(store.getters.baseRelation, store.getters.baseRelations({f_id: object_id_1, s_id: object_id_2}), params)
-    this.o1 = store.getters.baseObject(object_id_1)
-    this.o2 = store.getters.baseObject(object_id_2)
-    this.o1Object = store.getters.choosingObject(rec_id_1)
-    this.o2Object = store.getters.choosingObject(rec_id_2)
+export class DataBaseRelation extends BaseDbObject {
+  constructor(o1, o2, params=[]) {
+    let getter = store.getters.baseRelation
+    let baseObject = store.getters.baseRelations({f_id: o1.object.id, s_id: o2.object.id})
+    super(getter, baseObject, params)
+    this.o1 = o1
+    this.o2 = o2
   }
 
   getRequestStructure() {
@@ -155,31 +164,41 @@ class DataBaseRelation extends BaseDbObject {
         params.push({id: param.baseParam.id, value: value, date: newValue.date})
       }
     return {
-      object_1_id: this.o1.id,
-      object_2_id: this.o2.id,
-      rec_1_id: this.o1Object.rec_id,
-      rec_2_id: this.o2Object.rec_id,
+      object_1_id: this.o1.object.id,
+      object_2_id: this.o2.object.id,
+      rec_1_id: this.o1.recId,
+      rec_2_id: this.o2.recId,
       params: params,
     }
   }
 }
 
 
-class DataBaseObject extends BaseDbObject {
-  constructor(object_id, rec_id=0, title='', params=[], recIdOld=null) {
+export class DataBaseObject extends BaseDbObject {
+  constructor({object_id, rec_id = 0, title = '', photo = null, params = [], triggers = [], recIdOld = null}) {
     super(store.getters.baseClassifier, store.getters.baseClassifiers(object_id), params, recIdOld)
     this.object = store.getters.baseObject(object_id)
     this.recId = rec_id
     this.title = title
+    this.triggers = triggers
+    if(photo)
+      this.photo = photo
   }
 
   getRequestStructure() {
+    let formData = new FormData()
     let params = []
-    for(let param of this.params)
+    for(let param of this.params) {
       for (let newValue of param.new_values) {
-        let value = newValue.value
-        params.push({id: param.baseParam.id, value: value, date: newValue.date})
+        if(param.baseParam.type.startsWith('file')){
+          params.push({id: param.baseParam.id, value: params.length.toString(), date: newValue.date})
+          formData.append(params.length - 1, newValue.value.file)
+        } else {
+          let value = newValue.value
+          params.push({id: param.baseParam.id, value: value, date: newValue.date})
+        }
       }
+    }
     let request = {
       rec_id: this.recId,
       object_id: this.object.id,
@@ -188,7 +207,8 @@ class DataBaseObject extends BaseDbObject {
     }
     if(this.hasOwnProperty('recIdOld'))
       request.rec_id_old = this.recIdOld
-    return request
+    formData.append('data', JSON.stringify(request))
+    return formData
   }
 
   concatParams(concatObject) {
@@ -197,6 +217,10 @@ class DataBaseObject extends BaseDbObject {
       findParam.values = findParam.values.concat(_.cloneDeep(param.values))
       findParam.new_values = findParam.new_values.concat(_.cloneDeep(param.new_values))
     }
+  }
+
+  getGeneratedId() {
+    return `${this.object.id}-${this.recId}`
   }
 }
 

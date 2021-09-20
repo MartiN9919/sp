@@ -8,11 +8,7 @@ import traceback
 from django.contrib.auth.decorators import user_passes_test
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponseBadRequest, HttpResponse, JsonResponse
-from django.conf import settings
-from .logging_settings import PROJECT_LOG_REQUESTS
-
-
-
+from core.projectSettings.logging_settings import PROJECT_LOG_REQUESTS
 
 
 def request_wrap(f):
@@ -23,9 +19,10 @@ def request_wrap(f):
         try:
             return JsonResponse(f(request, *args, **kwargs), status=200)
         except Exception as e:
-            traceback.print_exc()  # DEBUG
-            return JsonResponse({'status': ' '+str(e)}, status=496)
-
+            if len(e.args) > 1:
+                return JsonResponse({'status': ' '+str(e)}, status=e.args[0])
+            else:
+                return JsonResponse({'status': ' '+str(e)}, status=498)
     wrap.__doc__ =f.__doc__
     wrap.__name__=f.__name__
     return wrap
@@ -149,14 +146,24 @@ logger = logging.getLogger(PROJECT_LOG_REQUESTS)
 
 def request_log(function):
     def _inner(request, *args, **kwargs):
-        logger.info(
-            str(request.user) + '.' +
-            str(request.user.id) + '|' +
-            request.get_host() + '|' +
-            request.method + ':' +
-            request.path + '|' +
-            str(request.body.decode("utf-8"))
-        )
+        try:
+            logger.info(
+                str(request.user) + '.' +
+                str(request.user.id) + '|' +
+                request.get_host() + '|' +
+                request.method + ':' +
+                request.path + '|' +
+                str(request.body.decode("utf-8"))
+            )
+        except:
+            logger.info(
+                str(request.user) + '.' +
+                str(request.user.id) + '|' +
+                request.get_host() + '|' +
+                request.method + ':' +
+                request.path + '|' +
+                request.POST['data']
+            )
         return function(request, *args, **kwargs)
 
     return _inner

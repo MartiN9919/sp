@@ -1,5 +1,5 @@
 <template>
-  <custom-tooltip>
+  <custom-tooltip bottom>
     <template v-slot:activator="{ on }">
       <v-chip
         @click:close="$emit('deleteActiveAnalytics', analytics)"
@@ -9,16 +9,11 @@
         outlined v-on="on" class="ma-1"
       >
         <p class="text-formatter-for-window-size font-for-color-background mb-0">{{ analytics.name }}</p>
-        <v-menu v-if="'fc' in analytics" offset-y :close-on-content-click=false z-index="10001">
-          <template v-slot:activator="{ on }">
-            <v-icon right v-on="on">mdi-brush</v-icon>
-          </template>
-          <v-color-picker v-model="color" hide-inputs></v-color-picker>
-        </v-menu>
+        <custom-color-picker v-if="analytics.hasOwnProperty('fc')" v-model="color"></custom-color-picker>
       </v-chip>
     </template>
     <template v-slot:body>
-      <div class="my-2">
+      <div class="ma-2">
         <table>
           <tr>
             <th>Название переменной</th>
@@ -40,10 +35,12 @@
 </template>
 
 <script>
-import CustomTooltip from "../../../WebsiteShell/UI/customTooltip";
+import CustomTooltip from "../../../WebsiteShell/UI/customTooltip"
+import CustomColorPicker from "@/components/WebsiteShell/UI/customColorPicker"
+
 export default {
   name: 'chipAnalytics',
-  components: { CustomTooltip, },
+  components: {CustomColorPicker, CustomTooltip},
   props: {
     analytics: Object,
     selectedTreeViewItem: Object

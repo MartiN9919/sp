@@ -1,4 +1,3 @@
-
 export default class CONST {
   static URL = class {
     static SERVER_IP = '127.0.0.1:8000/';
@@ -13,6 +12,7 @@ export default class CONST {
 
 
   static API = class {
+    static BASE_PREFIX = 'api'
     static OBJ = class {
       static GEOMETRY_TREE = 'objects/geometry_tree/';
       static GEOMETRY      = 'objects/geometry/';
