@@ -1,37 +1,65 @@
 <template>
-  <div @click.capture="activeObjects=[]">
+  <div>
     <screen ref="screen">
-      <g v-for="object in graphObjects" :key="object.id" @wheel.prevent.stop="scroll(object, $event)" @click.right="menuShow(object, $event)" @click.prevent="activateObject(object)" @click.ctrl.stop="activateObject(object)">
-        <v-label :ref="`label-${object.id}`" v-show="getTooltipStateObject(object)" :element="object" connector>
+      <g
+        :ref="`object-${object.id}`"
+        v-for="object in graphObjects" :key="object.id"
+        @wheel.prevent.stop="scroll(object, $event)"
+        @click.right="menuShow(object, $event)"
+        @mousedown.capture="selectObject(object)"
+      >
+        <node :ref="`node-${object.id}`" :data="object">
+          <body-object
+            :node="object"
+            :show-triggers="getTriggersStateObject(object)"
+          ></body-object>
+        </node>
+        <v-label
+          :ref="`label-${object.id}`"
+          v-show="getTooltipStateObject(object)"
+          :element="object"
+        >
           <information-label
-              :size-node="object.size"
-              :params="object.object.params"
-              :allow-params="objectClassifiersSettings(object.object.object.id)"
-              @update="updateLabel(object.id)"
+            :size-node="object.size"
+            :params="getObjectClassifiers(object)"
+            @update="updateLabel(object.id)"
           ></information-label>
         </v-label>
-        <node :ref="`node-${object.id}`" :data="object">
-          <body-object :node="object" :show-triggers="getTriggersStateObject(object)" :status="activeObjects.includes(object)"></body-object>
-        </node>
         <name-object
-            :visible="getTitleStateObject(object)"
-            :position="{x: object.x + object.width / 2 - object.size / 2, y: object.y + object.height}"
-            :title="object.object.title"
-            :size-node="object.size"
+          :visible="getTitleStateObject(object)"
+          :position="getTitlePosition(object)"
+          :title="object.object.title"
+          :size-node="object.size"
         ></name-object>
       </g>
-      <g v-for="relation in graphRelations" :key="relation.id" @wheel.prevent.stop="scrollRelation(relation, $event)">
-        <v-label :ref="`label-${relation.id}`" :element="relation" :edge-coordinates="getCoordinatesEdge(relation.id)" connector>
+      <g
+        v-for="relation in graphRelations" :key="relation.id"
+        @wheel.prevent.stop="scrollRelation(relation, $event)"
+      >
+        <v-label
+          :ref="`label-${relation.id}`"
+          v-show="getTooltipStateRelation(relation)"
+          :edge-coordinates="getCoordinatesEdge(relation.id)"
+          :element="relation"
+        >
           <information-label
-              :size-node="relation.size"
-              :params="relation.relation.params"
-              :allow-params="allowRelations"
+            :size-node="relation.size"
+            :params="relation.relation.params"
           ></information-label>
         </v-label>
-        <edge :ref="`edge-${relation.id}`" :data="relation" :nodes="graphObjects"></edge>
+        <edge
+          :ref="`edge-${relation.id}`"
+          :data="relation"
+          :nodes="graphObjects"
+        ></edge>
       </g>
     </screen>
-    <context-menu-nested ref="contextMenu" :form="this" :items="contextMenu" color="teal"></context-menu-nested>
+    <context-menu-nested
+      ref="contextMenu"
+      :form="this"
+      :items="contextMenu"
+      color="teal"
+    ></context-menu-nested>
   </div>
 </template>
 
@@ -45,14 +73,13 @@ import BodyObject from "@/components/Graph/WorkSpace/object/bodyObject"
 import NameObject from "@/components/Graph/WorkSpace/object/nameObject"
 import InformationLabel from "@/components/Graph/WorkSpace/object/informationLabel"
 import ContextMenuNested from "@/components/WebsiteShell/ContextMenu/contextMenuNested"
-import {mapGetters} from "vuex"
+import {mapActions, mapGetters} from "vuex"
 
 export default {
   name: "graphArea",
   components: {ContextMenuNested, Screen, Node, Edge, VLabel, BodyObject, NameObject, InformationLabel},
   data: () => ({
     graph: new Graph(),
-    activeObjects: [],
     objectWithActivatedMenu: null,
   }),
   computed: {
@@ -109,23 +136,37 @@ export default {
     }
   },
   methods: {
-    activateObject(object) {
-      let indexObject = this.activeObjects.findIndex(o => o === object)
-      if(indexObject === -1)
-        this.activeObjects.push(object)
-      else this.activeObjects.splice(indexObject, 1)
+    selectObject(object) {
+      this.graphObjects.push(object)
+      this.graphObjects.splice(this.graphObjects.findIndex(o => o === object), 1)
     },
     setChangeObject(event) {
       console.log(event)
+    },
+    getObjectClassifiers(object) {
+      let enabledClassifiers = this.objectClassifiersSettings(object.object.object.id)
+      return object.object.params.filter(p => enabledClassifiers.includes(p.baseParam.id) && p.values.length !== 0)
+    },
+    getTitlePosition(object) {
+      return {x: object.x + object.width / 2 - object.size / 2, y: object.y + object.height}
     },
     getTitleStateObject(object) {
       return this.globalDisplaySettings.showGlobalTitle.state && object.object.showTitle
     },
     getTooltipStateObject(object) {
+      let globalState = this.globalDisplaySettings.showGlobalTooltipObject.state
+      let classifiersLength = this.getObjectClassifiers(object).length
+      let localState = object.object.showTooltip
       this.$nextTick(() => {
         this.updateLabel(object.id)
       })
-      return this.globalDisplaySettings.showGlobalTooltipObject.state && object.object.showTooltip
+      return globalState && classifiersLength && localState
+    },
+    getTooltipStateRelation(relation) {
+      this.$nextTick(() => {
+        this.updateLabel(relation.id)
+      })
+      return this.globalDisplaySettings.showGlobalTooltipRelation.state
     },
     getTriggersStateObject(object) {
       return this.globalDisplaySettings.showGlobalTriggers.state && object.object.showTriggers

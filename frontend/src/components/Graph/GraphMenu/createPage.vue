@@ -4,7 +4,7 @@
       <selector-object
         v-model="selectedEditableObject"
         :items="baseObjects"
-        class="selector-object py-2"
+        class="selector-object py-2 v-list--dense"
       ></selector-object>
       <v-tabs id="tabs" v-model="activeTab" :color="sliderColor" grow show-arrows center-active :class="tabClasses">
         <v-tab v-for="(item, key) in editableObjects" :key="key">
@@ -56,7 +56,7 @@ export default {
     controlButtons: function () {
       return [
         {
-          title: 'Новый',
+          title: 'Очистить',
           action: 'recreate',
           disabled: !!(
             this.editableObjects[this.activeTab]

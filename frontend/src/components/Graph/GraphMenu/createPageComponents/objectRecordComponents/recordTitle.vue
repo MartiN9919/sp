@@ -1,6 +1,6 @@
 <template>
   <v-hover v-slot="{ hover }">
-    <v-expansion-panel-header class="py-0 px-2" :color="opened ? '#bfbfbf' : '#f2f2f2'">
+    <v-expansion-panel-header class="py-0 px-2" :color="opened ? '#bfbfbf' : '#f2f2f2'" expand-icon="">
       <template v-slot:actions="">
         <v-icon
           style="transform: none"

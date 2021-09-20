@@ -16,7 +16,7 @@ export default {
   props: {
     element: {type: Object, required: true},
     useDrag: {type: Boolean, default: false},
-    connector: {type: Boolean, default: false},
+    connector: {type: Boolean, default: true},
     edgeCoordinates: {type: Object, default: null},
   },
   data() {
@@ -30,7 +30,7 @@ export default {
   },
   mounted () {
     this.checkTypeElement()
-    this.offset = {x: -this.node.width/2, y: -((this.element.height || 0)*4 + this.node.height)}
+    this.offset = {x: -this.node.width/2, y: -((this.element.height || 0) + this.node.height)}
     this.oldNodeSize = {width: this.node.width, height: this.node.height}
   },
   methods: {
@@ -74,7 +74,7 @@ export default {
         this.oldNodeSize.width = this.node.width
       }
     },
-    updateNodeOffset (x=0, y=0, totalOffset, offsetX, offsetY) {
+    updateNodeOffset (x=0, y=0, totalOffset) {
       if(totalOffset < this.element.width *3){
           this.offset.x += (x || 0)
           this.offset.y += (y || 0)
@@ -84,15 +84,6 @@ export default {
       if(totalOffset < this.node.width*2){
         this.offset.x += (x || 0)
         this.offset.y += (y || 0)
-      }
-      else{
-        const el = document.getElementById(this.element.id)
-        if(this.edgeCoordinates){
-          if(typeof(x) === "number" && x !== 0 && y !== 0){
-            console.log(x, y)
-            console.log(this.edgeCoordinates.x2 - this.edgeCoordinates.x1, this.edgeCoordinates.y2 - this.edgeCoordinates.y1)
-          }
-        }
       }
     },
     onDrag (d) {

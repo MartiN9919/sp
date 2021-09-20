@@ -6,7 +6,7 @@
     ></global-settings>
     <object-settings :classifiers="getClassifiers" @setClassifier="setClassifier">
       <v-list-item class="px-2">
-        <selector-object v-model="idObjectSettings" start-object></selector-object>
+        <selector-object v-model="idObjectSettings" start-object ></selector-object>
       </v-list-item>
     </object-settings>
     <trigger-settings :triggers="getTriggers" @setTrigger="setTrigger">

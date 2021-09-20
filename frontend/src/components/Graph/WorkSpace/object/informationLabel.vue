@@ -1,7 +1,7 @@
 <template>
   <v-card hover width="fit-content">
     <table class="table" :style="{padding: sizeNode / 180}">
-      <tr v-for="param in classifiers" :key="param.id" v-if="param.values.length" :style="{fontSize: sizeNode/40}">
+      <tr v-for="param in params" :key="param.id" v-if="param.values.length" :style="{fontSize: sizeNode/40}">
         <td style="white-space: nowrap">{{param.baseParam.title}}</td>
         <td class="body-row" :style="{minWidth: sizeNode / 2}" v-if="param.values[0].value">{{param.values[0].value}}</td>
       </tr>
@@ -18,17 +18,8 @@ export default {
   components: {CustomTooltip},
   props: {
     params: Array,
-    allowParams: Array,
     sizeNode: Number,
   },
-  computed: {
-    classifiers: function () {
-      return this.params.filter(param =>this.allowParams.includes(param.baseParam.id))
-    }
-  },
-  watch: {
-    classifiers: function () { this.$emit('update') }
-  }
 }
 </script>
 
