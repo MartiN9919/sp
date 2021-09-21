@@ -5,8 +5,9 @@
         :ref="`object-${object.id}`"
         v-for="object in graphObjects" :key="object.id"
         @wheel.prevent.stop="scroll(object, $event)"
-        @click.right="menuShow($event, object)"
+        @click.stop.right="menuShow($event, object)"
         @mousedown.capture="selectObject(object)"
+        @click.ctrl="addChoosingObject(object)"
       >
         <node :ref="`node-${object.id}`" :data="object">
           <body-object
@@ -80,7 +81,7 @@ export default {
   name: "graphArea",
   components: {ContextMenuNested, Screen, Node, Edge, VLabel, BodyObject, NameObject, InformationLabel},
   data: () => ({
-    activeObjects: [],
+    choosingObjects: [],
   }),
   mixins : [
       bodyContextMenu
@@ -90,6 +91,9 @@ export default {
     allowRelations() { return Array.from(this.$store.state.graph.rootInstances.relations, r => {return r.id}) },
   },
   methods: {
+    addChoosingObject(choosingObject){
+      this.choosingObjects.push(choosingObject)
+    },
     selectObject(object) {
       this.graphObjects.push(object)
       this.graphObjects.splice(this.graphObjects.findIndex(o => o === object), 1)
