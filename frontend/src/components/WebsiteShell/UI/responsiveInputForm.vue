@@ -24,7 +24,7 @@ export default {
   components: {phoneInput, geometryInput, booleanInput, dateInput, dateTimeInput, numberInput, textInput, selectorInput, fileInput, unknownInput},
   props: {
     inputString: [ String, Object, Boolean, Array, Number, Function],
-    type: String,
+    type: {type: String, default: ''},
   },
   model: { prop: 'inputString', event: 'changeInputString'},
   computed: {

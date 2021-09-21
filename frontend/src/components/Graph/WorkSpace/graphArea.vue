@@ -27,7 +27,7 @@
           ></information-label>
         </v-label>
         <name-object
-          :visible="getTitleStateObject(object)"
+          v-show="getTitleStateObject(object)"
           :position="getTitlePosition(object)"
           :title="object.object.title"
           :size-node="object.size"

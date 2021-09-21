@@ -1,5 +1,5 @@
 <script>
-import {mapActions} from "vuex";
+import {mapActions, mapGetters} from "vuex";
 
 export default {
   name: "bodyContextMenu",
@@ -7,19 +7,35 @@ export default {
     objectWithActivatedMenu: null,
   }),
   computed: {
+    ...mapGetters(['baseClassifiers']),
     changeTitle: {
-      get: function () { return this.objectWithActivatedMenu.object.showTitle },
-      set: function (value) { this.objectWithActivatedMenu.object.showTitle = value }
+      get: function () {
+        return this.objectWithActivatedMenu.object.showTitle
+      },
+      set: function () {
+        this.objectWithActivatedMenu.object.showTitle = !this.objectWithActivatedMenu.object.showTitle
+      }
     },
     changeTooltip: {
-      get: function () { return this.objectWithActivatedMenu.object.showTooltip },
-      set: function (value) { this.objectWithActivatedMenu.object.showTooltip = value }
+      get: function () {
+        return this.objectWithActivatedMenu.object.showTooltip
+      },
+      set: function () {
+        this.objectWithActivatedMenu.object.showTooltip = !this.objectWithActivatedMenu.object.showTooltip
+      }
     },
     changeTriggers: {
-      get: function () { return this.objectWithActivatedMenu.object.showTriggers },
-      set: function (value) { this.objectWithActivatedMenu.object.showTriggers = value }
+      get: function () {
+        return this.objectWithActivatedMenu.object.showTriggers
+      },
+      set: function () {
+        this.objectWithActivatedMenu.object.showTriggers = !this.objectWithActivatedMenu.object.showTriggers
+      }
     },
     contextMenu: function () {
+      console.log(Array.from(this.baseClassifiers(this.objectWithActivatedMenu?.object.id), o => {
+        return {id: o.id, title: o.title, model: 'classifier'}
+      }))
       if(this.objectWithActivatedMenu){
         return [
           {
@@ -52,6 +68,7 @@ export default {
               },
               {
                 title: 'Классификаторы',
+                menu: []
               },
             ],
           }
@@ -74,7 +91,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['reorderGraph', 'setEditableRelation']),
+    ...mapActions(['reorderGraph', 'setEditableRelation', 'setNavigationDrawerStatus', 'setToolStatus', 'setActiveTool']),
     menuShow(event, object=null) {
       this.objectWithActivatedMenu = object
       this.$refs.contextMenu.show_root(event.x, event.y)
@@ -83,16 +100,18 @@ export default {
       console.log(event)
     },
     checkRelationCreateStatus(){
-      if(this.choosingObjects.length === 2){
-        return true
-      }
-      if(this.choosingObjects.length === 3 && this.choosingObjects.findIndex(o => o.object.object.id === 20) !== -1){
-        return true
-      }
+      return this.choosingObjects.length === 3
+        && this.choosingObjects.findIndex(o => o.object.object.id === 20) !== -1
+        || this.choosingObjects.length === 2
     },
     createRelation(){
-      let edge = this.graphRelations.find(edge =>  this.choosingObjects.includes(edge.relation.o1) && this.choosingObjects.includes(edge.relation.o2))
+      let edge = this.graphRelations.find(
+          edge =>  this.choosingObjects.includes(edge.relation.o1) && this.choosingObjects.includes(edge.relation.o2)
+      )
       this.setEditableRelation(edge.relation)
+      this.setNavigationDrawerStatus(true)
+      this.setToolStatus({tool: 'createRelationPage', status: false})
+      this.setActiveTool('createRelationPage')
     },
   },
 

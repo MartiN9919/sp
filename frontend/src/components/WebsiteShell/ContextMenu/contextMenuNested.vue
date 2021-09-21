@@ -130,10 +130,10 @@
               <!-- ITEM ACTION: SWITCH -->
               <v-switch
                 v-if="item.model"
-                v-model="form[item.model]"
+                :input-value="getDeepValue(item.model)"
                 :disabled="item.disabled"
                 :color="item.color || color"
-                @click.stop=""
+                readonly
               />
 
             </v-list-item-action>
@@ -174,6 +174,10 @@ export default {
   }),
 
   methods: {
+    getDeepValue (value) {
+      const _ = require("lodash")
+      return _.get(this.form, value)
+    },
     // Показать первый уровень меню, вызывается из родителя
     show_root(x, y) {
       this.open      = false;
@@ -192,7 +196,7 @@ export default {
     on_click_item(item, index) {
       // ITEM: SWITCH
       if (item.model) {
-        this.form[item.model] = !this.form[item.model];
+        this.form[item.model] = item;
       }
 
       // ITEM: ACTION
