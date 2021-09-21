@@ -17,24 +17,20 @@ export default {
     addNewParamEditableRelation: (state, id) => state.editableRelation.addParam(id),
     deleteNewParamEditableRelation: (state, {id, param}) => state.editableRelation.deleteParam(id, param),
 
-    setEditableObjects: (state, object) => {
-      state.editableObjects = [object]
-    },
+    setEditableObjects: (state, object) => state.editableObjects = [object],
     resetEditableObjects: (state) => state.editableObjects = [state.editableObjects[0]],
     addEditableObjects: (state, object) => state.editableObjects.push(object),
-    addNewParamEditableObject: (state, {id, position}) => {
-      state.editableObjects[position].addParam(id)
-    },
-    deleteNewParamEditableObject: (state, {id, param, position}) => {
-      state.editableObjects[position].deleteParam(id, param)
-    }
+    addNewParamEditableObject: (state, {id, position}) => state.editableObjects[position].addParam(id),
+    deleteNewParamEditableObject: (state, {id, param, position}) => state.editableObjects[position].deleteParam(id, param)
   },
   actions: {
     setEditableRelation({getters, commit}, relation) {
-      commit('setEditableRelation', relation)
-      // commit('setEditableRelation', new DataBaseRelation(
-      //   relation.o1, relation.o2, relation.params
-      // ))
+      if (relation instanceof DataBaseRelation)
+        commit('setEditableRelation', relation)
+      else
+        commit('setEditableRelation', new DataBaseRelation(
+          relation.o1, relation.o2, relation.params
+        ))
     },
     addNewParamEditableRelation({commit}, relationId) {
       commit('addNewParamEditableRelation', relationId)
@@ -114,8 +110,8 @@ export default {
       let relation = getters.editableRelation
       return await postResponseAxios('objects/relation', relation.getRequestStructure(), {})
         .then(r => {
-          let object = {o1: relation.o1.id, r1: relation.o1Object.rec_id, o2: relation.o2.id, r2: relation.o2Object.rec_id}
-          // dispatch('addChoosingRelation', {object: object, relations: r.data})
+          let object = {o1: relation.o1.object.object.id, r1: relation.o1.object.recId, o2: relation.object.object.o2.id, r2: relation.o2.object.recId}
+          dispatch('addChoosingRelation', {object: object, relations: r.data})
           dispatch('setEditableRelation', Object.assign({}, object, r.data))
           return Promise.resolve(r.data)
         })
@@ -164,10 +160,10 @@ export class DataBaseRelation extends BaseDbObject {
         params.push({id: param.baseParam.id, value: value, date: newValue.date})
       }
     return {
-      object_1_id: this.o1.object.id,
-      object_2_id: this.o2.object.id,
-      rec_1_id: this.o1.recId,
-      rec_2_id: this.o2.recId,
+      object_1_id: this.o1.object.object.id,
+      object_2_id: this.o2.object.object.id,
+      rec_1_id: this.o1.object.recId,
+      rec_2_id: this.o2.object.recId,
       params: params,
     }
   }

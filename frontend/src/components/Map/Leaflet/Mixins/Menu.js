@@ -43,35 +43,35 @@ export default {
       get: function()    { return this.MAP_GET_TILE; },
     },
     prop_range: {
-      set: function(val) { this.MAP_ACT_RANGE_SHOW({on: val}); },
+      set: function(val) { this.MAP_ACT_RANGE_SHOW({on: !this.MAP_GET_RANGE_SHOW}); },
       get: function()    { return this.MAP_GET_RANGE_SHOW; },
     },
     prop_cluster: {
-      set: function(val) { this.MAP_ACT_CLUSTER({on: val}); },
+      set: function(val) { this.MAP_ACT_CLUSTER({on: !this.MAP_GET_CLUSTER}); },
       get: function()    { return this.MAP_GET_CLUSTER; },
     },
     prop_hint: {
-      set: function(val) { this.MAP_ACT_HINT({on: val}); },
+      set: function(val) { this.MAP_ACT_HINT({on: !this.MAP_GET_HINT}); },
       get: function()    { return this.MAP_GET_HINT; },
     },
     prop_legend: {
-      set: function(val) { this.MAP_ACT_LEGEND({on: val}); },
+      set: function(val) { this.MAP_ACT_LEGEND({on: !this.MAP_GET_LEGEND}); },
       get: function()    { return this.MAP_GET_LEGEND; },
     },
     prop_notify: {
-      set: function(val) { this.MAP_ACT_NOTIFY({on: val}); },
+      set: function(val) { this.MAP_ACT_NOTIFY({on: !this.MAP_GET_NOTIFY}); },
       get: function()    { return this.MAP_GET_NOTIFY; },
     },
     prop_scale: {
-      set: function(val) { this.MAP_ACT_SCALE({on: val}); },
+      set: function(val) { this.MAP_ACT_SCALE({on: !this.MAP_GET_SCALE}); },
       get: function()    { return this.MAP_GET_SCALE; },
     },
     prop_measure: {
-      set: function(val) { this.MAP_ACT_MEASURE({on: val}); },
+      set: function(val) { this.MAP_ACT_MEASURE({on: !this.MAP_GET_MEASURE}); },
       get: function()    { return this.MAP_GET_MEASURE; },
     },
     prop_logo: {
-      set: function(val) { this.MAP_ACT_LOGO({on: val}); },
+      set: function(val) { this.MAP_ACT_LOGO({on: !this.MAP_GET_LOGO}); },
       get: function()    { return this.MAP_GET_LOGO; },
     },
 

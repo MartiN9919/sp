@@ -39,7 +39,7 @@ export default {
   actions: {
     setNavigationDrawerStatus: ({ getters, commit }, status) => commit('setNavigationDrawerStatus', status),
     setDefaultValueActiveTool({ commit }) { commit('setDefaultValueActiveTool') },
-    setToolStatus({ commit }, playLoad) { commit('setToolStatus', playLoad) },
+    setToolStatus({ commit }, playLoad) { console.log(playLoad); commit('setToolStatus', playLoad) },
     setActiveTool({ commit }, tool) { commit('setActiveTool', tool) },
   }
 }

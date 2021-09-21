@@ -2,8 +2,8 @@
   <v-col>
     <div class="work-place">
       <div class="selector-object">
-        <p>{{`${editableRelation.o1.titleSingle}: ${editableRelation.o1Object.title}`}}</p>
-        <p>{{`${editableRelation.o2.titleSingle}: ${editableRelation.o2Object.title}`}}</p>
+        <p>{{`${editableRelation.o1.object.object.titleSingle}: ${editableRelation.o1.object.title}`}}</p>
+        <p>{{`${editableRelation.o2.object.object.titleSingle}: ${editableRelation.o2.object.title}`}}</p>
       </div>
       <v-form ref="form" v-model="valid">
         <object-record-area
