@@ -31,10 +31,10 @@ export default {
   },
   actions: {
     setEditableRelation({getters, commit}, relation) {
-      commit('setEditableRelation', new DataBaseRelation(
-        relation.o1, relation.o2, relation.r1, relation.r2,
-        getters.relations(relation)?.relations
-      ))
+      commit('setEditableRelation', relation)
+      // commit('setEditableRelation', new DataBaseRelation(
+      //   relation.o1, relation.o2, relation.params
+      // ))
     },
     addNewParamEditableRelation({commit}, relationId) {
       commit('addNewParamEditableRelation', relationId)

@@ -5,9 +5,9 @@
         :ref="`object-${object.id}`"
         v-for="object in graphObjects" :key="object.id"
         @wheel.prevent.stop="scroll(object, $event)"
-        @click.stop.right="menuShow($event, object)"
+        @mousedown.ctrl.capture="addChoosingObject(object)"
+        @click.right.prevent.stop="menuShow($event, object)"
         @mousedown.capture="selectObject(object)"
-        @click.ctrl="addChoosingObject(object)"
       >
         <node :ref="`node-${object.id}`" :data="object">
           <body-object
@@ -92,7 +92,13 @@ export default {
   },
   methods: {
     addChoosingObject(choosingObject){
-      this.choosingObjects.push(choosingObject)
+      let findIndex = this.choosingObjects.findIndex(object => object === choosingObject)
+      if(findIndex === -1){
+        this.choosingObjects.push(choosingObject)
+      } else{
+        this.choosingObjects.splice(findIndex,1)
+      }
+      console.log(this.choosingObjects)
     },
     selectObject(object) {
       this.graphObjects.push(object)
