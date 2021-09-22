@@ -45,6 +45,7 @@ export default {
     SCRIPT_GET_ITEM_COLOR_LEGEND: state => ind => state.selectedTemplate.activeAnalysts[ind].color_legend || [],
     SCRIPT_GET_ITEM_ICON:         state => ind => state.selectedTemplate.activeAnalysts[ind].icon         || 'mdi-star',
     SCRIPT_GET_ITEM_REFRESH:      state => ind => state.selectedTemplate.activeAnalysts[ind].refresh,
+    SCRIPT_GET_ITEM_SEL:          state => ind => state.selectedTemplate.activeAnalysts[ind]?.sel         || false,
 
     // работает, но не используется
     // SCRIPT_GET_ITEM_ID:        state => ind => state.selectedTemplate.activeAnalysts[ind].id           || '',
@@ -101,8 +102,34 @@ export default {
       item_copy.refresh = new Date().getTime();
       state.selectedTemplate.activeAnalysts.push(item_copy);
     },
+
     SCRIPT_MUT_ITEM_DEL:   (state, id)      => state.selectedTemplate.activeAnalysts.splice(id, 1),
     SCRIPT_MUT_ITEM_COLOR: (state, param)   => state.selectedTemplate.activeAnalysts[param.ind].color = param.color,
+
+    // param.obj_id
+    // param.id
+    SCRIPT_MUT_SEL_SET:    (state, param)     => {
+      let is_equ;
+      for (let item_script of state.selectedTemplate.activeAnalysts) {
+        is_equ = false;
+        for (let item of item_script.fc.features) {
+          if ((item.id == param?.id) && (item.obj_id == param?.obj_id)) {
+            is_equ = true;
+            break;
+          }
+        }
+        if (is_equ) {
+          console.log(11, item_script)
+          item_script.sel = true;
+        } else {
+          if (item_script.sel) {
+            console.log(22, item_script)
+            delete item_script.sel;
+          }
+        }
+      }
+    },
+
   },
 
   actions: {
@@ -131,6 +158,16 @@ export default {
         })
         .catch(() => {})
     },
+
+
+    // добавить/удалить выделение
+    // param.obj_id
+    // param.id
+    SCRIPT_ACT_SEL_SET({ commit }, param) {
+      commit('SCRIPT_MUT_SEL_SET', param)
+    },
+
+
     getTemplatesList ({ commit, dispatch }, config = {}) {
       return getResponseAxios('script/templates/', config)
         .then(response => { { commit('loadTemplatesList', response.data); dispatch('MAP_ACT_RANGE_TS'); } })

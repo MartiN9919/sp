@@ -12,6 +12,10 @@
       @dblclick="on_map_dblclick"
       @contextmenu="on_menu_show"
     >
+    <!--
+            @contextmenu="on_menu_show"
+
+    -->
 
       <!-- ПОДЛОЖКА -->
       <l-tile-layer
@@ -30,7 +34,7 @@
           :options="cluster_options(map_ind)"
         >
           <l-geo-json
-              ref="geoJson"
+            ref="geoJson"
             :geojson="data_normalize(map_ind)"
             :options="geojson_options(map_ind)"
           />
@@ -216,6 +220,7 @@ export default {
       'SCRIPT_GET_ITEM_LINE',
       'SCRIPT_GET_ITEM_POLYGON',
       'SCRIPT_GET_ITEM_ICON',
+      'SCRIPT_GET_ITEM_SEL',
     ]),
 
     // FeatureCollection РЕДАКТИРУЕМЫХ объектов
@@ -229,6 +234,7 @@ export default {
   methods: {
     ...mapActions([
       'MAP_ACT_EDIT',
+      'SCRIPT_ACT_SEL_SET',
       'appendErrorAlert',
       'setNavigationDrawerStatus',
       'setActiveTool',
@@ -322,9 +328,12 @@ export default {
 
     geojson_options(map_ind) {
       let self = this;
+      let sel;
       return {
         // для каждого маркера / фигуры
         onEachFeature: function(feature, layer) {
+          sel = this.SCRIPT_GET_ITEM_SEL(feature.ind);
+
           // control-легенда: установка onHover
           // события повторно вызывают this.data_normalize_color
           let self = this;
@@ -332,6 +341,12 @@ export default {
           layer.on('mouseout',  function(e) {
             if (!e.originalEvent.ctrlKey) self.hover_map_ind = -1;
             self.hover_feature_ind = -1;
+          });
+          layer.on('click', function(e) {
+            self.SCRIPT_ACT_SEL_SET({
+              obj_id: e.target.feature.obj_id,
+              id:     e.target.feature.id,
+            });
           });
 
           // подсказка
@@ -375,6 +390,7 @@ export default {
             fillOpacity: .3,
             color:       self.SCRIPT_GET_ITEM_COLOR(map_ind),
             fillColor:   feature.color, // set in mixin
+            className:   self.SCRIPT_GET_ITEM_SEL(map_ind)?'pulse':'',
           };
         },
       };
@@ -465,4 +481,12 @@ export default {
   @import "~@/components/Map/Leaflet/Markers/Font.css";
 
   @import "~@/components/Map/Leaflet/Mixins/Control.css";
+
+  div::v-deep .pulse { animation: 1s ease 0s infinite normal none running pulse; }
+  @keyframes pulse {
+    0%   { opacity: 1;  }
+    50%  { opacity: .4; }
+    100% { opacity: 1;  }
+  }
+
 </style>
