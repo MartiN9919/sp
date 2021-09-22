@@ -175,5 +175,6 @@ def get_keys_by_object(object):
         temp.pop('rel_obj_2_id')
         if temp.get('list_id'):
             temp['list_id'] = get_list_by_top_id(int(temp.get('list_id')))
+            temp['list_id'].sort(key=lambda x: x['value'])
         result.append(temp)
     return result

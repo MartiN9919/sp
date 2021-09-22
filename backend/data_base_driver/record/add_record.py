@@ -122,7 +122,7 @@ def add_data(user, group_id, object, files=None):
                 if type(temp_set) == set:
                     temp_set.intersection_update(set(find_key_value_http(object.get('object_id'), item[0], item[1])))
                 else:
-                    temp_set = set(find_key_value_http(object.get('object_id'), item[0], item[1]))
+                    temp_set = set(find_key_value_http(object.get('object_id'), item[0], item[1], group_id))
         if temp_set and nums_needed == len(
                 [item for item in get_keys_by_object(object.get('object_id')) if item['need'] == 1]):
             return {'objects': [get_object_record_by_id_http(object.get('object_id'), item, group_id)
