@@ -71,7 +71,7 @@ export default {
   model: { prop: 'inputString', event: 'changeInputString', },
   props: {
     inputString:  Object,
-    modeEnabled:  { type: Object, default: () => ({ line: true, polygon: true }) }, // доступные элементы
+    modeEnabled:  { type: Object, default: () => ({ line: true, polygon: true, point: true }) }, // доступные элементы
     modeSelected: { type: String, default: () => undefined},                        // режим ввода по умолчанию
 
     rules: {

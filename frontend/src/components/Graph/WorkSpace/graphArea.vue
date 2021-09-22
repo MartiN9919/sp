@@ -98,7 +98,6 @@ export default {
       } else{
         this.choosingObjects.splice(findIndex,1)
       }
-      console.log(this.choosingObjects)
     },
     selectObject(object) {
       this.graphObjects.push(object)
