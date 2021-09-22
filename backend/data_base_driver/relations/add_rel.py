@@ -47,8 +47,15 @@ def add_rel(group_id, object_1_id, rec_1_id, object_2_id, rec_2_id, params, doc_
         else:
             result_list.append({'id': int(temp['key_id']), 'values': [{'val': temp['val'],
                                                                        'date': get_date_time_from_sec(temp['sec'])}]})
-    return get_object_relation(group_id, object_1_id, rec_1_id, [{'object_id': object_2_id, 'rec_id': rec_2_id}])
-    # return result_list
+    return {
+        'object_id_1': object_1_id,
+        'rec_id_1': rec_1_id,
+        'object_id_2': object_2_id,
+        'rec_id_2': rec_2_id,
+        'params': get_object_relation(group_id, object_1_id, rec_1_id, [{'object_id': object_2_id, 'rec_id': rec_2_id}])
+        [0]['relations']
+    }
+
 
 
 def add_rel_by_other_object(group_id, object_id, rec_id, other_object_id, other_rec_id):
