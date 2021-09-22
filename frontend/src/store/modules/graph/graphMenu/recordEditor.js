@@ -28,9 +28,7 @@ export default {
       if (relation instanceof DataBaseRelation)
         commit('setEditableRelation', relation)
       else
-        commit('setEditableRelation', new DataBaseRelation(
-          relation.o1, relation.o2, relation.params
-        ))
+        commit('setEditableRelation', new DataBaseRelation(relation.o1, relation.o2, relation.params))
     },
     addNewParamEditableRelation({commit}, relationId) {
       commit('addNewParamEditableRelation', relationId)
@@ -146,7 +144,7 @@ class BaseDbObject {
 export class DataBaseRelation extends BaseDbObject {
   constructor(o1, o2, params=[]) {
     let getter = store.getters.baseRelation
-    let baseObject = store.getters.baseRelations({f_id: o1.object.id, s_id: o2.object.id})
+    let baseObject = store.getters.baseRelations({f_id: o1.object.object.id, s_id: o2.object.object.id})
     super(getter, baseObject, params)
     this.o1 = o1
     this.o2 = o2

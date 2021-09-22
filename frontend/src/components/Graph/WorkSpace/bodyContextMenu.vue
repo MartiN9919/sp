@@ -33,9 +33,6 @@ export default {
       }
     },
     contextMenu: function () {
-      console.log(Array.from(this.baseClassifiers(this.objectWithActivatedMenu?.object.id), o => {
-        return {id: o.id, title: o.title, model: 'classifier'}
-      }))
       if(this.objectWithActivatedMenu){
         return [
           {
@@ -97,7 +94,7 @@ export default {
       this.$refs.contextMenu.show_root(event.x, event.y)
     },
     setChangeObject(event) {
-      console.log(event)
+
     },
     checkRelationCreateStatus(){
       return this.choosingObjects.length === 3
@@ -106,9 +103,12 @@ export default {
     },
     createRelation(){
       let edge = this.graphRelations.find(
-          edge =>  this.choosingObjects.includes(edge.relation.o1) && this.choosingObjects.includes(edge.relation.o2)
+          e =>  this.choosingObjects.includes(e.relation.o1) && this.choosingObjects.includes(e.relation.o2)
       )
-      this.setEditableRelation(edge.relation)
+      if(edge)
+        this.setEditableRelation(edge.relation)
+      else
+        this.setEditableRelation({o1: this.choosingObjects[0], o2: this.choosingObjects[1], params: []})
       this.setNavigationDrawerStatus(true)
       this.setToolStatus({tool: 'createRelationPage', status: false})
       this.setActiveTool('createRelationPage')
