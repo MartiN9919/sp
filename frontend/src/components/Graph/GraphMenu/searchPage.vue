@@ -67,17 +67,12 @@ export default {
   },
   methods: {
     ...mapActions(['setRootSearchTreeItem', 'changeSearchTreeItem', 'setActiveTool', 'addSearchTreeItem',
-    'findObjectsOnServer', 'removeSearchTreeItem', 'setEditableObject', 'getObjectFromServer', 'addObjectToGraph', 'getBaseClassifiers']),
+    'findObjectsOnServer', 'removeSearchTreeItem', 'setEditableObject', 'addObjectToGraph']),
     selectObject(object) {
-      this.getObjectFromServer({params: {record_id: object.rec_id, object_id: object.object_id}})
-        .then(response => { this.addObjectToGraph(response) })
+      this.addObjectToGraph({recId: object.rec_id, objectId: object.object_id})
     },
     changeObject(object) {
-      this.getObjectFromServer({params: {record_id: object.rec_id, object_id: object.object_id}})
-      .then(response => {
-        this.setEditableObject(response)
-        this.setActiveTool('createPage')
-      })
+      this.setEditableObject({recId: object.rec_id, objectId: object.object_id})
     },
     findObject () {
       this.findObjectsOnServer()

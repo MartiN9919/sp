@@ -24,11 +24,10 @@ export default {
     deleteNewParamEditableObject: (state, {id, param, position}) => state.editableObjects[position].deleteParam(id, param)
   },
   actions: {
-    setEditableRelation({getters, commit}, relation) {
-      if (relation instanceof DataBaseRelation)
-        commit('setEditableRelation', relation)
-      else
-        commit('setEditableRelation', new DataBaseRelation(relation.o1, relation.o2, relation.params))
+    setEditableRelation({getters, commit}, objects) {
+      let edge = getters.graphRelations.find(
+        e => [e.relation.o1.id, e.relation.o2.id].every(r => Array.from(objects, o => o.id).includes(r)))
+      commit('setEditableRelation', _.cloneDeep(edge?.relation) || new DataBaseRelation(...objects))
     },
     addNewParamEditableRelation({commit}, relationId) {
       commit('addNewParamEditableRelation', relationId)
@@ -36,25 +35,22 @@ export default {
     deleteNewParamEditableRelation({commit}, playLoad) {
       commit('deleteNewParamEditableRelation', playLoad)
     },
-    setEditableObject({commit}, object) {
-      commit('setEditableObjects', new DataBaseObject({
-        object_id: object.object_id,
-        rec_id: object.rec_id,
-        title: object.title,
-        params: object.params
-      }))
+    setEditableObject({commit, dispatch}, {objectId, recId=null}) {
+      if(!recId)
+        commit('setEditableObjects', new DataBaseObject({object_id: objectId}))
+      else
+        dispatch('getObjectFromServer', {params: {record_id: recId, object_id: objectId}})
+          .then(r => {
+            commit('setEditableObjects', new DataBaseObject(r))
+            dispatch('setNavigationDrawerStatus', true)
+            dispatch('setActiveTool', 'createObjectPage')
+          })
     },
     addEditableObjects({getters, commit}, objects) {
       commit('resetEditableObjects')
+      const zeroObject = getters.editableObjects[0]
       for(let object of objects) {
-        let zeroObject = getters.editableObjects[0]
-        let newObject = new DataBaseObject({
-          object_id: object.object_id,
-          rec_id: object.rec_id,
-          title: object.title,
-          params: object.params,
-          recIdOld: zeroObject.recId
-        })
+        let newObject = new DataBaseObject(Object.assign(object, {recIdOld: zeroObject.recId}))
         newObject.concatParams(zeroObject)
         commit('addEditableObjects', newObject)
       }
@@ -96,7 +92,8 @@ export default {
       )
         .then(r => {
           if(r.data.hasOwnProperty('object')) {
-            dispatch('setEditableObject', r.data.object)
+            dispatch('setEditableObject', {objectId: r.data.object.object_id, recId: r.data.object.rec_id})
+            dispatch('addObjectToGraph', {objectId: r.data.object.object_id, recId: r.data.object.rec_id})
           }
           if(r.data.hasOwnProperty('objects'))
             dispatch('addEditableObjects', r.data.objects)
@@ -108,9 +105,9 @@ export default {
       let relation = getters.editableRelation
       return await postResponseAxios('objects/relation', relation.getRequestStructure(), {})
         .then(r => {
-          let object = {o1: relation.o1.object.object.id, r1: relation.o1.object.recId, o2: relation.object.object.o2.id, r2: relation.o2.object.recId}
-          dispatch('addChoosingRelation', {object: object, relations: r.data})
-          dispatch('setEditableRelation', Object.assign({}, object, r.data))
+          let object = {o1: r.data.object_id_1, r1: r.data.rec_id_1, o2: r.data.object_id_2, r2: r.data.rec_id_2}
+          dispatch('addRelationToGraph', {object: object, relations: r.data.params})
+          dispatch('setEditableRelation', [relation.o1, relation.o2])
           return Promise.resolve(r.data)
         })
         .catch(e => { return Promise.reject(e) })
@@ -169,14 +166,10 @@ export class DataBaseRelation extends BaseDbObject {
 
 
 export class DataBaseObject extends BaseDbObject {
-  constructor({object_id, rec_id = 0, title = '', photo = null, params = [], triggers = [], recIdOld = null}) {
+  constructor({object_id, rec_id = 0, params = [], recIdOld = null}) {
     super(store.getters.baseClassifier, store.getters.baseClassifiers(object_id), params, recIdOld)
     this.object = store.getters.baseObject(object_id)
     this.recId = rec_id
-    this.title = title
-    this.triggers = triggers
-    if(photo)
-      this.photo = photo
   }
 
   getRequestStructure() {
@@ -187,10 +180,7 @@ export class DataBaseObject extends BaseDbObject {
         if(param.baseParam.type.startsWith('file')){
           params.push({id: param.baseParam.id, value: params.length.toString(), date: newValue.date})
           formData.append(params.length - 1, newValue.value.file)
-        } else {
-          let value = newValue.value
-          params.push({id: param.baseParam.id, value: value, date: newValue.date})
-        }
+        } else params.push({id: param.baseParam.id, value: newValue.value, date: newValue.date})
       }
     }
     let request = {
@@ -211,10 +201,6 @@ export class DataBaseObject extends BaseDbObject {
       findParam.values = findParam.values.concat(_.cloneDeep(param.values))
       findParam.new_values = findParam.new_values.concat(_.cloneDeep(param.new_values))
     }
-  }
-
-  getGeneratedId() {
-    return `${this.object.id}-${this.recId}`
   }
 }
 

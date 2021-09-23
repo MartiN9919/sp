@@ -60,6 +60,9 @@ export default {
     globalDisplaySettings: state => { return state.globalDisplaySettings },
   },
   mutations: {
+    deleteObjectFromGraph: (state, object) => state.graph.removeNode(object),
+    updateObjectFromGraph: (state, {object, fields}) => state.graph.updateNode(object, fields),
+    updateRelationFromGraph: (state, {relation, fields}) => state.graph.updateEdge(relation, fields),
     addTrigger: (state, trigger) => state.triggers.push(trigger),
     changeGlobalSettingState: (state, {id, value}) => state.globalDisplaySettings.changeState(id, value),
     setTriggerState: (state, {triggerId, value}) => state.triggers.find(t => t.id === triggerId).setState(value),
@@ -75,9 +78,8 @@ export default {
     addObjectToGraph: (state, editableObject) => {
       state.graph.createNode({
         id: editableObject.getGeneratedId(),
-        offsetX: 0, offsetY: 0, size: 600,
-        x: Math.random() * 1000, y: Math.random() * 1000,
-        object: editableObject
+        object: editableObject,
+        size: 600, x: Math.random() * 1000, y: Math.random() * 1000
       })
     },
     addRelationToGraph: (state, {objects, relation}) => {
@@ -89,34 +91,35 @@ export default {
     changeGlobalSettingState({ commit }, payload) { commit('changeGlobalSettingState', payload) },
     setTriggerState({ commit }, payload) { commit('setTriggerState', payload) },
     setClassifiersSettings({ commit }, payload) { commit('setClassifiersSettings', payload) },
-    addRelationToGraph({getters, commit}, {object, relations}) {
+    addRelationToGraph({getters, commit, dispatch}, {object, relations}) {
       let object1 = getters.graphObjects.find(r => r.object.object.id === object.o1 && r.object.recId === object.r1)
       let object2 = getters.graphObjects.find(r => r.object.object.id === object.o2 && r.object.recId === object.r2)
       let relation = new DataBaseRelation(object1, object2, relations)
-      commit('addRelationToGraph', {objects: [object1, object2], relation: relation})
+      let findRelation = getters.graphRelations.find(r => [r.from, r.to].every(v => [object1.id, object2.id].includes(v)))
+      if(findRelation)
+        dispatch('updateRelationFromGraph', {relation: findRelation, fields: {relation: relation}})
+      else
+        commit('addRelationToGraph', {objects: [object1, object2], relation: relation})
     },
-    addObjectToGraph({ getters, commit, dispatch }, object) {
-      let editableObject = new GraphObject({
-        object_id: object.object_id,
-        rec_id: object.rec_id,
-        title: object.title,
-        photo: object.photo,
-        params: object.params,
-        triggers: object.triggers
-      })
-      if(!getters.graphObjects.find(o => o.id === editableObject.getGeneratedId())) {
-        for(let graphObject of getters.graphObjects) {
-
-        }
-        dispatch('getRelationFromServer', {
-          object_id: object.object_id,
-          rec_id: object.rec_id,
-          objects: Array.from(getters.graphObjects, o =>
+    updateRelationFromGraph({commit}, {relation, fields}) { commit('updateRelationFromGraph', {relation, fields}) },
+    deleteObjectFromGraph({commit}, object) { commit('deleteObjectFromGraph', object) },
+    updateObjectFromGraph({commit}, {object, fields}) { commit('updateObjectFromGraph', {object, fields}) },
+    addObjectToGraph({ getters, commit, dispatch }, {recId, objectId}) {
+      dispatch('getObjectFromServer', {params: {record_id: recId, object_id: objectId}})
+        .then(r => {
+          let editableObject = new GraphObject(r)
+          let findNode = getters.graphObjects.find(o => o.id === editableObject.getGeneratedId())
+          let relatedObjects = Array.from(getters.graphObjects, o =>
             Object.assign({object_id: o.object.object.id, rec_id: o.object.recId})
           )
+          if(findNode)
+            dispatch('updateObjectFromGraph', {object: findNode, fields: {object: editableObject}})
+          else {
+            commit('addObjectToGraph', editableObject)
+            dispatch('getRelationFromServer', {object_id: objectId, rec_id: recId, objects: relatedObjects})
+          }
         })
-        commit('addObjectToGraph', editableObject)
-      }
+
     },
     async getBaseTriggers({getters, commit}, config = {}) {
       if(!getters.triggers.length)
@@ -154,9 +157,17 @@ function getClassifiersSettings() {
 class GraphObject extends DataBaseObject {
   constructor(object) {
     super(object)
+    this.title = object.title
+    this.triggers = object.triggers
+    if(object.hasOwnProperty('photo'))
+      this.photo = object.photo
     this.showTitle = true
     this.showTooltip = true
     this.showTriggers = true
+  }
+
+  getGeneratedId() {
+    return `${this.object.id}-${this.recId}`
   }
 }
 

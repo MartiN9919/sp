@@ -111,6 +111,7 @@ export default class Graph {
   }
 
   removeNode (node) {
+    this.removeEdge(this.edges.find(edge => edge.from === node.id || edge.to === node.id))
     const index = this.nodes.indexOf(node)
     if (index > -1) {
       this.nodes.splice(index, 1)

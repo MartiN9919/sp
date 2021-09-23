@@ -44,7 +44,7 @@ import ControlMenu from "./createPageComponents/controlMenu"
 import {mapActions, mapGetters} from "vuex"
 
 export default {
-  name: "createPage",
+  name: "createObjectPage",
   components: {ControlMenu, ObjectRecordArea, SelectorObject},
   data: () => ({
     valid: true,
@@ -80,7 +80,7 @@ export default {
     selectedEditableObject: {
       get: function () {
         if(this.editableObjects) return this.editableObjects[0].object.id },
-      set: function (id) { this.setEditableObject({object_id: id}) },
+      set: function (id) { this.setEditableObject({objectId: id}) },
     },
     tabClasses: function () {
       if(this.editableObjects)

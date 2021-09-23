@@ -42,6 +42,12 @@ export default {
             action: 'setChangeObject'
           },
           {
+            icon: 'mdi-delete',
+            title: 'Удалить',
+            subtitle: 'Удалить объект с графа',
+            action: 'deleteObject'
+          },
+          {
             icon: 'mdi-cog-outline',
             title: 'Настройки',
             subtitle: 'Индивидуальные настройки объекта',
@@ -88,13 +94,20 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['reorderGraph', 'setEditableRelation', 'setNavigationDrawerStatus', 'setToolStatus', 'setActiveTool']),
+    ...mapActions(['reorderGraph', 'setEditableRelation', 'setNavigationDrawerStatus', 'setToolStatus', 'setActiveTool',
+    'setEditableObject', 'deleteObjectFromGraph']),
     menuShow(event, object=null) {
       this.objectWithActivatedMenu = object
       this.$refs.contextMenu.show_root(event.x, event.y)
     },
     setChangeObject(event) {
-
+      this.setEditableObject({
+        objectId: this.objectWithActivatedMenu.object.object.id,
+        recId: this.objectWithActivatedMenu.object.recId
+      })
+    },
+    deleteObject(event) {
+      this.deleteObjectFromGraph(this.objectWithActivatedMenu)
     },
     checkRelationCreateStatus(){
       return this.choosingObjects.length === 3
@@ -102,13 +115,7 @@ export default {
         || this.choosingObjects.length === 2
     },
     createRelation(){
-      let edge = this.graphRelations.find(
-          e =>  this.choosingObjects.includes(e.relation.o1) && this.choosingObjects.includes(e.relation.o2)
-      )
-      if(edge)
-        this.setEditableRelation(edge.relation)
-      else
-        this.setEditableRelation({o1: this.choosingObjects[0], o2: this.choosingObjects[1], params: []})
+      this.setEditableRelation(this.choosingObjects)
       this.setNavigationDrawerStatus(true)
       this.setToolStatus({tool: 'createRelationPage', status: false})
       this.setActiveTool('createRelationPage')
