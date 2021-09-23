@@ -12,6 +12,7 @@
         <node :ref="`node-${object.id}`" :data="object">
           <body-object
             :node="object"
+            :selected="choosingObjects.includes(object)"
             :show-triggers="getTriggersStateObject(object)"
           ></body-object>
         </node>
