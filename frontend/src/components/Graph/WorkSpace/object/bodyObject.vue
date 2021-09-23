@@ -4,7 +4,7 @@
       <trigger-information :active-triggers="triggers" :size="triggerSize"></trigger-information>
     </template>
     <v-hover v-slot="{ hover }">
-      <v-avatar :size="bodySize" :class="hover ? 'elevation-12' : 'elevation-6'">
+      <v-avatar :size="bodySize" :class="getClassesObject(hover)">
         <v-img v-if="getPhoto" :src="getPhoto"></v-img>
         <i v-else :class="bodyIconClass" :style="bodyIconStyle"></i>
       </v-avatar>
@@ -22,6 +22,7 @@ export default {
   props: {
     node: Object,
     showTriggers: Boolean,
+    selected: Boolean,
   },
   data: () => ({
     edgeButton: {hover: false, top: 0, left: 0}
@@ -38,6 +39,18 @@ export default {
     bodyIconClass: function () { return 'mdi ' + this.node.object.object.icon },
     triggers: function () { return this.showTriggers ? this.node.object.triggers : []}
   },
+  methods: {
+    getClassesObject(hover) {
+      if (hover && this.selected)
+        return ['elevation-12', 'body-active']
+      if (hover && !this.selected)
+        return 'elevation-12'
+      if (!hover && this.selected)
+        return 'body-active'
+      if (!hover && !this.selected)
+        return 'elevation-6'
+    }
+  }
 }
 </script>
 
@@ -53,6 +66,6 @@ export default {
 .body-active {
   box-shadow: 0 0 9px 5px rgba(255, 0, 0, 0.2),
               0 0 22px 2px rgba(255, 0, 0, 0.14),
-              0 0 28px 5px rgba(255, 0, 0, 0.12);
+              0 0 28px 5px rgba(255, 0, 0, 0.12) !important;
 }
 </style>
