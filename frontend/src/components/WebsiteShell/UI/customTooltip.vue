@@ -4,9 +4,8 @@
       <slot name="activator" :on="on"></slot>
     </template>
     <slot name="body">
-<!--      <v-img width="250" max-width="auto" v-if="typeTooltip==='picture'" :src="fileLink"></v-img>-->
-<!--      <v-img width="250" v-else-if="typeTooltip" :src="typeTooltip"></v-img>-->
-      <div class="ma-2">{{bodyText || alternativeString}}</div>
+      <v-img width="250" max-width="auto" v-if="typeTooltip==='picture'" :src="fileLink"></v-img>
+      <div v-else class="ma-2">{{bodyText || alternativeString}}</div>
     </slot>
   </v-tooltip>
 </template>
@@ -39,8 +38,6 @@ export default {
     typeTooltip: function () {
       if(this.imageTypes.includes(this.bodyText.split('.').pop().toLowerCase()))
         return 'picture'
-      if(Object.keys(this.fileTypes).includes(this.bodyText.split('.').pop()))
-        return this.typeTooltip[this.bodyText.split('.').pop()]
       return this.fileTypes.default
     },
   }
