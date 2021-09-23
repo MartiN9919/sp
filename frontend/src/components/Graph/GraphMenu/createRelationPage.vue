@@ -1,12 +1,22 @@
 <template>
   <v-col>
     <div class="work-place">
-      <div class="selector-object">
-        <p>{{`${editableRelation.o1.object.object.titleSingle}: ${editableRelation.o1.object.title}`}}</p>
-        <p>{{`${editableRelation.o2.object.object.titleSingle}: ${editableRelation.o2.object.title}`}}</p>
-      </div>
+      <v-card flat>
+        <v-card-subtitle v-if="!editableRelation" class="text-center text-no-wrap">
+          Выбирете объекты для связи
+        </v-card-subtitle>
+        <v-card-subtitle v-else class="pa-0">
+          <p v-for="(relation, key) in [editableRelation.o1, editableRelation.o2]" class="mb-0">
+            <v-icon>
+              {{relation.object.object.icon}}
+            </v-icon>
+            {{relation.object.title}}
+          </p>
+        </v-card-subtitle>
+      </v-card>
       <v-form ref="form" v-model="valid">
         <object-record-area
+          v-if="editableRelation"
           :params="editableRelation.params"
           @createNewParam="createNewParam"
           @deleteNewParam="deleteNewParam"
@@ -15,9 +25,8 @@
     </div>
     <v-divider></v-divider>
     <control-menu
-      v-if="editableRelation"
       :buttons="controlButtons"
-      @create="create"
+      @create="createRelation"
       class="control-menu"
     ></control-menu>
   </v-col>
@@ -54,7 +63,7 @@ export default {
     deleteNewParam(event) {
       this.deleteNewParamEditableRelation({param: event.param, id: event.id})
     },
-    create() {
+    createRelation() {
       this.saveEditableRelation()
     }
   }

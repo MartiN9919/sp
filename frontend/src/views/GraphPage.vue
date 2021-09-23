@@ -17,8 +17,7 @@ import SplitPanel from "../components/WebsiteShell/UI/splitPanel"
 import graphArea from '../components/Graph/WorkSpace/graphArea'
 import toolsMenu from "../components/WebsiteShell/UI/toolsMenu"
 import searchPage from "../components/Graph/GraphMenu/searchPage"
-import createPage from "../components/Graph/GraphMenu/createPage"
-import dossierPage from "../components/Graph/GraphMenu/dossierPage"
+import createObjectPage from "../components/Graph/GraphMenu/createObjectPage"
 import createRelationPage from "../components/Graph/GraphMenu/createRelationPage"
 import settingsPage from "../components/Graph/GraphMenu/settingsPage"
 import {mapActions, mapGetters} from "vuex"
@@ -26,7 +25,7 @@ import router from '@/router'
 
 export default {
   name: 'GraphPage',
-  components: {SplitPanel, graphArea, toolsMenu, searchPage, createPage, dossierPage, createRelationPage, settingsPage},
+  components: {SplitPanel, graphArea, toolsMenu, searchPage, createObjectPage, createRelationPage, settingsPage},
   computed: {
     ...mapGetters(['activeTool']),
     activeWindow: function () {
@@ -38,10 +37,8 @@ export default {
     changeComponent() {
       if (this.activeWindow === 'searchPage')
         return 'searchPage'
-      if (this.activeWindow === 'createPage')
-        return 'createPage'
-      if (this.activeWindow === 'dossierPage')
-        return 'dossierPage'
+      if (this.activeWindow === 'createObjectPage')
+        return 'createObjectPage'
       if (this.activeWindow === 'createRelationPage')
         return 'createRelationPage'
       if (this.activeWindow === 'settingsPage')

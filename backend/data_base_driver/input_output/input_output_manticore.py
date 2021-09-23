@@ -172,7 +172,8 @@ def io_get_rel_manticore_dict(group_id, keys, obj_rel_1, obj_rel_2, val, time_in
             'bool': {
                 'must': must
             }
-        }
+        },
+        "limit": 500
     })
     data_2 = json.dumps({
         'index': DAT_REL.TABLE_SHORT,
@@ -181,7 +182,8 @@ def io_get_rel_manticore_dict(group_id, keys, obj_rel_1, obj_rel_2, val, time_in
             'bool': {
                 'must': must
             }
-        }
+        },
+        "limit": 500
     })
     response_1 = json.loads(requests.post(FullTextSearch.SEARCH_URL, data=data_1).text)['hits']['hits']
     response_2 = json.loads(requests.post(FullTextSearch.SEARCH_URL, data=data_2).text)['hits']['hits']

@@ -37,15 +37,15 @@ def get_rel_by_object(group_id, object, id, parents):
         if len(old_relation) > 0:
             temp_relation = [item for item in old_relation[0]['relations'] if item['id'] == relation['rel_type']]
             if len(temp_relation) > 0:
-                temp_relation[0]['values'].append({'val': relation['val'], 'sec': relation['sec']})
+                temp_relation[0]['values'].append({'value': relation['val'], 'sec': relation['sec']})
             else:
-                old_relation[0]['relations'].append({'id': relation['rel_type'], 'values': [{ 'val': relation['val'],
+                old_relation[0]['relations'].append({'id': relation['rel_type'], 'values': [{'value': relation['val'],
                                                      'date': get_date_time_from_sec(relation['sec'])[:-3]}]})
         else:
             relations.append(
                 {'object_id': relation['object_id'], 'rec_id': relation['rec_id'], 'params': relation['params'],
                  'relations': [{'id': relation['rel_type'],
-                                'values': [{'val': relation['val'],
+                                'values': [{'value': relation['val'],
                                             'date': get_date_time_from_sec(relation['sec'])[:-3]}]}]})
     return {'object_id': object, 'relations': [], 'rec_id': id,
             'params': get_object_record_by_id_http(object, id)['params'],
@@ -80,7 +80,8 @@ def get_rel_cascade(group_id, object, id, depth):
     :@param depth: глубина рекурсивного обхода, чем больше тем больше найденных связей
     :@return: список связей в формате {record_id, object_id, params, rels:[{},...,{}]}
     """
-    if depth <= 0: return []
+    if depth <= 0:
+        return []
     rels = get_rel_by_object(group_id, object, id, parents=[])
     get_rel_rec(group_id, rels['rels'], depth - 1, parents=[[rels['object_id'], rels['rec_id']]])
     return rels
