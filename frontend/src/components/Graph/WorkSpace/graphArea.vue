@@ -56,6 +56,7 @@
         ></edge>
       </g>
     </screen>
+    <graph-search :objects="graphObjects" @findNode="findNode"></graph-search>
     <context-menu-nested
       ref="contextMenu"
       :form="this"
@@ -76,11 +77,12 @@ import InformationLabel from "@/components/Graph/WorkSpace/object/informationLab
 import ContextMenuNested from "@/components/WebsiteShell/ContextMenu/contextMenuNested"
 import bodyContextMenu from "./bodyContextMenu"
 import {mapActions, mapGetters} from "vuex"
+import GraphSearch from "@/components/Graph/GraphMenu/graphSearch";
 
 
 export default {
   name: "graphArea",
-  components: {ContextMenuNested, Screen, Node, Edge, VLabel, BodyObject, NameObject, InformationLabel},
+  components: {GraphSearch, ContextMenuNested, Screen, Node, Edge, VLabel, BodyObject, NameObject, InformationLabel},
   data: () => ({
     choosingObjects: [],
   }),
@@ -92,6 +94,9 @@ export default {
     allowRelations() { return Array.from(this.$store.state.graph.rootInstances.relations, r => {return r.id}) },
   },
   methods: {
+    findNode(node) {
+      this.$refs.screen.panNode(node, { offsetX: 0, offsetY: 0 })
+    },
     addChoosingObject(choosingObject){
       let findIndex = this.choosingObjects.findIndex(object => object === choosingObject)
       if(findIndex === -1){

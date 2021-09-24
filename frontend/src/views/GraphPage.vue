@@ -3,7 +3,7 @@
     <template v-slot:firstPane>
       <v-row no-gutters class="graph-menu">
         <tools-menu></tools-menu>
-        <component :is="changeComponent()" class="page"></component>
+        <component :is="changeComponent()"></component>
       </v-row>
     </template>
     <template v-slot:secondPane>
@@ -25,15 +25,29 @@ import router from '@/router'
 
 export default {
   name: 'GraphPage',
-  components: {SplitPanel, graphArea, toolsMenu, searchPage, createObjectPage, createRelationPage, settingsPage},
+  components: {
+    SplitPanel,
+    graphArea,
+    toolsMenu,
+    searchPage,
+    createObjectPage,
+    createRelationPage,
+    settingsPage
+  },
   computed: {
     ...mapGetters(['activeTool']),
     activeWindow: function () {
       return this.activeTool(router.currentRoute.name)
-    },
+    }
   },
   methods: {
-    ...mapActions(['setDefaultValueActiveTool', 'getBaseObjects', 'setRootSearchTreeItem', 'getBaseTriggers', "getBaseRelations"]),
+    ...mapActions([
+      'setDefaultValueActiveTool',
+      'getBaseObjects',
+      'setRootSearchTreeItem',
+      'getBaseTriggers',
+      'getBaseRelations'
+    ]),
     changeComponent() {
       if (this.activeWindow === 'searchPage')
         return 'searchPage'
@@ -43,17 +57,17 @@ export default {
         return 'createRelationPage'
       if (this.activeWindow === 'settingsPage')
         return 'settingsPage'
-    },
+    }
   },
   mounted() {
-    this.getBaseObjects({})
-    .then(() => {
-      this.setDefaultValueActiveTool()
-      this.setRootSearchTreeItem({})
-    })
+    this.getBaseObjects()
+      .then(() => {
+        this.setDefaultValueActiveTool()
+        this.setRootSearchTreeItem({})
+      })
     this.getBaseTriggers()
     this.getBaseRelations()
-  },
+  }
 }
 </script>
 
@@ -61,9 +75,5 @@ export default {
 .graph-menu {
   flex-wrap: nowrap;
   height: 100%;
-}
-
-.page {
-  max-width: calc(100% - 56px)
 }
 </style>

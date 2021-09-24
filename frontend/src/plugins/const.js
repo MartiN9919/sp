@@ -7,6 +7,14 @@ export default class CONST {
 
   static APP = class {
     static COLOR_OBJ         = '#00796B';
+    static LOGIN = class {
+      static BACKGROUND = "#191122"
+    }
+    static TOOL_MENU = class {
+      static WIDTH   = 56;
+      static ACTIVE_COLOR = '#FFFFFF';
+      static DISABLED_COLOR = '#9E9E9E';
+    }
     //static COLOR_FONT        = '#fff';
   };
 

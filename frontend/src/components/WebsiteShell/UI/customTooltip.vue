@@ -4,7 +4,7 @@
       <slot name="activator" :on="on"></slot>
     </template>
     <slot name="body">
-      <v-img width="250" max-width="auto" v-if="typeTooltip==='picture'" :src="fileLink"></v-img>
+      <v-img width="250" max-width="auto" v-if="pictureType" :src="fileLink"></v-img>
       <div v-else class="ma-2">{{bodyText || alternativeString}}</div>
     </slot>
   </v-tooltip>
@@ -27,18 +27,12 @@ export default {
     },
   },
   data: () => ({
-    fileTypes: {
-      'pdf': '~@/assets/img/fileTypes/PDF.png',
-      'default': 'http://127.0.0.1:8000/static/src/vue/dist/img/fileTypes/EXE.png'
-    },
     imageTypes: ['jpg', 'jpeg', 'png'],
   }),
   computed: {
     fileLink: function () { return getFileLink(this.settings.objectId, this.settings.recId, this.bodyText) },
-    typeTooltip: function () {
-      if(this.imageTypes.includes(this.bodyText.split('.').pop().toLowerCase()))
-        return 'picture'
-      return this.fileTypes.default
+    pictureType: function () {
+      return this.imageTypes.includes(this.bodyText.split('.').pop().toLowerCase());
     },
   }
 }

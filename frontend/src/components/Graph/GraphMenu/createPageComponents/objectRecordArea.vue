@@ -20,7 +20,7 @@
             <tbody class="py-2">
               <custom-tooltip
                 v-for="(item, key) in param.values" :key="key"
-                v-if="checkTypeParam(param)"
+                v-if="checkTypeParam(param) === 'file_photo'"
                 :body-text="item.value"
                 :settings="settings"
                 bottom
@@ -34,7 +34,7 @@
                   </tr>
                 </template>
               </custom-tooltip>
-            <tr v-for="item in param.values" v-if="!checkTypeParam(param)">
+            <tr v-for="item in param.values" v-else>
               <td><span>{{item.value ? item.value : 'Создана'}}</span></td>
               <td class="text-end text-no-wrap pl-3"><span>{{item.date}}</span></td>
             </tr>
@@ -70,7 +70,8 @@ export default {
   }),
   methods: {
     checkTypeParam(param) {
-      return param.baseParam.hasOwnProperty('type') ? param.baseParam.type.startsWith('file') : false
+      if(param.baseParam.hasOwnProperty('type'))
+        return param.baseParam.type
     },
     createNewParam(id) {
       this.$emit('createNewParam', id)

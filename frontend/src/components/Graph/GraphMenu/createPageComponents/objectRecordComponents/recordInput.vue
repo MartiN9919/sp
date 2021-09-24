@@ -4,7 +4,7 @@
       v-model="param.value"
       :type="type"
       :items="list"
-      :rules="[ v => !!v || 'Поле должно быть заполнено', ]"
+      :rules="[v => !!v || 'Поле должно быть заполнено']"
       :hide-details="false"
       deletable
       class="pt-1"

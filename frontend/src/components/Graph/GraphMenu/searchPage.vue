@@ -1,6 +1,12 @@
 <template>
   <v-col class="d-flex flex-column">
-    <v-treeview :items="searchTreeItems" :open="openObject" item-children="rels" return-object class="search-tree pb-2">
+    <v-treeview
+      :items="searchTreeItems"
+      :open="openObject"
+      item-children="rels"
+      return-object
+      class="search-tree pb-2"
+    >
       <template v-slot:label="{ item }">
         <span class="message-text-style v-messages">
           <v-icon size="15">{{item.object.icon}}</v-icon>
@@ -11,8 +17,15 @@
           </v-icon>
         </span>
         <v-hover v-slot="{ hover }">
-          <v-text-field v-model="item.request" dense outlined hide-details color="teal" autocomplete="off"
-                        class="tree-item-input">
+          <v-text-field
+            v-model="item.request"
+            dense
+            outlined
+            hide-details
+            color="teal"
+            autocomplete="off"
+            class="tree-item-input"
+          >
             <template v-slot:append-outer="">
               <v-btn v-if="item === searchTreeItems[0]" icon>
                 <v-icon @click.stop="findObject" size="30">mdi-magnify</v-icon>
@@ -40,7 +53,6 @@
       </template>
     </v-treeview>
     <found-objects
-      v-if="foundObjects"
       :objects="foundObjects"
       @change="changeObject"
       @select="selectObject"

@@ -16,7 +16,7 @@ import SplitPanel from "../components/WebsiteShell/UI/splitPanel";
 
 export default {
   name: 'ReportsPage',
-  components: { SplitPanel, reportScriptMenu, reportsList, },
+  components: { SplitPanel, reportScriptMenu, reportsList},
 }
 </script>
 
