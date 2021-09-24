@@ -34,6 +34,7 @@ export function icon_get(options={}) {
       iconAnchor:  [12, 41],
       popupAnchor: [1, -34],
       shadowSize:  [41, 41],
+      className:   options.className || '',
     };
 
     switch(options.color) {
@@ -91,6 +92,7 @@ export function icon_get(options={}) {
     let color2 = options.color;
     let size   = options.size || 12;
     return L.icon.pulse({
+      className: options.className || '',
       iconSize:  [size, size],
       color:     color2,
       fillColor: color2,
@@ -103,11 +105,12 @@ export function icon_get(options={}) {
   //
   if (name==MAP_ITEM.MARKER.FONT) {
     let color2 = options.color;
-    let icon  = options.icon;
+    let icon   = options.icon;
     return L.divIcon({
-      iconSize: null,
-      color:    color2,
-      icon:     icon,
+      className: options.className || '',
+      iconSize:  null,
+      color:     color2,
+      icon:      icon,
       html:
         '<div class="marker-font redborder">'+
           '<div class="marker-font-content" style="border-color: '+color2+';">'+

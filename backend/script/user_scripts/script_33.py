@@ -14,19 +14,30 @@ from data_base_driver.additional_functions import str_to_sec
 def script_33(request, group_id):
 	try:
 		obj = request.get('obj',{}).get('value',[])
-		keys_rel = request.get('keys_rel',{}).get('value',[])
-		geometry = {
-		    "type": "Point",
-		    "coordinates": [26.842182,54.313136],
-		}
-		params = {}
+		rec_id = request.get('rec_id',{}).get('value',[])
+		#ret = []
+		#params = {}
+		# 
+		#geometry = {
+		#    "type": "Point",
+		#    "coordinates": [26.842182,54.313136],
+		#}
+		#feature = geojson.Feature(geometry=geometry, properties=params, keys=[])
+		#feature['id'] = 1
+		#feature['obj_id'] = 25
+		#ret.append(feature)
+		#
+		#geometry = {
+		#    "type": "Point",
+		#    "coordinates": [26.842182,54.313136],
+		#}
+		#feature = geojson.Feature(geometry=geometry, properties=params)
+		#feature['id'] = 1
+		#feature['obj_id'] = 25
+		#ret.append(feature)
+		#return geojson.FeatureCollection(ret)
 		
-		feature = geojson.Feature(geometry=geometry, properties=params)
-		feature['id'] = 1
-		feature['obj_id'] = 1
-		
-		ret = []
-		ret.append(feature)
-		return geojson.FeatureCollection(ret)
+		ret =  geo_id_to_fc(obj='geometry', group_id=group_id, geo_ids=[rec_id,], keys=[])
+		return ret
 	except BaseException:
 		return 'error'

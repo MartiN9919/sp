@@ -12,10 +12,6 @@
       @dblclick="on_map_dblclick"
       @contextmenu="on_menu_show"
     >
-    <!--
-            @contextmenu="on_menu_show"
-
-    -->
 
       <!-- ПОДЛОЖКА -->
       <l-tile-layer
@@ -364,6 +360,18 @@ export default {
           // редактирование запрещено - удалить pm - для уменьшения объема вычислений
           if (layer.pm) { delete layer.pm; }
 
+
+
+
+
+          // layer.setStyle({'className': 'sel', });
+          // if (layer._icon) {
+          //   layer._icon.classList.add('sel')
+          // }
+
+
+
+
           // тип полигона: color
           // let polygon = self.SCRIPT_GET_ITEM_POLYGON(map_ind);
           // if ((['Polygon', ].indexOf(feature.geometry.type)>-1) && (polygon!=POLYGON.DEFAULT)) {
@@ -373,12 +381,22 @@ export default {
 
         // стиль маркеров
         pointToLayer: function(feature, latlng) {
-          return marker_get(latlng, {
-            name:  self.SCRIPT_GET_ITEM_MARKER(map_ind),
-            color: self.SCRIPT_GET_ITEM_COLOR (map_ind),
-            icon:  self.SCRIPT_GET_ITEM_ICON  (map_ind),
-            // size:  self.SCRIPT_GET_ITEM_ICON(map_ind), не реализовано за ненадобностью
-          });
+          let layer = marker_get(
+            latlng,
+            {
+              name:      self.SCRIPT_GET_ITEM_MARKER(map_ind),
+              color:     self.SCRIPT_GET_ITEM_COLOR (map_ind),
+              icon:      self.SCRIPT_GET_ITEM_ICON  (map_ind),
+              className: self.SCRIPT_GET_ITEM_SEL(map_ind)?'sel':'',
+              // size:   self.SCRIPT_GET_ITEM_ICON(map_ind), не реализовано за ненадобностью
+            }
+          );
+          // console.log(1111, layer)
+          // if (layer._icon) {
+          //   layer._icon.classList.push('sel')
+          // }
+          // //layer.options.interactive = false;
+          return layer
         },
 
 
@@ -390,7 +408,8 @@ export default {
             fillOpacity: .3,
             color:       self.SCRIPT_GET_ITEM_COLOR(map_ind),
             fillColor:   feature.color, // set in mixin
-            className:   self.SCRIPT_GET_ITEM_SEL(map_ind)?'pulse':'',
+            //className:   'sel',
+            className:   self.SCRIPT_GET_ITEM_SEL(map_ind)?'sel':'',
           };
         },
       };
@@ -482,7 +501,7 @@ export default {
 
   @import "~@/components/Map/Leaflet/Mixins/Control.css";
 
-  div::v-deep .pulse { animation: 1s ease 0s infinite normal none running pulse; }
+  div::v-deep .sel { animation: 1s ease 0s infinite normal none running pulse; }
   @keyframes pulse {
     0%   { opacity: 1;  }
     50%  { opacity: .4; }

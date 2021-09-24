@@ -50,6 +50,8 @@ ENABLED_FUNCTIONS = [
     'Feature',
     'FeatureCollection',
     'append',
+    'get',
+    'print',
 ]
 
 PATH_TO_REPORTS_DIR = '/reports/'

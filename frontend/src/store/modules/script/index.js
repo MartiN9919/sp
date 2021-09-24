@@ -108,23 +108,24 @@ export default {
 
     // param.obj_id
     // param.id
-    SCRIPT_MUT_SEL_SET:    (state, param)     => {
+    SCRIPT_MUT_SEL_SET:    (state, param)   => {
       let is_equ;
       for (let item_script of state.selectedTemplate.activeAnalysts) {
         is_equ = false;
         for (let item of item_script.fc.features) {
           if ((item.id == param?.id) && (item.obj_id == param?.obj_id)) {
+            console.log('set', item_script, )
             is_equ = true;
             break;
           }
         }
         if (is_equ) {
-          console.log(11, item_script)
           item_script.sel = true;
+          console.log(11, item_script)
         } else {
           if (item_script.sel) {
-            console.log(22, item_script)
             delete item_script.sel;
+            console.log(22, item_script)
           }
         }
       }
