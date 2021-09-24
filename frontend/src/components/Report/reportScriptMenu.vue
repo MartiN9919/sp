@@ -16,7 +16,13 @@
         <div v-if="'id' in selectedItem" :key="selectedItem.id" class="pa-4 py-1">
           <responsive-input-form
             v-for="(variable, key) in selectedItem.variables" :key="key"
-            :variable="variable"
+            v-model="variable.value"
+            :type="variable.type"
+            :title="variable.title"
+            :items="variable.list"
+            hide-details
+            :rules="[ v => !!v || 'Поле должно быть заполнено', ]"
+            class="pt-2"
           ></responsive-input-form>
 
           <div class="text-center">

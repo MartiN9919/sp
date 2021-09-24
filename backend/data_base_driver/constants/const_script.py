@@ -16,7 +16,8 @@ feature_collection_by_geometry\n"\
           "from datetime import datetime\n"\
           "from data_base_driver.sys_reports.set_file_info import set_file_status, set_file_path\n"\
           "from data_base_driver.geometry.geometry_analytics import feature_collection_to_manticore_polygon, get_points_inside_polygon\n"\
-          "from data_base_driver.additional_functions import str_to_sec\n\n"\
+          "from data_base_driver.additional_functions import str_to_sec, get_document_date_format\n"\
+          "from document_driver.word_driver import get_document_from_template\n\n"\
 
 
 ENABLED_FUNCTIONS = [
@@ -43,7 +44,8 @@ ENABLED_FUNCTIONS = [
     'feature_collection_to_manticore_polygon',
     'feature_collection_by_geometry',
     'str_to_sec',
-
+    'get_document_from_template',
+    'get_document_date_format'
 ]
 
 PATH_TO_REPORTS_DIR = '/reports/'

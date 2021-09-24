@@ -131,10 +131,10 @@ export default {
   }
 
   .legend_top {
-    max-width: 10em;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
+    //max-width: 10em;
+    //text-overflow: ellipsis;
+    //overflow: hidden;
+    //white-space: nowrap;
   }
 
   .legend-color i {

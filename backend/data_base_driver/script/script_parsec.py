@@ -3,7 +3,6 @@ import os
 from data_base_driver.constants.const_script import IMPORTS, ENABLED_FUNCTIONS, ENVIRONMENT_VARIABLES, \
     BASE_PATH_TO_USER_SCRIPTS, PATH_TO_REPORTS_DIR
 
-
 DEBUG = False
 
 
@@ -27,8 +26,11 @@ def get_function_name(string):
     @param string: строка содержащие вызов функции
     @return: чистое название функции
     """
+    string = string[:string.find('(')+1]
     if string.find('.') != -1:
         return string[string.find('.') + 1:string.find('(')].replace('[', '')
+    elif string.find('=') != -1:
+        return string[string.find('=') + 1:string.find('(')].replace('[', '')
     else:
         return string[:string.find('(')].replace('[', '')
 
@@ -44,9 +46,9 @@ def default_checker(str):
                 ENVIRONMENT_VARIABLES))) > 0: return False, 'использование переменной окружения', list(
         set(str.split()) & set(ENVIRONMENT_VARIABLES))
     if len(set([get_function_name(func) for func in filter(is_function, str.split(' '))]).difference(
-            set(ENABLED_FUNCTIONS))) > 0: return False, ' использование неразрешенной функции ', set(
-        [get_function_name(func) for func in filter(is_function, str.split(' '))]).difference(
-        set(ENABLED_FUNCTIONS))
+            set(ENABLED_FUNCTIONS))) > 0:
+        return False, ' использование неразрешенной функции ', set(
+            [get_function_name(func) for func in filter(is_function, str.split(' '))]).difference(set(ENABLED_FUNCTIONS))
     return True, ''
 
 
@@ -98,7 +100,7 @@ def parse_text_to_python(name, text, params, type):
                 '\t\t' + 'add_notification(user_id, \'information\', \'ваш отчет: \' + title + \' - сгенерирован\','
                          ' from_id=1, file_id=file_id)' + '\n')
         if type == 'map':
-            file.write('\texcept BaseException:\n\t\treturn \'error\'')
+            file.write('\texcept Exception as e:\n\t\traise e')
         elif type == 'report':
             file.write('\texcept BaseException:\n');
             file.write('\t\tset_file_status(file_id, \'error\')\n')

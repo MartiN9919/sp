@@ -50,10 +50,11 @@ def feature_collection_by_geometry(group_id, object_type, rec_id, keys, time_int
     for object in objects:
         if objects[object].get('geometry'):
             geometry = json.loads(objects[object].get('geometry')[0]['val'])
-            params = {}
+            params = {'hint': ''}
             for param in objects[object].get('params', []):
                 params[get_key_by_id(param[DAT_OBJ_ROW.KEY_ID])[DAT_SYS_KEY.NAME]] = \
                     [param[DAT_OBJ_ROW.VAL], get_date_time_from_sec(param[DAT_OBJ_ROW.SEC])]
+                params['hint'] += param[DAT_OBJ_ROW.VAL] + '; '
             feature = geojson.Feature(geometry=geometry, properties=params)
             feature['id'] = object
             temp.append(feature)
@@ -149,14 +150,21 @@ def get_geometry_folders(group_id):
         'limit': 10000
     })
     response = requests.post(FullTextSearch.SEARCH_URL, data=data)
-    geometries = [{'id': item['_source']['rec_id'], 'name': item['_source']['name'],
-                   'parent_id': item['_source']['parent_id']}
+    geometries = [{'id': item['_source']['rec_id'], 'name': item['_source']['name'], 'sec': item['_source']['sec'],
+                   'parent_id': item['_source']['parent_id'], 'location': item['_source']['location']}
                   for item in json.loads(response.text)['hits']['hits']]
     geometries.sort(key=lambda x: x['id'])
-    result = [{'id': 0, 'value': 'Корень'}]
+    temp = {}
     for geometry in geometries:
-        if len([item for item in result if item['id'] == geometry['parent_id']]) == 0 and geometry['parent_id'] != 0:
-            result.append({'id': geometry['parent_id'], 'value': [item['name'] for item in geometries if item['id'] == geometry['parent_id']][0]})
+        if not temp.get(geometry['id']):
+            temp[geometry['id']] = {'location': geometry['location'], 'sec': geometry['sec'], 'name': geometry['name']}
+        else:
+            if geometry['location'] and geometry['sec'] > temp[geometry['id']]['sec'] < geometry['sec']:
+                temp[geometry['id']]['location'] = geometry['location']
+    result = [{'id': 0, 'value': 'Корень'}]
+    for key in temp:
+        if not temp[key]['location']:
+            result.append({'id': key, 'value': temp[key]['name']})
     return result
 
 

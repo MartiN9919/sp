@@ -100,3 +100,5 @@ STATICFILES_DIRS = [
     "static",
 ]
 MEDIA_ROOT = '/devstorage/saphir_data'
+DOCUMENT_ROOT = '/devstorage/saphir_documents/'
+TEMPLATE_ROOT = '/devstorage/saphir_documents/template/'

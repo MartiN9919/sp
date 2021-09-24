@@ -24,6 +24,10 @@ export function getDownloadFileLink(objectId, recId, fileName) {
   return `${CONST.API.BASE_PREFIX}/files/download/open_files/${generateFileLink(objectId, recId, fileName)}`
 }
 
+export function getDownloadReportLink(fileId) {
+  return `${HTTP_SERVER_IP + CONST.API.BASE_PREFIX}/files/download_report/${fileId}`
+}
+
 function generateFileLink(objectId, recId, fileName) {
   return `${objectId}/${recId}/${fileName}`
 }
