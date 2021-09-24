@@ -3,7 +3,7 @@
  * Starts looking for position in front of the parent
  * While collisions are detected find empty position perpendicular to collision
  */
-function findPosition (node, parent, align="right", nodes, sep={ x: 40, y: 40 }, invertOffset=false) {
+export function findPosition (node, parent, align="right", nodes, sep={ x: 40, y: 40 }, invertOffset=false) {
   const sepX = sep.x || sep
   const sepY = sep.y || sep
   const startX = !parent ? 0
