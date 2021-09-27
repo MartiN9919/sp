@@ -20,6 +20,11 @@ class GlobalSettings {
       subTitle: 'Управление отображением значка уведомления о срабатывании триггеров',
       state: this.getGlobalSettings('showGlobalTriggers', false)
     }
+    this.showGlobalDateObject = {
+      title: 'Время записи объекта',
+      subTitle: 'Управление отображением даты классификатора',
+      state: this.getGlobalSettings('showGlobalDateObject', false)
+    }
     this.showGlobalTooltipRelation = {
       title: 'Заголовоки связей',
       subTitle: 'Отображение заголовка над связями',
@@ -28,6 +33,11 @@ class GlobalSettings {
     this.showRelations = {
       title: 'Отображение связей',
       state: this.getGlobalSettings('showRelations', true)
+    }
+    this.showGlobalDateRelation = {
+      title: 'Время записи связи',
+      subTitle: 'Управление отображением даты связи',
+      state: this.getGlobalSettings('showGlobalDateRelation', false)
     }
   }
 
