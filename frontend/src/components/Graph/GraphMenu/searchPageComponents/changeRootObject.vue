@@ -53,7 +53,7 @@ export default {
     },
     objectActual: {
       get: function () { return this.newSettingsObject ? this.newSettingsObject.actual : null },
-      set: function (newObjectActual) { if(newObjectActual) this.newSettingsObject.actual = newObjectActual },
+      set: function (newObjectActual) { if(this.newSettingsObject) this.newSettingsObject.actual = newObjectActual },
     }
   },
   methods: {

@@ -77,10 +77,10 @@ import VLabel from '@/components/Graph/lib/components/Label'
 import BodyObject from "@/components/Graph/WorkSpace/object/bodyObject"
 import NameObject from "@/components/Graph/WorkSpace/object/nameObject"
 import InformationLabel from "@/components/Graph/WorkSpace/object/informationLabel"
-import ContextMenuNested from "@/components/WebsiteShell/ContextMenu/contextMenuNested"
+const GraphSearch = () => import("@/components/Graph/GraphMenu/graphSearch")
+const ContextMenuNested = () => import("@/components/WebsiteShell/ContextMenu/contextMenuNested")
 import bodyContextMenu from "./bodyContextMenu"
 import {mapActions, mapGetters} from "vuex"
-import GraphSearch from "@/components/Graph/GraphMenu/graphSearch";
 
 
 export default {
@@ -89,9 +89,7 @@ export default {
   data: () => ({
     choosingObjects: [],
   }),
-  mixins : [
-      bodyContextMenu
-  ],
+  mixins: [bodyContextMenu],
   computed: {
     ...mapGetters(['graphObjects', 'graphRelations', 'globalDisplaySettings', 'objectClassifiersSettings']),
     allowRelations() { return Array.from(this.$store.state.graph.rootInstances.relations, r => {return r.id}) },
