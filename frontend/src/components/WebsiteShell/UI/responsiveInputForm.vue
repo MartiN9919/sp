@@ -17,11 +17,24 @@ import selectorInput from "../InputForms/selectorInput"
 import phoneInput from "../InputForms/phoneInput"
 import fileInput from "../InputForms/fileInput"
 import unknownInput from "../InputForms/unknownInput"
+import searchInput from "@/components/WebsiteShell/InputForms/searchInput";
 
 export default {
   name: 'responsiveInputForm',
   inheritAttrs: false,
-  components: {phoneInput, geometryInput, booleanInput, dateInput, dateTimeInput, numberInput, textInput, selectorInput, fileInput, unknownInput},
+  components: {
+    searchInput,
+    phoneInput,
+    geometryInput,
+    booleanInput,
+    dateInput,
+    dateTimeInput,
+    numberInput,
+    textInput,
+    selectorInput,
+    fileInput,
+    unknownInput
+  },
   props: {
     inputString: [ String, Object, Boolean, Array, Number, Function],
     type: {type: String, default: ''},

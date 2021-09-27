@@ -15,6 +15,7 @@
     messages=" "
     color="teal"
     item-color="teal"
+    dense
   >
     <template v-slot:label>
       {{title}}
@@ -33,9 +34,10 @@
       <slot name="message"></slot>
     </template>
     <template v-slot:item="{ item }">
-      <v-list-item-content>
-        <v-list-item-title class="selector-item">{{item[itemText]}}</v-list-item-title>
-      </v-list-item-content>
+      <v-list-item-icon v-if="item.hasOwnProperty('icon')">
+        <v-icon>{{item.icon}}</v-icon>
+      </v-list-item-icon>
+      <v-list-item-title class="selector-item">{{item[itemText]}}</v-list-item-title>
     </template>
   </v-combobox>
 </template>
@@ -130,9 +132,10 @@ export default {
   width: 100%;
 }
 .selector-item {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  white-space: normal;
+  /*white-space: nowrap;*/
+  /*overflow: hidden;*/
+  /*text-overflow: ellipsis;*/
   width: 0;
 }
 </style>

@@ -3,7 +3,7 @@
     <template v-slot:firstPane>
       <v-row no-gutters class="graph-menu">
         <tools-menu></tools-menu>
-        <component :is="changeComponent()"></component>
+        <component :is="changeComponent()" :style="stylesComponent"></component>
       </v-row>
     </template>
     <template v-slot:secondPane>
@@ -13,13 +13,13 @@
 </template>
 
 <script>
+const searchPage = () => import("../components/Graph/GraphMenu/searchPage")
+const createObjectPage = () => import("../components/Graph/GraphMenu/createObjectPage")
+const createRelationPage = () => import("../components/Graph/GraphMenu/createRelationPage")
+const settingsPage = () => import("../components/Graph/GraphMenu/settingsPage")
 import SplitPanel from "../components/WebsiteShell/UI/splitPanel"
 import graphArea from '../components/Graph/WorkSpace/graphArea'
 import toolsMenu from "../components/WebsiteShell/UI/toolsMenu"
-import searchPage from "../components/Graph/GraphMenu/searchPage"
-import createObjectPage from "../components/Graph/GraphMenu/createObjectPage"
-import createRelationPage from "../components/Graph/GraphMenu/createRelationPage"
-import settingsPage from "../components/Graph/GraphMenu/settingsPage"
 import {mapActions, mapGetters} from "vuex"
 import router from '@/router'
 
@@ -36,6 +36,9 @@ export default {
   },
   computed: {
     ...mapGetters(['activeTool']),
+    stylesComponent: function () {
+      return { 'max-width': `calc(100% - ${this.$CONST.APP.TOOL_MENU.WIDTH}px)`}
+    },
     activeWindow: function () {
       return this.activeTool(router.currentRoute.name)
     }

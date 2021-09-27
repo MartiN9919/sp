@@ -1,5 +1,5 @@
 <template>
-  <v-app id="app" class="select_off" oncontextmenu="return false"> <!--  oncontextmenu="return false" -->
+  <v-app id="app" class="select_off"> <!--  oncontextmenu="return false" -->
     <appBar></appBar>  <!--  Меню навигации  -->
     <v-main id="main">
       <v-progress-linear indeterminate absolute color="red" height="2" :active="loadStatus"></v-progress-linear>
