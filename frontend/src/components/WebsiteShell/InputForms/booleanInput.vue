@@ -1,5 +1,5 @@
 <template>
-  <div class="boolean-input-form" @click="value === 'ДА' ? value = false : value = true">
+  <div class="boolean-input-form" @click="changeValue">
     <body-input-form
       v-model="value"
       :rules="rules"
@@ -23,6 +23,7 @@
           :ripple="false"
           class="mt-0 pt-0"
           color="gray"
+          readonly
           on-icon="mdi-checkbox-marked-outline"
           off-icon="mdi-checkbox-blank-outline"
         ></v-checkbox>
@@ -82,6 +83,11 @@ export default {
       set: function (value) { this.$emit('changeInputString', value) }
     },
   },
+  methods: {
+    changeValue() {
+      this.value === 'ДА' ? this.value = false : this.value = true
+    }
+  }
 }
 </script>
 
