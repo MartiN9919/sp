@@ -4,6 +4,7 @@
       <tr v-for="param in params" :key="param.id" v-if="param.values.length" :style="{fontSize: sizeNode/40}">
         <td style="white-space: nowrap">{{param.baseParam.title}}</td>
         <td class="body-row" :style="{minWidth: sizeNode / 2}" v-if="param.values[0].value">{{param.values[0].value}}</td>
+        <td class="body-row" :style="{minWidth: sizeNode / 4}" v-if="showDate && param.values[0].date">{{param.values[0].date}}</td>
       </tr>
     </table>
   </v-card>
@@ -19,6 +20,10 @@ export default {
   props: {
     params: Array,
     sizeNode: Number,
+    showDate: {
+      type: Boolean,
+      default: false,
+    }
   },
 }
 </script>

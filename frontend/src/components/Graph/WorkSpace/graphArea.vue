@@ -24,6 +24,7 @@
           <information-label
             :size-node="object.size"
             :params="getObjectClassifiers(object)"
+            :show-date="globalDisplaySettings.showGlobalDateObject.state"
             @update="updateLabel(object.id)"
           ></information-label>
         </v-label>
@@ -35,6 +36,7 @@
         ></name-object>
       </g>
       <g
+        v-show="globalDisplaySettings.showRelations.state"
         v-for="relation in graphRelations" :key="relation.id"
         @wheel.prevent.stop="scrollRelation(relation, $event)"
       >
@@ -47,6 +49,7 @@
           <information-label
             :size-node="relation.size"
             :params="relation.relation.params"
+            :show-date="globalDisplaySettings.showGlobalDateRelation.state"
           ></information-label>
         </v-label>
         <edge
@@ -56,7 +59,7 @@
         ></edge>
       </g>
     </screen>
-    <graph-search :objects="graphObjects" @findNode="findNode"></graph-search>
+    <graph-search v-if="graphObjects.length" :objects="graphObjects" @findNode="findNode"></graph-search>
     <context-menu-nested
       ref="contextMenu"
       :form="this"
