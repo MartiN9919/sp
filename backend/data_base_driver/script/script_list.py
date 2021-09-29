@@ -61,7 +61,7 @@ def script_list(parent_id, group_id, script_type):
         variables = get_script_variables(int(row[0]))
         variables_result = []
         for variable in variables:
-            variables_dict = {'title': variable[1], 'hint': variable[2], 'type': {'title': variable[3]}}
+            variables_dict = {'name': variable[0], 'title': variable[1], 'hint': variable[2], 'type': {'title': variable[3]}}
             if variable[3] == 'list':
                 variables_dict['type']['value'] = int(variable[4])
             elif variable[3] == 'search':
