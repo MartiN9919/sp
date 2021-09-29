@@ -100,7 +100,8 @@ class ModelScript(models.Model):
         """
         if not self.icon:
             status, error_str, error_code, error_type = parse_text_to_python('script_test', self.content,
-                                                                             self.variables, self.type)
+                                                                             ModelScriptVariable.objects.filter(
+                                                                                 script_id=self.id), self.type)
             if not status:
                 raise ValidationError(
                     'ошибка в синтаксисе скрипта, в строке: ' + error_str + ', ' + error_code + str(error_type))
@@ -116,7 +117,7 @@ class ModelScript(models.Model):
         super().save(*args, **kwargs)
         if not self.icon:
             parse_text_to_python('script_' + str(ModelScript.objects.get(title=self.title).id), self.content,
-                                 self.variables, self.type)
+                                 ModelScriptVariable.objects.filter(script_id=self.id), self.type)
 
     def delete(self, using=None, keep_parents=False):
         """
