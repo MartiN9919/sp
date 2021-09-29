@@ -39,5 +39,16 @@ def get_item_list_value(id):
     return value
 
 
+def get_lists():
+    sql = 'SELECT ' + DAT_SYS_LIST_TOP.ID + ', '\
+        + DAT_SYS_LIST_TOP.NAME + ', '\
+        + DAT_SYS_LIST_TOP.TITLE + ' FROM '\
+        + DAT_SYS_LIST_TOP.TABLE + ';'
+    result = {}
+    temp_list = db_sql(sql)
+    for temp in temp_list:
+        result[int(temp[0])] = {'name': temp[1], 'title': temp[2], 'values': get_list_by_top_id(int(temp[0]))}
+    return result
+
 
 

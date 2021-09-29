@@ -173,8 +173,7 @@ def get_keys_by_object(object):
         temp = dict(key)
         temp.pop('rel_obj_1_id')
         temp.pop('rel_obj_2_id')
-        if temp.get('list_id'):
-            temp['list_id'] = get_list_by_top_id(int(temp.get('list_id')))
-            temp['list_id'].sort(key=lambda x: x['value'])
+        temp['type'] = {'title': 'list' if temp.get('list_id') else temp['type'],
+                        'value': temp['list_id'] if temp.get('list_id') else None}
         result.append(temp)
     return result
