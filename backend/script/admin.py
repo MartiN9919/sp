@@ -1,10 +1,14 @@
 from django.contrib import admin
-from .models import ModelScript, ModelTrigger
+from .models import ModelScript, ModelTrigger, ModelScriptVariable
 
 from data_base_driver.constants.const_admin import PROJECT_TITLE_ADMIN
-from data_base_driver.constants.const_dat import DAT_SYS_SCRIPT, DAT_SYS_TRIGGER
+from data_base_driver.constants.const_dat import DAT_SYS_SCRIPT, DAT_SYS_TRIGGER, DAT_SYS_SCRIPT_VARIABLE
 
 admin.site.site_header = PROJECT_TITLE_ADMIN
+
+
+class ModelScriptVariableAdmin(admin.TabularInline):
+    model = ModelScriptVariable
 
 
 @admin.register(ModelScript)
@@ -52,6 +56,7 @@ class ModelScriptAdmin(admin.ModelAdmin):
              )
          }),
     )
+    inlines = [ModelScriptVariableAdmin]
 
     list_per_page = 20
 

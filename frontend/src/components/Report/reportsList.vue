@@ -67,6 +67,7 @@
 import NavigationDrawer from "../WebsiteShell/Mixins/NavigationDrawer"
 import {mapActions, mapGetters} from 'vuex'
 import router from '@/router'
+import {getDownloadReportLink, getResponseAxios} from "../../plugins/axios_settings";
 
 export default {
   name: 'reportsList',
@@ -95,7 +96,15 @@ export default {
   methods: {
     ...mapActions(['getListFiles', 'changeSelectedTreeViewItem']),
 
-    downloadFile: (id) => console.log(id),
+    downloadFile(id) {
+      console.log(getDownloadReportLink(id))
+      let fileURL = getDownloadReportLink(id);
+      let fileLink = document.createElement('a');
+      fileLink.href = fileURL;
+      fileLink.setAttribute('download', 'file.docx');
+      document.body.appendChild(fileLink);
+      fileLink.click();
+    },
     changeSelectedReport: function (item) {
       this.drawer = true
       if (this.selectReport && this.selectReport === item.params)

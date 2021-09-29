@@ -142,10 +142,12 @@ class DAT_SYS_KEY:
     TYPE_PHONE_NUMBER = 'phone_number'
     TYPE_FILE_PHOTO = 'file_photo'
     TYPE_FILE_ANY = 'file_any'
+    TYPE_SEARCH = 'search'
 
     VISIBLE_NONE = 'none'
     VISIBLE_ONLY_VALUE = 'only_value'
     VISIBLE_ALL = 'all'
+
 
     TYPE_LIST = (
         (TYPE_INT, "Число"),
@@ -180,6 +182,32 @@ class DAT_SYS_KEY:
     NAME_GEOMETRY_LOCATION = "ST_AsGeoJSON(location) AS location"
 
 
+class DAT_SYS_SCRIPT_VARIABLE:
+
+    TABLE_SHORT = 'sys_script_variable'
+    TABLE = VEC_DATA['NAME'] + '.' + TABLE_SHORT
+    ID = 'id'
+    NAME = 'name'
+    TITLE = 'title'
+    HINT = 'hint'
+    TYPE = 'type'
+    LIST_ID = 'list_id'
+    OBJ_ID = 'obj_id'
+    SCRIPT_ID = 'script_id'
+    TYPE_LIST = 'list'
+
+    TYPE_VARIABLE_LIST = (
+        (DAT_SYS_KEY.TYPE_INT, "Число"),
+        (DAT_SYS_KEY.TYPE_STR, 'Текст'),
+        (DAT_SYS_KEY.TYPE_DATATIME, 'Дата/Время'),
+        (DAT_SYS_KEY.TYPE_DATA, 'Дата'),
+        (DAT_SYS_KEY.TYPE_PHONE_NUMBER, 'Номер телефона'),
+        (DAT_SYS_KEY.TYPE_BIT, 'Да/Нет'),
+        (DAT_SYS_KEY.TYPE_GEOMETRY, 'Точка/Путь/Полигон'),
+        (DAT_SYS_KEY.TYPE_FILE_ANY, 'Файл-любой тип'),
+        (DAT_SYS_KEY.TYPE_SEARCH, 'Поиск объекта'),
+        (TYPE_LIST, 'Список')
+    )
 ##################################################################################
 # DAT_OWNER
 ##################################################################################

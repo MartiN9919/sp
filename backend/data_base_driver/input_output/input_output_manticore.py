@@ -106,7 +106,7 @@ def io_get_obj_manticore_dict(group_id, object_type, keys, ids, ids_max_block, w
                                            time_interval)
     if len(where_dop_row) > 0:
         ids = [item[DAT_OBJ_ROW.ID] for item in row_records]
-    col_records = io_get_obj_col_manticore(group_id, object_type, keys, ids, ids_max_block, where_dop_row)
+    col_records = io_get_obj_col_manticore(group_id, object_type, keys, ids, ids_max_block, where_dop_row) # исправить where dop row
     result = row_records + col_records
     result.sort(key=lambda x: x[DAT_OBJ_ROW.ID])
     return result
