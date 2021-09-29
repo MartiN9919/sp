@@ -4,8 +4,8 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Q
 
-from classifier.models import ModelObject
-from data_base_driver.constants.const_dat import DAT_SYS_SCRIPT, DAT_SYS_TRIGGER
+from classifier.models import ModelObject, ModelList
+from data_base_driver.constants.const_dat import DAT_SYS_SCRIPT, DAT_SYS_TRIGGER, DAT_SYS_KEY, DAT_SYS_SCRIPT_VARIABLE
 from data_base_driver.constants.const_script import BASE_PATH_TO_USER_SCRIPTS
 from data_base_driver.constants.const_trigger import BASE_PATH_TO_USER_TRIGGERS
 from data_base_driver.script.script_parsec import parse_text_to_python
@@ -133,6 +133,64 @@ class ModelScript(models.Model):
         db_table = DAT_SYS_SCRIPT.TABLE_SHORT
         verbose_name = "Скрипт"
         verbose_name_plural = "Скрипты"
+
+
+class ModelScriptVariable(models.Model):
+    name = models.CharField(
+        max_length=100,
+        verbose_name='Название переменной',
+        help_text='Данное название будет использоваться в теле скрипта',
+    )
+    title = models.CharField(
+        max_length=255,
+        verbose_name='Имя переменной',
+        help_text='Данное имя будет отображаться пользователю',
+    )
+    hint = models.CharField(
+        max_length=255,
+        verbose_name='Всплывающая подсказка',
+        help_text='Данная подсказка будет отображаться пользователю',
+    )
+    type = models.CharField(
+        max_length=25,
+        verbose_name='Тип переменной',
+        choices=DAT_SYS_SCRIPT_VARIABLE.TYPE_VARIABLE_LIST,
+        help_text='К какому типу будет относиться переменная',
+        default='text',
+    )
+    list = models.ForeignKey(
+        ModelList,
+        verbose_name='Закрепленный список',
+        on_delete=models.CASCADE,
+        help_text='Какой список использовать для выбора',
+        blank=True,
+        null=True,
+    )
+    obj = models.ForeignKey(
+        ModelObject,
+        verbose_name='Объект',
+        on_delete=models.CASCADE,
+        help_text='По какому объекту осуществлять поиск',
+        blank=True,
+        null=True,
+    )
+    script = models.ForeignKey(
+        ModelScript,
+        verbose_name='Скрипт',
+        on_delete=models.CASCADE,
+        help_text='По какому объекту осуществлять поиск',
+    )
+
+    def save(self, *args, **kwargs):
+        self.script_id = ModelScript.objects.get(title=self.script.title).id
+        super().save(*args, **kwargs)
+
+
+    class Meta:
+        managed = False
+        db_table = DAT_SYS_SCRIPT_VARIABLE.TABLE_SHORT
+        verbose_name = "Переменная скрипта"
+        verbose_name_plural = "Переменные скриптов"
 
 
 class ModelTrigger(models.Model):

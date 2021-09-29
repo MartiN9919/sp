@@ -29,7 +29,7 @@ def insert_list(works_sheet, mode, start_cell, data):
             works_sheet.cell(row, col + index - 1).value = value
 
 
-def get_document_from_template(template_path, name, data):
+def get_xlsx_document_from_template(template_path, name, data):
     work_book = load_workbook(TEMPLATE_ROOT + template_path)
     works_sheet = work_book.active
     for col in works_sheet.iter_cols():
@@ -40,11 +40,11 @@ def get_document_from_template(template_path, name, data):
                     row.value = data[row.value][0]
                 else:
                     insert_list(works_sheet, mode, row, data[re.sub("<[^<]+>", "", row.value)])
-    work_book.save(DOCUMENT_ROOT + name + 'xlsx')
-    return DOCUMENT_ROOT + name + 'xlsx'
+    work_book.save(DOCUMENT_ROOT + name + '.xlsx')
+    return DOCUMENT_ROOT + name + '.xlsx'
 
 
-get_document_from_template('template.xlsx', 'отчет2.xlsx', {'tops': [10,20,30], 'nums': [100,200,300,], 'test': ['a', 'b', 'c']})
+# get_document_from_template('template.xlsx', 'отчет2.xlsx', {'tops': [10,20,30], 'nums': [100,200,300,], 'test': ['a', 'b', 'c']})
 
 
 

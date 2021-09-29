@@ -37,7 +37,13 @@ data = {'POSITION': ['Начальнику отдела'],
         'DATE': ["01.02.2020"]
         }
 
-get_document_from_template('template.docx', 'отчет.docx', data)
+
+# document = Document(TEMPLATE_ROOT + 'template_person_test.docx')
+# for paragraph in document.paragraphs:
+#     for run in paragraph.runs:
+#         print(run.text)
+
+# get_document_from_template('template.docx', 'отчет.docx', data)
 
 # position;Должность руководителя;Должность руководителя;text
 # rank;Звание руководителя;Звание руководителя;text
