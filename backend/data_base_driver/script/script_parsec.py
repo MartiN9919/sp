@@ -72,9 +72,9 @@ def parse_text_to_python(name, text, params, type):
     if type == 'report':
         file.write('\t\tlock.acquire()\n\t\tlock.release()\n')
         file.write('\t\tpath = \'' + PATH_TO_REPORTS_DIR + '\' + title\n')
-    for param in params.split('\n'):
+    for param in params:
         file.write(
-            '\t\t' + param.split(';')[0] + ' = request.get(\'' + param.split(';')[0] + '\',{}).get(\'value\',[])\n')
+            '\t\t' + param.name + ' = request.get(\'' + param.name + '\',{}).get(\'value\',[])\n')
     index = text.find('\n')
     while index != -1:
         str = text[:index + 1]

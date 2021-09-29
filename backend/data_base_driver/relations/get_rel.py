@@ -261,10 +261,10 @@ def get_relations_list():
     """
     result = []
     for item in get_relation_keys():
-        list_item = None
+        list_id = None
         if item.get('list_id'):
-            list_item = get_list_by_top_id(int(item.get('list_id')))
-        result.append({'id': item['id'], 'title': item['title'], 'hint': item['hint'], 'list': list_item,
+            list_id = item.get('list_id')
+        result.append({'id': item['id'], 'title': item['title'], 'hint': item['hint'], 'list': list_id,
                        'object_id_1': item['rel_obj_1_id'], 'object_id_2': item['rel_obj_2_id']})
     return result
 
