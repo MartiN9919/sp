@@ -194,6 +194,8 @@ class DAT_SYS_SCRIPT_VARIABLE:
     LIST_ID = 'list_id'
     OBJ_ID = 'obj_id'
     SCRIPT_ID = 'script_id'
+    NECESSARY = 'necessary'
+
     TYPE_LIST = 'list'
 
     TYPE_VARIABLE_LIST = (

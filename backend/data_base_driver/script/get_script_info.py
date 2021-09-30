@@ -34,7 +34,8 @@ def get_script_variables(script_id):
         + DAT_SYS_SCRIPT_VARIABLE.HINT + ', '\
         + DAT_SYS_SCRIPT_VARIABLE.TYPE + ', '\
         + DAT_SYS_SCRIPT_VARIABLE.LIST_ID + ', '\
-        + DAT_SYS_SCRIPT_VARIABLE.OBJ_ID + ' FROM '\
+        + DAT_SYS_SCRIPT_VARIABLE.OBJ_ID + ', '\
+        + DAT_SYS_SCRIPT_VARIABLE.NECESSARY + ' FROM '\
         + DAT_SYS_SCRIPT_VARIABLE.TABLE + ' WHERE '\
         + DAT_SYS_SCRIPT_VARIABLE.SCRIPT_ID + ' = ' + str(script_id)
     return connect_mysql.db_sql(sql)
