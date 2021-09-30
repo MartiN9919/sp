@@ -387,7 +387,7 @@ export default {
               name:      self.SCRIPT_GET_ITEM_MARKER(map_ind),
               color:     self.SCRIPT_GET_ITEM_COLOR (map_ind),
               icon:      self.SCRIPT_GET_ITEM_ICON  (map_ind),
-              className: self.SCRIPT_GET_ITEM_SEL(map_ind)?'sel':'',
+              className: self.SCRIPT_GET_ITEM_SEL   (map_ind)?'sel':'',
               // size:   self.SCRIPT_GET_ITEM_ICON(map_ind), не реализовано за ненадобностью
             }
           );

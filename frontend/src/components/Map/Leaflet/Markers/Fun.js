@@ -5,16 +5,22 @@ import { MAP_ITEM } from '@/components/Map/Leaflet/Lib/Const';
 
 export function marker_get(latlng, options={}) {
   let icon = icon_get(options);
-  return icon_2_marker(latlng, icon);
+  return icon_2_marker(latlng, icon, options.className);
 }
 
-export function icon_2_marker(latlng, icon, options={}) {
+export function icon_2_marker(latlng, icon, className='', options={}) {
   let param = (icon) ? { icon:icon, } : {};
-  return L.marker(latlng, {...param, ...options});
+  let ret = L.marker(latlng, {...param, ...options});
+
+  // класс при отсутствии иконки. Для заданных иконок он установлен в icon_get
+  if (!icon) { ret.options.icon.options.className = className; }
+
+  return ret
+
 }
 
 export function icon_get(options={}) {
-  let name = options.name || '';
+  let name = options.name || MAP_ITEM.MARKER.DEFAULT;
 
   //
   // MAP_ITEM.MARKER.DEFAULT

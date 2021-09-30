@@ -275,7 +275,7 @@ export const MAP_TEST_ITEM_3 = {
       {
         "type": "Feature",
         "properties": {
-          "hint": "Color 4 = 100",
+          "hint": "Количество задержаний = 100",
           "value": 100,
         },
         "geometry": {

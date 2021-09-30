@@ -1,3 +1,5 @@
+import geojson
+
 from data_base_driver.input_output.input_output import io_set, io_get_obj_mysql_tuple, io_get_rel_mysql_tuple
 from data_base_driver.sys_key.get_object_info import obj_list, rel_rec_to_el, el_to_rec_id
 from data_base_driver.input_output.io_geo import rel_to_geo_fc, geo_id_to_fc, relations_to_geometry_id, feature_collection_by_geometry
@@ -21,8 +23,12 @@ def script_15(request, group_id):
 		list = request.get('list',{}).get('value',[])
 		unknow = request.get('unknow',{}).get('value',[])
 		keys_rel = [int(keys_rel)]
-		
-		
-		return rel_to_geo_fc(obj,0,keys_rel=keys_rel,keys_obj=['parent_id'], where_dop=[])
+		return rel_to_geo_fc(
+		    obj,
+		    0,
+		    keys_rel=keys_rel,
+		    keys_obj=['parent_id'], 
+		    where_dop=[]
+		)
 	except BaseException:
 		return 'error'
