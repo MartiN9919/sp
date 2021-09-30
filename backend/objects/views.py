@@ -34,6 +34,11 @@ def aj_object_type_list(request):
 @request_wrap
 @request_get
 def aj_list_icons(request):
+    """
+    Функция для обработки запроса на получения списка иконок
+    @param request: GET запрос на получение списка иконок
+    @return: JSON со списком иконок
+    """
     return {'data': get_list_by_top_id(SYS_KEY_CONSTANT.LIST_ICONS_ID)}
 
 
@@ -42,6 +47,11 @@ def aj_list_icons(request):
 @request_wrap
 @request_get
 def aj_lists(request):
+    """
+    Функция бля обработки запроса на получение всех списков
+    @param request: GET запрос на получение всех списков
+    @return: json в формате: {id:{name,title,hint,values}, ..., id_n:{}}
+    """
     return {'data': get_lists()}
 
 

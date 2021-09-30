@@ -181,11 +181,23 @@ class ModelScriptVariable(models.Model):
         on_delete=models.CASCADE,
         help_text='По какому объекту осуществлять поиск',
     )
+    necessary = models.BooleanField(
+        default=True,
+        verbose_name='Обязательная',
+        help_text='Является ли данная переменная обязательной для данного списка',
+    )
+
+    def clean(self):
+        if self.type == 'list' and not self.list_id:
+            raise ValidationError('У переменной типа списка не задан список')
+        elif self.type != 'list' and self.list_id:
+            raise ValidationError('Данная переменная не является списком')
+        elif self.type != 'search' and self.obj_id:
+            raise ValidationError('Данная переменная не является поиском объекта')
 
     def save(self, *args, **kwargs):
         self.script_id = ModelScript.objects.get(title=self.script.title).id
         super().save(*args, **kwargs)
-
 
     class Meta:
         managed = False

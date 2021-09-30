@@ -32,6 +32,11 @@ def get_list_by_name(name):
 
 
 def get_item_list_value(id):
+    """
+    Функция для получения значения листа по его идентификатору
+    @param id: идентификатор значения
+    @return: значение листа в строковом формате
+    """
     sql = 'SELECT ' + DAT_SYS_LIST_DOP.VAL + ' FROM ' \
           + DAT_SYS_LIST_DOP.TABLE_SHORT + ' WHERE ' \
           + DAT_SYS_LIST_DOP.ID + ' = ' + str(id) + ';'
@@ -40,6 +45,10 @@ def get_item_list_value(id):
 
 
 def get_lists():
+    """
+    Функция для получения общего списка со всеми списками
+    @return: объект в формате {id:{name,title,values:[{id,value},...,{}]},...,id_n:{}}
+    """
     sql = 'SELECT ' + DAT_SYS_LIST_TOP.ID + ', '\
         + DAT_SYS_LIST_TOP.NAME + ', '\
         + DAT_SYS_LIST_TOP.TITLE + ' FROM '\

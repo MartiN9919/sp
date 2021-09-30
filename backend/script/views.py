@@ -22,7 +22,7 @@ from data_base_driver.trigger.trigger_list import get_triggers_list
 def aj_script_list(request):
     """
     Функция для обработки запроса на получение списка скриптов
-    @param request: POST запрос на получение списка скриптов
+    @param request: GET запрос на получение списка скриптов
     @return: список скриптов с учетом уровня доступа пользователя, в формате JSON
     """
     script_type = request.GET['script_type']
@@ -34,6 +34,11 @@ def aj_script_list(request):
 @request_log
 @request_wrap
 def aj_trigger_list(request):
+    """
+    Функция для обработки запроса на получение списка скриптов
+    @param request: GET запрос на получение списка триггеров
+    @return: список триггеров в формате JSON
+    """
     return {'data': get_triggers_list()}
 
 
