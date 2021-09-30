@@ -41,6 +41,19 @@ def io_get_obj_row_manticore(group_id, object_type, keys, ids, ids_max_block, wh
                                group_id, False)
 
 
+def parse_where_dop(where_dop_row):
+    """
+    Вспомогательная функция для обработки where_dop_row при поиске по col таблицам
+    @param where_dop_row: исходная строка запроса
+    @return: None если в запросе нет @key_id, если есть, то key_id в числовом формате
+    """
+    if where_dop_row.find('@key_id') != -1:
+        classifier_id = int(where_dop_row[where_dop_row.find('@key_id')+8:])
+        return classifier_id
+    else:
+        return None
+
+
 def io_get_obj_col_manticore(group_id, object_type, keys, ids, ids_max_block, where_dop):
     """
     Функция для получения информации о объекте из col индексов мантикоры в формате списка словарей
@@ -52,6 +65,7 @@ def io_get_obj_col_manticore(group_id, object_type, keys, ids, ids_max_block, wh
     @param where_dop: строка вставляемая в match часть запроса manticore
     @return: список словарей в формате [{rec_id,sec,key_id,val},{},...,{}]
     """
+    key_request = parse_where_dop(where_dop)
     col_keys = DAT_SYS_KEY.DUMP.get_rec(obj_id=object_type, col=True, only_first=False)
     if len(keys) == 0:
         result_keys = [{'id': item['id'], 'name': item['name']} for item in col_keys]
@@ -66,7 +80,7 @@ def io_get_obj_col_manticore(group_id, object_type, keys, ids, ids_max_block, wh
     data = json.dumps({
         'index': index,
         'query': {
-            'query_string': where_dop,
+            'query_string': where_dop if not key_request else '',
             'bool': {
                 'must': must
             }
@@ -87,6 +101,8 @@ def io_get_obj_col_manticore(group_id, object_type, keys, ids, ids_max_block, wh
                                DAT_OBJ_ROW.SEC: params['sec'],
                                DAT_OBJ_ROW.KEY_ID: key['id'],
                                DAT_OBJ_ROW.VAL: value})
+    if key_request:
+        result = [item for item in result if item[DAT_OBJ_ROW.ID] == key_request]
     return get_enabled_records(object_type, result, group_id, False)
 
 
