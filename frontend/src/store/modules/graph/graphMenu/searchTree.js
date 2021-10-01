@@ -15,14 +15,17 @@ function createSearchItem(getters, item) {
 export default {
   state: {
     searchTreeGraph: null,
+    searchRelationTreeGraph: null,
     foundObjects: null,
   },
   getters: {
     searchTreeGraph: state => { return state.searchTreeGraph },
+    searchRelationTreeGraph: state => { return state.searchRelationTreeGraph },
     foundObjects: state => { return state.foundObjects },
   },
   mutations: {
     setRootSearchTreeItem: (state, rootObject) => state.searchTreeGraph = rootObject,
+    setRootSearchRelationTreeItem: (state, rootObject) => state.searchRelationTreeGraph = rootObject,
     changeActualRootSearchTreeItem: (state, actual) => state.searchTreeGraph.actual = actual,
     addSearchTreeItem: (state, {rootItem, newItem}) => rootItem.rels.unshift(newItem),
     changeSearchTreeItem: (state, {rootItem, newItem}) => rootItem.changeItem(newItem),
@@ -48,10 +51,27 @@ export default {
         localStorage.setItem('searchDefaultIdGraph', id)
       }
     },
+    setRootSearchRelationTreeItem({ getters, commit }, item) {
+      commit('setRootSearchRelationTreeItem', new SearchTreeRootItem({
+        object: item.object.object,
+        title: item.object.title,
+        recId: item.object.recId,
+        actual: true
+      }))
+    },
     findObjectsOnServer({ commit, state }, config={}) {
       config.headers = {'set-cookie': JSON.stringify(getTriggers(state.searchTreeGraph.object.id))}
       return postResponseAxios('objects/search', state.searchTreeGraph.getTree(), config)
         .then(response => { commit('setFoundObjects', response.data) })
+        .catch(error => {  })
+    },
+    findRelationsOnServer({ dispatch, state }, config={}) {
+      return postResponseAxios('objects/search_relations', state.searchRelationTreeGraph.getTree(), config)
+        .then(response => {
+          for (let obj of response.data) {
+            dispatch('addObjectToGraph', {recId: obj.rec_id, objectId: obj.object_id})
+          }
+        })
         .catch(error => {  })
     },
   }
@@ -68,6 +88,10 @@ class SearchTreeRootItem {
     this.object = item.object
     this.request = ''
     this.rels = []
+    if(item.hasOwnProperty('recId')) {
+      this.title = item.title
+      this.recId = item.recId
+    }
   }
 
   getInformation() {
@@ -80,6 +104,8 @@ class SearchTreeRootItem {
 
   getTree() {
     let tree = {actual: this.actual, object_id: this.object.id, request: this.request, rels: []}
+    if(this.hasOwnProperty('recId'))
+      tree['rec_id'] = this.recId
     if(this.hasOwnProperty('rel'))
       tree.rel = {
         id: this.rel?.id || 0,

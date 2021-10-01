@@ -146,6 +146,24 @@ export default {
           .catch(e => { return Promise.reject(e) })
       return Promise.resolve()
     },
+    async getRelationsBtwObjects({getters, dispatch}, objects) {
+      let config = {}
+      if(objects.length === 2)
+        config.params = {
+          object_id_1: objects[0].object.object.id,
+          object_id_2: objects[1].object.object.id,
+          rec_id_1: objects[0].object.recId,
+          rec_id_2: objects[1].object.recId
+        }
+      return await getResponseAxios('objects/objects_relation/', config)
+          .then(response => {
+              for (let obj of response.data) {
+              dispatch('addObjectToGraph', {recId: obj.rec_id, objectId: obj.object_id})
+            }
+            return Promise.resolve()
+          })
+          .catch(e => { return Promise.reject(e) })
+    }
   }
 }
 
