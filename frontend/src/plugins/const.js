@@ -7,6 +7,7 @@ export default class CONST {
 
   static APP = class {
     static COLOR_OBJ         = '#00796B';
+    static DISABLE           = '#616161'
     static LOGIN = class {
       static BACKGROUND = "#191122"
     }
