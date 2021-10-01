@@ -21,7 +21,7 @@
           </tr>
           <tr v-for="variable in analytics.variables">
             <td>{{variable.title}}</td>
-            <td v-if="variable.list">{{ listValue(variable) }}</td>
+            <td v-if="variable.type.title === 'list'">{{ listValue(variable) }}</td>
             <td v-else>{{variable.value}}</td>
           </tr>
         </table>
@@ -37,6 +37,7 @@
 <script>
 import CustomTooltip from "../../../WebsiteShell/UI/customTooltip"
 import CustomColorPicker from "@/components/WebsiteShell/UI/customColorPicker"
+import {mapGetters} from "vuex"
 
 export default {
   name: 'chipAnalytics',
@@ -46,6 +47,7 @@ export default {
     selectedTreeViewItem: Object
   },
   computed: {
+    ...mapGetters(['baseLists']),
     pulseAnimation () { return { '--selected-analytics-color': this.selectedTreeViewItem.color } },
     color: {
       get: function () { return this.analytics.color },
@@ -54,8 +56,12 @@ export default {
   },
   methods: {
     listValue (variable) {
-      let findObject = variable.list.find(item => item.id === variable.value)
-      return findObject ? findObject.value : ''
+      if (variable.value)
+        for (const [listId, list] of Object.entries(this.baseLists)) {
+          let findValue = list.values.find(item => item.id === variable.value)
+          if(findValue) return findValue.value
+        }
+      else return variable.value
     }
   }
 }

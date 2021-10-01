@@ -2,19 +2,17 @@
   <v-col>
     <responsive-input-form
       v-model="param.value"
-      :type="type"
-      :items="list"
-      :rules="[v => !!v || 'Поле должно быть заполнено']"
-      :hide-details="false"
+      :inputType="type"
+      :listRules="['notEmpty']"
       deletable
       class="pt-1"
       @deletable="$emit('deletable')"
     >
       <template v-slot:message>
-        <drop-down-menu nudge-left="290" min-width="auto" close-on-click :close-on-content-click="false">
+        <drop-down-menu min-width="auto" left offset-y close-on-click :close-on-content-click="false">
           <template v-slot:activator="{ on }">
-            <div style="width: 100%; font-size: 1.2em; padding-top: 1px;" class="text-end text-no-wrap">
-              <span v-on="on" class="v-messages" style="cursor: pointer; color: #004D40; font-size: 0.9em">{{param.date}}</span>
+            <div v-on="on" class="v-messages text-no-wrap selector-date-time">
+              {{param.date}}
             </div>
           </template>
           <template v-slot:body="{ closeMenu, status }">
@@ -36,12 +34,18 @@ export default {
   components: {DropDownMenu, SelectDateTime, ResponsiveInputForm},
   props: {
     param: Object,
-    type: String,
-    list: Array,
+    type: Object,
   },
 }
 </script>
 
 <style scoped>
-
+.selector-date-time {
+  font-size: 1.06em;
+  padding-top: 1px;
+  cursor: pointer;
+  color: #004D40;
+  margin-left: auto;
+  width: fit-content;
+}
 </style>

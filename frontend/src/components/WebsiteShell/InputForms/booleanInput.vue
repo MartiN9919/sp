@@ -1,24 +1,16 @@
 <template>
-  <div class="boolean-input-form" @click="changeValue">
+  <div class="boolean-input-form">
     <body-input-form
       v-model="value"
-      :rules="rules"
-      :hide-details="hideDetails"
+      v-bind="$attrs"
       :class="bodyInputClasses"
-      :placeholder="placeholder"
+      :placeholder="$attrs.placeholder || 'Выберете необходимое значение'"
+      @click.native="changeValue"
+      @deletable="$emit('deletable')"
       readonly
     >
-      <template v-slot:label>
-        {{title}}
-      </template>
-      <template v-slot:append="{ hover }" class="action-icon">
-        <v-icon
-          v-if="deletable && hover"
-          @click.stop="$emit('deletable')"
-          size="24"
-        >mdi-delete</v-icon>
+      <template v-slot:append>
         <v-checkbox
-          v-else
           :value="value === 'ДА'"
           :ripple="false"
           class="mt-0 pt-0"
@@ -37,42 +29,19 @@
 
 <script>
 import BodyInputForm from "../UI/bodyInputForm"
-import DropDownMenu from "../UI/dropDownMenu"
 
 export default {
   name: "booleanInput",
-  components: {BodyInputForm, DropDownMenu},
-  model: { prop: 'inputString', event: 'changeInputString', },
+  components: {BodyInputForm},
+  model: { prop: 'inputString', event: 'changeInputString'},
   props: {
     inputString: Boolean,
-    rules: {
-      type: Array,
-      default: function () {
-        return []
-      }
-    },
-    deletable: {
-      type: Boolean,
-      default: false,
-    },
-    title: {
-      type: String,
-      default: '',
-    },
-    hideDetails: {
-      type: Boolean,
-      default: false,
-    },
-    placeholder: {
-      type: String,
-      default: 'Выберете необходимое значение',
-    },
   },
   data: () => ({
     booleanMenu: [{ text: 'ДА', value: true }, { text: 'НЕТ', value: false }]
   }),
   computed: {
-    bodyInputClasses: function () { return this.title.length ? '' : 'pt-0' },
+    bodyInputClasses: function () { return this.$attrs.hasOwnProperty('label') ? '' : 'pt-0' },
     value: {
       get: function () {
         if (this.inputString === null)
@@ -96,9 +65,6 @@ export default {
   cursor: pointer;
 }
 .boolean-input-form >>> .v-input__slot {
-  cursor: pointer;
-}
-.action-icon {
   cursor: pointer;
 }
 .boolean-input-form {

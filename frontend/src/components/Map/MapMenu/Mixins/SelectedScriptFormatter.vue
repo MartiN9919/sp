@@ -10,9 +10,8 @@ export default {
           title: variable.title,
           hint:variable.hint,
           type: variable.type,
+          necessary: variable.necessary
         } // формирование словаря с переменными
-        if (variable?.list)
-          variables[variable.name].list = variable.list
       }
       return { id: script.id, name: script.name, variables: variables, hint: script.hint }
     }

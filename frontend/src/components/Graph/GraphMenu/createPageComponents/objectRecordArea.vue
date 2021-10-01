@@ -12,7 +12,6 @@
             <record-input
               :param="value"
               :type="param.baseParam.type"
-              :list="param.baseParam.list"
               @deletable="deleteNewParam(param.baseParam.id, value)"
             ></record-input>
           </v-row>

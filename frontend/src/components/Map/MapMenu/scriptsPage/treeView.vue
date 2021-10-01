@@ -1,6 +1,6 @@
 <template>
   <v-treeview
-    :items=treeViewItems :open.sync="listOpenFolder" @update:active="activateItem"
+    :items=items :open.sync="listOpenFolder" @update:active="activateItem"
     return-object open-on-click activatable dense active-class="" color=""
   >
     <template v-slot:label="{ item, open }">
@@ -17,7 +17,8 @@
 </template>
 
 <script>
-import CustomTooltip from "../../../WebsiteShell/UI/customTooltip"
+import CustomTooltip from "@/components/WebsiteShell/UI/customTooltip"
+import _ from 'lodash'
 
 function sleep (time) {
   return new Promise((resolve) => setTimeout(resolve, time))
@@ -32,14 +33,14 @@ export default {
     lastActiveItem: null
   }),
   props: {
-    treeViewItems: Array,
-    selectedTreeViewItem: Object
+    items: Array,
+    selected: Object
   },
   watch: {
-    selectedTreeViewItem: function (item) {
+    selected: function (item) {
       if (item.id) {
         this.findFolders = []
-        this.findItemInTreeView(item, this.treeViewItems)
+        this.findItemInTreeView(item, this.items)
         this.listOpenFolder = this.listOpenFolder.concat(this.findFolders)
         sleep(500).then(() => {
           this.$vuetify.goTo(
@@ -51,10 +52,10 @@ export default {
   },
   methods: {
     itemTextColor(item) {
-      return this.checkForSelectedItem(item) ? { color: '#00796B' } : {}
+      return this.checkForSelectedItem(item) ? { color: this.$CONST.APP.COLOR_OBJ } : {}
     },
     checkForSelectedItem(item) {
-      return this.selectedTreeViewItem.id === item.id
+      return this.selected.id === item.id
     },
     itemTextStyle(status) {
       return status ? 'text-uppercase pl-2' : 'text-lowercase pl-2'
@@ -67,21 +68,16 @@ export default {
     },
     colorIcon(item) {
       return this.checkForSelectedItem(item) ||
-      this.findFolders.find(folder => folder.id === item.id) ? '#00796B' : '#616161'
+      this.findFolders.find(folder => folder.id === item.id)
+        ? this.$CONST.APP.COLOR_OBJ
+        : this.$CONST.APP.DISABLE
     },
 
     /** Вызов родительского метода обработки выбора скрипта */
     activateItem (item) {
       /** Функция преобразования функционала v-treeview "активации" в функционал "выбора" */
-      if (item.length) {
-        /** Вызов родительского метода и передача ему глубокой копии выбранного скрипта */
-        this.$emit('changeSelectedTreeViewItem', JSON.parse(JSON.stringify(item[0])))
-        this.lastActiveItem = item[0]
-      } else {
-        /** Вызов родительского метода и передача ему глубокой копии выбранного скрипта */
-        this.$emit('changeSelectedTreeViewItem', JSON.parse(JSON.stringify(this.lastActiveItem)))
-        this.lastActiveItem = null
-      }
+      this.$emit('change', _.cloneDeep(item[0] || this.lastActiveItem))
+      this.lastActiveItem = item[0] || null
     },
 
     /**
@@ -94,7 +90,7 @@ export default {
       for (const treeViewItem of treeViewItems) {
         if (treeViewItem.id !== item.id) {
           if ('children' in treeViewItem) {
-            if (this.findFolders.indexOf(treeViewItem) === -1)
+            if (!this.findFolders.includes(treeViewItem))
               this.findFolders.push(treeViewItem)
             if (this.findItemInTreeView(item, treeViewItem.children))
               return true

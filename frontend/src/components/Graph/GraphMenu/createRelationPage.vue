@@ -29,9 +29,9 @@
 </template>
 
 <script>
-import ObjectRecordArea from "./createPageComponents/objectRecordArea";
-import {mapActions, mapGetters} from "vuex";
-import ControlMenu from "./createPageComponents/controlMenu";
+import ObjectRecordArea from "./createPageComponents/objectRecordArea"
+import ControlMenu from "./createPageComponents/controlMenu"
+import {mapActions, mapGetters} from "vuex"
 
 export default {
   name: "createRelationPage",
@@ -69,9 +69,6 @@ export default {
 <style scoped>
 .work-place {
   height: calc(100% - 3em);
-}
-.selector-object {
-  height: 5em;
 }
 .control-menu {
   height: 3em;

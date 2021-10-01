@@ -78,7 +78,7 @@ export default {
     searchTreeItems: function () { return this.searchTreeGraph ? [this.searchTreeGraph] : [] },
   },
   methods: {
-    ...mapActions(['setRootSearchTreeItem', 'changeSearchTreeItem', 'setActiveTool', 'addSearchTreeItem',
+    ...mapActions(['setRootSearchTreeItem', 'changeSearchTreeItem', 'addSearchTreeItem',
     'findObjectsOnServer', 'removeSearchTreeItem', 'setEditableObject', 'addObjectToGraph']),
     selectObject(object) {
       this.addObjectToGraph({recId: object.rec_id, objectId: object.object_id})
