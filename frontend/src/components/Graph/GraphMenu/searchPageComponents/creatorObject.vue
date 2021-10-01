@@ -27,21 +27,21 @@
           <v-list-item>
             <boolean-input
               v-model="newObject.actual"
-              title="Поиск только по актуальным значениям"
+              label="Поиск только по актуальным значениям"
             ></boolean-input>
           </v-list-item>
           <v-list-item>
             <date-time-input
               v-model="newObject.relDateTimeStart"
-              :clearable="true"
-              title="начала"
+              clearable
+              label="начала"
             ></date-time-input>
           </v-list-item>
           <v-list-item>
             <date-time-input
               v-model="newObject.relDateTimeEnd"
-              :clearable="true"
-              title="конца"
+              clearable
+              label="конца"
             ></date-time-input>
           </v-list-item>
         </v-form>

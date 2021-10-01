@@ -1,27 +1,19 @@
 <template>
   <div class="datetime-input-form">
-    <drop-down-menu :nudge-left="290" min-width="auto" close-on-click :close-on-content-click="false">
+    <drop-down-menu min-width="auto" offset-y close-on-click :close-on-content-click="false">
       <template v-slot:activator="{ on }">
         <div v-on="on">
           <body-input-form
             v-model="value"
+            v-bind="$attrs"
             :rules="rulesDateTime"
-            :clearable="clearable"
-            :hide-details="hideDetails"
             :class="bodyInputClasses"
-            :placeholder="placeholder"
+            :placeholder="$attrs.placeholder || 'Выберете необходимую дату и время'"
+            @deletable="$emit('deletable')"
             readonly
           >
-            <template v-slot:label>
-              {{customLabel}}
-            </template>
-            <template v-slot:append="{ hover }" class="action-icon">
-              <v-icon
-                v-if="deletable && hover"
-                @click.stop="$emit('deletable')"
-                size="24"
-              >mdi-delete</v-icon>
-              <v-icon v-else size="24">mdi-calendar-clock</v-icon>
+            <template v-slot:append="{ hover }">
+              <v-icon size="24">mdi-calendar-clock</v-icon>
             </template>
             <template v-slot:message>
               <slot name="message"></slot>
@@ -44,49 +36,23 @@ import SelectDateTime from "../UI/selectDateTime"
 export default {
   name: "dateTimeInput",
   components: {BodyInputForm, DropDownMenu, SelectDateTime},
-  model: { prop: 'inputString', event: 'changeInputString', },
+  model: { prop: 'inputString', event: 'changeInputString'},
   props: {
     inputString: String,
-    rules: {
-      type: Array,
-      default: function () {
-        return []
-      }
-    },
-    deletable: {
-      type: Boolean,
-      default: false,
-    },
-    title: {
-      type: String,
-      default: '',
-    },
-    hideDetails: {
-      type: Boolean,
-      default: false,
-    },
-    placeholder: {
-      type: String,
-      default: 'Выберете необходимую дату и время',
-    },
-    clearable: {
-      type: Boolean,
-      default: false,
-    }
   },
-
   computed: {
-    bodyInputClasses: function () { return this.title.length ? '' : 'pt-0' },
+    bodyInputClasses: function () { return this.$attrs.hasOwnProperty('label') ? '' : 'pt-0' },
     rulesDateTime : function () {
-      if (this.value)
-        return [v => (v || '').split(' ').length > 1 || 'Введите все значения'].concat(this.rules)
-      else return this.rules
+      if (this.value) {
+        let dateTimeRule = [v => (v || '').split(' ').length > 1 || 'Введите все значения']
+        return this.$attrs.hasOwnProperty('rules') ? dateTimeRule.concat(this.$attrs.rules) : dateTimeRule
+      }
+      else return this.$attrs.rules
     },
     value: {
       get: function () { return this.inputString },
       set: function (val) { this.$emit('changeInputString', val) }
     },
-    customLabel: function () { return this.title.length ? 'Дата и время - ' + this.title : '' }
   },
 
 }
@@ -97,9 +63,6 @@ export default {
   cursor: pointer;
 }
 .datetime-input-form >>> .v-input__slot {
-  cursor: pointer;
-}
-.action-icon {
   cursor: pointer;
 }
 .datetime-input-form {

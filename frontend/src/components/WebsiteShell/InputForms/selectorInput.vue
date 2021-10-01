@@ -1,14 +1,10 @@
 <template>
   <v-combobox
     v-model="value"
+    v-bind="$attrs"
     :items="items"
     :item-text="itemText"
-    :rules="rules"
-    :clearable="clearable"
-    :hide-details="hideDetails"
     :class="bodyInputClasses"
-    :placeholder="placeholder"
-    :disabled="disabled"
     :menu-props="{ offsetY: true, zIndex: 1000001 }"
     class="customCombobox"
     autocomplete="off"
@@ -17,15 +13,13 @@
     item-color="teal"
     dense
   >
-    <template v-slot:label>
-      {{title}}
-    </template>
     <template v-slot:append>
       <v-hover v-slot="{ hover }" class="action-icon">
         <v-icon
-          v-if="deletable && hover"
+          v-if="$attrs.hasOwnProperty('deletable') && hover"
           @click.stop="$emit('deletable')"
           size="24"
+          class="action-icon"
         >mdi-delete</v-icon>
         <v-icon v-else size="24">mdi-format-list-bulleted</v-icon>
       </v-hover>
@@ -37,61 +31,28 @@
       <v-list-item-icon v-if="item.hasOwnProperty('icon')">
         <v-icon>{{item.icon}}</v-icon>
       </v-list-item-icon>
-      <v-list-item-title class="selector-item">{{item[itemText]}}</v-list-item-title>
+      <v-list-item-title class="selector-item">{{item[itemText || 'value']}}</v-list-item-title>
     </template>
   </v-combobox>
 </template>
 
 <script>
 
+import {mapGetters} from "vuex";
+
 export default {
   name: "selectorInput",
-  model: { prop: 'inputString', event: 'changeInputString', },
+  model: { prop: 'inputString', event: 'changeInputString'},
   props: {
-    clearable: {
-      type: Boolean,
-      default: false,
-    },
-    deletable: {
-      type: Boolean,
-      default: false,
-    },
-    disabled: {
-      type: Boolean,
-      default: false,
-    },
-    hideDetails: {
-      type: Boolean,
-      default: false,
-    },
     inputString: Number,
-    itemText: {
-      type: String,
-      default: 'value',
-    },
-    items: {
-      type: Array,
-      default: function () {
-        return []
-      }
-    },
-    placeholder: {
-      type: String,
-      default: '',
-    },
-    rules: {
-      type: Array,
-      default: function () {
-        return []
-      }
-    },
-    title: {
-      type: String,
-      default: '',
-    },
   },
   computed: {
-    bodyInputClasses: function () { return this.title.length ? 'pt-5' : '' },
+    ...mapGetters(['baseList']),
+    bodyInputClasses: function () { return this.$attrs.hasOwnProperty('label') ? 'pt-2' : '' },
+    items: function() {
+      return this.$attrs['type-load'] ? this.baseList(this.$attrs['type-load']).values : this.$attrs.items
+    },
+    itemText: function () { return this.$attrs['item-text'] || 'value'},
     value: {
       get: function () { return this.items.find(item => item.id === this.inputString) },
       set: function (value) { this.$emit('changeInputString', value.id) }

@@ -6,6 +6,7 @@
         v-model="dialog"
         @input="show_dialog"
         @keydown.esc="dialog = false"
+        @deletable="$emit('deletable')"
         persistent
         style="z-index: 10000001"
         transition="dialog-bottom-transition"
@@ -15,24 +16,14 @@
       >
         <div v-on="on">
           <body-input-form
+              v-bind="$attrs"
               :input-string="show_text()"
-              :rules="rules"
-              :clearable="clearable"
-              :hide-details="hideDetails"
               :class="bodyInputClasses"
-              :placeholder="placeholder"
+              :placeholder="$attrs.placeholder || 'Выберете объект на карте'"
               readonly
           >
-            <template v-slot:label>
-              {{title}}
-            </template>
-            <template v-slot:append="props" class="action-icon">
-              <v-icon
-                v-if="deletable && props.hover"
-                @click.stop="$emit('deletable')"
-                size="24"
-              >mdi-delete</v-icon>
-              <v-icon v-else size="24">mdi-map-marker-outline</v-icon>
+            <template v-slot:append="props" >
+              <v-icon size="24">mdi-map-marker-outline</v-icon>
             </template>
             <template v-slot:message>
               <slot name="message"></slot>
@@ -42,7 +33,7 @@
       </template>
 
       <v-card>
-        <v-card-title class="text-h7">{{ title }}</v-card-title>
+        <v-card-title class="text-h7">{{ $attrs.label }}</v-card-title>
         <v-divider></v-divider>
         <LeafletEditor
           v-if="dialog"
@@ -73,33 +64,6 @@ export default {
     inputString:  Object,
     modeEnabled:  { type: Object, default: () => ({ marker: true , line: true, polygon: true, }) }, // доступные элементы
     modeSelected: { type: String, default: () => undefined},                        // режим ввода по умолчанию
-
-    rules: {
-      type: Array,
-      default: function () {
-        return []
-      }
-    },
-    deletable: {
-      type: Boolean,
-      default: false,
-    },
-    title: {
-      type: String,
-      default: '',
-    },
-    hideDetails: {
-      type: Boolean,
-      default: false,
-    },
-    placeholder: {
-      type: String,
-      default: 'Выберете объект на карте',
-    },
-    clearable: {
-      type: Boolean,
-      default: false,
-    }
   },
   data: () => ({
     dialog: false,
@@ -114,7 +78,7 @@ export default {
       get()    { return this.value; },
       set(val) { this.fc_temp = val; },
     },
-    bodyInputClasses: function () { return this.title.length ? '' : 'pt-0' },
+    bodyInputClasses: function () { return this.$attrs.hasOwnProperty('label') ? '' : 'pt-0' },
   },
 
   methods: {
@@ -185,9 +149,6 @@ export default {
   cursor: pointer;
 }
 .geometry-input-form >>> .v-input__slot {
-  cursor: pointer;
-}
-.action-icon {
   cursor: pointer;
 }
 .geometry-input-form {

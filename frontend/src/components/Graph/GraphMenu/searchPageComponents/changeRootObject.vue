@@ -4,12 +4,12 @@
       <selector-input
         v-model="objectId"
         :items="baseObjects"
-        :title="selectorTitle"
+        :label="selectorTitle"
         item-text="titleSingle"
       ></selector-input>
       <boolean-input
         v-model="objectActual"
-        :title="booleanTitle"
+        :label="booleanTitle"
         class="pt-4"
       ></boolean-input>
     </v-card-text>

@@ -166,7 +166,9 @@ export default {
       })
     },
     getCoordinatesEdge(id){
-      return this.$refs.hasOwnProperty(`edge-${id}`) ? this.$refs[`edge-${id}`][0].pos : null
+      this.$nextTick(() => {
+        return this.$refs.hasOwnProperty(`edge-${id}`) ? this.$refs[`edge-${id}`][0].pos : null
+      })
     },
     updateLabel(id) {
       this.$refs[`label-${id}`][0].$refs.node.fitContent()

@@ -4,10 +4,6 @@
     v-bind="$attrs"
     ref="menu"
     transition="slide-x-reverse-transition"
-    offset-x
-    offset-y
-    bottom
-    fixed
     z-index="10001"
   >
     <template v-slot:activator="{ on, attrs }">

@@ -2,10 +2,10 @@
   <split-panel>
     <template v-slot:firstPane>
       <treeView
-        :treeViewItems="treeView"
-        :selectedTreeViewItem="selectedItem"
-        @changeSelectedTreeViewItem="setSelectedTreeViewItem"
-        class="tree-view overflow-y-auto"
+        :items="treeView"
+        :selected="selectedItem"
+        @change="setSelectedItem"
+        class="tree-view"
       ></treeView>
     </template>
 
@@ -35,32 +35,29 @@
         <v-divider v-if="'id' in selectedItem"></v-divider>
 
         <v-scroll-y-transition mode="out-in">
-          <v-form ref="form" v-if="'id' in selectedItem" :key="selectedItem.id" class="px-2">
-            <custom-tooltip v-for="variable in selectedItem.variables" :key="variable.id" :body-text="variable.hint" bottom>
+          <v-form ref="form" v-if="'id' in selectedItem" class="px-2">
+            <custom-tooltip v-for="v in selectedItem.variables" :key="v.id" :body-text="v.hint" bottom>
               <template v-slot:activator="{ on }">
-                <div v-on="on">
+                <div v-on="on" class="pt-2">
                   <responsive-input-form
-                    v-model="variable.value"
-                    :type="variable.type"
-                    :title="variable.title"
-                    :items="variable.list"
-                    hide-details
-                    :rules="[ v => !!v || 'Поле должно быть заполнено', ]"
-                    class="pt-2"
+                    v-model="v.value"
+                    :input-type="v.type"
+                    :label="v.title"
+                    :list-rules="['notEmpty']"
                   ></responsive-input-form>
                 </div>
               </template>
             </custom-tooltip>
             <div class="py-2 d-flex flex-nowrap flex-row justify-center">
               <v-btn
-                  :disabled="selectedTemplate.passiveAnalysts.indexOf(selectedItem) !== -1"
-                  @click="disabledActiveAnalysts()"
-                  outlined color="#00796B"
+                :disabled="selectedTemplate.passiveAnalysts.includes(selectedItem)"
+                @click="disabledActiveAnalysts()"
+                outlined color="#00796B"
               >Отключить</v-btn>
               <v-spacer></v-spacer>
               <v-btn
-                  @click="executeScript(selectedItem)"
-                  outlined color="#00796B"
+                @click="executeScript(selectedItem)"
+                outlined color="#00796B"
               >Выполнить</v-btn>
             </div>
           </v-form>
@@ -85,11 +82,9 @@ import { mapActions, mapGetters } from 'vuex'
 
 export default {
   name: 'mapScriptMenu',
-  mixins: [ CreatorTreeView, ExecutorScripts, SelectedScriptFormatter, ],
-  components: {SplitPanel, CustomTooltip, treeView, chipAnalytics, ResponsiveInputForm, menuTemplate, blockHeader, },
-  computed: {
-    ...mapGetters(['templatesList', 'selectedTemplate'])
-  },
+  mixins: [CreatorTreeView, ExecutorScripts, SelectedScriptFormatter],
+  components: {SplitPanel, CustomTooltip, treeView, chipAnalytics, ResponsiveInputForm, menuTemplate, blockHeader},
+  computed: mapGetters(['templatesList', 'selectedTemplate']),
   methods: {
     ...mapActions([
       'addPassiveAnalysts', 'changeSelectedTreeViewItem', 'changeSelectedTemplateTitle', 'changeColorActiveAnalysts',
@@ -101,7 +96,7 @@ export default {
      * Обработка выбора скрипта в дереве скриптов [ConstructorBlocks.treeView]
      * @param {Object} script - Глубокая копия выбранного пользователем скрипта
      */
-    setSelectedTreeViewItem (script) {
+    setSelectedItem (script) {
       /**
        * transformSelectedScript - функция миксина [Mixins.SelectedScriptFormatter]
        * @type {Object} {id: *, name: *, variables: {title: *, value: *}}
@@ -182,6 +177,7 @@ export default {
 <style scoped>
 .tree-view {
   height: 100%;
+  overflow-y: auto;
 }
 .chip-analytics {
   flex: auto;
