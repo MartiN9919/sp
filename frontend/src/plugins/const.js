@@ -19,6 +19,9 @@ export default class CONST {
       static OSM_SEARCH    = 'objects/osm_search/';
       static OSM_FC        = 'objects/osm_fc/';
     };
+    static SCRIPT = class {
+      static MAP           = 'script/execute_map/';
+    };
   };
 
 

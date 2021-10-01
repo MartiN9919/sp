@@ -258,7 +258,7 @@ def geo_id_to_fc(obj, group_id, geo_ids, keys):
     REC_DAT = 3
 
     FC_OBJ_ID = 'obj_id'
-    FC_ID = 'id'
+    FC_REC_ID = 'rec_id'
     FC_PROPERTIES = 'properties'
     FC_GEOMETRY = 'geometry'
 
@@ -285,8 +285,9 @@ def geo_id_to_fc(obj, group_id, geo_ids, keys):
     for rec in recs:
         id = rec[REC_ID]
         # d_item: прочитать
-        d_item = d.get(id, {FC_ID: str(id), FC_PROPERTIES: {}, })
-        d_item[FC_OBJ_ID]=obj
+        #d_item = d.get(id, {FC_REC_ID: str(id), FC_PROPERTIES: {}, })
+        d_item = d.get(id, {FC_REC_ID: id, FC_PROPERTIES: {}, })
+        d_item[FC_OBJ_ID]=obj_id
 
         # запомнить ключ в d_item
         if rec[1] == 'location':

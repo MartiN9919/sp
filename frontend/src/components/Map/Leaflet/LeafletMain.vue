@@ -342,7 +342,7 @@ export default {
           layer.on('click', function(e) {
             let dat = {
               obj_id: e.target.feature.obj_id,
-              rec_id: e.target.feature.id,
+              rec_id: e.target.feature.rec_id,
             };
             self.SCRIPT_ACT_SEL_SET(dat);
             self.$emit('selectObj', dat);
@@ -372,7 +372,6 @@ export default {
 
         // стиль маркеров
         pointToLayer: function(feature, latlng) {
-          console.log('point', feature.properties.sel?'sel':'', feature)
           let sel = (feature.properties.sel?'sel':'');
           let layer = marker_get(
             latlng,
@@ -391,7 +390,6 @@ export default {
 
         // стиль фигур
         style: function(feature) {
-          //console.log('style', feature)
           return {
             weight:      2,
             opacity:     .5,

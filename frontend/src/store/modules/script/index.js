@@ -127,7 +127,7 @@ export default {
 
       for (let item_script of state.selectedTemplate.activeAnalysts) {
         for (let item of item_script.fc.features) {
-          if ((item.id == param?.rec_id) && (item.obj_id == param?.obj_id)) {
+          if ((item.rec_id == param?.rec_id) && (item.obj_id == param?.obj_id)) {
             item.properties.sel = true;
             // console.log('set', item)
           } else {
@@ -153,7 +153,7 @@ export default {
     createNewTemplate: ({ commit }) => commit('createNewTemplate'),
 
     executeMapScript ({ commit, dispatch }, parameters = {}) {
-      return postResponseAxios('script/execute_map/', parameters.request, parameters.config)
+      return postResponseAxios(this._vm.$CONST.API.SCRIPT.MAP, parameters.request, parameters.config)
         .then(response => {
           let data = {
             selectedScript: parameters.request,
