@@ -212,7 +212,7 @@ def aj_search_objects(request):
     @return: json с информацией о объекте в формате [{rec_id, obj_id, params:[{id,val},...,{}]},...,{}]
     """
     group_id = DAT_OWNER.DUMP.get_group(user_id=request.user.id)
-    triggers = json.loads(request.headers.get('Set-Cookie'))
+    triggers = json.loads(request.headers.get('Set-Cookie', []))
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
