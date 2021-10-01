@@ -194,7 +194,7 @@ def remove_path(parent, child):
     if parent and parent.get('parent'):
         remove_path(parent['parent'], parent)
     else:
-        [item for item in parent['rels'] if item == child][0]['bad'] = True
+        [item for item in parent['rels'] if item == child][0]['degenerated'] = True
 
 
 def search_relations_recursive(group_id, request, parent, root):
@@ -213,6 +213,7 @@ def search_relations_recursive(group_id, request, parent, root):
     @return: на каждой итерации возвращает родительский корень с возможным добавлением к нему новый найденных связей
     """
     for relation in request.get('rels', []):
+        temp_list = []
         if len(relation.get('request', '')) != 0:
             rec_ids = find_reliable_http(relation.get('object_id'), relation.get('request', ''),
                                          relation.get('actual'), group_id)
@@ -230,6 +231,7 @@ def search_relations_recursive(group_id, request, parent, root):
                 if len(temp_result) > 0:
                     temp = {'object_id': relation.get('object_id'), 'rec_id': int(rec_id), 'rels': [], 'parent': parent}
                     parent['rels'].append(temp)
+                    temp_list.append(temp)
                 else:
                     remove_path(parent.get('parent'), parent)
         else:
@@ -248,15 +250,16 @@ def search_relations_recursive(group_id, request, parent, root):
             for rec_id in rec_ids:
                 temp = {'object_id': relation.get('object_id'), 'rec_id': int(rec_id['rec_id']), 'rels': [], 'parent': parent}
                 parent['rels'].append(temp)
+                temp_list.append(temp)
         if len(relation.get('rels', [])) > 0:
-            for temp_parent in parent['rels']:
+            for temp_parent in temp_list:
                 search_relations_recursive(group_id, relation, temp_parent, root)
     return parent
 
 
 def get_unique_objects(objects, object_tree):
     for item in object_tree:
-        if item.get('bad') and item['bad'] == True:
+        if item.get('degenerated') and item['degenerated']:
             continue
         if len([temp for temp in objects if temp['object_id'] == item['object_id'] and
                                                 temp['rec_id'] == item['rec_id']]) == 0:
