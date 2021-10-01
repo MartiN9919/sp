@@ -138,6 +138,9 @@ Icon.Default.mergeOptions({
 export default {
   name: 'LeafletMain',
 
+  emits: [
+    'selectObj',                         // выбор объекта на карте
+  ],
 
   mixins: [
     MixResize,
@@ -293,6 +296,7 @@ export default {
     },
 
     cluster_options(map_ind) {
+      let self = this;
       return {
         // область при наведении курсора на кластер
         showCoverageOnHover: true,
@@ -308,7 +312,7 @@ export default {
         iconCreateFunction: function (cluster) {
           return new L.DivIcon({
             html: '<div style="background-color:'+this.cluster_color+';"><span>' + cluster.getChildCount() + '</span></div>',
-            className: 'marker-cluster marker-cluster-small marker-cluster-bg-new',
+            className: 'marker-cluster marker-cluster-small marker-cluster-bg-new'+(self.SCRIPT_GET_ITEM_SEL(map_ind)?' sel':''),
             iconSize: new L.Point(40, 40),
           });
         },
@@ -324,12 +328,9 @@ export default {
 
     geojson_options(map_ind) {
       let self = this;
-      let sel;
       return {
         // для каждого маркера / фигуры
         onEachFeature: function(feature, layer) {
-          sel = this.SCRIPT_GET_ITEM_SEL(feature.ind);
-
           // control-легенда: установка onHover
           // события повторно вызывают this.data_normalize_color
           let self = this;
@@ -339,10 +340,12 @@ export default {
             self.hover_feature_ind = -1;
           });
           layer.on('click', function(e) {
-            self.SCRIPT_ACT_SEL_SET({
+            let dat = {
               obj_id: e.target.feature.obj_id,
               id:     e.target.feature.id,
-            });
+            };
+            self.SCRIPT_ACT_SEL_SET(dat);
+            self.$emit('selectObj', dat);
           });
 
           // подсказка
@@ -359,18 +362,6 @@ export default {
 
           // редактирование запрещено - удалить pm - для уменьшения объема вычислений
           if (layer.pm) { delete layer.pm; }
-
-
-
-
-
-          // layer.setStyle({'className': 'sel', });
-          // if (layer._icon) {
-          //   layer._icon.classList.add('sel')
-          // }
-
-
-
 
           // тип полигона: color
           // let polygon = self.SCRIPT_GET_ITEM_POLYGON(map_ind);
@@ -391,12 +382,7 @@ export default {
               // size:   self.SCRIPT_GET_ITEM_ICON(map_ind), не реализовано за ненадобностью
             }
           );
-          // console.log(1111, layer)
-          // if (layer._icon) {
-          //   layer._icon.classList.push('sel')
-          // }
-          // //layer.options.interactive = false;
-          return layer
+          return layer;
         },
 
 
@@ -408,7 +394,6 @@ export default {
             fillOpacity: .3,
             color:       self.SCRIPT_GET_ITEM_COLOR(map_ind),
             fillColor:   feature.color, // set in mixin
-            //className:   'sel',
             className:   self.SCRIPT_GET_ITEM_SEL(map_ind)?'sel':'',
           };
         },
