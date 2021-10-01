@@ -5,11 +5,9 @@
       v-bind="$attrs"
       :class="bodyInputClasses"
       @deletable="$emit('deletable')"
+      icon="mdi-alert-circle-outline"
       readonly
     >
-      <template v-slot:append="props">
-        <v-icon size="24">mdi-alert-circle-outline</v-icon>
-      </template>
       <template v-slot:message>
         <slot name="message"></slot>
       </template>

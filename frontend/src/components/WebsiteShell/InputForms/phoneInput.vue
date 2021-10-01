@@ -7,11 +7,9 @@
       :placeholder="$attrs.placeholder || 'Введите номер телефона'"
       @keypress.native="isNumber"
       @deletable="$emit('deletable')"
+      icon="mdi-cellphone"
       prefix="+"
     >
-      <template v-slot:append="props">
-        <v-icon size="24">mdi-cellphone</v-icon>
-      </template>
       <template v-slot:message>
         <slot name="message"></slot>
       </template>
