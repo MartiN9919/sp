@@ -10,27 +10,37 @@ import {
 } from '@/components/Map/Leaflet/Lib/Const';
 
 export default {
-  /**
-   * state.selectedTemplate.activeAnalysts[ind]
-   *   id     (int)                                  - id скрипта (НЕ УНИКАЛЬНЫЙ)
-   *   marker (str) ['pulse']                        - тип маркера,  см. MAP_ITEM.MARKER. ...
-   *   line   (str) ['']                             - тип линии,    см. MAP_ITEM.LINE. ...
-   *   polygon(str) ['']                             - тип полигона, см. MAP_ITEM.POLYGON. ...
-   *   color  (str) ['red']                          - цвет маркера или фигуры, любой способ, в т.ч. прозрачность
-   *   icon   (str) ['mdi-star']                     - иконка (для маркера MARKER.FONT)
-   *   fc                                            - FeatureCollection
-   *   fc.id     (str, int)                          - уникальный идентификатор слоя, ПОКА НЕ НУЖЕН - НЕ УДАЛЯЛ
-   *   fc.features[i].properties.hint (str) ['']     - всплывающая подсказка, НЕТ РЕАКТИВНОСТИ
-   *   fc.features[i].color_fill (str) ['']          - цвет заливки фигуры
-   */
-
   state: {
     templatesList: [],
+
+    /**
+     * state.selectedTemplateactiveAnalysts            - список активных скриптов
+     * state.selectedTemplate.activeAnalysts[ind]
+     *   id     (int)                                  - id скрипта (НЕ УНИКАЛЬНЫЙ)
+     *   marker (str) ['pulse']                        - тип маркера,  см. MAP_ITEM.MARKER. ...
+     *   line   (str) ['']                             - тип линии,    см. MAP_ITEM.LINE. ...
+     *   polygon(str) ['']                             - тип полигона, см. MAP_ITEM.POLYGON. ...
+     *   color  (str) ['red']                          - цвет маркера или фигуры, любой способ, в т.ч. прозрачность
+     *   icon   (str) ['mdi-star']                     - иконка (для маркера MARKER.FONT)
+     *   fc                                            - FeatureCollection
+     *   fc.id     (str, int)                          - уникальный идентификатор слоя, ПОКА НЕ НУЖЕН - НЕ УДАЛЯЛ
+     *   fc.features[i].properties.hint (str) ['']     - всплывающая подсказка, НЕТ РЕАКТИВНОСТИ
+     *   fc.features[i].color_fill (str) ['']          - цвет заливки фигуры
+     */
     selectedTemplate: {
       title: '',
       activeAnalysts: [],
       passiveAnalysts: [],
-    }
+    },
+
+
+    /**
+     *
+     * state.selectedFC[ind]                           - список указателей на объекты, соотнесенные с выделенными фигурами
+     *   obj_id (int)                                  - тип объекта
+     *   rec_id (str)                                  - id записи
+     */
+    selectedFC: 0,
   },
   getters: {
     templatesList:                state =>        state.templatesList,
@@ -45,7 +55,7 @@ export default {
     SCRIPT_GET_ITEM_COLOR_LEGEND: state => ind => state.selectedTemplate.activeAnalysts[ind].color_legend || [],
     SCRIPT_GET_ITEM_ICON:         state => ind => state.selectedTemplate.activeAnalysts[ind].icon         || 'mdi-star',
     SCRIPT_GET_ITEM_REFRESH:      state => ind => state.selectedTemplate.activeAnalysts[ind].refresh,
-    SCRIPT_GET_ITEM_SEL:          state => ind => state.selectedTemplate.activeAnalysts[ind]?.sel         || false,
+    SCRIPT_GET_ITEM_SEL:          state => state.selectedFC.toString(),
 
     // работает, но не используется
     // SCRIPT_GET_ITEM_ID:        state => ind => state.selectedTemplate.activeAnalysts[ind].id           || '',
@@ -107,29 +117,50 @@ export default {
     SCRIPT_MUT_ITEM_COLOR: (state, param)   => state.selectedTemplate.activeAnalysts[param.ind].color = param.color,
 
     // param.obj_id
-    // param.id
+    // param.rec_id
     SCRIPT_MUT_SEL_SET:    (state, param)   => {
-      let is_equ;
+      state.selectedFC += 1;
+      // this.vm.$set(state.selectedFC, 0, {
+      //   obj_id: param?.obj_id,
+      //   rec_id: param?.rec_id,
+      // });
       for (let item_script of state.selectedTemplate.activeAnalysts) {
-        is_equ = false;
         for (let item of item_script.fc.features) {
-          if ((item.id == param?.id) && (item.obj_id == param?.obj_id)) {
-            console.log('set', item_script, )
-            is_equ = true;
-            break;
-          }
-        }
-        if (is_equ) {
-          item_script.sel = true;
-          console.log(11, item_script)
-        } else {
-          if (item_script.sel) {
-            delete item_script.sel;
-            console.log(22, item_script)
+          if ((item.id == param?.rec_id) && (item.obj_id == param?.obj_id)) {
+            item.properties.sel = true;
+            console.log('set', item)
+          } else {
+            if (item.properties.sel) {
+              delete item.properties.sel;
+              console.log('del', item)
+            }
           }
         }
       }
     },
+
+    // SCRIPT_MUT_SEL_SET:    (state, param)   => {
+    //   let is_equ;
+    //   for (let item_script of state.selectedTemplate.activeAnalysts) {
+    //     is_equ = false;
+    //     for (let item of item_script.fc.features) {
+    //       if ((item.id == param?.id) && (item.obj_id == param?.obj_id)) {
+    //         console.log('set', item_script, )
+    //         is_equ = true;
+    //         break;
+    //       }
+    //     }
+    //     if (is_equ) {
+    //       item_script.sel = true;
+    //       console.log(11, item_script)
+    //     } else {
+    //       if (item_script.sel) {
+    //         delete item_script.sel;
+    //         console.log(22, item_script)
+    //       }
+    //     }
+    //   }
+    // },
 
   },
 
@@ -163,7 +194,7 @@ export default {
 
     // добавить/удалить выделение
     // param.obj_id
-    // param.id
+    // param.rec_id
     SCRIPT_ACT_SEL_SET({ commit }, param) {
       commit('SCRIPT_MUT_SEL_SET', param)
     },

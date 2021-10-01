@@ -42,7 +42,7 @@ export default {
     MAP_GET_KEY: (state, getters) => (ind) =>
       ind+'-'+
       getters.MAP_GET_RANGE_SEL              +'-'+
-      getters.SCRIPT_GET_ITEM_SEL       (ind)+'-'+
+      getters.SCRIPT_GET_ITEM_SEL            +'-'+
       getters.SCRIPT_GET_ITEM_REFRESH   (ind)+'-'+
       getters.SCRIPT_GET_ITEM_MARKER    (ind)+'-'+
       getters.SCRIPT_GET_ITEM_LINE      (ind)+'-'+

@@ -312,7 +312,7 @@ export default {
         iconCreateFunction: function (cluster) {
           return new L.DivIcon({
             html: '<div style="background-color:'+this.cluster_color+';"><span>' + cluster.getChildCount() + '</span></div>',
-            className: 'marker-cluster marker-cluster-small marker-cluster-bg-new'+(self.SCRIPT_GET_ITEM_SEL(map_ind)?' sel':''),
+            className: 'marker-cluster marker-cluster-small marker-cluster-bg-new',
             iconSize: new L.Point(40, 40),
           });
         },
@@ -342,7 +342,7 @@ export default {
           layer.on('click', function(e) {
             let dat = {
               obj_id: e.target.feature.obj_id,
-              id:     e.target.feature.id,
+              rec_id: e.target.feature.id,
             };
             self.SCRIPT_ACT_SEL_SET(dat);
             self.$emit('selectObj', dat);
@@ -372,13 +372,16 @@ export default {
 
         // стиль маркеров
         pointToLayer: function(feature, latlng) {
+          console.log('point', feature.properties.sel?'sel':'', feature)
+          let sel = (feature.properties.sel?'sel':'');
           let layer = marker_get(
             latlng,
             {
               name:      self.SCRIPT_GET_ITEM_MARKER(map_ind),
               color:     self.SCRIPT_GET_ITEM_COLOR (map_ind),
               icon:      self.SCRIPT_GET_ITEM_ICON  (map_ind),
-              className: self.SCRIPT_GET_ITEM_SEL   (map_ind)?'sel':'',
+              className: sel,
+              // className: self.SCRIPT_GET_ITEM_SEL?'sel':'',
               // size:   self.SCRIPT_GET_ITEM_ICON(map_ind), не реализовано за ненадобностью
             }
           );
@@ -388,13 +391,15 @@ export default {
 
         // стиль фигур
         style: function(feature) {
+          //console.log('style', feature)
           return {
             weight:      2,
             opacity:     .5,
             fillOpacity: .3,
             color:       self.SCRIPT_GET_ITEM_COLOR(map_ind),
             fillColor:   feature.color, // set in mixin
-            className:   self.SCRIPT_GET_ITEM_SEL(map_ind)?'sel':'',
+            className:   feature.properties.sel?'sel':'',
+            //className:   self.SCRIPT_GET_ITEM_SEL?'sel':'',
           };
         },
       };
