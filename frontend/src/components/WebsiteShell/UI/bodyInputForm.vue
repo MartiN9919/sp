@@ -18,7 +18,7 @@
           size="24"
           class="action-icon"
         >mdi-delete</v-icon>
-        <slot name="append" v-else></slot>
+        <v-icon size="24" v-else>{{$attrs.icon}}</v-icon>
       </v-hover>
     </template>
   </v-text-field>

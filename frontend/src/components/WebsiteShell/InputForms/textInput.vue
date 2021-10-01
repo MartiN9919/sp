@@ -5,11 +5,9 @@
       v-bind="$attrs"
       :class="bodyInputClasses"
       :placeholder="$attrs.placeholder || 'Введите необходимое значение'"
+      icon="mdi-format-color-text"
       @deletable="$emit('deletable')"
     >
-      <template v-slot:append="props">
-        <v-icon size="24">mdi-format-color-text</v-icon>
-      </template>
       <template v-slot:message>
         <slot name="message"></slot>
       </template>

@@ -74,6 +74,10 @@ export default {
         })
         .catch(error => {  })
     },
+    simpleFindObject({state}, {objectId, searchRequest}) {
+      let request = {actual: false, object_id: objectId, request: searchRequest, rels: []}
+      return postResponseAxios('objects/search', request, {})
+    }
   }
 }
 

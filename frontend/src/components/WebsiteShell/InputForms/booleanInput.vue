@@ -4,22 +4,12 @@
       v-model="value"
       v-bind="$attrs"
       :class="bodyInputClasses"
+      :icon="value === 'ДА' ? 'mdi-checkbox-marked-outline' : 'mdi-checkbox-blank-outline'"
       :placeholder="$attrs.placeholder || 'Выберете необходимое значение'"
       @click.native="changeValue"
       @deletable="$emit('deletable')"
       readonly
     >
-      <template v-slot:append>
-        <v-checkbox
-          :value="value === 'ДА'"
-          :ripple="false"
-          class="mt-0 pt-0"
-          color="gray"
-          readonly
-          on-icon="mdi-checkbox-marked-outline"
-          off-icon="mdi-checkbox-blank-outline"
-        ></v-checkbox>
-      </template>
       <template v-slot:message>
         <slot name="message"></slot>
       </template>

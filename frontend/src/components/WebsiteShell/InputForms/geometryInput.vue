@@ -19,12 +19,10 @@
               v-bind="$attrs"
               :input-string="show_text()"
               :class="bodyInputClasses"
+              icon="mdi-map-marker-outline"
               :placeholder="$attrs.placeholder || 'Выберете объект на карте'"
               readonly
           >
-            <template v-slot:append="props" >
-              <v-icon size="24">mdi-map-marker-outline</v-icon>
-            </template>
             <template v-slot:message>
               <slot name="message"></slot>
             </template>

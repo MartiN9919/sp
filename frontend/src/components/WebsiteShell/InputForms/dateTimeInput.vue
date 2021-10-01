@@ -7,14 +7,12 @@
             v-model="value"
             v-bind="$attrs"
             :rules="rulesDateTime"
+            icon="mdi-calendar-clock"
             :class="bodyInputClasses"
             :placeholder="$attrs.placeholder || 'Выберете необходимую дату и время'"
             @deletable="$emit('deletable')"
             readonly
           >
-            <template v-slot:append="{ hover }">
-              <v-icon size="24">mdi-calendar-clock</v-icon>
-            </template>
             <template v-slot:message>
               <slot name="message"></slot>
             </template>

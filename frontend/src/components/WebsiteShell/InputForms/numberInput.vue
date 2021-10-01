@@ -5,12 +5,10 @@
       v-bind="$attrs"
       :placeholder="$attrs.placeholder || 'Введите необходимое значение'"
       :class="bodyInputClasses"
+      icon="mdi-numeric"
       @keypress.native="isNumber"
       @deletable="$emit('deletable')"
     >
-      <template v-slot:append>
-        <v-icon size="24">mdi-numeric</v-icon>
-      </template>
       <template v-slot:message>
         <slot name="message"></slot>
       </template>
