@@ -40,7 +40,7 @@ export default {
      *   obj_id (int)                                  - тип объекта
      *   rec_id (str)                                  - id записи
      */
-    selectedFC: 0,
+    selectedFC: [],
   },
   getters: {
     templatesList:                state =>        state.templatesList,
@@ -55,7 +55,7 @@ export default {
     SCRIPT_GET_ITEM_COLOR_LEGEND: state => ind => state.selectedTemplate.activeAnalysts[ind].color_legend || [],
     SCRIPT_GET_ITEM_ICON:         state => ind => state.selectedTemplate.activeAnalysts[ind].icon         || 'mdi-star',
     SCRIPT_GET_ITEM_REFRESH:      state => ind => state.selectedTemplate.activeAnalysts[ind].refresh,
-    SCRIPT_GET_ITEM_SEL:          state => state.selectedFC.toString(),
+    SCRIPT_GET_ITEM_SEL:          state =>        JSON.stringify(state.selectedFC),
 
     // работает, но не используется
     // SCRIPT_GET_ITEM_ID:        state => ind => state.selectedTemplate.activeAnalysts[ind].id           || '',
@@ -116,52 +116,29 @@ export default {
     SCRIPT_MUT_ITEM_DEL:   (state, id)      => state.selectedTemplate.activeAnalysts.splice(id, 1),
     SCRIPT_MUT_ITEM_COLOR: (state, param)   => state.selectedTemplate.activeAnalysts[param.ind].color = param.color,
 
-    // param.obj_id
-    // param.rec_id
-    SCRIPT_MUT_SEL_SET:    (state, param)   => {
-      state.selectedFC += 1;
-      // this.vm.$set(state.selectedFC, 0, {
-      //   obj_id: param?.obj_id,
-      //   rec_id: param?.rec_id,
-      // });
+    // установить выделение объекта на карте
+    SCRIPT_MUT_SEL_SET:    (state, param)   => {    // param.obj_id   param.rec_id
+      // реактивность обеспечивается
+      state.selectedFC = []
+      state.selectedFC.push({
+        obj_id: param?.obj_id,
+        rec_id: param?.rec_id,
+      });
+
       for (let item_script of state.selectedTemplate.activeAnalysts) {
         for (let item of item_script.fc.features) {
           if ((item.id == param?.rec_id) && (item.obj_id == param?.obj_id)) {
             item.properties.sel = true;
-            console.log('set', item)
+            // console.log('set', item)
           } else {
             if (item.properties.sel) {
               delete item.properties.sel;
-              console.log('del', item)
+              // console.log('del', item)
             }
           }
         }
       }
     },
-
-    // SCRIPT_MUT_SEL_SET:    (state, param)   => {
-    //   let is_equ;
-    //   for (let item_script of state.selectedTemplate.activeAnalysts) {
-    //     is_equ = false;
-    //     for (let item of item_script.fc.features) {
-    //       if ((item.id == param?.id) && (item.obj_id == param?.obj_id)) {
-    //         console.log('set', item_script, )
-    //         is_equ = true;
-    //         break;
-    //       }
-    //     }
-    //     if (is_equ) {
-    //       item_script.sel = true;
-    //       console.log(11, item_script)
-    //     } else {
-    //       if (item_script.sel) {
-    //         delete item_script.sel;
-    //         console.log(22, item_script)
-    //       }
-    //     }
-    //   }
-    // },
-
   },
 
   actions: {
