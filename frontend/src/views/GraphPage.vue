@@ -14,6 +14,7 @@
 
 <script>
 const searchPage = () => import("../components/Graph/GraphMenu/searchPage")
+const searchRelationPage = () => import("../components/Graph/GraphMenu/searchRelationPage")
 const createObjectPage = () => import("../components/Graph/GraphMenu/createObjectPage")
 const createRelationPage = () => import("../components/Graph/GraphMenu/createRelationPage")
 const settingsPage = () => import("../components/Graph/GraphMenu/settingsPage")
@@ -30,6 +31,7 @@ export default {
     graphArea,
     toolsMenu,
     searchPage,
+    searchRelationPage,
     createObjectPage,
     createRelationPage,
     settingsPage
@@ -54,6 +56,8 @@ export default {
     changeComponent() {
       if (this.activeWindow === 'searchPage')
         return 'searchPage'
+      if (this.activeWindow === 'searchRelationPage')
+        return 'searchRelationPage'
       if (this.activeWindow === 'createObjectPage')
         return 'createObjectPage'
       if (this.activeWindow === 'createRelationPage')

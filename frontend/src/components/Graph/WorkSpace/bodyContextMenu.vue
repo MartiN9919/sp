@@ -36,6 +36,12 @@ export default {
       if(this.objectWithActivatedMenu){
         return [
           {
+            icon: 'mdi-vector-link',
+            title: 'Поиск связей',
+            subtitle: 'Поиск связей для данного объекта',
+            action: 'setSearchRelation'
+          },
+          {
             icon: 'mdi-pencil',
             title: 'Изменить',
             subtitle: 'Редактировать данный объект',
@@ -89,16 +95,27 @@ export default {
             subtitle: 'Связать выбранные объекты',
             action: 'createRelation'
         }) : null
+        this.checkFindRelationsStatus() ? array.push({
+            icon: 'mdi-check',
+            title: 'Найти связи',
+            subtitle: 'Найти все возможные связи между выбранными объектами',
+            action: 'findRelations'
+        }) : null
         return array
       }
     }
   },
   methods: {
     ...mapActions(['reorderGraph', 'setEditableRelation', 'setNavigationDrawerStatus', 'setToolStatus', 'setActiveTool',
-    'setEditableObject', 'deleteObjectFromGraph']),
+    'setEditableObject', 'deleteObjectFromGraph', 'setRootSearchRelationTreeItem', 'getRelationsBtwObjects']),
     menuShow(event, object=null) {
       this.objectWithActivatedMenu = object
       this.$refs.contextMenu.show_root(event.x, event.y)
+    },
+    setSearchRelation(event) {
+      this.setRootSearchRelationTreeItem(this.objectWithActivatedMenu)
+      this.setNavigationDrawerStatus(true)
+      this.setActiveTool('searchRelationPage')
     },
     setChangeObject(event) {
       this.setEditableObject({
@@ -114,12 +131,18 @@ export default {
         && this.choosingObjects.findIndex(o => o.object.object.id === 20) !== -1
         || this.choosingObjects.length === 2
     },
+    checkFindRelationsStatus(){
+      return this.choosingObjects.length === 2
+    },
     createRelation(){
       this.setEditableRelation(this.choosingObjects)
       this.setNavigationDrawerStatus(true)
       this.setToolStatus({tool: 'createRelationPage', status: false})
       this.setActiveTool('createRelationPage')
     },
+    findRelations(){
+      this.getRelationsBtwObjects(this.choosingObjects)
+    }
   },
 
 }

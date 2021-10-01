@@ -18,6 +18,7 @@ export default {
       ],
       Graph: [
         { name: 'searchPage', icon: 'mdi-cloud-search-outline', disabled: false },
+        { name: 'searchRelationPage', icon: 'mdi-vector-link', disabled: false },
         { name: 'createObjectPage', icon: 'mdi-text-box-plus-outline', disabled: false },
         { name: 'createRelationPage', icon: 'mdi-link-variant-plus', disabled: false },
         { name: 'settingsPage', icon: 'mdi-cog-outline', disabled: false },

@@ -65,7 +65,6 @@ def io_get_obj_col_manticore(group_id, object_type, keys, ids, ids_max_block, wh
     @param where_dop: строка вставляемая в match часть запроса manticore
     @return: список словарей в формате [{rec_id,sec,key_id,val},{},...,{}]
     """
-    key_request = parse_where_dop(where_dop)
     col_keys = DAT_SYS_KEY.DUMP.get_rec(obj_id=object_type, col=True, only_first=False)
     if len(keys) == 0:
         result_keys = [{'id': item['id'], 'name': item['name']} for item in col_keys]
@@ -73,6 +72,7 @@ def io_get_obj_col_manticore(group_id, object_type, keys, ids, ids_max_block, wh
         result_keys = [{'id': item['id'], 'name': item['name']} for item in col_keys if item['id'] in keys]
     if len(result_keys) == 0:
         return []
+    key_request = parse_where_dop(where_dop)
     index = 'obj_' + FullTextSearch.TABLES[object_type] + '_col'
     must = []
     if len(ids) > 0:
