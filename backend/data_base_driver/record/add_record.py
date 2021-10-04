@@ -82,7 +82,7 @@ def parse_value(param, object, files):
     """
     value = param['value']
     key = get_key_by_id(param['id'])
-    if key.get('list_id') != 0 and key['id'] != SYS_KEY_CONSTANT.PARENT_ID_CLASSIFIER_ID and key.get('list_id') != None:
+    if key.get('list_id') != 0 and key['id'] not in SYS_KEY_CONSTANT.NOT_VALUE_TRANSFER_LIST and key.get('list_id') != None:
         if key['id'] == SYS_KEY_CONSTANT.ICON_CLASSIFIER_ID:
             temp_value = str(get_item_list_value(value))
             value = temp_value[temp_value.index('(') + 1:temp_value.index(')')]

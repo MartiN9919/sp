@@ -4,7 +4,7 @@ from data_base_driver.constants.const_key import SYS_KEY_CONSTANT
 from data_base_driver.input_output.input_output import io_get_obj
 from data_base_driver.input_output.io_geo import get_geometry_by_id
 from data_base_driver.sys_key.get_key_dump import get_key_by_id, get_obj_id
-from data_base_driver.sys_key.get_list import get_list_by_top_id
+from data_base_driver.sys_key.get_list import get_list_by_top_id, get_groups_list
 from data_base_driver.trigger.trigger_execute import check_triggers
 
 
@@ -118,6 +118,8 @@ def get_value_by_key(key, value):
             return 'корень'
         else:
             return get_geometry_by_id(int(value))['name']
+    elif key in SYS_KEY_CONSTANT.NOT_VALUE_TRANSFER_LIST:
+        return [item for item in get_groups_list() if item['id'] == int(value)][0]['value']
     return value
 
 
@@ -131,8 +133,7 @@ def get_object_record_by_id_http(object_id, rec_id, group_id=0, triggers=None):
     @return: словарь в формате {object_id, rec_id, params:[{id,val},...,{}]}
     """
     response = io_get_obj(group_id, object_id, [], [rec_id], 500, '', {})
-    temp = [(int(item['key_id']), item['val'], int(item['sec'])) for item in response
-            if int(item['key_id']) not in DAT_SYS_KEY.DUMP.owners.get(object_id, [])]
+    temp = [(int(item['key_id']), item['val'], int(item['sec'])) for item in response]
     params = []
     for item in temp:
         value = get_value_by_key(int(item[0]), item[1])
