@@ -230,7 +230,7 @@ export default {
   methods: {
     ...mapActions([
       'MAP_ACT_EDIT',
-      'SCRIPT_ACT_SEL_SWITCH',
+      'SCRIPT_ACT_SEL_SET',
       'SCRIPT_ACT_SEL_CLEAR',
       'appendErrorAlert',
       'setNavigationDrawerStatus',
@@ -342,8 +342,9 @@ export default {
             let dat = {
               obj_id: e.target.feature.obj_id,
               rec_id: e.target.feature.rec_id,
+              ctrl:   e.originalEvent.ctrlKey,
             };
-            self.SCRIPT_ACT_SEL_SWITCH(dat);
+            self.SCRIPT_ACT_SEL_SET(dat);
           });
 
           // подсказка

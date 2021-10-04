@@ -121,7 +121,7 @@ export default {
     // state.selectedFC
     //
     // установить/убрать выделение объекта на карте
-    SCRIPT_MUT_SEL_SWITCH: (state, param)   => {    // param.obj_id   param.rec_id
+    SCRIPT_MUT_SEL_SWITCH: (state, param)   => {    // param.obj_id, param.rec_id
       let ind_exist = undefined;
       for (let ind in state.selectedFC) {
         if ((state.selectedFC[ind].rec_id == param?.rec_id) && (state.selectedFC[ind].obj_id == param?.obj_id)) {
@@ -156,6 +156,7 @@ export default {
     },
   },
 
+
   actions: {
     addPassiveAnalysts: ({ commit }, analytics = {}) => commit('addPassiveAnalysts', analytics),
 
@@ -185,9 +186,8 @@ export default {
 
 
     // добавить/удалить выделение
-    // param.obj_id
-    // param.rec_id
-    SCRIPT_ACT_SEL_SWITCH({ commit }, param) {
+    SCRIPT_ACT_SEL_SET({ commit }, param) {         // param.obj_id, param.rec_id, param.ctrl
+      if (!param?.ctrl) { commit('SCRIPT_MUT_SEL_CLEAR'); }
       commit('SCRIPT_MUT_SEL_SWITCH', param);
       commit('SCRIPT_MAP_SEL_MARK');
     },
