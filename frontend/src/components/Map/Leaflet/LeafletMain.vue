@@ -338,6 +338,7 @@ export default {
             self.hover_feature_ind = -1;
           });
           layer.on('click', function(e) {
+            L.DomEvent.stopPropagation(e);
             let dat = {
               obj_id: e.target.feature.obj_id,
               rec_id: e.target.feature.rec_id,
