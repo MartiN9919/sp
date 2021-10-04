@@ -9,6 +9,7 @@
       :crs="MAP_GET_TILES[MAP_GET_TILE].crs"
       @ready="on_map_ready"
       @resize="on_map_resize"
+      @click="on_map_click"
       @dblclick="on_map_dblclick"
       @contextmenu="on_menu_show"
     >
@@ -138,10 +139,6 @@ Icon.Default.mergeOptions({
 export default {
   name: 'LeafletMain',
 
-  emits: [
-    'selectObj',                         // выбор объекта на карте
-  ],
-
   mixins: [
     MixResize,
     MixKey,
@@ -233,7 +230,8 @@ export default {
   methods: {
     ...mapActions([
       'MAP_ACT_EDIT',
-      'SCRIPT_ACT_SEL_SET',
+      'SCRIPT_ACT_SEL_SWITCH',
+      'SCRIPT_ACT_SEL_CLEAR',
       'appendErrorAlert',
       'setNavigationDrawerStatus',
       'setActiveTool',
@@ -344,8 +342,7 @@ export default {
               obj_id: e.target.feature.obj_id,
               rec_id: e.target.feature.rec_id,
             };
-            self.SCRIPT_ACT_SEL_SET(dat);
-            self.$emit('selectObj', dat);
+            self.SCRIPT_ACT_SEL_SWITCH(dat);
           });
 
           // подсказка
@@ -414,6 +411,10 @@ export default {
 
     on_map_resize() {
       this.map.invalidateSize();
+    },
+
+    on_map_click(e) {
+      this.SCRIPT_ACT_SEL_CLEAR();
     },
 
     on_map_dblclick(e) {

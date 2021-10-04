@@ -4,9 +4,7 @@
       <map-menu></map-menu>
     </template>
     <template v-slot:secondPane>
-      <LeafletMain
-        @selectObj="selectObj"
-      />
+      <LeafletMain/>
     </template>
   </split-panel>
 </template>
@@ -15,19 +13,30 @@
 import SplitPanel from "../components/WebsiteShell/UI/splitPanel"
 import LeafletMain from '../components/Map/Leaflet/LeafletMain'
 import MapMenu from "../components/Map/MapMenu/mapMenu"
-import { mapActions } from "vuex"
+import { mapGetters, mapActions } from "vuex"
 
 export default {
   name: 'MapPage',
   components: { SplitPanel, MapMenu, LeafletMain, },
+
   mounted() {
     this.setDefaultValueActiveTool()
   },
+
+  watch: {
+    SCRIPT_GET_ITEM_SEL: function(obj) {
+      console.log('Выбраны объекты:', obj)
+    },
+  },
+
+  computed: {
+    ...mapGetters([
+      'SCRIPT_GET_ITEM_SEL',
+    ]),
+  },
+
   methods: {
     ...mapActions(['setDefaultValueActiveTool', ]),
-    selectObj(obj) {
-      console.log('Выбран объект:', obj)
-    },
   },
 
 }

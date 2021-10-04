@@ -116,26 +116,41 @@ export default {
     SCRIPT_MUT_ITEM_DEL:   (state, id)      => state.selectedTemplate.activeAnalysts.splice(id, 1),
     SCRIPT_MUT_ITEM_COLOR: (state, param)   => state.selectedTemplate.activeAnalysts[param.ind].color = param.color,
 
-    // установить выделение объекта на карте
-    SCRIPT_MUT_SEL_SET:    (state, param)   => {    // param.obj_id   param.rec_id
-      // реактивность обеспечивается
-      state.selectedFC = []
-      state.selectedFC.push({
-        obj_id: param?.obj_id,
-        rec_id: param?.rec_id,
-      });
 
+    //
+    // state.selectedFC
+    //
+    // установить/убрать выделение объекта на карте
+    SCRIPT_MUT_SEL_SWITCH: (state, param)   => {    // param.obj_id   param.rec_id
+      let ind_exist = undefined;
+      for (let ind in state.selectedFC) {
+        if ((state.selectedFC[ind].rec_id == param?.rec_id) && (state.selectedFC[ind].obj_id == param?.obj_id)) {
+          ind_exist = ind;
+          break;
+        }
+      }
+      if (ind_exist) {
+        state.selectedFC.splice(ind_exist, 1);
+      } else {
+        state.selectedFC.push({
+          obj_id: param?.obj_id,
+          rec_id: param?.rec_id,
+        });
+      }
+    },
+    SCRIPT_MUT_SEL_CLEAR: (state) => {
+      state.selectedFC = [];
+    },
+
+    // пометить выделенные items (в скриптах)
+    SCRIPT_MAP_SEL_MARK: (state) => {
+      // просмотреть все активные скрипты
+      let sel_items;
       for (let item_script of state.selectedTemplate.activeAnalysts) {
         for (let item of item_script.fc.features) {
-          if ((item.rec_id == param?.rec_id) && (item.obj_id == param?.obj_id)) {
-            item.properties.sel = true;
-            // console.log('set', item)
-          } else {
-            if (item.properties.sel) {
-              delete item.properties.sel;
-              // console.log('del', item)
-            }
-          }
+          sel_items = state.selectedFC.find(sel_item => ((item.rec_id == sel_item.rec_id) && (item.obj_id == sel_item.obj_id)));
+          if (sel_items) { item.properties.sel = true; }
+          else { if (item.properties.sel) { delete item.properties.sel; } }
         }
       }
     },
@@ -172,8 +187,13 @@ export default {
     // добавить/удалить выделение
     // param.obj_id
     // param.rec_id
-    SCRIPT_ACT_SEL_SET({ commit }, param) {
-      commit('SCRIPT_MUT_SEL_SET', param)
+    SCRIPT_ACT_SEL_SWITCH({ commit }, param) {
+      commit('SCRIPT_MUT_SEL_SWITCH', param);
+      commit('SCRIPT_MAP_SEL_MARK');
+    },
+    SCRIPT_ACT_SEL_CLEAR({ commit }) {
+      commit('SCRIPT_MUT_SEL_CLEAR');
+      commit('SCRIPT_MAP_SEL_MARK');
     },
 
 
@@ -213,5 +233,5 @@ export default {
         })
         .catch(() => {})
     }
-  }
+  },
 }
