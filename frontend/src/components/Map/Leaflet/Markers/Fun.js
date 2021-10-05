@@ -31,11 +31,26 @@ export function icon_get(options={}) {
 
 
   //
+  // MAP_ITEM.MARKER.IMAGE
+  // имя маркера = имя файла.png
+  if (name==MAP_ITEM.MARKER.IMAGE) {
+    let ret = {
+      shadowUrl:   icon_path('marker-icon-shadow'),
+      iconSize:    [25, 41],
+      iconAnchor:  [12, 41],
+      popupAnchor: [1, -34],
+      shadowSize:  [41, 41],
+      className:   options.className || '',
+    };
+
+  };
+
+  //
   // MAP_ITEM.MARKER.COLOR
   // невозможна плавная смена цвета, только заданные значения
   if (name==MAP_ITEM.MARKER.COLOR) {
     let ret = {
-      shadowUrl:   require('@/assets/img/markers/marker-shadow.png'),
+      shadowUrl:   icon_path('marker-icon-shadow'),
       iconSize:    [25, 41],
       iconAnchor:  [12, 41],
       popupAnchor: [1, -34],
@@ -46,41 +61,41 @@ export function icon_get(options={}) {
     switch(options.color) {
       case 'red':
       case '#f00':
-        ret.iconUrl = require('@/assets/img/markers/marker-icon-2x-red.png');
+        ret.iconUrl = icon_path('marker-icon-red');
         break;
 
       case 'green':
       case '#0f0':
-        ret.iconUrl = require('@/assets/img/markers/marker-icon-2x-green.png');
+        ret.iconUrl = icon_path('marker-icon-2x-green');
         break;
 
       case 'blue':
       case '#00f':
-        ret.iconUrl = require('@/assets/img/markers/marker-icon-2x-blue.png');
+        ret.iconUrl = icon_path('marker-icon-2x-blue');
         break;
 
       case 'gold':
-        ret.iconUrl = require('@/assets/img/markers/marker-icon-2x-gold.png');
+        ret.iconUrl = icon_path('marker-icon-2x-gold');
         break;
 
       case 'orange':
-        ret.iconUrl = require('@/assets/img/markers/marker-icon-2x-orange.png');
+        ret.iconUrl = icon_path('marker-icon-2x-orange');
         break;
 
       case 'yellow':
-        ret.iconUrl = require('@/assets/img/markers/marker-icon-2x-yellow.png');
+        ret.iconUrl = icon_path('marker-icon-2x-yellow');
         break;
 
       case 'violet':
-        ret.iconUrl = require('@/assets/img/markers/marker-icon-2x-violet.png');
+        ret.iconUrl = icon_path('marker-icon-2x-violet');
         break;
 
       case 'grey':
-        ret.iconUrl = require('@/assets/img/markers/marker-icon-2x-grey.png');
+        ret.iconUrl = icon_path('marker-icon-2x-grey');
         break;
 
       case 'black':
-        ret.iconUrl = require('@/assets/img/markers/marker-icon-2x-black.png');
+        ret.iconUrl = icon_path('marker-icon-2x-black');
         break;
 
       default:
@@ -128,4 +143,9 @@ export function icon_get(options={}) {
   };
 
 
+}
+
+function icon_path(name) {
+  // require('@/assets/img/markers/marker-icon-red.png');
+  return process.env.BASE_URL+MAP_ITEM.MARKER.PATH+name+'.png';
 }

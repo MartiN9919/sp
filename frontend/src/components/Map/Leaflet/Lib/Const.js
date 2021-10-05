@@ -1,8 +1,9 @@
 export class MAP_ITEM {
-
   static MARKER     = class {
     static NAME       = 'marker';
+    static PATH       = 'img/markers/';  // путь к файлам маркеров
     static DEFAULT    = '';
+    static IMAGE      = 'image';
     static COLOR      = 'color';
     static PULSE      = 'pulse';
     static FONT       = 'font';
