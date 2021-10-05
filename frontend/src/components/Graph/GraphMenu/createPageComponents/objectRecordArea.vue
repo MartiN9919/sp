@@ -16,10 +16,9 @@
             ></record-input>
           </v-row>
           <table>
-            <tbody class="py-2">
+            <tbody class="py-2" v-if="checkTypeParam(param) === 'file_photo'">
               <custom-tooltip
                 v-for="(item, key) in param.values" :key="key"
-                v-if="checkTypeParam(param) === 'file_photo'"
                 :body-text="item.value"
                 :settings="settings"
                 bottom
@@ -33,10 +32,12 @@
                   </tr>
                 </template>
               </custom-tooltip>
-            <tr v-for="item in param.values" v-else>
-              <td><span>{{item.value ? item.value : 'Создана'}}</span></td>
-              <td class="text-end text-no-wrap pl-3"><span>{{item.date}}</span></td>
-            </tr>
+            </tbody>
+            <tbody class="py-2" v-else>
+              <tr v-for="item in param.values">
+                <td><span>{{item.value ? item.value : 'Создана'}}</span></td>
+                <td class="text-end text-no-wrap pl-3"><span>{{item.date}}</span></td>
+              </tr>
             </tbody>
           </table>
         </v-card>
@@ -59,10 +60,6 @@ export default {
   props: {
     settings: Object,
     params: Array,
-    type: {
-      type: Boolean,
-      default: false
-    }
   },
   data: () => ({
     openedPanels: []
@@ -70,7 +67,7 @@ export default {
   methods: {
     checkTypeParam(param) {
       if(param.baseParam.hasOwnProperty('type'))
-        return param.baseParam.type
+        return param.baseParam.type.title
     },
     createNewParam(id) {
       this.$emit('createNewParam', id)

@@ -311,8 +311,11 @@ def get_relations_list():
     for item in get_relation_keys():
         list_id = None
         if item.get('list_id'):
+            type = {'title': 'list', 'value': item.get('list_id')}
             list_id = item.get('list_id')
-        result.append({'id': item['id'], 'title': item['title'], 'hint': item['hint'], 'list': list_id,
+        else:
+            type = {'title': 'unknow', 'value': None}
+        result.append({'id': item['id'], 'title': item['title'], 'hint': item['hint'], 'list': list_id, 'type': type,
                        'object_id_1': item['rel_obj_1_id'], 'object_id_2': item['rel_obj_2_id']})
     return result
 
