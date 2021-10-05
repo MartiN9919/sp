@@ -33,4 +33,20 @@ class SYS_KEY_CONSTANT:
 
     PHOTO_CLASSIFIER_ID = 50142
 
+    NOT_VALUE_TRANSFER_LIST = [
+        30302,
+        10000,
+        10001,
+        10002,
+        10003,
+        15000,
+        15001,
+        15002,
+        15003,
+        20001,
+        20002,
+        20003,
+        20004
+    ]
+
     LIST_ICONS_ID = 49

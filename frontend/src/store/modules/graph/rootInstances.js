@@ -79,6 +79,6 @@ class BaseRelation extends BaseInstanceToObject {
     this.f_id = baseRelation.object_id_1
     this.s_id = baseRelation.object_id_2
     this.hint = baseRelation.hint
-    this.list = baseRelation.list
+    this.type = baseRelation.type
   }
 }

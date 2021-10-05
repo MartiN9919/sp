@@ -90,7 +90,7 @@ export default {
       return Array.from(this.listRules, rule => this.generalRules[rule])
     },
     selectComponent: function () {
-      return this.inputType ? this.components[this.inputType.title] : this.components.default
+      return this.components[this.inputType.title] || this.components.default
     },
     typeTitle: function () {
       return this.inputType ? this.inputType.title : ''

@@ -1,6 +1,10 @@
-from data_base_driver.constants.const_dat import DAT_SYS_LIST_DOP, DAT_SYS_LIST_TOP
+from data_base_driver.constants.const_dat import DAT_SYS_LIST_DOP, DAT_SYS_LIST_TOP, DAT_OWNER
 from data_base_driver.connect.connect_mysql import db_sql
 from data_base_driver.input_output.io_geo import get_geometry_folders
+
+
+def get_groups_list():
+    return [{'id': item['id'], 'value': item['title']} for item in DAT_OWNER.DUMP.get_groups_list()]
 
 
 def get_list_by_top_id(id):
@@ -11,6 +15,8 @@ def get_list_by_top_id(id):
     """
     if id == 48:
         return get_geometry_folders(1)
+    if id == 53:
+        return get_groups_list()
     sql = 'SELECT ' + DAT_SYS_LIST_DOP.ID + ', ' \
           + DAT_SYS_LIST_DOP.VAL + ' FROM ' \
           + DAT_SYS_LIST_DOP.TABLE + ' WHERE ' \

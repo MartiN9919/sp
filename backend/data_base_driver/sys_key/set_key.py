@@ -1,4 +1,4 @@
-from ..connect.connect_mysql import db_sql
+from data_base_driver.connect.connect_mysql import db_sql
 from data_base_driver.constants.const_key import TYPES
 from data_base_driver.constants.const_dat import DAT_SYS_KEY
 
@@ -7,19 +7,19 @@ def set_key(id, obj_id, col, need, type_val, title, list_id='NULL', name='NULL',
             rel_obj_1='NULL', rel_obj_2='NULL'):
     """
     добавление нового ключа в базу данных
-    :param id: id ключа в числовом или строковом формате
-    :param obj_id: id характеризуемого объекта в числовом или строковом формате
-    :param col: bit дополнительного параметра, при его наличие параметр заносится в col таблицу соответствующего объекта
-    :param need: обязательность ключа для объекта
-    :param type_val: тип ключа
-    :param title: название ключа для отображения
-    :param list_id: ?
-    :param name: имя ключа для идентификации
-    :param hint: описание
-    :param description: развернутое описание
-    :param rel_obj_1: если ключ-связь то id первого объекта связи
-    :param rel_obj_2: если ключ-связь то id второго объекта связи
-    :return: код ошибки в формате списка со строковым значением при ошибке и пустой список при успешном добавлении(учитываются только внутренние проверки)
+    @param id: id ключа в числовом или строковом формате
+    @param obj_id: id характеризуемого объекта в числовом или строковом формате
+    @param col: bit дополнительного параметра, при его наличие параметр заносится в col таблицу соответствующего объекта
+    @param need: обязательность ключа для объекта
+    @param type_val: тип ключа
+    @param title: название ключа для отображения
+    @param list_id: ?
+    @param name: имя ключа для идентификации
+    @param hint: описание
+    @param description: развернутое описание
+    @param rel_obj_1: если ключ-связь то id первого объекта связи
+    @param rel_obj_2: если ключ-связь то id второго объекта связи
+    @return: код ошибки в формате списка со строковым значением при ошибке и пустой список при успешном добавлении(учитываются только внутренние проверки)
     """
     if not (isinstance(id, int)) and not (id.isdigit()): return ['error id type']
     if not (isinstance(obj_id, int)) and not (obj_id.isdigit()):  return ['error obj_id_type']
@@ -63,5 +63,4 @@ def set_key(id, obj_id, col, need, type_val, title, list_id='NULL', name='NULL',
         list_id) + ', ' + name + ', \'' + title + '\', ' \
                   + hint + ', ' + description + ', ' + str(rel_obj_1) + '' \
                                                                         ', ' + str(rel_obj_2) + ');'
-
     return db_sql(sql_request, read=False)
