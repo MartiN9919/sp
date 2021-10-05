@@ -37,7 +37,7 @@
 
     <v-divider class="mx-4"></v-divider>
 
-    <div
+    <div style="height: calc(100% - 70px);"
       @contextmenu="on_menu_show($event)"
     >
 
@@ -311,5 +311,5 @@ export default {
 
 <style scoped lang="scss">
   div::v-deep .v-input__append-inner:nth-of-type(3) { margin-top: 2px !important; }
-  div.tree::v-deep { overflow-y: auto !important; height: calc( 100% - 120px ); } /*calc( 100% - 50px );*/
+  div.tree::v-deep { overflow-y: auto !important; height: 100%; } /*calc( 100% - 50px );*/
 </style>
