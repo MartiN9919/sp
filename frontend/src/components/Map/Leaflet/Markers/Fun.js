@@ -35,7 +35,7 @@ export function icon_get(options={}) {
   // имя маркера = имя файла.png
   if (name==MAP_ITEM.MARKER.IMAGE) {
     let ret = {
-      shadowUrl:   icon_path('marker-icon-shadow'),
+      shadowUrl:   icon_path('marker-shadow'),
       iconSize:    [25, 41],
       iconAnchor:  [12, 41],
       popupAnchor: [1, -34],
@@ -50,7 +50,7 @@ export function icon_get(options={}) {
   // невозможна плавная смена цвета, только заданные значения
   if (name==MAP_ITEM.MARKER.COLOR) {
     let ret = {
-      shadowUrl:   icon_path('marker-icon-shadow'),
+      shadowUrl:   icon_path('marker-shadow'),
       iconSize:    [25, 41],
       iconAnchor:  [12, 41],
       popupAnchor: [1, -34],
@@ -61,41 +61,41 @@ export function icon_get(options={}) {
     switch(options.color) {
       case 'red':
       case '#f00':
-        ret.iconUrl = icon_path('marker-icon-red');
+        ret.iconUrl = icon_path('marker-red');
         break;
 
       case 'green':
       case '#0f0':
-        ret.iconUrl = icon_path('marker-icon-2x-green');
+        ret.iconUrl = icon_path('marker-2x-green');
         break;
 
       case 'blue':
       case '#00f':
-        ret.iconUrl = icon_path('marker-icon-2x-blue');
+        ret.iconUrl = icon_path('marker-2x-blue');
         break;
 
       case 'gold':
-        ret.iconUrl = icon_path('marker-icon-2x-gold');
+        ret.iconUrl = icon_path('marker-2x-gold');
         break;
 
       case 'orange':
-        ret.iconUrl = icon_path('marker-icon-2x-orange');
+        ret.iconUrl = icon_path('marker-2x-orange');
         break;
 
       case 'yellow':
-        ret.iconUrl = icon_path('marker-icon-2x-yellow');
+        ret.iconUrl = icon_path('marker-2x-yellow');
         break;
 
       case 'violet':
-        ret.iconUrl = icon_path('marker-icon-2x-violet');
+        ret.iconUrl = icon_path('marker-2x-violet');
         break;
 
       case 'grey':
-        ret.iconUrl = icon_path('marker-icon-2x-grey');
+        ret.iconUrl = icon_path('marker-2x-grey');
         break;
 
       case 'black':
-        ret.iconUrl = icon_path('marker-icon-2x-black');
+        ret.iconUrl = icon_path('marker-2x-black');
         break;
 
       default:
