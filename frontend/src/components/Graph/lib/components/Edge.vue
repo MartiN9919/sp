@@ -25,6 +25,11 @@ export default {
     if (typeof this.data.pathd === 'undefined') {
       this.$set(this.data, 'pathd', '')
     }
+    let angle = 3.14 * (Math.random() * 360) / 180
+    let length = this.toNode.size
+    this.fromNode.x = this.toNode.x + (Math.cos(angle) * length)
+    this.fromNode.y = this.toNode.y + (Math.sin(angle) * length)
+
   },
 
   computed: {
@@ -171,6 +176,7 @@ export default {
         .pop()
     }
   },
+
 }
 </script>
 
