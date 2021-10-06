@@ -133,7 +133,16 @@ export function icon_get(options={}) {
       color:     color2,
       icon:      icon,
       html:
-        '<div class="marker-font redborder">'+
+        // '<div class="marker-font" style="color: '+color2+';">'+
+        //   '<div class="fs fs-spec0 fs-test" style="border-color: '+color2+';">'+
+        //   '</div>'+
+        // '</div>',
+
+        // '<div class="marker-font" style="color: '+color2+';">'+
+        //   '<span class="marker-font-mdi mdi mdi-map-marker style="color: '+color2+';">'+
+        // '</div>',
+
+        '<div class="marker-font">'+
           '<div class="marker-font-content" style="border-color: '+color2+';">'+
             '<span class="v-icon mdi '+icon+'" style="color: '+color2+';">'+
           '</div>'+
