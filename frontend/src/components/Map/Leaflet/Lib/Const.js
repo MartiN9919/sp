@@ -27,4 +27,5 @@ export class MAP_ITEM {
 
   static FC         = 'fc';
   static FC_COLOR   = 'color';
+//  static FC_MARKER  = 'marker';
 }

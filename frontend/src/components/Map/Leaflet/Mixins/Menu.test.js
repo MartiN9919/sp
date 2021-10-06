@@ -7,10 +7,16 @@ export const MAP_TEST_ITEM_1 = {
   "name": "Test 1",
   "hint": "Это тест 1",
   "color": "green",  //rgba(255, 190, 218, 0.5)
-  "marker": MAP_ITEM.MARKER.FONT,
-  "line":   MAP_ITEM.LINE.ANT,
-  "icon":   "mdi-apple-safari mdi-spin",
+  // "marker": MAP_ITEM.MARKER.FONT,
+  // "line":   MAP_ITEM.LINE.ANT,
+  "icon":   "mdi-flag", //"mdi-apple-safari mdi-spin",
+
   "fc": {
+    //"color": "green",  //rgba(255, 190, 218, 0.5)
+    "marker": MAP_ITEM.MARKER.FONT,
+    "line":   MAP_ITEM.LINE.ANT,
+    //"marker": "marker-gold",
+
     "type": "FeatureCollection",
     "features": [
       {
@@ -129,8 +135,10 @@ export const MAP_TEST_ITEM_2 = {
   "name": "Test 2",
   "hint": "Это тест 2",
   "color": "#923",
-  "marker": MAP_ITEM.MARKER.PULSE,
+  // "marker": MAP_ITEM.MARKER.PULSE,
   "fc": {
+    //"color": "#923",
+    "marker": MAP_ITEM.MARKER.PULSE,
     "type": "FeatureCollection",
     "features": [
       {
@@ -213,6 +221,7 @@ export const MAP_TEST_ITEM_3 = {
   "color": "#443",
   "polygon": MAP_ITEM.POLYGON.GREEN_MIN,
   "fc": {
+  //  "color": "#443",
     "type": "FeatureCollection",
     "features": [
       {
