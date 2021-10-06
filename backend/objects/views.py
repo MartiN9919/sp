@@ -67,7 +67,7 @@ def aj_list_classifier(request):
     @return: json содержащих информации по ключу data в формате:
     [{id,obj_id,col,need,type,list_id:{name,val:[]},name,title,hint,descript}, ...,{}]
     """
-    return {'data': get_keys_by_object(request.GET['object_id'])}
+    return {'data': get_keys_by_object()}
 
 
 @login_check

@@ -15,10 +15,9 @@
             v-bind="$attrs"
             :class="bodyInputClasses"
             :icon="baseObject(selectorObject).icon"
-            :placeholder="$attrs.placeholder || 'Выберете необходимую дату'"
+            :placeholder="$attrs.placeholder || 'Найдите и выбирете объект'"
             @deletable="$emit('deletable')"
             readonly
-            clearable
           >
             <template v-slot:message>
               <slot name="message"></slot>
@@ -56,7 +55,12 @@
             </v-text-field>
           </v-list-item>
           <div class="scroll-content">
-            <v-list-item v-for="object in findObjects" :key="object.rec_id" @click="value=object; closeMenu()">
+            <v-list-item v-if="findObjects && !findObjects.length">
+              <v-list-item-subtitle>
+                Нет найденных объектов
+              </v-list-item-subtitle>
+            </v-list-item>
+            <v-list-item v-else v-for="object in findObjects" :key="object.rec_id" @click="value=object; closeMenu()">
               <v-list-item-subtitle style="white-space: normal">
                 {{object.title}}
               </v-list-item-subtitle>
@@ -83,16 +87,20 @@ name: "searchInput",
   data: () => ({
     selectorObject: null,
     searchString: '',
-    findObjects: []
+    findObjects: null
   }),
   computed: {
   ...mapGetters(['baseObject', 'baseObjects']),
     bodyInputClasses: function () { return this.$attrs.hasOwnProperty('label') ? '' : 'pt-0' },
     value: {
       get: function () { return this.inputString ? this.inputString.title : '' },
-      set: function (value) { this.$emit('changeInputString', {
-        objectId: value.object_id, recId: value.rec_id, title: value.title
-      }) },
+      set: function (value) {
+        value
+          ? this.$emit('changeInputString', {
+            objectId: value.object_id, recId: value.rec_id, title: value.title
+          })
+          : this.$emit('changeInputString', value)
+      },
     },
   },
   methods: {

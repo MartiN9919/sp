@@ -21,8 +21,7 @@
           </tr>
           <tr v-for="variable in analytics.variables">
             <td>{{variable.title}}</td>
-            <td v-if="variable.type.title === 'list'">{{ listValue(variable) }}</td>
-            <td v-else>{{variable.value}}</td>
+            <td>{{ getValue(variable) }}</td>
           </tr>
         </table>
         <v-divider dark class="py-1"></v-divider>
@@ -55,14 +54,27 @@ export default {
     },
   },
   methods: {
-    listValue (variable) {
-      if (variable.value)
-        for (const [listId, list] of Object.entries(this.baseLists)) {
-          let findValue = list.values.find(item => item.id === variable.value)
-          if(findValue) return findValue.value
-        }
-      else return variable.value
-    }
+    getValue(variable) {
+      switch (variable.type.title) {
+        case 'list':
+          let value
+          for (const [listId, list] of Object.entries(this.baseLists)) {
+            value = list.values.find(item => item.id === variable.value)
+            if (value) return value.value
+          }
+          return value
+        case 'checkbox':
+          return variable.value ? 'ДА' : 'НЕТ'
+        case 'geometry':
+          return variable.value ? 'Геометрия' : ''
+        case 'search':
+          return variable.value ? variable.value.title : ''
+        default:
+          if(variable.type.title.startsWith('file'))
+            return variable.value ? variable.value.file.name : ''
+          else return variable.value
+      }
+    },
   }
 }
 </script>

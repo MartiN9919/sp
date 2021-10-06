@@ -62,9 +62,6 @@ export default {
       commit('deleteNewParamEditableObject', playLoad)
     },
     async getObjectFromServer({commit, dispatch}, config = {}) {
-      await dispatch('getBaseClassifiers', config)
-        .then(() => {})
-        .catch(e => { return Promise.reject(e) })
       config.headers = {'set-cookie': JSON.stringify(getTriggers(config.params.object_id))}
       return await getResponseAxios('objects/object/', config)
         .then(r => { return Promise.resolve(r.data) })

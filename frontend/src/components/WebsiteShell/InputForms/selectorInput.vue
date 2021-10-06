@@ -55,7 +55,7 @@ export default {
     itemText: function () { return this.$attrs['item-text'] || 'value'},
     value: {
       get: function () { return this.items.find(item => item.id === this.inputString) },
-      set: function (value) { this.$emit('changeInputString', value.id) }
+      set: function (value) { this.$emit('changeInputString', value?.id) }
     }
   },
 }

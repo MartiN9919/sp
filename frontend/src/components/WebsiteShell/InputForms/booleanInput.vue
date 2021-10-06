@@ -9,6 +9,7 @@
       @click.native="changeValue"
       @deletable="$emit('deletable')"
       readonly
+      :clearable="false"
     >
       <template v-slot:message>
         <slot name="message"></slot>

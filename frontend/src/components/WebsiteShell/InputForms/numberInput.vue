@@ -5,6 +5,7 @@
       v-bind="$attrs"
       :placeholder="$attrs.placeholder || 'Введите необходимое значение'"
       :class="bodyInputClasses"
+      :clearable="false"
       icon="mdi-numeric"
       @keypress.native="isNumber"
       @deletable="$emit('deletable')"

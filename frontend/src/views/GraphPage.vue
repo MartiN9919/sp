@@ -51,7 +51,8 @@ export default {
       'getBaseObjects',
       'setRootSearchTreeItem',
       'getBaseTriggers',
-      'getBaseRelations'
+      'getBaseRelations',
+      'getBaseClassifiers'
     ]),
     changeComponent() {
       if (this.activeWindow === 'searchPage')
@@ -74,6 +75,7 @@ export default {
       })
     this.getBaseTriggers()
     this.getBaseRelations()
+    this.getBaseClassifiers()
   }
 }
 </script>

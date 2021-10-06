@@ -43,7 +43,8 @@
                     v-model="v.value"
                     :input-type="v.type"
                     :label="v.title"
-                    :list-rules="['notEmpty']"
+                    :list-rules="v.necessary ? ['notEmpty'] : []"
+                    clearable
                   ></responsive-input-form>
                 </div>
               </template>

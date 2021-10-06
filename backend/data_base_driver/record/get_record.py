@@ -160,15 +160,13 @@ def get_object_record_by_id_http(object_id, rec_id, group_id=0, triggers=None):
             'title': title['title'], 'triggers': triggers, 'photo': photo}
 
 
-def get_keys_by_object(object):
+def get_keys_by_object():
     """
     Получение списка ключей по типу объекта
     @param object: имя или тип объекта
     @return: список словарей c информацией о искомых ключах
     """
-    if isinstance(object, str) and not (object.isdigit()):
-        object = get_obj_id(object)
-    keys = DAT_SYS_KEY.DUMP.get_rec(obj_id=int(object), only_first=False)
+    keys = DAT_SYS_KEY.DUMP.get_rec(only_first=False)
     result = []
     for key in keys:
         temp = dict(key)
