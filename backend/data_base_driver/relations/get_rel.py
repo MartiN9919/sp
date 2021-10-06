@@ -193,7 +193,7 @@ def check_relation(root, object_id, rec_id):
 def remove_path(parent, child):
     if parent and parent.get('parent'):
         remove_path(parent['parent'], parent)
-    else:
+    elif parent:
         [item for item in parent['rels'] if item == child][0]['degenerated'] = True
 
 
