@@ -90,8 +90,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['getBaseClassifiers', 'addNewParamEditableObject', 'deleteNewParamEditableObject',
-      'saveEditableObject', 'setEditableObject', ]),
+    ...mapActions(['addNewParamEditableObject', 'deleteNewParamEditableObject', 'saveEditableObject', 'setEditableObject']),
     tabColor(key) {
       return key ? '#FF0000' : '#009688'
     },

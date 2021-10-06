@@ -18,6 +18,7 @@
           <body-input-form
               v-bind="$attrs"
               :input-string="show_text()"
+              @changeInputString="value = $event"
               :class="bodyInputClasses"
               icon="mdi-map-marker-outline"
               :placeholder="$attrs.placeholder || 'Выберете объект на карте'"
@@ -70,7 +71,7 @@ export default {
   computed: {
     value: {
       get()    { return this.inputString; },
-      set(val) { this.$emit('changeInputString', val); }
+      set(val) { console.log(val); this.$emit('changeInputString', val); }
     },
     fc: {
       get()    { return this.value; },

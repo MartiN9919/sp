@@ -30,8 +30,6 @@ export default {
       return Promise.resolve()
     },
     async getBaseClassifiers({getters, commit}, config = {}) {
-      if (getters.baseClassifiers(config.params.object_id).length)
-        return Promise.resolve()
       await getResponseAxios('objects/list_classifier/', config)
         .then(r => { commit('addBaseClassifiers', r.data.map(c => new BaseClassifier(c))) })
         .catch(e => { return Promise.reject(e) })

@@ -45,7 +45,11 @@ export default {
     icon: function () { return this.type === 'file_photo' ? 'mdi-file-image-outline' : 'mdi-file-outline' },
     value: {
       get: function () { return this.inputString?.file },
-      set: function (value) { this.$emit('changeInputString', {'file': value}) }
+      set: function (value) {
+        value
+          ? this.$emit('changeInputString', {'file': value})
+          : this.$emit('changeInputString', value)
+      }
     },
   },
 }

@@ -99,7 +99,8 @@ class DUMP_KEY:
         if isinstance(val, str): list_key_val.append((DAT_SYS_KEY.NAME, val))
         if isinstance(val, int): list_key_val.append((DAT_SYS_KEY.ID, val))
         if col != None:        list_key_val.append((DAT_SYS_KEY.COL, col))
-        rec = dict_filter(list_dict=self.dump, list_key_val=list_key_val, only_first=only_first)
+        rec = dict_filter(list_dict=self.dump, list_key_val=list_key_val, only_first=only_first) \
+            if len(list_key_val) > 0 else self.dump
 
         if only_first:
             if len(rec) != 1: raise Exception(

@@ -27,10 +27,6 @@ export default {
   name: "selectorObject",
   props: {
     selectedObject: Number,
-    isGetClassifiers: {
-      type: Boolean,
-      default: true,
-    },
     startObject: {
       type: Boolean,
       default: false,
@@ -45,17 +41,7 @@ export default {
     objectIcon: function () { return this.baseObjects.find(i => i.id === this.selected)?.icon },
     selected: {
       get: function () { if (this.selectedObject) return this.selectedObject },
-      set: function (id) {
-        if(this.isGetClassifiers) this.getClassifiers(id)
-        else this.$emit('changeSelectedObject', id)
-      }
-    }
-  },
-  methods: {
-    ...mapActions(['getBaseClassifiers']),
-    getClassifiers(id) {
-      this.getBaseClassifiers({params: {object_id: id}})
-        .then(() => { return this.$emit('changeSelectedObject', id) })
+      set: function (id) { this.$emit('changeSelectedObject', id) }
     }
   },
   mounted() {

@@ -8,6 +8,7 @@
       @keypress.native="isNumber"
       @deletable="$emit('deletable')"
       icon="mdi-cellphone"
+      :clearable="false"
       prefix="+"
     >
       <template v-slot:message>

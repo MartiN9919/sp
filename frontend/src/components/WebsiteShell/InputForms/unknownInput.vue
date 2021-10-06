@@ -7,6 +7,7 @@
       @deletable="$emit('deletable')"
       icon="mdi-alert-circle-outline"
       readonly
+      :clearable="false"
     >
       <template v-slot:message>
         <slot name="message"></slot>

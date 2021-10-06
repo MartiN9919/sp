@@ -7,6 +7,7 @@
       :placeholder="$attrs.placeholder || 'Введите необходимое значение'"
       icon="mdi-format-color-text"
       @deletable="$emit('deletable')"
+      :clearable="false"
     >
       <template v-slot:message>
         <slot name="message"></slot>

@@ -5,7 +5,10 @@
         :ref="`object-${object.id}`"
         v-for="object in graphObjects" :key="object.id"
         @wheel.prevent.stop="scroll(object, $event)"
-        @mousedown.ctrl.capture="addChoosingObject(object)"
+        @mouseup.ctrl.capture="addChoosingObject(object)"
+        @mousedown.alt.capture="getRelatedObjects(object)"
+        @mousemove.alt.capture="moveDraggableObject(object)"
+        @mouseup.alt.capture="removePositionDraggableObject(object)"
         @click.right.prevent.stop="menuShow($event, object)"
         @mousedown.capture="selectObject(object)"
       >
@@ -88,6 +91,8 @@ export default {
   components: {GraphSearch, ContextMenuNested, Screen, Node, Edge, VLabel, BodyObject, NameObject, InformationLabel},
   data: () => ({
     choosingObjects: [],
+    positionDraggableObject: null,
+    relatedObjects: []
   }),
   mixins: [bodyContextMenu],
   computed: {
@@ -95,10 +100,38 @@ export default {
     allowRelations() { return Array.from(this.$store.state.graph.rootInstances.relations, r => {return r.id}) },
   },
   methods: {
+    getRelatedObjects(node) {
+      let relations = this.graphRelations.filter(relation => relation.to === node.id || relation.from === node.id)
+      for (let relation of relations) {
+        this.relatedObjects.push(
+            this.graphObjects.find(object => object.id !== node.id && (object.id === relation.to || object.id === relation.from))
+        )
+      }
+      this.savePositionDraggableObject(node)
+    },
+    savePositionDraggableObject(node) {
+      this.positionDraggableObject = {x: node.x, y: node.y}
+    },
+    moveDraggableObject(node) {
+      if(this.positionDraggableObject) {
+        let difX = node.x - this.positionDraggableObject.x
+        let difY = node.y - this.positionDraggableObject.y
+        for (let object of this.relatedObjects) {
+          object.x += difX
+          object.y += difY
+        }
+        this.savePositionDraggableObject(node)
+      }
+    },
+    removePositionDraggableObject() {
+      this.positionDraggableObject = null
+      this.relatedObjects = []
+    },
     findNode(node) {
       this.$refs.screen.panNode(node, { offsetX: 0, offsetY: 0 })
     },
     addChoosingObject(choosingObject){
+
       let findIndex = this.choosingObjects.findIndex(object => object === choosingObject)
       if(findIndex === -1){
         this.choosingObjects.push(choosingObject)
