@@ -1,21 +1,32 @@
-import {
-  MAP_ITEM,
-} from '@/components/Map/Leaflet/Lib/Const';
+import { MAP_ITEM } from '@/components/Map/Leaflet/Lib/ConstOld';
+import { MAP_STYLE } from '@/components/Map/Leaflet/Lib/Const';
+var STYLE = MAP_STYLE;
 
 export const MAP_TEST_ITEM_1 = {
   //"id": 5,
   "name": "Test 1",
   "hint": "Это тест 1",
-  "color": "green",  //rgba(255, 190, 218, 0.5)
+  // "color": "green",  //rgba(255, 190, 218, 0.5)
   // "marker": MAP_ITEM.MARKER.FONT,
   // "line":   MAP_ITEM.LINE.ANT,
   "icon":   "mdi-flag", //"mdi-apple-safari mdi-spin",
 
   "fc": {
     //"color": "green",  //rgba(255, 190, 218, 0.5)
-    "marker": MAP_ITEM.MARKER.FONT,
     "line":   MAP_ITEM.LINE.ANT,
     //"marker": "marker-gold",
+
+    //"marker": MAP_ITEM.MARKER.FONT,
+    "style": {
+      "color":  "green",  //rgba(255, 190, 218, 0.5)
+      "marker": {
+        "type": STYLE.MARKER.TYPE.FONT,
+        "icon": "mdi-flag",
+        //"style": "box",
+        //"color": "red",
+      },
+    },
+
 
     "type": "FeatureCollection",
     "features": [

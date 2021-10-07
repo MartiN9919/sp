@@ -2,7 +2,7 @@
 
 import { mapGetters, mapActions, } from 'vuex';
 
-import { MAP_ITEM, } from '@/components/Map/Leaflet/Lib/Const';
+import { MAP_ITEM, } from '@/components/Map/Leaflet/Lib/ConstOld';
 import { scale_log, color_array, } from '@/components/Map/Leaflet/Lib/LibColor'
 import { fc_key, fc_types_del, } from '@/components/Map/Leaflet/Lib/LibFc'
 

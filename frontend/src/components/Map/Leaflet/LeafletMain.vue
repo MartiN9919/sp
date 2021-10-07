@@ -110,7 +110,8 @@ import {
 import Vue2LeafletMarkerCluster     from 'vue2-leaflet-markercluster';
 import LControlPolylineMeasure      from 'vue2-leaflet-polyline-measure';
 
-import { MAP_ITEM }                 from '@/components/Map/Leaflet/Lib/Const';
+//import { MAP }                      from '@/components/Map/Leaflet/Lib/Const';
+import { MAP_ITEM }                 from '@/components/Map/Leaflet/Lib/ConstOld';
 import { marker_get }               from '@/components/Map/Leaflet/Markers/Fun';
 
 import                      '@/components/Map/Leaflet/Markers/Pulse';
@@ -212,7 +213,7 @@ export default {
 
       'SCRIPT_GET',
       'SCRIPT_GET_ITEM_COLOR',
-      'SCRIPT_GET_ITEM_MARKER',
+      'SCRIPT_GET_ITEM_STYLE',
       'SCRIPT_GET_ITEM_LINE',
       'SCRIPT_GET_ITEM_POLYGON',
       'SCRIPT_GET_ITEM_ICON',
@@ -376,14 +377,17 @@ export default {
           let sel = (feature.properties.sel?'sel':'');
           let layer = marker_get(
             latlng,
-            {
-              name:      self.SCRIPT_GET_ITEM_MARKER(map_ind),
-              color:     self.SCRIPT_GET_ITEM_COLOR (map_ind),
-              icon:      self.SCRIPT_GET_ITEM_ICON  (map_ind),
-              className: sel,
-              // className: self.SCRIPT_GET_ITEM_SEL?'sel':'',
-              // size:   self.SCRIPT_GET_ITEM_ICON(map_ind), не реализовано за ненадобностью
-            }
+            self.SCRIPT_GET_ITEM_STYLE (map_ind),
+            sel
+            // {
+            //   style:     self.SCRIPT_GET_ITEM_STYLE (map_ind),
+            //   //type:      self.SCRIPT_GET_ITEM_MARKER(map_ind),
+            //   color:     self.SCRIPT_GET_ITEM_COLOR (map_ind),
+            //   icon:      self.SCRIPT_GET_ITEM_ICON  (map_ind),
+            //   className: sel,
+            //   // className: self.SCRIPT_GET_ITEM_SEL?'sel':'',
+            //   // size:   self.SCRIPT_GET_ITEM_ICON(map_ind), не реализовано за ненадобностью
+            // }
           );
           return layer;
         },

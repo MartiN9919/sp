@@ -396,7 +396,7 @@ export default {
         // стиль маркеров
         pointToLayer: function(feature, latlng) {
           return marker_get(latlng, {
-            name:  self.MAP_GET_ITEM_MARKER(map_ind),
+            type:  self.MAP_GET_ITEM_MARKER(map_ind),
             color: self.MAP_GET_ITEM_COLOR (map_ind),
             icon:  self.MAP_GET_ITEM_ICON  (map_ind),
             // size:  self.MAP_GET_ITEM_ICON(map_ind), не реализовано за ненадобностью

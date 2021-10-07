@@ -104,7 +104,7 @@
  */
 
 import { LControl, } from "vue2-leaflet";
-import { MAP_ITEM, } from '@/components/Map/Leaflet/Lib/Const';
+import { MAP_ITEM, } from '@/components/Map/Leaflet/Lib/ConstOld';
 import { icon_get, icon_2_marker, } from '@/components/Map/Leaflet/Markers/Fun';
 import { fc_normalize, } from '@/components/Map/Leaflet/Lib/LibFc';
 import '@geoman-io/leaflet-geoman-free';
@@ -540,10 +540,10 @@ export default {
 
     // маркеры
     marker_origin(latlng) {
-      return icon_2_marker(latlng, this.icon_origin(), undefined, this.layer_editor_prop());
+      return icon_2_marker(latlng, this.icon_origin(), this.layer_editor_prop());
     },
     marker_modify(latlng) {
-      return icon_2_marker(latlng, this.icon_modify(), undefined, this.layer_editor_prop());
+      return icon_2_marker(latlng, this.icon_modify(), this.layer_editor_prop());
     },
 
     // фигуры

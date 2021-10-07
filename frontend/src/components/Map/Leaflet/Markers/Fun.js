@@ -1,16 +1,18 @@
 // инициализация маркеров
 
-import { MAP_ITEM } from '@/components/Map/Leaflet/Lib/Const';
+import { MAP_ITEM } from '@/components/Map/Leaflet/Lib/ConstOld';
+import { MAP_STYLE } from '@/components/Map/Leaflet/Lib/Const';
+var STYLE = MAP_STYLE;
 
 
-export function marker_get(latlng, options={}) {
-  let icon = icon_get(options);
-  return icon_2_marker(latlng, icon, options.className);
+export function marker_get(latlng, style={}, className='') {
+  let icon = icon_get(style, className);
+  return icon_2_marker(latlng, icon, undefined, className);
 }
 
-export function icon_2_marker(latlng, icon, className='', options={}) {
+export function icon_2_marker(latlng, icon, style={}, className='') {
   let param = (icon) ? { icon:icon, } : {};
-  let ret = L.marker(latlng, {...param, ...options});
+  let ret = L.marker(latlng, {...param, ...style});
 
   // класс при отсутствии иконки. Для заданных иконок он установлен в icon_get
   if (!icon) { ret.options.icon.options.className = className; }
@@ -19,13 +21,14 @@ export function icon_2_marker(latlng, icon, className='', options={}) {
 
 }
 
-export function icon_get(options={}) {
-  let name = options.name || MAP_ITEM.MARKER.DEFAULT;
+export function icon_get(style={}, className='') {
+  var type = ((style[STYLE.MARKER.KEY] ?? {})[STYLE.MARKER.TYPE.KEY] ?? STYLE.MARKER.TYPE.DEF);
+  var color2 = style[STYLE.COLOR.KEY] ?? STYLE.COLOR.DEF;
 
   //
-  // MAP_ITEM.MARKER.DEFAULT
+  // MAP_STYLE.MARKER.TYPE.DEF
   //
-  if (name==MAP_ITEM.MARKER.DEFAULT) {
+  if (type==STYLE.MARKER.TYPE.DEF) {
     return undefined;
   };
 
@@ -33,14 +36,14 @@ export function icon_get(options={}) {
   //
   // MAP_ITEM.MARKER.IMAGE
   // имя маркера = имя файла.png
-  if (name==MAP_ITEM.MARKER.IMAGE) {
+  if (type==MAP_ITEM.MARKER.IMAGE) {
     let ret = {
       shadowUrl:   icon_path('marker-shadow'),
       iconSize:    [25, 41],
       iconAnchor:  [12, 41],
       popupAnchor: [1, -34],
       shadowSize:  [41, 41],
-      className:   options.className || '',
+      className:   className,
     };
 
   };
@@ -48,17 +51,17 @@ export function icon_get(options={}) {
   //
   // MAP_ITEM.MARKER.COLOR
   // невозможна плавная смена цвета, только заданные значения
-  if (name==MAP_ITEM.MARKER.COLOR) {
+  if (type==MAP_ITEM.MARKER.COLOR) {
     let ret = {
       shadowUrl:   icon_path('marker-shadow'),
       iconSize:    [25, 41],
       iconAnchor:  [12, 41],
       popupAnchor: [1, -34],
       shadowSize:  [41, 41],
-      className:   options.className || '',
+      className:   className,
     };
 
-    switch(options.color) {
+    switch(style.color) {
       case 'red':
       case '#f00':
         ret.iconUrl = icon_path('marker-red');
@@ -109,11 +112,11 @@ export function icon_get(options={}) {
   //
   // MAP_ITEM.MARKER.PULSE
   //
-  if (name==MAP_ITEM.MARKER.PULSE) {
-    let color2 = options.color;
-    let size   = options.size || 12;
+  if (type==STYLE.MARKER.TYPE.PULSE) {
+    let color2 = style.color;
+    let size   = style.size || 12;
     return L.icon.pulse({
-      className: options.className || '',
+      className: className,
       iconSize:  [size, size],
       color:     color2,
       fillColor: color2,
@@ -124,11 +127,10 @@ export function icon_get(options={}) {
   //
   // MAP_ITEM.MARKER.FONT
   //
-  if (name==MAP_ITEM.MARKER.FONT) {
-    let color2 = options.color;
-    let icon   = options.icon;
+  if (type==STYLE.MARKER.TYPE.FONT) {
+    var icon = (style[STYLE.MARKER.KEY] ?? {})[STYLE.MARKER.ICON.KEY];
     return L.divIcon({
-      className: options.className || '',
+      className: className,
       iconSize:  null,
       color:     color2,
       icon:      icon,

@@ -41,7 +41,6 @@
   src:
     local("Special"),
     url("~@/assets/font/fs.woff") format("woff");
-    /*url("~@/assets/font/fs2.woff") format("woff");*/
 }
 
 
