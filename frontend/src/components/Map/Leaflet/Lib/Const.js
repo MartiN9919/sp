@@ -6,22 +6,17 @@ export const MAP_STYLE = {
   },
 
   MARKER: {
-    KEY:   'marker',
-    TYPE: {
-      KEY:   'type',
-      DEF:   '',             // значение по умолчанию
-      FONT:  'font',
-      PULSE: 'pulse',
-    },
-
+    KEY:      'marker',
     ICON: {
-      KEY: 'icon',
+      KEY:      'icon',
+      DEF:      '',             // значение по умолчанию
+      PREF_MDI: 'mdi-',
+      PREF_FS:  'fs-',
+      PULSE:    'pulse',
     },
-
-    STYLE: {
-      KEY:   'style',
-      FRAME: 'frame',
-    }
+    SIZE: {
+      KEY: 'size',
+    },
   },
 
   LINE: {

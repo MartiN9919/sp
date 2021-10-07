@@ -1,6 +1,6 @@
 import { MAP_ITEM } from '@/components/Map/Leaflet/Lib/ConstOld';
-import { MAP_STYLE } from '@/components/Map/Leaflet/Lib/Const';
-var STYLE = MAP_STYLE;
+// import { MAP_STYLE } from '@/components/Map/Leaflet/Lib/Const';
+// var STYLE = MAP_STYLE;
 
 export const MAP_TEST_ITEM_1 = {
   //"id": 5,
@@ -18,12 +18,9 @@ export const MAP_TEST_ITEM_1 = {
 
     //"marker": MAP_ITEM.MARKER.FONT,
     "style": {
-      "color":  "green",  //rgba(255, 190, 218, 0.5)
+      "color":  "green",    // rgba(255, 190, 218, 0.5)
       "marker": {
-        "type": STYLE.MARKER.TYPE.FONT,
-        "icon": "mdi-flag",
-        //"style": "box",
-        //"color": "red",
+        "icon": "marker-red", // "mdi-flag", "fs-spec0", "pulse" (size: 12)
       },
     },
 
