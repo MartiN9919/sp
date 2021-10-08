@@ -34,3 +34,7 @@ export const MAP_STYLE = {
     KEY: 'polygon',
   },
 };
+
+export const PATH = {
+  MARKERS: 'img/markers/',        // путь к файлам маркеров
+};
