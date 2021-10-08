@@ -379,15 +379,6 @@ export default {
             latlng,
             self.SCRIPT_GET_ITEM_STYLE (map_ind),
             sel
-            // {
-            //   style:     self.SCRIPT_GET_ITEM_STYLE (map_ind),
-            //   //type:      self.SCRIPT_GET_ITEM_MARKER(map_ind),
-            //   color:     self.SCRIPT_GET_ITEM_COLOR (map_ind),
-            //   icon:      self.SCRIPT_GET_ITEM_ICON  (map_ind),
-            //   className: sel,
-            //   // className: self.SCRIPT_GET_ITEM_SEL?'sel':'',
-            //   // size:   self.SCRIPT_GET_ITEM_ICON(map_ind), не реализовано за ненадобностью
-            // }
           );
           return layer;
         },

@@ -6,23 +6,20 @@ export const MAP_TEST_ITEM_1 = {
   //"id": 5,
   "name": "Test 1",
   "hint": "Это тест 1",
-  // "color": "green",  //rgba(255, 190, 218, 0.5)
-  // "marker": MAP_ITEM.MARKER.FONT,
   // "line":   MAP_ITEM.LINE.ANT,
-  "icon":   "mdi-flag", //"mdi-apple-safari mdi-spin",
 
   "fc": {
-    //"color": "green",  //rgba(255, 190, 218, 0.5)
-    "line":   MAP_ITEM.LINE.ANT,
-    //"marker": "marker-gold",
-
-    //"marker": MAP_ITEM.MARKER.FONT,
+    //"color": "green",     //rgba(255, 190, 218, 0.5)
     "style": {
       "color":  "green",    // rgba(255, 190, 218, 0.5)
       "marker": {
-        "icon": "gold", // "mdi-flag", "fs-spec0", "pulse" (size: 12), "#0f0", "gold", "file_name" (size_w: 25, size_h: 41)
-        "zoom": 1,
+        "icon": "gold",     // "mdi-flag mdi-spin", "fs-spec0", "pulse" (size: 12), "#0f0", "gold", "file_name" (size_w: 25, size_h: 41)
+        //"zoom": 1,
       },
+      "line": {
+        "type": "ant",
+      },
+    //"line":   MAP_ITEM.LINE.ANT,
     },
 
 

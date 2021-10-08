@@ -24,6 +24,10 @@ export const MAP_STYLE = {
 
   LINE: {
     KEY: 'line',
+    TYPE: {                       // тип линии, совпадает с именем класса для установки стиля
+      KEY: 'type',
+      ANT: 'ant',                 // бегущая линия
+    },
   },
 
   POLYGON: {

@@ -521,6 +521,7 @@ export default {
       if (layer.setStyle) layer.setStyle(this.path_modify());
     },
 
+
     // иконки
     icon_origin() {
       return icon_get({
