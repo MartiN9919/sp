@@ -26,6 +26,13 @@ export function icon_get(style={}, className='') {
   var marker = style[STYLE.MARKER.KEY] ?? {};
   var icon   = marker[STYLE.MARKER.ICON.KEY] ?? STYLE.MARKER.ICON.DEF;
 
+
+  // DEFAULT
+  if (icon==STYLE.MARKER.ICON.DEF) {
+    return undefined;
+  }
+
+
   // FONT.MDI
   if (icon.slice(0, STYLE.MARKER.ICON.PREF_MDI.length) == STYLE.MARKER.ICON.PREF_MDI) {
     return L.divIcon({
@@ -46,6 +53,7 @@ export function icon_get(style={}, className='') {
   // '<div class="marker-font" style="color: '+color+';">'+
   //   '<span class="marker-font-mdi mdi mdi-map-marker style="color: '+color+';">'+
   // '</div>',
+
 
   // FONT.FS
   if (icon.slice(0, STYLE.MARKER.ICON.PREF_FS.length) == STYLE.MARKER.ICON.PREF_FS) {
@@ -76,157 +84,21 @@ export function icon_get(style={}, className='') {
 
 
   // FILE
-  var file = icon_path('icon');
-  проверить доступность файла
-
-  if (icon==STYLE.MARKER.ICON) {
-    let ret = {
-      shadowUrl:   icon_path('marker-shadow'),
-      iconSize:    [25, 41],
-      iconAnchor:  [12, 41],
-      popupAnchor: [1, -34],
-      shadowSize:  [41, 41],
-      className:   className,
-    };
-
-    switch(style.color) {
-      case 'red':
-      case '#f00':
-        ret.iconUrl = icon_path('marker-red');
-        break;
-
-      case 'green':
-      case '#0f0':
-        ret.iconUrl = icon_path('marker-2x-green');
-        break;
-
-      case 'blue':
-      case '#00f':
-        ret.iconUrl = icon_path('marker-2x-blue');
-        break;
-
-      case 'gold':
-        ret.iconUrl = icon_path('marker-2x-gold');
-        break;
-
-      case 'orange':
-        ret.iconUrl = icon_path('marker-2x-orange');
-        break;
-
-      case 'yellow':
-        ret.iconUrl = icon_path('marker-2x-yellow');
-        break;
-
-      case 'violet':
-        ret.iconUrl = icon_path('marker-2x-violet');
-        break;
-
-      case 'grey':
-        ret.iconUrl = icon_path('marker-2x-grey');
-        break;
-
-      case 'black':
-        ret.iconUrl = icon_path('marker-2x-black');
-        break;
-
-      default:
-        return undefined;
-    };
-    return new L.Icon(ret);
+  const equ = {
+    '#f00': 'red',
+    '#0f0': 'green',
+    '#00f': 'blue',
   };
-
-
-  return undefined;
-
-
-
-
-  // //
-  // // MAP_STYLE.MARKER.TYPE.DEF
-  // //
-  // if (type==STYLE.MARKER.TYPE.DEF) {
-  //   return undefined;
-  // };
-
-
-  // //
-  // // MAP_ITEM.MARKER.IMAGE
-  // // имя маркера = имя файла.png
-  // if (type==MAP_ITEM.MARKER.IMAGE) {
-  //   let ret = {
-  //     shadowUrl:   icon_path('marker-shadow'),
-  //     iconSize:    [25, 41],
-  //     iconAnchor:  [12, 41],
-  //     popupAnchor: [1, -34],
-  //     shadowSize:  [41, 41],
-  //     className:   className,
-  //   };
-
-  // };
-
-  // //
-  // // MAP_ITEM.MARKER.COLOR
-  // // невозможна плавная смена цвета, только заданные значения
-  // if (type==MAP_ITEM.MARKER.COLOR) {
-  //   let ret = {
-  //     shadowUrl:   icon_path('marker-shadow'),
-  //     iconSize:    [25, 41],
-  //     iconAnchor:  [12, 41],
-  //     popupAnchor: [1, -34],
-  //     shadowSize:  [41, 41],
-  //     className:   className,
-  //   };
-
-  //   switch(style.color) {
-  //     case 'red':
-  //     case '#f00':
-  //       ret.iconUrl = icon_path('marker-red');
-  //       break;
-
-  //     case 'green':
-  //     case '#0f0':
-  //       ret.iconUrl = icon_path('marker-2x-green');
-  //       break;
-
-  //     case 'blue':
-  //     case '#00f':
-  //       ret.iconUrl = icon_path('marker-2x-blue');
-  //       break;
-
-  //     case 'gold':
-  //       ret.iconUrl = icon_path('marker-2x-gold');
-  //       break;
-
-  //     case 'orange':
-  //       ret.iconUrl = icon_path('marker-2x-orange');
-  //       break;
-
-  //     case 'yellow':
-  //       ret.iconUrl = icon_path('marker-2x-yellow');
-  //       break;
-
-  //     case 'violet':
-  //       ret.iconUrl = icon_path('marker-2x-violet');
-  //       break;
-
-  //     case 'grey':
-  //       ret.iconUrl = icon_path('marker-2x-grey');
-  //       break;
-
-  //     case 'black':
-  //       ret.iconUrl = icon_path('marker-2x-black');
-  //       break;
-
-  //     default:
-  //       return undefined;
-  //   };
-  //   return new L.Icon(ret);
-  // };
-
-
-
-
-
+  if (equ[icon]) { icon = equ[icon]; }
+  return new L.Icon({
+    className:   className,
+    shadowUrl:   icon_path('shadow-marker'),
+    shadowSize:  [41, 41],
+    iconUrl:     icon_path(icon),
+    iconSize:    [25, 41],
+    iconAnchor:  [12, 41],
+    popupAnchor: [1, -34],
+  });
 }
 
 function icon_path(name) {
