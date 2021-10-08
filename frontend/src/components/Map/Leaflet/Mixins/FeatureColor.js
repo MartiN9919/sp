@@ -3,12 +3,9 @@
 import { mapGetters, mapActions, } from 'vuex';
 
 import { MAP_ITEM, } from '@/components/Map/Leaflet/Lib/ConstOld';
+import { MAP_STYLE, COLORING, } from '@/components/Map/Leaflet/Lib/Const';
 import { scale_log, color_array, } from '@/components/Map/Leaflet/Lib/LibColor'
 import { fc_key, fc_types_del, } from '@/components/Map/Leaflet/Lib/LibFc'
-
-const COLOR_BEGIN = '00FF00';       // цвет: начальный
-const COLOR_END   = 'FF0000';       // цвет: конечный
-const COLOR_KEY   = 'value';        // property[COLOR_KEY]: значение определяет цвет полигона
 
 export default {
   data() {
@@ -23,7 +20,7 @@ export default {
   },
 
   methods: {
-    // ЗАПОЛНИТЬ MAP_ITEM.FC.features[i][MAP_ITEM.FC_COLOR]
+    // ЗАПОЛНИТЬ fc.features[i][COLORING.FC.COLOR]
     data_normalize_color(map_ind) {
       // данные на шине
       let map_item = this.SCRIPT_GET_ITEM(map_ind);
@@ -35,15 +32,15 @@ export default {
         // исключить ненужные геометрии
         fc_types_del(fc, ['LineString', 'Point']);
 
-        // MAP_ITEM.FC_PROP_VALUE значение которого определяет цвет полигона
-        let val_list    = fc_key(fc, COLOR_KEY);
+        // COLORING.FC.VALUE определяет цвет полигона
+        let val_list    = fc_key(fc, COLORING.FC.VALUE);
         let scale_value = scale_log(val_list);
-        let scale_color = color_array(COLOR_BEGIN, COLOR_END, scale_value.length);
+        let scale_color = color_array(COLORING.COLOR.BEGIN, COLORING.COLOR.END, scale_value.length);
 
         let feature, value, ret;
         for (let i=0; i<fc.features.length; i++) {
           feature = fc.features[i];
-          value   = feature.properties[COLOR_KEY];
+          value   = feature.properties[COLORING.FC.VALUE];
           ret     = scale_color[scale_value.length-1];
           for (let i=0; i<scale_value.length-1; i++) {
             if (value >= scale_value[i] && value < scale_value[i+1]) {
@@ -51,7 +48,7 @@ export default {
               break;
             }
           }
-          feature[MAP_ITEM.FC_COLOR] = '#'+ret;
+          feature[COLORING.FC.COLOR] = '#'+ret;
         }
 
         // построить легенду в map_item
@@ -80,7 +77,7 @@ export default {
       // иначе: копировать цвет MAP_ITEM.COLOR каждому feature
       } else if (MAP_ITEM.COLOR in map_item) {
         // for (let i=0; i<fc.features.length; i++) {
-        //   fc.features[i][MAP_ITEM.FC_COLOR] = map_item[MAP_ITEM.COLOR];
+        //   fc.features[i][COLORING.FC.COLOR] = map_item[MAP_ITEM.COLOR];
         // }
       }
 
@@ -91,7 +88,7 @@ export default {
     // является ли слой разноцветным (раскраска зависит от value )
     color_dif_valid(map_ind) {
       let map_item = this.SCRIPT_GET_ITEM(map_ind);
-      return ([MAP_ITEM.POLYGON.GREEN_MIN, MAP_ITEM.POLYGON.GREEN_MAX].indexOf(map_item[MAP_ITEM.POLYGON.NAME])>-1);
+      return ([COLORING.GREEN_MIN, COLORING.GREEN_MAX].indexOf(map_item[MAP_STYLE.POLYGON.KEY])>-1);
     },
 
   },

@@ -35,6 +35,21 @@ export const MAP_STYLE = {
   },
 };
 
+
+export const COLORING = {         // раскраска в зависимости от значения
+  COLOR: {
+    BEGIN: '00FF00',              // цвет: начальный
+    END:   'FF0000',              // цвет: конечный
+  },
+  FC: {
+    VALUE: 'value',               // вход:  fc.features[i].property.VALUE - значение определяет цвет полигона
+    COLOR: 'color',               // выход: fc.features[i].COLOR - расчитанный цвет полигона
+  },
+  GREEN_MIN: 'green_min',         // цвет полигона в зависимости от значения: зеленый(хуже)  -> красный(лучше) https://leafletjs.com/examples/choropleth/example.html
+  GREEN_MAX: 'green_max',         // цвет полигона в зависимости от значения: зеленый(лучше) -> красный(хуже)
+};
+
+
 export const PATH = {
   MARKERS: 'img/markers/',        // путь к файлам маркеров
 };
