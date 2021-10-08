@@ -6,7 +6,6 @@ export const MAP_TEST_ITEM_1 = {
   //"id": 5,
   "name": "Test 1",
   "hint": "Это тест 1",
-  // "line":   MAP_ITEM.LINE.ANT,
 
   "fc": {
     //"color": "green",     //rgba(255, 190, 218, 0.5)
@@ -17,9 +16,11 @@ export const MAP_TEST_ITEM_1 = {
         //"zoom": 1,
       },
       "line": {
-        "type": "ant",
+        "type": "ant",      // тип = классу объекта (для установки стиля)
       },
-    //"line":   MAP_ITEM.LINE.ANT,
+      "polygon": {
+
+      },
     },
 
 

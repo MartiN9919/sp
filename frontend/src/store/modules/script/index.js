@@ -50,10 +50,11 @@ export default {
     SCRIPT_GET:                   state =>        state.selectedTemplate.activeAnalysts,
     SCRIPT_GET_ITEM:              state => ind => state.selectedTemplate.activeAnalysts[ind],
 
-    SCRIPT_GET_ITEM_STYLE:        state => ind => state.selectedTemplate.activeAnalysts[ind].fc.style         || {},
-    SCRIPT_GET_ITEM_MARKER:       state => ind => state.selectedTemplate.activeAnalysts[ind].fc.style?.marker || {},
-    SCRIPT_GET_ITEM_LINE:         state => ind => state.selectedTemplate.activeAnalysts[ind].fc.style?.line   || {},
-    SCRIPT_GET_ITEM_COLOR:        state => ind => state.selectedTemplate.activeAnalysts[ind].fc.style?.color  || MAP_STYLE.COLOR.DEF,
+    SCRIPT_GET_ITEM_STYLE:        state => ind => state.selectedTemplate.activeAnalysts[ind].fc.style          || {},
+    SCRIPT_GET_ITEM_MARKER:       state => ind => state.selectedTemplate.activeAnalysts[ind].fc.style?.marker  || {},
+    SCRIPT_GET_ITEM_LINE:         state => ind => state.selectedTemplate.activeAnalysts[ind].fc.style?.line    || {},
+    SCRIPT_GET_ITEM_POLYGON:      state => ind => state.selectedTemplate.activeAnalysts[ind].fc.style?.polygon || {},
+    SCRIPT_GET_ITEM_COLOR:        state => ind => state.selectedTemplate.activeAnalysts[ind].fc.style?.color   || MAP_STYLE.COLOR.DEF,
     SCRIPT_GET_ITEM_COLOR_LEGEND: state => ind => state.selectedTemplate.activeAnalysts[ind].color_legend || [],
     SCRIPT_GET_ITEM_ICON:         state => ind => state.selectedTemplate.activeAnalysts[ind].icon         || 'mdi-star',
     SCRIPT_GET_ITEM_REFRESH:      state => ind => state.selectedTemplate.activeAnalysts[ind].refresh,
@@ -61,7 +62,6 @@ export default {
 
     // работает, но не используется
     // SCRIPT_GET_ITEM_ID:        state => ind => state.selectedTemplate.activeAnalysts[ind].id           || '',
-    // SCRIPT_GET_ITEM_POLYGON:   state => ind => state.selectedTemplate.activeAnalysts[ind].polygon      || MAP_ITEM.POLYGON.DEFAULT,
     // SCRIPT_GET_ITEM_FC:        state => ind => state.selectedTemplate.activeAnalysts[ind].fc           || {},
   },
 

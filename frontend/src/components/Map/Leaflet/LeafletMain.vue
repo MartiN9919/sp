@@ -110,8 +110,8 @@ import {
 import Vue2LeafletMarkerCluster     from 'vue2-leaflet-markercluster';
 import LControlPolylineMeasure      from 'vue2-leaflet-polyline-measure';
 
-//import { MAP }                      from '@/components/Map/Leaflet/Lib/Const';
 import { MAP_ITEM }                 from '@/components/Map/Leaflet/Lib/ConstOld';
+import { MAP_STYLE }                from '@/components/Map/Leaflet/Lib/Const';
 import { marker_get }               from '@/components/Map/Leaflet/Markers/Fun';
 
 import                      '@/components/Map/Leaflet/Markers/Pulse';
@@ -356,19 +356,15 @@ export default {
             { permanent: false, sticky: true, }
           );
 
-          // тип линии: бегущая пунктирная
-          let line = self.SCRIPT_GET_ITEM_LINE(map_ind);
-          if ((['LineString', ].indexOf(feature.geometry.type)>-1) && (line!=MAP_ITEM.LINE.DEFAULT)) {   // 'Polygon'
-            layer.setStyle({'className': line, });
-          }
+          // класс для стилей линий и полигонов
+          let style = {};
+          if (feature.geometry.type == 'LineString') { style = self.SCRIPT_GET_ITEM_LINE(map_ind); }
+          if (feature.geometry.type == 'Polygon')    { style = self.SCRIPT_GET_ITEM_POLYGON(map_ind); }
+          let type = style[MAP_STYLE.LINE.TYPE.KEY] ?? '';
+          if (type != '') { layer.setStyle({'className': type, }); }
 
           // редактирование запрещено - удалить pm - для уменьшения объема вычислений
           if (layer.pm) { delete layer.pm; }
-
-          // тип полигона: color
-          // let polygon = self.SCRIPT_GET_ITEM_POLYGON(map_ind);
-          // if ((['Polygon', ].indexOf(feature.geometry.type)>-1) && (polygon!=POLYGON.DEFAULT)) {
-          // }
         }.bind(this),
 
 
