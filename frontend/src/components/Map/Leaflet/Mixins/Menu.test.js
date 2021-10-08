@@ -20,7 +20,8 @@ export const MAP_TEST_ITEM_1 = {
     "style": {
       "color":  "green",    // rgba(255, 190, 218, 0.5)
       "marker": {
-        "icon": "gold", // "mdi-flag", "fs-spec0", "pulse" (size: 12), "#0f0", "gold", "file_name" ()
+        "icon": "gold", // "mdi-flag", "fs-spec0", "pulse" (size: 12), "#0f0", "gold", "file_name" (size_w: 25, size_h: 41)
+        "zoom": 1,
       },
     },
 

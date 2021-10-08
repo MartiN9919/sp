@@ -50,9 +50,9 @@ export default {
     SCRIPT_GET:                   state =>        state.selectedTemplate.activeAnalysts,
     SCRIPT_GET_ITEM:              state => ind => state.selectedTemplate.activeAnalysts[ind],
 
-    SCRIPT_GET_ITEM_STYLE:        state => ind => state.selectedTemplate.activeAnalysts[ind].fc.style     || {},
-    // SCRIPT_GET_ITEM_MARKER:       state => ind => state.selectedTemplate.activeAnalysts[ind].fc.style?.marker       || MAP_ITEM.MARKER.DEFAULT,
-    SCRIPT_GET_ITEM_LINE:         state => ind => state.selectedTemplate.activeAnalysts[ind].fc.line         || MAP_ITEM.LINE.DEFAULT,
+    SCRIPT_GET_ITEM_STYLE:        state => ind => state.selectedTemplate.activeAnalysts[ind].fc.style         || {},
+    SCRIPT_GET_ITEM_MARKER:       state => ind => state.selectedTemplate.activeAnalysts[ind].fc.style?.marker || {},
+    SCRIPT_GET_ITEM_LINE:         state => ind => state.selectedTemplate.activeAnalysts[ind].fc.line          || MAP_ITEM.LINE.DEFAULT,
     SCRIPT_GET_ITEM_COLOR:        state => ind => state.selectedTemplate.activeAnalysts[ind].fc.style?.color  || MAP_STYLE.COLOR.DEF,
     SCRIPT_GET_ITEM_COLOR_LEGEND: state => ind => state.selectedTemplate.activeAnalysts[ind].color_legend || [],
     SCRIPT_GET_ITEM_ICON:         state => ind => state.selectedTemplate.activeAnalysts[ind].icon         || 'mdi-star',

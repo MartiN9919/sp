@@ -25,7 +25,7 @@ export function icon_get(style={}, className='') {
   var color  = style[STYLE.COLOR.KEY ] ?? STYLE.COLOR.DEF;
   var marker = style[STYLE.MARKER.KEY] ?? {};
   var icon   = marker[STYLE.MARKER.ICON.KEY] ?? STYLE.MARKER.ICON.DEF;
-
+  var zoom   = marker[STYLE.MARKER.ZOOM.KEY] ?? 1;
 
   // DEFAULT
   if (icon==STYLE.MARKER.ICON.DEF) {
@@ -73,7 +73,7 @@ export function icon_get(style={}, className='') {
 
   // PULSE
   if (icon==STYLE.MARKER.ICON.PULSE) {
-    var size  = marker[STYLE.MARKER.SIZE.KEY] ?? 12;
+    var size  = (marker[STYLE.MARKER.SIZE.KEY] ?? 12) * zoom|0;
     return L.icon.pulse({
       className: className,
       iconSize:  [size, size],
@@ -85,13 +85,14 @@ export function icon_get(style={}, className='') {
 
   // FILE
   const equ = {
+    '#000': 'black',
     '#f00': 'red',
     '#0f0': 'green',
     '#00f': 'blue',
   };
   if (equ[icon]) { icon = equ[icon]; }
-  var size_w = marker[STYLE.MARKER.SIZE.KEY] ?? 25;
-  var size_h = marker[STYLE.MARKER.SIZE.KEY] ?? 41;
+  var size_w = (marker[STYLE.MARKER.SIZE_W.KEY] ?? 25) * zoom|0;
+  var size_h = (marker[STYLE.MARKER.SIZE_H.KEY] ?? 41) * zoom|0;
   return new L.Icon({
     className:   className,
     shadowUrl:   icon_path('shadow-marker'),
@@ -99,7 +100,7 @@ export function icon_get(style={}, className='') {
     iconUrl:     icon_path(icon),
     iconSize:    [size_w, size_h],
     iconAnchor:  [size_w/2|0, size_h],
-    popupAnchor: [1, -34],
+    popupAnchor: [1, -34 * zoom|0],
   });
 }
 
