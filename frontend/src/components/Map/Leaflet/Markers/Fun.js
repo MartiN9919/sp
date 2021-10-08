@@ -90,13 +90,15 @@ export function icon_get(style={}, className='') {
     '#00f': 'blue',
   };
   if (equ[icon]) { icon = equ[icon]; }
+  var size_w = marker[STYLE.MARKER.SIZE.KEY] ?? 25;
+  var size_h = marker[STYLE.MARKER.SIZE.KEY] ?? 41;
   return new L.Icon({
     className:   className,
     shadowUrl:   icon_path('shadow-marker'),
-    shadowSize:  [41, 41],
+    shadowSize:  [size_h, size_h],
     iconUrl:     icon_path(icon),
-    iconSize:    [25, 41],
-    iconAnchor:  [12, 41],
+    iconSize:    [size_w, size_h],
+    iconAnchor:  [size_w/2|0, size_h],
     popupAnchor: [1, -34],
   });
 }
