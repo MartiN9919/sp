@@ -33,7 +33,7 @@ export default {
       }
     },
     contextMenu: function () {
-      if(this.objectWithActivatedMenu){
+      if(this.objectWithActivatedMenu && this.objectWithActivatedMenu.hasOwnProperty('object')){
         return [
           {
             icon: 'mdi-vector-link',
@@ -82,7 +82,18 @@ export default {
             ],
           }
         ]
-      } else {
+      }
+      if (this.objectWithActivatedMenu && this.objectWithActivatedMenu.hasOwnProperty('relation')){
+        return [
+          {
+            icon: 'mdi-check',
+            title: 'Редактировать связь',
+            subtitle: 'Редактировать данную связь',
+            action: 'createRelation'
+          },
+        ]
+      }
+      else {
         let array = [{
             icon: 'mdi-pencil',
             title: 'Переупорядочить граф',
@@ -135,7 +146,11 @@ export default {
       return this.choosingObjects.length === 2
     },
     createRelation(){
-      this.setEditableRelation(this.choosingObjects)
+      this.setEditableRelation({
+        relations: this.choosingObjects.length > 0 ? this.choosingObjects.filter(o => o.object.object.id !== 20) :
+            [this.objectWithActivatedMenu.relation.o1, this.objectWithActivatedMenu.relation.o2],
+        document: this.choosingObjects.find(o => o.object.object.id === 20) || null
+      })
       this.setNavigationDrawerStatus(true)
       this.setToolStatus({tool: 'createRelationPage', status: false})
       this.setActiveTool('createRelationPage')

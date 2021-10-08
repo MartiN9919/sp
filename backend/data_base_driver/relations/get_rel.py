@@ -5,10 +5,19 @@ from data_base_driver.additional_functions import get_date_time_from_sec
 from data_base_driver.record.find_object import find_reliable_http
 from data_base_driver.record.get_record import get_object_record_by_id_http
 from data_base_driver.relations.find_rel import search_rel_with_key_http
-from data_base_driver.input_output.input_output import io_get_rel_tuple
+from data_base_driver.input_output.input_output import io_get_rel_tuple, io_get_rel
 from data_base_driver.sys_key.get_key_dump import get_relation_keys
 from data_base_driver.sys_key.get_list import get_list_by_top_id, get_item_list_value
 from data_base_driver.sys_key.get_object_dump import get_object_by_name
+
+
+def get_system_relation(group_id, rel_rec_id):
+    system_relations = io_get_rel(group_id, [1], [1, int(rel_rec_id)], [20], [], {}, True)
+    if len(system_relations) > 0:
+        doc = get_object_record_by_id_http(20, system_relations[0]['rec_id_2'], group_id, [])
+        return {'object_id': doc['object_id'], 'rec_id': int(doc['rec_id']), 'title': doc['title']}
+    else:
+        return None
 
 
 def get_rel_by_object(group_id, object, id, parents):
@@ -23,31 +32,35 @@ def get_rel_by_object(group_id, object, id, parents):
     if not (isinstance(object, int)) and not (object.isdigit()):
         object = get_object_by_name(object)['id']
     rels = io_get_rel_tuple(group_id, [], [int(object), id], [], [], {}, True)
-    first_data = [{'object_id': rel[2], 'rel_type': rel[0], 'val': rel[6], 'rec_id': rel[3], 'sec': rel[1]}
+    first_data = [{'object_id': rel[2], 'rel_type': rel[0], 'val': rel[6], 'rec_id': rel[3], 'sec': rel[1], 'id': rel[7]}
                   for rel in rels if(rel[4] == object and rel[5] == id) and len(
                       [temp for temp in parents if int(temp[0]) == rel[2] and temp[1] == rel[3]]) == 0]
-    second_data = [{'object_id': rel[4], 'rel_type': rel[0], 'val': rel[6], 'rec_id': rel[5], 'sec': rel[1]}
+    second_data = [{'object_id': rel[4], 'rel_type': rel[0], 'val': rel[6], 'rec_id': rel[5], 'sec': rel[1], 'id': rel[7]}
                    for rel in rels if(rel[2] == object and rel[3] == id) and len(
                        [temp for temp in parents if int(temp[0]) == rel[4] and temp[1] == rel[5]]) == 0]
     relations = []
     for relation in first_data + second_data:
+        doc = get_system_relation(group_id, relation['id'])
         old_relation = [item for item in relations if relation['object_id'] == item['object_id'] and
                         relation['rec_id'] == item['rec_id']]
         if len(old_relation) > 0:
             temp_relation = [item for item in old_relation[0]['relations'] if item['id'] == relation['rel_type']]
             if len(temp_relation) > 0:
                 temp_relation[0]['values'].append({'value': get_item_list_value(int(relation['val'])) if relation['val'] != 0 else '',
-                                                   'sec': relation['sec']})
+                                                   'date': get_date_time_from_sec(relation['sec'])[:-3], 'doc': doc})
             else:
                 old_relation[0]['relations'].append({'id': relation['rel_type'],
                                                      'values': [{'value': get_item_list_value(int(relation['val'])) if relation['val'] != 0 else '',
-                                                     'date': get_date_time_from_sec(relation['sec'])[:-3]}]})
+                                                     'date': get_date_time_from_sec(relation['sec'])[:-3]}], 'doc': doc})
         else:
             relations.append(
                 {'object_id': relation['object_id'], 'rec_id': relation['rec_id'],
                  'relations': [{'id': relation['rel_type'],
                                 'values': [{'value': get_item_list_value(int(relation['val'])) if relation['val'] != 0 else '',
-                                            'date': get_date_time_from_sec(relation['sec'])[:-3]}]}]})
+                                            'date': get_date_time_from_sec(relation['sec'])[:-3], 'doc': doc}]}]})
+    for relation in relations:
+        for sub_relation in relation['relations']:
+            sub_relation['values'].sort(key=lambda x: x['date'], reverse=True)
     return {'object_id': object, 'relations': [], 'rec_id': id, 'rels': relations}
 
 
@@ -191,6 +204,11 @@ def check_relation(root, object_id, rec_id):
 
 
 def remove_path(parent, child):
+    """
+    Вспомогательная функция для обозначения вырожденных веток дерева поиска
+    @param parent: родитель на данной итерации рекурсии
+    @param child: наследник на данной итерации рекурсии
+    """
     if parent and parent.get('parent'):
         remove_path(parent['parent'], parent)
     elif parent:

@@ -141,7 +141,7 @@ def io_get_rel_manticore_dict(group_id, keys, obj_rel_1, obj_rel_2, val, time_in
     @param time_interval: словарь хранящий промежуток времени в секундах: {second_start, second_end}
     @param is_unique: флаг проверки результирующего списка на уникальность входящих элементов
     @param rec_id: идентификатор связи, для проверки создания связи
-    @return: список словарей в формате [{sec,key_id,obj_id_1,rec_id_1,obj_id_2,rec_id_2,val},{},...,{}]
+    @return: список словарей в формате [{id,sec,key_id,obj_id_1,rec_id_1,obj_id_2,rec_id_2,val},{},...,{}]
     """
     if rec_id != 0:
         data = json.dumps({
@@ -203,7 +203,15 @@ def io_get_rel_manticore_dict(group_id, keys, obj_rel_1, obj_rel_2, val, time_in
     })
     response_1 = json.loads(requests.post(FullTextSearch.SEARCH_URL, data=data_1).text)['hits']['hits']
     response_2 = json.loads(requests.post(FullTextSearch.SEARCH_URL, data=data_2).text)['hits']['hits']
-    full_result = [item['_source'] for item in response_1 + response_2 if check_relation_permission(item, group_id)]
+    full_result = [{'id': int(item['_id']),
+                    'sec': item['_source']['sec'],
+                    'key_id': item['_source']['key_id'],
+                    'obj_id_1': item['_source']['obj_id_1'],
+                    'rec_id_1': item['_source']['rec_id_1'],
+                    'obj_id_2': item['_source']['obj_id_2'],
+                    'rec_id_2': item['_source']['rec_id_2'],
+                    'val': item['_source']['val'],
+                    } for item in response_1 + response_2 if check_relation_permission(item, group_id)]
     for relation in full_result:
         if len(relation['val']) == 0:
             relation['val'] = 0

@@ -36,6 +36,7 @@
             <tbody class="py-2" v-else>
               <tr v-for="item in param.values">
                 <td><span>{{item.value ? item.value : 'Создана'}}</span></td>
+                <td class="text-center" @click="addDocumentToGraph(item.doc)" style="cursor: pointer"><span>{{item.doc ? item.doc.title : ''}}</span></td>
                 <td class="text-end text-no-wrap pl-3"><span>{{item.date}}</span></td>
               </tr>
             </tbody>
@@ -65,6 +66,9 @@ export default {
     openedPanels: []
   }),
   methods: {
+    addDocumentToGraph(doc) {
+      this.$emit('addDocumentToGraph', {objectId: doc.object_id, recId: doc.rec_id})
+    },
     checkTypeParam(param) {
       if(param.baseParam.hasOwnProperty('type'))
         return param.baseParam.type.title

@@ -6,20 +6,27 @@
           Выбирете объекты для связи
         </v-card-subtitle>
         <v-card-subtitle v-else class="pa-0">
-          <p v-for="(relation, key) in [editableRelation.o1, editableRelation.o2]" class="mb-0">
+          <p v-for="(relation, key) in [editableRelation.relation.o1, editableRelation.relation.o2]" class="mb-0">
             <v-icon>
               {{relation.object.object.icon}}
             </v-icon>
             {{relation.object.title}}
           </p>
+          <p class="mb-0" v-if="editableRelation.document">
+            <v-icon>
+              {{editableRelation.document.object.object.icon}}
+            </v-icon>
+            {{editableRelation.document.object.title}}
+          </p>
         </v-card-subtitle>
       </v-card>
-      <v-form ref="form" v-model="valid">
+      <v-form v-if="editableRelation" ref="form" v-model="valid">
         <object-record-area
-          v-if="editableRelation"
-          :params="editableRelation.params"
+          v-if="editableRelation.relation"
+          :params="editableRelation.relation.params"
           @createNewParam="createNewParam"
           @deleteNewParam="deleteNewParam"
+          @addDocumentToGraph="addObjectToGraph"
         ></object-record-area>
       </v-form>
     </div>
@@ -52,7 +59,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['addNewParamEditableRelation', 'deleteNewParamEditableRelation', 'saveEditableRelation']),
+    ...mapActions(['addNewParamEditableRelation', 'deleteNewParamEditableRelation', 'saveEditableRelation', 'addObjectToGraph']),
     createNewParam(event) {
       this.addNewParamEditableRelation(event)
     },

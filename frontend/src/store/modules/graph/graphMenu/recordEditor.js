@@ -13,9 +13,9 @@ export default {
     editableObjects: state => { return state.editableObjects },
   },
   mutations: {
-    setEditableRelation: (state, relation) => state.editableRelation = relation,
-    addNewParamEditableRelation: (state, id) => state.editableRelation.addParam(id),
-    deleteNewParamEditableRelation: (state, {id, param}) => state.editableRelation.deleteParam(id, param),
+    setEditableRelation: (state, {relation, document}) => state.editableRelation = {relation, document},
+    addNewParamEditableRelation: (state, id) => state.editableRelation.relation.addParam(id),
+    deleteNewParamEditableRelation: (state, {id, param}) => state.editableRelation.relation.deleteParam(id, param),
 
     setEditableObjects: (state, object) => state.editableObjects = [object],
     resetEditableObjects: (state) => state.editableObjects = [state.editableObjects[0]],
@@ -24,10 +24,13 @@ export default {
     deleteNewParamEditableObject: (state, {id, param, position}) => state.editableObjects[position].deleteParam(id, param)
   },
   actions: {
-    setEditableRelation({getters, commit}, objects) {
+    setEditableRelation({getters, commit}, {relations, document}) {
       let edge = getters.graphRelations.find(
-        e => [e.relation.o1.id, e.relation.o2.id].every(r => Array.from(objects, o => o.id).includes(r)))
-      commit('setEditableRelation', _.cloneDeep(edge?.relation) || new DataBaseRelation(...objects))
+        e => [e.relation.o1.id, e.relation.o2.id].every(r => Array.from(relations, o => o.id).includes(r)))
+      commit('setEditableRelation', {
+        relation: _.cloneDeep(edge?.relation) || new DataBaseRelation(...relations),
+        document: document
+      })
     },
     addNewParamEditableRelation({commit}, relationId) {
       commit('addNewParamEditableRelation', relationId)
@@ -100,11 +103,19 @@ export default {
     },
     async saveEditableRelation({getters, dispatch}) {
       let relation = getters.editableRelation
-      return await postResponseAxios('objects/relation', relation.getRequestStructure(), {})
+      let request = Object.assign(
+          {doc_rec_id: relation.document.object.recId || null},
+          relation.relation.getRequestStructure()
+      )
+      return await postResponseAxios('objects/relation', request, {})
         .then(r => {
           let object = {o1: r.data.object_id_1, r1: r.data.rec_id_1, o2: r.data.object_id_2, r2: r.data.rec_id_2}
           dispatch('addRelationToGraph', {object: object, relations: r.data.params})
-          dispatch('setEditableRelation', [relation.o1, relation.o2])
+          dispatch('setEditableRelation',
+            {
+              relations: [relation.relation.o1, relation.relation.o2],
+              document: relation.document
+            })
           return Promise.resolve(r.data)
         })
         .catch(e => { return Promise.reject(e) })
@@ -207,14 +218,16 @@ class ParamObject {
     this.new_values = newValues
     this.values = []
     for(let v of values)
-      this.values.push(new ValueParam(v.value, v.date))
+      this.values.push(new ValueParam(v.value, v.date, v.doc))
   }
 }
 
 class ValueParam {
-  constructor(value=null, date=this.getDateTime()) {
+  constructor(value=null, date=this.getDateTime(), doc=null) {
     this.value = value
     this.date = date
+    if(doc)
+      this.doc = doc
   }
 
   getDateTime() {

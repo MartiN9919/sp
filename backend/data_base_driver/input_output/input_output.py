@@ -144,7 +144,8 @@ def io_get_rel_tuple(group_id, keys, obj_rel_1, obj_rel_2, val, time_interval, i
              int(item['rec_id_1']),
              int(item['obj_id_2']),
              int(item['rec_id_2']),
-             item['val']
+             item['val'],
+             item['id']
              ) for item in temp_result]
 
 
