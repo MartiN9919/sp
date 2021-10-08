@@ -107,12 +107,12 @@ import {
   LIcon,
 } from 'vue2-leaflet';
 
-import Vue2LeafletMarkerCluster     from 'vue2-leaflet-markercluster';
-import LControlPolylineMeasure      from 'vue2-leaflet-polyline-measure';
+import Vue2LeafletMarkerCluster       from 'vue2-leaflet-markercluster';
+import LControlPolylineMeasure        from 'vue2-leaflet-polyline-measure';
 
-import { MAP_ITEM }                 from '@/components/Map/Leaflet/Lib/ConstOld';
-import { MAP_STYLE }                from '@/components/Map/Leaflet/Lib/Const';
-import { marker_get }               from '@/components/Map/Leaflet/Markers/Fun';
+import { MAP_ITEM }                   from '@/components/Map/Leaflet/Lib/ConstOld';
+import { MAP_STYLE }                  from '@/components/Map/Leaflet/Lib/Const';
+import { marker_get, icon_get_group } from '@/components/Map/Leaflet/Markers/Fun';
 
 import                      '@/components/Map/Leaflet/Markers/Pulse';
 import EditorMap       from '@/components/Map/Leaflet/Components/EditorMap';
@@ -295,29 +295,25 @@ export default {
     },
 
     cluster_options(map_ind) {
-      let self = this;
+      let color = this.SCRIPT_GET_ITEM_COLOR(map_ind);
       return {
         // область при наведении курсора на кластер
         showCoverageOnHover: true,
         polygonOptions: { color: this.SCRIPT_GET_ITEM_COLOR(map_ind), },
 
         // для последующей коррекции цвета маркеров
-        cluster_color: this.SCRIPT_GET_ITEM_COLOR(map_ind),
+        cluster_color: color,
 
         // увеличение, при котором создавать кластеры
         disableClusteringAtZoom: this.MAP_GET_CLUSTER?17:0,
 
         // подмена иконки кластера
         iconCreateFunction: function (cluster) {
-          return new L.DivIcon({
-            html: '<div style="background-color:'+this.cluster_color+';"><span>' + cluster.getChildCount() + '</span></div>',
-            className: 'marker-cluster marker-cluster-small marker-cluster-bg-new',
-            iconSize: new L.Point(40, 40),
-          });
+          return icon_get_group(color, cluster.getChildCount());
         },
 
         // цвет региона сгруппированного кластера
-        spiderLegPolylineOptions: { weight: 1.5, color: this.cluster_color, opacity: 0.5 },
+        spiderLegPolylineOptions: { weight: 1.5, color: color, opacity: 0.5 },
 
         // несгрупированные и сгруппированные маркеры одинаковы
         // singleMarkerMode: true,

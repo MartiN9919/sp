@@ -104,6 +104,17 @@ export function icon_get(style={}, className='') {
   });
 }
 
+
+// иконка группировки
+export function icon_get_group(color, title) {
+  return new L.DivIcon({
+    html: '<div style="background-color:'+color+';"><span>' + title + '</span></div>',
+    className: 'marker-cluster marker-cluster-small marker-cluster-bg-new',
+    iconSize: new L.Point(40, 40),
+  });
+}
+
+
 function icon_path(name) {
   // require('@/assets/img/markers/marker-icon-red.png');
   return process.env.BASE_URL+MAP_ITEM.MARKER.PATH+name+'.png';
