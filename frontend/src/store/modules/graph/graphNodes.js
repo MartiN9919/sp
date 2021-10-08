@@ -85,11 +85,11 @@ export default {
       } else Vue.set(state.classifiersSettings, objectId, [classifierId])
       localStorage.setItem('objectClassifiersSettings', JSON.stringify(state.classifiersSettings))
     },
-    addObjectToGraph: (state, editableObject) => {
+    addObjectToGraph: (state, {editableObject, x, y, size}) => {
       state.graph.createNode({
         id: editableObject.getGeneratedId(),
         object: editableObject,
-        size: 600, x: Math.random() * 1000, y: Math.random() * 1000
+        size: size, x: x, y: y
       })
     },
     addRelationToGraph: (state, {objects, relation}) => {
@@ -114,7 +114,7 @@ export default {
     updateRelationFromGraph({commit}, {relation, fields}) { commit('updateRelationFromGraph', {relation, fields}) },
     deleteObjectFromGraph({commit}, object) { commit('deleteObjectFromGraph', object) },
     updateObjectFromGraph({commit}, {object, fields}) { commit('updateObjectFromGraph', {object, fields}) },
-    addObjectToGraph({ getters, commit, dispatch }, {recId, objectId}) {
+    addObjectToGraph({ getters, commit, dispatch }, {recId, objectId, size=600, x=Math.random() * 1000, y=Math.random() * 1000}) {
       dispatch('getObjectFromServer', {params: {record_id: recId, object_id: objectId}})
         .then(r => {
           let editableObject = new GraphObject(r)
@@ -125,7 +125,7 @@ export default {
           if(findNode)
             dispatch('updateObjectFromGraph', {object: findNode, fields: {object: editableObject}})
           else {
-            commit('addObjectToGraph', editableObject)
+            commit('addObjectToGraph', {editableObject, x, y, size})
             dispatch('getRelationFromServer', {object_id: objectId, rec_id: recId, objects: relatedObjects})
           }
         })
