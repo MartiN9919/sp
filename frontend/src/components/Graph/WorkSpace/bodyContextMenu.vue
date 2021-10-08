@@ -94,12 +94,26 @@ export default {
         ]
       }
       else {
-        let array = [{
+        let array = [
+          {
             icon: 'mdi-pencil',
             title: 'Переупорядочить граф',
             subtitle: 'Переупорядочить граф',
             action: 'reorderGraph'
-          }]
+          },
+          {
+            icon: 'mdi-download',
+            title: 'Загрузить граф',
+            subtitle: 'Загрузить граф из файла',
+            action: 'getGraphFromFile'
+          },
+        ]
+        this.graphObjects.length ? array.push({
+          icon: 'mdi-upload',
+          title: 'Сохранить граф',
+          subtitle: 'Сохранить граф в файл',
+          action: 'saveGraphInFile'
+        }) : null
         this.checkRelationCreateStatus() ? array.push({
             icon: 'mdi-check',
             title: 'Создать связь',
@@ -118,7 +132,7 @@ export default {
   },
   methods: {
     ...mapActions(['reorderGraph', 'setEditableRelation', 'setNavigationDrawerStatus', 'setToolStatus', 'setActiveTool',
-    'setEditableObject', 'deleteObjectFromGraph', 'setRootSearchRelationTreeItem', 'getRelationsBtwObjects']),
+    'setEditableObject', 'deleteObjectFromGraph', 'setRootSearchRelationTreeItem', 'getRelationsBtwObjects', 'addObjectToGraph']),
     menuShow(event, object=null) {
       this.objectWithActivatedMenu = object
       this.$refs.contextMenu.show_root(event.x, event.y)
@@ -157,7 +171,40 @@ export default {
     },
     findRelations(){
       this.getRelationsBtwObjects(this.choosingObjects)
-    }
+    },
+    saveGraphInFile() {
+      let a = document.createElement("a");
+      let file = new Blob([JSON.stringify(Array.from(this.graphObjects, node => {return {
+        x: node.x,
+        y: node.y,
+        size: node.size,
+        objectId: node.object.object.id,
+        recId: node.object.recId
+      }}))], {type: 'text/plain'});
+      a.href = URL.createObjectURL(file);
+      a.download = new Date().getTime().toString() + '.json'
+      a.click();
+      a.remove()
+    },
+    getGraphFromFile() {
+      this.graphObjects.map(obj => this.deleteObjectFromGraph(obj))
+      const addObjectToGraph = this.addObjectToGraph
+      let obj = document.createElement('input')
+      obj.style.cssText = 'display:none'
+      obj.type = 'file'
+      obj.accept='.json'
+
+      let input  = document.getElementById("app").appendChild(obj)
+      input.click()
+      const parseText = function (text) {
+        JSON.parse(text).map(obj => addObjectToGraph(obj))
+      }
+      input.addEventListener('change', function() {
+        input.files[0].text()
+        .then(text => { parseText(text) })
+      })
+      obj.remove()
+    },
   },
 
 }
