@@ -2,7 +2,20 @@
 
 import { MAP_ITEM } from '@/components/Map/Leaflet/Lib/ConstOld';
 import { MAP_STYLE } from '@/components/Map/Leaflet/Lib/Const';
-var STYLE = MAP_STYLE;
+//var STYLE = MAP_STYLE;
+import { Icon } from 'leaflet';
+
+
+
+// устранение бага с путями
+export function icon_ini() {
+  delete Icon.Default.prototype._getIconUrl;
+  Icon.Default.mergeOptions({
+    iconRetinaUrl: icon_path('blue-2x'),
+    iconUrl:       icon_path('blue'),
+    shadowUrl:     icon_path('shadow-marker'),
+  });
+}
 
 
 export function marker_get(latlng, style={}, className='') {
@@ -22,19 +35,19 @@ export function icon_2_marker(latlng, icon, style={}, className='') {
 }
 
 export function icon_get(style={}, className='') {
-  var color  = style[STYLE.COLOR.KEY ] ?? STYLE.COLOR.DEF;
-  var marker = style[STYLE.MARKER.KEY] ?? {};
-  var icon   = marker[STYLE.MARKER.ICON.KEY] ?? STYLE.MARKER.ICON.DEF;
-  var zoom   = marker[STYLE.MARKER.ZOOM.KEY] ?? 1;
+  let color  = style[MAP_STYLE.COLOR.KEY ] ?? MAP_STYLE.COLOR.DEF;
+  let marker = style[MAP_STYLE.MARKER.KEY] ?? {};
+  let icon   = marker[MAP_STYLE.MARKER.ICON.KEY] ?? MAP_STYLE.MARKER.ICON.DEF;
+  let zoom   = marker[MAP_STYLE.MARKER.ZOOM.KEY] ?? 1;
 
   // DEFAULT
-  if (icon==STYLE.MARKER.ICON.DEF) {
+  if (icon==MAP_STYLE.MARKER.ICON.DEF) {
     return undefined;
   }
 
 
   // FONT.MDI
-  if (icon.slice(0, STYLE.MARKER.ICON.PREF_MDI.length) == STYLE.MARKER.ICON.PREF_MDI) {
+  if (icon.slice(0, MAP_STYLE.MARKER.ICON.PREF_MDI.length) == MAP_STYLE.MARKER.ICON.PREF_MDI) {
     return L.divIcon({
       className: className,
       iconSize:  null,
@@ -56,7 +69,7 @@ export function icon_get(style={}, className='') {
 
 
   // FONT.FS
-  if (icon.slice(0, STYLE.MARKER.ICON.PREF_FS.length) == STYLE.MARKER.ICON.PREF_FS) {
+  if (icon.slice(0, MAP_STYLE.MARKER.ICON.PREF_FS.length) == MAP_STYLE.MARKER.ICON.PREF_FS) {
     return L.divIcon({
       className: className,
       iconSize:  null,
@@ -72,8 +85,8 @@ export function icon_get(style={}, className='') {
 
 
   // PULSE
-  if (icon==STYLE.MARKER.ICON.PULSE) {
-    var size  = (marker[STYLE.MARKER.SIZE.KEY] ?? 12) * zoom|0;
+  if (icon==MAP_STYLE.MARKER.ICON.PULSE) {
+    let size  = (marker[MAP_STYLE.MARKER.SIZE.KEY] ?? 12) * zoom|0;
     return L.icon.pulse({
       className: className,
       iconSize:  [size, size],
@@ -91,8 +104,8 @@ export function icon_get(style={}, className='') {
     '#00f': 'blue',
   };
   if (equ[icon]) { icon = equ[icon]; }
-  var size_w = (marker[STYLE.MARKER.SIZE_W.KEY] ?? 25) * zoom|0;
-  var size_h = (marker[STYLE.MARKER.SIZE_H.KEY] ?? 41) * zoom|0;
+  let size_w = (marker[MAP_STYLE.MARKER.SIZE_W.KEY] ?? 25) * zoom|0;
+  let size_h = (marker[MAP_STYLE.MARKER.SIZE_H.KEY] ?? 41) * zoom|0;
   return new L.Icon({
     className:   className,
     shadowUrl:   icon_path('shadow-marker'),

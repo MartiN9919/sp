@@ -12,8 +12,8 @@ export const MAP_TEST_ITEM_1 = {
     "style": {
       "color":  "green",    // rgba(255, 190, 218, 0.5)
       "marker": {
-        "icon": "gold",     // "mdi-flag mdi-spin", "fs-spec0", "pulse" (size: 12), "#0f0", "gold", "file_name" (size_w: 25, size_h: 41)
-        //"zoom": 1,
+        "icon": "test",     // "mdi-flag mdi-spin", "fs-spec0", "pulse" (size: 12), "#0f0", "gold", "file_name" (size_w: 25, size_h: 41)
+        "zoom": 2,
       },
       "line": {
         "type": "ant",      // тип = классу объекта (для установки стиля)
@@ -141,11 +141,25 @@ export const MAP_TEST_ITEM_2 = {
   //"id": 6,
   "name": "Test 2",
   "hint": "Это тест 2",
-  "color": "#923",
+  // "color": "#923",
   // "marker": MAP_ITEM.MARKER.PULSE,
   "fc": {
+    "style": {
+      "color":  "#923",
+      "marker": {
+        "icon": "pulse",
+        "zoom": 2,
+      },
+      "line": {
+        //"type": "ant",      // тип = классу объекта (для установки стиля)
+      },
+      "polygon": {
+
+      },
+    },
+
     //"color": "#923",
-    "marker": MAP_ITEM.MARKER.PULSE,
+    //"marker": MAP_ITEM.MARKER.PULSE,
     "type": "FeatureCollection",
     "features": [
       {
@@ -225,10 +239,23 @@ export const MAP_TEST_ITEM_2 = {
 export const MAP_TEST_ITEM_3 = {
   "name": "Test 3",
   "hint": "Это тест 3",
-  "color": "#443",
+  //"color": "#443",
   "polygon": MAP_ITEM.POLYGON.GREEN_MIN,
   "fc": {
   //  "color": "#443",
+    "style": {
+      "color":  "#493",
+      "marker": {
+        "icon": "pulse",
+        "zoom": 2,
+      },
+      "line": {
+        //"type": "ant",      // тип = классу объекта (для установки стиля)
+      },
+      "polygon": {
+
+      },
+    },
     "type": "FeatureCollection",
     "features": [
       {

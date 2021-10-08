@@ -112,7 +112,11 @@ import LControlPolylineMeasure        from 'vue2-leaflet-polyline-measure';
 
 import { MAP_ITEM }                   from '@/components/Map/Leaflet/Lib/ConstOld';
 import { MAP_STYLE }                  from '@/components/Map/Leaflet/Lib/Const';
-import { marker_get, icon_get_group } from '@/components/Map/Leaflet/Markers/Fun';
+import {
+  icon_ini,
+  marker_get,
+  icon_get_group,
+} from '@/components/Map/Leaflet/Markers/Fun';
 
 import                      '@/components/Map/Leaflet/Markers/Pulse';
 import EditorMap       from '@/components/Map/Leaflet/Components/EditorMap';
@@ -128,13 +132,9 @@ import MixMenu         from '@/components/Map/Leaflet/Mixins/Menu';
 
 import { datesql_to_ts, } from '@/plugins/sys';
 
+
 // устранение бага с путями
-delete Icon.Default.prototype._getIconUrl;
-Icon.Default.mergeOptions({
-  iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
-  iconUrl:       require('leaflet/dist/images/marker-icon.png'),
-  shadowUrl:     require('leaflet/dist/images/marker-shadow.png'),
-});
+icon_ini();
 
 
 export default {
