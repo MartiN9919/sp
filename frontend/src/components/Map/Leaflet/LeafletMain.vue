@@ -118,17 +118,17 @@ import {
   icon_get_group,
 } from '@/components/Map/Leaflet/Markers/Fun';
 
-import                      '@/components/Map/Leaflet/Markers/Pulse';
-import EditorMap       from '@/components/Map/Leaflet/Components/EditorMap';
-import Range           from '@/components/Map/Leaflet/Components/Range';
-import Legend          from '@/components/Map/Leaflet/Components/Legend';
-import Logo            from '@/components/Map/Leaflet/Components/Logo';
-import MixResize       from '@/components/Map/Leaflet/Mixins/Resize';
-import MixKey          from '@/components/Map/Leaflet/Mixins/Key';
-import MixFeatureColor from '@/components/Map/Leaflet/Mixins/FeatureColor';
-import MixControl      from '@/components/Map/Leaflet/Mixins/Control';
-import MixMeasure      from '@/components/Map/Leaflet/Mixins/Measure';
-import MixMenu         from '@/components/Map/Leaflet/Mixins/Menu';
+import                 '@/components/Map/Leaflet/Markers/Pulse';
+import EditorMap  from '@/components/Map/Leaflet/Components/EditorMap';
+import Range      from '@/components/Map/Leaflet/Components/Range';
+import Legend     from '@/components/Map/Leaflet/Components/Legend';
+import Logo       from '@/components/Map/Leaflet/Components/Logo';
+import MixResize  from '@/components/Map/Leaflet/Mixins/Resize';
+import MixKey     from '@/components/Map/Leaflet/Mixins/Key';
+import MixColor   from '@/components/Map/Leaflet/Mixins/Color';
+import MixControl from '@/components/Map/Leaflet/Mixins/Control';
+import MixMeasure from '@/components/Map/Leaflet/Mixins/Measure';
+import MixMenu    from '@/components/Map/Leaflet/Mixins/Menu';
 
 import { datesql_to_ts, } from '@/plugins/sys';
 
@@ -143,7 +143,7 @@ export default {
   mixins: [
     MixResize,
     MixKey,
-    MixFeatureColor,
+    MixColor,
     MixControl,
     MixMeasure,
     MixMenu,

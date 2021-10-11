@@ -123,14 +123,14 @@ import '@/components/Leaflet/L.Marker.Pulse';
 
 import { datesql_to_ts, } from '@/plugins/sys';
 
-import Edit            from '@/components/Leaflet/Edit';
-import Menu            from '@/components/Leaflet/Menu';
-import Range           from '@/components/Leaflet/Range';
-import Legend          from '@/components/Leaflet/Legend';
-import Logo            from '@/components/Leaflet/Logo';
-import MixKey          from '@/components/Leaflet/L.Mix.Key';
-import MixFeatureColor from '@/components/Leaflet/L.Mix.FeatureColor';
-import MixControl      from '@/components/Leaflet/L.Mix.Control';
+import Edit       from '@/components/Leaflet/Edit';
+import Menu       from '@/components/Leaflet/Menu';
+import Range      from '@/components/Leaflet/Range';
+import Legend     from '@/components/Leaflet/Legend';
+import Logo       from '@/components/Leaflet/Logo';
+import MixKey     from '@/components/Leaflet/L.Mix.Key';
+import MixColor   from '@/components/Leaflet/L.Mix.Color';
+import MixControl from '@/components/Leaflet/L.Mix.Control';
 
 
 // устранение бага с путями
@@ -148,7 +148,7 @@ export default {
 
   mixins: [
     MixKey,
-    MixFeatureColor,
+    MixColor,
     MixControl,
   ],
 

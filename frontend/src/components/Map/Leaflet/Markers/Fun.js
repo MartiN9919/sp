@@ -1,6 +1,6 @@
 // инициализация маркеров
 
-import { MAP_STYLE, PATH } from '@/components/Map/Leaflet/Lib/Const';
+import { MAP_STYLE } from '@/components/Map/Leaflet/Lib/Const';
 import { Icon } from 'leaflet';
 
 
@@ -128,5 +128,5 @@ export function icon_get_group(color, title) {
 
 function icon_path(name) {
   // require('@/assets/img/markers/red.png');
-  return process.env.BASE_URL+PATH.MARKERS+name+'.png';
+  return process.env.BASE_URL+MAP_STYLE.MARKER.PATH+name+'.png';
 }

@@ -240,7 +240,7 @@ export const MAP_TEST_ITEM_3 = {
   "name": "Test 3",
   "hint": "Это тест 3",
   //"color": "#443",
-  "polygon": MAP_ITEM.POLYGON.GREEN_MIN,
+  //"polygon": "green_min",
   "fc": {
   //  "color": "#443",
     "style": {
@@ -253,7 +253,9 @@ export const MAP_TEST_ITEM_3 = {
         //"type": "ant",      // тип = классу объекта (для установки стиля)
       },
       "polygon": {
-
+        "coloring": {
+          "green": "min",
+        },
       },
     },
     "type": "FeatureCollection",

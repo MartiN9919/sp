@@ -2,8 +2,9 @@
 
 import { mapGetters, mapActions, } from 'vuex';
 
-import { MAP_ITEM, } from '@/components/Map/Leaflet/Lib/ConstOld';
 import { MAP_STYLE, COLORING, } from '@/components/Map/Leaflet/Lib/Const';
+var MAP_STYLE2 = MAP_STYLE;
+var COLORING2 = COLORING;
 import { scale_log, color_array, } from '@/components/Map/Leaflet/Lib/LibColor'
 import { fc_key, fc_types_del, } from '@/components/Map/Leaflet/Lib/LibFc'
 
@@ -23,19 +24,23 @@ export default {
     // ЗАПОЛНИТЬ fc.features[i][COLORING.FC.COLOR]
     data_normalize_color(map_ind) {
       // данные на шине
-      let map_item = this.SCRIPT_GET_ITEM(map_ind);
-      let fc       = map_item[MAP_ITEM.FC];
+      let map_item    = this.SCRIPT_GET_ITEM(map_ind);
+      let color_green = this.color_green(map_ind);
+      let fc          = map_item[MAP_STYLE.FC];
 
       // если установлена опция раскраски полигона от value
-      if (this.color_dif_valid(map_ind)) {
+      if (this.color_valid(color_green)) {
 
         // исключить ненужные геометрии
         fc_types_del(fc, ['LineString', 'Point']);
 
+        // начальный и конечный цвет
+        var [color_begin, color_end] = this.color_set(color_green);
+
         // COLORING.FC.VALUE определяет цвет полигона
-        let val_list    = fc_key(fc, COLORING.FC.VALUE);
+        let val_list    = fc_key(fc, COLORING2.FC.VALUE);
         let scale_value = scale_log(val_list);
-        let scale_color = color_array(COLORING.COLOR.BEGIN, COLORING.COLOR.END, scale_value.length);
+        let scale_color = color_array(color_begin, color_end, scale_value.length);
 
         let feature, value, ret;
         for (let i=0; i<fc.features.length; i++) {
@@ -74,10 +79,10 @@ export default {
           });
         }
 
-      // иначе: копировать цвет MAP_ITEM.COLOR каждому feature
-      } else if (MAP_ITEM.COLOR in map_item) {
+      // иначе: копировать цвет MAP_STYLE.COLOR.KEY каждому feature
+      } else if (MAP_STYLE.COLOR.KEY in map_item) {
         // for (let i=0; i<fc.features.length; i++) {
-        //   fc.features[i][COLORING.FC.COLOR] = map_item[MAP_ITEM.COLOR];
+        //   fc.features[i][COLORING.FC.COLOR] = map_item[MAP_STYLE.COLOR.KEY];
         // }
       }
 
@@ -86,9 +91,30 @@ export default {
 
 
     // является ли слой разноцветным (раскраска зависит от value )
-    color_dif_valid(map_ind) {
-      let map_item = this.SCRIPT_GET_ITEM(map_ind);
-      return ([COLORING.GREEN_MIN, COLORING.GREEN_MAX].indexOf(map_item[MAP_STYLE.POLYGON.KEY])>-1);
+    color_valid(color_green) {
+      return (
+        [
+          MAP_STYLE.POLYGON.COLORING.GREEN.MIN,
+          MAP_STYLE.POLYGON.COLORING.GREEN.MAX,
+        ].indexOf(color_green)>-1);
+    },
+
+    // тип раскраски (по зеленому цвету)
+    color_green(map_ind) {
+      return ((((((((
+        this.SCRIPT_GET_ITEM(map_ind)
+        [MAP_STYLE.FC                       ]) ?? {})
+        [MAP_STYLE.KEY                      ]) ?? {})
+        [MAP_STYLE.POLYGON.KEY              ]) ?? {})
+        [MAP_STYLE.POLYGON.COLORING.KEY     ]) ?? {})
+        [MAP_STYLE.POLYGON.COLORING.GREEN.KEY];
+    },
+
+    // значения цветов (с, по)
+    color_set(color_green) {
+      return (color_green == MAP_STYLE.POLYGON.COLORING.GREEN.MIN) ?
+        [MAP_STYLE.POLYGON.COLORING.BEGIN, MAP_STYLE.POLYGON.COLORING.END  ] :
+        [MAP_STYLE.POLYGON.COLORING.END,   MAP_STYLE.POLYGON.COLORING.BEGIN];
     },
 
   },

@@ -1,5 +1,8 @@
 
 export const MAP_STYLE = {
+  KEY: 'style',
+  FC:  'fc',              // переделать
+
   COLOR: {
     KEY:    'color',
     DEF:    '#f00',               // цвет по умолчанию
@@ -8,7 +11,8 @@ export const MAP_STYLE = {
   },
 
   MARKER: {
-    KEY:      'marker',
+    KEY:  'marker',
+    PATH: 'img/markers/',         // путь к файлам маркеров
     ICON: {
       KEY:      'icon',
       DEF:      '',               // значение по умолчанию
@@ -32,24 +36,23 @@ export const MAP_STYLE = {
 
   POLYGON: {
     KEY: 'polygon',
+    COLORING: {
+      KEY:   'coloring',
+      GREEN: {
+        KEY:   'green',
+        MIN:   'min',             // цвет полигона в зависимости от значения: зеленый(хуже)  -> красный(лучше) https://leafletjs.com/examples/choropleth/example.html
+        MAX:   'max',             // цвет полигона в зависимости от значения: зеленый(лучше) -> красный(хуже)
+      },
+      BEGIN:     '00FF00',        // цвет: начальный
+      END:       'FF0000',        // цвет: конечный
+    },
   },
 };
 
 
 export const COLORING = {         // раскраска в зависимости от значения
-  COLOR: {
-    BEGIN: '00FF00',              // цвет: начальный
-    END:   'FF0000',              // цвет: конечный
-  },
   FC: {
     VALUE: 'value',               // вход:  fc.features[i].property.VALUE - значение определяет цвет полигона
     COLOR: 'color',               // выход: fc.features[i].COLOR - расчитанный цвет полигона
   },
-  GREEN_MIN: 'green_min',         // цвет полигона в зависимости от значения: зеленый(хуже)  -> красный(лучше) https://leafletjs.com/examples/choropleth/example.html
-  GREEN_MAX: 'green_max',         // цвет полигона в зависимости от значения: зеленый(лучше) -> красный(хуже)
-};
-
-
-export const PATH = {
-  MARKERS: 'img/markers/',        // путь к файлам маркеров
 };
