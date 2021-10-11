@@ -5,7 +5,7 @@ import {
   putResponseAxios,
 } from '@/plugins/axios_settings'
 
-import { MAP_ITEM, MAP_STYLE } from '@/components/Map/Leaflet/Lib/Const';
+import { MAP_ITEM } from '@/components/Map/Leaflet/Lib/Const';
 
 export default {
   state: {
@@ -17,9 +17,9 @@ export default {
      *   id     (int)                                  - id скрипта (НЕ УНИКАЛЬНЫЙ)
      *
      *   style                                         - стили фигур и маркеров
-     *   style.marker                                  - {}, стиль маркера,  см. MAP_STYLE.MARKER. ...
-     *   style.line                                    - {}, стиль линии,    см. MAP_STYLE.LINE. ...
-     *   style.polygon                                 - {}, стиль полигона, см. MAP_STYLE.POLYGON. ...
+     *   style.marker                                  - {}, стиль маркера,  см. MAP_ITEM.STYLE.MARKER. ...
+     *   style.line                                    - {}, стиль линии,    см. MAP_ITEM.STYLE.LINE. ...
+     *   style.polygon                                 - {}, стиль полигона, см. MAP_ITEM.STYLE.POLYGON. ...
      *   style.color                                   - цвет маркера или фигуры, любой способ, в т.ч. прозрачность
      *
      *   fc                                            - FeatureCollection
@@ -52,8 +52,8 @@ export default {
     SCRIPT_GET_ITEM_MARKER:       state => ind => state.selectedTemplate.activeAnalysts[ind].fc.style?.marker  || {},
     SCRIPT_GET_ITEM_LINE:         state => ind => state.selectedTemplate.activeAnalysts[ind].fc.style?.line    || {},
     SCRIPT_GET_ITEM_POLYGON:      state => ind => state.selectedTemplate.activeAnalysts[ind].fc.style?.polygon || {},
-    SCRIPT_GET_ITEM_COLOR:        state => ind => state.selectedTemplate.activeAnalysts[ind].fc.style?.color   || MAP_STYLE.COLOR.DEF,
-    SCRIPT_GET_ITEM_LEGEND_COLOR: state => ind => state.selectedTemplate.activeAnalysts[ind].legend_color      || [],                 // MAP_ITEM.LEGEND_COLOR
+    SCRIPT_GET_ITEM_COLOR:        state => ind => state.selectedTemplate.activeAnalysts[ind].fc.style?.color   || MAP_ITEM.STYLE.COLOR.DEF,
+    SCRIPT_GET_ITEM_LEGEND_COLOR: state => ind => state.selectedTemplate.activeAnalysts[ind][MAP_ITEM._LEGEND_COLOR_] || [],
     SCRIPT_GET_ITEM_REFRESH:      state => ind => state.selectedTemplate.activeAnalysts[ind].refresh,
     SCRIPT_GET_ITEM_SEL:          state =>        JSON.stringify(state.selectedFC),
 

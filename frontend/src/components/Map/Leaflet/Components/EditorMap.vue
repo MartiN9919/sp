@@ -104,7 +104,7 @@
  */
 
 import { LControl, } from "vue2-leaflet";
-import { MAP_STYLE } from '@/components/Map/Leaflet/Lib/Const';
+import { MAP_ITEM } from '@/components/Map/Leaflet/Lib/Const';
 import { icon_get, icon_2_marker, } from '@/components/Map/Leaflet/Markers/Fun';
 import { fc_normalize, } from '@/components/Map/Leaflet/Lib/LibFc';
 import '@geoman-io/leaflet-geoman-free';
@@ -524,15 +524,15 @@ export default {
     // иконки
     icon_origin() {
       return icon_get({
-        [MAP_STYLE.MARKER.KEY]: {
-          [MAP_STYLE.MARKER.ICON.KEY]: MAP_STYLE.COLOR.ORIGIN,
+        [MAP_ITEM.STYLE.MARKER.KEY]: {
+          [MAP_ITEM.STYLE.MARKER.ICON.KEY]: MAP_ITEM.STYLE.COLOR.ORIGIN,
         },
       });
     },
     icon_modify() {
       return icon_get({
-        [MAP_STYLE.MARKER.KEY]: {
-          [MAP_STYLE.MARKER.ICON.KEY]: MAP_STYLE.COLOR.MODIFY,
+        [MAP_ITEM.STYLE.MARKER.KEY]: {
+          [MAP_ITEM.STYLE.MARKER.ICON.KEY]: MAP_ITEM.STYLE.COLOR.MODIFY,
         },
       });
     },
@@ -559,16 +559,16 @@ export default {
       return {
         ...this.layer_editor_prop(),
         ...this.path_common(),
-        color:       MAP_STYLE.COLOR.ORIGIN,
-        fillColor:   MAP_STYLE.COLOR.ORIGIN,
+        color:       MAP_ITEM.STYLE.COLOR.ORIGIN,
+        fillColor:   MAP_ITEM.STYLE.COLOR.ORIGIN,
       }
     },
     path_modify() {
       return {
         ...this.layer_editor_prop(),
         ...this.path_common(),
-        color:       MAP_STYLE.COLOR.MODIFY,
-        fillColor:   MAP_STYLE.COLOR.MODIFY,
+        color:       MAP_ITEM.STYLE.COLOR.MODIFY,
+        fillColor:   MAP_ITEM.STYLE.COLOR.MODIFY,
       }
     },
 

@@ -1,5 +1,3 @@
-// import { MAP_STYLE } from '@/components/Map/Leaflet/Lib/Const';
-// var STYLE = MAP_STYLE;
 
 export const MAP_TEST_ITEM_1 = {
   //"id": 5,

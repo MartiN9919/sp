@@ -107,10 +107,10 @@ import {
   LIcon,
 } from 'vue2-leaflet';
 
-import Vue2LeafletMarkerCluster       from 'vue2-leaflet-markercluster';
-import LControlPolylineMeasure        from 'vue2-leaflet-polyline-measure';
+import Vue2LeafletMarkerCluster from 'vue2-leaflet-markercluster';
+import LControlPolylineMeasure  from 'vue2-leaflet-polyline-measure';
 
-import { MAP_ITEM, MAP_STYLE }        from '@/components/Map/Leaflet/Lib/Const';
+import { MAP_ITEM }             from '@/components/Map/Leaflet/Lib/Const';
 import {
   icon_ini,
   marker_get,
@@ -354,7 +354,7 @@ export default {
           let style = {};
           if (feature.geometry.type == 'LineString') { style = self.SCRIPT_GET_ITEM_LINE(map_ind); }
           if (feature.geometry.type == 'Polygon')    { style = self.SCRIPT_GET_ITEM_POLYGON(map_ind); }
-          let type = style[MAP_STYLE.LINE.TYPE.KEY] ?? '';
+          let type = style[MAP_ITEM.STYLE.LINE.TYPE.KEY] ?? '';
           if (type != '') { layer.setStyle({'className': type, }); }
 
           // редактирование запрещено - удалить pm - для уменьшения объема вычислений
@@ -381,7 +381,7 @@ export default {
             opacity:     .5,
             fillOpacity: .3,
             color:       self.SCRIPT_GET_ITEM_COLOR(map_ind),
-            fillColor:   feature.color,                       // set in mixin
+            fillColor:   feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._COLOR_],    // set in mixin: Color
             className:   feature.properties.sel?'sel':'',
             //className:   self.SCRIPT_GET_ITEM_SEL?'sel':'',
           };

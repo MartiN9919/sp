@@ -5,7 +5,7 @@
 
 import { mapGetters, mapActions, } from 'vuex';
 
-import { MAP_ITEM, MAP_STYLE } from '@/components/Map/Leaflet/Lib/Const';
+import { MAP_ITEM } from '@/components/Map/Leaflet/Lib/Const';
 import { scale_log, color_array, } from '@/components/Map/Leaflet/Lib/LibColor'
 import { fc_key, fc_types_del, } from '@/components/Map/Leaflet/Lib/LibFc'
 
@@ -22,7 +22,7 @@ export default {
   },
 
   methods: {
-    // ЗАПОЛНИТЬ fc.features[i][MAP_STYLE.COLOR.KEY]
+    // ЗАПОЛНИТЬ fc.features[i][MAP_ITEM.STYLE.COLOR.KEY]
     data_normalize_color(map_ind) {
       // данные на шине
       let map_item    = this.SCRIPT_GET_ITEM(map_ind);
@@ -54,10 +54,10 @@ export default {
               break;
             }
           }
-          feature[MAP_STYLE.COLOR.KEY] = '#'+ret;                                   // записать цвет в feature[i].color
+          feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._COLOR_] = '#'+ret;    // записать цвет
         }
 
-        // построить легенду в MAP_ITEM.LEGEND_COLOR
+        // построить легенду в MAP_ITEM._LEGEND_COLOR_
         function color_get(scale_value, value) {
           let ret = scale_color[scale_value.length-1];
           for (let i=0; i<scale_value.length-1; i++) {
@@ -68,22 +68,22 @@ export default {
           }
           return '#'+ret;
         }
-        map_item[MAP_ITEM.LEGEND_COLOR] = [];
+        map_item[MAP_ITEM._LEGEND_COLOR_] = [];
         let from, to;
         for (let i=0; i<scale_value.length; i++) {
           from = scale_value[i];
           to   = scale_value[i+1];
-          map_item[MAP_ITEM.LEGEND_COLOR].push({
+          map_item[MAP_ITEM._LEGEND_COLOR_].push({
             color: color_get(scale_value, from+0.00000001),
             from:  from,
             to:    (to!=undefined)?'–'+to:'+',
           });
         }
 
-      // // иначе: копировать цвет MAP_STYLE.COLOR.KEY каждому feature
-      // } else if (MAP_STYLE.COLOR.KEY in map_item) {
+      // // иначе: копировать цвет MAP_ITEM.STYLE.COLOR.KEY каждому feature
+      // } else if (MAP_ITEM.STYLE.COLOR.KEY in map_item) {
       //   // for (let i=0; i<fc.features.length; i++) {
-      //   //   fc.features[i][MAP_STYLE.COLOR.KEY] = map_item[MAP_STYLE.COLOR.KEY];
+      //   //   fc.features[i][MAP_ITEM.STYLE.COLOR.KEY] = map_item[MAP_ITEM.STYLE.COLOR.KEY];
       //   // }
       }
     },
@@ -93,8 +93,8 @@ export default {
     color_valid(color_green) {
       return (
         [
-          MAP_STYLE.POLYGON.COLORING.GREEN.MIN,
-          MAP_STYLE.POLYGON.COLORING.GREEN.MAX,
+          MAP_ITEM.STYLE.POLYGON.COLORING.GREEN.MIN,
+          MAP_ITEM.STYLE.POLYGON.COLORING.GREEN.MAX,
         ].indexOf(color_green)>-1);
     },
 
@@ -102,18 +102,18 @@ export default {
     color_green(map_ind) {
       return ((((((((
         this.SCRIPT_GET_ITEM(map_ind)
-        [MAP_ITEM.FC.KEY                    ]) ?? {})
-        [MAP_STYLE.KEY                      ]) ?? {})
-        [MAP_STYLE.POLYGON.KEY              ]) ?? {})
-        [MAP_STYLE.POLYGON.COLORING.KEY     ]) ?? {})
-        [MAP_STYLE.POLYGON.COLORING.GREEN.KEY];
+        [MAP_ITEM.FC.KEY                         ]) ?? {})
+        [MAP_ITEM.STYLE.KEY                      ]) ?? {})
+        [MAP_ITEM.STYLE.POLYGON.KEY              ]) ?? {})
+        [MAP_ITEM.STYLE.POLYGON.COLORING.KEY     ]) ?? {})
+        [MAP_ITEM.STYLE.POLYGON.COLORING.GREEN.KEY];
     },
 
     // значения цветов (с, по)
     color_set(color_green) {
-      return (color_green == MAP_STYLE.POLYGON.COLORING.GREEN.MIN) ?
-        [MAP_STYLE.POLYGON.COLORING.BEGIN, MAP_STYLE.POLYGON.COLORING.END  ] :
-        [MAP_STYLE.POLYGON.COLORING.END,   MAP_STYLE.POLYGON.COLORING.BEGIN];
+      return (color_green == MAP_ITEM.STYLE.POLYGON.COLORING.GREEN.MIN) ?
+        [MAP_ITEM.STYLE.POLYGON.COLORING.BEGIN, MAP_ITEM.STYLE.POLYGON.COLORING.END  ] :
+        [MAP_ITEM.STYLE.POLYGON.COLORING.END,   MAP_ITEM.STYLE.POLYGON.COLORING.BEGIN];
     },
 
   },
