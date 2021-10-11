@@ -1,7 +1,23 @@
 
+export const MAP_ITEM = {
+  FC: {
+    KEY: 'fc',
+    FEATURES: {
+      KEY: 'features',
+      PROPERTIES: {
+        KEY:   'properties',
+        VALUE: 'value',               // для полигона - вход:  fc.features[i].property.VALUE - значение, которое определяет цвет полигона
+      },
+    },
+  },
+
+  LEGEND_COLOR: 'legend_color',       // [], заполняется автоматически
+};
+
+
+
 export const MAP_STYLE = {
   KEY: 'style',
-  FC:  'fc',              // переделать
 
   COLOR: {
     KEY:    'color',
@@ -46,13 +62,5 @@ export const MAP_STYLE = {
       BEGIN:     '00FF00',        // цвет: начальный
       END:       'FF0000',        // цвет: конечный
     },
-  },
-};
-
-
-export const COLORING = {         // раскраска в зависимости от значения
-  FC: {
-    VALUE: 'value',               // вход:  fc.features[i].property.VALUE - значение определяет цвет полигона
-    COLOR: 'color',               // выход: fc.features[i].COLOR - расчитанный цвет полигона
   },
 };

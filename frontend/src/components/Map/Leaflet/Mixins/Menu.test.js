@@ -1,4 +1,3 @@
-import { MAP_ITEM } from '@/components/Map/Leaflet/Lib/ConstOld';
 // import { MAP_STYLE } from '@/components/Map/Leaflet/Lib/Const';
 // var STYLE = MAP_STYLE;
 
@@ -142,7 +141,6 @@ export const MAP_TEST_ITEM_2 = {
   "name": "Test 2",
   "hint": "Это тест 2",
   // "color": "#923",
-  // "marker": MAP_ITEM.MARKER.PULSE,
   "fc": {
     "style": {
       "color":  "#923",
@@ -159,7 +157,6 @@ export const MAP_TEST_ITEM_2 = {
     },
 
     //"color": "#923",
-    //"marker": MAP_ITEM.MARKER.PULSE,
     "type": "FeatureCollection",
     "features": [
       {
@@ -239,10 +236,7 @@ export const MAP_TEST_ITEM_2 = {
 export const MAP_TEST_ITEM_3 = {
   "name": "Test 3",
   "hint": "Это тест 3",
-  //"color": "#443",
-  //"polygon": "green_min",
   "fc": {
-  //  "color": "#443",
     "style": {
       "color":  "#493",
       "marker": {
@@ -254,7 +248,7 @@ export const MAP_TEST_ITEM_3 = {
       },
       "polygon": {
         "coloring": {
-          "green": "min",
+          "green": "max",
         },
       },
     },

@@ -83,7 +83,7 @@ export function fc_merge (inputs) {
 
 
 
-// читать мз FeatureCollection properties.key
+// читать из FeatureCollection все features[i].properties.key
 export function fc_key(FC, key) {
   let ret = [];
   for (let i=0; i<FC.features.length; i++) {

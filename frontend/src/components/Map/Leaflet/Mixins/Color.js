@@ -1,10 +1,11 @@
+// РАСКРАСКА ПОЛИГОНА ОТ ЗНАЧЕНИЯ
+// вход:  fc.features[i].property.value - значение определяет цвет полигона
+// выход: fc.features[i].color - расчитанный цвет полигона
 
 
 import { mapGetters, mapActions, } from 'vuex';
 
-import { MAP_STYLE, COLORING, } from '@/components/Map/Leaflet/Lib/Const';
-var MAP_STYLE2 = MAP_STYLE;
-var COLORING2 = COLORING;
+import { MAP_ITEM, MAP_STYLE } from '@/components/Map/Leaflet/Lib/Const';
 import { scale_log, color_array, } from '@/components/Map/Leaflet/Lib/LibColor'
 import { fc_key, fc_types_del, } from '@/components/Map/Leaflet/Lib/LibFc'
 
@@ -21,12 +22,12 @@ export default {
   },
 
   methods: {
-    // ЗАПОЛНИТЬ fc.features[i][COLORING.FC.COLOR]
+    // ЗАПОЛНИТЬ fc.features[i][MAP_STYLE.COLOR.KEY]
     data_normalize_color(map_ind) {
       // данные на шине
       let map_item    = this.SCRIPT_GET_ITEM(map_ind);
       let color_green = this.color_green(map_ind);
-      let fc          = map_item[MAP_STYLE.FC];
+      let fc          = map_item[MAP_ITEM.FC.KEY];
 
       // если установлена опция раскраски полигона от value
       if (this.color_valid(color_green)) {
@@ -38,14 +39,14 @@ export default {
         var [color_begin, color_end] = this.color_set(color_green);
 
         // COLORING.FC.VALUE определяет цвет полигона
-        let val_list    = fc_key(fc, COLORING2.FC.VALUE);
-        let scale_value = scale_log(val_list);
-        let scale_color = color_array(color_begin, color_end, scale_value.length);
+        let val_list    = fc_key(fc, MAP_ITEM.FC.FEATURES.PROPERTIES.VALUE);        // читать все fc.features[i].properties.value
+        let scale_value = scale_log(val_list);                                      // шкала значений
+        let scale_color = color_array(color_begin, color_end, scale_value.length);  // шкала цветов
 
         let feature, value, ret;
         for (let i=0; i<fc.features.length; i++) {
           feature = fc.features[i];
-          value   = feature.properties[COLORING.FC.VALUE];
+          value   = feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES.VALUE];
           ret     = scale_color[scale_value.length-1];
           for (let i=0; i<scale_value.length-1; i++) {
             if (value >= scale_value[i] && value < scale_value[i+1]) {
@@ -53,10 +54,10 @@ export default {
               break;
             }
           }
-          feature[COLORING.FC.COLOR] = '#'+ret;
+          feature[MAP_STYLE.COLOR.KEY] = '#'+ret;                                   // записать цвет в feature[i].color
         }
 
-        // построить легенду в map_item
+        // построить легенду в MAP_ITEM.LEGEND_COLOR
         function color_get(scale_value, value) {
           let ret = scale_color[scale_value.length-1];
           for (let i=0; i<scale_value.length-1; i++) {
@@ -67,26 +68,24 @@ export default {
           }
           return '#'+ret;
         }
-        map_item.color_legend = [];
+        map_item[MAP_ITEM.LEGEND_COLOR] = [];
         let from, to;
         for (let i=0; i<scale_value.length; i++) {
           from = scale_value[i];
           to   = scale_value[i+1];
-          map_item.color_legend.push({
+          map_item[MAP_ITEM.LEGEND_COLOR].push({
             color: color_get(scale_value, from+0.00000001),
             from:  from,
             to:    (to!=undefined)?'–'+to:'+',
           });
         }
 
-      // иначе: копировать цвет MAP_STYLE.COLOR.KEY каждому feature
-      } else if (MAP_STYLE.COLOR.KEY in map_item) {
-        // for (let i=0; i<fc.features.length; i++) {
-        //   fc.features[i][COLORING.FC.COLOR] = map_item[MAP_STYLE.COLOR.KEY];
-        // }
+      // // иначе: копировать цвет MAP_STYLE.COLOR.KEY каждому feature
+      // } else if (MAP_STYLE.COLOR.KEY in map_item) {
+      //   // for (let i=0; i<fc.features.length; i++) {
+      //   //   fc.features[i][MAP_STYLE.COLOR.KEY] = map_item[MAP_STYLE.COLOR.KEY];
+      //   // }
       }
-
-      // return fc;
     },
 
 
@@ -103,7 +102,7 @@ export default {
     color_green(map_ind) {
       return ((((((((
         this.SCRIPT_GET_ITEM(map_ind)
-        [MAP_STYLE.FC                       ]) ?? {})
+        [MAP_ITEM.FC.KEY                    ]) ?? {})
         [MAP_STYLE.KEY                      ]) ?? {})
         [MAP_STYLE.POLYGON.KEY              ]) ?? {})
         [MAP_STYLE.POLYGON.COLORING.KEY     ]) ?? {})

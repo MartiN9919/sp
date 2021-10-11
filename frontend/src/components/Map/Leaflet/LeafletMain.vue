@@ -110,8 +110,7 @@ import {
 import Vue2LeafletMarkerCluster       from 'vue2-leaflet-markercluster';
 import LControlPolylineMeasure        from 'vue2-leaflet-polyline-measure';
 
-import { MAP_ITEM }                   from '@/components/Map/Leaflet/Lib/ConstOld';
-import { MAP_STYLE }                  from '@/components/Map/Leaflet/Lib/Const';
+import { MAP_ITEM, MAP_STYLE }        from '@/components/Map/Leaflet/Lib/Const';
 import {
   icon_ini,
   marker_get,
@@ -216,7 +215,6 @@ export default {
       'SCRIPT_GET_ITEM_STYLE',
       'SCRIPT_GET_ITEM_LINE',
       'SCRIPT_GET_ITEM_POLYGON',
-      'SCRIPT_GET_ITEM_ICON',
       'SCRIPT_GET_ITEM_SEL',
     ]),
 
@@ -273,7 +271,7 @@ export default {
 
       // deep copy
       let item = this.SCRIPT_GET_ITEM(map_ind);
-      let fc   = item[MAP_ITEM.FC];
+      let fc   = item[MAP_ITEM.FC.KEY];
       fc = JSON.parse(JSON.stringify(fc));
 
       // установить fc.features[ind].ind - порядковый номер фигуры в fc
@@ -383,7 +381,7 @@ export default {
             opacity:     .5,
             fillOpacity: .3,
             color:       self.SCRIPT_GET_ITEM_COLOR(map_ind),
-            fillColor:   feature.color, // set in mixin
+            fillColor:   feature.color,                       // set in mixin
             className:   feature.properties.sel?'sel':'',
             //className:   self.SCRIPT_GET_ITEM_SEL?'sel':'',
           };
