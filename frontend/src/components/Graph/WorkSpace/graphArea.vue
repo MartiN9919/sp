@@ -115,11 +115,9 @@ export default {
     },
     moveDraggableObject(node) {
       if(this.positionDraggableObject) {
-        let difX = node.x - this.positionDraggableObject.x
-        let difY = node.y - this.positionDraggableObject.y
         for (let object of this.relatedObjects) {
-          object.x += difX
-          object.y += difY
+          object.x += (node.x - this.positionDraggableObject.x)
+          object.y += (node.y - this.positionDraggableObject.y)
         }
         this.savePositionDraggableObject(node)
       }

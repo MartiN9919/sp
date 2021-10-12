@@ -61,6 +61,10 @@ def feature_collection_by_geometry(group_id, object_type, rec_id, keys, time_int
     return geojson.FeatureCollection(temp)
 
 
+def get_geometries(group_id, rec_id):
+    return feature_collection_by_geometry(group_id, 30, [rec_id], [], {})['features'][0]['geometry']['geometries']
+
+
 def relations_to_geometry_id(group_id, geometry_type, object_type, rec_id, keys_relation, time_interval):
     """
     Функция для преобразования связей в идентификаторы геометрий

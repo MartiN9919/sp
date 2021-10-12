@@ -110,22 +110,23 @@ def get_rel_cascade(group_id, object, id, depth):
     return rels
 
 
-def get_object_relation(group_id, object_id, rec_id, objects):
+def get_object_relation(group_id, object_id, rec_id, objects, all=False):
     """
     Функция получения всех связей для объекта, с учетом уже имеющихся объектов
     @param group_id: идентификатор группы пользователя
     @param object_id: идентификатор типа объекта
     @param rec_id: идентификатор объекта
     @param objects: список объектов связи с которыми требуются в результате
+    @param all: флаг для получения всех связей
     @return: список словарей в формате [{object_id, rec_id, params, relations:[{key_id, sec, val},...,{}]},...,{}]
     """
-    if len(objects) == 0:
+    if len(objects) == 0 and not all:
         return []
     result = []
     temp_result = get_rel_cascade(group_id, object_id, rec_id, 1)['rels']
     for temp in temp_result:
         if len([item for item in objects if item['object_id'] == temp['object_id'] and
-                item['rec_id'] == temp['rec_id']]) > 0:
+                item['rec_id'] == temp['rec_id']]) > 0 or all:
             result.append(temp)
     return result
 
