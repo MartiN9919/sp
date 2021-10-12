@@ -47,7 +47,11 @@ export default {
       const length = el.getTotalLength() * (this.perc/100)
       this.pos = el.getPointAtLength(length)
     },
-    updatePos(x=0, y=0){
+    updatePos(){
+      this.node.x = this.pos.x + this.offset.x
+      this.node.y = this.pos.y + this.offset.y
+    },
+    updateOffset(x=0, y=0){
       let offsetX = this.offset.x + (x || 0) + (this.node.width/2)
       let offsetY = this.offset.y + (y || 0) + (this.node.height/2)
       let totalOffset = Math.sqrt(Math.pow(offsetX,2) + Math.pow(offsetY,2))
@@ -87,7 +91,7 @@ export default {
       }
     },
     onDrag (d) {
-      this.updatePos(d.x || 0, d.y || 0)
+      this.updateOffset(d.x || 0, d.y || 0)
     }
   },
   computed: {

@@ -6,9 +6,7 @@
         v-for="object in graphObjects" :key="object.id"
         @wheel.prevent.stop="scroll(object, $event)"
         @mouseup.ctrl.capture="addChoosingObject(object)"
-        @mousedown.alt.capture="getRelatedObjects(object)"
-        @mousemove.alt.capture="moveDraggableObject(object)"
-        @mouseup.alt.capture="removePositionDraggableObject(object)"
+        @mousedown.alt.capture="getRelatedObjects(object, $event)"
         @click.right.prevent.stop="menuShow($event, object)"
         @mousedown.capture="selectObject(object)"
       >
@@ -28,7 +26,6 @@
             :size-node="object.size"
             :params="getObjectClassifiers(object)"
             :show-date="globalDisplaySettings.showGlobalDateObject.state"
-            @update="updateLabel(object.id)"
           ></information-label>
         </v-label>
         <name-object
@@ -101,30 +98,12 @@ export default {
     allowRelations() { return Array.from(this.$store.state.graph.rootInstances.relations, r => {return r.id}) },
   },
   methods: {
-    getRelatedObjects(node) {
+    getRelatedObjects(node, e) {
       let relations = this.graphRelations.filter(relation => relation.to === node.id || relation.from === node.id)
       for (let relation of relations) {
-        this.relatedObjects.push(
-            this.graphObjects.find(object => object.id !== node.id && (object.id === relation.to || object.id === relation.from))
-        )
+        this.$refs[`node-${relation.to === node.id ? relation.from : relation.to}`].map(node => node.onMousedown(e))
       }
-      this.savePositionDraggableObject(node)
-    },
-    savePositionDraggableObject(node) {
-      this.positionDraggableObject = {x: node.x, y: node.y}
-    },
-    moveDraggableObject(node) {
-      if(this.positionDraggableObject) {
-        for (let object of this.relatedObjects) {
-          object.x += (node.x - this.positionDraggableObject.x)
-          object.y += (node.y - this.positionDraggableObject.y)
-        }
-        this.savePositionDraggableObject(node)
-      }
-    },
-    removePositionDraggableObject() {
-      this.positionDraggableObject = null
-      this.relatedObjects = []
+      this.$refs[`node-${node.id}`].map(node => node.onMousedown(e))
     },
     findNode(node) {
       this.$refs.screen.panNode(node, { offsetX: 0, offsetY: 0 })
@@ -156,15 +135,9 @@ export default {
       let globalState = this.globalDisplaySettings.showGlobalTooltipObject.state
       let classifiersLength = this.getObjectClassifiers(object).length
       let localState = object.object.showTooltip
-      this.$nextTick(() => {
-        this.updateLabel(object.id)
-      })
       return globalState && classifiersLength && localState
     },
     getTooltipStateRelation(relation) {
-      this.$nextTick(() => {
-        this.updateLabel(relation.id)
-      })
       return this.globalDisplaySettings.showGlobalTooltipRelation.state
     },
     getTriggersStateObject(object) {
