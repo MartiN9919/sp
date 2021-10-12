@@ -10,10 +10,10 @@ import { scale_log, color_array, } from '@/components/Map/Leaflet/Lib/LibColor'
 import { fc_key, fc_types_del, } from '@/components/Map/Leaflet/Lib/LibFc'
 
 export default {
-  data() {
-    return {
-    }
-  },
+  // data() {
+  //   return {
+  //   }
+  // },
 
   computed: {
     ...mapGetters([

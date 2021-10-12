@@ -152,7 +152,7 @@ export default {
       this.map = this.$refs.map.mapObject;
       this.map.doubleClickZoom.disable();
       this.map.invalidateSize();
-      this.key_mounted_after();
+      this.mounted_after_key();
     },
 
     on_map_resize () {                   // fire from MixResize

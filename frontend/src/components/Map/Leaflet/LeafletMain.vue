@@ -125,6 +125,7 @@ import Logo       from '@/components/Map/Leaflet/Components/Logo';
 import MixResize  from '@/components/Map/Leaflet/Mixins/Resize';
 import MixKey     from '@/components/Map/Leaflet/Mixins/Key';
 import MixColor   from '@/components/Map/Leaflet/Mixins/Color';
+import MixSvg     from '@/components/Map/Leaflet/Mixins/Svg';
 import MixControl from '@/components/Map/Leaflet/Mixins/Control';
 import MixMeasure from '@/components/Map/Leaflet/Mixins/Measure';
 import MixMenu    from '@/components/Map/Leaflet/Mixins/Menu';
@@ -143,6 +144,7 @@ export default {
     MixResize,
     MixKey,
     MixColor,
+    MixSvg,
     MixControl,
     MixMeasure,
     MixMenu,
@@ -193,7 +195,10 @@ export default {
     this.resize_add(this.$refs.map.$el, this.on_map_resize);
 
     // добавить обработчики событий клавиатуры
-    this.key_mounted_after();
+    this.mounted_after_key();
+
+    // добавить паттерны и иные настройки SVG
+    this.mounted_after_svg(L);
   },
 
 
@@ -379,9 +384,10 @@ export default {
           return {
             weight:      2,
             opacity:     .5,
-            fillOpacity: .3,
             color:       self.SCRIPT_GET_ITEM_COLOR(map_ind),
+            fillOpacity: .3,
             fillColor:   feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._COLOR_],    // set in mixin: Color
+            fillRule:    'evenodd',
             className:   feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._SEL_  ]?'sel':'',
           };
         },
