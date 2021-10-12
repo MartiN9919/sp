@@ -33,19 +33,19 @@ export function icon_2_marker(latlng, icon, style={}, className='') {
 }
 
 export function icon_get(style={}, className='') {
-  let color  = style [MAP_ITEM.STYLE.COLOR.KEY      ] ?? MAP_ITEM.STYLE.COLOR.DEF;
-  let marker = style [MAP_ITEM.STYLE.MARKER.KEY     ] ?? {};
-  let icon   = marker[MAP_ITEM.STYLE.MARKER.ICON.KEY] ?? MAP_ITEM.STYLE.MARKER.ICON.DEF;
-  let zoom   = marker[MAP_ITEM.STYLE.MARKER.ZOOM.KEY] ?? 1;
+  let color  = style [MAP_ITEM.FC.STYLE.COLOR.KEY      ] ?? MAP_ITEM.FC.STYLE.COLOR.DEF;
+  let marker = style [MAP_ITEM.FC.STYLE.MARKER.KEY     ] ?? {};
+  let icon   = marker[MAP_ITEM.FC.STYLE.MARKER.ICON.KEY] ?? MAP_ITEM.FC.STYLE.MARKER.ICON.DEF;
+  let zoom   = marker[MAP_ITEM.FC.STYLE.MARKER.ZOOM.KEY] ?? 1;
 
   // DEFAULT
-  if (icon==MAP_ITEM.STYLE.MARKER.ICON.DEF) {
+  if (icon==MAP_ITEM.FC.STYLE.MARKER.ICON.DEF) {
     return undefined;
   }
 
 
   // FONT.MDI
-  if (icon.slice(0, MAP_ITEM.STYLE.MARKER.ICON.PREF_MDI.length) == MAP_ITEM.STYLE.MARKER.ICON.PREF_MDI) {
+  if (icon.slice(0, MAP_ITEM.FC.STYLE.MARKER.ICON.PREF_MDI.length) == MAP_ITEM.FC.STYLE.MARKER.ICON.PREF_MDI) {
     return L.divIcon({
       className: className,
       iconSize:  null,
@@ -67,7 +67,7 @@ export function icon_get(style={}, className='') {
 
 
   // FONT.FS
-  if (icon.slice(0, MAP_ITEM.STYLE.MARKER.ICON.PREF_FS.length) == MAP_ITEM.STYLE.MARKER.ICON.PREF_FS) {
+  if (icon.slice(0, MAP_ITEM.FC.STYLE.MARKER.ICON.PREF_FS.length) == MAP_ITEM.FC.STYLE.MARKER.ICON.PREF_FS) {
     return L.divIcon({
       className: className,
       iconSize:  null,
@@ -83,8 +83,8 @@ export function icon_get(style={}, className='') {
 
 
   // PULSE
-  if (icon==MAP_ITEM.STYLE.MARKER.ICON.PULSE) {
-    let size  = (marker[MAP_ITEM.STYLE.MARKER.SIZE.KEY] ?? 12) * zoom|0;
+  if (icon==MAP_ITEM.FC.STYLE.MARKER.ICON.PULSE) {
+    let size  = (marker[MAP_ITEM.FC.STYLE.MARKER.SIZE.KEY] ?? 12) * zoom|0;
     return L.icon.pulse({
       className: className,
       iconSize:  [size, size],
@@ -102,8 +102,8 @@ export function icon_get(style={}, className='') {
     '#00f': 'blue',
   };
   if (equ[icon]) { icon = equ[icon]; }
-  let size_w = (marker[MAP_ITEM.STYLE.MARKER.SIZE_W.KEY] ?? 25) * zoom|0;
-  let size_h = (marker[MAP_ITEM.STYLE.MARKER.SIZE_H.KEY] ?? 41) * zoom|0;
+  let size_w = (marker[MAP_ITEM.FC.STYLE.MARKER.SIZE_W.KEY] ?? 25) * zoom|0;
+  let size_h = (marker[MAP_ITEM.FC.STYLE.MARKER.SIZE_H.KEY] ?? 41) * zoom|0;
   return new L.Icon({
     className:   className,
     shadowUrl:   icon_path('shadow-marker'),
@@ -128,5 +128,5 @@ export function icon_get_group(color, title) {
 
 function icon_path(name) {
   // require('@/assets/img/markers/red.png');
-  return process.env.BASE_URL+MAP_ITEM.STYLE.MARKER.PATH+name+'.png';
+  return process.env.BASE_URL+MAP_ITEM.FC.STYLE.MARKER.PATH+name+'.png';
 }

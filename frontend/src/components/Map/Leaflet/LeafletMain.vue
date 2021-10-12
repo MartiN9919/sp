@@ -352,9 +352,9 @@ export default {
 
           // класс для стилей линий и полигонов
           let style = {};
-          if (feature.geometry.type == 'LineString') { style = self.SCRIPT_GET_ITEM_LINE(map_ind); }
-          if (feature.geometry.type == 'Polygon')    { style = self.SCRIPT_GET_ITEM_POLYGON(map_ind); }
-          let type = style[MAP_ITEM.STYLE.LINE.TYPE.KEY] ?? '';
+          if (feature.geometry.type == MAP_ITEM.FC.FEATURES.GEOMETRY.TYPE.LINE)    { style = self.SCRIPT_GET_ITEM_LINE   (map_ind); }
+          if (feature.geometry.type == MAP_ITEM.FC.FEATURES.GEOMETRY.TYPE.POLYGON) { style = self.SCRIPT_GET_ITEM_POLYGON(map_ind); }
+          let type = style[MAP_ITEM.FC.STYLE.LINE.TYPE.KEY] ?? '';
           if (type != '') { layer.setStyle({'className': type, }); }
 
           // редактирование запрещено - удалить pm - для уменьшения объема вычислений
@@ -364,7 +364,7 @@ export default {
 
         // стиль маркеров
         pointToLayer: function(feature, latlng) {
-          let sel = (feature.properties.sel?'sel':'');
+          let sel = (feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._SEL_]?'sel':'');
           let layer = marker_get(
             latlng,
             self.SCRIPT_GET_ITEM_STYLE (map_ind),
@@ -382,8 +382,7 @@ export default {
             fillOpacity: .3,
             color:       self.SCRIPT_GET_ITEM_COLOR(map_ind),
             fillColor:   feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._COLOR_],    // set in mixin: Color
-            className:   feature.properties.sel?'sel':'',
-            //className:   self.SCRIPT_GET_ITEM_SEL?'sel':'',
+            className:   feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._SEL_  ]?'sel':'',
           };
         },
       };

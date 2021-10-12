@@ -524,15 +524,15 @@ export default {
     // иконки
     icon_origin() {
       return icon_get({
-        [MAP_ITEM.STYLE.MARKER.KEY]: {
-          [MAP_ITEM.STYLE.MARKER.ICON.KEY]: MAP_ITEM.STYLE.COLOR.ORIGIN,
+        [MAP_ITEM.FC.STYLE.MARKER.KEY]: {
+          [MAP_ITEM.FC.STYLE.MARKER.ICON.KEY]: MAP_ITEM.FC.STYLE.COLOR.ORIGIN,
         },
       });
     },
     icon_modify() {
       return icon_get({
-        [MAP_ITEM.STYLE.MARKER.KEY]: {
-          [MAP_ITEM.STYLE.MARKER.ICON.KEY]: MAP_ITEM.STYLE.COLOR.MODIFY,
+        [MAP_ITEM.FC.STYLE.MARKER.KEY]: {
+          [MAP_ITEM.FC.STYLE.MARKER.ICON.KEY]: MAP_ITEM.FC.STYLE.COLOR.MODIFY,
         },
       });
     },
@@ -559,16 +559,16 @@ export default {
       return {
         ...this.layer_editor_prop(),
         ...this.path_common(),
-        color:       MAP_ITEM.STYLE.COLOR.ORIGIN,
-        fillColor:   MAP_ITEM.STYLE.COLOR.ORIGIN,
+        color:       MAP_ITEM.FC.STYLE.COLOR.ORIGIN,
+        fillColor:   MAP_ITEM.FC.STYLE.COLOR.ORIGIN,
       }
     },
     path_modify() {
       return {
         ...this.layer_editor_prop(),
         ...this.path_common(),
-        color:       MAP_ITEM.STYLE.COLOR.MODIFY,
-        fillColor:   MAP_ITEM.STYLE.COLOR.MODIFY,
+        color:       MAP_ITEM.FC.STYLE.COLOR.MODIFY,
+        fillColor:   MAP_ITEM.FC.STYLE.COLOR.MODIFY,
       }
     },
 

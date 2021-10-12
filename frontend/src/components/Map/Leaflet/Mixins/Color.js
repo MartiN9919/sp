@@ -22,7 +22,7 @@ export default {
   },
 
   methods: {
-    // ЗАПОЛНИТЬ fc.features[i][MAP_ITEM.STYLE.COLOR.KEY]
+    // ЗАПОЛНИТЬ fc.features[i][MAP_ITEM.FC.STYLE.COLOR.KEY]
     data_normalize_color(map_ind) {
       // данные на шине
       let map_item    = this.SCRIPT_GET_ITEM(map_ind);
@@ -80,10 +80,10 @@ export default {
           });
         }
 
-      // // иначе: копировать цвет MAP_ITEM.STYLE.COLOR.KEY каждому feature
-      // } else if (MAP_ITEM.STYLE.COLOR.KEY in map_item) {
+      // // иначе: копировать цвет MAP_ITEM.FC.STYLE.COLOR.KEY каждому feature
+      // } else if (MAP_ITEM.FC.STYLE.COLOR.KEY in map_item) {
       //   // for (let i=0; i<fc.features.length; i++) {
-      //   //   fc.features[i][MAP_ITEM.STYLE.COLOR.KEY] = map_item[MAP_ITEM.STYLE.COLOR.KEY];
+      //   //   fc.features[i][MAP_ITEM.FC.STYLE.COLOR.KEY] = map_item[MAP_ITEM.FC.STYLE.COLOR.KEY];
       //   // }
       }
     },
@@ -93,8 +93,8 @@ export default {
     color_valid(color_green) {
       return (
         [
-          MAP_ITEM.STYLE.POLYGON.COLORING.GREEN.MIN,
-          MAP_ITEM.STYLE.POLYGON.COLORING.GREEN.MAX,
+          MAP_ITEM.FC.STYLE.POLYGON.COLORING.GREEN.MIN,
+          MAP_ITEM.FC.STYLE.POLYGON.COLORING.GREEN.MAX,
         ].indexOf(color_green)>-1);
     },
 
@@ -103,17 +103,17 @@ export default {
       return ((((((((
         this.SCRIPT_GET_ITEM(map_ind)
         [MAP_ITEM.FC.KEY                         ]) ?? {})
-        [MAP_ITEM.STYLE.KEY                      ]) ?? {})
-        [MAP_ITEM.STYLE.POLYGON.KEY              ]) ?? {})
-        [MAP_ITEM.STYLE.POLYGON.COLORING.KEY     ]) ?? {})
-        [MAP_ITEM.STYLE.POLYGON.COLORING.GREEN.KEY];
+        [MAP_ITEM.FC.STYLE.KEY                      ]) ?? {})
+        [MAP_ITEM.FC.STYLE.POLYGON.KEY              ]) ?? {})
+        [MAP_ITEM.FC.STYLE.POLYGON.COLORING.KEY     ]) ?? {})
+        [MAP_ITEM.FC.STYLE.POLYGON.COLORING.GREEN.KEY];
     },
 
     // значения цветов (с, по)
     color_set(color_green) {
-      return (color_green == MAP_ITEM.STYLE.POLYGON.COLORING.GREEN.MIN) ?
-        [MAP_ITEM.STYLE.POLYGON.COLORING.BEGIN, MAP_ITEM.STYLE.POLYGON.COLORING.END  ] :
-        [MAP_ITEM.STYLE.POLYGON.COLORING.END,   MAP_ITEM.STYLE.POLYGON.COLORING.BEGIN];
+      return (color_green == MAP_ITEM.FC.STYLE.POLYGON.COLORING.GREEN.MIN) ?
+        [MAP_ITEM.FC.STYLE.POLYGON.COLORING.BEGIN, MAP_ITEM.FC.STYLE.POLYGON.COLORING.END  ] :
+        [MAP_ITEM.FC.STYLE.POLYGON.COLORING.END,   MAP_ITEM.FC.STYLE.POLYGON.COLORING.BEGIN];
     },
 
   },

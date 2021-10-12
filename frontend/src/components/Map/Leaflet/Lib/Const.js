@@ -2,67 +2,75 @@
 export const MAP_ITEM = {
   FC: {
     KEY: 'fc',
+
     FEATURES: {
       KEY: 'features',
       PROPERTIES: {
         KEY:     'properties',
         VALUE:   'value',           // для полигона - вход:  fc.features[i].property.VALUE - значение, которое определяет цвет полигона
-        _COLOR_: 'color',           // цвет заливки фигуры, заполняется программой
+        _COLOR_: 'color',           // заполняется программой, цвет заливки фигуры
+        _SEL_:   'sel',             // заполняется программой, выделенный features[]
+      },
+      GEOMETRY:  {
+        KEY:     'geometry',
+        TYPE: {
+          MARKER:  'Marker',
+          LINE:    'LineString',
+          POLYGON: 'Polygon',
+        },
+      },
+    },
+
+    STYLE: {                          // стили маркеров и фигур
+      KEY: 'style',
+
+      COLOR: {
+        KEY:    'color',
+        DEF:    '#f00',               // цвет по умолчанию
+        ORIGIN: '#000',               // цвет маркеров и фигур ДО    ИЗМЕНЕНИЯ
+        MODIFY: '#f00',               // цвет маркеров и фигур ПОСЛЕ ИЗМЕНЕНИЯ
+      },
+
+      MARKER: {
+        KEY:  'marker',
+        PATH: 'img/markers/',         // путь к файлам маркеров
+        ICON: {
+          KEY:      'icon',
+          DEF:      '',               // значение по умолчанию
+          PREF_MDI: 'mdi-',           // маркер: шрифт mdi
+          PREF_FS:  'fs-',            // маркер: шрифт дополнительный
+          PULSE:    'pulse',          // маркер: пульсирующий
+        },
+        ZOOM:   { KEY: 'zoom' },
+        SIZE:   { KEY: 'size', },
+        SIZE_W: { KEY: 'size_w', },
+        SIZE_H: { KEY: 'size_h', },
+      },
+
+      LINE: {
+        KEY: 'line',
+        TYPE: {                       // тип линии, совпадает с именем класса для установки стиля
+          KEY: 'type',
+          ANT: 'ant',                 // бегущая линия
+        },
+      },
+
+      POLYGON: {
+        KEY: 'polygon',
+        COLORING: {
+          KEY:   'coloring',
+          GREEN: {
+            KEY:   'green',
+            MIN:   'min',             // цвет полигона в зависимости от значения: зеленый(хуже)  -> красный(лучше) https://leafletjs.com/examples/choropleth/example.html
+            MAX:   'max',             // цвет полигона в зависимости от значения: зеленый(лучше) -> красный(хуже)
+          },
+          BEGIN:     '00FF00',        // цвет: начальный
+          END:       'FF0000',        // цвет: конечный
+        },
       },
     },
   },
 
   _LEGEND_COLOR_: 'legend_color',   // [], заполняется программой
 
-  STYLE: {                          // стили маркеров и фигур
-    KEY: 'style',
-
-    COLOR: {
-      KEY:    'color',
-      DEF:    '#f00',               // цвет по умолчанию
-      ORIGIN: '#000',               // цвет маркеров и фигур ДО    ИЗМЕНЕНИЯ
-      MODIFY: '#f00',               // цвет маркеров и фигур ПОСЛЕ ИЗМЕНЕНИЯ
-    },
-
-    MARKER: {
-      KEY:  'marker',
-      PATH: 'img/markers/',         // путь к файлам маркеров
-      ICON: {
-        KEY:      'icon',
-        DEF:      '',               // значение по умолчанию
-        PREF_MDI: 'mdi-',           // маркер: шрифт mdi
-        PREF_FS:  'fs-',            // маркер: шрифт дополнительный
-        PULSE:    'pulse',          // маркер: пульсирующий
-      },
-      ZOOM:   { KEY: 'zoom' },
-      SIZE:   { KEY: 'size', },
-      SIZE_W: { KEY: 'size_w', },
-      SIZE_H: { KEY: 'size_h', },
-    },
-
-    LINE: {
-      KEY: 'line',
-      TYPE: {                       // тип линии, совпадает с именем класса для установки стиля
-        KEY: 'type',
-        ANT: 'ant',                 // бегущая линия
-      },
-    },
-
-    POLYGON: {
-      KEY: 'polygon',
-      COLORING: {
-        KEY:   'coloring',
-        GREEN: {
-          KEY:   'green',
-          MIN:   'min',             // цвет полигона в зависимости от значения: зеленый(хуже)  -> красный(лучше) https://leafletjs.com/examples/choropleth/example.html
-          MAX:   'max',             // цвет полигона в зависимости от значения: зеленый(лучше) -> красный(хуже)
-        },
-        BEGIN:     '00FF00',        // цвет: начальный
-        END:       'FF0000',        // цвет: конечный
-      },
-    },
-  },
 };
-
-
-

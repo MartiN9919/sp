@@ -17,9 +17,9 @@ export default {
      *   id     (int)                                  - id скрипта (НЕ УНИКАЛЬНЫЙ)
      *
      *   style                                         - стили фигур и маркеров
-     *   style.marker                                  - {}, стиль маркера,  см. MAP_ITEM.STYLE.MARKER. ...
-     *   style.line                                    - {}, стиль линии,    см. MAP_ITEM.STYLE.LINE. ...
-     *   style.polygon                                 - {}, стиль полигона, см. MAP_ITEM.STYLE.POLYGON. ...
+     *   style.marker                                  - {}, стиль маркера,  см. MAP_ITEM.FC.STYLE.MARKER. ...
+     *   style.line                                    - {}, стиль линии,    см. MAP_ITEM.FC.STYLE.LINE. ...
+     *   style.polygon                                 - {}, стиль полигона, см. MAP_ITEM.FC.STYLE.POLYGON. ...
      *   style.color                                   - цвет маркера или фигуры, любой способ, в т.ч. прозрачность
      *
      *   fc                                            - FeatureCollection
@@ -52,7 +52,7 @@ export default {
     SCRIPT_GET_ITEM_MARKER:       state => ind => state.selectedTemplate.activeAnalysts[ind].fc.style?.marker  || {},
     SCRIPT_GET_ITEM_LINE:         state => ind => state.selectedTemplate.activeAnalysts[ind].fc.style?.line    || {},
     SCRIPT_GET_ITEM_POLYGON:      state => ind => state.selectedTemplate.activeAnalysts[ind].fc.style?.polygon || {},
-    SCRIPT_GET_ITEM_COLOR:        state => ind => state.selectedTemplate.activeAnalysts[ind].fc.style?.color   || MAP_ITEM.STYLE.COLOR.DEF,
+    SCRIPT_GET_ITEM_COLOR:        state => ind => state.selectedTemplate.activeAnalysts[ind].fc.style?.color   || MAP_ITEM.FC.STYLE.COLOR.DEF,
     SCRIPT_GET_ITEM_LEGEND_COLOR: state => ind => state.selectedTemplate.activeAnalysts[ind][MAP_ITEM._LEGEND_COLOR_] || [],
     SCRIPT_GET_ITEM_REFRESH:      state => ind => state.selectedTemplate.activeAnalysts[ind].refresh,
     SCRIPT_GET_ITEM_SEL:          state =>        JSON.stringify(state.selectedFC),
