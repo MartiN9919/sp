@@ -104,7 +104,7 @@ export default {
     async saveEditableRelation({getters, dispatch}) {
       let relation = getters.editableRelation
       let request = Object.assign(
-          {doc_rec_id: relation.document.object.recId || null},
+          {doc_rec_id: relation.document ? relation.document.object.recId : null},
           relation.relation.getRequestStructure()
       )
       return await postResponseAxios('objects/relation', request, {})

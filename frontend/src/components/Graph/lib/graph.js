@@ -160,10 +160,16 @@ export default class Graph {
   }
 
   reorderGraph() {
-    for(let i = 0; i < 200; i++){
+    let tempNodes = []
+    for(let node of this.nodes) {
+      tempNodes.push({id: node.id, x: node.x, y: node.y, width: node.width})
+    }
+    for(let i = 0; i < 25; i++){
       let n = 0
-      for(let node of this.nodes){
-        for (let otherNode of this.nodes) {
+      let n1 = 0
+      let n2= 0
+      for(let node of tempNodes){
+        for (let otherNode of tempNodes) {
           if(otherNode.id === node.id){
             continue
           }
@@ -184,11 +190,12 @@ export default class Graph {
                     node.x -= dx;
                     node.y -= dy;
                   } else {
-                    node.x -= dx / 3;
-                    node.y -= dy / 3;
+                    node.x -= dx / 2;
+                    node.y -= dy / 2;
                   }
                 } else {
                   //if linked nodes have medium distance, make them little closer and up force count
+                  n1++
                   n++
                   node.x += dx / 6;
                   node.y += dy / 6;
@@ -223,6 +230,7 @@ export default class Graph {
               }
               else{
                 // if distance between nodes is so long, up force count
+                n2++
                 n++
               }
             }
@@ -231,13 +239,18 @@ export default class Graph {
         // move all nodes to start of coordinates
         let dx = 0 - node.x
         let dy = 0 - node.y
-        node.x += dx / 15
-        node.y += dy / 15
+        node.x += dx / 30
+        node.y += dy / 30
       }
       //if force of the nodes is 70% of all graph, graph is reorder
-      if(n / (this.nodes.length * this.nodes.length) > 0.7){
+      if(((n1+n2)/2) / (this.nodes.length * this.nodes.length) > 0.7){
         break
       }
+    }
+    for(let node of tempNodes){
+      let tempNode = this.nodes.find((item) => {return item.id === node.id})
+      tempNode.x = node.x
+      tempNode.y = node.y
     }
   }
 }

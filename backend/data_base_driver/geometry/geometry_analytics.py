@@ -52,10 +52,10 @@ def get_lines_intersection(line1, line2):
 def get_line_buffer_polygon(line):
     """
     Функция для получения многоугольника описывающего линию
-    @param line: исходная линия shapely line string
+    @param line: исходная линия shapely line string1
     @return: feature collection содержащий полигон описывающий заданную линию
     """
-    return geopandas.GeoSeries([line.buffer(0.5)]).__geo_interface__
+    return geopandas.GeoSeries([line.buffer(0.005)]).__geo_interface__
 
 
 def get_points_inside_polygon(polygon, points, group_id):
