@@ -61,6 +61,8 @@ def find_key_value_http(object_id, key_id, value, group_id=0):
     """
     if get_key_by_id(key_id)['type'] == 'date' or get_key_by_id(key_id)['type'] == 'date_time':
         value = str(value).replace('-', '<<')
+    else:
+        value = str(value)
     response = io_get_obj(group_id, object_id, [], [], 500, '@key_id ' + str(key_id) + ' @val ' + value, {})
     remove_list = []
     for item in response:

@@ -90,7 +90,7 @@ def parse_value(param, object, files):
         else:
             value = str(get_item_list_value(value))
     if key.get('type') == DAT_SYS_KEY.TYPE_FILE_PHOTO or key.get('type') == DAT_SYS_KEY.TYPE_FILE_ANY:
-        path = 'open_files/' + str(object['object_id']) + '/' + str(object['rec_id']) + '/'
+        path = 'files/' + str(object['object_id']) + '/' + str(object['rec_id']) + '/'
         if not os.path.exists(MEDIA_ROOT + '/' + path):
             os.makedirs(MEDIA_ROOT + '/' + path, exist_ok=True)
         file = files[value]
