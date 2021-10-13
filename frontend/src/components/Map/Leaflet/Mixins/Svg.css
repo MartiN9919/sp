@@ -1,0 +1,5 @@
+.fill-star           { fill: url(#fill-star); }
+.fill-diagonal-hatch { fill: url(#fill-diagonal-hatch) red; }
+
+.head-arrow-end      { marker-end: url(#head-arrow); }
+.head-arrow-end-2    { marker-end: url(#head-arrow-2); }

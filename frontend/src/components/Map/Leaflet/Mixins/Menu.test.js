@@ -13,10 +13,10 @@ export const MAP_TEST_ITEM_1 = {
         "zoom": 2,
       },
       "line": {
-        "type": "ant",      // тип = классу объекта (для установки стиля)
+        "class": "ant head-arrow-end-2",     // класс объекта (для установки стиля)
       },
       "polygon": {
-
+        "class": "fill-star",
       },
     },
 
@@ -141,16 +141,16 @@ export const MAP_TEST_ITEM_2 = {
   // "color": "#923",
   "fc": {
     "style": {
-      "color":  "#923",
+      "color":  "#f00",  // "#923"
       "marker": {
         "icon": "pulse",
         "zoom": 2,
       },
       "line": {
-        //"type": "ant",      // тип = классу объекта (для установки стиля)
+        //"class": "ant",      // тип = классу объекта (для установки стиля)
       },
       "polygon": {
-
+        "class": "fill-diagonal-hatch",
       },
     },
 
@@ -242,7 +242,7 @@ export const MAP_TEST_ITEM_3 = {
         "zoom": 2,
       },
       "line": {
-        //"type": "ant",      // тип = классу объекта (для установки стиля)
+        //"class": "ant",      // тип = классу объекта (для установки стиля)
       },
       "polygon": {
         "coloring": {

@@ -48,9 +48,9 @@ export const MAP_ITEM = {
       },
 
       LINE: {
-        KEY: 'line',
-        TYPE: {                       // тип линии, совпадает с именем класса для установки стиля
-          KEY: 'type',
+        KEY:   'line',
+        CLASS: {                       // тип линии, совпадает с именем класса для установки стиля
+          KEY: 'class',
           ANT: 'ant',                 // бегущая линия
         },
       },
@@ -66,6 +66,9 @@ export const MAP_ITEM = {
           },
           BEGIN:     '00FF00',        // цвет: начальный
           END:       'FF0000',        // цвет: конечный
+        },
+        CLASS: {
+          KEY: 'class',
         },
       },
     },

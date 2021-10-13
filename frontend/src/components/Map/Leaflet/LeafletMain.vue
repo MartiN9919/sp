@@ -359,8 +359,8 @@ export default {
           let style = {};
           if (feature.geometry.type == MAP_ITEM.FC.FEATURES.GEOMETRY.TYPE.LINE)    { style = self.SCRIPT_GET_ITEM_LINE   (map_ind); }
           if (feature.geometry.type == MAP_ITEM.FC.FEATURES.GEOMETRY.TYPE.POLYGON) { style = self.SCRIPT_GET_ITEM_POLYGON(map_ind); }
-          let type = style[MAP_ITEM.FC.STYLE.LINE.TYPE.KEY] ?? '';
-          if (type != '') { layer.setStyle({'className': type, }); }
+          let className = style[MAP_ITEM.FC.STYLE.LINE.CLASS.KEY] ?? '';
+          if (className != '') { layer.setStyle({'className': className, }); }
 
           // редактирование запрещено - удалить pm - для уменьшения объема вычислений
           if (layer.pm) { delete layer.pm; }
@@ -388,7 +388,7 @@ export default {
             fillOpacity: .3,
             fillColor:   feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._COLOR_],    // set in mixin: Color
             fillRule:    'evenodd',
-            className:   feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._SEL_  ]?'sel':'',
+            className:   (feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._SEL_  ]?'sel':''),
           };
         },
       };
@@ -483,6 +483,7 @@ export default {
   @import "~@/components/Map/Leaflet/Markers/Font.css";
 
   @import "~@/components/Map/Leaflet/Mixins/Control.css";
+  @import "~@/components/Map/Leaflet/Mixins/Svg.css";
 
   div::v-deep .sel { animation: 1s ease 0s infinite normal none running pulse; }
   @keyframes pulse {
