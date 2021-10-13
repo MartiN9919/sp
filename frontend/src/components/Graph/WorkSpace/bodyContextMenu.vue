@@ -149,6 +149,9 @@ export default {
       })
     },
     deleteObject(event) {
+      let removeIndex = this.choosingObjects.findIndex((o) => o.id === this.objectWithActivatedMenu.id)
+      if(removeIndex !== -1)
+        this.choosingObjects.splice(removeIndex, 1)
       this.deleteObjectFromGraph(this.objectWithActivatedMenu)
     },
     checkRelationCreateStatus(){

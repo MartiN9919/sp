@@ -1,5 +1,6 @@
 from data_base_driver.additional_functions import intercept_sort_list
 from data_base_driver.input_output.input_output import io_get_obj
+from data_base_driver.sys_key.get_key_dump import get_key_by_id
 
 
 def find_reliable_http(object_type, request, actual=False, group_id=0):
@@ -58,7 +59,8 @@ def find_key_value_http(object_id, key_id, value, group_id=0):
     @param group_id: идентификатор группы пользователя
     @return: список идентификатор объектов
     """
-    value = str(value).replace('-', '<<')
+    if get_key_by_id(key_id)['type'] == 'date' or get_key_by_id(key_id)['type'] == 'date_time':
+        value = str(value).replace('-', '<<')
     response = io_get_obj(group_id, object_id, [], [], 500, '@key_id ' + str(key_id) + ' @val ' + value, {})
     remove_list = []
     for item in response:

@@ -7,6 +7,7 @@ from PIL import Image
 from core.projectSettings.decoraters import login_check, request_log, request_get
 from core.settings import MEDIA_ROOT
 from data_base_driver.constants.const_dat import DAT_OWNER
+from data_base_driver.input_output.valid_permission_manticore import check_object_permission
 from data_base_driver.sys_reports.check_file_permission import check_file_permission
 from data_base_driver.sys_reports.get_files_info import get_file_path
 
@@ -20,13 +21,15 @@ def aj_download_open_file(request):
     @param request: запрос на скачивание
     @return: django file response
     """
-    path = request.path.split('download_open_files')[1]
+    group_id = DAT_OWNER.DUMP.get_group(user_id=request.user.id)
+    path = request.path.split('download')[1]
     path_start_directory = path.split('/')[1]
-    if path_start_directory != 'open_files':
+    if path_start_directory != 'files':
         return JsonResponse({}, status=403)
     object_id = int(path.split('/')[2])
     rec_id = int(path.split('/')[3])
-
+    if not check_object_permission(group_id, object_id, rec_id, False):
+        return JsonResponse({}, status=403)
     # временно пока не развернут nginx
     file_path = MEDIA_ROOT + '/' + path
     if os.path.exists(file_path):
@@ -46,7 +49,7 @@ def aj_download_condense_image(request):
     """
     path = request.path.split('download_condense_image')[1]
     path_start_directory = path.split('/')[1]
-    if path_start_directory != 'open_files':
+    if path_start_directory != 'files':
         return JsonResponse({}, status=403)
     # временно пока не развернут nginx
     file_path = MEDIA_ROOT + '/' + path

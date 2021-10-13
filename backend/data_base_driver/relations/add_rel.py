@@ -71,8 +71,8 @@ def add_rel_by_other_object(group_id, object_id, rec_id, other_object_id, other_
     result = []
     for relation_object in other_object_relations:
         for relation in relation_object['relations']:
-            params = [{'id': relation['id'], 'val': item['val'],
-                       'date': item['date'][:-3]} for item in relation['values']]
+            params = [{'id': relation['id'], 'val': item['value'],
+                       'date': item['date']} for item in relation['values']]
             result += add_rel(group_id, object_id, rec_id, relation_object['object_id'],
                               relation_object['rec_id'], params)
     return result

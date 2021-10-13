@@ -47,7 +47,6 @@ class ModelScriptAdmin(admin.ModelAdmin):
                  ),
                  DAT_SYS_SCRIPT.CONTENT,
                  DAT_SYS_SCRIPT.DESCRIPT,
-                 DAT_SYS_SCRIPT.VARIABLES,
                  (
                      DAT_SYS_SCRIPT.OWNER_LINE,
                      DAT_SYS_SCRIPT.ENEBLED,
