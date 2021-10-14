@@ -81,11 +81,6 @@ export default {
       state.selectedTemplate.activeAnalysts = []
       state.selectedTemplate.passiveAnalysts = []
     },
-    addActiveAnalysts: (state, playLoad) => {
-      playLoad.selectedScript[MAP_ITEM.FC.KEY] = playLoad[MAP_ITEM.FC.KEY]
-      if (playLoad.selectedScript.color === '#696969FF') { playLoad.selectedScript.color = '#FFA500FF' }
-      // state.selectedTemplate.activeAnalysts.push(playLoad.selectedScript) // см. SCRIPT_MUT_ITEM_ADD
-    },
     removeAnalytics: (state, analytics) => {
       let checkForAvailability = state.selectedTemplate.passiveAnalysts.indexOf(analytics)
       if (checkForAvailability !== -1) { state.selectedTemplate.passiveAnalysts.splice(checkForAvailability, 1) }
@@ -105,15 +100,17 @@ export default {
 
 
     SCRIPT_MUT_ITEM_ADD: (state, item) => {
-      if (item.marker===undefined) item.marker = '';
-      if (item.color ===undefined) item.color  = '';
+      //if (item.marker === undefined)   item.marker = '';
+      //if (item.color  === undefined)   item.color  = '';
+      if (item.color  === '#696969FF') item.color  = '#FFA500FF';
+
       let item_copy = JSON.parse(JSON.stringify(item));        // deep copy
       item_copy.refresh = new Date().getTime();
       state.selectedTemplate.activeAnalysts.push(item_copy);
     },
 
     SCRIPT_MUT_ITEM_DEL:   (state, id)      => state.selectedTemplate.activeAnalysts.splice(id, 1),
-    SCRIPT_MUT_ITEM_COLOR: (state, param)   => state.selectedTemplate.activeAnalysts[param.ind].color = param.color,
+    SCRIPT_MUT_ITEM_COLOR: (state, param)   => state.selectedTemplate.activeAnalysts[param.ind][MAP_ITEM.COLOR] = param.color,
 
 
     //
@@ -170,15 +167,11 @@ export default {
     executeMapScript ({ commit, dispatch }, parameters = {}) {
       return postResponseAxios(this._vm.$CONST.API.SCRIPT.MAP, parameters.request, parameters.config)
         .then(response => {
-          let data = {
-            selectedScript: parameters.request,
-            fc: response.data
-          }
-          commit('removeAnalytics', parameters.request)
-          commit('addActiveAnalysts', data)
-          commit('SCRIPT_MUT_ITEM_ADD', data.selectedScript)
-          commit('changeSelectedTreeViewItem', {})
-          dispatch('MAP_ACT_RANGE_TS')
+          commit('removeAnalytics', parameters.request);
+          parameters.request[MAP_ITEM.FC.KEY] = response.data;
+          commit('SCRIPT_MUT_ITEM_ADD', parameters.request);
+          commit('changeSelectedTreeViewItem', {});
+          dispatch('MAP_ACT_RANGE_TS');
         })
         .catch(() => {})
     },

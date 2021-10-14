@@ -80,10 +80,10 @@ export default {
 
   methods: {
     ...mapActions([
-      'MAP_ACT_ITEM_ADD',
-      'MAP_ACT_ITEM_DEL',
-      'MAP_ACT_ITEM_COLOR',
-      'MAP_ACT_EDIT',
+      //'MAP_ACT_ITEM_ADD',
+      //'MAP_ACT_ITEM_DEL',
+      //'MAP_ACT_ITEM_COLOR',
+      //'MAP_ACT_EDIT',
       'appendErrorAlert',
     ]),
 
