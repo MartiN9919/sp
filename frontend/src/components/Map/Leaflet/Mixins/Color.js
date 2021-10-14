@@ -102,7 +102,7 @@ export default {
     color_green(map_ind) {
       return ((((((((
         this.SCRIPT_GET_ITEM(map_ind)
-        [MAP_ITEM.FC.KEY                         ]) ?? {})
+        [MAP_ITEM.FC.KEY                            ]) ?? {})
         [MAP_ITEM.FC.STYLE.KEY                      ]) ?? {})
         [MAP_ITEM.FC.STYLE.POLYGON.KEY              ]) ?? {})
         [MAP_ITEM.FC.STYLE.POLYGON.COLORING.KEY     ]) ?? {})

@@ -6,6 +6,7 @@ import {
 } from '@/plugins/axios_settings'
 
 import { MAP_ITEM } from '@/components/Map/Leaflet/Lib/Const';
+import { dict_set, dict_get } from '@/components/Map/Leaflet/Lib/Lib';
 
 export default {
   state: {
@@ -100,6 +101,12 @@ export default {
 
 
     SCRIPT_MUT_ITEM_ADD: (state, item) => {
+
+      // let tst = {w: 5, d: {r: 6, t: {e: 7}}};
+      // dict_set(tst, ['z','d','r','t'], 'u', '!!!')
+      // var dd = dict_get(tst, ['d', 't'], 'e')
+
+
       //if (item.marker === undefined)   item.marker = '';
       //if (item.color  === undefined)   item.color  = '';
       if (item.color  === '#696969FF') item.color  = '#FFA500FF';
