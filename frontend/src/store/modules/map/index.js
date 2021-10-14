@@ -40,10 +40,10 @@ export default {
       getters.MAP_GET_RANGE_SEL              +'-'+
       getters.SCRIPT_GET_ITEM_SEL            +'-'+
       getters.SCRIPT_GET_ITEM_REFRESH   (ind)+'-'+
-      getters.SCRIPT_GET_ITEM_MARKER    (ind)+'-'+
-      // getters.SCRIPT_GET_ITEM_LINE      (ind)+'-'+
-      // getters.SCRIPT_GET_ITEM_POLYGON(ind)+'-'+
-      getters.SCRIPT_GET_ITEM_COLOR     (ind)+'-'+
+      getters.SCRIPT_GET_ITEM_FC_STYLE_MARKER    (ind)+'-'+
+      // getters.SCRIPT_GET_ITEM_FC_STYLE_LINE   (ind)+'-'+
+      // getters.SCRIPT_GET_ITEM_FC_STYLE_POLYGON(ind)+'-'+
+      getters.SCRIPT_GET_ITEM_FC_STYLE_COLOR     (ind)+'-'+
       getters.MAP_GET_CLUSTER                +'-'+
       getters.MAP_GET_HINT,
 

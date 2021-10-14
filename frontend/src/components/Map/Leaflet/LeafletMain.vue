@@ -216,10 +216,10 @@ export default {
       'MAP_GET_EDIT',
 
       'SCRIPT_GET',
-      'SCRIPT_GET_ITEM_COLOR',
-      'SCRIPT_GET_ITEM_STYLE',
-      'SCRIPT_GET_ITEM_LINE',
-      'SCRIPT_GET_ITEM_POLYGON',
+      'SCRIPT_GET_ITEM_FC_STYLE_COLOR',
+      'SCRIPT_GET_ITEM_FC_STYLE',
+      'SCRIPT_GET_ITEM_FC_STYLE_LINE',
+      'SCRIPT_GET_ITEM_FC_STYLE_POLYGON',
       'SCRIPT_GET_ITEM_SEL',
     ]),
 
@@ -298,11 +298,11 @@ export default {
     },
 
     cluster_options(map_ind) {
-      let color = this.SCRIPT_GET_ITEM_COLOR(map_ind);
+      let color = this.SCRIPT_GET_ITEM_FC_STYLE_COLOR(map_ind);
       return {
         // область при наведении курсора на кластер
         showCoverageOnHover: true,
-        polygonOptions: { color: this.SCRIPT_GET_ITEM_COLOR(map_ind), },
+        polygonOptions: { color: this.SCRIPT_GET_ITEM_FC_STYLE_COLOR(map_ind), },
 
         // для последующей коррекции цвета маркеров
         cluster_color: color,
@@ -357,8 +357,8 @@ export default {
 
           // класс для стилей линий и полигонов
           let style = {};
-          if (feature.geometry.type == MAP_ITEM.FC.FEATURES.GEOMETRY.TYPE.LINE)    { style = self.SCRIPT_GET_ITEM_LINE   (map_ind); }
-          if (feature.geometry.type == MAP_ITEM.FC.FEATURES.GEOMETRY.TYPE.POLYGON) { style = self.SCRIPT_GET_ITEM_POLYGON(map_ind); }
+          if (feature.geometry.type == MAP_ITEM.FC.FEATURES.GEOMETRY.TYPE.LINE)    { style = self.SCRIPT_GET_ITEM_FC_STYLE_LINE   (map_ind); }
+          if (feature.geometry.type == MAP_ITEM.FC.FEATURES.GEOMETRY.TYPE.POLYGON) { style = self.SCRIPT_GET_ITEM_FC_STYLE_POLYGON(map_ind); }
           let className = style[MAP_ITEM.FC.STYLE.LINE.CLASS.KEY] ?? '';
           if (className != '') { layer.setStyle({'className': className, }); }
 
@@ -372,7 +372,7 @@ export default {
           let sel = (feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._SEL_]?'sel':'');
           let layer = marker_get(
             latlng,
-            self.SCRIPT_GET_ITEM_STYLE (map_ind),
+            self.SCRIPT_GET_ITEM_FC_STYLE (map_ind),
             sel
           );
           return layer;
@@ -384,7 +384,7 @@ export default {
           return {
             weight:      2,
             opacity:     .5,
-            color:       self.SCRIPT_GET_ITEM_COLOR(map_ind),
+            color:       self.SCRIPT_GET_ITEM_FC_STYLE_COLOR(map_ind),
             fillOpacity: .3,
             fillColor:   feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._COLOR_],    // set in mixin: Color
             fillRule:    'evenodd',

@@ -74,6 +74,7 @@ export const MAP_ITEM = {
     },
   },
 
+  COLOR:          'color',          // цвет скрипта (транслируется в MAP_ITEM.FC.STYLE.COLOR)
   _LEGEND_COLOR_: 'legend_color',   // [], заполняется программой
 
 };

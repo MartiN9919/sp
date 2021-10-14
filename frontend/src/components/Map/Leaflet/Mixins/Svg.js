@@ -20,11 +20,11 @@ export default {
       <path d='M0,0 V4 L2,2 Z' fill="red"/>
     </marker>
 
-    <marker id='head-arrow-2' orient="auto" markerWidth='31' markerHeight='11' refX='0.1' refY='6' fill='#555' opacity='.5'>
-      <path d='M1,6 L8,1 L8,11 Z' fill="context-stroke"/>
-      <path d='M31,6 L24,1 L24,11 Z' fill="context-stroke"/>
-      <path d='M8,3 L24,3 L24,4 L8,4'/>
-      <path d='M8,8 L24,8 L24,9 L8,9'/>
+    <marker id='head-arrow-2' orient="auto" markerUnits='userSpaceOnUse' markerWidth='101' markerHeight='33' refX='0.1' refY='16.5' fill='#555' opacity='.5'>
+      <path d='M1,17 L21,1 L21,33 Z' fill="context-stroke"/>
+      <path d='M101,17 L82,1 L82,33 Z' fill="context-stroke"/>
+      <rect x="20" y="6" width="64" height="5" />
+      <rect x="20" y="23" width="64" height="5" />
     </marker>
 
   </defs>
@@ -34,7 +34,7 @@ export default {
   },
 
 
-// markerUnits='userSpaceOnUse'
+//
 //
 //       <path d='M1,6 L8,1 L8,11 Z' fill="white" stroke="context-stroke"/>
 // fill="context-stroke"
