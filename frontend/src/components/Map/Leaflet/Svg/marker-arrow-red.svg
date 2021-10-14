@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" width="0" height="0">
+  <defs>
+    <marker id='marker-arrow-red' orient="auto" markerUnits='userSpaceOnUse' markerWidth='101' markerHeight='33' refX='0.1' refY='16.5' opacity='.5' fill='red'>
+      <path d='M1,17 L21,1 L21,33 Z'/>
+      <path d='M101,17 L82,1 L82,33 Z'/>
+      <rect x="20" y="6" width="64" height="5" />
+      <rect x="20" y="23" width="64" height="5" />
+    </marker>
+  </defs>
+</svg>
