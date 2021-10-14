@@ -95,8 +95,33 @@ export default {
 
 
     SCRIPT_MUT_ITEM_ADD: (state, item) => {
-      if (item.color  === undefined)   item.color  = MAP_ITEM.COLOR.DEF;
-      if (item.color  === MAP_ITEM.COLOR.SCRIPT_OFF) item.color  = color_random();
+      // item.color: нет или цвет неактивного скрипта -> выбрать цвет
+      if ((item.color === MAP_ITEM.COLOR.SCRIPT_OFF) || (item.color === undefined)) {
+        // выбрать очередной цвет из MAP_ITEM.COLOR.SCRIPT_BANK
+        let color = undefined;
+        for(let ind_bank=0; ind_bank<MAP_ITEM.COLOR.SCRIPT_BANK.length; ind_bank++) {
+          let item_bank = MAP_ITEM.COLOR.SCRIPT_BANK[ind_bank];
+          // item_bank не должен уже быть в активных скриптах
+          for(let ind_script=0; ind_script<state.selectedTemplate.activeAnalysts.length; ind_script++) {
+            let item_script = state.selectedTemplate.activeAnalysts[ind_script];
+            // цвет из банка уже присвоен другому скрипту - прервать и взять другой цвет из банка
+            if (item_script.color === item_bank) {
+              item_bank = undefined;
+              break;
+            }
+          }
+          // нашли цвет -> запомнить
+          if (item_bank) {
+            color = item_bank;
+            break;
+          }
+        }
+
+        // все цвета заняты -> случайный цвет
+        if (!color) { color  = color_random(); }
+        // записать найденный цвет
+        item.color = color;
+      }
 
       let item_copy = JSON.parse(JSON.stringify(item));        // deep copy
       item_copy.refresh = new Date().getTime();
