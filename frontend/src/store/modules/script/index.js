@@ -53,7 +53,6 @@ export default {
     SCRIPT_GET_ITEM_FC_STYLE_LINE:    state => ind => state.selectedTemplate.activeAnalysts[ind].fc.style?.line    || {},
     SCRIPT_GET_ITEM_FC_STYLE_POLYGON: state => ind => state.selectedTemplate.activeAnalysts[ind].fc.style?.polygon || {},
     SCRIPT_GET_ITEM_FC_STYLE_COLOR:   state => ind => state.selectedTemplate.activeAnalysts[ind].fc.style?.color   || MAP_ITEM.FC.STYLE.COLOR.DEF,
-    SCRIPT_GET_ITEM_COLOR:            state => ind => state.selectedTemplate.activeAnalysts[ind][MAP_ITEM.COLOR]   || MAP_ITEM.FC.STYLE.COLOR.DEF,
     SCRIPT_GET_ITEM_LEGEND_COLOR:     state => ind => state.selectedTemplate.activeAnalysts[ind][MAP_ITEM._LEGEND_COLOR_] || [],
     SCRIPT_GET_ITEM_REFRESH:          state => ind => state.selectedTemplate.activeAnalysts[ind].refresh,
     SCRIPT_GET_ITEM_SEL:              state =>        JSON.stringify(state.selectedFC),
@@ -73,8 +72,13 @@ export default {
     },
 
     changeColorActiveAnalysts: (state, parameters) => {
-      state.selectedTemplate.activeAnalysts.find(
-        analytics => analytics === parameters.analytics).color = parameters.color
+      // state.selectedTemplate.activeAnalysts.find(
+      //   analytics => analytics === parameters.analytics).fc.style.color = parameters.color
+      dict_set(
+        state.selectedTemplate.activeAnalysts.find(analytics => analytics === parameters.analytics),
+        [ MAP_ITEM.FC.KEY, MAP_ITEM.FC.STYLE.KEY, MAP_ITEM.FC.STYLE.COLOR.KEY, ],
+        parameters.color
+      )
     },
     loadTemplatesList: (state, templates) => state.templatesList = templates,
     addSelectedTemplate: (state, template) => {
@@ -101,16 +105,10 @@ export default {
 
 
     SCRIPT_MUT_ITEM_ADD: (state, item) => {
-
-      // let tst = {w: 5, d: {r: 6, t: {e: 7}}};
-      // dict_set(tst, ['z','d','r','t', 'u'], '!!!')
-      // var dd = dict_get(tst, ['d', 't', 'e'])
-
-
       //if (item.marker === undefined)   item.marker = '';
       //if (item.color  === undefined)   item.color  = '';
-      if (item.color  === '#696969FF') item.color  = '#FFA500FF';
-      if ((!item.color) && (item?.fc?.style?.color)) item.color = item?.fc?.style?.color;
+      //if (item.color  === '#696969FF') item.color  = '#FFA500FF';
+      //if ((!item.color) && (item?.fc?.style?.color)) item.color = item?.fc?.style?.color;
 
       let item_copy = JSON.parse(JSON.stringify(item));        // deep copy
       item_copy.refresh = new Date().getTime();
@@ -118,12 +116,12 @@ export default {
     },
 
     SCRIPT_MUT_ITEM_DEL:   (state, id)      => state.selectedTemplate.activeAnalysts.splice(id, 1),
-    SCRIPT_MUT_ITEM_COLOR: (state, param)   => state.selectedTemplate.activeAnalysts[param.ind][MAP_ITEM.COLOR] = param.color,
-    // SCRIPT_MUT_ITEM_COLOR: (state, param)   => dict_set(
-    //   state.selectedTemplate.activeAnalysts[param.ind],
-    //   [ MAP_ITEM.FC.KEY, MAP_ITEM.FC.STYLE.KEY, MAP_ITEM.FC.STYLE.KEY ],
-    //   MAP_ITEM.FC.STYLE.KEY
-    // ),
+    // SCRIPT_MUT_ITEM_COLOR: (state, param)   => state.selectedTemplate.activeAnalysts[param.ind][MAP_ITEM.COLOR] = param.color,
+    SCRIPT_MUT_ITEM_COLOR: (state, param)   => dict_set(
+      state.selectedTemplate.activeAnalysts[param.ind],
+      [ MAP_ITEM.FC.KEY, MAP_ITEM.FC.STYLE.KEY, MAP_ITEM.FC.STYLE.COLOR.KEY, ],
+      MAP_ITEM.FC.STYLE.COLOR.DEF
+    ),
 
 
 

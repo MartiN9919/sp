@@ -37,5 +37,4 @@ export function dict_get(dict, chain, val_default) {
     dict_item = dict_item[chain[ind]] ?? {};
   }
   return dict_item[chain[chain.length-1]] ?? val_default;
-
 }
