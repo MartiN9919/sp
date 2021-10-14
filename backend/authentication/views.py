@@ -59,6 +59,7 @@ def authorization(request):
         'admin': request.user.is_superuser,
         'staff': request.user.is_staff,
         'write': request.user.is_write,
+        'group_id': {'list_id': 53, 'id': request.user.owner_groups.id}
     }}, status=200)
 
 
