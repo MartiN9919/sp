@@ -103,6 +103,7 @@ export default {
       //if (item.marker === undefined)   item.marker = '';
       //if (item.color  === undefined)   item.color  = '';
       if (item.color  === '#696969FF') item.color  = '#FFA500FF';
+      if ((!item.color) && (item?.fc?.style?.color)) item.color = item?.fc?.style?.color;
 
       let item_copy = JSON.parse(JSON.stringify(item));        // deep copy
       item_copy.refresh = new Date().getTime();
