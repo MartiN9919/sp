@@ -77,11 +77,11 @@ export default {
           });
         }
 
-      // иначе: копировать цвет MAP_ITEM.COLOR каждому feature
-      } else if (MAP_ITEM.COLOR in map_item) {
-        // for (let i=0; i<fc.features.length; i++) {
-        //   fc.features[i][MAP_ITEM.FC_COLOR] = map_item[MAP_ITEM.COLOR];
-        // }
+      // // иначе: копировать цвет MAP_ITEM.COLOR каждому feature
+      // } else if (MAP_ITEM.COLOR in map_item) {
+      //   // for (let i=0; i<fc.features.length; i++) {
+      //   //   fc.features[i][MAP_ITEM.FC_COLOR] = map_item[MAP_ITEM.COLOR.KEY];
+      //   // }
       }
 
       // return fc;

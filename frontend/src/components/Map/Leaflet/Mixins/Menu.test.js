@@ -1,13 +1,12 @@
 
 export const MAP_TEST_ITEM_1 = {
   //"id": 5,
-  "name": "Test 1",
-  "hint": "Это тест 1",
+  "name":  "Test 1",
+  "hint":  "Это тест 1",
+  "color": "green",    // rgba(255, 190, 218, 0.5)
 
   "fc": {
-    //"color": "green",     //rgba(255, 190, 218, 0.5)
     "style": {
-      "color":  "green",    // rgba(255, 190, 218, 0.5)
       "marker": {
         "icon": "test",     // "mdi-flag mdi-spin", "fs-spec0", "pulse" (size: 12), "#0f0", "gold", "file_name" (size_w: 25, size_h: 41)
         "zoom": 2,
@@ -136,12 +135,11 @@ export const MAP_TEST_ITEM_1 = {
 
 export const MAP_TEST_ITEM_2 = {
   //"id": 6,
-  "name": "Test 2",
-  "hint": "Это тест 2",
-  // "color": "#923",
+  "name":  "Test 2",
+  "hint":  "Это тест 2",
+  "color": "#f00",  // "#923"
   "fc": {
     "style": {
-      "color":  "#f00",  // "#923"
       "marker": {
         "icon": "pulse",
         "zoom": 2,
@@ -234,9 +232,9 @@ export const MAP_TEST_ITEM_2 = {
 export const MAP_TEST_ITEM_3 = {
   "name": "Test 3",
   "hint": "Это тест 3",
+  "color": "#493",
   "fc": {
     "style": {
-      "color":  "#493",
       "marker": {
         "icon": "pulse",
         "zoom": 2,

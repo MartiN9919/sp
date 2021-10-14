@@ -216,7 +216,7 @@ export default {
       'MAP_GET_EDIT',
 
       'SCRIPT_GET',
-      'SCRIPT_GET_ITEM_FC_STYLE_COLOR',
+      'SCRIPT_GET_ITEM_COLOR',
       'SCRIPT_GET_ITEM_FC_STYLE',
       'SCRIPT_GET_ITEM_FC_STYLE_LINE',
       'SCRIPT_GET_ITEM_FC_STYLE_POLYGON',
@@ -298,7 +298,7 @@ export default {
     },
 
     cluster_options(map_ind) {
-      let color = this.SCRIPT_GET_ITEM_FC_STYLE_COLOR(map_ind);
+      let color = this.SCRIPT_GET_ITEM_COLOR(map_ind);
       return {
         // область при наведении курсора на кластер
         showCoverageOnHover: true,
@@ -384,7 +384,7 @@ export default {
           return {
             weight:      2,
             opacity:     .5,
-            color:       self.SCRIPT_GET_ITEM_FC_STYLE_COLOR(map_ind),
+            color:       self.SCRIPT_GET_ITEM_COLOR(map_ind),
             fillOpacity: .3,
             fillColor:   feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._COLOR_],    // set in mixin: Color
             fillRule:    'evenodd',

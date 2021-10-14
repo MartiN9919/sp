@@ -35,7 +35,6 @@ export default {
 
 
     /**
-     *
      * state.selectedFC[ind]                           - список указателей на объекты, соотнесенные с выделенными фигурами
      *   obj_id (int)                                  - тип объекта
      *   rec_id (str)                                  - id записи
@@ -48,22 +47,14 @@ export default {
 
     SCRIPT_GET:                       state =>        state.selectedTemplate.activeAnalysts,
     SCRIPT_GET_ITEM:                  state => ind => state.selectedTemplate.activeAnalysts[ind],
-    SCRIPT_GET_ITEM_FC_STYLE:         state => ind => state.selectedTemplate.activeAnalysts[ind].fc.style          || {},
-    SCRIPT_GET_ITEM_FC_STYLE_MARKER:  state => ind => state.selectedTemplate.activeAnalysts[ind].fc.style?.marker  || {},
-    SCRIPT_GET_ITEM_FC_STYLE_LINE:    state => ind => state.selectedTemplate.activeAnalysts[ind].fc.style?.line    || {},
-    SCRIPT_GET_ITEM_FC_STYLE_POLYGON: state => ind => state.selectedTemplate.activeAnalysts[ind].fc.style?.polygon || {},
-    SCRIPT_GET_ITEM_FC_STYLE_COLOR:   state => ind => dict_get(
-      state.selectedTemplate.activeAnalysts[ind],
-      [ MAP_ITEM.FC.KEY, MAP_ITEM.FC.STYLE.KEY, MAP_ITEM.FC.STYLE.COLOR.KEY, ],
-      MAP_ITEM.FC.STYLE.COLOR.DEF
-    ),
-    SCRIPT_GET_ITEM_LEGEND_COLOR:     state => ind => state.selectedTemplate.activeAnalysts[ind][MAP_ITEM._LEGEND_COLOR_] || [],
+    SCRIPT_GET_ITEM_FC_STYLE:         state => ind => state.selectedTemplate.activeAnalysts[ind].fc.style                 ?? {},
+    SCRIPT_GET_ITEM_FC_STYLE_MARKER:  state => ind => state.selectedTemplate.activeAnalysts[ind].fc.style?.marker         ?? {},
+    SCRIPT_GET_ITEM_FC_STYLE_LINE:    state => ind => state.selectedTemplate.activeAnalysts[ind].fc.style?.line           ?? {},
+    SCRIPT_GET_ITEM_FC_STYLE_POLYGON: state => ind => state.selectedTemplate.activeAnalysts[ind].fc.style?.polygon        ?? {},
+    SCRIPT_GET_ITEM_COLOR:            state => ind => state.selectedTemplate.activeAnalysts[ind][MAP_ITEM.COLOR.KEY]      ?? MAP_ITEM.COLOR.DEF,
+    SCRIPT_GET_ITEM_LEGEND_COLOR:     state => ind => state.selectedTemplate.activeAnalysts[ind][MAP_ITEM._LEGEND_COLOR_] ?? [],
     SCRIPT_GET_ITEM_REFRESH:          state => ind => state.selectedTemplate.activeAnalysts[ind].refresh,
     SCRIPT_GET_ITEM_SEL:              state =>        JSON.stringify(state.selectedFC),
-
-    // работает, но не используется
-    // SCRIPT_GET_ITEM_ID:        state => ind => state.selectedTemplate.activeAnalysts[ind].id           || '',
-    // SCRIPT_GET_ITEM_FC:        state => ind => state.selectedTemplate.activeAnalysts[ind].fc           || {},
   },
 
   mutations: {
@@ -76,13 +67,8 @@ export default {
     },
 
     changeColorActiveAnalysts: (state, parameters) => {
-      // state.selectedTemplate.activeAnalysts.find(
-      //   analytics => analytics === parameters.analytics).fc.style.color = parameters.color
-      dict_set(
-        state.selectedTemplate.activeAnalysts.find(analytics => analytics === parameters.analytics),
-        [ MAP_ITEM.FC.KEY, MAP_ITEM.FC.STYLE.KEY, MAP_ITEM.FC.STYLE.COLOR.KEY, ],
-        parameters.color
-      )
+      state.selectedTemplate.activeAnalysts.find(
+        analytics => analytics === parameters.analytics)[MAP_ITEM.COLOR.KEY] = parameters.color;
     },
     loadTemplatesList: (state, templates) => state.templatesList = templates,
     addSelectedTemplate: (state, template) => {
@@ -110,9 +96,8 @@ export default {
 
     SCRIPT_MUT_ITEM_ADD: (state, item) => {
       //if (item.marker === undefined)   item.marker = '';
-      //if (item.color  === undefined)   item.color  = '';
-      //if (item.color  === '#696969FF') item.color  = '#FFA500FF';
-      //if ((!item.color) && (item?.fc?.style?.color)) item.color = item?.fc?.style?.color;
+      if (item.color  === undefined)   item.color  = MAP_ITEM.COLOR.DEF;
+      if (item.color  === '#696969FF') item.color  = '#FFA500FF';
 
       let item_copy = JSON.parse(JSON.stringify(item));        // deep copy
       item_copy.refresh = new Date().getTime();
@@ -120,13 +105,7 @@ export default {
     },
 
     SCRIPT_MUT_ITEM_DEL:   (state, id)      => state.selectedTemplate.activeAnalysts.splice(id, 1),
-    // SCRIPT_MUT_ITEM_COLOR: (state, param)   => state.selectedTemplate.activeAnalysts[param.ind][MAP_ITEM.COLOR] = param.color,
-    SCRIPT_MUT_ITEM_COLOR: (state, param)   => dict_set(
-      state.selectedTemplate.activeAnalysts[param.ind],
-      [ MAP_ITEM.FC.KEY, MAP_ITEM.FC.STYLE.KEY, MAP_ITEM.FC.STYLE.COLOR.KEY, ],
-      MAP_ITEM.FC.STYLE.COLOR.DEF
-    ),
-
+    SCRIPT_MUT_ITEM_COLOR: (state, param)   => state.selectedTemplate.activeAnalysts[param.ind][MAP_ITEM.COLOR.KEY] = param.color,
 
 
     //

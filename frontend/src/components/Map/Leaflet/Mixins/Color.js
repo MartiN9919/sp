@@ -22,7 +22,7 @@ export default {
   },
 
   methods: {
-    // ЗАПОЛНИТЬ fc.features[i][MAP_ITEM.FC.STYLE.COLOR.KEY]
+    // ЗАПОЛНИТЬ fc.features[i][MAP_ITEM.COLOR.KEY]
     data_normalize_color(map_ind) {
       // данные на шине
       let map_item    = this.SCRIPT_GET_ITEM(map_ind);
@@ -80,10 +80,10 @@ export default {
           });
         }
 
-      // // иначе: копировать цвет MAP_ITEM.FC.STYLE.COLOR.KEY каждому feature
-      // } else if (MAP_ITEM.FC.STYLE.COLOR.KEY in map_item) {
+      // // иначе: копировать цвет MAP_ITEM.COLOR.KEY каждому feature
+      // } else if (MAP_ITEM.COLOR.KEY in map_item) {
       //   // for (let i=0; i<fc.features.length; i++) {
-      //   //   fc.features[i][MAP_ITEM.FC.STYLE.COLOR.KEY] = map_item[MAP_ITEM.FC.STYLE.COLOR.KEY];
+      //   //   fc.features[i][MAP_ITEM.COLOR.KEY] = map_item[MAP_ITEM.COLOR.KEY];
       //   // }
       }
     },

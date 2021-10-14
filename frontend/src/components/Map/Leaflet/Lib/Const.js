@@ -24,13 +24,6 @@ export const MAP_ITEM = {
     STYLE: {                          // стили маркеров и фигур
       KEY: 'style',
 
-      COLOR: {
-        KEY:    'color',
-        DEF:    '#f00',               // цвет по умолчанию
-        ORIGIN: '#000',               // редактор: цвет ДО    ИЗМЕНЕНИЯ
-        MODIFY: '#f00',               // редактор: цвет ПОСЛЕ ИЗМЕНЕНИЯ
-      },
-
       MARKER: {
         KEY:  'marker',
         PATH: 'img/markers/',         // путь к файлам маркеров
@@ -72,6 +65,13 @@ export const MAP_ITEM = {
         },
       },
     },
+  },
+
+  COLOR: {
+    KEY:    'color',
+    DEF:    '#f00',               // цвет по умолчанию
+    ORIGIN: '#000',               // редактор: цвет ДО    ИЗМЕНЕНИЯ
+    MODIFY: '#f00',               // редактор: цвет ПОСЛЕ ИЗМЕНЕНИЯ
   },
 
   _LEGEND_COLOR_: 'legend_color',   // [], заполняется программой
