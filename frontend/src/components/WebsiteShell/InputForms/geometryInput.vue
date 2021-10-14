@@ -71,7 +71,6 @@ export default {
   computed: {
    bodyInputClasses: function () { return this.$attrs.hasOwnProperty('label') ? '' : 'pt-0' },
   },
-
   mounted() {
     if(this.inputString) {
       this.featureCollection = { "type": "FeatureCollection", "features": [{'type': 'Feature', 'geometry': this.inputString, 'properties': {}}], }
@@ -80,24 +79,19 @@ export default {
       this.featureCollection = { "type": "FeatureCollection", "features": []}
     }
   },
-
   methods: {
     click_ok() {
       this.dialog = false;
       this.$emit('changeInputString', this.featureCollection)
     },
-
     click_cancel() {
       this.dialog = false;
     },
-
     show_text() {
       if (!this.featureCollection || this.featureCollection.features.length === 0) return ''
       return '[объект]'
     },
-
   },
-
 }
 
 </script>

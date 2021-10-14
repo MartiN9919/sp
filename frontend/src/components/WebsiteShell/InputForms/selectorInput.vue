@@ -47,7 +47,7 @@ export default {
     inputString: Number,
   },
   computed: {
-    ...mapGetters(['baseList']),
+    ...mapGetters(['baseList', 'userInformation']),
     bodyInputClasses: function () { return this.$attrs.hasOwnProperty('label') ? 'pt-2' : '' },
     items: function() {
       return this.$attrs['type-load'] ? this.baseList(this.$attrs['type-load']).values : this.$attrs.items
@@ -58,6 +58,10 @@ export default {
       set: function (value) { this.$emit('changeInputString', value?.id) }
     }
   },
+  mounted() {
+    if(this.userInformation.group_id.list_id === this.$attrs['type-load'])
+      this.value = {id: this.userInformation.group_id.id}
+  }
 }
 </script>
 
