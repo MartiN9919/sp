@@ -6,7 +6,7 @@
 import { mapGetters, mapActions, } from 'vuex';
 
 import { MAP_ITEM } from '@/components/Map/Leaflet/Lib/Const';
-import { scale_log, color_array, } from '@/components/Map/Leaflet/Lib/LibColor'
+import { color_scale_log, color_array, } from '@/components/Map/Leaflet/Lib/LibColor'
 import { fc_key, fc_types_del, } from '@/components/Map/Leaflet/Lib/LibFc'
 
 export default {
@@ -40,7 +40,7 @@ export default {
 
         // COLORING.FC.VALUE определяет цвет полигона
         let val_list    = fc_key(fc, MAP_ITEM.FC.FEATURES.PROPERTIES.VALUE);        // читать все fc.features[i].properties.value
-        let scale_value = scale_log(val_list);                                      // шкала значений
+        let scale_value = color_scale_log(val_list);                                // шкала значений
         let scale_color = color_array(color_begin, color_end, scale_value.length);  // шкала цветов
 
         let feature, value, ret;

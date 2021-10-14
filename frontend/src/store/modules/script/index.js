@@ -6,7 +6,7 @@ import {
 } from '@/plugins/axios_settings'
 
 import { MAP_ITEM } from '@/components/Map/Leaflet/Lib/Const';
-import { dict_set, dict_get } from '@/components/Map/Leaflet/Lib/Lib';
+import { color_random } from '@/components/Map/Leaflet/Lib/LibColor';
 
 export default {
   state: {
@@ -95,9 +95,8 @@ export default {
 
 
     SCRIPT_MUT_ITEM_ADD: (state, item) => {
-      //if (item.marker === undefined)   item.marker = '';
       if (item.color  === undefined)   item.color  = MAP_ITEM.COLOR.DEF;
-      if (item.color  === '#696969FF') item.color  = '#FFA500FF';
+      if (item.color  === MAP_ITEM.COLOR.SCRIPT_OFF) item.color  = color_random();
 
       let item_copy = JSON.parse(JSON.stringify(item));        // deep copy
       item_copy.refresh = new Date().getTime();

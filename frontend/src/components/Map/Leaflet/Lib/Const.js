@@ -7,9 +7,9 @@ export const MAP_ITEM = {
       KEY: 'features',
       PROPERTIES: {
         KEY:     'properties',
-        VALUE:   'value',           // для полигона - вход:  fc.features[i].property.VALUE - значение, которое определяет цвет полигона
-        _COLOR_: 'color',           // заполняется программой, цвет заливки фигуры
-        _SEL_:   'sel',             // заполняется программой, выделенный features[]
+        VALUE:   'value',             // для полигона - вход:  fc.features[i].property.VALUE - значение, которое определяет цвет полигона
+        _COLOR_: 'color',             // заполняется программой, цвет заливки фигуры
+        _SEL_:   'sel',               // заполняется программой, выделенный features[]
       },
       GEOMETRY:  {
         KEY:     'geometry',
@@ -42,7 +42,7 @@ export const MAP_ITEM = {
 
       LINE: {
         KEY:   'line',
-        CLASS: {                       // тип линии, совпадает с именем класса для установки стиля
+        CLASS: {                      // тип линии, совпадает с именем класса для установки стиля
           KEY: 'class',
           ANT: 'ant',                 // бегущая линия
         },
@@ -68,12 +68,13 @@ export const MAP_ITEM = {
   },
 
   COLOR: {
-    KEY:    'color',
-    DEF:    '#f00',               // цвет по умолчанию
-    ORIGIN: '#000',               // редактор: цвет ДО    ИЗМЕНЕНИЯ
-    MODIFY: '#f00',               // редактор: цвет ПОСЛЕ ИЗМЕНЕНИЯ
+    KEY:        'color',
+    DEF:        '#f00',               // цвет по умолчанию
+    ORIGIN:     '#000',               // редактор: цвет ДО    ИЗМЕНЕНИЯ
+    MODIFY:     '#f00',               // редактор: цвет ПОСЛЕ ИЗМЕНЕНИЯ
+    SCRIPT_OFF: '#696969FF',          // цвет неактивного скрипта
   },
 
-  _LEGEND_COLOR_: 'legend_color',   // [], заполняется программой
+  _LEGEND_COLOR_: 'legend_color',     // [], заполняется программой
 
 };
