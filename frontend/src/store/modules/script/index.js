@@ -103,8 +103,8 @@ export default {
     SCRIPT_MUT_ITEM_ADD: (state, item) => {
 
       // let tst = {w: 5, d: {r: 6, t: {e: 7}}};
-      // dict_set(tst, ['z','d','r','t'], 'u', '!!!')
-      // var dd = dict_get(tst, ['d', 't'], 'e')
+      // dict_set(tst, ['z','d','r','t', 'u'], '!!!')
+      // var dd = dict_get(tst, ['d', 't', 'e'])
 
 
       //if (item.marker === undefined)   item.marker = '';
@@ -119,6 +119,12 @@ export default {
 
     SCRIPT_MUT_ITEM_DEL:   (state, id)      => state.selectedTemplate.activeAnalysts.splice(id, 1),
     SCRIPT_MUT_ITEM_COLOR: (state, param)   => state.selectedTemplate.activeAnalysts[param.ind][MAP_ITEM.COLOR] = param.color,
+    // SCRIPT_MUT_ITEM_COLOR: (state, param)   => dict_set(
+    //   state.selectedTemplate.activeAnalysts[param.ind],
+    //   [ MAP_ITEM.FC.KEY, MAP_ITEM.FC.STYLE.KEY, MAP_ITEM.FC.STYLE.KEY ],
+    //   MAP_ITEM.FC.STYLE.KEY
+    // ),
+
 
 
     //
