@@ -302,7 +302,7 @@ export default {
       return {
         // область при наведении курсора на кластер
         showCoverageOnHover: true,
-        polygonOptions: { color: this.SCRIPT_GET_ITEM_FC_STYLE_COLOR(map_ind), },
+        polygonOptions: { color: color, },
 
         // для последующей коррекции цвета маркеров
         cluster_color: color,

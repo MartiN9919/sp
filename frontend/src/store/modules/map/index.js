@@ -35,7 +35,8 @@ export default {
   },
 
   getters: {
-    MAP_GET_KEY: (state, getters) => (ind) =>
+    MAP_GET_KEY: (state, getters) => (ind) => {
+      let ret =
       ind+'-'+
       getters.MAP_GET_RANGE_SEL                       +'-'+
       getters.SCRIPT_GET_ITEM_SEL                     +'-'+
@@ -45,7 +46,11 @@ export default {
       // getters.SCRIPT_GET_ITEM_FC_STYLE_POLYGON(ind)+'-'+
       getters.SCRIPT_GET_ITEM_FC_STYLE_COLOR     (ind)+'-'+
       getters.MAP_GET_CLUSTER                         +'-'+
-      getters.MAP_GET_HINT,
+      getters.MAP_GET_HINT;
+
+      console.log(1111, ret)
+      return ret;
+    },
 
     MAP_GET_RANGE_SHOW:        (state) =>  state.range.show,
     MAP_GET_RANGE_SEL:         (state) => (state.range.show)?[state.range.sel_min,state.range.sel_max]:[0,0],

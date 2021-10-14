@@ -52,7 +52,11 @@ export default {
     SCRIPT_GET_ITEM_FC_STYLE_MARKER:  state => ind => state.selectedTemplate.activeAnalysts[ind].fc.style?.marker  || {},
     SCRIPT_GET_ITEM_FC_STYLE_LINE:    state => ind => state.selectedTemplate.activeAnalysts[ind].fc.style?.line    || {},
     SCRIPT_GET_ITEM_FC_STYLE_POLYGON: state => ind => state.selectedTemplate.activeAnalysts[ind].fc.style?.polygon || {},
-    SCRIPT_GET_ITEM_FC_STYLE_COLOR:   state => ind => state.selectedTemplate.activeAnalysts[ind].fc.style?.color   || MAP_ITEM.FC.STYLE.COLOR.DEF,
+    SCRIPT_GET_ITEM_FC_STYLE_COLOR:   state => ind => dict_get(
+      state.selectedTemplate.activeAnalysts[ind],
+      [ MAP_ITEM.FC.KEY, MAP_ITEM.FC.STYLE.KEY, MAP_ITEM.FC.STYLE.COLOR.KEY, ],
+      MAP_ITEM.FC.STYLE.COLOR.DEF
+    ),
     SCRIPT_GET_ITEM_LEGEND_COLOR:     state => ind => state.selectedTemplate.activeAnalysts[ind][MAP_ITEM._LEGEND_COLOR_] || [],
     SCRIPT_GET_ITEM_REFRESH:          state => ind => state.selectedTemplate.activeAnalysts[ind].refresh,
     SCRIPT_GET_ITEM_SEL:              state =>        JSON.stringify(state.selectedFC),
