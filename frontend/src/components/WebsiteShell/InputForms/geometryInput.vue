@@ -4,7 +4,6 @@
         width="60%"
         height="80%"
         v-model="dialog"
-        @input="show_dialog"
         @keydown.esc="dialog = false"
         @deletable="$emit('deletable')"
         persistent
@@ -19,6 +18,7 @@
               v-bind="$attrs"
               :input-string="show_text()"
               @changeInputString="value = $event"
+              @deletable="$emit('deletable')"
               :class="bodyInputClasses"
               icon="mdi-map-marker-outline"
               :placeholder="$attrs.placeholder || 'Выберете объект на карте'"
@@ -36,7 +36,7 @@
         <v-divider></v-divider>
         <LeafletEditor
           v-if="dialog"
-          v-model="fc"
+          v-model="featureCollection"
           :modeEnabled="modeEnabled"
           :modeSelected="modeSelected"
         />
@@ -66,29 +66,25 @@ export default {
   },
   data: () => ({
     dialog: false,
-    fc_temp: undefined,       // не принятые изменения fc
+    featureCollection: null,
   }),
   computed: {
-    value: {
-      get()    { return this.inputString; },
-      set(val) { console.log(val); this.$emit('changeInputString', val); }
-    },
-    fc: {
-      get()    { return this.value; },
-      set(val) { this.fc_temp = val; },
-    },
-    bodyInputClasses: function () { return this.$attrs.hasOwnProperty('label') ? '' : 'pt-0' },
+   bodyInputClasses: function () { return this.$attrs.hasOwnProperty('label') ? '' : 'pt-0' },
+  },
+
+  mounted() {
+    if(this.inputString) {
+      this.featureCollection = { "type": "FeatureCollection", "features": [{'type': 'Feature', 'geometry': this.inputString, 'properties': {}}], }
+    }
+    else {
+      this.featureCollection = { "type": "FeatureCollection", "features": []}
+    }
   },
 
   methods: {
-    show_dialog (e) {
-       if (this.value == undefined) this.value = { "type": "FeatureCollection", "features": [], }
-       this.fc = JSON.parse(JSON.stringify(this.value));
-    },
-
     click_ok() {
       this.dialog = false;
-      this.value  = JSON.parse(JSON.stringify(this.fc_temp));
+      this.$emit('changeInputString', this.featureCollection)
     },
 
     click_cancel() {
@@ -96,50 +92,13 @@ export default {
     },
 
     show_text() {
-      if (this.value == undefined) return ''
-      if (this.value.features.length == 0) return ''
+      if (!this.featureCollection || this.featureCollection.features.length === 0) return ''
       return '[объект]'
     },
 
   },
 
 }
-
-// ТЕСТОВЫЕ ДАННЫЕ
-// { "type": "FeatureCollection", "features": [], },
-// L.featureGroup().toGeoJSON(),
-// this.value = {
-//   "type": "FeatureCollection",
-//   "features": [
-//     {
-//       "type": "Feature",
-//       "properties": {
-//         "hint": "Edit 1",
-//       },
-//       "geometry": {
-//         "type": "Polygon",
-//         "coordinates": [
-//           [
-//             [30.212402343750004,55.19141243527065],
-//             [30.443115234375004,54.50832650029076],
-//             [31.014404296875004,54.718275018302315],
-//             [30.212402343750004,55.19141243527065],
-//           ]
-//         ]
-//       }
-//     },
-//     {
-//       "type": "Feature",
-//       "properties": {
-//         "hint": "Edit 2",
-//       },
-//       "geometry": {
-//         "type":        "Point",
-//         "coordinates": [24.071044921875004,55.86914706303444]
-//       },
-//     },
-//   ],
-// },
 
 </script>
 

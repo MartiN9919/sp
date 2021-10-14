@@ -10,7 +10,7 @@
         <v-card tile flat>
           <v-row v-for="(value, key) in param.new_values" :key="key" no-gutters class="flex-nowrap">
             <record-input
-              :param="value"
+              :param="getParam(param, value)"
               :type="param.baseParam.type"
               @deletable="deleteNewParam(param.baseParam.id, value)"
             ></record-input>
@@ -35,7 +35,23 @@
             </tbody>
             <tbody class="py-2" v-else>
               <tr v-for="item in param.values">
-                <td><span>{{item.value ? item.value : 'Создана'}}</span></td>
+                <td v-if="checkTypeParam(param) === 'file_any'">
+                  <a :href="getDownloadLink(item.value)">{{item.value}}</a>
+                </td>
+                <td v-else-if="checkTypeParam(param) === 'geometry'">
+                  <v-dialog width="80%" style="z-index: 1000002">
+                    <template v-slot:activator="{ on, attrs }">
+                      <span v-bind="attrs" v-on="on">
+                        Геометрия
+                      </span>
+                    </template>
+                    <LeafletEditor
+                      :fc_parent_prop="JSON.parse(item.value)"
+                      :modeEnabled="{ marker: false , line: false, polygon: false, }"
+                    />
+                  </v-dialog>
+                </td>
+                <td v-else><span>{{item.value ? item.value : 'Создана'}}</span></td>
                 <td class="text-center" @click="addDocumentToGraph(item.doc)" style="cursor: pointer"><span>{{item.doc ? item.doc.title : ''}}</span></td>
                 <td class="text-end text-no-wrap pl-3"><span>{{item.date}}</span></td>
               </tr>
@@ -53,11 +69,13 @@ import RecordInput from "./objectRecordComponents/recordInput"
 import DropDownMenu from "../../../WebsiteShell/UI/dropDownMenu"
 import MenuDateTime from "../../../WebsiteShell/UI/selectDateTime"
 import CustomTooltip from "../../../WebsiteShell/UI/customTooltip"
+import LeafletEditor from "../../../Map/Leaflet/LeafletEditor";
 import {getDownloadFileLink} from '@/plugins/axios_settings'
+import _ from 'lodash'
 
 export default {
   name: "objectRecordArea",
-  components: {CustomTooltip, RecordInput, RecordTitle, MenuDateTime, DropDownMenu},
+  components: {CustomTooltip, RecordInput, RecordTitle, MenuDateTime, DropDownMenu, LeafletEditor},
   props: {
     settings: Object,
     params: Array,
@@ -66,6 +84,13 @@ export default {
     openedPanels: []
   }),
   methods: {
+    getParam(param, value) {
+      if(this.checkTypeParam(param) === 'geometry' && param.values.length > 0){
+        let copyGeometry = _.cloneDeep(param.values[0])
+        value.value = JSON.parse(copyGeometry.value)
+      }
+      return value
+    },
     addDocumentToGraph(doc) {
       this.$emit('addDocumentToGraph', {objectId: doc.object_id, recId: doc.rec_id})
     },
@@ -81,7 +106,7 @@ export default {
     },
     getDownloadLink(fileName) {
       return getDownloadFileLink(this.settings.objectId, this.settings.recId, fileName)
-    }
+    },
   },
   mounted() {
     this.openedPanels = [...Array(this.params.length).keys()]

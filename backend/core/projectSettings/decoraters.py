@@ -1,14 +1,16 @@
 # -*- coding: utf-8 -*-
-
+import os
 import time
 import json
 import logging
-import traceback
 
 from django.contrib.auth.decorators import user_passes_test
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponseBadRequest, HttpResponse, JsonResponse
 from core.projectSettings.logging_settings import PROJECT_LOG_REQUESTS
+from core.settings import MEDIA_ROOT
+from data_base_driver.constants.const_dat import DAT_OWNER
+from data_base_driver.input_output.valid_permission_manticore import check_object_permission
 
 
 def request_wrap(f):
@@ -50,6 +52,31 @@ def request_post(f):
         if request.method!='POST':
             raise Exception('доступен только POST-запрос')
         return f(request, *args, **kwargs)
+
+    wrap.__doc__ =f.__doc__
+    wrap.__name__=f.__name__
+    return wrap
+
+
+def request_download(f):
+    """
+    Доступ только get-запросам
+    """
+    def wrap(request, *args, **kwargs):
+        group_id = DAT_OWNER.DUMP.get_group(user_id=request.user.id)
+        path = request.path.split('download')[1]
+        path_start_directory = path.split('/')[1]
+        if path_start_directory != 'files':
+            raise Exception(403, 'Нет доступа к файлу')
+        object_id = int(path.split('/')[2])
+        rec_id = int(path.split('/')[3])
+        if not check_object_permission(group_id, object_id, rec_id, False):
+            raise Exception(403, 'Нет доступа к файлу')
+        file_path = MEDIA_ROOT + '/' + path
+        if os.path.exists(file_path):
+            return f(request, *args, **kwargs)
+        else:
+            raise Exception(404, 'Файл не найден')
 
     wrap.__doc__ =f.__doc__
     wrap.__name__=f.__name__

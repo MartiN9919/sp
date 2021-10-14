@@ -82,14 +82,15 @@ def parse_value(param, object, files):
     """
     value = param['value']
     key = get_key_by_id(param['id'])
-    if key.get('list_id') != 0 and key['id'] not in SYS_KEY_CONSTANT.NOT_VALUE_TRANSFER_LIST and key.get('list_id') != None:
+    if key.get('list_id') != 0 and key['id'] not in SYS_KEY_CONSTANT.NOT_VALUE_TRANSFER_LIST and key.get(
+            'list_id') != None:
         if key['id'] == SYS_KEY_CONSTANT.ICON_CLASSIFIER_ID:
             temp_value = str(get_item_list_value(value))
             value = temp_value[temp_value.index('(') + 1:temp_value.index(')')]
         else:
             value = str(get_item_list_value(value))
     if key.get('type') == DAT_SYS_KEY.TYPE_FILE_PHOTO or key.get('type') == DAT_SYS_KEY.TYPE_FILE_ANY:
-        path = 'open_files/' + str(object['object_id']) + '/' + str(object['rec_id']) + '/'
+        path = 'files/' + str(object['object_id']) + '/' + str(object['rec_id']) + '/'
         if not os.path.exists(MEDIA_ROOT + '/' + path):
             os.makedirs(MEDIA_ROOT + '/' + path, exist_ok=True)
         file = files[value]
@@ -124,14 +125,14 @@ def add_data(user, group_id, object, files=None):
                 else:
                     temp_set = set(find_key_value_http(object.get('object_id'), item[0], item[1], group_id))
         if temp_set and nums_needed == len(
-                [item for item in get_keys_by_object(object.get('object_id')) if item['need'] == 1]):
+                list(filter(lambda x: x['obj_id'] == object.get('object_id') and x['need'], get_keys_by_object()))):
             return {'objects': [get_object_record_by_id_http(object.get('object_id'), item, group_id)
                                 for item in temp_set]}
     if object.get('rec_id_old', 0) != 0:  # действия при слиянии объектов
         old_object = get_object_record_by_id_http(object.get('object_id'), object.get('rec_id_old'), group_id)
         for param in old_object['params']:
             for value in param['values']:
-                data.append([param['id'], value['value'], value['date']])
+                data.append([param['id'], value['value'], value['date'] + ':00'])
         add_rel_by_other_object(group_id, object.get('object_id', 0), object.get('rec_id', 0),
                                 object.get('object_id', 0), object.get('rec_id_old', 0))
     if len(data) == 0:  # проверка на пустой запрос
