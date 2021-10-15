@@ -40,9 +40,15 @@ export default {
       if (val.length == 0) return;
       let defs = val[0];
 
+
       let el = document.createElement('svg');
       document.body.prepend(el);
       el.outerHTML = MAP_SVG.VAR.DEFS_TXT_PREFIX+defs+MAP_SVG.VAR.DEFS_TXT_POSTFIX;
+
+
+      el = document.createElement('style');
+      document.body.prepend(el);
+      el.outerHTML = MAP_SVG.VAR.STYLE_TXT_PREFIX+defs+MAP_SVG.VAR.STYLE_TXT_POSTFIX;
     },
 
     svg_const_defs_create()  { let el = document.createElement('svg');   document.body.prepend(el); el.outerHTML = MAP_SVG.CONST.DEFS_TXT; },
