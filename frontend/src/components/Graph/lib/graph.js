@@ -246,10 +246,7 @@ export default class Graph {
           node.y += dy / 30
         })
         //if force of the nodes is 70% of all graph, graph is reorder
-        if(((n1+n2)/2) / (this.nodes.length * this.nodes.length) > 0.7){
-          return
-        }
-        if(i >= 24){
+        if(((n1+n2)/2) / (this.nodes.length * this.nodes.length) > 0.7 || i >= 24){
           for(let node of tempNodes){
             let tempNode = this.nodes.find((item) => {return item.id === node.id})
             tempNode.x = node.x

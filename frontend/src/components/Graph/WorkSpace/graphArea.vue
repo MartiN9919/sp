@@ -32,7 +32,7 @@
         @wheel.stop="scroll(object, $event)"
         @click.ctrl.stop="addChoosingObject(object)"
         @click.alt.stop="getRelatedObjects(object, $event)"
-        @click.right.stop="menuShow($event, object)"
+        @click.right.prevent.stop="menuShow($event, object)"
         @click.stop="selectObject(object)"
       >
         <node :ref="`node-${object.id}`" :data="object">
