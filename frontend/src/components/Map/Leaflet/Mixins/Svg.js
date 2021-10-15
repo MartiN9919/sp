@@ -14,12 +14,13 @@ export default {
   },
 
   beforeDestroy: function() {
-
+    this.svg_const_remove();
+    this.svg_var_remove();
   },
 
   watch: {
     svg: function(val) {
-
+      this.svg_var_remove();
     },
   },
 
@@ -28,20 +29,20 @@ export default {
     mounted_after_svg() {
       let el = document.createElement('svg');
       document.body.prepend(el);
-      el.outerHTML = `
-<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" width="0" height="0">
-  <defs>
-    <marker id='${this.color_id}' fill='${this.color_temp}' orient="auto" markerUnits='userSpaceOnUse' markerWidth='101' markerHeight='33' refX='0.1' refY='16.5' opacity='.5'>
-      <path d='M1,17 L21,1 L21,33 Z'/>
-      <path d='M101,17 L82,1 L82,33 Z'/>
-      <rect x="20" y="6" width="64" height="5" />
-      <rect x="20" y="23" width="64" height="5" />
-    </marker>
-
-  </defs>
-</svg>
-      `;
+      el.outerHTML =
+        MAP_SVG.VAR.PREFIX+`
+        <marker id='${this.color_id}' fill='${this.color_temp}' orient="auto" markerUnits='userSpaceOnUse' markerWidth='101' markerHeight='33' refX='0.1' refY='16.5' opacity='.5'>
+          <path d='M1,17 L21,1 L21,33 Z'/>
+          <path d='M101,17 L82,1 L82,33 Z'/>
+          <rect x="20" y="6" width="64" height="5" />
+          <rect x="20" y="23" width="64" height="5" />
+        </marker>
+        `+MAP_SVG.VAR.POSTFIX;
     },
+
+    svg_const_remove() { let el = document.getElementById(MAP_SVG.CONST.ID); if (el) el.remove(); },
+    svg_var_remove()   { let el = document.getElementById(MAP_SVG.VAR.ID);   if (el) el.remove(); },
+
   },
 
     // <marker id='head-arrow-2' fill='${this.color_temp}' orient="auto" markerUnits='userSpaceOnUse' markerWidth='101' markerHeight='33' refX='0.1' refY='16.5' opacity='.5'>
