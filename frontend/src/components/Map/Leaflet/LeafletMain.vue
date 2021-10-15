@@ -483,7 +483,6 @@ export default {
   @import "~@/components/Map/Leaflet/Markers/Font.css";
 
   @import "~@/components/Map/Leaflet/Mixins/Control.css";
-  @import "~@/components/Map/Leaflet/Mixins/Svg.css";
 
   div::v-deep .sel { animation: 1s ease 0s infinite normal none running pulse; }
   @keyframes pulse {

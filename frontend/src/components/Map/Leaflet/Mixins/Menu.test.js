@@ -3,7 +3,7 @@ export const MAP_TEST_ITEM_1 = {
   //"id": 5,
   "name":  "Test 1",
   "hint":  "Это тест 1",
-  "color": "green",    // rgba(255, 190, 218, 0.5)
+  "color": "#F00", // "#FF000055", "green", не работает: rgba(255, 190, 218, 0.5)
 
   "fc": {
     "style": {
@@ -12,10 +12,10 @@ export const MAP_TEST_ITEM_1 = {
         "zoom": 2,
       },
       "line": {
-        "class": "ant arrow-double",     // класс объекта (для установки стиля)
+        "class": "ant arrow-double-end",     // класс объекта (для установки стиля)
       },
       "polygon": {
-        "class": "fill-star",
+        "class": "fill-hatch-diagonal-1",
       },
     },
 

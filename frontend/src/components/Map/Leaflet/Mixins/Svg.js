@@ -4,14 +4,9 @@ import { MAP_ITEM } from '@/components/Map/Leaflet/Lib/Const';
 import { MAP_SVG } from '@/components/Map/Leaflet/Mixins/Svg.const';
 
 export default {
-  data: () => ({
-    svg: [],
-  }),
+  data: () => ({ }),
 
-  mounted: function() {
-    this.svg_const_defs_create();
-    this.svg_const_style_create();
-  },
+  mounted: function() { },
 
   beforeDestroy: function() {
     this.svg_remove();
@@ -19,7 +14,7 @@ export default {
 
   watch: {
     SCRIPT_GET: {
-      handler: function(val) { this.svg_var_create(val); },
+      handler: function(val) { this.svg_refresh(val); },
       deep: true,
     },
   },
@@ -33,8 +28,8 @@ export default {
     mounted_after_svg() {
     },
 
-    svg_var_create(items) {
-      this.svg_var_remove();
+    svg_refresh(items) {
+      this.svg_remove();
       if (items.length == 0) return;
 
       // сформировать тексты defs и style
@@ -54,10 +49,10 @@ export default {
         // перебрать классы
         item_classes.forEach(function(item_class, ind_class) {
           // для класса: стиль и defs
-          let svg = MAP_SVG.LIST[item_class];
+          let svg = MAP_SVG.DAT.VAL[item_class];
           if (!svg) return;
-          let svg_style = svg[MAP_SVG.STYLE_KEY];
-          let svg_defs  = svg[MAP_SVG.DEFS_KEY];
+          let svg_style = svg[MAP_SVG.DAT.KEY_STYLE];
+          let svg_defs  = svg[MAP_SVG.DAT.KEY_DEFS ];
 
           // уникальный id
           let id = 'svg_'+ind+'_'+ind_class;
@@ -76,11 +71,11 @@ export default {
 
         let el;
         if (style!='') {
-          style = MAP_SVG.VAR.STYLE_TXT_PREFIX+style+MAP_SVG.VAR.STYLE_TXT_POSTFIX;
+          style = MAP_SVG.STYLE.PREFIX+style+MAP_SVG.STYLE.POSTFIX;
           el = document.createElement('style'); document.body.prepend(el); el.outerHTML = style;
         }
         if (defs!='') {
-          defs = MAP_SVG.VAR.DEFS_TXT_PREFIX +defs +MAP_SVG.VAR.DEFS_TXT_POSTFIX;
+          defs = MAP_SVG.DEFS.PREFIX+defs+MAP_SVG.DEFS.POSTFIX;
           el = document.createElement('svg'); document.body.prepend(el); el.outerHTML = defs;
         }
       }
@@ -88,15 +83,8 @@ export default {
 
     },
 
-    svg_const_defs_create()  { let el = document.createElement('svg');   document.body.prepend(el); el.outerHTML = MAP_SVG.CONST.DEFS_TXT; },
-    svg_const_style_create() { let el = document.createElement('style'); document.body.prepend(el); el.outerHTML = MAP_SVG.CONST.STYLE_TXT; },
-
-    svg_const_defs_remove()  { let el = document.getElementById(MAP_SVG.CONST.DEFS_ID);  if (el) el.remove(); },
-    svg_const_style_remove() { let el = document.getElementById(MAP_SVG.CONST.STYLE_ID); if (el) el.remove(); },
-    svg_var_defs_remove()    { let el = document.getElementById(MAP_SVG.VAR.DEFS_ID);    if (el) el.remove(); },
-    svg_var_style_remove()   { let el = document.getElementById(MAP_SVG.VAR.STYLE_ID);   if (el) el.remove(); },
-    svg_const_remove()       { this.svg_const_defs_remove(); this.svg_const_style_remove(); },
-    svg_var_remove()         { this.svg_var_defs_remove  (); this.svg_var_style_remove(); },
-    svg_remove()             { this.svg_const_remove();      this.svg_var_remove(); },
+    svg_defs_remove()  { let el = document.getElementById(MAP_SVG.DEFS.ID);  if (el) el.remove(); },
+    svg_style_remove() { let el = document.getElementById(MAP_SVG.STYLE.ID); if (el) el.remove(); },
+    svg_remove()       { this.svg_defs_remove  (); this.svg_style_remove(); },
   },
 }
