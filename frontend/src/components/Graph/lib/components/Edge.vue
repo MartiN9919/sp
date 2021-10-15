@@ -29,7 +29,6 @@ export default {
     let length = this.toNode.size
     this.fromNode.x = this.toNode.x + (Math.cos(angle) * length)
     this.fromNode.y = this.toNode.y + (Math.sin(angle) * length)
-
   },
 
   computed: {
