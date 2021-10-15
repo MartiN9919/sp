@@ -1,3 +1,6 @@
+import { mapGetters } from 'vuex';
+import { dict_get } from '@/components/Map/Leaflet/Lib/Lib';
+import { MAP_ITEM } from '@/components/Map/Leaflet/Lib/Const';
 import { MAP_SVG } from '@/components/Map/Leaflet/Mixins/Svg.const';
 
 export default {
@@ -17,38 +20,80 @@ export default {
   },
 
   watch: {
-    svg: function(val) {
-      this.svg_var_create(val);
+    SCRIPT_GET: {
+      handler: function(val) { this.svg_var_create(val); },
+      deep: true,
     },
+  },
+
+  computed: {
+    ...mapGetters(['SCRIPT_GET']),
   },
 
   methods: {
     // вызывать из родительского mounted
     mounted_after_svg() {
-      this.svg.push(`
-        <marker id='${this.color_id}' fill='${this.color_temp}' orient="auto" markerUnits='userSpaceOnUse' markerWidth='101' markerHeight='33' refX='0.1' refY='16.5' opacity='.5'>
-          <path d='M1,17 L21,1 L21,33 Z'/>
-          <path d='M101,17 L82,1 L82,33 Z'/>
-          <rect x="20" y="6" width="64" height="5" />
-          <rect x="20" y="23" width="64" height="5" />
-        </marker>
-        `);
+    //   this.svg.push(`
+    //     <marker id='${this.color_id}' fill='${this.color_temp}' orient="auto" markerUnits='userSpaceOnUse' markerWidth='101' markerHeight='33' refX='0.1' refY='16.5' opacity='.5'>
+    //       <path d='M1,17 L21,1 L21,33 Z'/>
+    //       <path d='M101,17 L82,1 L82,33 Z'/>
+    //       <rect x="20" y="6" width="64" height="5" />
+    //       <rect x="20" y="23" width="64" height="5" />
+    //     </marker>
+    //     `);
     },
 
-    svg_var_create(val) {
+    svg_var_create(items) {
       this.svg_var_remove();
-      if (val.length == 0) return;
-      let defs = val[0];
+      if (items.length == 0) return;
+
+      // сформировать тексты defs и style
+      let style = '';
+      let defs = '';
+      for(let ind=0; ind<items.length; ind++) {
+        let item = items[ind];
+
+        // с шины: списки классов и цвет
+        let item_color   = dict_get(item, [MAP_ITEM.COLOR.KEY], 'gray');
+        let item_classes =
+          (
+            dict_get(item, [MAP_ITEM.FC.KEY, MAP_ITEM.FC.STYLE.KEY, MAP_ITEM.FC.STYLE.LINE.KEY,    MAP_ITEM.FC.STYLE.LINE.CLASS.KEY],    '')+' '+
+            dict_get(item, [MAP_ITEM.FC.KEY, MAP_ITEM.FC.STYLE.KEY, MAP_ITEM.FC.STYLE.POLYGON.KEY, MAP_ITEM.FC.STYLE.POLYGON.CLASS.KEY], '')
+          ).trim().replace(/\s+/g, ' ').split(' ');
+
+        // перебрать классы
+        item_classes.forEach(function(item_class, ind_class) {
+          // для класса: стиль и defs
+          let svg = MAP_SVG.LIST[item_class] ?? [undefined, undefined];
+          let svg_style = svg[0];
+          let svg_defs  = svg[1];
+          if ((!svg_style) || (!svg_defs)) return;
+
+          // уникальный id
+          let id = 'svg_'+ind+'_'+ind_class;
+
+          // заменить переменные
+          svg_style = svg_style.replace(/{id}/g, id).replace(/{color}/g, item_color);
+          svg_defs  = svg_defs.replace(/{id}/g, id).replace(/{color}/g, item_color);
+
+          // запомнить
+          style += '.'+item_class+' { '+svg_style+' }';
+          defs  += svg_defs;
+          console.log(id, item_color, item_class, ind_class, svg_style, svg_defs);
+        });
+
+        if ((style=='') || (defs=='')) return;
+        style = MAP_SVG.VAR.STYLE_TXT_PREFIX+style+MAP_SVG.VAR.STYLE_TXT_POSTFIX;
+        defs  = MAP_SVG.VAR.DEFS_TXT_PREFIX +defs +MAP_SVG.VAR.DEFS_TXT_POSTFIX;
+
+        console.log(style, defs)
+
+        let el;
+        el = document.createElement('style'); document.body.prepend(el); el.outerHTML = style;
+        el = document.createElement('svg');   document.body.prepend(el); el.outerHTML = defs;
+      }
 
 
-      let el = document.createElement('svg');
-      document.body.prepend(el);
-      el.outerHTML = MAP_SVG.VAR.DEFS_TXT_PREFIX+defs+MAP_SVG.VAR.DEFS_TXT_POSTFIX;
-
-
-      el = document.createElement('style');
-      document.body.prepend(el);
-      el.outerHTML = MAP_SVG.VAR.STYLE_TXT_PREFIX+defs+MAP_SVG.VAR.STYLE_TXT_POSTFIX;
     },
 
     svg_const_defs_create()  { let el = document.createElement('svg');   document.body.prepend(el); el.outerHTML = MAP_SVG.CONST.DEFS_TXT; },

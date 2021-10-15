@@ -12,7 +12,7 @@ export const MAP_TEST_ITEM_1 = {
         "zoom": 2,
       },
       "line": {
-        "class": "ant head-arrow-end-2",     // класс объекта (для установки стиля)
+        "class": "ant arrow-double",     // класс объекта (для установки стиля)
       },
       "polygon": {
         "class": "fill-star",
