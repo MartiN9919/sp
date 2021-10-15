@@ -60,12 +60,12 @@ export default {
           // заменить переменные
           if (svg_style) {
             svg_style = svg_style.replace(/{id}/g, id).replace(/{color}/g, item_color);
-            style    += '.'+item_class+' { '+svg_style+' }';
+            style    += '.'+item_class+' { '+svg_style+' }\n';
           }
 
           if (svg_defs ) {
             svg_defs  = svg_defs.replace(/{id}/g, id).replace(/{color}/g, item_color);
-            defs  += svg_defs;
+            defs  += svg_defs+'\n';
           }
         });
 

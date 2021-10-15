@@ -12,10 +12,10 @@ export const MAP_TEST_ITEM_1 = {
         "zoom": 2,
       },
       "line": {
-        "class": "ant arrow-double-end",     // класс объекта (для установки стиля)
+        "class": "ant arrow-double-end dash-3",     // класс объекта (для установки стиля)
       },
       "polygon": {
-        "class": "fill-hatch-diagonal-1",
+        "class": "hatch-diagonal-1",
       },
     },
 
