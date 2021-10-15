@@ -1,6 +1,31 @@
 <template>
-  <div @click.right="menuShow($event)" @click="clearSelectors">
+  <div @click.right="menuShow($event)" @mousedown="clearSelectors">
     <screen ref="screen">
+      <group v-if="relatedObjects.length" :nodes="relatedObjects"></group>
+      <g
+        v-show="globalDisplaySettings.showRelations.state"
+        v-for="relation in graphRelations" :key="relation.id"
+        @wheel.stop="scrollRelation(relation, $event)"
+        @click.right.stop="menuShow($event, relation)"
+      >
+        <v-label
+          :ref="`label-${relation.id}`"
+          v-show="getTooltipStateRelation(relation)"
+          :edge-coordinates="getCoordinatesEdge(relation.id)"
+          :element="relation"
+        >
+          <information-label
+            :size-node="relation.size"
+            :params="relation.relation.params"
+            :show-date="globalDisplaySettings.showGlobalDateRelation.state"
+          ></information-label>
+        </v-label>
+        <edge
+          :ref="`edge-${relation.id}`"
+          :data="relation"
+          :nodes="graphObjects"
+        ></edge>
+      </g>
       <g
         :ref="`object-${object.id}`"
         v-for="object in graphObjects" :key="object.id"
@@ -8,7 +33,7 @@
         @click.ctrl.stop="addChoosingObject(object)"
         @click.alt.stop="getRelatedObjects(object, $event)"
         @click.right.stop="menuShow($event, object)"
-        @click="selectObject(object)"
+        @click.stop="selectObject(object)"
       >
         <node :ref="`node-${object.id}`" :data="object">
           <body-object
@@ -34,33 +59,6 @@
           :title="object.object.title"
           :size-node="object.size"
         ></name-object>
-      </g>
-      <g
-        v-show="globalDisplaySettings.showRelations.state"
-        v-for="relation in graphRelations" :key="relation.id"
-        @wheel.prevent.stop="scrollRelation(relation, $event)"
-        @click.right.prevent.stop="menuShow($event, relation)"
-      >
-        <v-label
-          :ref="`label-${relation.id}`"
-          v-show="getTooltipStateRelation(relation)"
-          :edge-coordinates="getCoordinatesEdge(relation.id)"
-          :element="relation"
-        >
-          <information-label
-            :size-node="relation.size"
-            :params="relation.relation.params"
-            :show-date="globalDisplaySettings.showGlobalDateRelation.state"
-          ></information-label>
-        </v-label>
-        <edge
-          :ref="`edge-${relation.id}`"
-          :data="relation"
-          :nodes="graphObjects"
-        ></edge>
-      </g>
-      <g v-if="relatedObjects.length" @click.stop>
-        <group :nodes="relatedObjects"></group>
       </g>
     </screen>
     <graph-search v-if="graphObjects.length" :objects="graphObjects" @findNode="findNode"></graph-search>
