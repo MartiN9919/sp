@@ -1,19 +1,19 @@
 <template>
-  <div @click.right="menuShow($event)">
+  <div @click.right="menuShow($event)" @click="clearSelectors">
     <screen ref="screen">
       <g
         :ref="`object-${object.id}`"
         v-for="object in graphObjects" :key="object.id"
-        @wheel.prevent.stop="scroll(object, $event)"
-        @mouseup.ctrl.capture="addChoosingObject(object)"
-        @mousedown.alt.capture="getRelatedObjects(object, $event)"
-        @click.right.prevent.stop="menuShow($event, object)"
-        @mousedown.capture="selectObject(object)"
+        @wheel.stop="scroll(object, $event)"
+        @click.ctrl.stop="addChoosingObject(object)"
+        @click.alt.stop="getRelatedObjects(object, $event)"
+        @click.right.stop="menuShow($event, object)"
+        @click="selectObject(object)"
       >
         <node :ref="`node-${object.id}`" :data="object">
           <body-object
             :node="object"
-            :selected="choosingObjects.includes(object)"
+            :selector="typeSelectorNode(object)"
             :show-triggers="getTriggersStateObject(object)"
           ></body-object>
         </node>
@@ -59,6 +59,9 @@
           :nodes="graphObjects"
         ></edge>
       </g>
+      <g v-if="relatedObjects.length" @click.stop>
+        <group :nodes="relatedObjects"></group>
+      </g>
     </screen>
     <graph-search v-if="graphObjects.length" :objects="graphObjects" @findNode="findNode"></graph-search>
     <context-menu-nested
@@ -71,9 +74,11 @@
 </template>
 
 <script>
+import dragMixin from '@/components/Graph/lib/mixins/drag'
 import Screen from '@/components/Graph/lib/components/Screen'
 import Node from '@/components/Graph/lib/components/Node'
 import Edge from "@/components/Graph/lib/components/Edge"
+import Group from "@/components/Graph/lib/components/Group"
 import VLabel from '@/components/Graph/lib/components/Label'
 import BodyObject from "@/components/Graph/WorkSpace/object/bodyObject"
 import NameObject from "@/components/Graph/WorkSpace/object/nameObject"
@@ -86,24 +91,36 @@ import {mapActions, mapGetters} from "vuex"
 
 export default {
   name: "graphArea",
-  components: {GraphSearch, ContextMenuNested, Screen, Node, Edge, VLabel, BodyObject, NameObject, InformationLabel},
+  components: {GraphSearch, ContextMenuNested, Screen, Node, Edge, VLabel, Group, BodyObject, NameObject, InformationLabel},
   data: () => ({
     choosingObjects: [],
-    positionDraggableObject: null,
     relatedObjects: []
   }),
-  mixins: [bodyContextMenu],
+  mixins: [bodyContextMenu, dragMixin],
   computed: {
     ...mapGetters(['graphObjects', 'graphRelations', 'globalDisplaySettings', 'objectClassifiersSettings']),
     allowRelations() { return Array.from(this.$store.state.graph.rootInstances.relations, r => {return r.id}) },
   },
   methods: {
+    typeSelectorNode(node) {
+      if(this.choosingObjects.includes(node))
+        return 'choosing'
+      if(this.relatedObjects.includes(node))
+        return 'related'
+    },
+    clearSelectors() {
+      this.choosingObjects = []
+      this.relatedObjects = []
+    },
     getRelatedObjects(node, e) {
-      let relations = this.graphRelations.filter(relation => relation.to === node.id || relation.from === node.id)
-      for (let relation of relations) {
-        this.$refs[`node-${relation.to === node.id ? relation.from : relation.to}`].map(node => node.onMousedown(e))
+      this.relatedObjects = []
+      if (!this.relatedObjects.length) {
+        let relations = this.graphRelations.filter(relation => relation.to === node.id || relation.from === node.id)
+        for (let relation of relations) {
+          this.relatedObjects.push(this.graphObjects.find(n => (n.id === relation.to || n.id === relation.from) && n.id !== node.id))
+        }
+        this.relatedObjects.push(node)
       }
-      this.$refs[`node-${node.id}`].map(node => node.onMousedown(e))
     },
     findNode(node) {
       this.$refs.screen.panNode(node, { offsetX: 0, offsetY: 0 })
