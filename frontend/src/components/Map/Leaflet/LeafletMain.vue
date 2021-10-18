@@ -37,11 +37,11 @@
           />
         </l-marker-cluster>
 
-        <l-polyline-decorator
+<!--         <l-polyline-decorator
           :paths="style_decor_get(map_ind, map_item)"
           :patterns="style_patterns"
         />
-
+ -->
       </l-layer-group>
 
       <!-- СТИЛИЗАЦИЯ ФИГУР -->
@@ -101,7 +101,7 @@
 <script>
 
 import { mapGetters, mapActions, } from 'vuex';
-import { Icon } from 'leaflet';
+import { Icon, } from 'leaflet';
 
 import {
   LMap,
@@ -119,7 +119,7 @@ import {
   LIcon,
 } from 'vue2-leaflet';
 
-import Vue2LeafletPolylinedecorator from "@/components/Map/Leaflet/Components/Polylinedecorator";
+//import Vue2LeafletPolylinedecorator from "@/components/Map/Leaflet/Components/Polylinedecorator";
 import Vue2LeafletMarkerCluster from 'vue2-leaflet-markercluster';
 import LControlPolylineMeasure  from 'vue2-leaflet-polyline-measure';
 
@@ -182,7 +182,7 @@ export default {
     LControl,
     LIcon,
     'l-marker-cluster': Vue2LeafletMarkerCluster,
-    'l-polyline-decorator': Vue2LeafletPolylinedecorator,
+    //'l-polyline-decorator': Vue2LeafletPolylinedecorator,
     LControlPolylineMeasure,
 
     EditorMap,
@@ -423,6 +423,15 @@ export default {
     // СОБЫТИЯ
     // ===============
     on_map_ready() {
+
+      // var markerLine = L.polyline([[58.44773, -28.65234], [52.9354, -23.33496], [53.01478, -14.32617], [58.1707, -10.37109], [59.68993, -0.65918]], {}).addTo(this.map);
+      // var markerPatterns = L.polylineDecorator(markerLine, {
+      //   //patterns: this.style_patterns,
+      //   patterns: [
+      //     { offset: '5%', repeat: '10%', symbol: L.Symbol.marker()}
+      //   ]
+      // }).addTo(this.map);
+
       this.map.invalidateSize();
     },
 
