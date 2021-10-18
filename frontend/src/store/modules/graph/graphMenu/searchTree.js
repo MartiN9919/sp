@@ -1,5 +1,6 @@
 import { postResponseAxios } from '@/plugins/axios_settings'
 import {getTriggers} from "@/store/modules/graph/graphNodes"
+import store from'@/store'
 
 function createSearchItem(getters, item) {
   return {
@@ -135,7 +136,7 @@ class SearchTreeItem extends SearchTreeRootItem {
   getInformation() {
     let message = ''
     if (this.rel) message += this.rel.title
-    if (this.relValue) message += `('${this.rel.list.find(i => i.id === this.relValue).value}')`
+    if (this.relValue) message += `('${store.getters.baseList(this.rel.type.value).values.find(i => i.id === this.relValue).value}')`
     if (this.relDateTimeStart) message += ` c ${this.relDateTimeStart}`
     if (this.relDateTimeEnd) message += ` по ${this.relDateTimeEnd}`
     return message

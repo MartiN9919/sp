@@ -91,7 +91,7 @@ export default {
     },
   }),
   computed: {
-    ...mapGetters(['baseObjects', 'baseRelations']),
+    ...mapGetters(['baseObjects', 'baseRelations', 'baseList']),
     selectedObjectId: {
       get: function () {
         return this.newObject.id
@@ -131,9 +131,11 @@ export default {
       return Array.isArray(relations) ? defaultRelations.concat(relations) : defaultRelations
     },
     listRelationItems: function () {
-      let relationList = this.listRelations.find(relation => relation.id === this.selectedRelationId)?.list
+      let relationObject = this.listRelations.find(relation => relation.id === this.selectedRelationId)
       let defaultRelationList = [{ id: 0, value: 'Не выбрано' }]
-      return Array.isArray(relationList) ? defaultRelationList.concat(relationList) : defaultRelationList
+      if(relationObject && relationObject.hasOwnProperty('type') && relationObject.type.value)
+          return defaultRelationList.concat(this.baseList(relationObject.type.value).values)
+      return defaultRelationList
     },
     checkChildrenChangeObject: function () {
       if(this.changeObject)
