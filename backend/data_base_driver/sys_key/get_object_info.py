@@ -1,6 +1,7 @@
 import copy
 
-from data_base_driver.constants.const_dat import DAT_SYS_OBJ, DAT_SYS_KEY
+from data_base_driver.connect.connect_mysql import db_sql
+from data_base_driver.constants.const_dat import DAT_SYS_OBJ, DAT_SYS_KEY, DAT_SYS_ID
 
 
 ###########################################
@@ -34,3 +35,10 @@ def rel_rec_to_el(rel_recs):
 def el_to_rec_id(obj, els):
     obj_id = DAT_SYS_OBJ.DUMP.to_id(val=obj)
     return [item[1] for item in els if item[0] == obj_id]
+
+
+def get_object_new_rec_id(object_type):
+    sql = 'SELECT ' + DAT_SYS_ID.ID + ' FROM '\
+                    + DAT_SYS_ID.TABLE + ' WHERE ' \
+                    + DAT_SYS_ID.OBJ_ID + ' = ' + str(object_type) + ';'
+    return db_sql(sql)[0][0] + 1

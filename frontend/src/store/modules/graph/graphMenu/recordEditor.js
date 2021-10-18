@@ -115,7 +115,7 @@ export default {
       return await postResponseAxios('objects/relation', request, {})
         .then(r => {
           let object = {o1: r.data.object_id_1, r1: r.data.rec_id_1, o2: r.data.object_id_2, r2: r.data.rec_id_2}
-          dispatch('addRelationToGraph', {object: object, relations: r.data.params})
+          dispatch('addRelationToGraph', {object: object, relations: r.data.params, noMove: true})
           dispatch('setEditableRelation',
             {
               relations: [relation.relation.o1, relation.relation.o2],

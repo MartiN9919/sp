@@ -6,7 +6,7 @@
         v-show="globalDisplaySettings.showRelations.state"
         v-for="relation in graphRelations" :key="relation.id"
         @wheel.stop="scrollRelation(relation, $event)"
-        @click.right.stop="menuShow($event, relation)"
+        @click.right.prevent.stop="menuShow($event, relation)"
       >
         <v-label
           :ref="`label-${relation.id}`"
