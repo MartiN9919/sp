@@ -1,23 +1,10 @@
 import os
+import re
 
 from data_base_driver.constants.const_script import IMPORTS, ENABLED_FUNCTIONS, ENVIRONMENT_VARIABLES, \
     BASE_PATH_TO_USER_SCRIPTS, PATH_TO_REPORTS_DIR
 
 DEBUG = False
-
-
-def is_function(string):
-    """
-    Стандартная функция проверки является ли данное слова функцией
-    @param str: строка содержащие проверяемое слово
-    @return: True если функция, False если нет
-    """
-    if string.find('\'') != -1 and string.find('(') != -1 and string.find('(') < string.find('\''):
-        return True
-    elif string.find('\"') != -1 and string.find('(') != -1 and string.find('(') < string.find('\"'):
-        return True
-    elif string.find('(') != -1:
-        return True
 
 
 def get_function_name(string):
@@ -26,29 +13,23 @@ def get_function_name(string):
     @param string: строка содержащие вызов функции
     @return: чистое название функции
     """
-    string = string[:string.find('(')+1]
-    if string.find('.') != -1:
-        return string[string.find('.') + 1:string.find('(')].replace('[', '')
-    elif string.find('=') != -1:
-        return string[string.find('=') + 1:string.find('(')].replace('[', '')
-    else:
-        return string[:string.find('(')].replace('[', '')
+    return re.sub(r'\(\w*\)', '', string)
 
 
-def default_checker(str):
+def default_checker(string):
     """
     проверка содержит ли данная строка запрещенные функции или переменные окружения
     @param str: строка из скрипта
     @return: False если строка не прошла проверку, True если проверка пройдена
     """
     if len(list(
-            set(str.split()) & set(
+            set(string.split()) & set(
                 ENVIRONMENT_VARIABLES))) > 0: return False, 'использование переменной окружения', list(
-        set(str.split()) & set(ENVIRONMENT_VARIABLES))
-    if len(set([get_function_name(func) for func in filter(is_function, str.split(' '))]).difference(
-            set(ENABLED_FUNCTIONS))) > 0:
-        return False, ' использование неразрешенной функции ', set(
-            [get_function_name(func) for func in filter(is_function, str.split(' '))]).difference(set(ENABLED_FUNCTIONS))
+        set(string.split()) & set(ENVIRONMENT_VARIABLES))
+    wrong_functions = set([get_function_name(func) for func in re.findall(r'[\w]*\(\w*\)', string)]).difference(
+            set(ENABLED_FUNCTIONS))
+    if len(wrong_functions) > 0:
+        return False, ' использование неразрешенной функции ', wrong_functions
     return True, ''
 
 

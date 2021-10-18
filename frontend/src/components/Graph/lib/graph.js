@@ -1,6 +1,7 @@
 import uuid from 'uuid'
 import util from './util'
 import { flextree } from 'd3-flextree'
+import store from '../../../store/index'
 
 export default class Graph {
   constructor () {
@@ -160,97 +161,100 @@ export default class Graph {
   }
 
   reorderGraph() {
+    store.commit('changeLoadStatus', true)
     let tempNodes = []
     for(let node of this.nodes) {
       tempNodes.push({id: node.id, x: node.x, y: node.y, width: node.width})
     }
     for(let i = 0; i < 25; i++){
-      let n = 0
-      let n1 = 0
-      let n2= 0
-      for(let node of tempNodes){
-        for (let otherNode of tempNodes) {
-          if(otherNode.id === node.id){
-            continue
-          }
-          else{
-            // distance(offset) between two nodes
-            let dx = otherNode.x - node.x;
-            let dy = otherNode.y - node.y;
-            let offset = Math.sqrt(dx * dx + dy * dy);
-            // if nodes is linked
-            if(this.edges.find(edge => {
-              return (edge.to === node.id && edge.from === otherNode.id) ||
-                     (edge.from === node.id && edge.to === otherNode.id)
-            })){
-              if(offset < 500 + node.width/2 + otherNode.width/2){
-                if (offset < 400 + node.width/2 + otherNode.width/2) {
-                  if (offset < 200 + node.width/2 + otherNode.width/2) {
-                    // if linked nodes is so close, up distance between them
-                    node.x -= dx;
-                    node.y -= dy;
-                  } else {
-                    node.x -= dx / 2;
-                    node.y -= dy / 2;
-                  }
-                } else {
-                  //if linked nodes have medium distance, make them little closer and up force count
-                  n1++
-                  n++
-                  node.x += dx / 6;
-                  node.y += dy / 6;
-                }
-              }
-              else{
-                //if linked nodes have long distance, make them closer
-                node.x += dx / 3;
-                node.y += dy / 3;
-              }
+      setTimeout(() => {
+        let n = 0
+        let n1 = 0
+        let n2= 0
+        tempNodes.forEach((node) => {
+          tempNodes.forEach((otherNode) => {
+            if(otherNode.id === node.id){
+              return
             }
-            // if nodes isn't linked
             else{
-              if(offset < 1000 + node.width/2 + otherNode.width/2){
-                if(offset < 100 + node.width/2 + otherNode.width/2){
-                  // if unlinked nodes is very close, make them much further
-                  node.x -= dx * 3;
-                  node.y -= dy * 3;
+              // distance(offset) between two nodes
+              let dx = otherNode.x - node.x;
+              let dy = otherNode.y - node.y;
+              let offset = Math.sqrt(dx * dx + dy * dy);
+              // if nodes is linked
+              if(this.edges.find(edge => {
+                return (edge.to === node.id && edge.from === otherNode.id) ||
+                       (edge.from === node.id && edge.to === otherNode.id)
+              })){
+                if(offset < 500 + node.width/2 + otherNode.width/2){
+                  if (offset < 400 + node.width/2 + otherNode.width/2) {
+                    if (offset < 200 + node.width/2 + otherNode.width/2) {
+                      // if linked nodes is so close, up distance between them
+                      node.x -= dx;
+                      node.y -= dy;
+                    } else {
+                      node.x -= dx / 2;
+                      node.y -= dy / 2;
+                    }
+                  } else {
+                    //if linked nodes have medium distance, make them little closer and up force count
+                    n1++
+                    n++
+                    node.x += dx / 6;
+                    node.y += dy / 6;
+                  }
                 }
                 else{
-                  // if unlinked nodes is medium close, make them further
-                  if(offset < 500 + node.width/2 + otherNode.width/2){
-                    node.x -= dx / 3;
-                    node.y -= dy / 3;
-                  }
-                  else{
-                    // if unlinked nodes is not so close, make them little further
-                    node.x -= dx / 9;
-                    node.y -= dy / 9;
-                  }
+                  //if linked nodes have long distance, make them closer
+                  node.x += dx / 3;
+                  node.y += dy / 3;
                 }
               }
+              // if nodes isn't linked
               else{
-                // if distance between nodes is so long, up force count
-                n2++
-                n++
+                if(offset < 1000 + node.width/2 + otherNode.width/2){
+                  if(offset < 100 + node.width/2 + otherNode.width/2){
+                    // if unlinked nodes is very close, make them much further
+                    node.x -= dx * 3;
+                    node.y -= dy * 3;
+                  }
+                  else{
+                    // if unlinked nodes is medium close, make them further
+                    if(offset < 500 + node.width/2 + otherNode.width/2){
+                      node.x -= dx / 3;
+                      node.y -= dy / 3;
+                    }
+                    else{
+                      // if unlinked nodes is not so close, make them little further
+                      node.x -= dx / 9;
+                      node.y -= dy / 9;
+                    }
+                  }
+                }
+                else{
+                  // if distance between nodes is so long, up force count
+                  n2++
+                  n++
+                }
               }
             }
+          })
+          // move all nodes to start of coordinates
+          let dx = 0 - node.x
+          let dy = 0 - node.y
+          node.x += dx / 30
+          node.y += dy / 30
+        })
+        //if force of the nodes is 70% of all graph, graph is reorder
+        if(((n1+n2)/2) / (this.nodes.length * this.nodes.length) > 0.7 || i >= 24){
+          for(let node of tempNodes){
+            let tempNode = this.nodes.find((item) => {return item.id === node.id})
+            tempNode.x = node.x
+            tempNode.y = node.y
           }
+          store.commit('changeLoadStatus', false)
         }
-        // move all nodes to start of coordinates
-        let dx = 0 - node.x
-        let dy = 0 - node.y
-        node.x += dx / 30
-        node.y += dy / 30
-      }
-      //if force of the nodes is 70% of all graph, graph is reorder
-      if(((n1+n2)/2) / (this.nodes.length * this.nodes.length) > 0.7){
-        break
-      }
-    }
-    for(let node of tempNodes){
-      let tempNode = this.nodes.find((item) => {return item.id === node.id})
-      tempNode.x = node.x
-      tempNode.y = node.y
+      }, 0)
     }
   }
 }

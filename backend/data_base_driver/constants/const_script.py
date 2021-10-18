@@ -8,7 +8,7 @@ ENVIRONMENT_VARIABLES = [
     "import"
 ]
 
-IMPORTS = "from data_base_driver.input_output.input_output import io_set, io_get_obj_mysql_tuple, io_get_rel_mysql_tuple\n" \
+IMPORTS = "from data_base_driver.input_output.input_output import io_set, io_get_obj_mysql_tuple, io_get_rel_mysql_tuple, io_get_rel\n" \
           "from data_base_driver.sys_key.get_object_info import obj_list, rel_rec_to_el, el_to_rec_id\n" \
           "from data_base_driver.input_output.io_geo import rel_to_geo_fc, geo_id_to_fc, relations_to_geometry_id, \
 feature_collection_by_geometry\n"\
@@ -32,7 +32,9 @@ ENABLED_FUNCTIONS = [
     'rel_to_geo_fc',
     'geo_id_to_fc',
     'int',
+    'set',
     'list',
+    'len',
     'find',
     'split',
     'open',
@@ -45,7 +47,8 @@ ENABLED_FUNCTIONS = [
     'feature_collection_by_geometry',
     'str_to_sec',
     'get_document_from_template',
-    'get_document_date_format'
+    'get_document_date_format',
+    'io_get_rel',
 ]
 
 PATH_TO_REPORTS_DIR = '/reports/'

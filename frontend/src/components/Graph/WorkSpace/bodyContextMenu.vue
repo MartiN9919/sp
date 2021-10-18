@@ -200,7 +200,7 @@ export default {
       let input  = document.getElementById("app").appendChild(obj)
       input.click()
       const parseText = function (text) {
-        JSON.parse(text).map(obj => addObjectToGraph(obj))
+        JSON.parse(text).map(obj => addObjectToGraph(Object.assign(obj, {'noMove': true})))
       }
       input.addEventListener('change', function() {
         input.files[0].text()
