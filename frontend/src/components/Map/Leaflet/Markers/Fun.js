@@ -33,7 +33,7 @@ export function icon_2_marker(latlng, icon, style={}, className='') {
 }
 
 export function icon_get(style={}, className='') {
-  let color  = style [MAP_ITEM.COLOR.KEY               ] ?? MAP_ITEM.COLOR.DEF;
+  let color  = style [MAP_ITEM.FC.STYLE._COLOR_.KEY    ] ?? MAP_ITEM.COLOR.DEF;
   let marker = style [MAP_ITEM.FC.STYLE.MARKER.KEY     ] ?? {};
   let icon   = marker[MAP_ITEM.FC.STYLE.MARKER.ICON.KEY] ?? MAP_ITEM.FC.STYLE.MARKER.ICON.DEF;
   let zoom   = marker[MAP_ITEM.FC.STYLE.MARKER.ZOOM.KEY] ?? 1;

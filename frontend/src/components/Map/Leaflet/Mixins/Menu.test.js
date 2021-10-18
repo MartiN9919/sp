@@ -137,7 +137,7 @@ export const MAP_TEST_ITEM_2 = {
   //"id": 6,
   "name":  "Test 2",
   "hint":  "Это тест 2",
-  "color": "#f00",  // "#923"
+  "color": "green",  // "#923"
   "fc": {
     "style": {
       "marker": {

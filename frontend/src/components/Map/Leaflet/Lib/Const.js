@@ -22,7 +22,10 @@ export const MAP_ITEM = {
     },
 
     STYLE: {                          // стили маркеров и фигур
-      KEY: 'style',
+      KEY:     'style',
+      _COLOR_: {                      // в некоторых случаях транслируется сюда из MAP_ITEM.COLOR (чтобы использовать в стилях)
+        KEY:   'color',
+      },
 
       MARKER: {
         KEY:  'marker',
@@ -82,6 +85,10 @@ export const MAP_ITEM = {
       '#4DD6D6FF',
       '#E3F017FF',
     ],
+  },
+
+  ZOOM: {
+    KEY: 'zoom',                      // увеличение карты
   },
 
   _LEGEND_COLOR_: 'legend_color',     // [], заполняется программой
