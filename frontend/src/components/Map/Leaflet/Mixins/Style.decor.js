@@ -1,3 +1,5 @@
+import { mapGetters, } from 'vuex';
+
 import { MAP_ITEM } from '@/components/Map/Leaflet/Lib/Const';
 import { dict_get } from '@/components/Map/Leaflet/Lib/Lib';
 import { fc_key, fc_types_del, } from '@/components/Map/Leaflet/Lib/LibFc';
@@ -26,14 +28,14 @@ import {
 export default {
   data: () => ({
     style_patterns: [
-      // {
-      //   offset: 12,
-      //   repeat: 25,
-      //   symbol: L.Symbol.arrowHead({
-      //     pixelSize: 15,
-      //     pathOptions: { color: "#f00", weight: 2, stroke: true },
-      //   }),
-      // },
+      {
+        offset: 12,
+        repeat: 25,
+        symbol: L.Symbol.arrowHead({
+          pixelSize: 15,
+          pathOptions: { color: "#f00", weight: 2, stroke: true },
+        }),
+      },
     ],
     style_decor_path: [
       // [47.334852, -1.509485],
@@ -43,16 +45,29 @@ export default {
     ],
   }),
 
+  watch: {
+    SCRIPT_GET: {
+      handler: function(val) {
+        console.log(11111, val)
+      },
+      deep: true,
+    },
+  },
 
+  computed: {
+    ...mapGetters([
+      'SCRIPT_GET',
+    ]),
+  },
 
   methods: {
     style_decor_set(map_ind, map_item, fc) {
       var markerLine = L.polyline([[58.44773, -28.65234], [52.9354, -23.33496], [53.01478, -14.32617], [58.1707, -10.37109], [59.68993, -0.65918]], {}).addTo(this.map);
       var markerPatterns = L.polylineDecorator(markerLine, {
-        //patterns: this.style_patterns,
-        patterns: [
-          { offset: '5%', repeat: '10%', symbol: L.Symbol.marker()}
-        ]
+        patterns: this.style_patterns,
+        // patterns: [
+        //   { offset: '5%', repeat: '10%', symbol: L.Symbol.marker()}
+        // ]
       }).addTo(this.map);
 
     },
