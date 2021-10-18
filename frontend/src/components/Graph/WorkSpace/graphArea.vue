@@ -29,6 +29,7 @@
       <g
         :ref="`object-${object.id}`"
         v-for="object in graphObjects" :key="object.id"
+        v-if="object.object.show"
         @wheel.stop="scroll(object, $event)"
         @click.ctrl.stop="addChoosingObject(object)"
         @click.alt.stop="getRelatedObjects(object, $event)"
@@ -107,7 +108,7 @@ export default {
         return 'related'
     },
     clearSelectors() {
-      this.choosingObjects = []
+      // this.choosingObjects = []
       this.relatedObjects = []
     },
     getRelatedObjects(node, e) {

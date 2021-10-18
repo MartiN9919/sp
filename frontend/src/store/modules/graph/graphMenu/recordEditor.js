@@ -70,12 +70,17 @@ export default {
         .then(r => { return Promise.resolve(r.data) })
         .catch(e => { return Promise.reject(e) })
     },
-    async getRelationFromServer({commit, dispatch}, params, config={}) {
+    async getRelationFromServer({getters, commit, dispatch}, params, config={}) {
       return await postResponseAxios('objects/object_relation/', params, config)
         .then(r => {
+          if(r.data.length === 0){
+            let findNode = getters.graphObjects.find(o => o.id === params.object_id.toString() + '-' + params.rec_id.toString())
+            findNode.object.show = true
+            dispatch('updateObjectFromGraph', {object: findNode, fields: {object: findNode.object}})
+          }
           for(let relation of r.data) {
             let object = {o1: params.object_id, r1: params.rec_id, o2: relation.object_id, r2: relation.rec_id}
-            dispatch('addRelationToGraph', {object: object, relations: relation.relations})
+            dispatch('addRelationToGraph', {object: object, relations: relation.relations, noMove: params.noMove})
           }
           return Promise.resolve(r.data)
         })

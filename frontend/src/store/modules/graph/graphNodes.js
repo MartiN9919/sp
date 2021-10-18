@@ -92,8 +92,8 @@ export default {
         size: size, x: x, y: y
       })
     },
-    addRelationToGraph: (state, {objects, relation}) => {
-      state.graph.createEdge(objects[0], objects[1],{relation: relation, size: 600})
+    addRelationToGraph: (state, {objects, relation, noMove}) => {
+      state.graph.createEdge(objects[0], objects[1],{relation: relation, size: 600, noMove: noMove})
     },
   },
   actions: {
@@ -101,7 +101,7 @@ export default {
     changeGlobalSettingState({ commit }, payload) { commit('changeGlobalSettingState', payload) },
     setTriggerState({ commit }, payload) { commit('setTriggerState', payload) },
     setClassifiersSettings({ commit }, payload) { commit('setClassifiersSettings', payload) },
-    addRelationToGraph({getters, commit, dispatch}, {object, relations}) {
+    addRelationToGraph({getters, commit, dispatch}, {object, relations, noMove}) {
       let object1 = getters.graphObjects.find(r => r.object.object.id === object.o1 && r.object.recId === object.r1)
       let object2 = getters.graphObjects.find(r => r.object.object.id === object.o2 && r.object.recId === object.r2)
       let relation = new DataBaseRelation(object1, object2, relations)
@@ -109,12 +109,12 @@ export default {
       if(findRelation)
         dispatch('updateRelationFromGraph', {relation: findRelation, fields: {relation: relation}})
       else
-        commit('addRelationToGraph', {objects: [object1, object2], relation: relation})
+        commit('addRelationToGraph', {objects: [object1, object2], relation: relation, noMove: noMove})
     },
     updateRelationFromGraph({commit}, {relation, fields}) { commit('updateRelationFromGraph', {relation, fields}) },
     deleteObjectFromGraph({commit}, object) { commit('deleteObjectFromGraph', object) },
     updateObjectFromGraph({commit}, {object, fields}) { commit('updateObjectFromGraph', {object, fields}) },
-    addObjectToGraph({ getters, commit, dispatch }, {recId, objectId, size=600, x=Math.random() * 1000, y=Math.random() * 1000}) {
+    addObjectToGraph({ getters, commit, dispatch }, {recId, objectId, size=600, x=Math.random() * 1000, y=Math.random() * 1000, noMove =false}) {
       dispatch('getObjectFromServer', {params: {record_id: recId, object_id: objectId}})
         .then(r => {
           let editableObject = new GraphObject(r)
@@ -126,7 +126,7 @@ export default {
             dispatch('updateObjectFromGraph', {object: findNode, fields: {object: editableObject}})
           else {
             commit('addObjectToGraph', {editableObject, x, y, size})
-            dispatch('getRelationFromServer', {object_id: objectId, rec_id: recId, objects: relatedObjects})
+            dispatch('getRelationFromServer', {object_id: objectId, rec_id: recId, objects: relatedObjects, noMove: noMove})
           }
         })
 
@@ -192,6 +192,7 @@ class GraphObject extends DataBaseObject {
     this.showTitle = true
     this.showTooltip = true
     this.showTriggers = true
+    this.show = false
   }
 
   getGeneratedId() {
