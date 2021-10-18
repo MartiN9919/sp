@@ -32,17 +32,25 @@
         >
           <l-geo-json
             ref="geoJson"
-            :geojson="data_normalize(map_ind)"
+            :geojson="data_normalize(map_ind, map_item)"
             :options="geojson_options(map_ind)"
           />
         </l-marker-cluster>
+
+        <l-polyline-decorator
+          :paths="style_decor_get(map_ind, map_item)"
+          :patterns="style_patterns"
+        />
+
       </l-layer-group>
 
+      <!-- СТИЛИЗАЦИЯ ФИГУР -->
 <!--       <l-polyline-decorator
-        :paths="polyline.latlngs"
-        :patterns="patterns"
-      ></l-polyline-decorator>
+        :paths="style_path"
+        :patterns="style_patterns"
+      />
  -->
+
       <!-- РЕДАКТОР -->
       <EditorMap
         v-model="fc_edit"
@@ -123,18 +131,18 @@ import {
 } from '@/components/Map/Leaflet/Markers/Fun';
 
 import                 '@/components/Map/Leaflet/Markers/Pulse';
-import EditorMap  from '@/components/Map/Leaflet/Components/EditorMap';
-import Style      from '@/components/Map/Leaflet/Components/Style';
-import Range      from '@/components/Map/Leaflet/Components/Range';
-import Legend     from '@/components/Map/Leaflet/Components/Legend';
-import Logo       from '@/components/Map/Leaflet/Components/Logo';
-import MixResize  from '@/components/Map/Leaflet/Mixins/Resize';
-import MixKey     from '@/components/Map/Leaflet/Mixins/Key';
-import MixColor   from '@/components/Map/Leaflet/Mixins/Color';
-import MixSvg     from '@/components/Map/Leaflet/Mixins/Svg';
-import MixControl from '@/components/Map/Leaflet/Mixins/Control';
-import MixMeasure from '@/components/Map/Leaflet/Mixins/Measure';
-import MixMenu    from '@/components/Map/Leaflet/Mixins/Menu';
+import EditorMap     from '@/components/Map/Leaflet/Components/EditorMap';
+import Range         from '@/components/Map/Leaflet/Components/Range';
+import Legend        from '@/components/Map/Leaflet/Components/Legend';
+import Logo          from '@/components/Map/Leaflet/Components/Logo';
+import MixResize     from '@/components/Map/Leaflet/Mixins/Resize';
+import MixKey        from '@/components/Map/Leaflet/Mixins/Key';
+import MixColor      from '@/components/Map/Leaflet/Mixins/Color';
+import MixSvg        from '@/components/Map/Leaflet/Mixins/Svg';
+import MixControl    from '@/components/Map/Leaflet/Mixins/Control';
+import MixMeasure    from '@/components/Map/Leaflet/Mixins/Measure';
+import MixMenu       from '@/components/Map/Leaflet/Mixins/Menu';
+import MixStyleDecor from '@/components/Map/Leaflet/Mixins/Style.decor';
 
 
 import { datesql_to_ts, } from '@/plugins/sys';
@@ -155,6 +163,7 @@ export default {
     MixControl,
     MixMeasure,
     MixMenu,
+    MixStyleDecor,
   ],
 
 
@@ -177,7 +186,6 @@ export default {
     LControlPolylineMeasure,
 
     EditorMap,
-    Style,
     Range,
     Legend,
     Logo,
@@ -192,32 +200,6 @@ export default {
         zoomControl: false,
         zoomSnap:    0.5,
       },
-
-
-      // patterns: [
-      //   {
-      //     offset: 12,
-      //     repeat: 25,
-      //     symbol: L.Symbol.arrowHead({
-      //       pixelSize: 15,
-      //       pathOptions: { color: "#f00", weight: 2, stroke: true },
-      //     }),
-      //   },
-      // ],
-      // polyline: {
-      //   latlngs: [
-      //     [47.334852, -1.509485],
-      //     [47.342596, -1.328731],
-      //     [47.241487, -1.190568],
-      //     [47.234787, -1.358337],
-      //   ],
-      //  color: "orange",
-      // },
-
-
-
-
-
     };
   },
 
@@ -305,13 +287,12 @@ export default {
     // MAP
     // ===============
     // корректировать данные
-    data_normalize(map_ind) {
+    data_normalize(map_ind, map_item) {
       // рассчитать цвета (легенда, цвет от значения в группе)
-      this.data_normalize_color(map_ind);
+      this.data_normalize_color(map_item);
 
       // deep copy
-      let item = this.SCRIPT_GET_ITEM(map_ind);
-      let fc   = item[MAP_ITEM.FC.KEY];
+      let fc = map_item[MAP_ITEM.FC.KEY];
       fc = JSON.parse(JSON.stringify(fc));
 
       // установить fc.features[ind].ind - порядковый номер фигуры в fc
@@ -321,13 +302,17 @@ export default {
       let range_ts  = this.MAP_GET_RANGE_SEL;
       if ((range_ts[0]>0) && (range_ts[1]>0)) {
         let item_date;
-        let features = fc.features.filter(function(item) {
-          if (!item.properties.date) return true;
-          item_date = datesql_to_ts(item.properties.date);
+        let features = fc.features.filter(function(map_item) {
+          if (!map_item.properties.date) return true;
+          item_date = datesql_to_ts(map_item.properties.date);
           return ((item_date >= range_ts[0]) && (item_date <= range_ts[1]));
         });
         fc.features = features;
       }
+
+      // стилизация фигур
+      this.style_decor_set(map_ind, map_item, fc)
+
       // console.log(this.$refs.geoJson)
       return fc;
     },
@@ -438,17 +423,6 @@ export default {
     // СОБЫТИЯ
     // ===============
     on_map_ready() {
-
-    // var markerLine = L.polyline([[58.44773, -28.65234], [52.9354, -23.33496], [53.01478, -14.32617], [58.1707, -10.37109], [59.68993, -0.65918]], {}).addTo(this.map);
-    // var markerPatterns = L.polylineDecorator(markerLine, {
-    //   patterns: [
-    //     { offset: '5%', repeat: '10%', symbol: L.Symbol.marker()}
-    //   ]
-    // }).addTo(this.map);
-
-
-
-
       this.map.invalidateSize();
     },
 

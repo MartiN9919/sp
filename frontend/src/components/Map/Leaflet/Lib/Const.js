@@ -14,9 +14,12 @@ export const MAP_ITEM = {
       GEOMETRY:  {
         KEY:     'geometry',
         TYPE: {
-          MARKER:  'Marker',
-          LINE:    'LineString',
-          POLYGON: 'Polygon',
+          MARKER:    'Marker',
+          LINE:      'LineString',
+          POLYGON:   'Polygon',
+        },
+        COORDINATES: {
+          KEY:       'coordinates',
         },
       },
     },
@@ -67,6 +70,12 @@ export const MAP_ITEM = {
           KEY: 'class',
         },
       },
+
+      _DECOR_: {                      // декоратор стилей (Polylinedecorator)
+        KEY:   'decor',
+        PATHS: 'paths',
+      },
+
     },
   },
 

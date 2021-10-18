@@ -23,10 +23,9 @@ export default {
 
   methods: {
     // ЗАПОЛНИТЬ fc.features[i][MAP_ITEM.COLOR.KEY]
-    data_normalize_color(map_ind) {
+    data_normalize_color(map_item) {
       // данные на шине
-      let map_item    = this.SCRIPT_GET_ITEM(map_ind);
-      let color_green = this.color_green(map_ind);
+      let color_green = this.color_green(map_item);
       let fc          = map_item[MAP_ITEM.FC.KEY];
 
       // если установлена опция раскраски полигона от value
@@ -99,9 +98,9 @@ export default {
     },
 
     // тип раскраски (по зеленому цвету)
-    color_green(map_ind) {
+    color_green(map_item) {
       return ((((((((
-        this.SCRIPT_GET_ITEM(map_ind)
+        map_item
         [MAP_ITEM.FC.KEY                            ]) ?? {})
         [MAP_ITEM.FC.STYLE.KEY                      ]) ?? {})
         [MAP_ITEM.FC.STYLE.POLYGON.KEY              ]) ?? {})
