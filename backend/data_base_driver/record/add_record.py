@@ -16,6 +16,7 @@ from data_base_driver.record.validate_record import validate_record, get_country
 from data_base_driver.relations.add_rel import add_rel_by_other_object
 from data_base_driver.sys_key.get_key_dump import get_key_by_id
 from data_base_driver.sys_key.get_list import get_item_list_value
+from data_base_driver.sys_key.get_object_info import get_object_new_rec_id
 
 
 def add_record(group_id, object_id, object_info):
@@ -90,7 +91,8 @@ def parse_value(param, object, files):
         else:
             value = str(get_item_list_value(value))
     if key.get('type') == DAT_SYS_KEY.TYPE_FILE_PHOTO or key.get('type') == DAT_SYS_KEY.TYPE_FILE_ANY:
-        path = 'files/' + str(object['object_id']) + '/' + str(object['rec_id']) + '/'
+        rec_id = get_object_new_rec_id(object['object_id']) if object['rec_id'] == 0 else object['rec_id']
+        path = 'files/' + str(object['object_id']) + '/' + str(rec_id) + '/'
         if not os.path.exists(MEDIA_ROOT + '/' + path):
             os.makedirs(MEDIA_ROOT + '/' + path, exist_ok=True)
         file = files[value]

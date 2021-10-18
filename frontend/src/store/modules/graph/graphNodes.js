@@ -123,7 +123,7 @@ export default {
             Object.assign({object_id: o.object.object.id, rec_id: o.object.recId})
           )
           if(findNode)
-            dispatch('updateObjectFromGraph', {object: findNode, fields: {object: editableObject}})
+            dispatch('updateObjectFromGraph', {object: findNode, fields: {object: Object.assign(editableObject, {show: true})}})
           else {
             commit('addObjectToGraph', {editableObject, x, y, size})
             dispatch('getRelationFromServer', {object_id: objectId, rec_id: recId, objects: relatedObjects, noMove: noMove})

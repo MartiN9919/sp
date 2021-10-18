@@ -1,4 +1,5 @@
-from data_base_driver.constants.const_dat import DAT_SYS_OBJ
+from data_base_driver.connect.connect_mysql import db_sql
+from data_base_driver.constants.const_dat import DAT_SYS_OBJ, DAT_SYS_ID
 
 
 def get_all_objects():
@@ -25,3 +26,5 @@ def get_object_by_id(id):
     @return: словарь содержащий информацию о объекте
     """
     return DAT_SYS_OBJ.DUMP.get_rec(id=id)
+
+
