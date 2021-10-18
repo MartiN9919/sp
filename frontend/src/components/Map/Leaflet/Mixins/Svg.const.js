@@ -45,7 +45,7 @@ export const MAP_SVG = {
       'arrow-double-end': {
         style: 'marker-end: url(#{id});',
         defs: `
-          <marker id="{id}" fill="{color}" orient="auto" markerUnits='userSpaceOnUse' markerWidth='101' markerHeight='33' refX='0.1' refY='16.5' opacity='.5'>
+          <marker id="{id}" fill="{color}" orient="auto" markerUnits='userSpaceOnUse' markerWidth='101' markerHeight='33' refX='51' refY='16.5' opacity='.5'>
             <path d='M1,17 L21,1 L21,33 Z'/>
             <path d='M101,17 L82,1 L82,33 Z'/>
             <rect x="20" y="6" width="64" height="5" />

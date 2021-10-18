@@ -38,7 +38,11 @@
         </l-marker-cluster>
       </l-layer-group>
 
-
+<!--       <l-polyline-decorator
+        :paths="polyline.latlngs"
+        :patterns="patterns"
+      ></l-polyline-decorator>
+ -->
       <!-- РЕДАКТОР -->
       <EditorMap
         v-model="fc_edit"
@@ -107,6 +111,7 @@ import {
   LIcon,
 } from 'vue2-leaflet';
 
+import Vue2LeafletPolylinedecorator from "@/components/Map/Leaflet/Components/Polylinedecorator";
 import Vue2LeafletMarkerCluster from 'vue2-leaflet-markercluster';
 import LControlPolylineMeasure  from 'vue2-leaflet-polyline-measure';
 
@@ -119,6 +124,7 @@ import {
 
 import                 '@/components/Map/Leaflet/Markers/Pulse';
 import EditorMap  from '@/components/Map/Leaflet/Components/EditorMap';
+import Style      from '@/components/Map/Leaflet/Components/Style';
 import Range      from '@/components/Map/Leaflet/Components/Range';
 import Legend     from '@/components/Map/Leaflet/Components/Legend';
 import Logo       from '@/components/Map/Leaflet/Components/Logo';
@@ -129,6 +135,7 @@ import MixSvg     from '@/components/Map/Leaflet/Mixins/Svg';
 import MixControl from '@/components/Map/Leaflet/Mixins/Control';
 import MixMeasure from '@/components/Map/Leaflet/Mixins/Measure';
 import MixMenu    from '@/components/Map/Leaflet/Mixins/Menu';
+
 
 import { datesql_to_ts, } from '@/plugins/sys';
 
@@ -166,9 +173,11 @@ export default {
     LControl,
     LIcon,
     'l-marker-cluster': Vue2LeafletMarkerCluster,
+    'l-polyline-decorator': Vue2LeafletPolylinedecorator,
     LControlPolylineMeasure,
 
     EditorMap,
+    Style,
     Range,
     Legend,
     Logo,
@@ -183,6 +192,32 @@ export default {
         zoomControl: false,
         zoomSnap:    0.5,
       },
+
+
+      // patterns: [
+      //   {
+      //     offset: 12,
+      //     repeat: 25,
+      //     symbol: L.Symbol.arrowHead({
+      //       pixelSize: 15,
+      //       pathOptions: { color: "#f00", weight: 2, stroke: true },
+      //     }),
+      //   },
+      // ],
+      // polyline: {
+      //   latlngs: [
+      //     [47.334852, -1.509485],
+      //     [47.342596, -1.328731],
+      //     [47.241487, -1.190568],
+      //     [47.234787, -1.358337],
+      //   ],
+      //  color: "orange",
+      // },
+
+
+
+
+
     };
   },
 
@@ -403,6 +438,17 @@ export default {
     // СОБЫТИЯ
     // ===============
     on_map_ready() {
+
+    // var markerLine = L.polyline([[58.44773, -28.65234], [52.9354, -23.33496], [53.01478, -14.32617], [58.1707, -10.37109], [59.68993, -0.65918]], {}).addTo(this.map);
+    // var markerPatterns = L.polylineDecorator(markerLine, {
+    //   patterns: [
+    //     { offset: '5%', repeat: '10%', symbol: L.Symbol.marker()}
+    //   ]
+    // }).addTo(this.map);
+
+
+
+
       this.map.invalidateSize();
     },
 
