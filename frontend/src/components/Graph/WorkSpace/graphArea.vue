@@ -101,6 +101,7 @@ export default {
     allowRelations() { return Array.from(this.$store.state.graph.rootInstances.relations, r => {return r.id}) },
   },
   methods: {
+    ...mapActions(['setScreen']),
     typeSelectorNode(node) {
       if(this.choosingObjects.includes(node))
         return 'choosing'
@@ -198,6 +199,9 @@ export default {
       this.$refs[`node-${id}`][0].fitContent()
     },
   },
+  mounted() {
+    this.setScreen(this.$refs.screen)
+  }
 }
 </script>
 

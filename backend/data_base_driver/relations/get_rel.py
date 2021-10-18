@@ -308,8 +308,8 @@ def search_relations(group_id, request):
     """
     result = []
     if len(request.get('rels')) == 0:
-        return [{'object_id': item['object_id'], 'rec_id': item['rec_id']}
-                for item in get_rel_cascade(group_id, request.get('object_id'), request.get('rec_id'), 1)['rels']]
+        get_unique_objects(result, get_rel_cascade(group_id, request.get('object_id'), request.get('rec_id'), 1)['rels'])
+        return result
     else:
         parent = {'object_id': request.get('object_id'), 'rec_id': request.get('rec_id')}
         parent['rels'] = []

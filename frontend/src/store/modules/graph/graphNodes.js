@@ -55,6 +55,7 @@ class GlobalSettings {
 
 export default {
   state: {
+    screen: null,
     triggers: [],
     classifiersSettings: getClassifiersSettings(),
     globalDisplaySettings: new GlobalSettings(),
@@ -70,6 +71,7 @@ export default {
     globalDisplaySettings: state => { return state.globalDisplaySettings },
   },
   mutations: {
+    setScreen: (state, screen) => state.screen = screen,
     deleteObjectFromGraph: (state, object) => state.graph.removeNode(object),
     updateObjectFromGraph: (state, {object, fields}) => state.graph.updateNode(object, fields),
     updateRelationFromGraph: (state, {relation, fields}) => state.graph.updateEdge(relation, fields),
@@ -85,11 +87,11 @@ export default {
       } else Vue.set(state.classifiersSettings, objectId, [classifierId])
       localStorage.setItem('objectClassifiersSettings', JSON.stringify(state.classifiersSettings))
     },
-    addObjectToGraph: (state, {editableObject, x, y, size}) => {
+    addObjectToGraph: (state, {editableObject, position, size}) => {
       state.graph.createNode({
         id: editableObject.getGeneratedId(),
         object: editableObject,
-        size: size, x: x, y: y
+        size: size, x: position.x, y: position.y
       })
     },
     addRelationToGraph: (state, {objects, relation, noMove}) => {
@@ -97,6 +99,7 @@ export default {
     },
   },
   actions: {
+    setScreen({ commit }, screen) { commit('setScreen', screen) },
     reorderGraph({ state }) { state.graph.reorderGraph() },
     changeGlobalSettingState({ commit }, payload) { commit('changeGlobalSettingState', payload) },
     setTriggerState({ commit }, payload) { commit('setTriggerState', payload) },
@@ -114,7 +117,7 @@ export default {
     updateRelationFromGraph({commit}, {relation, fields}) { commit('updateRelationFromGraph', {relation, fields}) },
     deleteObjectFromGraph({commit}, object) { commit('deleteObjectFromGraph', object) },
     updateObjectFromGraph({commit}, {object, fields}) { commit('updateObjectFromGraph', {object, fields}) },
-    addObjectToGraph({ getters, commit, dispatch }, {recId, objectId, size=600, x=Math.random() * 1000, y=Math.random() * 1000, noMove =false}) {
+    addObjectToGraph({ state, getters, commit, dispatch }, {recId, objectId, size=600, position=state.screen.getStartPosition(), noMove =false}) {
       dispatch('getObjectFromServer', {params: {record_id: recId, object_id: objectId}})
         .then(r => {
           let editableObject = new GraphObject(r)
@@ -125,7 +128,7 @@ export default {
           if(findNode)
             dispatch('updateObjectFromGraph', {object: findNode, fields: {object: Object.assign(editableObject, {show: true})}})
           else {
-            commit('addObjectToGraph', {editableObject, x, y, size})
+            commit('addObjectToGraph', {editableObject, position, size})
             dispatch('getRelationFromServer', {object_id: objectId, rec_id: recId, objects: relatedObjects, noMove: noMove})
           }
         })
