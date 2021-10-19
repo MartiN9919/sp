@@ -160,7 +160,7 @@ export default class Graph {
     return index
   }
 
-  reorderGraph() {
+  reorderGraph(x, y) {
     store.commit('changeLoadStatus', true)
     let tempNodes = []
     for(let node of this.nodes) {
@@ -240,8 +240,8 @@ export default class Graph {
             }
           })
           // move all nodes to start of coordinates
-          let dx = 0 - node.x
-          let dy = 0 - node.y
+          let dx = x - node.x
+          let dy = y - node.y
           node.x += dx / 30
           node.y += dy / 30
         })
