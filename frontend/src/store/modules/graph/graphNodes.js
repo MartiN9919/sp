@@ -132,7 +132,6 @@ export default {
             dispatch('getRelationFromServer', {object_id: objectId, rec_id: recId, objects: relatedObjects, noMove: noMove})
           }
         })
-
     },
     async getBaseTriggers({getters, commit}, config = {}) {
       if(!getters.triggers.length)

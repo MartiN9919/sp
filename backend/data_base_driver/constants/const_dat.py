@@ -48,6 +48,7 @@ class DAT_SYS_TRIGGER:
     TABLE = VEC_DATA['NAME'] + '.' + TABLE_SHORT
     ID = 'id'
     OBJECT_ID = 'object_id'
+    OBJECT = 'object'
     TITLE = 'title'
     CONTENT = 'content'
     VARIABLES = 'variables'
@@ -210,6 +211,24 @@ class DAT_SYS_SCRIPT_VARIABLE:
         (DAT_SYS_KEY.TYPE_SEARCH, 'Поиск объекта'),
         (TYPE_LIST, 'Список')
     )
+
+
+class DAT_SYS_TRIGGER_VARIABLE:
+
+    TABLE_SHORT = 'sys_trigger_variable'
+    TABLE = VEC_DATA['NAME'] + '.' + TABLE_SHORT
+    ID = 'id'
+    NAME = 'name'
+    TITLE = 'title'
+    HINT = 'hint'
+    TYPE = 'type'
+    LIST_ID = 'list_id'
+    OBJ_ID = 'obj_id'
+    SCRIPT_ID = 'trigger_id'
+    NECESSARY = 'necessary'
+
+    TYPE_LIST = 'list'
+
 ##################################################################################
 # DAT_OWNER
 ##################################################################################

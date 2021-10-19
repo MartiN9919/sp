@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import ModelScript, ModelTrigger, ModelScriptVariable
+from .models import ModelScript, ModelTrigger, ModelScriptVariable, ModelTriggerVariable
 
 from data_base_driver.constants.const_admin import PROJECT_TITLE_ADMIN
 from data_base_driver.constants.const_dat import DAT_SYS_SCRIPT, DAT_SYS_TRIGGER, DAT_SYS_SCRIPT_VARIABLE
@@ -74,6 +74,10 @@ class ModelScriptAdmin(admin.ModelAdmin):
         return obj.parent
 
 
+class ModelTriggerVariableAdmin(admin.TabularInline):
+    model = ModelTriggerVariable
+
+
 @admin.register(ModelTrigger)
 class ModelTriggerAdmin(admin.ModelAdmin):
     list_display = (
@@ -84,6 +88,20 @@ class ModelTriggerAdmin(admin.ModelAdmin):
     ordering = (
         DAT_SYS_TRIGGER.OBJECT_ID,
     )
+    fieldsets = (
+        (None,
+         {'fields':
+             (
+                 DAT_SYS_TRIGGER.OBJECT,
+                 DAT_SYS_TRIGGER.TITLE,
+                 DAT_SYS_TRIGGER.CONTENT,
+                 DAT_SYS_TRIGGER.HINT,
+             )
+         }
+         ),
+    )
+
+    inlines = [ModelTriggerVariableAdmin]
 
     @admin.display(description='объект')
     def get_object_title(self, obj):
