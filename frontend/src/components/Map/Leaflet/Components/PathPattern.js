@@ -1,19 +1,24 @@
 export class PATH_PATTERN {
   constructor(color='gray') {
     this.dat = {
-      'path_arrow': [
-        {
-          offset: 12,
-          repeat: 25,
-          symbol: L.Symbol.arrowHead({ pixelSize: 15, pathOptions: { color: color, weight: 2, stroke: true }, }),
-        },
-      ],
+      'path_arrow': {
+        offset: 12,
+        repeat: 25,
+        symbol: L.Symbol.arrowHead({ pixelSize: 15, pathOptions: { color: color, weight: 2, stroke: true }, }),
+      },
     }
 
   }
 
-  get = function(key) {
-    return this.dat[key] ?? []
+  get = function(names_str) {
+    let ret = [];
+    let names_list = names_str.trim().replace(/\s+/g, ' ').split(' ');
+
+    for(let i=0; i<names_list.length; i++) {
+      let pattern = this.dat[names_list[i]];
+      if (pattern) { ret.push(pattern); }
+    }
+    return ret;
   }
 }
 

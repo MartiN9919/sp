@@ -34,6 +34,9 @@ export const MAP_ITEM = {
       _COLOR_: {                      // в некоторых случаях транслируется сюда из MAP_ITEM.COLOR (чтобы использовать в стилях)
         KEY:   'color',
       },
+      PATTERN: {
+        KEY: 'pattern',
+      },
 
       MARKER: {
         KEY:  'marker',
@@ -57,9 +60,6 @@ export const MAP_ITEM = {
           KEY: 'class',
           ANT: 'ant',                 // бегущая линия
         },
-        PATTERN: {
-          KEY: 'pattern',
-        },
       },
 
       POLYGON: {
@@ -76,9 +76,6 @@ export const MAP_ITEM = {
         },
         CLASS: {
           KEY: 'class',
-        },
-        PATTERN: {
-          KEY: 'pattern',
         },
       },
     },
