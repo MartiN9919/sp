@@ -15,12 +15,16 @@ export const MAP_ITEM = {
         KEY:     'geometry',
         TYPE: {
           KEY:       'type',
+          GC:        'GeometryCollection',
           MARKER:    'Marker',
           LINE:      'LineString',
           POLYGON:   'Polygon',
         },
         COORDINATES: {
           KEY:       'coordinates',
+        },
+        GEOMETRIES: {                 // вложенные геометрии MAP_ITEM.FC.FEATURES.GEOMETRY
+          KEY:      'geometries',
         },
       },
     },
