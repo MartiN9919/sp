@@ -16,14 +16,8 @@ const props = {
     type: Object,
     default: () => {},
   },
-  paths: {
-    type: Array,
-    custom: true,
-    default: () => [],
-  },
   patterns: {
     type: Array,
-    custom: true,
     default: () => [],
   },
   visible: {
