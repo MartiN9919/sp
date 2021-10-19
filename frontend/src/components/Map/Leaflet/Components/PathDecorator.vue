@@ -45,10 +45,6 @@ export default {
     }
   },
   mounted() {
-    console.log(this.fc)
-
-    this.color = dict_get(this.fc, [MAP_ITEM.FC.STYLE.KEY, MAP_ITEM.FC.STYLE._COLOR_.KEY], 'gray');
-
     const features = this.fc[MAP_ITEM.FC.FEATURES.KEY];
     for(let ind=0; ind<features.length; ind++) {
       let feature       = features[ind];
@@ -63,8 +59,9 @@ export default {
       } else { this.add_obj(geometry); }
     }
 
+    const color   = dict_get(this.fc, [MAP_ITEM.FC.STYLE.KEY, MAP_ITEM.FC.STYLE._COLOR_.KEY], 'gray');
     const pattern = dict_get(this.fc, [MAP_ITEM.FC.STYLE.KEY, MAP_ITEM.FC.STYLE.PATTERN.KEY], '');
-    this.mapObject = L.polylineDecorator(this.objects, { patterns: new PATH_PATTERN(this.color).get(pattern) });
+    this.mapObject = L.polylineDecorator(this.objects, { patterns: new PATH_PATTERN(color).get(pattern) });
 
     L.DomEvent.on(this.mapObject, this.$listeners);
     propsBinder(this, this.mapObject, props);

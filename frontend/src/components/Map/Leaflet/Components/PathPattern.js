@@ -1,11 +1,79 @@
 export class PATH_PATTERN {
   constructor(color='gray') {
     this.dat = {
+      // стрелки с окантовкой
       'path_arrow': {
         offset: 12,
         repeat: 25,
         symbol: L.Symbol.arrowHead({ pixelSize: 15, pathOptions: { color: color, weight: 2, stroke: true }, }),
       },
+
+      // стрелки закрашенные
+      'path_arrow2': {
+        offset: 25,
+        repeat: 50,
+        symbol: L.Symbol.arrowHead({ pixelSize: 15, pathOptions: { color: color, fillOpacity: 1, weight: 0, }, }),
+      },
+
+
+      // стрелка в конце, для полигонов не подходит
+      'path_arrow3': {
+        offset: '100%',
+        repeat: 0,
+        symbol: L.Symbol.arrowHead({
+          pixelSize: 15,
+          polygon: false,
+          pathOptions: {
+            color: color,
+            stroke: true,
+          }
+        }),
+      },
+
+
+      // маркеры обычные
+      'mark': {
+        offset: '5%',
+        repeat: '10%',
+        symbol: L.Symbol.marker(),
+      },
+
+      // типа граница
+      'test3_1': {
+        offset: 12,
+        repeat: 25,
+        symbol: L.Symbol.dash({
+          pixelSize: 10,
+          pathOptions: {
+            color: color,
+            weight: 2
+          }
+        })
+      },
+      'test3_2': {
+        offset: 0,
+        repeat: 25,
+        symbol: L.Symbol.dash({
+          pixelSize: 0
+        })
+      },
+
+
+
+      // штрих линия светло-серая
+      'test2': {
+        offset: 0,
+        repeat: 10,
+        symbol: L.Symbol.dash({
+          pixelSize: 5,
+          pathOptions: {
+            color: '#000',
+            weight: 1,
+            opacity: 0.2
+          },
+        }),
+      },
+
     }
 
   }

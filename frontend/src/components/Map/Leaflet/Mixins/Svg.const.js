@@ -55,6 +55,11 @@ export const MAP_SVG = {
       },
 
 
+      // скрыто
+      'hidden': {
+        style: 'opacity: 0;',
+      },
+
       // тест
       'fill-test': {
         style: 'fill: url(#{id});',
