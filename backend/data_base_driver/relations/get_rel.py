@@ -110,6 +110,29 @@ def get_rel_cascade(group_id, object, id, depth):
     return rels
 
 
+def get_related_objects(group_id, object_id, rec_id, keys, values, time_interval, result_object_type=0):
+    """
+    Функия для получения списка объектов свзанных с искомым по заданным характеристикам
+    @param group_id: идентфификатор группы пользователя
+    @param object_id: идентификатор типа объекта
+    @param rec_id: идентификатор объекта
+    @param keys: список идентификаторов типов связей, если любые то пустой список
+    @param values: список идентификаторов значений связей, если любые то пустой список
+    @param time_interval: временной интервал установления связи в формате {second_start,second_end}
+    @param result_object_type: идентификатор типа результирующего объекта для фильтрации, если любой то 0
+    @return: список словарей в формате [{object_id, rec_id},...,{}]
+    """
+    temp_object = [] if result_object_type == 0 else [result_object_type]
+    relations = io_get_rel(group_id, keys, [object_id, rec_id], temp_object, values, time_interval, True)
+    result = []
+    for relation in relations:
+        if int(relation['obj_id_1']) == object_id and int(relation['rec_id_1']) == rec_id:
+            result.append({'object_id': int(relation['obj_id_2']), 'rec_id': int(relation['rec_id_2'])})
+        else:
+            result.append({'object_id': int(relation['obj_id_1']), 'rec_id': int(relation['rec_id_1'])})
+    return result
+
+
 def get_object_relation(group_id, object_id, rec_id, objects, all=False):
     """
     Функция получения всех связей для объекта, с учетом уже имеющихся объектов

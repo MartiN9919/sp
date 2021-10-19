@@ -100,7 +100,7 @@ export default {
   },
   actions: {
     setScreen({ commit }, screen) { commit('setScreen', screen) },
-    reorderGraph({ state }) { state.graph.reorderGraph() },
+    reorderGraph({ state }) { state.graph.reorderGraph(state.screen.getStartPosition().x, state.screen.getStartPosition().y) },
     changeGlobalSettingState({ commit }, payload) { commit('changeGlobalSettingState', payload) },
     setTriggerState({ commit }, payload) { commit('setTriggerState', payload) },
     setClassifiersSettings({ commit }, payload) { commit('setClassifiersSettings', payload) },
