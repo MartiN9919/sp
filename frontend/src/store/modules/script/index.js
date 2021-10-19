@@ -7,6 +7,8 @@ import {
 
 import { MAP_ITEM } from '@/components/Map/Leaflet/Lib/Const';
 import { color_random } from '@/components/Map/Leaflet/Lib/LibColor';
+import { dict_set } from '@/components/Map/Leaflet/Lib/Lib';
+
 
 export default {
   state: {
@@ -21,7 +23,7 @@ export default {
      *   style.marker                                  - {}, стиль маркера,  см. MAP_ITEM.FC.STYLE.MARKER. ...
      *   style.line                                    - {}, стиль линии,    см. MAP_ITEM.FC.STYLE.LINE. ...
      *   style.polygon                                 - {}, стиль полигона, см. MAP_ITEM.FC.STYLE.POLYGON. ...
-     *   style.color                                   - цвет маркера или фигуры, любой способ, в т.ч. прозрачность
+     *   style.color                                   - цвет маркера или фигуры, в т.ч. прозрачность, ЗДЕСЬ транслируется в MAP_ITEM.FC.STYLE._COLOR_
      *
      *   fc                                            - FeatureCollection
      *   fc.id     (str, int)                          - уникальный идентификатор слоя, ПОКА НЕ НУЖЕН - НЕ УДАЛЯЛ
@@ -67,8 +69,9 @@ export default {
     },
 
     changeColorActiveAnalysts: (state, parameters) => {
-      state.selectedTemplate.activeAnalysts.find(
-        analytics => analytics === parameters.analytics)[MAP_ITEM.COLOR.KEY] = parameters.color;
+      let item = state.selectedTemplate.activeAnalysts.find(analytics => analytics === parameters.analytics);
+      item[MAP_ITEM.COLOR.KEY] = parameters.color;
+      dict_set(item, [MAP_ITEM.FC.KEY, MAP_ITEM.FC.STYLE.KEY, MAP_ITEM.FC.STYLE._COLOR_.KEY], parameters.color); // дублирование цвета
     },
     loadTemplatesList: (state, templates) => state.templatesList = templates,
     addSelectedTemplate: (state, template) => {
@@ -96,7 +99,7 @@ export default {
 
     SCRIPT_MUT_ITEM_ADD: (state, item) => {
       // item.color: нет или цвет неактивного скрипта -> выбрать цвет
-      if ((item.color === MAP_ITEM.COLOR.SCRIPT_OFF) || (item.color === undefined)) {
+      if ((item[MAP_ITEM.COLOR.KEY] === MAP_ITEM.COLOR.SCRIPT_OFF) || (item[MAP_ITEM.COLOR.KEY] === undefined)) {
         // выбрать очередной цвет из MAP_ITEM.COLOR.SCRIPT_BANK
         let color = undefined;
         for(let ind_bank=0; ind_bank<MAP_ITEM.COLOR.SCRIPT_BANK.length; ind_bank++) {
@@ -120,8 +123,9 @@ export default {
         // все цвета заняты -> случайный цвет
         if (!color) { color  = color_random(); }
         // записать найденный цвет
-        item.color = color;
+        item[MAP_ITEM.COLOR.KEY] = color;
       }
+      dict_set(item, [MAP_ITEM.FC.KEY, MAP_ITEM.FC.STYLE.KEY, MAP_ITEM.FC.STYLE._COLOR_.KEY], item[MAP_ITEM.COLOR.KEY]); // дублирование цвета
 
       let item_copy = JSON.parse(JSON.stringify(item));        // deep copy
       item_copy.refresh = new Date().getTime();
@@ -129,7 +133,12 @@ export default {
     },
 
     SCRIPT_MUT_ITEM_DEL:   (state, id)      => state.selectedTemplate.activeAnalysts.splice(id, 1),
-    SCRIPT_MUT_ITEM_COLOR: (state, param)   => state.selectedTemplate.activeAnalysts[param.ind][MAP_ITEM.COLOR.KEY] = param.color,
+    SCRIPT_MUT_ITEM_COLOR: (state, param)   => {
+      let item = state.selectedTemplate.activeAnalysts[param.ind];
+      item[MAP_ITEM.COLOR.KEY] = param.color;
+      dict_set(item, [MAP_ITEM.FC.KEY, MAP_ITEM.FC.STYLE.KEY, MAP_ITEM.FC.STYLE._COLOR_.KEY], param.color); // дублирование цвета
+    },
+
 
 
     //

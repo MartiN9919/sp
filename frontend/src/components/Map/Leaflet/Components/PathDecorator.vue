@@ -5,20 +5,24 @@
 </template>
 
 <script>
+/*
+ *  =============================================
+ *     НАЛОЖЕНИЕ НА ФИГУРУ PATTERN (ДЕКОРАТОР)
+ *  =============================================
+ *
+ */
 
 import 'leaflet-polylinedecorator'
 
-import { MAP_ITEM } from '@/components/Map/Leaflet/Lib/Const';
-import { findRealParent, propsBinder } from 'vue2-leaflet'
+import { MAP_ITEM }   from '@/components/Map/Leaflet/Lib/Const';
+import { PATH_PATTERN } from '@/components/Map/Leaflet/Components/PathPattern';
+import { findRealParent, propsBinder } from 'vue2-leaflet';
+import { dict_get } from '@/components/Map/Leaflet/Lib/Lib';
 
 const props = {
   fc: {
     type: Object,
     default: () => {},
-  },
-  patterns: {
-    type: Array,
-    default: () => [],
   },
   visible: {
     type: Boolean,
@@ -32,12 +36,21 @@ export default {
   props,
   data() {
     return {
-      objects: [],
+      objects: [],                    // список объектов линий и полигонов
+      pattern: {                      // список паттернов
+        line: [],
+        polygon: [],
+      },
       ready: false,
     }
   },
   mounted() {
-    let features = this.fc[MAP_ITEM.FC.FEATURES.KEY];
+    console.log(this.fc)
+
+    this.color = dict_get(this.fc, [MAP_ITEM.FC.STYLE.KEY, MAP_ITEM.FC.STYLE._COLOR_.KEY], 'gray');
+    this.patterns = new PATH_PATTERN(this.color);
+
+    const features = this.fc[MAP_ITEM.FC.FEATURES.KEY];
     for(let ind=0; ind<features.length; ind++) {
       let feature       = features[ind];
       let geometry      = feature[MAP_ITEM.FC.FEATURES.GEOMETRY.KEY];
@@ -51,7 +64,7 @@ export default {
       } else { this.add_obj(geometry); }
     }
 
-    this.mapObject = L.polylineDecorator(this.objects, { patterns: this.patterns });
+    this.mapObject = L.polylineDecorator(this.objects, { patterns: this.patterns.get('path_arrow') });
 
     L.DomEvent.on(this.mapObject, this.$listeners);
     propsBinder(this, this.mapObject, props);
@@ -81,6 +94,18 @@ export default {
         }
         this.objects.push(L.polygon(geometry_coordinates));
       }
+    },
+
+    get_patterns(names_str){
+      let ret = [];
+      let names_list = names_str.trim().replace(/\s+/g, ' ').split(' ');
+
+      for(let i; i<names_list.length; i++) {        // перебрать названия паттернов
+        let pattern = PATH_PATTERN[names_list[i]];
+        pattern = pattern.replace(/{color}/g, this.color);
+        if (pattern) { ret.push(pattern); }
+      }
+      return ret;
     },
 
     // БЫЛО В ИСХОДНОМ КОДЕ

@@ -7,12 +7,14 @@ export const MAP_TEST_ITEM_1 = {
 
   "fc": {
     "style": {
+      // "color": "blue", // !!! УДАЛИТЬ
       "marker": {
         "icon": "test",     // "mdi-flag mdi-spin", "fs-spec0", "pulse" (size: 12), "#0f0", "gold", "file_name" (size_w: 25, size_h: 41)
         "zoom": 2,
       },
       "line": {
         "class": "ant arrow-double-end dash-3",     // класс объекта (для установки стиля)
+        "pattern": "path_arrow",
       },
       "polygon": {
         "class": "hatch-diagonal-1",

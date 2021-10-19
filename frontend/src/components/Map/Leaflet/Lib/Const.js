@@ -57,6 +57,9 @@ export const MAP_ITEM = {
           KEY: 'class',
           ANT: 'ant',                 // бегущая линия
         },
+        PATTERN: {
+          KEY: 'pattern',
+        },
       },
 
       POLYGON: {
@@ -74,17 +77,14 @@ export const MAP_ITEM = {
         CLASS: {
           KEY: 'class',
         },
+        PATTERN: {
+          KEY: 'pattern',
+        },
       },
-
-      _DECOR_: {                      // декоратор стилей (Polylinedecorator)
-        KEY:   'decor',
-        PATHS: 'paths',
-      },
-
     },
   },
 
-  COLOR: {
+  COLOR: {                            // копия в FC.STYLE._COLOR_
     KEY:        'color',
     DEF:        '#f00',               // цвет по умолчанию
     ORIGIN:     '#000',               // редактор: цвет ДО    ИЗМЕНЕНИЯ

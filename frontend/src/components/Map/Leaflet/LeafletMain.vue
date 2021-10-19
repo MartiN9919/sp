@@ -40,7 +40,6 @@
         <!-- СТИЛИЗАЦИЯ ФИГУР -->
         <l-path-decorator
           :fc="data_normalize(map_ind, map_item)"
-          :patterns="style_patterns"
         />
 
       </l-layer-group>
@@ -194,23 +193,6 @@ export default {
         zoomControl: false,
         zoomSnap:    0.5,
       },
-
-
-      style_patterns: [
-        {
-          offset: 12,
-          repeat: 25,
-          symbol: L.Symbol.arrowHead({
-            pixelSize: 15,
-            pathOptions: { color: "#00f", weight: 2, stroke: true },
-          }),
-        },
-      ],
-
-
-
-
-
     };
   },
 
@@ -403,10 +385,11 @@ export default {
           let sel = (feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._SEL_]?'sel':'');
           let layer = marker_get(
             latlng,
-            {
-              ...self.SCRIPT_GET_ITEM_FC_STYLE (map_ind),
-              [MAP_ITEM.FC.STYLE._COLOR_.KEY]: self.SCRIPT_GET_ITEM_COLOR(map_ind),   // транслировать item.color в item.fc.style.color
-            },
+            self.SCRIPT_GET_ITEM_FC_STYLE (map_ind),
+            // {
+            //   ...self.SCRIPT_GET_ITEM_FC_STYLE (map_ind),
+            //   [MAP_ITEM.FC.STYLE._COLOR_.KEY]: self.SCRIPT_GET_ITEM_COLOR(map_ind),   // транслировать item.color в item.fc.style.color
+            // },
             sel
           );
           return layer;
@@ -434,15 +417,6 @@ export default {
     // СОБЫТИЯ
     // ===============
     on_map_ready() {
-
-      // var markerLine = L.polyline([[58.44773, -28.65234], [52.9354, -23.33496], [53.01478, -14.32617], [58.1707, -10.37109], [59.68993, -0.65918]], {}).addTo(this.map);
-      // var markerPatterns = L.polylineDecorator(markerLine, {
-      //   //patterns: this.style_patterns,
-      //   patterns: [
-      //     { offset: '5%', repeat: '10%', symbol: L.Symbol.marker()}
-      //   ]
-      // }).addTo(this.map);
-
       this.map.invalidateSize();
     },
 
