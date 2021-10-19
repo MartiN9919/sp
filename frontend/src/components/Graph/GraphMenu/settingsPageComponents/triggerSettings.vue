@@ -18,10 +18,9 @@
             <responsive-input-form
               v-model="param.value"
               @changeInputString="deactivateTrigger(trigger, false)"
-              :type="param.type"
-              :items="param.list"
-              :title="param.title"
-              :rules="[ v => !!v || 'Поле должно быть заполнено']"
+              :input-type="param.type"
+              :label="param.title"
+              :list-rules="param.necessary ? ['notEmpty'] : []"
             ></responsive-input-form>
           </v-list-item>
         </v-form>
