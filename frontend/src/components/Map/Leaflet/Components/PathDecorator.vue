@@ -49,6 +49,7 @@ export default {
       let geometry      = feature[MAP_ITEM.FC.FEATURES.GEOMETRY.KEY];
       let geometry_type = geometry[MAP_ITEM.FC.FEATURES.GEOMETRY.TYPE.KEY];
 
+      // GeometryCollection: вложенные геометрии
       if (geometry_type == MAP_ITEM.FC.FEATURES.GEOMETRY.TYPE.GC) {
         for(let i=0; i<geometry[MAP_ITEM.FC.FEATURES.GEOMETRY.GEOMETRIES.KEY].length; i++) {
           this.add_obj(geometry[MAP_ITEM.FC.FEATURES.GEOMETRY.GEOMETRIES.KEY][i]);

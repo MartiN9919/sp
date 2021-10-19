@@ -37,19 +37,13 @@
           />
         </l-marker-cluster>
 
+        <!-- СТИЛИЗАЦИЯ ФИГУР -->
         <l-path-decorator
           :fc="data_normalize(map_ind, map_item)"
           :patterns="style_patterns"
         />
 
       </l-layer-group>
-
-      <!-- СТИЛИЗАЦИЯ ФИГУР -->
-<!--       <l-polyline-decorator
-        :paths="style_path"
-        :patterns="style_patterns"
-      />
- -->
 
       <!-- РЕДАКТОР -->
       <EditorMap
