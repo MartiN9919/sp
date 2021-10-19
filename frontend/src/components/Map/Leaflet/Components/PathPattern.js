@@ -1,3 +1,5 @@
+import { icon_path } from '@/components/Map/Leaflet/Markers/Fun';
+
 export class PATH_PATTERN {
   constructor(color='gray') {
     this.dat = {
@@ -14,6 +16,8 @@ export class PATH_PATTERN {
         repeat: 50,
         symbol: L.Symbol.arrowHead({ pixelSize: 15, pathOptions: { color: color, fillOpacity: 1, weight: 0, }, }),
       },
+
+
 
 
       // стрелка в конце, для полигонов не подходит
@@ -36,6 +40,20 @@ export class PATH_PATTERN {
         offset: '5%',
         repeat: '10%',
         symbol: L.Symbol.marker(),
+      },
+
+      'mark2': {
+        offset: '16%',
+        repeat: '8%',
+        symbol: L.Symbol.marker({
+          rotate: false,
+          markerOptions: {
+            icon: L.icon({
+              iconUrl: icon_path('test2'),
+              iconAnchor: [0, 50]
+            }),
+          },
+        }),
       },
 
       // типа граница
