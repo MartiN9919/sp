@@ -14,6 +14,7 @@ export const MAP_ITEM = {
       GEOMETRY:  {
         KEY:     'geometry',
         TYPE: {
+          KEY:       'type',
           MARKER:    'Marker',
           LINE:      'LineString',
           POLYGON:   'Polygon',

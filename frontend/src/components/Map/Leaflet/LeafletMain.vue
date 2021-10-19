@@ -37,11 +37,11 @@
           />
         </l-marker-cluster>
 
-<!--         <l-polyline-decorator
-          :paths="style_decor_get(map_ind, map_item)"
+        <l-path-decorator
+          :fc="data_normalize(map_ind, map_item)"
           :patterns="style_patterns"
         />
- -->
+
       </l-layer-group>
 
       <!-- СТИЛИЗАЦИЯ ФИГУР -->
@@ -119,7 +119,7 @@ import {
   LIcon,
 } from 'vue2-leaflet';
 
-//import Vue2LeafletPolylinedecorator from "@/components/Map/Leaflet/Components/Polylinedecorator";
+import PathDecorator            from "@/components/Map/Leaflet/Components/PathDecorator";
 import Vue2LeafletMarkerCluster from 'vue2-leaflet-markercluster';
 import LControlPolylineMeasure  from 'vue2-leaflet-polyline-measure';
 
@@ -130,7 +130,7 @@ import {
   icon_get_group,
 } from '@/components/Map/Leaflet/Markers/Fun';
 
-import                 '@/components/Map/Leaflet/Markers/Pulse';
+import                    '@/components/Map/Leaflet/Markers/Pulse';
 import EditorMap     from '@/components/Map/Leaflet/Components/EditorMap';
 import Range         from '@/components/Map/Leaflet/Components/Range';
 import Legend        from '@/components/Map/Leaflet/Components/Legend';
@@ -142,7 +142,7 @@ import MixSvg        from '@/components/Map/Leaflet/Mixins/Svg';
 import MixControl    from '@/components/Map/Leaflet/Mixins/Control';
 import MixMeasure    from '@/components/Map/Leaflet/Mixins/Measure';
 import MixMenu       from '@/components/Map/Leaflet/Mixins/Menu';
-import MixStyleDecor from '@/components/Map/Leaflet/Mixins/Style.decor';
+//import MixStyleDecor from '@/components/Map/Leaflet/Mixins/Style.decor';
 
 
 import { datesql_to_ts, } from '@/plugins/sys';
@@ -163,7 +163,7 @@ export default {
     MixControl,
     MixMeasure,
     MixMenu,
-    MixStyleDecor,
+    //MixStyleDecor,
   ],
 
 
@@ -182,7 +182,7 @@ export default {
     LControl,
     LIcon,
     'l-marker-cluster': Vue2LeafletMarkerCluster,
-    //'l-polyline-decorator': Vue2LeafletPolylinedecorator,
+    'l-path-decorator': PathDecorator,
     LControlPolylineMeasure,
 
     EditorMap,
@@ -200,6 +200,23 @@ export default {
         zoomControl: false,
         zoomSnap:    0.5,
       },
+
+
+      style_patterns: [
+        {
+          offset: 12,
+          repeat: 25,
+          symbol: L.Symbol.arrowHead({
+            pixelSize: 15,
+            pathOptions: { color: "#00f", weight: 2, stroke: true },
+          }),
+        },
+      ],
+
+
+
+
+
     };
   },
 
@@ -311,7 +328,7 @@ export default {
       }
 
       // стилизация фигур
-      this.style_decor_set(map_ind, map_item, fc)
+      //this.style_decor_set(map_ind, map_item, fc)
 
       // console.log(this.$refs.geoJson)
       return fc;
