@@ -6,9 +6,9 @@
 
 <script>
 /*
- *  ============================================================
- *     ДЕКОРАТОР: НАЛОЖЕНИЕ НА ФИГУРУ ОТДЕЛЬНОГО СЛОЯ PATTERN
- *  ============================================================
+ *  =====================================================
+ *     ДЕКОРАТОР: НАЛОЖЕНИЕ НА ФИГУРУ ОТДЕЛЬНОГО СЛОЯ
+ *  =====================================================
  *
  */
 
@@ -60,7 +60,7 @@ export default {
     }
 
     const color   = dict_get(this.fc, [MAP_ITEM.FC.STYLE.KEY, MAP_ITEM.FC.STYLE._COLOR_.KEY], 'gray');
-    const pattern = dict_get(this.fc, [MAP_ITEM.FC.STYLE.KEY, MAP_ITEM.FC.STYLE.PATTERN.KEY], '');
+    const pattern = dict_get(this.fc, [MAP_ITEM.FC.STYLE.KEY, MAP_ITEM.FC.STYLE.CLASS  .KEY], '');
     this.mapObject = L.polylineDecorator(this.objects, { patterns: new CONST_PATH(color).get(pattern) });
 
     L.DomEvent.on(this.mapObject, this.$listeners);

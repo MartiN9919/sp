@@ -34,8 +34,8 @@ export const MAP_ITEM = {
       _COLOR_: {                      // в некоторых случаях транслируется сюда из MAP_ITEM.COLOR (чтобы использовать в стилях)
         KEY:   'color',
       },
-      PATTERN: {
-        KEY: 'pattern',
+      CLASS: {
+        KEY: 'class',                 // классы декораторов-паттернов ТОЛЬКО для фигур
       },
 
       MARKER: {
@@ -98,9 +98,9 @@ export const MAP_ITEM = {
     ],
   },
 
-  ZOOM: {
-    KEY: 'zoom',                      // увеличение карты
-  },
+  // ZOOM: {
+  //   KEY: 'zoom',                      // увеличение карты
+  // },
 
   _LEGEND_COLOR_: 'legend_color',     // [], заполняется программой
 

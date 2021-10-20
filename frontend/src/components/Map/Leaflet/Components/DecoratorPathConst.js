@@ -4,14 +4,14 @@ export class CONST_PATH {
   constructor(color='gray') {
     this.dat = {
       // стрелки с окантовкой
-      'path_arrow': {
+      'arrow': {
         offset: 12,
         repeat: 25,
         symbol: L.Symbol.arrowHead({ pixelSize: 15, pathOptions: { color: color, weight: 2, stroke: true }, }),
       },
 
       // стрелки закрашенные
-      'path_arrow2': {
+      'arrow2': {
         offset: 25,
         repeat: 50,
         symbol: L.Symbol.arrowHead({ pixelSize: 15, pathOptions: { color: color, fillOpacity: 1, weight: 0, }, }),
@@ -21,7 +21,7 @@ export class CONST_PATH {
 
 
       // стрелка в конце, для полигонов не подходит
-      'path_arrow3': {
+      'arrow3': {
         offset: '100%',
         repeat: 0,
         symbol: L.Symbol.arrowHead({
