@@ -87,7 +87,7 @@ class DUMP_KEY:
             self.refreshTime = time.time() + self.refreshDelay
 
     def update(self):
-        self._refresh_(force=True)
+        self.refreshTime = time.time() - 1
 
     # и/или id, и/или name, и/или val (val может быть id или name), и/или col
     def get_rec(self, obj_id=None, id=None, name=None, val=None, col=None, only_first=True, visible=True):
