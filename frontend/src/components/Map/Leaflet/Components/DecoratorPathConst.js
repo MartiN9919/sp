@@ -3,8 +3,6 @@
  * color - подставляется автоматически
  * offset - смещение первого маркера от начала, можно в %: '100%'
  * repeat - смещение, через которое повторить маркер, можно в %: '50%'
- * symbol
- *   markerOptionssymbol
  */
 
 import { icon_path } from '@/components/Map/Leaflet/Markers/Fun';
@@ -13,14 +11,24 @@ export class CONST_PATH {
   constructor(color='gray') {
     this.dat = {
 
+      // Маркер обычный
+      'mark': {
+        offset: 10,
+        repeat: 100,
+        symbol: L.Symbol.marker(),
+      },
+
+
+      //
       // Забор оградительный
+      //
       'mark_zabor_ograd': {
         offset: 8, repeat: 30,
         symbol: L.Symbol.marker({
           rotate: true,
           markerOptions: {
             icon: L.icon({
-              iconUrl: icon_path('Zabor_ogradit'),
+              iconUrl: icon_path('zabor_ogradit'),
               iconSize: [10, 10],   // original: [16, 16]
               iconAnchor: [5, 5],
             }),
@@ -30,8 +38,26 @@ export class CONST_PATH {
 
 
       //
-      // Рубеж охраны 1 _ . _
+      // Заграждение сигнализация -|-|-
       //
+      'line_zagrad_signal_1': {
+        offset: 8, repeat: 18,
+        symbol: L.Symbol.marker({
+          rotate: true,
+          markerOptions: {
+            icon: L.icon({
+              iconUrl: icon_path('zagragd_signal'),
+              //iconSize: [2, 10],   // original: [3, 16]
+              iconAnchor: [8, 0],
+            }),
+          },
+        }),
+      },
+
+
+      //
+      // Рубеж охраны 1 _ . _
+      // class="hidden" для основной линии
       'line_border_1': [
         { offset: 12, repeat: 25, symbol: L.Symbol.dash({ pixelSize: 10, pathOptions: { color: color, weight: 2, }, }), },
         { offset: 0,  repeat: 25, symbol: L.Symbol.dash({ pixelSize: 0,  pathOptions: { color: color, }, }), },
@@ -39,7 +65,7 @@ export class CONST_PATH {
 
       //
       // Рубеж охраны 2 _ .. _
-      //
+      // class="hidden" для основной линии
       'line_border_2': [
         { offset: 18, repeat: 30, symbol: L.Symbol.dash({ pixelSize: 10, pathOptions: { color: color, weight: 2, }, }), },
         { offset: 0,  repeat: 30, symbol: L.Symbol.dash({ pixelSize: 0,  pathOptions: { color: color, }, }), },
@@ -47,7 +73,28 @@ export class CONST_PATH {
       ],
 
 
-      'mark_iz2': {
+
+
+
+
+      //
+      // РАЗНОЕ ДЛЯ ПРИМЕРОВ
+      //
+      'test_mark_auto': {
+        offset: 25,
+        repeat: 120,
+        symbol: L.Symbol.marker({
+          rotate: false,
+          markerOptions: {
+            icon: L.icon({
+              iconUrl: icon_path('test2'),
+              iconAnchor: [30, 40],
+            }),
+          },
+        }),
+      },
+
+      'test_mark_iz2': {
         offset: 12,
         repeat: 25,
         symbol: L.Symbol.arrowHead({
@@ -59,24 +106,21 @@ export class CONST_PATH {
 
 
       // стрелки с окантовкой
-      'arrow': {
+      'test_arrow': {
         offset: 12,
         repeat: 25,
         symbol: L.Symbol.arrowHead({ pixelSize: 15, pathOptions: { color: color, weight: 2, stroke: true }, }),
       },
 
       // стрелки закрашенные
-      'arrow2': {
+      'test_arrow2': {
         offset: 25,
         repeat: 50,
         symbol: L.Symbol.arrowHead({ pixelSize: 15, pathOptions: { color: color, fillOpacity: 1, weight: 0, }, }),
       },
 
-
-
-
       // стрелка в конце, для полигонов не подходит
-      'arrow3': {
+      'test_arrow3': {
         offset: '100%',
         repeat: 0,
         symbol: L.Symbol.arrowHead({
@@ -88,31 +132,6 @@ export class CONST_PATH {
           }
         }),
       },
-
-
-      // маркеры обычные
-      'mark': {
-        offset: '5%',
-        repeat: '10%',
-        symbol: L.Symbol.marker(),
-      },
-
-      'mark2': {
-        offset: '16%',
-        repeat: '8%',
-        symbol: L.Symbol.marker({
-          rotate: false,
-          markerOptions: {
-            icon: L.icon({
-              iconUrl: icon_path('test2'),
-              iconAnchor: [0, 50]
-            }),
-          },
-        }),
-      },
-
-
-
 
       // штрих линия светло-серая
       'test2': {

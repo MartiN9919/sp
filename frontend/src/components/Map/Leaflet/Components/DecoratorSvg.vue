@@ -1,5 +1,5 @@
 <template>
-  <div class="drd">
+  <div>
     <svg
       id="map-svg-defs"
       xmlns="http://www.w3.org/2000/svg"

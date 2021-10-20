@@ -7,6 +7,7 @@ export const CONST_SVG = {
       style: 'opacity: 0;',
     },
 
+
     // штриховка: диагональные штрихи тонкие
     'hatch-diagonal-1': {
       style: 'fill: url(#{id});',
@@ -15,21 +16,6 @@ export const CONST_SVG = {
             <path d="M-1,1 l2,-2 M0,4 l4,-4 M3,5 l2,-2" style="stroke:{color}; stroke-width:1;" />
           </pattern>
         `,
-    },
-
-
-    // черта: тройная
-    'dash-3': {
-      style: 'marker-pattern: "40 url(#{id}_2) 40 url(#{id}_1)"',
-      defs: `
-        <marker id="{id}_2" orient="auto" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="12" refX="0" refY="0" viewBox="-4 -6 8 12">
-          <rect x="-3" y="-5" width="2" height="10"/>
-          <rect x="1" y="-5" width="2" height="10"/>
-        </marker>
-        <marker id="{id}_1" orient="auto" markerUnits="userSpaceOnUse" markerWidth="4" markerHeight="12" refX="0" refY="0" viewBox="-2 -6 4 12">
-          <rect x="-1" y="-5" width="2" height="10"/>
-        </marker>
-      `,
     },
 
 
@@ -48,6 +34,26 @@ export const CONST_SVG = {
 
 
 
+
+    //
+    // РАЗНОЕ ДЛЯ ПРИМЕРОВ
+    //
+
+    // черта: тройная
+    'dash-3': {
+      style: 'marker-pattern: "40 url(#{id}_2) 40 url(#{id}_1)"',
+      defs: `
+        <marker id="{id}_2" orient="auto" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="12" refX="0" refY="0" viewBox="-4 -6 8 12">
+          <rect x="-3" y="-5" width="2" height="10"/>
+          <rect x="1" y="-5" width="2" height="10"/>
+        </marker>
+        <marker id="{id}_1" orient="auto" markerUnits="userSpaceOnUse" markerWidth="4" markerHeight="12" refX="0" refY="0" viewBox="-2 -6 4 12">
+          <rect x="-1" y="-5" width="2" height="10"/>
+        </marker>
+      `,
+    },
+
+
     // тест
     'fill-test': {
       style: 'fill: url(#{id});',
@@ -57,8 +63,6 @@ export const CONST_SVG = {
           </pattern>
         `,
     },
-
-    // ...
 
   },
 }
