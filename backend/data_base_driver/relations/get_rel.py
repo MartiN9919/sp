@@ -332,14 +332,14 @@ def search_relations(group_id, request):
     result = []
     if len(request.get('rels')) == 0:
         get_unique_objects(result, get_rel_cascade(group_id, request.get('object_id'), request.get('rec_id'), 1)['rels'])
-        return result
+        return [item for item in result if item['object_id'] != 1]
     else:
         parent = {'object_id': request.get('object_id'), 'rec_id': request.get('rec_id')}
         parent['rels'] = []
         result.append({'object_id': request.get('object_id'), 'rec_id': request.get('rec_id')})
         temp = search_relations_recursive(group_id, request, parent, parent)['rels']
         get_unique_objects(result, temp)
-        return result
+        return [item for item in result if item['object_id'] != 1]
 
 
 def get_relations_list():
