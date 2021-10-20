@@ -1,6 +1,18 @@
 <template>
   <div class="drd">
-    <svg style="display: none;"></svg>
+    <svg
+      id="map-svg-defs"
+      xmlns="http://www.w3.org/2000/svg"
+      preserveAspectRatio="none"
+      width="0"
+      height="0"
+    >
+      <defs ref="defs"/>
+    </svg>
+    <div is="style"
+      id="map-svg-style"
+      ref="style"
+    ></div>
   </div>
 </template>
 
@@ -20,15 +32,10 @@ import { CONST_SVG }  from '@/components/Map/Leaflet/Components/DecoratorSvgCons
 export default {
   name: 'LDecoratorSvg',
 
-  data() {
-    return {
-      ready: false,
-    }
-  },
-
-  beforeDestroy: function() {
-    this.svg_remove();
-  },
+  // beforeDestroy: function() {
+  //   this.$refs.defs .innerHTML = '';
+  //   this.$refs.style.innerHTML = '';
+  // },
 
   watch: {
     SCRIPT_GET: {
@@ -43,8 +50,6 @@ export default {
 
   methods: {
     svg_refresh(items) {
-      if (items.length == 0) return;
-
       // сформировать тексты defs и style
       let style = '';
       let defs = '';
@@ -62,10 +67,10 @@ export default {
         // перебрать классы
         item_classes.forEach(function(item_class, ind_class) {
           // для класса: стиль и defs
-          let svg = CONST_SVG.DAT.VAL[item_class];
+          let svg = CONST_SVG.LIST[item_class];
           if (!svg) return;
-          let svg_style = svg[CONST_SVG.DAT.KEY_STYLE];
-          let svg_defs  = svg[CONST_SVG.DAT.KEY_DEFS ];
+          let svg_style = svg[CONST_SVG.KEY_STYLE];
+          let svg_defs  = svg[CONST_SVG.KEY_DEFS ];
 
           // уникальный id
           let id = 'svg_'+ind+'_'+ind_class;
@@ -81,27 +86,13 @@ export default {
             defs  += svg_defs+'\n';
           }
         });
-
-        let el;
-        if (style!='') {
-          style = CONST_SVG.STYLE.PREFIX+style+CONST_SVG.STYLE.POSTFIX;
-          el = document.createElement('style'); document.body.prepend(el); el.outerHTML = style;
-        }
-        if (defs!='') {
-          defs = CONST_SVG.DEFS.PREFIX+defs+CONST_SVG.DEFS.POSTFIX;
-          el = document.createElement('svg'); document.body.prepend(el); el.outerHTML = defs;
-        }
       }
 
-
-
-      this.ready = true;
+      this.$refs.defs .innerHTML = defs;
+      this.$refs.style.innerHTML = style;
     },
   },
 
-  svg_defs_remove()  { let el = document.getElementById(CONST_SVG.DEFS.ID);  if (el) el.remove(); },
-  svg_style_remove() { let el = document.getElementById(CONST_SVG.STYLE.ID); if (el) el.remove(); },
-  svg_remove()       { this.svg_defs_remove  (); this.svg_style_remove(); },
 }
 
 </script>

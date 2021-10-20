@@ -94,6 +94,7 @@ export default {
     },
 
 
+
     // БЫЛО В ИСХОДНОМ КОДЕ
     setVisible(newVal, oldVal) {
       if (newVal == oldVal) return;
