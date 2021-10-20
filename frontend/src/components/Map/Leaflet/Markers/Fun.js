@@ -126,7 +126,7 @@ export function icon_get_group(color, title) {
 }
 
 
-export function icon_path(name) {
+export function icon_path(name, ext='png') {
   // require('@/assets/img/markers/red.png');
-  return process.env.BASE_URL+MAP_ITEM.FC.STYLE.MARKER.PATH+name+'.png';
+  return process.env.BASE_URL+MAP_ITEM.FC.STYLE.MARKER.PATH+name+'.'+ext;
 }
