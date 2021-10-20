@@ -1,22 +1,45 @@
+/* СПИСКИ ДЕКОРАТОРОВ ДЛЯ ЛИНИЙ И ГРАНИЦ ПОЛИГОНОВ
+ * key - название класса, указывается в MAP_ITEM.FC.STYLE.CLASS
+ * color - подставляется автоматически
+ * offset - смещение первого маркера от начала, можно в %: '100%'
+ * repeat - смещение, через которое повторить маркер, можно в %: '50%'
+ * symbol
+ *   markerOptionssymbol
+ */
+
 import { icon_path } from '@/components/Map/Leaflet/Markers/Fun';
 
 export class CONST_PATH {
   constructor(color='gray') {
     this.dat = {
-      'mark_iz': {
-        offset: 12,  // '16%'
-        repeat: 25,   // '8%'
+
+      // Забор оградительный
+      'mark_zabor_ograd': {
+        offset: 8, repeat: 30,
         symbol: L.Symbol.marker({
           rotate: true,
           markerOptions: {
             icon: L.icon({
-              iconUrl: icon_path('iz'),
-              iconSize: [16, 16],  // не обязательно
-              iconAnchor: [8, 8],
+              iconUrl: icon_path('Забор оградительный'),
+              iconSize: [10, 10],   // original: [16, 16]
+              iconAnchor: [5, 5],
             }),
           },
         }),
       },
+
+
+      //
+      // Рубеж охраны 1 _ . _
+      //
+      'line_border_1_1': { offset: 12, repeat: 25, symbol: L.Symbol.dash({ pixelSize: 10, pathOptions: { color: color, weight: 2, }, }), },
+      'line_border_1_2': { offset: 0,  repeat: 25, symbol: L.Symbol.dash({ pixelSize: 0,  pathOptions: { color: color, }, }), },
+
+      //
+      // Рубеж охраны 2 _ .. _
+      //
+      'line_border_2_1': { offset: 12, repeat: 25, symbol: L.Symbol.dash({ pixelSize: 10, pathOptions: { color: color, weight: 2, }, }), },
+      'line_border_2_2': { offset: 0,  repeat: 25, symbol: L.Symbol.dash({ pixelSize: 0,  pathOptions: { color: color, }, }), },
 
 
       'mark_iz2': {
@@ -83,25 +106,6 @@ export class CONST_PATH {
         }),
       },
 
-      // типа граница
-      'test3_1': {
-        offset: 12,
-        repeat: 25,
-        symbol: L.Symbol.dash({
-          pixelSize: 10,
-          pathOptions: {
-            color: color,
-            weight: 2
-          }
-        })
-      },
-      'test3_2': {
-        offset: 0,
-        repeat: 25,
-        symbol: L.Symbol.dash({
-          pixelSize: 0
-        })
-      },
 
 
 

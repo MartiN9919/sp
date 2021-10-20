@@ -2,6 +2,11 @@ export const CONST_SVG = {
   KEY_STYLE: 'style',
   KEY_DEFS:  'defs',
   LIST: {
+    // скрыто
+    'hidden': {
+      style: 'opacity: 0;',
+    },
+
     // штриховка: диагональные штрихи тонкие
     'hatch-diagonal-1': {
       style: 'fill: url(#{id});',
@@ -42,10 +47,6 @@ export const CONST_SVG = {
     },
 
 
-    // скрыто
-    'hidden': {
-      style: 'opacity: 0;',
-    },
 
     // тест
     'fill-test': {
