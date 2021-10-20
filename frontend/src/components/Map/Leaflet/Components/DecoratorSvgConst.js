@@ -1,4 +1,4 @@
-export const MAP_SVG = {
+export const CONST_SVG = {
   DEFS: {
     ID:      'map-svg-defs',
     PREFIX:  '<svg id="map-svg-defs" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" width="0" height="0">\n<defs>\n',

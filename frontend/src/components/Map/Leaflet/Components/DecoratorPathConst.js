@@ -1,6 +1,6 @@
 import { icon_path } from '@/components/Map/Leaflet/Markers/Fun';
 
-export class PATH_PATTERN {
+export class CONST_PATH {
   constructor(color='gray') {
     this.dat = {
       // стрелки с окантовкой

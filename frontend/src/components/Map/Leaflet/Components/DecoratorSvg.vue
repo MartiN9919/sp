@@ -1,12 +1,30 @@
+<template>
+  <div class="drd">
+    <svg style="display: none;"></svg>
+  </div>
+</template>
+
+<script>
+/*
+ *  ============================================================
+ *     ДЕКОРАТОР: СТРИЛИЗАЦИЯ SVG
+ *  ============================================================
+ *
+ */
+
 import { mapGetters } from 'vuex';
-import { dict_get } from '@/components/Map/Leaflet/Lib/Lib';
-import { MAP_ITEM } from '@/components/Map/Leaflet/Lib/Const';
-import { MAP_SVG } from '@/components/Map/Leaflet/Mixins/Svg.const';
+import { MAP_ITEM }   from '@/components/Map/Leaflet/Lib/Const';
+import { dict_get }   from '@/components/Map/Leaflet/Lib/Lib';
+import { CONST_SVG }  from '@/components/Map/Leaflet/Components/DecoratorSvgConst';
 
 export default {
-  data: () => ({ }),
+  name: 'LDecoratorSvg',
 
-  mounted: function() { },
+  data() {
+    return {
+      ready: false,
+    }
+  },
 
   beforeDestroy: function() {
     this.svg_remove();
@@ -24,12 +42,7 @@ export default {
   },
 
   methods: {
-    // вызывать из родительского mounted
-    mounted_after_svg() {
-    },
-
     svg_refresh(items) {
-      this.svg_remove();
       if (items.length == 0) return;
 
       // сформировать тексты defs и style
@@ -49,10 +62,10 @@ export default {
         // перебрать классы
         item_classes.forEach(function(item_class, ind_class) {
           // для класса: стиль и defs
-          let svg = MAP_SVG.DAT.VAL[item_class];
+          let svg = CONST_SVG.DAT.VAL[item_class];
           if (!svg) return;
-          let svg_style = svg[MAP_SVG.DAT.KEY_STYLE];
-          let svg_defs  = svg[MAP_SVG.DAT.KEY_DEFS ];
+          let svg_style = svg[CONST_SVG.DAT.KEY_STYLE];
+          let svg_defs  = svg[CONST_SVG.DAT.KEY_DEFS ];
 
           // уникальный id
           let id = 'svg_'+ind+'_'+ind_class;
@@ -71,20 +84,24 @@ export default {
 
         let el;
         if (style!='') {
-          style = MAP_SVG.STYLE.PREFIX+style+MAP_SVG.STYLE.POSTFIX;
+          style = CONST_SVG.STYLE.PREFIX+style+CONST_SVG.STYLE.POSTFIX;
           el = document.createElement('style'); document.body.prepend(el); el.outerHTML = style;
         }
         if (defs!='') {
-          defs = MAP_SVG.DEFS.PREFIX+defs+MAP_SVG.DEFS.POSTFIX;
+          defs = CONST_SVG.DEFS.PREFIX+defs+CONST_SVG.DEFS.POSTFIX;
           el = document.createElement('svg'); document.body.prepend(el); el.outerHTML = defs;
         }
       }
 
 
-    },
 
-    svg_defs_remove()  { let el = document.getElementById(MAP_SVG.DEFS.ID);  if (el) el.remove(); },
-    svg_style_remove() { let el = document.getElementById(MAP_SVG.STYLE.ID); if (el) el.remove(); },
-    svg_remove()       { this.svg_defs_remove  (); this.svg_style_remove(); },
+      this.ready = true;
+    },
   },
+
+  svg_defs_remove()  { let el = document.getElementById(CONST_SVG.DEFS.ID);  if (el) el.remove(); },
+  svg_style_remove() { let el = document.getElementById(CONST_SVG.STYLE.ID); if (el) el.remove(); },
+  svg_remove()       { this.svg_defs_remove  (); this.svg_style_remove(); },
 }
+
+</script>

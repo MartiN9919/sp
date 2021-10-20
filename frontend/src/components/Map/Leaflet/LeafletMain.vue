@@ -2,6 +2,10 @@
   <div
     style="height: 100%; width: 100%;"
     >
+
+    <!-- СТИЛИЗАЦИЯ ФИГУР: SVG -->
+    <l-decorator-svg/>
+
     <l-map
       ref="map"
       style="height: 100%; z-index: 0;"
@@ -37,8 +41,8 @@
           />
         </l-marker-cluster>
 
-        <!-- СТИЛИЗАЦИЯ ФИГУР -->
-        <l-path-decorator
+        <!-- СТИЛИЗАЦИЯ ФИГУР: PATH -->
+        <l-decorator-path
           :fc="data_normalize(map_ind, map_item)"
         />
 
@@ -112,7 +116,6 @@ import {
   LIcon,
 } from 'vue2-leaflet';
 
-import PathDecorator            from "@/components/Map/Leaflet/Components/PathDecorator";
 import Vue2LeafletMarkerCluster from 'vue2-leaflet-markercluster';
 import LControlPolylineMeasure  from 'vue2-leaflet-polyline-measure';
 
@@ -123,6 +126,8 @@ import {
   icon_get_group,
 } from '@/components/Map/Leaflet/Markers/Fun';
 
+import DecoratorSvg  from "@/components/Map/Leaflet/Components/DecoratorSvg";
+import DecoratorPath from "@/components/Map/Leaflet/Components/DecoratorPath";
 import                    '@/components/Map/Leaflet/Markers/Pulse';
 import EditorMap     from '@/components/Map/Leaflet/Components/EditorMap';
 import Range         from '@/components/Map/Leaflet/Components/Range';
@@ -131,11 +136,9 @@ import Logo          from '@/components/Map/Leaflet/Components/Logo';
 import MixResize     from '@/components/Map/Leaflet/Mixins/Resize';
 import MixKey        from '@/components/Map/Leaflet/Mixins/Key';
 import MixColor      from '@/components/Map/Leaflet/Mixins/Color';
-import MixSvg        from '@/components/Map/Leaflet/Mixins/Svg';
 import MixControl    from '@/components/Map/Leaflet/Mixins/Control';
 import MixMeasure    from '@/components/Map/Leaflet/Mixins/Measure';
 import MixMenu       from '@/components/Map/Leaflet/Mixins/Menu';
-//import MixStyleDecor from '@/components/Map/Leaflet/Mixins/Style.decor';
 
 
 import { datesql_to_ts, } from '@/plugins/sys';
@@ -152,11 +155,9 @@ export default {
     MixResize,
     MixKey,
     MixColor,
-    MixSvg,
     MixControl,
     MixMeasure,
     MixMenu,
-    //MixStyleDecor,
   ],
 
 
@@ -175,7 +176,8 @@ export default {
     LControl,
     LIcon,
     'l-marker-cluster': Vue2LeafletMarkerCluster,
-    'l-path-decorator': PathDecorator,
+    'l-decorator-svg':  DecoratorSvg,
+    'l-decorator-path': DecoratorPath,
     LControlPolylineMeasure,
 
     EditorMap,
@@ -206,9 +208,6 @@ export default {
 
     // добавить обработчики событий клавиатуры
     this.mounted_after_key();
-
-    // добавить паттерны и иные настройки SVG
-    this.mounted_after_svg(L);
   },
 
 
@@ -302,9 +301,6 @@ export default {
         });
         fc.features = features;
       }
-
-      // стилизация фигур
-      //this.style_decor_set(map_ind, map_item, fc)
 
       // console.log(this.$refs.geoJson)
       return fc;

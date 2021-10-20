@@ -6,16 +6,16 @@
 
 <script>
 /*
- *  =============================================
- *     НАЛОЖЕНИЕ НА ФИГУРУ PATTERN (ДЕКОРАТОР)
- *  =============================================
+ *  ============================================================
+ *     ДЕКОРАТОР: НАЛОЖЕНИЕ НА ФИГУРУ ОТДЕЛЬНОГО СЛОЯ PATTERN
+ *  ============================================================
  *
  */
 
 import 'leaflet-polylinedecorator'
 
 import { MAP_ITEM }   from '@/components/Map/Leaflet/Lib/Const';
-import { PATH_PATTERN } from '@/components/Map/Leaflet/Components/PathPattern';
+import { CONST_PATH } from '@/components/Map/Leaflet/Components/DecoratorPathConst';
 import { findRealParent, propsBinder } from 'vue2-leaflet';
 import { dict_get } from '@/components/Map/Leaflet/Lib/Lib';
 
@@ -32,16 +32,16 @@ const props = {
 };
 
 export default {
-  name: 'LPathDecorator',
+  name: 'LDecoratorPath',
   props,
   data() {
     return {
+      ready: false,
       objects: [],                    // список объектов линий и полигонов
       pattern: {                      // список паттернов
         line: [],
         polygon: [],
       },
-      ready: false,
     }
   },
   mounted() {
@@ -61,7 +61,7 @@ export default {
 
     const color   = dict_get(this.fc, [MAP_ITEM.FC.STYLE.KEY, MAP_ITEM.FC.STYLE._COLOR_.KEY], 'gray');
     const pattern = dict_get(this.fc, [MAP_ITEM.FC.STYLE.KEY, MAP_ITEM.FC.STYLE.PATTERN.KEY], '');
-    this.mapObject = L.polylineDecorator(this.objects, { patterns: new PATH_PATTERN(color).get(pattern) });
+    this.mapObject = L.polylineDecorator(this.objects, { patterns: new CONST_PATH(color).get(pattern) });
 
     L.DomEvent.on(this.mapObject, this.$listeners);
     propsBinder(this, this.mapObject, props);
@@ -93,18 +93,19 @@ export default {
       }
     },
 
+
     // БЫЛО В ИСХОДНОМ КОДЕ
-    // setVisible(newVal, oldVal) {
-    //   if (newVal == oldVal) return;
-    //   if (newVal) {
-    //     this.parentContainer.addLayer(this);
-    //   } else {
-    //     this.parentContainer.removeLayer(this);
-    //   }
-    // },
-    // addLatLng(value) {
-    //   this.mapObject.addLatLng(value);
-    // },
+    setVisible(newVal, oldVal) {
+      if (newVal == oldVal) return;
+      if (newVal) {
+        this.parentContainer.addLayer(this);
+      } else {
+        this.parentContainer.removeLayer(this);
+      }
+    },
+    addLatLng(value) {
+      this.mapObject.addLatLng(value);
+    },
   }
 };
 </script>
