@@ -20,7 +20,7 @@ export class CONST_PATH {
           rotate: true,
           markerOptions: {
             icon: L.icon({
-              iconUrl: icon_path('Забор оградительный'),
+              iconUrl: icon_path('Zabor_ogradit'),
               iconSize: [10, 10],   // original: [16, 16]
               iconAnchor: [5, 5],
             }),
@@ -32,14 +32,19 @@ export class CONST_PATH {
       //
       // Рубеж охраны 1 _ . _
       //
-      'line_border_1_1': { offset: 12, repeat: 25, symbol: L.Symbol.dash({ pixelSize: 10, pathOptions: { color: color, weight: 2, }, }), },
-      'line_border_1_2': { offset: 0,  repeat: 25, symbol: L.Symbol.dash({ pixelSize: 0,  pathOptions: { color: color, }, }), },
+      'line_border_1': [
+        { offset: 12, repeat: 25, symbol: L.Symbol.dash({ pixelSize: 10, pathOptions: { color: color, weight: 2, }, }), },
+        { offset: 0,  repeat: 25, symbol: L.Symbol.dash({ pixelSize: 0,  pathOptions: { color: color, }, }), },
+      ],
 
       //
       // Рубеж охраны 2 _ .. _
       //
-      'line_border_2_1': { offset: 12, repeat: 25, symbol: L.Symbol.dash({ pixelSize: 10, pathOptions: { color: color, weight: 2, }, }), },
-      'line_border_2_2': { offset: 0,  repeat: 25, symbol: L.Symbol.dash({ pixelSize: 0,  pathOptions: { color: color, }, }), },
+      'line_border_2': [
+        { offset: 18, repeat: 30, symbol: L.Symbol.dash({ pixelSize: 10, pathOptions: { color: color, weight: 2, }, }), },
+        { offset: 0,  repeat: 30, symbol: L.Symbol.dash({ pixelSize: 0,  pathOptions: { color: color, }, }), },
+        { offset: 5,  repeat: 30, symbol: L.Symbol.dash({ pixelSize: 0,  pathOptions: { color: color, }, }), },
+      ],
 
 
       'mark_iz2': {
@@ -127,25 +132,18 @@ export class CONST_PATH {
 
   }
 
+  // список классов в список паттернов
   get = function(names_str) {
     let ret = [];
     let names_list = names_str.trim().replace(/\s+/g, ' ').split(' ');
 
     for(let i=0; i<names_list.length; i++) {
-      let pattern = this.dat[names_list[i]];
-      if (pattern) { ret.push(pattern); }
+      let val = this.dat[names_list[i]];
+      if (val) {
+        if (val instanceof Array) { ret = ret.concat(val); }
+        else                      { ret.push(val);         }
+      }
     }
     return ret;
   }
 }
-
-
-
-      // var markerLine = L.polyline([[58.44773, -28.65234], [52.9354, -23.33496], [53.01478, -14.32617], [58.1707, -10.37109], [59.68993, -0.65918]], {}).addTo(this.map);
-      // var markerPatterns = L.polylineDecorator(markerLine, {
-      //   //patterns: this.style_patterns,
-      //   patterns: [
-      //     { offset: '5%', repeat: '10%', symbol: L.Symbol.marker()}
-      //   ]
-      // }).addTo(this.map);
-

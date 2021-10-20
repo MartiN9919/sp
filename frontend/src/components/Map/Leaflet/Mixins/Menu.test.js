@@ -7,7 +7,7 @@ export const MAP_TEST_ITEM_1 = {
 
   "fc": {
     "style": {
-      "class": "line_border_1_1 line_border_1_2", // "mark_zabor_ograd",
+      "class": "line_border_2", // "mark_zabor_ograd",
       "marker": {
         "icon": "test",     // "mdi-flag mdi-spin", "fs-spec0", "pulse" (size: 12), "#0f0", "gold", "file_name" (size_w: 25, size_h: 41)
         "zoom": 2,
