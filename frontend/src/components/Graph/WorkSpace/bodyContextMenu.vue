@@ -164,9 +164,10 @@ export default {
     },
     createRelation(){
       this.setEditableRelation({
-        relations: this.choosingObjects.length > 0 ? this.choosingObjects.filter(o => o.object.object.id !== 20) :
-            [this.objectWithActivatedMenu.relation.o1, this.objectWithActivatedMenu.relation.o2],
-        document: this.choosingObjects.find(o => o.object.object.id === 20) || null
+        relations: this.choosingObjects.length > 0 ? this.choosingObjects.length === 2 ? this.choosingObjects :
+          this.choosingObjects.filter(o => o.object.object.id !== 20) :
+          [this.objectWithActivatedMenu.relation.o1, this.objectWithActivatedMenu.relation.o2],
+        document: this.choosingObjects.length === 3 ? this.choosingObjects.find(o => o.object.object.id === 20) : null
       })
       this.setNavigationDrawerStatus(true)
       this.setToolStatus({tool: 'createRelationPage', status: false})

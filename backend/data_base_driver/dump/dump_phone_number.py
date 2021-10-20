@@ -14,7 +14,6 @@ class DUMP_PHONE_NUMBER_FORMAT:
         self._lock = threading.Lock()
         self._refresh_()
 
-
     def _refresh_(self, force=False):
         if not force and (self.refreshTime > time.time()): return
         with self._lock:
@@ -40,6 +39,9 @@ class DUMP_PHONE_NUMBER_FORMAT:
 
             # актуальность дампа
             self.refreshTime = time.time() + self.refreshDelay
+
+    def update(self, force):
+        self.refreshTime = time.time() - 1
 
     def get_all(self):
         self._refresh_()
