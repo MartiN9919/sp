@@ -7,7 +7,7 @@ export const MAP_TEST_ITEM_1 = {
 
   "fc": {
     "style": {
-      "class": "mark2",
+      "class": "mark_iz",
       "marker": {
         "icon": "test",     // "mdi-flag mdi-spin", "fs-spec0", "pulse" (size: 12), "#0f0", "gold", "file_name" (size_w: 25, size_h: 41)
         "zoom": 2,

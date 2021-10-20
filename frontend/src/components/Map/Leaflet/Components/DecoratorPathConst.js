@@ -3,6 +3,33 @@ import { icon_path } from '@/components/Map/Leaflet/Markers/Fun';
 export class CONST_PATH {
   constructor(color='gray') {
     this.dat = {
+      'mark_iz': {
+        offset: 12,  // '16%'
+        repeat: 25,   // '8%'
+        symbol: L.Symbol.marker({
+          rotate: true,
+          markerOptions: {
+            icon: L.icon({
+              iconUrl: icon_path('iz'),
+              iconSize: [16, 16],  // не обязательно
+              iconAnchor: [8, 8],
+            }),
+          },
+        }),
+      },
+
+
+      'mark_iz2': {
+        offset: 12,
+        repeat: 25,
+        symbol: L.Symbol.arrowHead({
+          pixelSize: 15,
+          polygon: false,
+          pathOptions: { color: color, weight: 2, stroke: true },
+        }),
+      },
+
+
       // стрелки с окантовкой
       'arrow': {
         offset: 12,
