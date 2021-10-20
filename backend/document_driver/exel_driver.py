@@ -5,18 +5,14 @@ from openpyxl import Workbook, load_workbook
 from core.settings import DOCUMENT_ROOT, TEMPLATE_ROOT
 
 
-def get_document(title, data):
-    work_book = Workbook()
-    works_sheet = work_book.active
-    works_sheet.title = title
-    for key_index, key in enumerate(data):
-        works_sheet.cell(column=key_index+1, row=1, value=key)
-        for index, value in enumerate(data[key]):
-            works_sheet.cell(column=key_index+1, row=index+2, value=value)
-    work_book.save(DOCUMENT_ROOT + title + '.xlsx')
-
-
 def insert_list(works_sheet, mode, start_cell, data):
+    """
+    Функция для вставки списка в exel документ
+    @param works_sheet: рабочее окно для вставки
+    @param mode: режим вставки (ud, down, left, right)
+    @param start_cell: стартовая ячейка
+    @param data: список для вставки
+    """
     col = start_cell.col_idx
     row = start_cell.row
     if mode == 'down' or mode == 'up':
@@ -30,6 +26,14 @@ def insert_list(works_sheet, mode, start_cell, data):
 
 
 def get_xlsx_document_from_template(template_path, name, data):
+    """
+    Функция для формирования exel документа из шаблона
+    @param template_path: название шаблона
+    @param name: название конечного документа
+    @param data: словарь содержащий информаию для занесение в документ, формат:
+    {Position:[data1,...,dataN],...,PositionN:p[]} , где Position позиция в шаблоне, data -  данные для занесения
+    @return: путь к конечному документу
+    """
     work_book = load_workbook(TEMPLATE_ROOT + template_path)
     works_sheet = work_book.active
     for col in works_sheet.iter_cols():

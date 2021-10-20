@@ -12,6 +12,12 @@ from data_base_driver.sys_key.get_object_dump import get_object_by_name
 
 
 def get_system_relation(group_id, rel_rec_id):
+    """
+    Функция для получения системной связи (связь-документ)
+    @param group_id: идентификатор группы пользователя
+    @param rel_rec_id: идентификатор связи
+    @return: словарь в формате {object_id, rec_id, title} содержащий информацию о документе
+    """
     system_relations = io_get_rel(group_id, [1], [1, int(rel_rec_id)], [20], [], {}, True)
     if len(system_relations) > 0:
         doc = get_object_record_by_id_http(20, system_relations[0]['rec_id_2'], group_id, [])
@@ -65,6 +71,14 @@ def get_rel_by_object(group_id, object, id, parents):
 
 
 def thread_function(group_id, parents, rel, depth, start=False):
+    """
+    Вспомогательная функция для обработки функции обхода одной из ветвей дерева в отдельном потоке
+    @param group_id: идентификатор группы пользователя
+    @param parents: список предков
+    @param rel: связь на данной итерации рекурсии
+    @param depth: остаточная глубина рекурсии
+    @param start: -
+    """
     newParents = parents.copy()
     newRels = get_rel_by_object(group_id, rel['object_id'], rel['rec_id'], newParents)
     newParents.append([newRels['object_id'], newRels['rec_id']])
@@ -155,6 +169,13 @@ def get_object_relation(group_id, object_id, rec_id, objects, all=False):
 
 
 def get_relation_path(relation_object, path, path_list, search_object):
+    """
+    Функция для обхода одной из ветвей дерева поиска
+    @param relation_object: объект корень дерева на данной итерации рекурсии
+    @param path: список предков
+    @param path_list: список предков
+    @param search_object: искомый объект
+    """
     path.append({'object_id': relation_object['object_id'], 'rec_id': relation_object['rec_id']})
     if relation_object['object_id'] == search_object['object_id'] and relation_object['rec_id'] == search_object['rec_id']:
         result_path = path.copy()
@@ -167,6 +188,12 @@ def get_relation_path(relation_object, path, path_list, search_object):
 
 
 def get_relation_path_list(relation_tree, search_object):
+    """
+    Функция для обхода ветвей дерева поиска связей между объектами
+    @param relation_tree: дерево поиска
+    @param search_object: искомый объект
+    @return: список объектов для постройки результирующих путей
+    """
     result = []
     threads = []
     for relation_object in relation_tree['rels']:
@@ -300,6 +327,11 @@ def search_relations_recursive(group_id, request, parent, root):
 
 
 def get_unique_objects(objects, object_tree):
+    """
+    Функция для филтрации дерева объектов с занесением всех уникальных объектов в objects
+    @param objects: результирующий список
+    @param object_tree: дерево объетов построенное при поиске связей
+    """
     for item in object_tree:
         if item.get('degenerated') and item['degenerated']:
             continue

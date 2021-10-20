@@ -6,6 +6,14 @@ from core.settings import DOCUMENT_ROOT, TEMPLATE_ROOT
 
 
 def get_document_from_template(template_name, title, data):
+    """
+    Функция для формирования документа microsoft word из шаблона
+    @param template_name: название шаблона
+    @param title: название документа
+    @param data: словарь содержащий информаию для занесение в документ, формат:
+    {Position:[data1,...,dataN],...,PositionN:p[]} , где Position позиция в шаблоне, data -  данные для занесения
+    @return: путь к конечному документу
+    """
     document = Document(TEMPLATE_ROOT + template_name)
     for paragraph in document.paragraphs:
         for word in paragraph.text.replace('\t', ' ').split(' '):
@@ -24,18 +32,18 @@ def get_document_from_template(template_name, title, data):
     return DOCUMENT_ROOT + title + '.docx'
 
 
-data = {'POSITION': ['Начальнику отдела'],
-        'RANK': ['Подполковнику'],
-        'NAME': ['Иванову И.И.'],
-        'START': ["01.01.2020"],
-        'END': ["01.02.2020"],
-        'N': ["1200"],
-        'n': ["13"],
-        'OWNER_POSITION': ["Старший офицер"],
-        'OWNER_RANK': ["Майор"],
-        'OWNER_NAME': ["Петров П.П."],
-        'DATE': ["01.02.2020"]
-        }
+# data = {'POSITION': ['Начальнику отдела'],
+#         'RANK': ['Подполковнику'],
+#         'NAME': ['Иванову И.И.'],
+#         'START': ["01.01.2020"],
+#         'END': ["01.02.2020"],
+#         'N': ["1200"],
+#         'n': ["13"],
+#         'OWNER_POSITION': ["Старший офицер"],
+#         'OWNER_RANK': ["Майор"],
+#         'OWNER_NAME': ["Петров П.П."],
+#         'DATE': ["01.02.2020"]
+#         }
 
 
 # document = Document(TEMPLATE_ROOT + 'template_person_test.docx')

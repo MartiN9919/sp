@@ -113,6 +113,12 @@ def get_record_photo(object_id, params):
 
 
 def get_value_by_key(key, value):
+    """
+    Функция функция для преобразования значения в базе данных в значение для пользователя
+    @param key: идентификатор классификатора
+    @param value: значение классификатора
+    @return: значение для пользователя
+    """
     if key == SYS_KEY_CONSTANT.PARENT_ID_CLASSIFIER_ID:
         if int(value) == 0:
             return 'корень'
