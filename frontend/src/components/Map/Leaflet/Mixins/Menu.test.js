@@ -12,11 +12,11 @@ export const MAP_TEST_ITEM_1 = {
         "zoom": 2,
       },
       "line": {
-        "class": " ",           // "mark_zabor_ograd",
+        "class": "test_mark_auto mark_zabor_ograd arrow-double-end line_zagrad_signal_1",           // "mark_zabor_ograd",
         //"class": "hidden", //"ant arrow-double-end dash-3",     // класс объекта (для установки стиля)
       },
       "polygon": {
-        "class": "hatch-diagonal-1 line_zagrad_signal_1 test_mark_auto",
+        "class": "mark_zabor_ograd hatch-diagonal-1",  //hatch-diagonal-1 line_zagrad_signal_1 test_mark_auto
       },
     },
 

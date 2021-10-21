@@ -368,7 +368,7 @@ export default {
           let style = {};
           if (feature.geometry.type == MAP_ITEM.FC.FEATURES.GEOMETRY.TYPE.LINE)    { style = self.SCRIPT_GET_ITEM_FC_STYLE_LINE   (map_ind); }
           if (feature.geometry.type == MAP_ITEM.FC.FEATURES.GEOMETRY.TYPE.POLYGON) { style = self.SCRIPT_GET_ITEM_FC_STYLE_POLYGON(map_ind); }
-          let className = style[MAP_ITEM.FC.STYLE.LINE.CLASS.KEY] ?? '';
+          let className = (style[MAP_ITEM.FC.STYLE.LINE.CLASS.KEY] ?? '').trim().replace(/\s+/g, ' ');
           if (className != '') { layer.setStyle({'className': className, }); }
 
           // редактирование запрещено - удалить pm - для уменьшения объема вычислений

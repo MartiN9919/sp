@@ -63,12 +63,13 @@ export default {
             dict_get(item, [MAP_ITEM.FC.KEY, MAP_ITEM.FC.STYLE.KEY, MAP_ITEM.FC.STYLE.LINE.KEY,    MAP_ITEM.FC.STYLE.LINE.CLASS.KEY],    '')+' '+
             dict_get(item, [MAP_ITEM.FC.KEY, MAP_ITEM.FC.STYLE.KEY, MAP_ITEM.FC.STYLE.POLYGON.KEY, MAP_ITEM.FC.STYLE.POLYGON.CLASS.KEY], '')
           ).trim().replace(/\s+/g, ' ').split(' ');
+        item_classes = [...new Set(item_classes)];      // исключить повторы
 
         // перебрать классы
         item_classes.forEach(function(item_class, ind_class) {
           // для класса: стиль и defs
           let svg = CONST_SVG.LIST[item_class];
-          if (!svg) return;
+          if (svg === undefined) return;
           let svg_style = svg[CONST_SVG.KEY_STYLE];
           let svg_defs  = svg[CONST_SVG.KEY_DEFS ];
 
