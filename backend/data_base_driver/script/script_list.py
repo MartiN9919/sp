@@ -1,5 +1,6 @@
 from data_base_driver.connect import connect_mysql
 from data_base_driver.constants.const_dat import DAT_SYS_SCRIPT, DAT_OWNER
+from data_base_driver.script.get_script_info import get_script_variables
 from data_base_driver.sys_key.get_list import get_list_by_name
 
 
@@ -57,6 +58,21 @@ def script_list(parent_id, group_id, script_type):
     scripts = list(filter(lambda x: DAT_OWNER.DUMP.valid_line_group(group_id=group_id, line_id=x[-1]), scripts))
     response_with_scripts = []
     for row in scripts:
+        variables = get_script_variables(int(row[0]))
+        variables_result = []
+        for variable in variables:
+            variables_dict = {'name': variable[0],
+                              'title': variable[1],
+                              'hint': variable[2],
+                              'type': {'title': variable[3]},
+                              'necessary': True if variable[6] == 1 else False}
+            if variable[3] == 'list':
+                variables_dict['type']['value'] = int(variable[4])
+            elif variable[3] == 'search':
+                variables_dict['type']['value'] = int(variable[5]) if variable[5] else None
+            else:
+                variables_dict['type']['value'] = None
+            variables_result.append(variables_dict)
         if row[4] is not None:
             if len(connect_mysql.db_sql(get_sql(parent_id=' = ' + str(row[0]), script_type=script_type))) == 0:
                 continue
@@ -67,21 +83,10 @@ def script_list(parent_id, group_id, script_type):
                 "children": [],
             })
         else:
-            variables = row[2].replace('\r', '').split('\n')
-            variables_list = []
-            for variable in variables:
-                variable_params = variable.split(';')
-                variable_dict = {'name': variable_params[0], 'title': variable_params[1], 'hint': variable_params[2],
-                                 'type': variable_params[3]}
-                if len(variable_params) > 4:
-                    variable_dict['list'] = get_list_by_name(variable_params[4])
-                else:
-                    variable_dict['list'] = None
-                variables_list.append(variable_dict)
             response_with_scripts.append({
                 "id": row[0],
                 "name": row[1],
-                "variables": variables_list,
+                "variables": variables_result,
                 "hint": row[3],
             })
     response_with_scripts = sorted(response_with_scripts, key=lambda k: k['name'].lower())

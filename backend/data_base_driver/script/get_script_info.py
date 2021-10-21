@@ -1,5 +1,5 @@
 from data_base_driver.connect import connect_mysql
-from data_base_driver.constants.const_dat import DAT_SYS_SCRIPT, DAT_OWNER
+from data_base_driver.constants.const_dat import DAT_SYS_SCRIPT, DAT_OWNER, DAT_SYS_SCRIPT_VARIABLE
 
 
 def get_script_type(script_id):
@@ -26,3 +26,16 @@ def get_script_title(script_id):
           + DAT_SYS_SCRIPT.ID + ' = ' \
           + str(script_id)
     return connect_mysql.db_sql(sql)[0][0]
+
+
+def get_script_variables(script_id):
+    sql = 'SELECT ' + DAT_SYS_SCRIPT_VARIABLE.NAME + ', '\
+        + DAT_SYS_SCRIPT_VARIABLE.TITLE + ', '\
+        + DAT_SYS_SCRIPT_VARIABLE.HINT + ', '\
+        + DAT_SYS_SCRIPT_VARIABLE.TYPE + ', '\
+        + DAT_SYS_SCRIPT_VARIABLE.LIST_ID + ', '\
+        + DAT_SYS_SCRIPT_VARIABLE.OBJ_ID + ', '\
+        + DAT_SYS_SCRIPT_VARIABLE.NECESSARY + ' FROM '\
+        + DAT_SYS_SCRIPT_VARIABLE.TABLE + ' WHERE '\
+        + DAT_SYS_SCRIPT_VARIABLE.SCRIPT_ID + ' = ' + str(script_id)
+    return connect_mysql.db_sql(sql)

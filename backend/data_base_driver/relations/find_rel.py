@@ -6,6 +6,12 @@ from data_base_driver.record.find_object import find_reliable_http
 
 
 def get_seconds_from_request_data_time(date_time_start, date_time_end):
+    """
+    Функция для преобразования строк содержащих дату время в кортеж содержащий интервал в секундах
+    @param date_time_start: строка содержащая дату/время начала интервала
+    @param date_time_end: строка содержащая дату/время конца интервала
+    @return: кортеж содержащий 2 значения интервала в секундах
+    """
     if not date_time_start:
         date_time_1_str = '0001-01-01 00:00:00'
     else:

@@ -6,6 +6,7 @@
 <script>
 import uuid from 'uuid'
 import util from '../util'
+import {mapActions} from "vuex";
 const Victor = require('victor');
 export default {
   props: {
@@ -25,6 +26,14 @@ export default {
     if (typeof this.data.pathd === 'undefined') {
       this.$set(this.data, 'pathd', '')
     }
+    if(!this.data.noMove){
+      let angle = 3.14 * (Math.random() * 360) / 180
+      let length = this.toNode.size
+      this.fromNode.x = this.toNode.x + (Math.cos(angle) * length)
+      this.fromNode.y = this.toNode.y + (Math.sin(angle) * length)
+    }
+    this.fromNode.object.show = true
+    this.updateObjectFromGraph({object: this.fromNode, fields: {object: this.fromNode.object}})
   },
 
   computed: {
@@ -109,6 +118,7 @@ export default {
      *    snap,   'circle' or 'rect' snaps to the bounding box or circle
      * }
      */
+    ...mapActions(['updateObjectFromGraph']),
     parseAnchor(anchor, node) {
       if (!anchor) return { x: 0, y: 0 }
       let snap = anchor.snap
@@ -171,6 +181,7 @@ export default {
         .pop()
     }
   },
+
 }
 </script>
 

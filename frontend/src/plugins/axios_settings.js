@@ -17,11 +17,15 @@ const http = axios.create({
 })
 
 export function getFileLink(objectId, recId, fileName) {
-  return `${CONST.API.BASE_PREFIX}/files/download_condense_image/open_files/${generateFileLink(objectId, recId, fileName)}`
+  return `${CONST.API.BASE_PREFIX}/files/condense_image_download/files/${generateFileLink(objectId, recId, fileName)}`
 }
 
 export function getDownloadFileLink(objectId, recId, fileName) {
-  return `${CONST.API.BASE_PREFIX}/files/download/open_files/${generateFileLink(objectId, recId, fileName)}`
+  return `${CONST.API.BASE_PREFIX}/files/download/files/${generateFileLink(objectId, recId, fileName)}`
+}
+
+export function getDownloadReportLink(fileId) {
+  return `${HTTP_SERVER_IP + CONST.API.BASE_PREFIX}/files/download_report/${fileId}`
 }
 
 function generateFileLink(objectId, recId, fileName) {

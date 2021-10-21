@@ -41,6 +41,19 @@ def io_get_obj_row_manticore(group_id, object_type, keys, ids, ids_max_block, wh
                                group_id, False)
 
 
+def parse_where_dop(where_dop_row):
+    """
+    Вспомогательная функция для обработки where_dop_row при поиске по col таблицам
+    @param where_dop_row: исходная строка запроса
+    @return: None если в запросе нет @key_id, если есть, то key_id в числовом формате
+    """
+    if where_dop_row.find('@key_id') != -1:
+        classifier_id = int(where_dop_row[where_dop_row.find('@key_id')+8:])
+        return classifier_id
+    else:
+        return None
+
+
 def io_get_obj_col_manticore(group_id, object_type, keys, ids, ids_max_block, where_dop):
     """
     Функция для получения информации о объекте из col индексов мантикоры в формате списка словарей
@@ -59,6 +72,7 @@ def io_get_obj_col_manticore(group_id, object_type, keys, ids, ids_max_block, wh
         result_keys = [{'id': item['id'], 'name': item['name']} for item in col_keys if item['id'] in keys]
     if len(result_keys) == 0:
         return []
+    key_request = parse_where_dop(where_dop)
     index = 'obj_' + FullTextSearch.TABLES[object_type] + '_col'
     must = []
     if len(ids) > 0:
@@ -66,7 +80,7 @@ def io_get_obj_col_manticore(group_id, object_type, keys, ids, ids_max_block, wh
     data = json.dumps({
         'index': index,
         'query': {
-            'query_string': where_dop,
+            'query_string': where_dop if not key_request else '',
             'bool': {
                 'must': must
             }
@@ -87,6 +101,8 @@ def io_get_obj_col_manticore(group_id, object_type, keys, ids, ids_max_block, wh
                                DAT_OBJ_ROW.SEC: params['sec'],
                                DAT_OBJ_ROW.KEY_ID: key['id'],
                                DAT_OBJ_ROW.VAL: value})
+    if key_request:
+        result = [item for item in result if item[DAT_OBJ_ROW.ID] == key_request]
     return get_enabled_records(object_type, result, group_id, False)
 
 
@@ -106,7 +122,7 @@ def io_get_obj_manticore_dict(group_id, object_type, keys, ids, ids_max_block, w
                                            time_interval)
     if len(where_dop_row) > 0:
         ids = [item[DAT_OBJ_ROW.ID] for item in row_records]
-    col_records = io_get_obj_col_manticore(group_id, object_type, keys, ids, ids_max_block, where_dop_row)
+    col_records = io_get_obj_col_manticore(group_id, object_type, keys, ids, ids_max_block, where_dop_row) # исправить where dop row
     result = row_records + col_records
     result.sort(key=lambda x: x[DAT_OBJ_ROW.ID])
     return result
@@ -125,7 +141,7 @@ def io_get_rel_manticore_dict(group_id, keys, obj_rel_1, obj_rel_2, val, time_in
     @param time_interval: словарь хранящий промежуток времени в секундах: {second_start, second_end}
     @param is_unique: флаг проверки результирующего списка на уникальность входящих элементов
     @param rec_id: идентификатор связи, для проверки создания связи
-    @return: список словарей в формате [{sec,key_id,obj_id_1,rec_id_1,obj_id_2,rec_id_2,val},{},...,{}]
+    @return: список словарей в формате [{id,sec,key_id,obj_id_1,rec_id_1,obj_id_2,rec_id_2,val},{},...,{}]
     """
     if rec_id != 0:
         data = json.dumps({
@@ -172,7 +188,8 @@ def io_get_rel_manticore_dict(group_id, keys, obj_rel_1, obj_rel_2, val, time_in
             'bool': {
                 'must': must
             }
-        }
+        },
+        "limit": 500
     })
     data_2 = json.dumps({
         'index': DAT_REL.TABLE_SHORT,
@@ -181,11 +198,20 @@ def io_get_rel_manticore_dict(group_id, keys, obj_rel_1, obj_rel_2, val, time_in
             'bool': {
                 'must': must
             }
-        }
+        },
+        "limit": 500
     })
     response_1 = json.loads(requests.post(FullTextSearch.SEARCH_URL, data=data_1).text)['hits']['hits']
     response_2 = json.loads(requests.post(FullTextSearch.SEARCH_URL, data=data_2).text)['hits']['hits']
-    full_result = [item['_source'] for item in response_1 + response_2 if check_relation_permission(item, group_id)]
+    full_result = [{'id': int(item['_id']),
+                    'sec': item['_source']['sec'],
+                    'key_id': item['_source']['key_id'],
+                    'obj_id_1': item['_source']['obj_id_1'],
+                    'rec_id_1': item['_source']['rec_id_1'],
+                    'obj_id_2': item['_source']['obj_id_2'],
+                    'rec_id_2': item['_source']['rec_id_2'],
+                    'val': item['_source']['val'],
+                    } for item in response_1 + response_2 if check_relation_permission(item, group_id)]
     for relation in full_result:
         if len(relation['val']) == 0:
             relation['val'] = 0

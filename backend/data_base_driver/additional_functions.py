@@ -1,6 +1,15 @@
 import datetime
 
 
+def get_document_date_format(date):
+    """
+    Функция для преобразования строки даты из формата 2020-01-01 в 01.01.2020
+    @param date: строка содержащая дату в формате 2020-01-01
+    @return: строка содержащая дату в формате 01.01.2020
+    """
+    return '.'.join(reversed(date.split('-')))
+
+
 def get_date_from_days_sec(days, sec):
     """
     Функция для получения даты и времени в строковом формате из дней с рождества христова и секунд с начала дня
@@ -96,3 +105,15 @@ def push_dict(dictionary, key, value):
         dictionary[key].append(value)
     else:
         dictionary[key] = [value]
+
+
+def get_second_range(date_start, date_end):
+    """
+    Функция для получения диапазона времени в секундах
+    @param date_start: стартовая дата в строковом формате гг.мм.дд
+    @param date_end: дата окончания гг.мм.дд
+    @return: словарь в формате {second_start, second_end}
+    """
+    date_time_start = date_start + ' 00:00:00'
+    date_time_end = date_end + ' 00:00:00'
+    return {'second_start': str_to_sec(date_time_start), 'second_end': str_to_sec(date_time_end)}

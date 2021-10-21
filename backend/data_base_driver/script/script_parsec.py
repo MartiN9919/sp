@@ -1,24 +1,10 @@
 import os
+import re
 
 from data_base_driver.constants.const_script import IMPORTS, ENABLED_FUNCTIONS, ENVIRONMENT_VARIABLES, \
     BASE_PATH_TO_USER_SCRIPTS, PATH_TO_REPORTS_DIR
 
-
 DEBUG = False
-
-
-def is_function(string):
-    """
-    Стандартная функция проверки является ли данное слова функцией
-    @param str: строка содержащие проверяемое слово
-    @return: True если функция, False если нет
-    """
-    if string.find('\'') != -1 and string.find('(') != -1 and string.find('(') < string.find('\''):
-        return True
-    elif string.find('\"') != -1 and string.find('(') != -1 and string.find('(') < string.find('\"'):
-        return True
-    elif string.find('(') != -1:
-        return True
 
 
 def get_function_name(string):
@@ -27,26 +13,23 @@ def get_function_name(string):
     @param string: строка содержащие вызов функции
     @return: чистое название функции
     """
-    if string.find('.') != -1:
-        return string[string.find('.') + 1:string.find('(')].replace('[', '')
-    else:
-        return string[:string.find('(')].replace('[', '')
+    return re.sub(r'\(\w*\)', '', string)
 
 
-def default_checker(str):
+def default_checker(string):
     """
     проверка содержит ли данная строка запрещенные функции или переменные окружения
     @param str: строка из скрипта
     @return: False если строка не прошла проверку, True если проверка пройдена
     """
     if len(list(
-            set(str.split()) & set(
+            set(string.split()) & set(
                 ENVIRONMENT_VARIABLES))) > 0: return False, 'использование переменной окружения', list(
-        set(str.split()) & set(ENVIRONMENT_VARIABLES))
-    if len(set([get_function_name(func) for func in filter(is_function, str.split(' '))]).difference(
-            set(ENABLED_FUNCTIONS))) > 0: return False, ' использование неразрешенной функции ', set(
-        [get_function_name(func) for func in filter(is_function, str.split(' '))]).difference(
-        set(ENABLED_FUNCTIONS))
+        set(string.split()) & set(ENVIRONMENT_VARIABLES))
+    wrong_functions = set([get_function_name(func) for func in re.findall(r'[\w]*\(\w*\)', string)]).difference(
+            set(ENABLED_FUNCTIONS))
+    if len(wrong_functions) > 0:
+        return False, ' использование неразрешенной функции ', wrong_functions
     return True, ''
 
 
@@ -70,9 +53,9 @@ def parse_text_to_python(name, text, params, type):
     if type == 'report':
         file.write('\t\tlock.acquire()\n\t\tlock.release()\n')
         file.write('\t\tpath = \'' + PATH_TO_REPORTS_DIR + '\' + title\n')
-    for param in params.split('\n'):
+    for param in params:
         file.write(
-            '\t\t' + param.split(';')[0] + ' = request.get(\'' + param.split(';')[0] + '\',{}).get(\'value\',[])\n')
+            '\t\t' + param.name + ' = request.get(\'' + param.name + '\',{}).get(\'value\',[])\n')
     index = text.find('\n')
     while index != -1:
         str = text[:index + 1]
@@ -98,7 +81,7 @@ def parse_text_to_python(name, text, params, type):
                 '\t\t' + 'add_notification(user_id, \'information\', \'ваш отчет: \' + title + \' - сгенерирован\','
                          ' from_id=1, file_id=file_id)' + '\n')
         if type == 'map':
-            file.write('\texcept BaseException:\n\t\treturn \'error\'')
+            file.write('\texcept Exception as e:\n\t\traise e')
         elif type == 'report':
             file.write('\texcept BaseException:\n');
             file.write('\t\tset_file_status(file_id, \'error\')\n')

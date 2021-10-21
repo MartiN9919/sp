@@ -30,6 +30,7 @@ export default {
       return getResponseAxios('auth/authorization/', config)
         .then(response => {
           commit('setUserInformation', response.user)
+          if (!getters.baseLists.length) dispatch('getBaseLists')
           if (!getters.socket) {
             dispatch('connectSocket').then(() => {
               dispatch('socketListener')

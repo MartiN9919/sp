@@ -4,12 +4,12 @@
       <selector-input
         v-model="objectId"
         :items="baseObjects"
-        :title="selectorTitle"
+        :label="selectorTitle"
         item-text="titleSingle"
       ></selector-input>
       <boolean-input
         v-model="objectActual"
-        :title="booleanTitle"
+        :label="booleanTitle"
         class="pt-4"
       ></boolean-input>
     </v-card-text>
@@ -53,7 +53,7 @@ export default {
     },
     objectActual: {
       get: function () { return this.newSettingsObject ? this.newSettingsObject.actual : null },
-      set: function (newObjectActual) { if(newObjectActual) this.newSettingsObject.actual = newObjectActual },
+      set: function (newObjectActual) { if(this.newSettingsObject) this.newSettingsObject.actual = newObjectActual },
     }
   },
   methods: {

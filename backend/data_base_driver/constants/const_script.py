@@ -8,6 +8,7 @@ ENVIRONMENT_VARIABLES = [
     "import"
 ]
 
+
 IMPORTS = \
     "import geojson\n" \
     "\n" \
@@ -22,6 +23,7 @@ feature_collection_by_geometry\n"\
     "from data_base_driver.additional_functions import str_to_sec\n\n"\
 
 
+
 ENABLED_FUNCTIONS = [
     'io_set',
     'io_get_obj_mysql_tuple',
@@ -34,7 +36,9 @@ ENABLED_FUNCTIONS = [
     'rel_to_geo_fc',
     'geo_id_to_fc',
     'int',
+    'set',
     'list',
+    'len',
     'find',
     'split',
     'open',
@@ -46,7 +50,6 @@ ENABLED_FUNCTIONS = [
     'feature_collection_to_manticore_polygon',
     'feature_collection_by_geometry',
     'str_to_sec',
-
     'Feature',
     'FeatureCollection',
     'append',

@@ -47,17 +47,20 @@ export default {
       const length = el.getTotalLength() * (this.perc/100)
       this.pos = el.getPointAtLength(length)
     },
-    updatePos(x=0, y=0){
+    updatePos(){
+      if(this.oldNodeSize.height - this.node.height !== 0)
+        this.updateOffsetBySize()
+      this.node.x = this.pos.x + this.offset.x
+      this.node.y = this.pos.y + this.offset.y
+    },
+    updateOffset(x=0, y=0){
       let offsetX = this.offset.x + (x || 0) + (this.node.width/2)
       let offsetY = this.offset.y + (y || 0) + (this.node.height/2)
       let totalOffset = Math.sqrt(Math.pow(offsetX,2) + Math.pow(offsetY,2))
-      if(this.element.hasOwnProperty('type')){
-        this.updateEdgeOffset(x,y,totalOffset)
-      }
-      else{
-        this.updateNodeOffset(x,y,totalOffset, offsetX, offsetY)
-      }
-      this.updateOffsetBySize()
+      if(totalOffset < this.node.width*2){
+          this.offset.x += (x || 0)
+          this.offset.y += (y || 0)
+        }
       this.node.x = this.pos.x + this.offset.x
       this.node.y = this.pos.y + this.offset.y
     },
@@ -74,20 +77,8 @@ export default {
         this.oldNodeSize.width = this.node.width
       }
     },
-    updateNodeOffset (x=0, y=0, totalOffset) {
-      if(totalOffset < this.element.width *3){
-          this.offset.x += (x || 0)
-          this.offset.y += (y || 0)
-        }
-    },
-    updateEdgeOffset (x=0, y=0, totalOffset) {
-      if(totalOffset < this.node.width*2){
-        this.offset.x += (x || 0)
-        this.offset.y += (y || 0)
-      }
-    },
     onDrag (d) {
-      this.updatePos(d.x || 0, d.y || 0)
+      this.updateOffset(d.x || 0, d.y || 0)
     }
   },
   computed: {

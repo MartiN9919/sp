@@ -30,8 +30,6 @@ export default {
       return Promise.resolve()
     },
     async getBaseClassifiers({getters, commit}, config = {}) {
-      if (getters.baseClassifiers(config.params.object_id).length)
-        return Promise.resolve()
       await getResponseAxios('objects/list_classifier/', config)
         .then(r => { commit('addBaseClassifiers', r.data.map(c => new BaseClassifier(c))) })
         .catch(e => { return Promise.reject(e) })
@@ -79,6 +77,6 @@ class BaseRelation extends BaseInstanceToObject {
     this.f_id = baseRelation.object_id_1
     this.s_id = baseRelation.object_id_2
     this.hint = baseRelation.hint
-    this.list = baseRelation.list
+    this.type = baseRelation.type
   }
 }

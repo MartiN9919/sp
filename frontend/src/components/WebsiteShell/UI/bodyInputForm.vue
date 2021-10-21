@@ -5,18 +5,20 @@
     class="customTextField"
     autocomplete="off"
     messages=" "
-    color="teal"
-    @keypress="$emit('keypress', $event)"
+    :color="$CONST.APP.COLOR_OBJ"
   >
-    <template v-slot:label>
-      <slot name="label"></slot>
-    </template>
     <template v-slot:message="{}">
       <slot name="message"></slot>
     </template>
     <template v-slot:append>
       <v-hover v-slot="{ hover }">
-        <slot name="append" :hover="hover"></slot>
+        <v-icon
+          v-if="$attrs.hasOwnProperty('deletable') && hover"
+          @click.stop="$emit('deletable')"
+          size="24"
+          class="action-icon"
+        >mdi-delete</v-icon>
+        <v-icon size="24" v-else>{{$attrs.icon}}</v-icon>
       </v-hover>
     </template>
   </v-text-field>
@@ -26,14 +28,21 @@
 export default {
   name: "bodyInputForm",
   inheritAttrs: false,
-  props: [ 'inputString', ],
-  model: { prop: 'inputString', event: 'changeInputString', },
+  props: ['inputString'],
+  model: {
+    prop: 'inputString',
+    event: 'changeInputString'
+  },
   computed: {
     value: {
-      get: function () { return this.inputString },
-      set: function (value) { this.$emit('changeInputString', value) }
-    },
-  },
+      get: function () {
+        return this.inputString
+      },
+      set: function (value) {
+        this.$emit('changeInputString', value)
+      }
+    }
+  }
 }
 </script>
 

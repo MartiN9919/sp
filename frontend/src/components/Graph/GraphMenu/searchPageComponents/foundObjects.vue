@@ -1,5 +1,5 @@
 <template>
-  <v-list class="py-0">
+  <v-list class="py-0" v-if="objects">
     <v-list-item class="title-table">
       <v-list-item-subtitle class="text-title-table">Найдено объектов: {{objects.length}}</v-list-item-subtitle>
     </v-list-item>

@@ -4,7 +4,7 @@ from data_base_driver.constants.const_key import SYS_KEY_CONSTANT
 from data_base_driver.input_output.input_output import io_get_obj
 from data_base_driver.input_output.io_geo import get_geometry_by_id
 from data_base_driver.sys_key.get_key_dump import get_key_by_id, get_obj_id
-from data_base_driver.sys_key.get_list import get_list_by_top_id
+from data_base_driver.sys_key.get_list import get_list_by_top_id, get_groups_list
 from data_base_driver.trigger.trigger_execute import check_triggers
 
 
@@ -113,11 +113,19 @@ def get_record_photo(object_id, params):
 
 
 def get_value_by_key(key, value):
+    """
+    Функция функция для преобразования значения в базе данных в значение для пользователя
+    @param key: идентификатор классификатора
+    @param value: значение классификатора
+    @return: значение для пользователя
+    """
     if key == SYS_KEY_CONSTANT.PARENT_ID_CLASSIFIER_ID:
         if int(value) == 0:
             return 'корень'
         else:
             return get_geometry_by_id(int(value))['name']
+    elif key in SYS_KEY_CONSTANT.NOT_VALUE_TRANSFER_LIST:
+        return [item for item in get_groups_list() if item['id'] == int(value)][0]['value']
     return value
 
 
@@ -131,8 +139,7 @@ def get_object_record_by_id_http(object_id, rec_id, group_id=0, triggers=None):
     @return: словарь в формате {object_id, rec_id, params:[{id,val},...,{}]}
     """
     response = io_get_obj(group_id, object_id, [], [rec_id], 500, '', {})
-    temp = [(int(item['key_id']), item['val'], int(item['sec'])) for item in response
-            if int(item['key_id']) not in DAT_SYS_KEY.DUMP.owners.get(object_id, [])]
+    temp = [(int(item['key_id']), item['val'], int(item['sec'])) for item in response]
     params = []
     for item in temp:
         value = get_value_by_key(int(item[0]), item[1])
@@ -159,21 +166,35 @@ def get_object_record_by_id_http(object_id, rec_id, group_id=0, triggers=None):
             'title': title['title'], 'triggers': triggers, 'photo': photo}
 
 
-def get_keys_by_object(object):
+def get_keys_by_object():
     """
     Получение списка ключей по типу объекта
     @param object: имя или тип объекта
     @return: список словарей c информацией о искомых ключах
     """
-    if isinstance(object, str) and not (object.isdigit()):
-        object = get_obj_id(object)
-    keys = DAT_SYS_KEY.DUMP.get_rec(obj_id=int(object), only_first=False)
+    keys = DAT_SYS_KEY.DUMP.get_rec(only_first=False)
     result = []
     for key in keys:
         temp = dict(key)
         temp.pop('rel_obj_1_id')
         temp.pop('rel_obj_2_id')
-        if temp.get('list_id'):
-            temp['list_id'] = get_list_by_top_id(int(temp.get('list_id')))
+        temp['type'] = {'title': 'list' if temp.get('list_id') else temp['type'],
+                        'value': temp['list_id'] if temp.get('list_id') else None}
         result.append(temp)
+    result.sort(key=lambda x: x['id'])
+    result.sort(key=lambda x:x['obj_id'])
     return result
+
+
+def get_object_param_by_key(group_id, object_id, rec_id, key_id):
+    """
+    Функция для получения параметра объекта
+    @param group_id: идентификатор группы пользователя
+    @param object_id: идентификатор типа объекта
+    @param rec_id: идентификатор объекта
+    @param key_id: идентификатор искомого параметра
+    @return: наиболее актуальное значение искомого параметра если он есть, если нет -  None
+    """
+    object_params = get_object_record_by_id_http(object_id, rec_id, group_id, None)['params']
+    object_param_list = [item for item in object_params if item['id'] == key_id]
+    return object_param_list[0]['values'][0]['value'] if len(object_param_list) > 0 else None

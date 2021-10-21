@@ -4,7 +4,7 @@
 VEC_DATA = {
     'HOST': '200.200.200.233',
     'PORT': '3306',
-    'NAME': 'vec_data_dev',
+    'NAME': 'smorgon',
     'USER': 'dev',
     'PASSWORD': '1',
     'CHARSET': 'utf8',

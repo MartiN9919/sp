@@ -4,6 +4,7 @@ import json
 import threading
 
 from authentication.models import ModelCustomUser
+from core.settings import DOCUMENT_ROOT
 from data_base_driver.script.get_script_info import get_script_title
 from data_base_driver.script.script_execute import execute_script_map
 from data_base_driver.script.script_list import get_script_tree
@@ -21,7 +22,7 @@ from data_base_driver.trigger.trigger_list import get_triggers_list
 def aj_script_list(request):
     """
     Функция для обработки запроса на получение списка скриптов
-    @param request: POST запрос на получение списка скриптов
+    @param request: GET запрос на получение списка скриптов
     @return: список скриптов с учетом уровня доступа пользователя, в формате JSON
     """
     script_type = request.GET['script_type']
@@ -33,6 +34,11 @@ def aj_script_list(request):
 @request_log
 @request_wrap
 def aj_trigger_list(request):
+    """
+    Функция для обработки запроса на получение списка скриптов
+    @param request: GET запрос на получение списка триггеров
+    @return: список триггеров в формате JSON
+    """
     return {'data': get_triggers_list()}
 
 
@@ -51,10 +57,7 @@ def aj_script_execute_map(request):
     method_name = 'script_' + str(data.get('id'))
     importlib.invalidate_caches()
     result = execute_script_map(method_name, group_id, data.get('variables'))
-    if result == 'error':
-        raise Exception(470, '')
-    else:
-        return {'data': result}
+    return {'data': result}
 
 
 @login_check
@@ -71,10 +74,11 @@ def aj_script_execute_report(request):
     user = ModelCustomUser.objects.get(id=request.user.id)
     title = get_script_title(data.get('id')) + '-' + datetime.datetime.now().replace(microsecond=0,
                                                                                      tzinfo=None).isoformat(sep='-')
+    group_id = DAT_OWNER.DUMP.get_group(user_id=request.user.id)
     try:
         my_module = importlib.import_module('script.user_scripts.' + method_name)
         date_time = datetime.datetime.now()
-        file_id = add_file(path='/reports/' + title,
+        file_id = add_file(path=DOCUMENT_ROOT + title,
                            owner_line=user.owner_groups.owner_lines_id,
                            owner_region=user.owner_groups.owner_regions_id,
                            params=json.dumps(data, ensure_ascii=False),
@@ -84,7 +88,7 @@ def aj_script_execute_report(request):
         lock = threading.Lock()
         with lock:
             thread = threading.Thread(target=script_function,
-                                      args=(data.get('variables'), file_id, request.user.id, title, lock))
+                                      args=(data.get('variables'), group_id, file_id, request.user.id, title, lock))
             thread.start()
             return {'data': {'id': file_id, 'name': title,
                              'date': date_time.replace(microsecond=0, tzinfo=None).isoformat(sep=' '),

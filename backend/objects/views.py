@@ -9,9 +9,10 @@ from data_base_driver.osm.osm_lib import osm_search, osm_fc
 from data_base_driver.record.search import search
 from data_base_driver.record.add_record import add_data, add_geometry
 from data_base_driver.relations.add_rel import add_rel
-from data_base_driver.relations.get_rel import get_object_relation, get_relations_list
+from data_base_driver.relations.get_rel import get_object_relation, get_relations_list, search_relations, \
+    get_objects_relation
 from data_base_driver.record.get_record import get_keys_by_object
-from data_base_driver.sys_key.get_list import get_list_by_top_id
+from data_base_driver.sys_key.get_list import get_list_by_top_id, get_lists
 from data_base_driver.sys_key.get_object_info import obj_list
 
 
@@ -34,7 +35,25 @@ def aj_object_type_list(request):
 @request_wrap
 @request_get
 def aj_list_icons(request):
+    """
+    Функция для обработки запроса на получения списка иконок
+    @param request: GET запрос на получение списка иконок
+    @return: JSON со списком иконок
+    """
     return {'data': get_list_by_top_id(SYS_KEY_CONSTANT.LIST_ICONS_ID)}
+
+
+@login_check
+@request_log
+@request_wrap
+@request_get
+def aj_lists(request):
+    """
+    Функция бля обработки запроса на получение всех списков
+    @param request: GET запрос на получение всех списков
+    @return: json в формате: {id:{name,title,hint,values}, ..., id_n:{}}
+    """
+    return {'data': get_lists()}
 
 
 @login_check
@@ -48,7 +67,7 @@ def aj_list_classifier(request):
     @return: json содержащих информации по ключу data в формате:
     [{id,obj_id,col,need,type,list_id:{name,val:[]},name,title,hint,descript}, ...,{}]
     """
-    return {'data': get_keys_by_object(request.GET['object_id'])}
+    return {'data': get_keys_by_object()}
 
 
 @login_check
@@ -143,6 +162,16 @@ def aj_relation(request):
 @login_check
 @request_log
 @request_wrap
+@request_get
+def aj_objects_relation(request):
+    group_id = DAT_OWNER.DUMP.get_group(user_id=request.user.id)
+    return({'data': get_objects_relation(group_id, int(request.GET['object_id_1']), int(request.GET['rec_id_1']),
+                                         int(request.GET['object_id_2']), int(request.GET['rec_id_2']), 5)})
+
+
+@login_check
+@request_log
+@request_wrap
 def aj_object_relation(request):
     group_id = DAT_OWNER.DUMP.get_group(user_id=request.user.id)
     if request.method == 'POST':
@@ -160,6 +189,21 @@ def aj_object_relation(request):
 @login_check
 @request_log
 @request_wrap
+def aj_search_relations(request):
+    group_id = DAT_OWNER.DUMP.get_group(user_id=request.user.id)
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            return {'data': search_relations(group_id, data)}
+        except Exception as e:
+            raise e
+    else:
+        raise Exception(480, 'Некорректный формат запроса')
+
+
+@login_check
+@request_log
+@request_wrap
 def aj_search_objects(request):
     """
     Функция API для поиска объектов в базе данных
@@ -168,7 +212,7 @@ def aj_search_objects(request):
     @return: json с информацией о объекте в формате [{rec_id, obj_id, params:[{id,val},...,{}]},...,{}]
     """
     group_id = DAT_OWNER.DUMP.get_group(user_id=request.user.id)
-    triggers = json.loads(request.headers.get('Set-Cookie'))
+    triggers = json.loads(request.headers.get('Set-Cookie', '[]'))
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
