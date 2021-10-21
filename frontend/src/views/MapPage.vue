@@ -19,11 +19,10 @@ export default {
   name: 'MapPage',
   components: { SplitPanel, MapMenu, LeafletMain, },
   methods: {
-    ...mapActions(['setDefaultValueActiveTool', 'getBaseObjects']),
+    ...mapActions(['setDefaultValueActiveTool', ]),
   },
   mounted() {
     this.setDefaultValueActiveTool()
-    this.getBaseObjects()
   },
 }
 </script>

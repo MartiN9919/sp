@@ -113,6 +113,12 @@ def get_record_photo(object_id, params):
 
 
 def get_value_by_key(key, value):
+    """
+    Функция функция для преобразования значения в базе данных в значение для пользователя
+    @param key: идентификатор классификатора
+    @param value: значение классификатора
+    @return: значение для пользователя
+    """
     if key == SYS_KEY_CONSTANT.PARENT_ID_CLASSIFIER_ID:
         if int(value) == 0:
             return 'корень'
@@ -178,3 +184,17 @@ def get_keys_by_object():
     result.sort(key=lambda x: x['id'])
     result.sort(key=lambda x:x['obj_id'])
     return result
+
+
+def get_object_param_by_key(group_id, object_id, rec_id, key_id):
+    """
+    Функция для получения параметра объекта
+    @param group_id: идентификатор группы пользователя
+    @param object_id: идентификатор типа объекта
+    @param rec_id: идентификатор объекта
+    @param key_id: идентификатор искомого параметра
+    @return: наиболее актуальное значение искомого параметра если он есть, если нет -  None
+    """
+    object_params = get_object_record_by_id_http(object_id, rec_id, group_id, None)['params']
+    object_param_list = [item for item in object_params if item['id'] == key_id]
+    return object_param_list[0]['values'][0]['value'] if len(object_param_list) > 0 else None

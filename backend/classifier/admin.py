@@ -12,6 +12,7 @@ admin.site.site_header = PROJECT_TITLE_ADMIN
 @admin.register(ModelObject)
 class ModelObjectAdmin(admin.ModelAdmin):
     list_display = (
+        DAT_SYS_OBJ.ID,
         DAT_SYS_OBJ.TITLE,
         DAT_SYS_OBJ.TITLE_SINGLE,
         DAT_SYS_OBJ.NAME,
@@ -86,6 +87,7 @@ class Rel(ModelKey):
 @admin.register(Rel)
 class ModelKeyAdminRel(admin.ModelAdmin):
     list_display = (
+        DAT_SYS_KEY.ID,
         DAT_SYS_KEY.TITLE,
         DAT_SYS_KEY.PATH,
         DAT_SYS_KEY.REL_OBJ_1,
@@ -98,8 +100,9 @@ class ModelKeyAdminRel(admin.ModelAdmin):
     ordering = (DAT_SYS_KEY.OBJ, DAT_SYS_KEY.PATH, DAT_SYS_KEY.TITLE,)
 
     autocomplete_fields = (DAT_SYS_KEY.LIST,)
-
+    readonly_fields = (DAT_SYS_KEY.ID,)
     fieldsets = (
+        ("Идентификатор", {'fields': (DAT_SYS_KEY.ID,)}),
         ("Название связи", {'fields': ((DAT_SYS_KEY.TITLE, DAT_SYS_KEY.NAME,), (DAT_SYS_KEY.PATH,),)}),
         ("Основные настройки связи", {'fields': (DAT_SYS_KEY.LIST,), }),
         ("Описания для связи", {'fields': ((DAT_SYS_KEY.HINT,),), }),
@@ -169,6 +172,7 @@ class ObjectKey(ModelKey):
 class ModelKeyAdminObject(admin.ModelAdmin):
     list_display = (
         DAT_SYS_KEY.TITLE,
+        DAT_SYS_KEY.ID,
         DAT_SYS_KEY.PATH,
         DAT_SYS_KEY.OBJ,
         DAT_SYS_KEY.TYPE_VAL,
@@ -181,8 +185,9 @@ class ModelKeyAdminObject(admin.ModelAdmin):
     ordering = (DAT_SYS_KEY.OBJ, DAT_SYS_KEY.PATH, DAT_SYS_KEY.TITLE,)
 
     autocomplete_fields = (DAT_SYS_KEY.LIST,)
-
+    readonly_fields = (DAT_SYS_KEY.ID,)
     fieldsets = (
+        ("Идентификатор", {'fields': (DAT_SYS_KEY.ID,)}),
         ("Название классификатора", {'fields': ((DAT_SYS_KEY.TITLE, DAT_SYS_KEY.NAME,), (DAT_SYS_KEY.PATH,
                                                                                          DAT_SYS_KEY.PRIORITY, ),)}),
         ("Основные настройки классификатора", {'fields': (DAT_SYS_KEY.OBJ, DAT_SYS_KEY.TYPE_VAL, DAT_SYS_KEY.LIST, ), }),

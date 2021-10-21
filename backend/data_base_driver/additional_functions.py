@@ -105,3 +105,15 @@ def push_dict(dictionary, key, value):
         dictionary[key].append(value)
     else:
         dictionary[key] = [value]
+
+
+def get_second_range(date_start, date_end):
+    """
+    Функция для получения диапазона времени в секундах
+    @param date_start: стартовая дата в строковом формате гг.мм.дд
+    @param date_end: дата окончания гг.мм.дд
+    @return: словарь в формате {second_start, second_end}
+    """
+    date_time_start = date_start + ' 00:00:00'
+    date_time_end = date_end + ' 00:00:00'
+    return {'second_start': str_to_sec(date_time_start), 'second_end': str_to_sec(date_time_end)}
