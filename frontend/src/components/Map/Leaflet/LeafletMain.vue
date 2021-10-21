@@ -41,8 +41,8 @@
           />
         </l-marker-cluster>
 
-        <!-- ДЕКОРАТОР ФИГУР: PATH -->
-        <l-decorator-path
+        <!-- ДЕКОРАТОР ФИГУР: PATTERN -->
+        <l-decorator-pattern
           :fc="data_normalize(map_ind, map_item)"
         />
 
@@ -126,19 +126,19 @@ import {
   icon_get_group,
 } from '@/components/Map/Leaflet/Markers/Fun';
 
-import DecoratorSvg  from "@/components/Map/Leaflet/Components/DecoratorSvg";
-import DecoratorPath from "@/components/Map/Leaflet/Components/DecoratorPath";
-import                    '@/components/Map/Leaflet/Markers/Pulse';
-import EditorMap     from '@/components/Map/Leaflet/Components/EditorMap';
-import Range         from '@/components/Map/Leaflet/Components/Range';
-import Legend        from '@/components/Map/Leaflet/Components/Legend';
-import Logo          from '@/components/Map/Leaflet/Components/Logo';
-import MixResize     from '@/components/Map/Leaflet/Mixins/Resize';
-import MixKey        from '@/components/Map/Leaflet/Mixins/Key';
-import MixColor      from '@/components/Map/Leaflet/Mixins/Color';
-import MixControl    from '@/components/Map/Leaflet/Mixins/Control';
-import MixMeasure    from '@/components/Map/Leaflet/Mixins/Measure';
-import MixMenu       from '@/components/Map/Leaflet/Mixins/Menu';
+import DecoratorSvg     from '@/components/Map/Leaflet/Components/DecoratorSvg';
+import DecoratorPattern from '@/components/Map/Leaflet/Components/DecoratorPattern';
+import                       '@/components/Map/Leaflet/Markers/Pulse';
+import EditorMap        from '@/components/Map/Leaflet/Components/EditorMap';
+import Range            from '@/components/Map/Leaflet/Components/Range';
+import Legend           from '@/components/Map/Leaflet/Components/Legend';
+import Logo             from '@/components/Map/Leaflet/Components/Logo';
+import MixResize        from '@/components/Map/Leaflet/Mixins/Resize';
+import MixKey           from '@/components/Map/Leaflet/Mixins/Key';
+import MixColor         from '@/components/Map/Leaflet/Mixins/Color';
+import MixControl       from '@/components/Map/Leaflet/Mixins/Control';
+import MixMeasure       from '@/components/Map/Leaflet/Mixins/Measure';
+import MixMenu          from '@/components/Map/Leaflet/Mixins/Menu';
 
 
 import { datesql_to_ts, } from '@/plugins/sys';
@@ -175,9 +175,9 @@ export default {
     LControlScale,
     LControl,
     LIcon,
-    'l-marker-cluster': Vue2LeafletMarkerCluster,
-    'l-decorator-svg':  DecoratorSvg,
-    'l-decorator-path': DecoratorPath,
+    'l-marker-cluster':    Vue2LeafletMarkerCluster,
+    'l-decorator-svg':     DecoratorSvg,
+    'l-decorator-pattern': DecoratorPattern,
     LControlPolylineMeasure,
 
     EditorMap,
