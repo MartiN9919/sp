@@ -173,8 +173,8 @@ export default {
       for (let item_script of state.selectedTemplate.activeAnalysts) {
         for (let item of item_script.fc.features) {
           sel_items = state.selectedFC.find(sel_item => ((item.rec_id == sel_item.rec_id) && (item.obj_id == sel_item.obj_id)));
-          if (sel_items) { item.properties.sel = true; }
-          else { if (item.properties.sel) { delete item.properties.sel; } }
+          if (sel_items) { item.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._SEL_.KEY] = true; }
+          else { if (item.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._SEL_.KEY]) { delete item.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._SEL_.KEY]; } }
         }
       }
     },

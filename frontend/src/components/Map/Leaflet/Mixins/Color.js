@@ -37,15 +37,15 @@ export default {
         // начальный и конечный цвет
         var [color_begin, color_end] = this.color_set(color_green);
 
-        // COLORING.FC.VALUE определяет цвет полигона
-        let val_list    = fc_key(fc, MAP_ITEM.FC.FEATURES.PROPERTIES.VALUE);        // читать все fc.features[i].properties.value
+        // COLORING.FC.VALUE.KEY определяет цвет полигона
+        let val_list    = fc_key(fc, MAP_ITEM.FC.FEATURES.PROPERTIES.VALUE.KEY);    // читать все fc.features[i].properties.value
         let scale_value = color_scale_log(val_list);                                // шкала значений
         let scale_color = color_array(color_begin, color_end, scale_value.length);  // шкала цветов
 
         let feature, value, ret;
         for (let i=0; i<fc.features.length; i++) {
           feature = fc.features[i];
-          value   = feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES.VALUE];
+          value   = feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES.VALUE.KEY];
           ret     = scale_color[scale_value.length-1];
           for (let i=0; i<scale_value.length-1; i++) {
             if (value >= scale_value[i] && value < scale_value[i+1]) {
@@ -53,7 +53,7 @@ export default {
               break;
             }
           }
-          feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._COLOR_] = '#'+ret;    // записать цвет
+          feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._COLOR_.KEY] = '#'+ret;    // записать цвет
         }
 
         // построить легенду в MAP_ITEM._LEGEND_COLOR_

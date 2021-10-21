@@ -7,9 +7,15 @@ export const MAP_ITEM = {
       KEY: 'features',
       PROPERTIES: {
         KEY:     'properties',
-        VALUE:   'value',             // для полигона - вход:  fc.features[i].property.VALUE - значение, которое определяет цвет полигона
-        _COLOR_: 'color',             // заполняется программой, цвет заливки фигуры
-        _SEL_:   'sel',               // заполняется программой, выделенный features[]
+        VALUE: {                      // key: для полигона - вход:  fc.features[i].property.VALUE - значение, которое определяет цвет полигона
+          KEY: 'value',
+        },
+        _COLOR_: {                    // key: заполняется программой, цвет заливки фигуры
+          KEY: 'color',
+        },
+        _SEL_: {                      // key: заполняется программой, выделенный features[], true - выделено
+          KEY: 'sel',
+        },
       },
       GEOMETRY:  {
         KEY:     'geometry',
@@ -34,6 +40,10 @@ export const MAP_ITEM = {
       _COLOR_: {                      // в некоторых случаях транслируется сюда из MAP_ITEM.COLOR (чтобы использовать в стилях)
         KEY:   'color',
       },
+      CLASS: {                        // классы общие (не задействовано, кроме sel)
+        KEY: 'class',
+        SEL: 'sel',                   // название класса: выделено (pulse)
+      },
 
       MARKER: {
         KEY:  'marker',
@@ -49,13 +59,16 @@ export const MAP_ITEM = {
         SIZE:   { KEY: 'size', },
         SIZE_W: { KEY: 'size_w', },
         SIZE_H: { KEY: 'size_h', },
+        // CLASS: {                      // классы, без decoratorPath и decoratorSVG (не задействовано)
+        //   KEY: 'class',
+        // },
       },
 
       LINE: {
         KEY:   'line',
         CLASS: {                      // классы, в т.ч. decoratorPath и decoratorSVG
           KEY: 'class',
-          ANT: 'ant',                 // бегущая линия
+          ANT: 'ant',                 // название класса: бегущая линия
         },
       },
 
