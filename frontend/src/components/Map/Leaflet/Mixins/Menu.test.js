@@ -7,16 +7,16 @@ export const MAP_TEST_ITEM_1 = {
 
   "fc": {
     "style": {
-      "class": "line_zagrad_signal_1 test_mark_auto", // "mark_zabor_ograd",
       "marker": {
         "icon": "test",     // "mdi-flag mdi-spin", "fs-spec0", "pulse" (size: 12), "#0f0", "gold", "file_name" (size_w: 25, size_h: 41)
         "zoom": 2,
       },
       "line": {
+        "class": " ",           // "mark_zabor_ograd",
         //"class": "hidden", //"ant arrow-double-end dash-3",     // класс объекта (для установки стиля)
       },
       "polygon": {
-        "class": "hatch-diagonal-1",
+        "class": "hatch-diagonal-1 line_zagrad_signal_1 test_mark_auto",
       },
     },
 
@@ -141,16 +141,16 @@ export const MAP_TEST_ITEM_2 = {
   "color": "green",  // "#923"
   "fc": {
     "style": {
-      "class": "mark",
       "marker": {
         "icon": "pulse",
         "zoom": 2,
       },
       "line": {
+        "class": "mark",
         //"class": "ant",      // тип = классу объекта (для установки стиля)
       },
       "polygon": {
-        "class": "fill-diagonal-hatch",
+        "class": "mark fill-diagonal-hatch",
       },
     },
 

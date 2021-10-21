@@ -34,9 +34,6 @@ export const MAP_ITEM = {
       _COLOR_: {                      // в некоторых случаях транслируется сюда из MAP_ITEM.COLOR (чтобы использовать в стилях)
         KEY:   'color',
       },
-      CLASS: {
-        KEY: 'class',                 // классы декораторов-паттернов ТОЛЬКО для фигур
-      },
 
       MARKER: {
         KEY:  'marker',
@@ -56,7 +53,7 @@ export const MAP_ITEM = {
 
       LINE: {
         KEY:   'line',
-        CLASS: {                      // тип линии, совпадает с именем класса для установки стиля
+        CLASS: {                      // классы, в т.ч. decoratorPath и decoratorSVG
           KEY: 'class',
           ANT: 'ant',                 // бегущая линия
         },
@@ -74,7 +71,7 @@ export const MAP_ITEM = {
           BEGIN:     '00FF00',        // цвет: начальный
           END:       'FF0000',        // цвет: конечный
         },
-        CLASS: {
+        CLASS: {                      // классы, в т.ч. decoratorPath и decoratorSVG
           KEY: 'class',
         },
       },

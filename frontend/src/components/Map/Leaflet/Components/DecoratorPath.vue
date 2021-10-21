@@ -37,8 +37,7 @@ export default {
   data() {
     return {
       ready: false,
-      objects: [],                    // список объектов линий и полигонов
-      pattern: {                      // список паттернов
+      objects: {                      // список объектов
         line: [],
         polygon: [],
       },
@@ -60,15 +59,21 @@ export default {
     }
 
     const color   = dict_get(this.fc, [MAP_ITEM.FC.STYLE.KEY, MAP_ITEM.FC.STYLE._COLOR_.KEY], 'gray');
-    const pattern = dict_get(this.fc, [MAP_ITEM.FC.STYLE.KEY, MAP_ITEM.FC.STYLE.CLASS  .KEY], '');
-    this.mapObject = L.polylineDecorator(this.objects, { patterns: new CONST_PATH(color).get(pattern) });
+    const pattern = {
+      line:    dict_get(this.fc, [MAP_ITEM.FC.STYLE.KEY, MAP_ITEM.FC.STYLE.LINE   .KEY, MAP_ITEM.FC.STYLE.LINE   .CLASS.KEY], ''),
+      polygon: dict_get(this.fc, [MAP_ITEM.FC.STYLE.KEY, MAP_ITEM.FC.STYLE.POLYGON.KEY, MAP_ITEM.FC.STYLE.POLYGON.CLASS.KEY], ''),
+    };
+    let path               = new CONST_PATH(color);
+    this.mapObject_line    = L.polylineDecorator(this.objects.line,    { patterns: path.get(pattern.line   ) });
+    this.mapObject_polygon = L.polylineDecorator(this.objects.polygon, { patterns: path.get(pattern.polygon) });
+    this.mapObject         = this.mapObject_line;
 
     L.DomEvent.on(this.mapObject, this.$listeners);
     propsBinder(this, this.mapObject, props);
 
-    this.ready = true;
     this.parentContainer = findRealParent(this.$parent);
     this.parentContainer.addLayer(this, !this.visible);
+    this.ready = true;
   },
 
   beforeDestroy() {
@@ -83,13 +88,13 @@ export default {
 
       if (geometry_type == MAP_ITEM.FC.FEATURES.GEOMETRY.TYPE.LINE) {                                   // для линий [[x,y],...]
         geometry_coordinates = geometry_coordinates.map((val) => { return [val[1], val[0]] });          // поменять местами x y
-        this.objects.push(L.polyline(geometry_coordinates));
+        this.objects.line.push(L.polyline(geometry_coordinates));
       }
       if (geometry_type == MAP_ITEM.FC.FEATURES.GEOMETRY.TYPE.POLYGON) {                                // для полигонов [[[x,y],...],...]
         for(let i=0; i<geometry_coordinates.length;i++) {                                               // поменять местами x y
           geometry_coordinates[i] = geometry_coordinates[i].map((val) => { return [val[1], val[0]] });
         }
-        this.objects.push(L.polygon(geometry_coordinates));
+        this.objects.polygon.push(L.polygon(geometry_coordinates));
       }
     },
 
