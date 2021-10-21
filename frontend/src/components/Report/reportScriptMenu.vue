@@ -2,38 +2,38 @@
   <split-panel>
     <template v-slot:firstPane>
       <treeView
-        :treeViewItems="treeView"
-        :selectedTreeViewItem="selectedItem"
-        @changeSelectedTreeViewItem="changeSelectedTreeViewItem(transformSelectedScript($event))"
+        :items="treeView"
+        :selected="selectedItem"
+        @change="changeSelectedTreeViewItem(transformSelectedScript($event))"
         class="overflow-y-auto tree-view"
       ></treeView>
     </template>
 
     <template v-slot:secondPane>
-      <block-header :text-header="textHeaderSettings"></block-header>
-      <v-divider></v-divider>
       <v-scroll-y-transition mode="out-in">
-        <div v-if="'id' in selectedItem" :key="selectedItem.id" class="pa-4 py-1">
-          <responsive-input-form
-            v-for="(variable, key) in selectedItem.variables" :key="key"
-            v-model="variable.value"
-            :type="variable.type"
-            :title="variable.title"
-            :items="variable.list"
-            hide-details
-            :rules="[ v => !!v || 'Поле должно быть заполнено', ]"
-            class="pt-2"
-          ></responsive-input-form>
-
-          <div class="text-center">
-            <v-btn
-              @click="executeScript(selectedItem)"
-              color="teal"
-              outlined
-            >Выполнить скрипт</v-btn>
-          </div>
-        </div>
-      </v-scroll-y-transition>
+          <v-form ref="form" v-if="'id' in selectedItem" class="px-2">
+            <custom-tooltip v-for="v in selectedItem.variables" :key="v.id" :body-text="v.hint" bottom>
+              <template v-slot:activator="{ on }">
+                <div v-on="on" class="pt-2">
+                  <responsive-input-form
+                    v-model="v.value"
+                    :input-type="v.type"
+                    :label="v.title"
+                    :list-rules="v.necessary ? ['notEmpty'] : []"
+                    clearable
+                  ></responsive-input-form>
+                </div>
+              </template>
+            </custom-tooltip>
+            <div class="py-2 d-flex flex-nowrap flex-row justify-center">
+              <v-btn
+                @click="executeScript(selectedItem)"
+                outlined color="#00796B"
+              >Выполнить
+              </v-btn>
+            </div>
+          </v-form>
+        </v-scroll-y-transition>
     </template>
   </split-panel>
 </template>
@@ -47,11 +47,12 @@ import CreatorTreeView from '../Map/MapMenu/Mixins/CreatorTreeView'
 import ExecutorScripts from '../Map/MapMenu/Mixins/ExecutorScripts'
 import SelectedScriptFormatter from '../Map/MapMenu/Mixins/SelectedScriptFormatter'
 import SplitPanel from "../WebsiteShell/UI/splitPanel"
+import CustomTooltip from "../WebsiteShell/UI/customTooltip"
 
 export default {
   name: 'reportScriptMenu',
   mixins: [CreatorTreeView, ExecutorScripts, SelectedScriptFormatter],
-  components: {SplitPanel, treeView, ResponsiveInputForm, blockHeader, },
+  components: {SplitPanel, treeView, ResponsiveInputForm, blockHeader, CustomTooltip, },
   methods: {
     ...mapActions(['changeSelectedTreeViewItem'])
   },
