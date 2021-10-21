@@ -48,6 +48,7 @@ export default {
   methods: {
     ...mapActions([
       'setDefaultValueActiveTool',
+      'getBaseObjects',
       'setRootSearchTreeItem',
       'getBaseTriggers',
       'getBaseRelations',
@@ -67,6 +68,11 @@ export default {
     }
   },
   mounted() {
+    this.getBaseObjects()
+      .then(() => {
+        this.setDefaultValueActiveTool()
+        this.setRootSearchTreeItem({})
+      })
     this.getBaseTriggers()
     this.getBaseRelations()
     this.getBaseClassifiers()
