@@ -1,6 +1,7 @@
 <template>
-  <div style="display: none;">
-    <slot v-if="ready"></slot>
+  <div v-if="ready" style="display: none;">
+    <div ref="dpline"/>
+    <div ref="dppolygon"/>
   </div>
 </template>
 
@@ -36,10 +37,14 @@ export default {
   props,
   data() {
     return {
-      ready: false,
+      ready: true, //false,
       objects: {                      // список объектов
         line: [],
         polygon: [],
+      },
+      pl: {
+        line: {},
+        polygon: {},
       },
     }
   },
@@ -63,21 +68,39 @@ export default {
       line:    dict_get(this.fc, [MAP_ITEM.FC.STYLE.KEY, MAP_ITEM.FC.STYLE.LINE   .KEY, MAP_ITEM.FC.STYLE.LINE   .CLASS.KEY], ''),
       polygon: dict_get(this.fc, [MAP_ITEM.FC.STYLE.KEY, MAP_ITEM.FC.STYLE.POLYGON.KEY, MAP_ITEM.FC.STYLE.POLYGON.CLASS.KEY], ''),
     };
-    let path               = new CONST_PATH(color);
-    this.mapObject_line    = L.polylineDecorator(this.objects.line,    { patterns: path.get(pattern.line   ) });
-    this.mapObject_polygon = L.polylineDecorator(this.objects.polygon, { patterns: path.get(pattern.polygon) });
-    this.mapObject         = this.mapObject_line;
+    let path = new CONST_PATH(color);
+    this.pl.line    = this.$refs.dpline;
+    this.pl.polygon = this.$refs.dppolygon;
 
-    L.DomEvent.on(this.mapObject, this.$listeners);
-    propsBinder(this, this.mapObject, props);
+    this.pl.line.mapObject    = L.polylineDecorator(this.objects.line,    { patterns: path.get(pattern.line   ) });
+    this.pl.polygon.mapObject = L.polylineDecorator(this.objects.polygon, { patterns: path.get(pattern.polygon) });
 
-    this.parentContainer = findRealParent(this.$parent);
-    this.parentContainer.addLayer(this, !this.visible);
+    // L.DomEvent.on(this.mapObject, this.$listeners);
+    L.DomEvent.on(this.pl.line   .mapObject, this.$listeners);
+    L.DomEvent.on(this.pl.polygon.mapObject, this.$listeners);
+
+    // propsBinder(this, this.mapObject, props);
+    propsBinder(this, this.pl.line   .mapObject, props);
+    propsBinder(this, this.pl.polygon.mapObject, props);
+
     this.ready = true;
+    this.parentContainer = findRealParent(this.$parent);
+
+    // this.parentContainer.addLayer(this, !this.visible);
+    this.parentContainer.addLayer(this.pl.line, !this.visible);
+    this.parentContainer.addLayer(this.pl.polygon, !this.visible);
+
+    this.$nextTick(() => {
+      this.$emit('ready', this.mapObject);
+    });
   },
 
   beforeDestroy() {
-    this.parentContainer.removeLayer(this);
+    // this.parentContainer.removeLayer(this);
+    this.parentContainer.removeLayer(this.pl.line);
+    this.parentContainer.removeLayer(this.pl.polygon);
+    // delete this.mapObject_line;
+    // delete this.mapObject_polygon;
   },
 
   methods: {

@@ -3,7 +3,7 @@
     style="height: 100%; width: 100%;"
     >
 
-    <!-- СТИЛИЗАЦИЯ ФИГУР: SVG -->
+    <!-- ДЕКОРАТОР ФИГУР: SVG -->
     <l-decorator-svg/>
 
     <l-map
@@ -41,7 +41,7 @@
           />
         </l-marker-cluster>
 
-        <!-- СТИЛИЗАЦИЯ ФИГУР: PATH -->
+        <!-- ДЕКОРАТОР ФИГУР: PATH -->
         <l-decorator-path
           :fc="data_normalize(map_ind, map_item)"
         />

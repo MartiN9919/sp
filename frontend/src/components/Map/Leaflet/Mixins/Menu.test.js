@@ -12,7 +12,7 @@ export const MAP_TEST_ITEM_1 = {
         "zoom": 2,
       },
       "line": {
-        "class": " ",           // "mark_zabor_ograd",
+        "class": "mark_zabor_ograd",           // "mark_zabor_ograd",
         //"class": "hidden", //"ant arrow-double-end dash-3",     // класс объекта (для установки стиля)
       },
       "polygon": {
