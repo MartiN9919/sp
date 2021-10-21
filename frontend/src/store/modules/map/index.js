@@ -1,9 +1,5 @@
 
 import {
-  MAP_ITEM,
-} from '@/components/Map/Leaflet/Lib/Const';
-
-import {
   cook_set,
   cook_get_int,
   cook_get_bool,
@@ -39,17 +35,20 @@ export default {
   },
 
   getters: {
-    MAP_GET_KEY: (state, getters) => (ind) =>
-      ind+'-'+
-      getters.MAP_GET_RANGE_SEL              +'-'+
-      getters.SCRIPT_GET_ITEM_REFRESH   (ind)+'-'+
-      getters.SCRIPT_GET_ITEM_MARKER    (ind)+'-'+
-      getters.SCRIPT_GET_ITEM_LINE      (ind)+'-'+
-      // getters.SCRIPT_GET_ITEM_POLYGON(ind)+'-'+
-      getters.SCRIPT_GET_ITEM_COLOR     (ind)+'-'+
-      getters.SCRIPT_GET_ITEM_ICON      (ind)+'-'+
-      getters.MAP_GET_CLUSTER                +'-'+
-      getters.MAP_GET_HINT,
+    MAP_GET_KEY: (state, getters) => (ind) => {
+      let ret =
+        ind+'-'+
+        getters.MAP_GET_RANGE_SEL                       +'-'+
+        getters.SCRIPT_GET_ITEM_SEL                     +'-'+
+        getters.SCRIPT_GET_ITEM_REFRESH            (ind)+'-'+
+        JSON.stringify(getters.SCRIPT_GET_ITEM_FC_STYLE_MARKER(ind))+'-'+
+        // getters.SCRIPT_GET_ITEM_FC_STYLE_LINE   (ind)+'-'+
+        // getters.SCRIPT_GET_ITEM_FC_STYLE_POLYGON(ind)+'-'+
+        getters.SCRIPT_GET_ITEM_COLOR              (ind)+'-'+
+        getters.MAP_GET_CLUSTER                         +'-'+
+        getters.MAP_GET_HINT;
+      return ret;
+    },
 
     MAP_GET_RANGE_SHOW:        (state) =>  state.range.show,
     MAP_GET_RANGE_SEL:         (state) => (state.range.show)?[state.range.sel_min,state.range.sel_max]:[0,0],

@@ -104,13 +104,11 @@
  */
 
 import { LControl, } from "vue2-leaflet";
-import { MAP_ITEM, } from '@/components/Map/Leaflet/Lib/Const';
+import { MAP_ITEM } from '@/components/Map/Leaflet/Lib/Const';
 import { icon_get, icon_2_marker, } from '@/components/Map/Leaflet/Markers/Fun';
 import { fc_normalize, } from '@/components/Map/Leaflet/Lib/LibFc';
 import '@geoman-io/leaflet-geoman-free';
 
-const COLOR_ORIGIN = 'black';             // цвет маркеров и фигур ДО    ИЗМЕНЕНИЯ
-const COLOR_MODIFY = '#f00';              // цвет маркеров и фигур ПОСЛЕ ИЗМЕНЕНИЯ
 const TYPES = class {
   static MARKER   = 'Marker';
   static LINE     = 'Line';
@@ -522,19 +520,20 @@ export default {
       if (layer.setStyle) layer.setStyle(this.path_modify());
     },
 
+
     // иконки
     icon_origin() {
       return icon_get({
-        //name:  MAP_ITEM.MARKER.FONT,
-        //icon:  'mdi-exclamation-thick',
-        name:  MAP_ITEM.MARKER.COLOR,
-        color: COLOR_ORIGIN,
+        [MAP_ITEM.FC.STYLE.MARKER.KEY]: {
+          [MAP_ITEM.FC.STYLE.MARKER.ICON.KEY]: MAP_ITEM.COLOR.ORIGIN,
+        },
       });
     },
     icon_modify() {
       return icon_get({
-        name:  MAP_ITEM.MARKER.COLOR,
-        color: COLOR_MODIFY,
+        [MAP_ITEM.FC.STYLE.MARKER.KEY]: {
+          [MAP_ITEM.FC.STYLE.MARKER.ICON.KEY]: MAP_ITEM.COLOR.MODIFY,
+        },
       });
     },
 
@@ -560,16 +559,16 @@ export default {
       return {
         ...this.layer_editor_prop(),
         ...this.path_common(),
-        color:       COLOR_ORIGIN,
-        fillColor:   COLOR_ORIGIN,
+        color:       MAP_ITEM.COLOR.ORIGIN,
+        fillColor:   MAP_ITEM.COLOR.ORIGIN,
       }
     },
     path_modify() {
       return {
         ...this.layer_editor_prop(),
         ...this.path_common(),
-        color:       COLOR_MODIFY,
-        fillColor:   COLOR_MODIFY,
+        color:       MAP_ITEM.COLOR.MODIFY,
+        fillColor:   MAP_ITEM.COLOR.MODIFY,
       }
     },
 

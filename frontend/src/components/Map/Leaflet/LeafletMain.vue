@@ -2,6 +2,10 @@
   <div
     style="height: 100%; width: 100%;"
     >
+
+    <!-- ДЕКОРАТОР ФИГУР: SVG -->
+    <l-decorator-svg/>
+
     <l-map
       ref="map"
       style="height: 100%; z-index: 0;"
@@ -9,6 +13,7 @@
       :crs="MAP_GET_TILES[MAP_GET_TILE].crs"
       @ready="on_map_ready"
       @resize="on_map_resize"
+      @click="on_map_click"
       @dblclick="on_map_dblclick"
       @contextmenu="on_menu_show"
     >
@@ -30,13 +35,18 @@
           :options="cluster_options(map_ind)"
         >
           <l-geo-json
-              ref="geoJson"
-            :geojson="data_normalize(map_ind)"
+            ref="geoJson"
+            :geojson="data_normalize(map_ind, map_item)"
             :options="geojson_options(map_ind)"
           />
         </l-marker-cluster>
-      </l-layer-group>
 
+        <!-- ДЕКОРАТОР ФИГУР: PATTERN -->
+        <l-decorator-pattern
+          :fc="data_normalize(map_ind, map_item)"
+        />
+
+      </l-layer-group>
 
       <!-- РЕДАКТОР -->
       <EditorMap
@@ -88,7 +98,7 @@
 <script>
 
 import { mapGetters, mapActions, } from 'vuex';
-import { Icon } from 'leaflet';
+import { Icon, } from 'leaflet';
 
 import {
   LMap,
@@ -106,43 +116,45 @@ import {
   LIcon,
 } from 'vue2-leaflet';
 
-import Vue2LeafletMarkerCluster     from 'vue2-leaflet-markercluster';
-import LControlPolylineMeasure      from 'vue2-leaflet-polyline-measure';
+import Vue2LeafletMarkerCluster from 'vue2-leaflet-markercluster';
+import LControlPolylineMeasure  from 'vue2-leaflet-polyline-measure';
 
-import { MAP_ITEM }                 from '@/components/Map/Leaflet/Lib/Const';
-import { marker_get }               from '@/components/Map/Leaflet/Markers/Fun';
+import { MAP_ITEM }             from '@/components/Map/Leaflet/Lib/Const';
+import {
+  icon_ini,
+  marker_get,
+  icon_get_group,
+} from '@/components/Map/Leaflet/Markers/Fun';
 
-import                      '@/components/Map/Leaflet/Markers/Pulse';
-import EditorMap       from '@/components/Map/Leaflet/Components/EditorMap';
-import Range           from '@/components/Map/Leaflet/Components/Range';
-import Legend          from '@/components/Map/Leaflet/Components/Legend';
-import Logo            from '@/components/Map/Leaflet/Components/Logo';
-import MixResize       from '@/components/Map/Leaflet/Mixins/Resize';
-import MixKey          from '@/components/Map/Leaflet/Mixins/Key';
-import MixFeatureColor from '@/components/Map/Leaflet/Mixins/FeatureColor';
-import MixControl      from '@/components/Map/Leaflet/Mixins/Control';
-import MixMeasure      from '@/components/Map/Leaflet/Mixins/Measure';
-import MixMenu         from '@/components/Map/Leaflet/Mixins/Menu';
+import DecoratorSvg     from '@/components/Map/Leaflet/Components/DecoratorSvg';
+import DecoratorPattern from '@/components/Map/Leaflet/Components/DecoratorPattern';
+import                       '@/components/Map/Leaflet/Markers/Pulse';
+import EditorMap        from '@/components/Map/Leaflet/Components/EditorMap';
+import Range            from '@/components/Map/Leaflet/Components/Range';
+import Legend           from '@/components/Map/Leaflet/Components/Legend';
+import Logo             from '@/components/Map/Leaflet/Components/Logo';
+import MixResize        from '@/components/Map/Leaflet/Mixins/Resize';
+import MixKey           from '@/components/Map/Leaflet/Mixins/Key';
+import MixColor         from '@/components/Map/Leaflet/Mixins/Color';
+import MixControl       from '@/components/Map/Leaflet/Mixins/Control';
+import MixMeasure       from '@/components/Map/Leaflet/Mixins/Measure';
+import MixMenu          from '@/components/Map/Leaflet/Mixins/Menu';
+
 
 import { datesql_to_ts, } from '@/plugins/sys';
 
+
 // устранение бага с путями
-delete Icon.Default.prototype._getIconUrl;
-Icon.Default.mergeOptions({
-  iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
-  iconUrl:       require('leaflet/dist/images/marker-icon.png'),
-  shadowUrl:     require('leaflet/dist/images/marker-shadow.png'),
-});
+icon_ini();
 
 
 export default {
   name: 'LeafletMain',
 
-
   mixins: [
     MixResize,
     MixKey,
-    MixFeatureColor,
+    MixColor,
     MixControl,
     MixMeasure,
     MixMenu,
@@ -163,7 +175,9 @@ export default {
     LControlScale,
     LControl,
     LIcon,
-    'l-marker-cluster': Vue2LeafletMarkerCluster,
+    'l-marker-cluster':    Vue2LeafletMarkerCluster,
+    'l-decorator-svg':     DecoratorSvg,
+    'l-decorator-pattern': DecoratorPattern,
     LControlPolylineMeasure,
 
     EditorMap,
@@ -193,7 +207,7 @@ export default {
     this.resize_add(this.$refs.map.$el, this.on_map_resize);
 
     // добавить обработчики событий клавиатуры
-    this.key_mounted_after();
+    this.mounted_after_key();
   },
 
 
@@ -212,10 +226,10 @@ export default {
 
       'SCRIPT_GET',
       'SCRIPT_GET_ITEM_COLOR',
-      'SCRIPT_GET_ITEM_MARKER',
-      'SCRIPT_GET_ITEM_LINE',
-      'SCRIPT_GET_ITEM_POLYGON',
-      'SCRIPT_GET_ITEM_ICON',
+      'SCRIPT_GET_ITEM_FC_STYLE',
+      'SCRIPT_GET_ITEM_FC_STYLE_LINE',
+      'SCRIPT_GET_ITEM_FC_STYLE_POLYGON',
+      'SCRIPT_GET_ITEM_SEL',
     ]),
 
     // FeatureCollection РЕДАКТИРУЕМЫХ объектов
@@ -229,6 +243,8 @@ export default {
   methods: {
     ...mapActions([
       'MAP_ACT_EDIT',
+      'SCRIPT_ACT_SEL_SET',
+      'SCRIPT_ACT_SEL_CLEAR',
       'appendErrorAlert',
       'setNavigationDrawerStatus',
       'setActiveTool',
@@ -263,13 +279,12 @@ export default {
     // MAP
     // ===============
     // корректировать данные
-    data_normalize(map_ind) {
+    data_normalize(map_ind, map_item) {
       // рассчитать цвета (легенда, цвет от значения в группе)
-      this.data_normalize_color(map_ind);
+      this.data_normalize_color(map_item);
 
       // deep copy
-      let item = this.SCRIPT_GET_ITEM(map_ind);
-      let fc   = item[MAP_ITEM.FC];
+      let fc = map_item[MAP_ITEM.FC.KEY];
       fc = JSON.parse(JSON.stringify(fc));
 
       // установить fc.features[ind].ind - порядковый номер фигуры в fc
@@ -279,40 +294,39 @@ export default {
       let range_ts  = this.MAP_GET_RANGE_SEL;
       if ((range_ts[0]>0) && (range_ts[1]>0)) {
         let item_date;
-        let features = fc.features.filter(function(item) {
-          if (!item.properties.date) return true;
-          item_date = datesql_to_ts(item.properties.date);
+        let features = fc.features.filter(function(map_item) {
+          if (!map_item.properties.date) return true;
+          item_date = datesql_to_ts(map_item.properties.date);
           return ((item_date >= range_ts[0]) && (item_date <= range_ts[1]));
         });
         fc.features = features;
       }
+
       // console.log(this.$refs.geoJson)
       return fc;
     },
 
     cluster_options(map_ind) {
+      let color = this.SCRIPT_GET_ITEM_COLOR(map_ind);
       return {
         // область при наведении курсора на кластер
         showCoverageOnHover: true,
-        polygonOptions: { color: this.SCRIPT_GET_ITEM_COLOR(map_ind), },
+        polygonOptions: { color: color, },
 
         // для последующей коррекции цвета маркеров
-        cluster_color: this.SCRIPT_GET_ITEM_COLOR(map_ind),
+        cluster_color: color,
 
         // увеличение, при котором создавать кластеры
         disableClusteringAtZoom: this.MAP_GET_CLUSTER?17:0,
 
         // подмена иконки кластера
         iconCreateFunction: function (cluster) {
-          return new L.DivIcon({
-            html: '<div style="background-color:'+this.cluster_color+';"><span>' + cluster.getChildCount() + '</span></div>',
-            className: 'marker-cluster marker-cluster-small marker-cluster-bg-new',
-            iconSize: new L.Point(40, 40),
-          });
+          // select фактически не имеет смысла, т.к. могут группироваться маркеры с разными id
+          return icon_get_group(color, cluster.getChildCount()); //, feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._SEL_.KEY]
         },
 
         // цвет региона сгруппированного кластера
-        spiderLegPolylineOptions: { weight: 1.5, color: this.cluster_color, opacity: 0.5 },
+        spiderLegPolylineOptions: { weight: 1.5, color: color, opacity: 0.5 },
 
         // несгрупированные и сгруппированные маркеры одинаковы
         // singleMarkerMode: true,
@@ -333,6 +347,17 @@ export default {
             if (!e.originalEvent.ctrlKey) self.hover_map_ind = -1;
             self.hover_feature_ind = -1;
           });
+          layer.on('click', function(e) {
+            // реакция выделения только на объекты из БД
+            if ((!e.target.feature.obj_id) || (!e.target.feature.rec_id)) return;
+            L.DomEvent.stopPropagation(e);
+            let dat = {
+              obj_id: e.target.feature.obj_id,
+              rec_id: e.target.feature.rec_id,
+              ctrl:   e.originalEvent.ctrlKey,
+            };
+            self.SCRIPT_ACT_SEL_SET(dat);
+          });
 
           // подсказка
           if (self.MAP_GET_HINT && feature.properties.hint && feature.properties.hint!='') layer.bindTooltip(
@@ -340,30 +365,23 @@ export default {
             { permanent: false, sticky: true, }
           );
 
-          // тип линии: бегущая пунктирная
-          let line = self.SCRIPT_GET_ITEM_LINE(map_ind);
-          if ((['LineString', ].indexOf(feature.geometry.type)>-1) && (line!=MAP_ITEM.LINE.DEFAULT)) {   // 'Polygon'
-            layer.setStyle({'className': line, });
-          }
+          // класс для стилей линий и полигонов
+          let style = {};
+          if (feature.geometry.type == MAP_ITEM.FC.FEATURES.GEOMETRY.TYPE.LINE)    { style = self.SCRIPT_GET_ITEM_FC_STYLE_LINE   (map_ind); }
+          if (feature.geometry.type == MAP_ITEM.FC.FEATURES.GEOMETRY.TYPE.POLYGON) { style = self.SCRIPT_GET_ITEM_FC_STYLE_POLYGON(map_ind); }
+          let className = (style[MAP_ITEM.FC.STYLE.LINE.CLASS.KEY] ?? '').trim().replace(/\s+/g, ' ');
+          if (className != '') { layer.setStyle({'className': className, }); }
 
           // редактирование запрещено - удалить pm - для уменьшения объема вычислений
           if (layer.pm) { delete layer.pm; }
-
-          // тип полигона: color
-          // let polygon = self.SCRIPT_GET_ITEM_POLYGON(map_ind);
-          // if ((['Polygon', ].indexOf(feature.geometry.type)>-1) && (polygon!=POLYGON.DEFAULT)) {
-          // }
         }.bind(this),
 
 
         // стиль маркеров
         pointToLayer: function(feature, latlng) {
-          return marker_get(latlng, {
-            name:  self.SCRIPT_GET_ITEM_MARKER(map_ind),
-            color: self.SCRIPT_GET_ITEM_COLOR (map_ind),
-            icon:  self.SCRIPT_GET_ITEM_ICON  (map_ind),
-            // size:  self.SCRIPT_GET_ITEM_ICON(map_ind), не реализовано за ненадобностью
-          });
+          let className = (feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._SEL_.KEY]?MAP_ITEM.FC.STYLE.CLASS.SEL:'');
+          let layer = marker_get(latlng, self.SCRIPT_GET_ITEM_FC_STYLE (map_ind), className);
+          return layer;
         },
 
 
@@ -372,9 +390,11 @@ export default {
           return {
             weight:      2,
             opacity:     .5,
-            fillOpacity: .3,
             color:       self.SCRIPT_GET_ITEM_COLOR(map_ind),
-            fillColor:   feature.color, // set in mixin
+            fillOpacity: .3,
+            fillColor:   feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._COLOR_.KEY],    // set in mixin: Color
+            fillRule:    'evenodd',
+            className:   (feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._SEL_.KEY]?MAP_ITEM.FC.STYLE.CLASS.SEL:''),
           };
         },
       };
@@ -391,6 +411,10 @@ export default {
 
     on_map_resize() {
       this.map.invalidateSize();
+    },
+
+    on_map_click(e) {
+      this.SCRIPT_ACT_SEL_CLEAR();
     },
 
     on_map_dblclick(e) {
@@ -465,4 +489,12 @@ export default {
   @import "~@/components/Map/Leaflet/Markers/Font.css";
 
   @import "~@/components/Map/Leaflet/Mixins/Control.css";
+
+  div::v-deep .sel { animation: 1s ease 0s infinite normal none running pulse; }
+  @keyframes pulse {
+    0%   { opacity: 1;  }
+    50%  { opacity: .4; }
+    100% { opacity: 1;  }
+  }
+
 </style>

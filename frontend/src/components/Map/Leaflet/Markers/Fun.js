@@ -1,122 +1,133 @@
 // инициализация маркеров
 
 import { MAP_ITEM } from '@/components/Map/Leaflet/Lib/Const';
+import { Icon } from 'leaflet';
 
 
-export function marker_get(latlng, options={}) {
-  let icon = icon_get(options);
-  return icon_2_marker(latlng, icon);
+
+// устранение бага с путями
+export function icon_ini() {
+  delete Icon.Default.prototype._getIconUrl;
+  Icon.Default.mergeOptions({
+    iconRetinaUrl: icon_path('blue-2x'),
+    iconUrl:       icon_path('blue'),
+    shadowUrl:     icon_path('shadow-marker'),
+  });
 }
 
-export function icon_2_marker(latlng, icon, options={}) {
+
+export function marker_get(latlng, style={}, className='') {
+  let icon = icon_get(style, className);
+  return icon_2_marker(latlng, icon, undefined, className);
+}
+
+export function icon_2_marker(latlng, icon, style={}, className='') {
   let param = (icon) ? { icon:icon, } : {};
-  return L.marker(latlng, {...param, ...options});
+  let ret = L.marker(latlng, {...param, ...style});
+
+  // класс при отсутствии иконки. Для заданных иконок он установлен в icon_get
+  if (!icon) { ret.options.icon.options.className = className; }
+
+  return ret
+
 }
 
-export function icon_get(options={}) {
-  let name = options.name || '';
+export function icon_get(style={}, className='') {
+  let color  = style [MAP_ITEM.FC.STYLE._COLOR_.KEY    ] ?? MAP_ITEM.COLOR.DEF;
+  let marker = style [MAP_ITEM.FC.STYLE.MARKER.KEY     ] ?? {};
+  let icon   = marker[MAP_ITEM.FC.STYLE.MARKER.ICON.KEY] ?? MAP_ITEM.FC.STYLE.MARKER.ICON.DEF;
+  let zoom   = marker[MAP_ITEM.FC.STYLE.MARKER.ZOOM.KEY] ?? 1;
 
-  //
-  // MAP_ITEM.MARKER.DEFAULT
-  //
-  if (name==MAP_ITEM.MARKER.DEFAULT) {
+  // DEFAULT
+  if (icon==MAP_ITEM.FC.STYLE.MARKER.ICON.DEF) {
     return undefined;
-  };
+  }
 
 
-  //
-  // MAP_ITEM.MARKER.COLOR
-  // невозможна плавная смена цвета, только заданные значения
-  if (name==MAP_ITEM.MARKER.COLOR) {
-    let ret = {
-      shadowUrl:   require('@/assets/img/markers/marker-shadow.png'),
-      iconSize:    [25, 41],
-      iconAnchor:  [12, 41],
-      popupAnchor: [1, -34],
-      shadowSize:  [41, 41],
-    };
-
-    switch(options.color) {
-      case 'red':
-      case '#f00':
-        ret.iconUrl = require('@/assets/img/markers/marker-icon-2x-red.png');
-        break;
-
-      case 'green':
-      case '#0f0':
-        ret.iconUrl = require('@/assets/img/markers/marker-icon-2x-green.png');
-        break;
-
-      case 'blue':
-      case '#00f':
-        ret.iconUrl = require('@/assets/img/markers/marker-icon-2x-blue.png');
-        break;
-
-      case 'gold':
-        ret.iconUrl = require('@/assets/img/markers/marker-icon-2x-gold.png');
-        break;
-
-      case 'orange':
-        ret.iconUrl = require('@/assets/img/markers/marker-icon-2x-orange.png');
-        break;
-
-      case 'yellow':
-        ret.iconUrl = require('@/assets/img/markers/marker-icon-2x-yellow.png');
-        break;
-
-      case 'violet':
-        ret.iconUrl = require('@/assets/img/markers/marker-icon-2x-violet.png');
-        break;
-
-      case 'grey':
-        ret.iconUrl = require('@/assets/img/markers/marker-icon-2x-grey.png');
-        break;
-
-      case 'black':
-        ret.iconUrl = require('@/assets/img/markers/marker-icon-2x-black.png');
-        break;
-
-      default:
-        return undefined;
-    };
-    return new L.Icon(ret);
-  };
-
-
-
-  //
-  // MAP_ITEM.MARKER.PULSE
-  //
-  if (name==MAP_ITEM.MARKER.PULSE) {
-    let color2 = options.color;
-    let size   = options.size || 12;
-    return L.icon.pulse({
-      iconSize:  [size, size],
-      color:     color2,
-      fillColor: color2,
+  // FONT.MDI
+  if (icon.slice(0, MAP_ITEM.FC.STYLE.MARKER.ICON.PREF_MDI.length) == MAP_ITEM.FC.STYLE.MARKER.ICON.PREF_MDI) {
+    return L.divIcon({
+      className: className,
+      iconSize:  null,
+      color:     color,
+      icon:      icon,
+      html:
+        '<div class="marker-font">'+
+          '<div class="marker-font-content" style="border-color: '+color+';">'+
+            '<span class="v-icon mdi '+icon+'" style="color: '+color+';">'+
+          '</div>'+
+          '<div class="marker-font-arrow" style="border-top-color: '+color+';"></div>'+
+        '</div>',
     });
   };
+  // БЕЗ FRAME
+  // '<div class="marker-font" style="color: '+color+';">'+
+  //   '<span class="marker-font-mdi mdi mdi-map-marker style="color: '+color+';">'+
+  // '</div>',
 
 
-  //
-  // MAP_ITEM.MARKER.FONT
-  //
-  if (name==MAP_ITEM.MARKER.FONT) {
-    let color2 = options.color;
-    let icon  = options.icon;
+  // FONT.FS
+  if (icon.slice(0, MAP_ITEM.FC.STYLE.MARKER.ICON.PREF_FS.length) == MAP_ITEM.FC.STYLE.MARKER.ICON.PREF_FS) {
     return L.divIcon({
-      iconSize: null,
-      color:    color2,
-      icon:     icon,
+      className: className,
+      iconSize:  null,
+      color:     color,
+      icon:      icon,
       html:
-        '<div class="marker-font redborder">'+
-          '<div class="marker-font-content" style="border-color: '+color2+';">'+
-            '<span class="v-icon mdi '+icon+'" style="color: '+color2+';">'+
+        '<div class="marker-font" style="color: '+color+';">'+
+          '<div class="fs '+icon+'" style="border-color: '+color+';">'+
           '</div>'+
-          '<div class="marker-font-arrow" style="border-top-color: '+color2+';"></div>'+
         '</div>',
     });
   };
 
 
+  // PULSE
+  if (icon==MAP_ITEM.FC.STYLE.MARKER.ICON.PULSE) {
+    let size  = (marker[MAP_ITEM.FC.STYLE.MARKER.SIZE.KEY] ?? 12) * zoom|0;
+    return L.icon.pulse({
+      className: className,
+      iconSize:  [size, size],
+      color:     color,
+      fillColor: color,
+    });
+  };
+
+
+  // FILE
+  const equ = {
+    '#000': 'black',
+    '#f00': 'red',
+    '#0f0': 'green',
+    '#00f': 'blue',
+  };
+  if (equ[icon]) { icon = equ[icon]; }
+  let size_w = (marker[MAP_ITEM.FC.STYLE.MARKER.SIZE_W.KEY] ?? 25) * zoom|0;
+  let size_h = (marker[MAP_ITEM.FC.STYLE.MARKER.SIZE_H.KEY] ?? 41) * zoom|0;
+  return new L.Icon({
+    className:   className,
+    shadowUrl:   icon_path('shadow-marker'),
+    shadowSize:  [size_h, size_h],
+    iconUrl:     icon_path(icon),
+    iconSize:    [size_w, size_h],
+    iconAnchor:  [size_w/2|0, size_h],
+    popupAnchor: [1, -34 * zoom|0],
+  });
+}
+
+
+// иконка группировки
+// select фактически не имеет смысла, т.к. могут группироваться маркеры с разными id
+export function icon_get_group(color, title, select=false) {
+  return new L.DivIcon({
+    html: '<div style="background-color:'+color+';"><span>' + title + '</span></div>',
+    className: 'marker-cluster marker-cluster-small marker-cluster-bg-new'+((select)?(' '+MAP_ITEM.FC.STYLE.CLASS.SEL):''),
+    iconSize: new L.Point(40, 40),
+  });
+}
+
+
+export function icon_path(name, ext='png') {
+  // require('@/assets/img/markers/red.png');
+  return process.env.BASE_URL+MAP_ITEM.FC.STYLE.MARKER.PATH+name+'.'+ext;
 }
