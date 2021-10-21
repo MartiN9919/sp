@@ -1,8 +1,11 @@
 import re
 
 from docx import Document
+from docxtpl import DocxTemplate, InlineImage
 
-from core.settings import DOCUMENT_ROOT, TEMPLATE_ROOT
+from core.settings import DOCUMENT_ROOT, TEMPLATE_ROOT, MEDIA_ROOT
+from data_base_driver.record.get_record import get_object_record_by_id_http
+from data_base_driver.sys_key.get_key_dump import get_key_by_id
 
 
 def get_document_from_template(template_name, title, data):
@@ -31,6 +34,34 @@ def get_document_from_template(template_name, title, data):
     document.save(DOCUMENT_ROOT + title + '.docx')
     return DOCUMENT_ROOT + title + '.docx'
 
+
+def get_dossier_for_object(group_id, object_id, rec_id, title):
+    """
+    Функция для формирования досье о любом объекте базы данных
+    @param group_id: идентификатор группы пользователя
+    @param object_id: идентификатор типа объекта
+    @param rec_id: идентификатор объекта
+    @param title: название конечного досье
+    @return: путь к конечному файлу
+    """
+    template = DocxTemplate(TEMPLATE_ROOT + 'template_tables.docx')
+    object_records = get_object_record_by_id_http(object_id, rec_id, group_id)
+    table_content = []
+    for param in object_records['params']:
+        if get_key_by_id(param['id'])['type'] == 'file_photo':
+            value = InlineImage(template, MEDIA_ROOT + '/files/' + str(object_id) + '/' + str(rec_id) + '/' + param['values'][0]['value'])
+        elif get_key_by_id(param['id'])['type'] == 'file_any':
+            continue
+        else:
+            value = param['values'][0]['value']
+        table_content.append({'key': get_key_by_id(param['id'])['title'], 'value': value})
+    content = {
+        'title': 'Досье на ' + object_records['title'],
+        'table_contents': table_content
+    }
+    template.render(content)
+    template.save(DOCUMENT_ROOT + title + '.docx')
+    return DOCUMENT_ROOT + title + '.docx'
 
 # data = {'POSITION': ['Начальнику отдела'],
 #         'RANK': ['Подполковнику'],
