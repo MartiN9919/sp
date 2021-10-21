@@ -14,14 +14,20 @@
 <script>
 import alertsList from './components/WebsiteShell/Notifications/alertsList'
 import appBar from './components/WebsiteShell/AppBar/appBar'
-import { mapGetters } from "vuex"
+import {mapActions, mapGetters} from "vuex"
 
 export default {
   name: 'App',
   components: { alertsList, appBar },
   computed: {
     ...mapGetters(['loadStatus'])
-  }
+  },
+  methods: {
+    ...mapActions(['getBaseObjects',]),
+  },
+  mounted(){
+    this.getBaseObjects()
+  },
 }
 </script>
 

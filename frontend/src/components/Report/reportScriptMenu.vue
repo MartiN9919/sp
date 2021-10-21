@@ -10,6 +10,8 @@
     </template>
 
     <template v-slot:secondPane>
+      <block-header :text-header="textHeaderSettings"></block-header>
+      <v-divider></v-divider>
       <v-scroll-y-transition mode="out-in">
           <v-form ref="form" v-if="'id' in selectedItem" class="px-2">
             <custom-tooltip v-for="v in selectedItem.variables" :key="v.id" :body-text="v.hint" bottom>
