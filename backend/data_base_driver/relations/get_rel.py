@@ -263,10 +263,12 @@ def remove_path(parent, child):
     @param parent: родитель на данной итерации рекурсии
     @param child: наследник на данной итерации рекурсии
     """
+    if not child.get('degenerated'):
+        child['degenerated'] = 1
+    else:
+        child['degenerated'] += 1
     if parent and parent.get('parent'):
         remove_path(parent['parent'], parent)
-    elif parent:
-        [item for item in parent['rels'] if item == child][0]['degenerated'] = True
 
 
 def search_relations_recursive(group_id, request, parent, root):
@@ -336,7 +338,8 @@ def get_unique_objects(objects, object_tree):
     @param object_tree: дерево объетов построенное при поиске связей
     """
     for item in object_tree:
-        if item.get('degenerated') and item['degenerated']:
+        if item.get('degenerated') and \
+                (item['degenerated'] == len(item['rels']) or (item['degenerated'] and len(item['rels']) == 0)):
             continue
         if len([temp for temp in objects if temp['object_id'] == item['object_id'] and
                                                 temp['rec_id'] == item['rec_id']]) == 0:
