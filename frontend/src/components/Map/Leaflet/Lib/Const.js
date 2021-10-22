@@ -2,6 +2,10 @@
 export const MAP_ITEM = {
   FC: {
     KEY: 'fc',
+    TYPE: {
+      KEY: 'type',
+      VAL: 'FeatureCollection',
+    },
 
     FEATURES: {
       KEY: 'features',

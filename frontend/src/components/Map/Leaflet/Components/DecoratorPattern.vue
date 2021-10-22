@@ -20,6 +20,13 @@ import { CONST_PATTERN } from '@/components/Map/Leaflet/Components/DecoratorPatt
 import { findRealParent, propsBinder } from 'vue2-leaflet';
 import { dict_get } from '@/components/Map/Leaflet/Lib/Lib';
 
+
+
+import { icon_path } from '@/components/Map/Leaflet/Markers/Fun';
+
+
+
+
 const props = {
   fc: {
     type: Object,
@@ -80,6 +87,66 @@ export default {
     // должен быть видимым
     this.ready = true;
 
+
+
+
+
+    // this.map  = this.$parent.mapObject;
+    // let self  = this;
+    // let style = {
+    //   // pointToLayer:  function(feature, latlng) { },
+    //   style: function(feature) { return self.style_path(); },
+    //   onEachFeature: function(feature, layer)  {
+    //     if (pattern_line.length > 0) {
+    //       let tt = L.polylineDecorator(layer, { patterns: pattern_line, }); //.addTo(this.map);
+    //       this.parentContainer.addLayer(e, !this.visible);
+    //     }
+    //   },
+    //  };
+    // let layer = (this.fc.type==MAP_ITEM.FC.TYPE.VAL)?L.geoJSON(this.fc, style):L.GeoJSON.geometryToLayer(this.fc, style);
+    // layer.addTo(this.map);
+    // return;
+
+    this.map  = this.$parent.mapObject;
+    let self  = this;
+    let style = {
+      // pointToLayer:  function(feature, latlng) { },
+      style: function(feature) { return self.style_path(); },
+      onEachFeature: function(feature, layer)  {
+        if (pattern_line.length > 0) {
+          let tt = L.polylineDecorator(layer, { patterns: [
+
+              {
+                offset: 8, repeat: 18,
+                symbol: L.Symbol.marker({
+                  rotate: true,
+                  markerOptions: {
+                    icon: L.icon({
+                      iconUrl: icon_path('zagragd_signal'),
+                      //iconSize: [2, 10],   // original: [3, 16]
+                      iconAnchor: [8, 0],
+                    }),
+                  },
+                }),
+              }
+
+          ]}); //.addTo(this.map);
+          debugger
+          self.$parent.mapObject.addLayer(tt, !this.visible);
+        }
+      },
+     };
+    let layer = (this.fc.type==MAP_ITEM.FC.TYPE.VAL)?L.geoJSON(this.fc, style):L.GeoJSON.geometryToLayer(this.fc, style);
+    layer.addTo(this.map);
+    return;
+
+
+
+
+
+
+
+
     // декорация линий
     if (pattern_line.length > 0) {
       this.pl.line = this.$refs.dpline;
@@ -92,6 +159,7 @@ export default {
     // декорация полигонов
     if (pattern_polygon.length > 0) {
       this.pl.polygon = this.$refs.dppolygon;
+      debugger
       this.pl.polygon.mapObject = L.polylineDecorator(this.objects.polygon, { patterns: pattern_polygon, });
       L.DomEvent.on(this.pl.polygon.mapObject, this.$listeners);
       propsBinder(this, this.pl.polygon.mapObject, props);
@@ -125,6 +193,15 @@ export default {
         this.objects.polygon.push(L.polygon(geometry_coordinates));
       }
     },
+
+
+    style_path() {
+      return {
+        color:       MAP_ITEM.COLOR.ORIGIN,
+        fillColor:   MAP_ITEM.COLOR.ORIGIN,
+      }
+    },
+
 
 
 

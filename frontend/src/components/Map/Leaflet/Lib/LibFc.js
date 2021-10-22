@@ -26,7 +26,7 @@ export function fc_normalize(gj) {
 
   if (type === 'geometry') {
     return {
-      type: 'FeatureCollection',
+      type: MAP_ITEM.FC.TYPE.VAL,
       features: [{
         type: 'Feature',
         properties: {},
@@ -35,7 +35,7 @@ export function fc_normalize(gj) {
     };
   } else if (type === 'feature') {
     return {
-      type: 'FeatureCollection',
+      type: MAP_ITEM.FC.TYPE.VAL,
       features: [gj],
     };
   } else if (type === 'featurecollection') {
@@ -72,7 +72,7 @@ export function fc_normalize(gj) {
  */
 export function fc_merge (inputs) {
   let output = {
-    type: 'FeatureCollection',
+    type: MAP_ITEM.FC.TYPE.VAL,
     features: []
   };
   for (let i = 0; i < inputs.length; i++) {
