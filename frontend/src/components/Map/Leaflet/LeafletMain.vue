@@ -96,9 +96,6 @@
 
 
 <script>
-// import 'leaflet-polylinedecorator'
-// import { icon_path } from '@/components/Map/Leaflet/Markers/Fun';
-
 
 import { mapGetters, mapActions, } from 'vuex';
 import { Icon, } from 'leaflet';
@@ -378,29 +375,6 @@ export default {
 
           // редактирование запрещено - удалить pm - для уменьшения объема вычислений
           if (layer.pm) { delete layer.pm; }
-
-
-          // + УДАЛИТЬ IMPORT 2
-          // if (feature.geometry.type == MAP_ITEM.FC.FEATURES.GEOMETRY.TYPE.LINE)    {
-          //   let tt = L.polylineDecorator(layer, { patterns: [
-          //     {
-          //       offset: 8, repeat: 18,
-          //       symbol: L.Symbol.marker({
-          //         rotate: true,
-          //         markerOptions: {
-          //           icon: L.icon({
-          //             iconUrl: icon_path('zagragd_signal'),
-          //             //iconSize: [2, 10],   // original: [3, 16]
-          //             iconAnchor: [8, 0],
-          //           }),
-          //         },
-          //       }),
-          //     }
-          //   ]});
-          //   tt.addTo(self.$refs.map.mapObject); //.addTo(this.map); this.mapObject
-          // }
-
-
         }.bind(this),
 
 
