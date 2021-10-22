@@ -166,7 +166,7 @@ def aj_relation(request):
 def aj_objects_relation(request):
     group_id = DAT_OWNER.DUMP.get_group(user_id=request.user.id)
     return({'data': get_objects_relation(group_id, int(request.GET['object_id_1']), int(request.GET['rec_id_1']),
-                                         int(request.GET['object_id_2']), int(request.GET['rec_id_2']), 5)})
+                                         int(request.GET['object_id_2']), int(request.GET['rec_id_2']), 3)})
 
 
 @login_check
