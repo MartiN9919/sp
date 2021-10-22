@@ -14,6 +14,7 @@ export const MAP_ITEM = {
         CLASS: {
           KEY: 'class',               // key: класс для стилизации
           SEL: 'sel',                 // название класса: выделено (pulse)
+          ANT: 'ant',                 // название класса: бегущая линия
         },
         VALUE: {                      // key: для полигона - вход:  fc.features[i].property.VALUE - значение, которое определяет цвет полигона
           KEY: 'value',
@@ -71,10 +72,6 @@ export const MAP_ITEM = {
 
       LINE: {
         KEY:   'line',
-        CLASS: {                      // классы, в т.ч. decoratorPath и decoratorSVG
-          KEY: 'class',
-          ANT: 'ant',                 // название класса: бегущая линия
-        },
       },
 
       POLYGON: {
@@ -88,9 +85,6 @@ export const MAP_ITEM = {
           },
           BEGIN:     '00FF00',        // цвет: начальный
           END:       'FF0000',        // цвет: конечный
-        },
-        CLASS: {                      // классы, в т.ч. decoratorPath и decoratorSVG
-          KEY: 'class',
         },
       },
     },

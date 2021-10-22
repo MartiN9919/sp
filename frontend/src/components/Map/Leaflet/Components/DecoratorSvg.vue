@@ -24,10 +24,11 @@
  *
  */
 
-import { mapGetters } from 'vuex';
-import { MAP_ITEM }   from '@/components/Map/Leaflet/Lib/Const';
-import { dict_get }   from '@/components/Map/Leaflet/Lib/Lib';
-import { CONST_SVG }  from '@/components/Map/Leaflet/Components/DecoratorSvgConst';
+import { mapGetters }             from 'vuex';
+import { MAP_ITEM }               from '@/components/Map/Leaflet/Lib/Const';
+import { dict_get }               from '@/components/Map/Leaflet/Lib/Lib';
+import { fc_properties_keys_get } from '@/components/Map/Leaflet/Lib/LibFc'
+import { CONST_SVG }              from '@/components/Map/Leaflet/Components/DecoratorSvgConst';
 
 export default {
   name: 'LDecoratorSvg',
@@ -58,12 +59,9 @@ export default {
 
         // с шины: списки классов и цвет
         let item_color   = dict_get(item, [MAP_ITEM.COLOR.KEY], 'gray');
-        let item_classes =
-          (
-            dict_get(item, [MAP_ITEM.FC.KEY, MAP_ITEM.FC.STYLE.KEY, MAP_ITEM.FC.STYLE.LINE.KEY,    MAP_ITEM.FC.STYLE.LINE.CLASS.KEY],    '')+' '+
-            dict_get(item, [MAP_ITEM.FC.KEY, MAP_ITEM.FC.STYLE.KEY, MAP_ITEM.FC.STYLE.POLYGON.KEY, MAP_ITEM.FC.STYLE.POLYGON.CLASS.KEY], '')
-          ).trim().replace(/\s+/g, ' ').split(' ');
-        item_classes = [...new Set(item_classes)];      // исключить повторы
+        let item_classes = fc_properties_keys_get(item.fc, MAP_ITEM.FC.FEATURES.PROPERTIES.CLASS.KEY);  // список fc.features[i].properties.class
+        item_classes = item_classes.join(' ').trim().replace(/\s+/g, ' ').split(' ');                   // удалить пустые классы и лишние пробелы
+        item_classes = [...new Set(item_classes)];                                                      // исключить повторы
 
         // перебрать классы
         item_classes.forEach(function(item_class, ind_class) {

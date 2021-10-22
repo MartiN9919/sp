@@ -90,7 +90,8 @@ export function fc_merge (inputs) {
 export function fc_properties_keys_get(FC, key) {
   let ret = [];
   for (let i=0; i<FC.features.length; i++) {
-    ret.push(FC.features[i].properties[key]);
+    let val = FC.features[i].properties[key];
+    if (val != undefined) ret.push(val);
   }
   return ret;
 }
