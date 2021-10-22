@@ -1,3 +1,6 @@
+import { MAP_ITEM } from '@/components/Map/Leaflet/Lib/Const';
+import { dict_get } from '@/components/Map/Leaflet/Lib/Lib';
+
 /**
  * Normalize a GeoJSON feature into a FeatureCollection.
  *
@@ -83,8 +86,8 @@ export function fc_merge (inputs) {
 
 
 
-// читать из FeatureCollection все features[i].properties.key
-export function fc_key(FC, key) {
+// читать из FeatureCollection: список features[i].properties.key
+export function fc_properties_keys_get(FC, key) {
   let ret = [];
   for (let i=0; i<FC.features.length; i++) {
     ret.push(FC.features[i].properties[key]);
@@ -93,7 +96,7 @@ export function fc_key(FC, key) {
 }
 
 
-// удалить из FeatureCollection объекты типов types_del ['LineString', 'Point', ...]
+// удалить из FeatureCollection: объекты типов types_del ['LineString', 'Point', ...]
 export function fc_types_del(FC, types_del) {
     for (let key in FC) {
         // недопустимые типы удалить
@@ -112,4 +115,11 @@ export function fc_types_del(FC, types_del) {
 // задан ли FC
 export function fc_exist(FC) {
   return ((FC) && (FC.features) && (FC.features.length > 0));
+}
+
+
+// читать из Feature: список feature.properties.class
+export function feature_class_get(feature) {
+  let ret = dict_get(feature, [MAP_ITEM.FC.FEATURES.PROPERTIES.KEY, MAP_ITEM.FC.FEATURES.PROPERTIES.CLASS.KEY], '');
+  return ret.trim().replace(/\s+/g, ' ');
 }

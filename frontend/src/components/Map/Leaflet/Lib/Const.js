@@ -7,6 +7,10 @@ export const MAP_ITEM = {
       KEY: 'features',
       PROPERTIES: {
         KEY:     'properties',
+        CLASS: {
+          KEY: 'class',               // key: класс для стилизации
+          SEL: 'sel',                 // название класса: выделено (pulse)
+        },
         VALUE: {                      // key: для полигона - вход:  fc.features[i].property.VALUE - значение, которое определяет цвет полигона
           KEY: 'value',
         },
@@ -39,10 +43,6 @@ export const MAP_ITEM = {
       KEY:     'style',
       _COLOR_: {                      // в некоторых случаях транслируется сюда из MAP_ITEM.COLOR (чтобы использовать в стилях)
         KEY:   'color',
-      },
-      CLASS: {                        // классы общие (не задействовано, кроме sel)
-        KEY: 'class',
-        SEL: 'sel',                   // название класса: выделено (pulse)
       },
 
       MARKER: {

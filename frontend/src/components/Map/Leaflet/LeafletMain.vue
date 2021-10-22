@@ -120,6 +120,7 @@ import Vue2LeafletMarkerCluster from 'vue2-leaflet-markercluster';
 import LControlPolylineMeasure  from 'vue2-leaflet-polyline-measure';
 
 import { MAP_ITEM }             from '@/components/Map/Leaflet/Lib/Const';
+import { feature_class_get }    from '@/components/Map/Leaflet/Lib/LibFc';
 import {
   icon_ini,
   marker_get,
@@ -369,7 +370,8 @@ export default {
           let style = {};
           if (feature.geometry.type == MAP_ITEM.FC.FEATURES.GEOMETRY.TYPE.LINE)    { style = self.SCRIPT_GET_ITEM_FC_STYLE_LINE   (map_ind); }
           if (feature.geometry.type == MAP_ITEM.FC.FEATURES.GEOMETRY.TYPE.POLYGON) { style = self.SCRIPT_GET_ITEM_FC_STYLE_POLYGON(map_ind); }
-          let className = (style[MAP_ITEM.FC.STYLE.LINE.CLASS.KEY] ?? '').trim().replace(/\s+/g, ' ');
+          // let className = (style[MAP_ITEM.FC.STYLE.LINE.CLASS.KEY] ?? '').trim().replace(/\s+/g, ' ');
+          let className = feature_class_get(feature);
           if (className != '') { layer.setStyle({'className': className, }); }
 
           // редактирование запрещено - удалить pm - для уменьшения объема вычислений
@@ -379,7 +381,8 @@ export default {
 
         // стиль маркеров
         pointToLayer: function(feature, latlng) {
-          let className = (feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._SEL_.KEY]?MAP_ITEM.FC.STYLE.CLASS.SEL:'');
+          //let className = feature_class_get(feature);
+          let className = (feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._SEL_.KEY]?MAP_ITEM.FC.FEATURES.PROPERTIES.CLASS.SEL:'');
           let layer = marker_get(latlng, self.SCRIPT_GET_ITEM_FC_STYLE (map_ind), className);
           return layer;
         },
@@ -394,7 +397,7 @@ export default {
             fillOpacity: .3,
             fillColor:   feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._COLOR_.KEY],    // set in mixin: Color
             fillRule:    'evenodd',
-            className:   (feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._SEL_.KEY]?MAP_ITEM.FC.STYLE.CLASS.SEL:''),
+            className:   (feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._SEL_.KEY]?MAP_ITEM.FC.FEATURES.PROPERTIES.CLASS.SEL:''),
           };
         },
       };

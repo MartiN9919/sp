@@ -26,6 +26,7 @@ export const MAP_TEST_ITEM_1 = {
       {
         "type": "Feature",
         "properties": {
+          //"class": "mark_zabor_ograd hatch-diagonal-1",  //hatch-diagonal-1 line_zagrad_signal_1 test_mark_auto
           "hint": "Подсказка 1",
         },
         "geometry": {
