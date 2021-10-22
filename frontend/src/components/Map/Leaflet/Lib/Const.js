@@ -30,7 +30,8 @@ export const MAP_ITEM = {
         TYPE: {
           KEY:       'type',
           GC:        'GeometryCollection',
-          MARKER:    'Marker',
+          MARKER:    'Marker',        // кажется нужно использовать POINT
+          POINT:     'Point',
           LINE:      'LineString',
           POLYGON:   'Polygon',
         },

@@ -96,8 +96,8 @@
 
 
 <script>
-import 'leaflet-polylinedecorator'
-import { icon_path } from '@/components/Map/Leaflet/Markers/Fun';
+// import 'leaflet-polylinedecorator'
+// import { icon_path } from '@/components/Map/Leaflet/Markers/Fun';
 
 
 import { mapGetters, mapActions, } from 'vuex';
@@ -123,7 +123,7 @@ import Vue2LeafletMarkerCluster from 'vue2-leaflet-markercluster';
 import LControlPolylineMeasure  from 'vue2-leaflet-polyline-measure';
 
 import { MAP_ITEM }             from '@/components/Map/Leaflet/Lib/Const';
-import { feature_class_get }    from '@/components/Map/Leaflet/Lib/LibFc';
+import { get_feature_class }    from '@/components/Map/Leaflet/Lib/LibFc';
 import {
   icon_ini,
   marker_get,
@@ -373,7 +373,7 @@ export default {
           let style = {};
           if (feature.geometry.type == MAP_ITEM.FC.FEATURES.GEOMETRY.TYPE.LINE)    { style = self.SCRIPT_GET_ITEM_FC_STYLE_LINE   (map_ind); }
           if (feature.geometry.type == MAP_ITEM.FC.FEATURES.GEOMETRY.TYPE.POLYGON) { style = self.SCRIPT_GET_ITEM_FC_STYLE_POLYGON(map_ind); }
-          let className = feature_class_get(feature);
+          let className = get_feature_class(feature);
           if (className != '') { layer.setStyle({'className': className, }); }
 
           // редактирование запрещено - удалить pm - для уменьшения объема вычислений
