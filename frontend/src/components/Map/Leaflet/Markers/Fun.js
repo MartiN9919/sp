@@ -121,7 +121,7 @@ export function icon_get(style={}, className='') {
 export function icon_get_group(color, title, select=false) {
   return new L.DivIcon({
     html: '<div style="background-color:'+color+';"><span>' + title + '</span></div>',
-    className: 'marker-cluster marker-cluster-small marker-cluster-bg-new'+((select)?(' '+MAP_ITEM.FC.STYLE.CLASS.SEL):''),
+    className: 'marker-cluster marker-cluster-small marker-cluster-bg-new'+((select)?(' '+MAP_ITEM.FC.FEATURES.PROPERTIES.CLASS.SEL):''),
     iconSize: new L.Point(40, 40),
   });
 }

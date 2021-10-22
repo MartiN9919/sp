@@ -2,11 +2,20 @@
 export const MAP_ITEM = {
   FC: {
     KEY: 'fc',
+    TYPE: {
+      KEY: 'type',
+      VAL: 'FeatureCollection',
+    },
 
     FEATURES: {
       KEY: 'features',
       PROPERTIES: {
         KEY:     'properties',
+        CLASS: {
+          KEY: 'class',               // key: класс для стилизации
+          SEL: 'sel',                 // название класса: выделено (pulse)
+          ANT: 'ant',                 // название класса: бегущая линия
+        },
         VALUE: {                      // key: для полигона - вход:  fc.features[i].property.VALUE - значение, которое определяет цвет полигона
           KEY: 'value',
         },
@@ -22,7 +31,8 @@ export const MAP_ITEM = {
         TYPE: {
           KEY:       'type',
           GC:        'GeometryCollection',
-          MARKER:    'Marker',
+          MARKER:    'Marker',        // кажется нужно использовать POINT
+          POINT:     'Point',
           LINE:      'LineString',
           POLYGON:   'Polygon',
         },
@@ -39,10 +49,6 @@ export const MAP_ITEM = {
       KEY:     'style',
       _COLOR_: {                      // в некоторых случаях транслируется сюда из MAP_ITEM.COLOR (чтобы использовать в стилях)
         KEY:   'color',
-      },
-      CLASS: {                        // классы общие (не задействовано, кроме sel)
-        KEY: 'class',
-        SEL: 'sel',                   // название класса: выделено (pulse)
       },
 
       MARKER: {
@@ -66,10 +72,6 @@ export const MAP_ITEM = {
 
       LINE: {
         KEY:   'line',
-        CLASS: {                      // классы, в т.ч. decoratorPath и decoratorSVG
-          KEY: 'class',
-          ANT: 'ant',                 // название класса: бегущая линия
-        },
       },
 
       POLYGON: {
@@ -83,9 +85,6 @@ export const MAP_ITEM = {
           },
           BEGIN:     '00FF00',        // цвет: начальный
           END:       'FF0000',        // цвет: конечный
-        },
-        CLASS: {                      // классы, в т.ч. decoratorPath и decoratorSVG
-          KEY: 'class',
         },
       },
     },
