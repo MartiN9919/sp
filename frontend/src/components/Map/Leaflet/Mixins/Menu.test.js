@@ -114,6 +114,7 @@ export const MAP_TEST_ITEM_1 = {
       {
         "type": "Feature",
         "properties": {
+          //"class": "sel",
           "hint": "Test",
           "date": "2021-01-01",
         },
