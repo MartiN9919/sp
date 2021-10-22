@@ -152,13 +152,13 @@ export class CONST_PATTERN {
   }
 
   // список классов в список паттернов
-  get = function(names_str) {
+  get = function(classes_str) {
     let ret = [];
-    let names_list = names_str.trim().replace(/\s+/g, ' ').split(' ');    // убрать лишние пробелы
-    names_list = [...new Set(names_list)];                                // исключить повторы
+    let classes_list = classes_str.trim().replace(/\s+/g, ' ').split(' ');  // убрать лишние пробелы
+    classes_list = [...new Set(classes_list)];                              // исключить повторы
 
-    for(let i=0; i<names_list.length; i++) {
-      let val = this.dat[names_list[i]];
+    for(let i=0; i<classes_list.length; i++) {
+      let val = this.dat[classes_list[i]];
       if (val) {
         if (val instanceof Array) { ret = ret.concat(val); }
         else                      { ret.push(val);         }

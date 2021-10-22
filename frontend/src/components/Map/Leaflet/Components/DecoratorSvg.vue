@@ -28,7 +28,7 @@ import { mapGetters }             from 'vuex';
 import { MAP_ITEM }               from '@/components/Map/Leaflet/Lib/Const';
 import { dict_get }               from '@/components/Map/Leaflet/Lib/Lib';
 import { fc_properties_keys_get } from '@/components/Map/Leaflet/Lib/LibFc'
-import { CONST_SVG }              from '@/components/Map/Leaflet/Components/DecoratorSvgConst';
+import { const_svg }              from '@/components/Map/Leaflet/Components/DecoratorSvgConst';
 
 export default {
   name: 'LDecoratorSvg',
@@ -51,42 +51,17 @@ export default {
 
   methods: {
     svg_refresh(items) {
-      // сформировать тексты defs и style
+      // сформировать defs и style
       let style = '';
       let defs = '';
       for(let ind=0; ind<items.length; ind++) {
-        let item = items[ind];
-
-        // с шины: списки классов и цвет
-        let item_color   = dict_get(item, [MAP_ITEM.COLOR.KEY], 'gray');
-        let item_classes = fc_properties_keys_get(item.fc, MAP_ITEM.FC.FEATURES.PROPERTIES.CLASS.KEY);  // список fc.features[i].properties.class
-        item_classes = item_classes.join(' ').trim().replace(/\s+/g, ' ').split(' ');                   // удалить пустые классы и лишние пробелы
-        item_classes = [...new Set(item_classes)];                                                      // исключить повторы
-
-        // перебрать классы
-        item_classes.forEach(function(item_class, ind_class) {
-          // для класса: стиль и defs
-          let svg = CONST_SVG.LIST[item_class];
-          if (svg === undefined) return;
-          let svg_style = svg[CONST_SVG.KEY_STYLE];
-          let svg_defs  = svg[CONST_SVG.KEY_DEFS ];
-
-          // уникальный id
-          let id = 'svg_'+ind+'_'+ind_class;
-
-          // заменить переменные
-          if (svg_style) {
-            svg_style = svg_style.replace(/{id}/g, id).replace(/{color}/g, item_color);
-            style    += '.'+item_class+' { '+svg_style+' }\n';
-          }
-
-          if (svg_defs ) {
-            svg_defs  = svg_defs.replace(/{id}/g, id).replace(/{color}/g, item_color);
-            defs  += svg_defs+'\n';
-          }
-        });
+        let item    = items[ind];
+        let color   = dict_get(item, [MAP_ITEM.COLOR.KEY], 'gray');
+        let classes = fc_properties_keys_get(item.fc, MAP_ITEM.FC.FEATURES.PROPERTIES.CLASS.KEY);  // список fc.features[i].properties.class
+        let data    = const_svg(classes.join(' '), color);
+        if (data.style!='') style += data.style;
+        if (data.defs !='') defs  += data.defs;
       }
-
       this.$refs.defs .innerHTML = defs;
       this.$refs.style.innerHTML = style;
     },

@@ -1,7 +1,7 @@
-export const CONST_SVG = {
+const CONST_SVG = {
   KEY_STYLE: 'style',
   KEY_DEFS:  'defs',
-  LIST: {
+  DATA: {
     // скрыто
     'hidden': {
       style: 'opacity: 0;',
@@ -65,4 +65,39 @@ export const CONST_SVG = {
     },
 
   },
+}
+
+
+
+// список классов в словарь строк style, defs
+// return {style: '...', defs: '...'}
+export function const_svg(classes_str, color="gray") {
+  let ret = {style: '', defs: ''};
+  let classes_list = classes_str.trim().replace(/\s+/g, ' ').split(' ');  // убрать лишние пробелы
+  classes_list = [...new Set(classes_list)];                              // исключить повторы
+
+  // перебрать классы
+  classes_list.forEach(function(class_item, class_ind) {
+    // для класса: стиль и defs
+    let data = CONST_SVG.DATA[class_item];
+    if (data === undefined) return;
+    let data_style = data[CONST_SVG.KEY_STYLE];
+    let data_defs  = data[CONST_SVG.KEY_DEFS ];
+
+    // уникальный id
+    let id = 'svg_'+(new Date().getTime())+'_'+class_ind;
+
+    // заменить переменные
+    if (data_style) {
+      data_style = data_style.replace(/{id}/g, id).replace(/{color}/g, color);
+      ret.style += '.'+class_item+' { '+data_style+' }\n';
+    }
+
+    if (data_defs) {
+      data_defs = data_defs.replace(/{id}/g, id).replace(/{color}/g, color);
+      ret.defs += data_defs+'\n';
+    }
+  });
+
+  return ret;
 }

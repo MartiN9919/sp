@@ -6,19 +6,19 @@ export const MAP_TEST_ITEM_1 = {
   "color": "#F00", // "#FF000055", "green", не работает: rgba(255, 190, 218, 0.5)
 
   "fc": {
-    "style": {
-      "marker": {
-        "icon": "test",     // "mdi-flag mdi-spin", "fs-spec0", "pulse" (size: 12), "#0f0", "gold", "file_name" (size_w: 25, size_h: 41)
-        "zoom": 2,
-      },
-      "line": {
-        "class": "test_mark_auto mark_zabor_ograd arrow-double-end line_zagrad_signal_1",           // "mark_zabor_ograd",
-        //"class": "hidden", //"ant arrow-double-end dash-3",     // класс объекта (для установки стиля)
-      },
-      "polygon": {
-        "class": "mark_zabor_ograd hatch-diagonal-1",  //hatch-diagonal-1 line_zagrad_signal_1 test_mark_auto
-      },
-    },
+    // "style": {
+    //   "marker": {
+    //     "icon": "test",     // "mdi-flag mdi-spin", "fs-spec0", "pulse" (size: 12), "#0f0", "gold", "file_name" (size_w: 25, size_h: 41)
+    //     "zoom": 2,
+    //   },
+    //   "line": {
+    //     "class": "test_mark_auto mark_zabor_ograd arrow-double-end line_zagrad_signal_1",           // "mark_zabor_ograd",
+    //     //"class": "hidden", //"ant arrow-double-end dash-3",     // класс объекта (для установки стиля)
+    //   },
+    //   "polygon": {
+    //     "class": "mark_zabor_ograd hatch-diagonal-1",  //hatch-diagonal-1 line_zagrad_signal_1 test_mark_auto
+    //   },
+    // },
 
 
     "type": "FeatureCollection",
@@ -62,7 +62,7 @@ export const MAP_TEST_ITEM_1 = {
       {
         "type": "Feature",
         "properties": {
-          "class": "test_mark_auto",
+          "class": "test_mark_auto arrow-double-end line_zagrad_signal_1 ant",
           "hint": "Подсказка 3-1",
           "date": "2021-01-04",
         },
@@ -78,6 +78,7 @@ export const MAP_TEST_ITEM_1 = {
       {
         "type": "Feature",
         "properties": {
+          "class": "arrow-double-end",
           "hint": "Подсказка 3-2",
           "date": "2021-01-04",
         },
@@ -143,26 +144,12 @@ export const MAP_TEST_ITEM_2 = {
   "hint":  "Это тест 2",
   "color": "green",  // "#923"
   "fc": {
-    "style": {
-      "marker": {
-        "icon": "pulse",
-        "zoom": 2,
-      },
-      "line": {
-        "class": "mark",
-        //"class": "ant",      // тип = классу объекта (для установки стиля)
-      },
-      "polygon": {
-        "class": "mark fill-diagonal-hatch",
-      },
-    },
-
-    //"color": "#923",
     "type": "FeatureCollection",
     "features": [
       {
         "type": "Feature",
         "properties": {
+          "class": "mark hatch-diagonal-1",
           "hint": "Привет",
         },
         "geometry": {
@@ -245,7 +232,6 @@ export const MAP_TEST_ITEM_3 = {
         "zoom": 2,
       },
       "line": {
-        //"class": "ant",      // тип = классу объекта (для установки стиля)
       },
       "polygon": {
         "coloring": {

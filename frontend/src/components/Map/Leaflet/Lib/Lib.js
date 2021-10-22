@@ -19,6 +19,17 @@ export function str_copy_deep(str) {
   return (str) ? (' '+str).slice(1) : str;
 }
 
+// отключено за ненадобностью
+// export function str_random(length=6) {
+//     let result           = '';
+//     let characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+//     let charactersLength = characters.length;
+//     for (let i=0; i<length; i++) {
+//       result += characters.charAt(Math.floor(Math.random() * charactersLength));
+//    }
+//    return result;
+// }
+
 
 export function dict_set(dict, chain, val) {
   let dict_item = dict;

@@ -17,6 +17,7 @@ import { MAP_ITEM } from '@/components/Map/Leaflet/Lib/Const';
 import { get_feature_class, get_feature_coordinates } from '@/components/Map/Leaflet/Lib/LibFc';
 import { dict_get } from '@/components/Map/Leaflet/Lib/Lib';
 import { CONST_PATTERN } from '@/components/Map/Leaflet/Components/DecoratorPatternConst';
+//import { DECORATOR_CLASSES } from '@/components/Map/Leaflet/Components/DecoratorClasses';
 //import { icon_path } from '@/components/Map/Leaflet/Markers/Fun';
 
 import { findRealParent, propsBinder } from 'vue2-leaflet';
@@ -44,6 +45,12 @@ export default {
     }
   },
   mounted() {
+    // // test
+    // const test = new DECORATOR_CLASSES(color);
+    // var   dd = test.get_patterns('mark_zabor_ograd line_border_1');
+    // debugger
+
+
     const self         = this;
     const features     = this.fc[MAP_ITEM.FC.FEATURES.KEY];
     const color        = dict_get(this.fc, [MAP_ITEM.FC.STYLE.KEY, MAP_ITEM.FC.STYLE._COLOR_.KEY], 'gray');
