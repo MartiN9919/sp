@@ -389,7 +389,6 @@ export default {
         // стиль фигур
         style: function(feature) {
           let classSel = feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._SEL_.KEY]?MAP_ITEM.FC.FEATURES.PROPERTIES.CLASS.SEL:'';
-          console.log(feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._COLOR_.KEY])
           return {
             weight:      2,
             opacity:     .5,

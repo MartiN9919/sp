@@ -154,8 +154,8 @@ export class CONST_PATTERN {
   // список классов в список паттернов
   get = function(names_str) {
     let ret = [];
-    let names_list = names_str.trim().replace(/\s+/g, ' ').split(' ');
-    names_list = [...new Set(names_list)];            //
+    let names_list = names_str.trim().replace(/\s+/g, ' ').split(' ');    // убрать лишние пробелы
+    names_list = [...new Set(names_list)];                                // исключить повторы
 
     for(let i=0; i<names_list.length; i++) {
       let val = this.dat[names_list[i]];
