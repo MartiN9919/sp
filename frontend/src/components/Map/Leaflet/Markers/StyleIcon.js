@@ -117,7 +117,7 @@ export function icon_get(style={}, className='') {
 
 
 // иконка группировки
-// select фактически не имеет смысла, т.к. могут группироваться маркеры с разными id
+// select не имеет смысла, т.к. могут группироваться маркеры с разными id, только часть из которых sel
 export function icon_get_group(color, title, select=false) {
   return new L.DivIcon({
     html: '<div style="background-color:'+color+';"><span>' + title + '</span></div>',

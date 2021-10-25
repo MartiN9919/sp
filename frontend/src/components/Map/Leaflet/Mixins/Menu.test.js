@@ -94,7 +94,7 @@ export const MAP_TEST_ITEM_1 = {
       {
         "type": "Feature",
         "properties": {
-          //"class": "marker_test",
+          "class": "marker_test",
           "hint": "Подсказка 4",
           "date": "2021-01-03",
         },

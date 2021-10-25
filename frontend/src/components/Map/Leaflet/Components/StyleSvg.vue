@@ -28,10 +28,10 @@ import { mapGetters }             from 'vuex';
 import { MAP_ITEM }               from '@/components/Map/Leaflet/Lib/Const';
 import { dict_get }               from '@/components/Map/Leaflet/Lib/Lib';
 import { fc_properties_keys_get } from '@/components/Map/Leaflet/Lib/LibFc'
-import { data_svg }               from '@/components/Map/Leaflet/Components/DecoratorSvgData';
+import { data_svg }               from '@/components/Map/Leaflet/Components/StyleSvgData';
 
 export default {
-  name: 'LDecoratorSvg',
+  name: 'LStyleSvg',
 
   // beforeDestroy: function() {
   //   this.$refs.defs .innerHTML = '';

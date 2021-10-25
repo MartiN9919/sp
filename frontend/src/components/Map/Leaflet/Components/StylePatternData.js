@@ -5,7 +5,7 @@
  * repeat - смещение, через которое повторить маркер, можно в %: '50%'
  */
 
-import { icon_path } from '@/components/Map/Leaflet/Markers/Fun';
+import { icon_path } from '@/components/Map/Leaflet/Markers/StyleIcon';
 
 export class DATA_PATTERN {
   constructor(color='gray') {
@@ -17,6 +17,18 @@ export class DATA_PATTERN {
         repeat: 100,
         symbol: L.Symbol.marker(),
       },
+
+
+      'marker_test': {
+
+      },
+
+    //   "marker": {
+    //     "icon": "test",     // "mdi-flag mdi-spin", "fs-spec0", "pulse" (size: 12), "#0f0", "gold", "file_name" (size_w: 25, size_h: 41)
+    //     "zoom": 2,
+    //   },
+
+
 
 
       //

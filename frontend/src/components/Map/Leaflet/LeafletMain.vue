@@ -4,7 +4,7 @@
     >
 
     <!-- ДЕКОРАТОР ФИГУР: SVG -->
-    <l-decorator-svg/>
+    <l-style-svg/>
 
     <l-map
       ref="map"
@@ -42,7 +42,7 @@
         </l-marker-cluster>
 
         <!-- ДЕКОРАТОР ФИГУР: PATTERN -->
-        <l-decorator-pattern
+        <l-style-pattern
           :fc="data_normalize(map_ind, map_item)"
         />
 
@@ -125,11 +125,11 @@ import {
   icon_ini,
   marker_get,
   icon_get_group,
-} from '@/components/Map/Leaflet/Markers/Fun';
+} from '@/components/Map/Leaflet/Markers/StyleIcon';
 
-import DecoratorSvg     from '@/components/Map/Leaflet/Components/DecoratorSvg';
-import { classes_name_correct } from '@/components/Map/Leaflet/Components/DecoratorSvgData';
-import DecoratorPattern from '@/components/Map/Leaflet/Components/DecoratorPattern';
+import StyleSvg         from '@/components/Map/Leaflet/Components/StyleSvg';
+import { classes_name_correct } from '@/components/Map/Leaflet/Components/StyleSvgData';
+import StylePattern     from '@/components/Map/Leaflet/Components/StylePattern';
 
 import                       '@/components/Map/Leaflet/Markers/Pulse';
 import EditorMap        from '@/components/Map/Leaflet/Components/EditorMap';
@@ -178,9 +178,9 @@ export default {
     LControlScale,
     LControl,
     LIcon,
-    'l-marker-cluster':    Vue2LeafletMarkerCluster,
-    'l-decorator-svg':     DecoratorSvg,
-    'l-decorator-pattern': DecoratorPattern,
+    'l-marker-cluster': Vue2LeafletMarkerCluster,
+    'l-style-svg':      StyleSvg,
+    'l-style-pattern':  StylePattern,
     LControlPolylineMeasure,
 
     EditorMap,
@@ -374,7 +374,7 @@ export default {
           if (feature.geometry.type == MAP_ITEM.FC.FEATURES.GEOMETRY.TYPE.POLYGON) { style = self.SCRIPT_GET_ITEM_FC_STYLE_POLYGON(map_ind); }
           let className = get_feature_class(feature);
           className = classes_name_correct(className, map_ind);  // коррекция названий классом для избежания повторов из разных скриптов
-          if (className != '') { layer.setStyle({'className': className, }); }
+          if ((className != '') && (layer.setStyle)) { layer.setStyle({'className': className, }); }
 
           // редактирование запрещено - удалить pm - для уменьшения объема вычислений
           if (layer.pm) { delete layer.pm; }
@@ -384,7 +384,7 @@ export default {
         // стиль маркеров
         pointToLayer: function(feature, latlng) {
           let classSel = feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._SEL_.KEY]?MAP_ITEM.FC.FEATURES.PROPERTIES.CLASS.SEL:'';
-          let layer = marker_get(latlng, self.SCRIPT_GET_ITEM_FC_STYLE (map_ind), classSel);
+          let layer = marker_get(latlng, self.SCRIPT_GET_ITEM_FC_STYLE (map_ind), classSel+' ddd');
           return layer;
         },
 
