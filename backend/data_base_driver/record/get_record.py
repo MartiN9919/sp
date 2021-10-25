@@ -3,8 +3,8 @@ from data_base_driver.constants.const_dat import DAT_SYS_KEY, DAT_OWNER
 from data_base_driver.constants.const_key import SYS_KEY_CONSTANT
 from data_base_driver.input_output.input_output import io_get_obj
 from data_base_driver.input_output.io_geo import get_geometry_by_id
-from data_base_driver.sys_key.get_key_dump import get_key_by_id, get_obj_id
-from data_base_driver.sys_key.get_list import get_list_by_top_id, get_groups_list
+from data_base_driver.sys_key.get_key_dump import get_key_by_id
+from data_base_driver.sys_key.get_list import get_groups_list
 from data_base_driver.trigger.trigger_execute import check_triggers
 
 

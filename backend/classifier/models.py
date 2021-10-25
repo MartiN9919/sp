@@ -1,4 +1,3 @@
-from django import forms
 from django.core.exceptions import ValidationError
 from django.db import models
 from data_base_driver.constants.const_dat import DAT_SYS_OBJ, DAT_SYS_LIST_TOP, DAT_SYS_KEY, DAT_SYS_LIST_DOP, \

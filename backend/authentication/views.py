@@ -2,7 +2,7 @@ import json
 from django.contrib import auth
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from core.projectSettings.decoraters import request_log, login_check, request_get
+from core.projectSettings.decoraters import request_log, login_check
 
 
 @csrf_exempt

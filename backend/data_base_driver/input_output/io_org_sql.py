@@ -1,7 +1,7 @@
 import datetime
 
 from data_base_driver.constants.const_dat import DAT_SYS_OBJ, DAT_OBJ_COL, DAT_OBJ_ROW, DAT_REL
-from .io_lib_sql import IO_LIB_SQL
+from data_base_driver.input_output.io_lib_sql import IO_LIB_SQL
 
 DEBUG = False
 

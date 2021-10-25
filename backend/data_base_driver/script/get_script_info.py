@@ -1,5 +1,5 @@
 from data_base_driver.connect import connect_mysql
-from data_base_driver.constants.const_dat import DAT_SYS_SCRIPT, DAT_OWNER, DAT_SYS_SCRIPT_VARIABLE
+from data_base_driver.constants.const_dat import DAT_SYS_SCRIPT, DAT_SYS_SCRIPT_VARIABLE
 
 
 def get_script_type(script_id):

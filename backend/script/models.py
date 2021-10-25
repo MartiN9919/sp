@@ -5,7 +5,7 @@ from django.db import models
 from django.db.models import Q
 
 from classifier.models import ModelObject, ModelList
-from data_base_driver.constants.const_dat import DAT_SYS_SCRIPT, DAT_SYS_TRIGGER, DAT_SYS_KEY, DAT_SYS_SCRIPT_VARIABLE, \
+from data_base_driver.constants.const_dat import DAT_SYS_SCRIPT, DAT_SYS_TRIGGER, DAT_SYS_SCRIPT_VARIABLE, \
     DAT_SYS_TRIGGER_VARIABLE
 from data_base_driver.constants.const_script import BASE_PATH_TO_USER_SCRIPTS
 from data_base_driver.constants.const_trigger import BASE_PATH_TO_USER_TRIGGERS

@@ -1,7 +1,6 @@
 from data_base_driver.connect import connect_mysql
 from data_base_driver.constants.const_dat import DAT_SYS_SCRIPT, DAT_OWNER
 from data_base_driver.script.get_script_info import get_script_variables
-from data_base_driver.sys_key.get_list import get_list_by_name
 
 
 def sort_by_type(item):

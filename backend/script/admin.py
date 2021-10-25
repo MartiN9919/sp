@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import ModelScript, ModelTrigger, ModelScriptVariable, ModelTriggerVariable
+from script.models import ModelScript, ModelTrigger, ModelScriptVariable, ModelTriggerVariable
 
 from data_base_driver.constants.const_admin import PROJECT_TITLE_ADMIN
 from data_base_driver.constants.const_dat import DAT_SYS_SCRIPT, DAT_SYS_TRIGGER, DAT_SYS_SCRIPT_VARIABLE
