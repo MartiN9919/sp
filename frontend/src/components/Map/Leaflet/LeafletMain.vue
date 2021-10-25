@@ -373,7 +373,7 @@ export default {
           if (feature.geometry.type == MAP_ITEM.FC.FEATURES.GEOMETRY.TYPE.LINE)    { style = self.SCRIPT_GET_ITEM_FC_STYLE_LINE   (map_ind); }
           if (feature.geometry.type == MAP_ITEM.FC.FEATURES.GEOMETRY.TYPE.POLYGON) { style = self.SCRIPT_GET_ITEM_FC_STYLE_POLYGON(map_ind); }
           let className = get_feature_class(feature);
-          className = classes_name_correct(className, map_ind);
+          className = classes_name_correct(className, map_ind);  // коррекция названий классом для избежания повторов из разных скриптов
           if (className != '') { layer.setStyle({'className': className, }); }
 
           // редактирование запрещено - удалить pm - для уменьшения объема вычислений

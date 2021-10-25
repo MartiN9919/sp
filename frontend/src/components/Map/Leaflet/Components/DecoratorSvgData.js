@@ -4,13 +4,13 @@ const DATA_SVG = {
   DATA: {
     // скрыто
     'hidden': {
-      style: 'opacity: 0;',
+      style: '{class} { opacity: 0; }',
     },
 
 
     // штриховка: диагональные штрихи тонкие
     'hatch-diagonal-1': {
-      style: 'fill: url(#{id});',
+      style: '{class} { fill: url(#{id}); }',
       defs: `
           <pattern id="{id}" patternUnits="userSpaceOnUse" width="4" height="4">
             <path d="M-1,1 l2,-2 M0,4 l4,-4 M3,5 l2,-2" style="stroke:{color}; stroke-width:1;" />
@@ -21,7 +21,7 @@ const DATA_SVG = {
 
     // стрелка: <=>
     'arrow-double-end': {
-      style: 'marker-end: url(#{id});',
+      style: '{class} { marker-end: url(#{id}); }',
       defs: `
         <marker id="{id}" fill="{color}" orient="auto" markerUnits='userSpaceOnUse' markerWidth='101' markerHeight='33' refX='0' refY='16.5' opacity='.5'>
           <path d='M1,17 L21,1 L21,33 Z'/>
@@ -41,7 +41,7 @@ const DATA_SVG = {
 
     // черта: тройная
     'dash-3': {
-      style: 'marker-pattern: "40 url(#{id}_2) 40 url(#{id}_1)"',
+      style: '{class} { marker-pattern: "40 url(#{id}_2) 40 url(#{id}_1)"; }',
       defs: `
         <marker id="{id}_2" orient="auto" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="12" refX="0" refY="0" viewBox="-4 -6 8 12">
           <rect x="-3" y="-5" width="2" height="10"/>
@@ -56,7 +56,7 @@ const DATA_SVG = {
 
     // тест
     'fill-test': {
-      style: 'fill: url(#{id});',
+      style: '{class} { fill: url(#{id}); }',
       defs: `
           <pattern id="{id}" fill="{color}" x="0" y="0" width="25" height="25" patternUnits="userSpaceOnUse">
             <circle cx="10" cy="10" r="10"/>
@@ -87,12 +87,12 @@ export function data_svg(classes_str, index, color="gray") {
 
     // уникальные id и имя класса
     let id        = 'svg_'+(new Date().getTime())+'_'+index+'_'+class_ind;
-    let class_str = class_name_correct(class_item, index);
+    let class_str = '.'+class_name_correct(class_item, index);
 
     // заменить переменные
     if (data_style) {
-      data_style   = data_style.replace(/{id}/g, id).replace(/{color}/g, color);
-      ret.style   += '.'+class_str+' { '+data_style+' }\n';
+      data_style = data_style.replace(/{id}/g, id).replace(/{color}/g, color).replace(/{class}/g, class_str);
+      ret.style += data_style+'\n';
     }
 
     if (data_defs) {
