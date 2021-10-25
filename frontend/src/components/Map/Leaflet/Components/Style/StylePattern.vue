@@ -16,9 +16,8 @@ import 'leaflet-polylinedecorator'
 import { MAP_ITEM } from '@/components/Map/Leaflet/Lib/Const';
 import { get_feature_class, get_feature_coordinates } from '@/components/Map/Leaflet/Lib/LibFc';
 import { dict_get } from '@/components/Map/Leaflet/Lib/Lib';
-import { DATA_PATTERN } from '@/components/Map/Leaflet/Components/StylePatternData';
-//import { DECORATOR_CLASSES } from '@/components/Map/Leaflet/Components/DecoratorClasses';
-//import { icon_path } from '@/components/Map/Leaflet/Markers/StyleIcon';
+import { DATA_PATTERN } from '@/components/Map/Leaflet/Components/Style/StylePatternData';
+//import { icon_path } from '@/components/Map/Leaflet/Components/Style/StyleMarker';
 
 import { findRealParent, propsBinder } from 'vue2-leaflet';
 

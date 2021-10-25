@@ -125,13 +125,13 @@ import {
   icon_ini,
   marker_get,
   icon_get_group,
-} from '@/components/Map/Leaflet/Markers/StyleIcon';
+} from '@/components/Map/Leaflet/Components/Style/StyleMarker';
 
-import StyleSvg         from '@/components/Map/Leaflet/Components/StyleSvg';
-import { classes_name_correct } from '@/components/Map/Leaflet/Components/StyleSvgData';
-import StylePattern     from '@/components/Map/Leaflet/Components/StylePattern';
+import StyleSvg         from '@/components/Map/Leaflet/Components/Style/StyleSvg';
+import { classes_name_correct } from '@/components/Map/Leaflet/Components/Style/StyleSvgData';
+import StylePattern     from '@/components/Map/Leaflet/Components/Style/StylePattern';
 
-import                       '@/components/Map/Leaflet/Markers/Pulse';
+import                       '@/components/Map/Leaflet/Components/Style/StyleMarkerPulse';
 import EditorMap        from '@/components/Map/Leaflet/Components/EditorMap';
 import Range            from '@/components/Map/Leaflet/Components/Range';
 import Legend           from '@/components/Map/Leaflet/Components/Legend';
@@ -489,9 +489,9 @@ export default {
 
   @import "~@/components/Map/Leaflet/Lib/Lib.css";
 
-  @import "~@/components/Map/Leaflet/Markers/Cluster.css";
-  @import "~@/components/Map/Leaflet/Markers/Pulse.css";
-  @import "~@/components/Map/Leaflet/Markers/Font.css";
+  @import "~@/components/Map/Leaflet/Components/Style/StyleMarkerCluster.css";
+  @import "~@/components/Map/Leaflet/Components/Style/StyleMarkerPulse.css";
+  @import "~@/components/Map/Leaflet/Components/Style/StyleMarkerFont.css";
 
   @import "~@/components/Map/Leaflet/Mixins/Control.css";
 

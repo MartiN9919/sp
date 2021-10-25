@@ -5,7 +5,7 @@
  * repeat - смещение, через которое повторить маркер, можно в %: '50%'
  */
 
-import { icon_path } from '@/components/Map/Leaflet/Markers/StyleIcon';
+import { icon_path } from '@/components/Map/Leaflet/Components/Style/StyleMarker';
 
 export class DATA_PATTERN {
   constructor(color='gray') {

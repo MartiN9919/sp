@@ -105,7 +105,7 @@
 
 import { LControl, } from "vue2-leaflet";
 import { MAP_ITEM } from '@/components/Map/Leaflet/Lib/Const';
-import { icon_get, icon_2_marker, } from '@/components/Map/Leaflet/Markers/StyleIcon';
+import { icon_get, icon_2_marker, } from '@/components/Map/Leaflet/Components/Style/StyleMarker';
 import { fc_normalize, } from '@/components/Map/Leaflet/Lib/LibFc';
 import '@geoman-io/leaflet-geoman-free';
 

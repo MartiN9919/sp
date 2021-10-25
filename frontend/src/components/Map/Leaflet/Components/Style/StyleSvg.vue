@@ -28,7 +28,7 @@ import { mapGetters }             from 'vuex';
 import { MAP_ITEM }               from '@/components/Map/Leaflet/Lib/Const';
 import { dict_get }               from '@/components/Map/Leaflet/Lib/Lib';
 import { fc_properties_keys_get } from '@/components/Map/Leaflet/Lib/LibFc'
-import { data_svg }               from '@/components/Map/Leaflet/Components/StyleSvgData';
+import { data_svg }               from '@/components/Map/Leaflet/Components/Style/StyleSvgData';
 
 export default {
   name: 'LStyleSvg',
