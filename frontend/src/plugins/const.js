@@ -21,12 +21,15 @@ export default class CONST {
 
 
   static API = class {
-    static BASE_PREFIX = 'api'
+    static BASE_PREFIX = 'api';
     static OBJ = class {
       static GEOMETRY_TREE = 'objects/geometry_tree/';
       static GEOMETRY      = 'objects/geometry/';
       static OSM_SEARCH    = 'objects/osm_search/';
       static OSM_FC        = 'objects/osm_fc/';
+    };
+    static SCRIPT = class {
+      static MAP           = 'script/execute_map/';
     };
   };
 

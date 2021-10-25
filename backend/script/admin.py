@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import ModelScript, ModelTrigger, ModelScriptVariable, ModelTriggerVariable
+from script.models import ModelScript, ModelTrigger, ModelScriptVariable, ModelTriggerVariable
 
 from data_base_driver.constants.const_admin import PROJECT_TITLE_ADMIN
 from data_base_driver.constants.const_dat import DAT_SYS_SCRIPT, DAT_SYS_TRIGGER, DAT_SYS_SCRIPT_VARIABLE
@@ -16,6 +16,7 @@ class ModelScriptAdmin(admin.ModelAdmin):
     list_display = (
         'get_parent',
         DAT_SYS_SCRIPT.TITLE,
+        DAT_SYS_SCRIPT.ID,
         DAT_SYS_SCRIPT.DESCRIPT,
         'get_owner',
         DAT_SYS_SCRIPT.ENEBLED,
@@ -35,10 +36,13 @@ class ModelScriptAdmin(admin.ModelAdmin):
         DAT_SYS_SCRIPT.TITLE,
     ]
 
+    readonly_fields = (DAT_SYS_SCRIPT.ID,)
+
     fieldsets = (
         (None,
          {'fields':
              (
+                 DAT_SYS_SCRIPT.ID,
                  DAT_SYS_SCRIPT.TITLE,
                  DAT_SYS_SCRIPT.HINT,
                  (

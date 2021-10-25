@@ -310,6 +310,7 @@ class DAT_SYS_LIST_DOP:
     KEY_ID = 'key_id'
     LIST_ID = 'list_id'
     VAL = 'val'
+    DUMP = None
 
 
 class DAT_SYS_FILES:
@@ -432,9 +433,11 @@ class DAT_SYS_SCRIPT_RESULT:
 from data_base_driver.dump.dump_obj import DUMP_OBJ
 from data_base_driver.dump.dump_key import DUMP_KEY
 from data_base_driver.dump.dump_owner import DUMP_OWNER
+from data_base_driver.dump.dump_list import DUMP_LIST
 from data_base_driver.dump.dump_phone_number import DUMP_PHONE_NUMBER_FORMAT
 
 DAT_SYS_OBJ.DUMP = DUMP_OBJ()
 DAT_SYS_KEY.DUMP = DUMP_KEY()
 DAT_OWNER.DUMP = DUMP_OWNER()
 DAT_SYS_PHONE_NUMBER_FORMAT.DUMP = DUMP_PHONE_NUMBER_FORMAT()
+DAT_SYS_LIST_DOP.DUMP = DUMP_LIST()

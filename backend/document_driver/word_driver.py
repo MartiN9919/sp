@@ -54,7 +54,8 @@ def get_dossier_for_object(group_id, object_id, rec_id, title):
             continue
         else:
             value = param['values'][0]['value']
-        table_content.append({'key': get_key_by_id(param['id'])['title'], 'value': value})
+        table_content.append({'id': param['id'], 'key': get_key_by_id(param['id'])['title'], 'value': value})
+    table_content.sort(key=lambda x: get_key_by_id(x['id'])['type'] != 'file_photo')
     content = {
         'title': 'Досье на ' + object_records['title'],
         'table_contents': table_content

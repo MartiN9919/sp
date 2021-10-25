@@ -43,11 +43,7 @@ def get_item_list_value(id):
     @param id: идентификатор значения
     @return: значение листа в строковом формате
     """
-    sql = 'SELECT ' + DAT_SYS_LIST_DOP.VAL + ' FROM ' \
-          + DAT_SYS_LIST_DOP.TABLE_SHORT + ' WHERE ' \
-          + DAT_SYS_LIST_DOP.ID + ' = ' + str(id) + ';'
-    value = db_sql(sql)[0][0]
-    return value
+    return DAT_SYS_LIST_DOP.DUMP.get_item_by_id(int(id))
 
 
 def get_lists():

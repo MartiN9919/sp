@@ -9,7 +9,7 @@ from data_base_driver.script.get_script_info import get_script_title
 from data_base_driver.script.script_execute import execute_script_map
 from data_base_driver.script.script_list import get_script_tree
 from data_base_driver.constants.const_dat import DAT_OWNER
-from core.projectSettings.decoraters import request_log, login_check, request_wrap
+from core.projectSettings.decoraters import request_log, login_check, request_wrap, script_wrap
 from data_base_driver.sys_reports.set_file_info import add_file
 from data_base_driver.sys_templates.get_template_info import get_templates_list, get_template
 from data_base_driver.sys_templates.set_templates_info import add_template, remove_template, update_template
@@ -45,6 +45,7 @@ def aj_trigger_list(request):
 @login_check
 @request_log
 @request_wrap
+@script_wrap
 def aj_script_execute_map(request):
     """
     Функция обработки запроса на исполнение скрипта анализа для карты
@@ -63,6 +64,7 @@ def aj_script_execute_map(request):
 @login_check
 @request_log
 @request_wrap
+@script_wrap
 def aj_script_execute_report(request):
     """
     Функция для обработки запросов анализа с получением отчета

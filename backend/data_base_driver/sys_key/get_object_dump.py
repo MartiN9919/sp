@@ -1,5 +1,4 @@
-from data_base_driver.connect.connect_mysql import db_sql
-from data_base_driver.constants.const_dat import DAT_SYS_OBJ, DAT_SYS_ID
+from data_base_driver.constants.const_dat import DAT_SYS_OBJ
 
 
 def get_all_objects():

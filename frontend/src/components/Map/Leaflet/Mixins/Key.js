@@ -21,7 +21,7 @@ export default {
     // ВАЖНО
     // вызывать из родительского mounted или method.onMapReady
     // должна быть установлена переменная this.map
-    key_mounted_after() {
+    mounted_after_key() {
       this.map.addEventListener('keydown', this.key_down);
       this.key_load_pos(1);
     },

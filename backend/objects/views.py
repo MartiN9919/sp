@@ -164,15 +164,25 @@ def aj_relation(request):
 @request_wrap
 @request_get
 def aj_objects_relation(request):
+    """
+    Функция обработки запроса на получение связей между 2 объектами
+    @param request: запрос содержащий идентфификаторы 2-х объектов
+    @return: список объектов через которые могут быть связаны 2 начальных объекта
+    """
     group_id = DAT_OWNER.DUMP.get_group(user_id=request.user.id)
     return({'data': get_objects_relation(group_id, int(request.GET['object_id_1']), int(request.GET['rec_id_1']),
-                                         int(request.GET['object_id_2']), int(request.GET['rec_id_2']), 5)})
+                                         int(request.GET['object_id_2']), int(request.GET['rec_id_2']), 3)})
 
 
 @login_check
 @request_log
 @request_wrap
 def aj_object_relation(request):
+    """
+    Функция обработки запроса получения связей объекта
+    @param request: идентификаторы объекта и список объектов с которыми возможна связь
+    @return: спсиок связей
+    """
     group_id = DAT_OWNER.DUMP.get_group(user_id=request.user.id)
     if request.method == 'POST':
         try:
@@ -190,6 +200,11 @@ def aj_object_relation(request):
 @request_log
 @request_wrap
 def aj_search_relations(request):
+    """
+    Функция обработки запроса рекурсивного поиска связей
+    @param request: древовидный запрос для поиска связей
+    @return: список объектов связи с которыми найдены
+    """
     group_id = DAT_OWNER.DUMP.get_group(user_id=request.user.id)
     if request.method == 'POST':
         try:
@@ -279,6 +294,11 @@ def aj_geometry(request):
 @request_wrap
 @request_get
 def aj_groups(request):
+    """
+    Функция для получения списка групп пользователей
+    @param request: GET зарпос без параметров
+    @return: список групп пользователей
+    """
     return {'data': DAT_OWNER.DUMP.get_groups_list()}
 
 

@@ -51,7 +51,8 @@
 
             // apply css class
 
-            this.options.className = this.options.className+' leaflet-pulsing-icon '+uniqueClassName;
+            //old (error): this.options.className = this.options.className+' leaflet-pulsing-icon '+uniqueClassName;
+            options.className = options.className+' leaflet-pulsing-icon '+uniqueClassName;
 
             // initialize icon
 

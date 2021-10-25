@@ -87,8 +87,8 @@ class Rel(ModelKey):
 @admin.register(Rel)
 class ModelKeyAdminRel(admin.ModelAdmin):
     list_display = (
-        DAT_SYS_KEY.ID,
         DAT_SYS_KEY.TITLE,
+        DAT_SYS_KEY.ID,
         DAT_SYS_KEY.PATH,
         DAT_SYS_KEY.REL_OBJ_1,
         DAT_SYS_KEY.REL_OBJ_2,

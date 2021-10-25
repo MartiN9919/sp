@@ -1,5 +1,7 @@
 import datetime
 
+from data_base_driver.sys_key.get_key_dump import get_key_by_name, get_obj_id
+
 
 def get_document_date_format(date):
     """
@@ -117,3 +119,71 @@ def get_second_range(date_start, date_end):
     date_time_start = date_start + ' 00:00:00'
     date_time_end = date_end + ' 00:00:00'
     return {'second_start': str_to_sec(date_time_start), 'second_end': str_to_sec(date_time_end)}
+
+
+def get_id_by_key(key):
+    if key == 'id':
+        return key
+    if isinstance(key, str) and not (key.isdigit()):
+        return get_key_by_name(key)['id']
+    else:
+        return key
+
+
+def io_set_wrap(function):
+    """
+    Обертка для упрощения функции
+    """
+
+    def wrap(group_id, obj, data):
+        try:
+            data = [(get_id_by_key(item[0]), item[1]) for item in data]
+            obj = get_obj_id(obj) if isinstance(obj, str) and not (obj.isdigit()) else int(obj)
+            return function(group_id, obj, data)
+        except Exception as e:
+            raise e
+
+    wrap.__doc__ = function.__doc__
+    wrap.__name__ = function.__name__
+    return wrap
+
+
+def io_get_object_wrap(function):
+    """
+        Обертка для упрощения функции
+        """
+
+    def wrap(group_id, object, keys, ids, ids_max_block, where_dop_row, time_interval):
+        try:
+            keys = [get_id_by_key(item) for item in keys]
+            object = get_obj_id(object) if isinstance(object, str) and not (object.isdigit()) else int(object)
+            return function(group_id, object, keys, ids, ids_max_block, where_dop_row, time_interval)
+        except Exception as e:
+            raise e
+
+    wrap.__doc__ = function.__doc__
+    wrap.__name__ = function.__name__
+    return wrap
+
+
+def io_get_rel_wrap(function):
+    """
+        Обертка для упрощения функции
+        """
+
+    def wrap(group_id, keys, obj_rel_1, obj_rel_2, val, time_interval, is_unique, rec_id=0):
+        try:
+            keys = [get_id_by_key(item) for item in keys]
+            if obj_rel_1 and len(obj_rel_1) > 0:
+                obj_rel_1[0] = get_obj_id(obj_rel_1[0]) if isinstance(obj_rel_1[0], str) and not (
+                    obj_rel_1[0].isdigit()) else int(obj_rel_1[0])
+            if obj_rel_2 and len(obj_rel_2) > 0:
+                obj_rel_2[0] = get_obj_id(obj_rel_2[0]) if isinstance(obj_rel_2[0], str) and not (
+                    obj_rel_2[0].isdigit()) else int(obj_rel_2[0])
+            return function(group_id, keys, obj_rel_1, obj_rel_2, val, time_interval, is_unique, rec_id)
+        except Exception as e:
+            raise e
+
+    wrap.__doc__ = function.__doc__
+    wrap.__name__ = function.__name__
+    return wrap

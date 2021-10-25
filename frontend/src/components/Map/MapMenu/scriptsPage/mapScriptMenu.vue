@@ -80,6 +80,7 @@ import SelectedScriptFormatter from '../Mixins/SelectedScriptFormatter'
 import CustomTooltip from "../../../WebsiteShell/UI/customTooltip"
 import SplitPanel from "../../../WebsiteShell/UI/splitPanel"
 import { mapActions, mapGetters } from 'vuex'
+import { MAP_ITEM } from '@/components/Map/Leaflet/Lib/Const';
 
 export default {
   name: 'mapScriptMenu',
@@ -104,7 +105,7 @@ export default {
        */
       const transformedScript = this.transformSelectedScript(script)
       /** Добавление цвета "пассивной" аналитики */
-      transformedScript.color = '#696969FF'
+      transformedScript.color = MAP_ITEM.COLOR.SCRIPT_OFF
       /** Занесение преобразованной копии скрипта на шину в переменную selectedTreeViewItemMap */
       this.changeSelectedTreeViewItem(transformedScript)
       /** Занесение преобразованной копии скрипта на шину в переменную selectedTemplate.passiveAnalysts */
@@ -140,7 +141,7 @@ export default {
       /** Удаление аналитики из списка активных аналитик шаблона */
       this.removeAnalytics(this.selectedItem)
       /** Добавление цвета "пассивной" аналитики */
-      this.selectedItem.color = '#696969FF'
+      this.selectedItem.color = MAP_ITEM.COLOR.SCRIPT_OFF
       /** Удаление имеющися результатов выполнения скрипта */
       delete this.selectedItem.result
       /** Занесение аналитки на шину в переменную selectedTemplate.passiveAnalysts */

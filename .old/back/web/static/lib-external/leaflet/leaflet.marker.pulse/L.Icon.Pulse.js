@@ -12,7 +12,7 @@
         },
 
         initialize: function (options) {
-            L.setOptions(this,options);
+            L.setOptions(this, options);
 
             // css
             

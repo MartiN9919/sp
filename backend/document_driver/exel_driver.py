@@ -1,6 +1,6 @@
 import re
 
-from openpyxl import Workbook, load_workbook
+from openpyxl import load_workbook
 
 from core.settings import DOCUMENT_ROOT, TEMPLATE_ROOT
 

@@ -253,8 +253,9 @@ def rel_to_geo_fc(obj, group_id, keys_rel, keys_obj, where_dop=[]):
 
 ###########################################
 # IN
+#     obj_id          id гео-объекта
 #     group_id        id группы пользователя
-#     geo_ids         id гео-объектов             (33, 34)
+#     geo_ids         id записей гео-объектов (33, 34)
 #     keys:           ключи из SYS_KEY, location не указывать, т.к. задается автоматически
 #
 # OUT ITEM
@@ -268,7 +269,8 @@ def geo_id_to_fc(obj, group_id, geo_ids, keys):
     REC_VAL = 2
     REC_DAT = 3
 
-    FC_ID = 'id'
+    FC_OBJ_ID = 'obj_id'
+    FC_REC_ID = 'rec_id'
     FC_PROPERTIES = 'properties'
     FC_GEOMETRY = 'geometry'
 
@@ -281,7 +283,7 @@ def geo_id_to_fc(obj, group_id, geo_ids, keys):
     else:
         raise Exception('Unknow obj [' + obj + ']')
 
-    # читать записи point по id
+    # читать записи obj.id
     # recs = ((42, 30303, 'Тест 41'), (42, 81, '-1', None), (42, 'location', '{"type": "GeometryCollection", "geometries": [{"type": "Polygon", "coordinates": []}]}'), ... )
     recs = io_get_obj_mysql_tuple(
         group_id=group_id,
@@ -295,7 +297,9 @@ def geo_id_to_fc(obj, group_id, geo_ids, keys):
     for rec in recs:
         id = rec[REC_ID]
         # d_item: прочитать
-        d_item = d.get(id, {FC_ID: str(id), FC_PROPERTIES: {}, })
+        #d_item = d.get(id, {FC_REC_ID: str(id), FC_PROPERTIES: {}, })
+        d_item = d.get(id, {FC_REC_ID: id, FC_PROPERTIES: {}, })
+        d_item[FC_OBJ_ID]=obj_id
 
         # запомнить ключ в d_item
         if rec[1] == 'location':

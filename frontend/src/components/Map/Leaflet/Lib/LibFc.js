@@ -1,3 +1,6 @@
+import { MAP_ITEM } from '@/components/Map/Leaflet/Lib/Const';
+import { dict_get } from '@/components/Map/Leaflet/Lib/Lib';
+
 /**
  * Normalize a GeoJSON feature into a FeatureCollection.
  *
@@ -23,7 +26,7 @@ export function fc_normalize(gj) {
 
   if (type === 'geometry') {
     return {
-      type: 'FeatureCollection',
+      type: MAP_ITEM.FC.TYPE.VAL,
       features: [{
         type: 'Feature',
         properties: {},
@@ -32,7 +35,7 @@ export function fc_normalize(gj) {
     };
   } else if (type === 'feature') {
     return {
-      type: 'FeatureCollection',
+      type: MAP_ITEM.FC.TYPE.VAL,
       features: [gj],
     };
   } else if (type === 'featurecollection') {
@@ -69,7 +72,7 @@ export function fc_normalize(gj) {
  */
 export function fc_merge (inputs) {
   let output = {
-    type: 'FeatureCollection',
+    type: MAP_ITEM.FC.TYPE.VAL,
     features: []
   };
   for (let i = 0; i < inputs.length; i++) {
@@ -83,17 +86,18 @@ export function fc_merge (inputs) {
 
 
 
-// читать мз FeatureCollection properties.key
-export function fc_key(FC, key) {
+// читать из FeatureCollection: список features[i].properties.key
+export function fc_properties_keys_get(FC, key) {
   let ret = [];
   for (let i=0; i<FC.features.length; i++) {
-    ret.push(FC.features[i].properties[key]);
+    let val = FC.features[i].properties[key];
+    if (val != undefined) ret.push(val);
   }
   return ret;
 }
 
 
-// удалить из FeatureCollection объекты типов types_del ['LineString', 'Point', ...]
+// удалить из FeatureCollection: объекты типов types_del ['LineString', 'Point', ...]
 export function fc_types_del(FC, types_del) {
     for (let key in FC) {
         // недопустимые типы удалить
@@ -112,4 +116,67 @@ export function fc_types_del(FC, types_del) {
 // задан ли FC
 export function fc_exist(FC) {
   return ((FC) && (FC.features) && (FC.features.length > 0));
+}
+
+
+// читать из Feature: список feature.properties.class
+export function get_feature_class(feature) {
+  let ret = dict_get(feature, [MAP_ITEM.FC.FEATURES.PROPERTIES.KEY, MAP_ITEM.FC.FEATURES.PROPERTIES.CLASS.KEY], '');
+  return ret.trim().replace(/\s+/g, ' ');
+}
+
+
+// читать из Feature: список feature.geometry.coordinates
+// invert  - поменять местами x и y
+export function get_feature_coordinates(feature, invert=false) {
+  let ret = {
+    [MAP_ITEM.FC.FEATURES.GEOMETRY.TYPE.POINT]: [],
+    [MAP_ITEM.FC.FEATURES.GEOMETRY.TYPE.LINE]: [],
+    [MAP_ITEM.FC.FEATURES.GEOMETRY.TYPE.POLYGON]: [],
+  }
+
+  //=========================================================
+  // разбор одной записи
+  //=========================================================
+  function parse_item(item_geometry) {
+    let item_type        = item_geometry[MAP_ITEM.FC.FEATURES.GEOMETRY.TYPE.KEY];
+    let item_coordinates = item_geometry[MAP_ITEM.FC.FEATURES.GEOMETRY.COORDINATES.KEY] ?? {};
+
+    if (invert) {
+      switch (item_type) {
+        case MAP_ITEM.FC.FEATURES.GEOMETRY.TYPE.POINT:                                  // для точек [x,y]
+          item_coordinates = [item_coordinates[1], item_coordinates[0]];
+          break;
+        case MAP_ITEM.FC.FEATURES.GEOMETRY.TYPE.LINE:                                   // для линий [[x,y],...]
+          item_coordinates = item_coordinates.map((val) => { return [val[1], val[0]] });
+          break;
+        case MAP_ITEM.FC.FEATURES.GEOMETRY.TYPE.POLYGON:                                // для полигонов [[[x,y],...],...]
+          if (invert) {
+            for(let i=0; i<item_coordinates.length;i++) {
+              item_coordinates[i] = item_coordinates[i].map((val) => { return [val[1], val[0]] });
+            }
+          }
+          break;
+      }
+    }
+
+    ret[item_type].push(item_coordinates);
+  }
+  //=========================================================
+
+
+  let geometry      = feature[MAP_ITEM.FC.FEATURES.GEOMETRY.KEY];
+  let geometry_type = geometry[MAP_ITEM.FC.FEATURES.GEOMETRY.TYPE.KEY];
+
+  // GeometryCollection: вложенные геометрии
+  if (geometry_type == MAP_ITEM.FC.FEATURES.GEOMETRY.TYPE.GC) {
+    for(let i=0; i<geometry[MAP_ITEM.FC.FEATURES.GEOMETRY.GEOMETRIES.KEY].length; i++) {
+      parse_item(geometry[MAP_ITEM.FC.FEATURES.GEOMETRY.GEOMETRIES.KEY][i]);
+    }
+  }
+
+  // Point, LineString, Polygon
+  else { parse_item(geometry); }
+
+  return ret;
 }

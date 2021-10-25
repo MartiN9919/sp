@@ -5,8 +5,6 @@ import requests
 import geopandas
 from functools import reduce
 
-from shapely.speedups._speedups import LineString
-
 from data_base_driver.constants.const_dat import DAT_OBJ_COL
 from data_base_driver.constants.const_fulltextsearch import FullTextSearch
 from data_base_driver.input_output.input_output import io_get_obj
