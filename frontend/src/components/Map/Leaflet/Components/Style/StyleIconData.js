@@ -25,7 +25,7 @@ import { MAP_ITEM } from '@/components/Map/Leaflet/Lib/Const';
 
 // получить иконку
 // используется только первый совпавший класс из списка допустимых
-export function data_icon(classes_str, color="blue") {
+export function data_icon(classes_str, color="blue", zoom=1) {
   let classes_list = classes_str.trim().replace(/\s+/g, ' ').split(' ');  // убрать лишние пробелы
   classes_list = [...new Set(classes_list)];                              // исключить повторы
 
@@ -44,13 +44,14 @@ export function data_icon(classes_str, color="blue") {
     }
   }
   if (classes_icon_list.length == 0) return undefined;                    // иконки в классах не найдены
+  let classes_other_str = classes_other_list.join(' ');
 
   let ret = undefined;
   switch (icon_type) {
 
+    // FONT: MDI
     case MAP_ITEM.FC.FEATURES.PROPERTIES.CLASS.ICON_TYPE_MDI:
       let classes_icon_str  = classes_icon_list.map((val) => val.join('-')).join(' '); // 'mdi-flag mdi-spin'
-      let classes_other_str = classes_other_list.join(' ');
       ret = L.divIcon({
         className: classes_other_str,                                     // неиспользованные классы
         iconSize:  null,
@@ -64,8 +65,19 @@ export function data_icon(classes_str, color="blue") {
             '<div class="marker-font-arrow" style="border-top-color: '+color+';"></div>'+
           '</div>',
       });
+      break;
 
-    break
+    // PULSE
+    case MAP_ITEM.FC.FEATURES.PROPERTIES.CLASS.ICON_TYPE_PULSE:
+      let size  = (classes_icon_list[0][1] ?? 12) * zoom|0;
+      ret = L.icon.pulse({
+        className: classes_other_str,
+        iconSize:  [size, size],
+        color:     color,
+        fillColor: color,
+      });
+      break;
+
   }
 
   return ret;
