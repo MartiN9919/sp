@@ -78,7 +78,7 @@ export const MAP_TEST_ITEM_1 = {
       {
         "type": "Feature",
         "properties": {
-          "class": "arrow-double-end",
+          "class": "line_border_1 hidden",
           "hint": "Подсказка 3-2",
           "date": "2021-01-04",
         },
@@ -94,6 +94,7 @@ export const MAP_TEST_ITEM_1 = {
       {
         "type": "Feature",
         "properties": {
+          //"class": "marker_test",
           "hint": "Подсказка 4",
           "date": "2021-01-03",
         },
@@ -167,6 +168,7 @@ export const MAP_TEST_ITEM_2 = {
       {
         "type": "Feature",
         "properties": {
+          "class": "line_border_2 hidden",
           "hint": "Подсказка 555",
           "date": "2020-12-31 05:00",
         },
