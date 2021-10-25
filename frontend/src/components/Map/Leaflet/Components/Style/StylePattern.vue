@@ -17,7 +17,7 @@ import { MAP_ITEM } from '@/components/Map/Leaflet/Lib/Const';
 import { get_feature_class, get_feature_coordinates } from '@/components/Map/Leaflet/Lib/LibFc';
 import { dict_get } from '@/components/Map/Leaflet/Lib/Lib';
 import { DATA_PATTERN } from '@/components/Map/Leaflet/Components/Style/StylePatternData';
-//import { icon_path } from '@/components/Map/Leaflet/Components/Style/StyleMarker';
+//import { icon_path } from '@/components/Map/Leaflet/Components/Style/StyleIcon';
 
 import { findRealParent, propsBinder } from 'vue2-leaflet';
 

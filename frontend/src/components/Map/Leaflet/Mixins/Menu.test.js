@@ -94,7 +94,7 @@ export const MAP_TEST_ITEM_1 = {
       {
         "type": "Feature",
         "properties": {
-          "class": "marker_test",
+          "class": "icon-mdi-flag sss icon-mdi-spin tst",
           "hint": "Подсказка 4",
           "date": "2021-01-03",
         },

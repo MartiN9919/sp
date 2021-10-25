@@ -125,13 +125,13 @@ import {
   icon_ini,
   marker_get,
   icon_get_group,
-} from '@/components/Map/Leaflet/Components/Style/StyleMarker';
+} from '@/components/Map/Leaflet/Components/Style/StyleIcon';
 
 import StyleSvg         from '@/components/Map/Leaflet/Components/Style/StyleSvg';
 import { classes_name_correct } from '@/components/Map/Leaflet/Components/Style/StyleSvgData';
 import StylePattern     from '@/components/Map/Leaflet/Components/Style/StylePattern';
 
-import                       '@/components/Map/Leaflet/Components/Style/StyleMarkerPulse';
+import                       '@/components/Map/Leaflet/Components/Style/StyleIconPulse';
 import EditorMap        from '@/components/Map/Leaflet/Components/EditorMap';
 import Range            from '@/components/Map/Leaflet/Components/Range';
 import Legend           from '@/components/Map/Leaflet/Components/Legend';
@@ -383,8 +383,9 @@ export default {
 
         // стиль маркеров
         pointToLayer: function(feature, latlng) {
+          let classAny = feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES.CLASS.KEY]??'';
           let classSel = feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._SEL_.KEY]?MAP_ITEM.FC.FEATURES.PROPERTIES.CLASS.SEL:'';
-          let layer = marker_get(latlng, self.SCRIPT_GET_ITEM_FC_STYLE (map_ind), classSel+' ddd');
+          let layer = marker_get(latlng, self.SCRIPT_GET_ITEM_FC_STYLE (map_ind), classAny+' '+classSel);
           return layer;
         },
 
@@ -489,9 +490,9 @@ export default {
 
   @import "~@/components/Map/Leaflet/Lib/Lib.css";
 
-  @import "~@/components/Map/Leaflet/Components/Style/StyleMarkerCluster.css";
-  @import "~@/components/Map/Leaflet/Components/Style/StyleMarkerPulse.css";
-  @import "~@/components/Map/Leaflet/Components/Style/StyleMarkerFont.css";
+  @import "~@/components/Map/Leaflet/Components/Style/StyleIconCluster.css";
+  @import "~@/components/Map/Leaflet/Components/Style/StyleIconPulse.css";
+  @import "~@/components/Map/Leaflet/Components/Style/StyleIconFont.css";
 
   @import "~@/components/Map/Leaflet/Mixins/Control.css";
 

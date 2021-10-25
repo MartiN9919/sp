@@ -2,6 +2,7 @@
 
 import { MAP_ITEM } from '@/components/Map/Leaflet/Lib/Const';
 import { Icon } from 'leaflet';
+import { data_icon } from '@/components/Map/Leaflet/Components/Style/StyleIconData';
 
 
 
@@ -37,6 +38,10 @@ export function icon_get(style={}, className='') {
   let marker = style [MAP_ITEM.FC.STYLE.MARKER.KEY     ] ?? {};
   let icon   = marker[MAP_ITEM.FC.STYLE.MARKER.ICON.KEY] ?? MAP_ITEM.FC.STYLE.MARKER.ICON.DEF;
   let zoom   = marker[MAP_ITEM.FC.STYLE.MARKER.ZOOM.KEY] ?? 1;
+
+  //data_icon('icon-mdi-flag sss icon-mdi-spin tst')
+  let ret = data_icon(className, color);
+  if (ret) return ret;
 
   // DEFAULT
   if (icon==MAP_ITEM.FC.STYLE.MARKER.ICON.DEF) {
