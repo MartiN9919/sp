@@ -128,7 +128,9 @@ import {
 } from '@/components/Map/Leaflet/Markers/Fun';
 
 import DecoratorSvg     from '@/components/Map/Leaflet/Components/DecoratorSvg';
+import { classes_name_correct } from '@/components/Map/Leaflet/Components/DecoratorSvgData';
 import DecoratorPattern from '@/components/Map/Leaflet/Components/DecoratorPattern';
+
 import                       '@/components/Map/Leaflet/Markers/Pulse';
 import EditorMap        from '@/components/Map/Leaflet/Components/EditorMap';
 import Range            from '@/components/Map/Leaflet/Components/Range';
@@ -371,6 +373,7 @@ export default {
           if (feature.geometry.type == MAP_ITEM.FC.FEATURES.GEOMETRY.TYPE.LINE)    { style = self.SCRIPT_GET_ITEM_FC_STYLE_LINE   (map_ind); }
           if (feature.geometry.type == MAP_ITEM.FC.FEATURES.GEOMETRY.TYPE.POLYGON) { style = self.SCRIPT_GET_ITEM_FC_STYLE_POLYGON(map_ind); }
           let className = get_feature_class(feature);
+          className = classes_name_correct(className, map_ind);
           if (className != '') { layer.setStyle({'className': className, }); }
 
           // редактирование запрещено - удалить pm - для уменьшения объема вычислений

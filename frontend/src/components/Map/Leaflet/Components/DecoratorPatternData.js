@@ -7,7 +7,7 @@
 
 import { icon_path } from '@/components/Map/Leaflet/Markers/Fun';
 
-export class CONST_PATTERN {
+export class DATA_PATTERN {
   constructor(color='gray') {
     this.dat = {
 
