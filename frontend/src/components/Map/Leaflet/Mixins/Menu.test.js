@@ -203,7 +203,9 @@ export const MAP_TEST_ITEM_2 = {
       },
       {
         "type": "Feature",
-        "properties": {},
+        "properties": {
+          "class": "icon-file-gold",
+        },
         "geometry": {
           "type": "Point",
           "coordinates": [29.637048820051557,51.06794583616016]
@@ -212,6 +214,7 @@ export const MAP_TEST_ITEM_2 = {
       {
         "type": "Feature",
         "properties": {
+          "class": "icon-file-test-25-41",
           "hint": "Подсказка 5",
           "date": "2021-01-06 19:00",
         },
@@ -221,10 +224,22 @@ export const MAP_TEST_ITEM_2 = {
         },
       },
 
+      {
+        "type": "Feature",
+        "properties": {
+          "class": "icon-file-#0f0",
+          "hint": "Подсказка 6",
+          "date": "2021-01-09 12:00",
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [32.21580260030736,50.284672727278426]
+        },
+      },
+
     ],
   }
 };
-
 
 
 export const MAP_TEST_ITEM_3 = {

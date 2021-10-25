@@ -22,10 +22,16 @@ import { MAP_ITEM } from '@/components/Map/Leaflet/Lib/Const';
 //   },
 // }
 
+const COLOR_EQU = {
+  '#000': 'black',
+  '#f00': 'red',
+  '#0f0': 'green',
+  '#00f': 'blue',
+};
 
 // получить иконку
 // используется только первый совпавший класс из списка допустимых
-export function data_icon(classes_str, color="blue", zoom=1) {
+export function data_icon(classes_str='', color='blue', zoom=1) {
   let classes_list = classes_str.trim().replace(/\s+/g, ' ').split(' ');  // убрать лишние пробелы
   classes_list = [...new Set(classes_list)];                              // исключить повторы
 
@@ -73,7 +79,7 @@ export function data_icon(classes_str, color="blue", zoom=1) {
       // '</div>',
 
 
-  // FONT.FS
+    // FONT.FS
     case MAP_ITEM.FC.FEATURES.PROPERTIES.CLASS.ICON_TYPE_FS:
       classes_icon_str  = classes_icon_list.map((val) => val.join('-')).join(' '); // 'fs-spec0'
       ret = L.divIcon({
@@ -101,6 +107,24 @@ export function data_icon(classes_str, color="blue", zoom=1) {
       });
       break;
 
+
+    // FILE
+    case MAP_ITEM.FC.FEATURES.PROPERTIES.CLASS.ICON_TYPE_FILE:
+      let file   = classes_icon_list[0][1];
+      if (COLOR_EQU[file]) { file = COLOR_EQU[file]; }
+      let size_w = (classes_icon_list[0][2] ?? 25) * zoom|0; //(marker[MAP_ITEM.FC.STYLE.MARKER.SIZE_W.KEY] ?? 25) * zoom|0;
+      let size_h = (classes_icon_list[0][3] ?? 41) * zoom|0; //(marker[MAP_ITEM.FC.STYLE.MARKER.SIZE_H.KEY] ?? 41) * zoom|0;
+      ret = new L.Icon({
+        className:   classes_other_str,
+        shadowUrl:   icon_path('shadow-marker'),
+        shadowSize:  [size_h, size_h],
+        iconUrl:     icon_path(file),
+        iconSize:    [size_w, size_h],
+        iconAnchor:  [size_w/2|0, size_h],
+        popupAnchor: [1, -34 * zoom|0],
+      });
+
+
   }
 
   return ret;
@@ -109,7 +133,7 @@ export function data_icon(classes_str, color="blue", zoom=1) {
 }
 
 
-
-    // icon_type  = class_item_list.slice(0,2).join('-');                    // первых два элемента - тип иконки
-    // icon_param = class_item_list.slice(2);                                // остальное: параметры иконки (зависят от типа иконки)
-    // break
+export function icon_path(name, ext='png') {
+  // require('@/assets/img/markers/red.png');
+  return process.env.BASE_URL+MAP_ITEM.FC.STYLE.MARKER.PATH+name+'.'+ext;
+}

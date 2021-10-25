@@ -24,3 +24,5 @@
   'icon-mdi-flag icon-mdi-spin' => [['mdi', 'flag'], ['mdi', 'spin']]
   'icon-fs-spec0'
   'icon-pulse-30'
+  'icon-file-gold-25-41'
+  'icon-file-#00f'

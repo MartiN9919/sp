@@ -40,8 +40,8 @@ export function icon_get(style={}, className='') {
   let zoom   = marker[MAP_ITEM.FC.STYLE.MARKER.ZOOM.KEY] ?? 1;
 
   //data_icon('icon-mdi-flag sss icon-mdi-spin tst')
-  let ret = data_icon(className, color);
-  if (ret) return ret;
+  let ret = data_icon(className, color, 2);
+  return ret;
 
   // DEFAULT
   if (icon==MAP_ITEM.FC.STYLE.MARKER.ICON.DEF) {
