@@ -184,7 +184,7 @@ export const MAP_TEST_ITEM_2 = {
       {
         "type": "Feature",
         "properties": {
-          "class": "icon-pulse-30",
+          "class": "icon-pulse-14",
         },
         "geometry": {
           "type": "Point",
@@ -193,7 +193,9 @@ export const MAP_TEST_ITEM_2 = {
       },
       {
         "type": "Feature",
-        "properties": {},
+        "properties": {
+          "class": "icon-fs-spec0",
+        },
         "geometry": {
           "type": "Point",
           "coordinates": [31.24901404693862,51.4907087536248]

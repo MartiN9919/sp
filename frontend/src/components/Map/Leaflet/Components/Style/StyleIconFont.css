@@ -31,6 +31,14 @@
 }
 
 
+.marker-font-mdi {
+  order: 1;
+  position: relative; left: -50%;
+  white-space: nowrap;
+  font-size: 3em;
+}
+
+
 /* ЛОКАЛЬНЫЕ ШРИФТЫ */
 @font-face {
   font-family: "Special";
@@ -43,13 +51,6 @@
     url("~@/assets/font/fs.woff") format("woff");
 }
 
-
-.marker-font-mdi {
-  order: 1;
-  position: relative; left: -50%;
-  white-space: nowrap;
-  font-size: 3em;
-}
 
 .fs { font-family: "Special"; font-size: 5em; line-height: 1; }
 .fs-test { transform: rotate(30deg); }

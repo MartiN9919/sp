@@ -45,13 +45,14 @@ export function data_icon(classes_str, color="blue", zoom=1) {
   }
   if (classes_icon_list.length == 0) return undefined;                    // иконки в классах не найдены
   let classes_other_str = classes_other_list.join(' ');
-
+  let classes_icon_str;
   let ret = undefined;
   switch (icon_type) {
 
+
     // FONT: MDI
     case MAP_ITEM.FC.FEATURES.PROPERTIES.CLASS.ICON_TYPE_MDI:
-      let classes_icon_str  = classes_icon_list.map((val) => val.join('-')).join(' '); // 'mdi-flag mdi-spin'
+      classes_icon_str  = classes_icon_list.map((val) => val.join('-')).join(' '); // 'mdi-flag mdi-spin'
       ret = L.divIcon({
         className: classes_other_str,                                     // неиспользованные классы
         iconSize:  null,
@@ -66,6 +67,28 @@ export function data_icon(classes_str, color="blue", zoom=1) {
           '</div>',
       });
       break;
+      // БЕЗ FRAME
+      // '<div class="marker-font" style="color: '+color+';">'+
+      //   '<span class="marker-font-mdi mdi mdi-map-marker style="color: '+color+';">'+
+      // '</div>',
+
+
+  // FONT.FS
+    case MAP_ITEM.FC.FEATURES.PROPERTIES.CLASS.ICON_TYPE_FS:
+      classes_icon_str  = classes_icon_list.map((val) => val.join('-')).join(' '); // 'fs-spec0'
+      ret = L.divIcon({
+        className: classes_other_str,
+        iconSize:  null,
+        color:     color,
+        //icon:      icon,
+        html:
+          '<div class="marker-font" style="color: '+color+';">'+
+            '<div class="fs '+classes_icon_str+'" style="border-color: '+color+';">'+
+            '</div>'+
+          '</div>',
+      });
+      break;
+
 
     // PULSE
     case MAP_ITEM.FC.FEATURES.PROPERTIES.CLASS.ICON_TYPE_PULSE:
