@@ -20,7 +20,8 @@ def add_notification(to_id, type, content, date_time=datetime.now(), from_id='NU
     @param geometry: геометрическая информация
     @param test_mode: флаг тестового режима
     """
-
+    file_id = str(file_id) if file_id else 'NULL'
+    content = content.replace('\'', '\\\'')
     geometry = geometry.replace('\'', '\\\'')
     sql = 'INSERT INTO ' + DAT_SYS_NOTIFY.TABLE_SHORT + ' (' \
           + DAT_SYS_NOTIFY.FROM_ID + ', ' \

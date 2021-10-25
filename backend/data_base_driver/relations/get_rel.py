@@ -338,6 +338,16 @@ def get_unique_objects(objects, object_tree):
 
 
 def get_path_list(object_tree, object_id, rec_id, other_tree, other_tree_objects, result, temp_result):
+    """
+    Функция для получения общих путей двух деревьев
+    @param object_tree: дерево первого объекта
+    @param object_id: идентификатор типа корня дерева второго объекта
+    @param rec_id: идентификатор корня дерева второго объекта
+    @param other_tree: дерево второго объекта
+    @param other_tree_objects: список элементов второго дерева
+    @param result: список для накопления результата
+    @param temp_result: список для накопления элементов пути для данной итерации
+    """
     for relation in object_tree:
         if relation['object_id'] == object_id and relation['rec_id'] == rec_id:
             result.append(temp_result.copy())

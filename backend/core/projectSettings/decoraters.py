@@ -3,30 +3,54 @@ import os
 import time
 import json
 import logging
+import traceback
 
 from django.contrib.auth.decorators import user_passes_test
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponseBadRequest, HttpResponse, JsonResponse
-from core.projectSettings.logging_settings import PROJECT_LOG_REQUESTS
+from core.projectSettings.logging_settings import PROJECT_LOG_REQUESTS, PROJECT_LOG_SCRIPT_ERROR
 from core.settings import MEDIA_ROOT
 from data_base_driver.constants.const_dat import DAT_OWNER
 from data_base_driver.input_output.valid_permission_manticore import check_object_permission
+from data_base_driver.sys_notifications.set_notifications_info import add_notification
 
 
 def request_wrap(f):
     """
     Обертка для упрощения функции
     """
+
     def wrap(request, *args, **kwargs):
         try:
             return JsonResponse(f(request, *args, **kwargs), status=200)
         except Exception as e:
             if len(e.args) > 1:
-                return JsonResponse({'status': ' '+str(e)}, status=e.args[0])
+                return JsonResponse({'status': ' ' + str(e)}, status=e.args[0])
             else:
-                return JsonResponse({'status': ' '+str(e)}, status=498)
-    wrap.__doc__ =f.__doc__
-    wrap.__name__=f.__name__
+                return JsonResponse({'status': str(e)}, status=498)
+
+    wrap.__doc__ = f.__doc__
+    wrap.__name__ = f.__name__
+    return wrap
+
+
+logger_script_error = logging.getLogger(PROJECT_LOG_SCRIPT_ERROR)
+
+
+def script_wrap(f):
+    def wrap(request, *args, **kwargs):
+        try:
+            return f(request, *args, **kwargs)
+        except Exception as e:
+            data = json.loads(request.body).get('variables')
+            data = [str(key) + ':' + str(data[key]['value']) for key in data.keys()]
+            message = '\n'.join(data) + '\n' + ''.join(traceback.format_tb(e.__traceback__)) + str(e)
+            logger_script_error.info('user_id: ' + str(
+                request.user.id) + ', info: \n' + message + '\n----------------------------------------------------------------------------------------------------------')
+            add_notification(request.user.id, 'warning', message, from_id=1, file_id=None)
+
+    wrap.__doc__ = f.__doc__
+    wrap.__name__ = f.__name__
     return wrap
 
 
@@ -34,13 +58,14 @@ def request_get(f):
     """
     Доступ только get-запросам
     """
+
     def wrap(request, *args, **kwargs):
-        if request.method!='GET':
+        if request.method != 'GET':
             raise Exception('доступен только GET-запрос')
         return f(request, *args, **kwargs)
 
-    wrap.__doc__ =f.__doc__
-    wrap.__name__=f.__name__
+    wrap.__doc__ = f.__doc__
+    wrap.__name__ = f.__name__
     return wrap
 
 
@@ -48,13 +73,14 @@ def request_post(f):
     """
     Доступ только post-запросам
     """
+
     def wrap(request, *args, **kwargs):
-        if request.method!='POST':
+        if request.method != 'POST':
             raise Exception('доступен только POST-запрос')
         return f(request, *args, **kwargs)
 
-    wrap.__doc__ =f.__doc__
-    wrap.__name__=f.__name__
+    wrap.__doc__ = f.__doc__
+    wrap.__name__ = f.__name__
     return wrap
 
 
@@ -62,6 +88,7 @@ def request_download(f):
     """
     Доступ только get-запросам
     """
+
     def wrap(request, *args, **kwargs):
         group_id = DAT_OWNER.DUMP.get_group(user_id=request.user.id)
         path = request.path.split('download')[1]
@@ -78,8 +105,8 @@ def request_download(f):
         else:
             raise Exception(404, 'Файл не найден')
 
-    wrap.__doc__ =f.__doc__
-    wrap.__name__=f.__name__
+    wrap.__doc__ = f.__doc__
+    wrap.__name__ = f.__name__
     return wrap
 
 
@@ -89,15 +116,15 @@ def write_permission(f):
     @param f: оборачиваемая функция
     @return: результат оборачиваемой функции или  json с кодом 454
     """
+
     def wrap(request, *args, **kwargs):
         if request.method == 'POST' and not request.user.is_write:
             return JsonResponse({'data': 'ошибка добавления'}, status=454)
         return f(request, *args, **kwargs)
 
-    wrap.__doc__ =f.__doc__
-    wrap.__name__=f.__name__
+    wrap.__doc__ = f.__doc__
+    wrap.__name__ = f.__name__
     return wrap
-
 
 
 #########################################################################
@@ -231,4 +258,5 @@ def login_check(function):
             return function(request)
         else:
             return JsonResponse({}, status=401)
+
     return is_auth

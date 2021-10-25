@@ -16,6 +16,7 @@ class ModelScriptAdmin(admin.ModelAdmin):
     list_display = (
         'get_parent',
         DAT_SYS_SCRIPT.TITLE,
+        DAT_SYS_SCRIPT.ID,
         DAT_SYS_SCRIPT.DESCRIPT,
         'get_owner',
         DAT_SYS_SCRIPT.ENEBLED,
@@ -35,10 +36,13 @@ class ModelScriptAdmin(admin.ModelAdmin):
         DAT_SYS_SCRIPT.TITLE,
     ]
 
+    readonly_fields = (DAT_SYS_SCRIPT.ID,)
+
     fieldsets = (
         (None,
          {'fields':
              (
+                 DAT_SYS_SCRIPT.ID,
                  DAT_SYS_SCRIPT.TITLE,
                  DAT_SYS_SCRIPT.HINT,
                  (
