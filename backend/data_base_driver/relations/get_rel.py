@@ -85,14 +85,14 @@ def thread_function(group_id, parents, rel, depth, start=False):
     @param depth: остаточная глубина рекурсии
     @param start: -
     """
-    newParents = parents.copy()
-    newRels = get_rel_by_object(group_id, rel['object_id'], rel['rec_id'], newParents)
-    newParents.append([newRels['object_id'], newRels['rec_id']])
-    get_rel_rec(group_id, newRels['rels'], depth - 1, newParents)
+    new_parents = parents.copy()
+    new_rels = get_rel_by_object(group_id, rel['object_id'], rel['rec_id'], new_parents)
+    new_parents.append([new_rels['object_id'], new_rels['rec_id']])
+    get_rel_rec(group_id, new_rels['rels'], depth - 1, new_parents)
     if rel.get('rels'):
-        rel['rels'].append(newRels['rels'])
+        rel['rels'].append(new_rels['rels'])
     else:
-        rel['rels'] = newRels['rels']
+        rel['rels'] = new_rels['rels']
 
 
 def get_rel_rec(group_id, rels, depth, parents, start=False):
