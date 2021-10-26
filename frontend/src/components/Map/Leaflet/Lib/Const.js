@@ -15,7 +15,8 @@ export const MAP_ITEM = {
           KEY: 'class',                  // key: класс для стилизации
           SEL: 'sel',                    // название класса: выделено (pulse)
           ANT: 'ant',                    // название класса: бегущая линия
-          ICON_TYPE:           'icon',   // иконка
+          ICON_TYPE: 'icon',             // иконка
+          ICON_PATH: 'img/markers/',     // иконка: путь к файлам иконок
           ICON_TYPE_SEPARATOR: '-',      // иконка: разделитель
           ICON_TYPE_MDI:   'mdi',        // иконка: шрифт mdi
           ICON_TYPE_FS:    'fs',         // иконка: шрифт fs
@@ -59,7 +60,6 @@ export const MAP_ITEM = {
 
       MARKER: {
         KEY:  'marker',
-        PATH: 'img/markers/',            // путь к файлам маркеров
         ICON: {
           KEY:      'icon',
           DEF:      '',                  // значение по умолчанию

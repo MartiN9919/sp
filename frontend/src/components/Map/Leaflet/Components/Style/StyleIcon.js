@@ -1,5 +1,3 @@
-// инициализация маркеров
-
 import { MAP_ITEM } from '@/components/Map/Leaflet/Lib/Const';
 import { Icon } from 'leaflet';
 
@@ -26,37 +24,15 @@ export function icon_2_marker(latlng, icon, param={}) {
   return L.marker(latlng, { ...param, ...param_icon, });
 }
 
-// export function icon_get(style={}, className='') {
-//   let color  = style [MAP_ITEM.FC.STYLE._COLOR_.KEY    ] ?? MAP_ITEM.COLOR.DEF;
-//   let marker = style [MAP_ITEM.FC.STYLE.MARKER.KEY     ] ?? {};
-//   let icon   = marker[MAP_ITEM.FC.STYLE.MARKER.ICON.KEY] ?? MAP_ITEM.FC.STYLE.MARKER.ICON.DEF;
-//   let zoom   = marker[MAP_ITEM.FC.STYLE.MARKER.ZOOM.KEY] ?? 1;
 
-const COLOR_EQU = {
-  '#000'    : 'black',
-  '#000000' : 'black',
-  '#f00'    : 'red',
-  '#ff0000' : 'red',
-  '#0f0'    : 'green',
-  '#00ff00' : 'green',
-  '#00f'    : 'blue',
-  '#0000ff' : 'blue',
-  '#ff0'    : 'yellow',
-  '#ffff00' : 'yellow',
-  '#808080' : 'gray',
-  '#ee82ee' : 'violet',
-  '#ffd700' : 'gold',
-  '#ffa500' : 'orange',
-};
+
 
 // получить иконку
-// icon_get('icon-mdi-flag sss icon-mdi-spin tst')
-// icon_get(className, color, 2);
-// icon_get('', 'green'); icon_get('', '#00f');  COLOR_EQU
-// icon_get();
 export function icon_get(classes_str='', color='blue', zoom=1) {
+  const separator  = MAP_ITEM.FC.FEATURES.PROPERTIES.CLASS.ICON_TYPE_SEPARATOR;
   let classes_list = classes_str.trim().replace(/\s+/g, ' ').split(' ');  // убрать лишние пробелы
   classes_list = [...new Set(classes_list)];                              // исключить повторы
+  if (color) color = color.toLowerCase();                                 // цвет к нижнему регистру
 
   // парсить классы
   let icon_type          = undefined;                                     // тип иконки
@@ -64,7 +40,7 @@ export function icon_get(classes_str='', color='blue', zoom=1) {
   let classes_other_list = [];                                            // классы, не связанные с иконками: ['class1', ...]
   for(let class_ind=0; class_ind<classes_list.length; class_ind++) {      // классы иконки
     let class_item_str  = classes_list[class_ind];                        // название класса строкой
-    let class_item_list = class_item_str.split('-');                      // название класса списком
+    let class_item_list = class_item_str.split(separator);                // название класса списком
     if (class_item_list[0] == MAP_ITEM.FC.FEATURES.PROPERTIES.CLASS.ICON_TYPE) { // класс иконки
       if (icon_type == undefined) icon_type = class_item_list[1];         // тип определяется по ПЕРВОМУ классу иконки
       classes_icon_list.push(class_item_list.slice(1));
@@ -74,7 +50,7 @@ export function icon_get(classes_str='', color='blue', zoom=1) {
   }
   // if (classes_icon_list.length == 0) return undefined;                 // иконки в классах не найдены - пропусить для file, т.к. задан color
   let classes_other_str = classes_other_list.join(' ');                   // неиспользованные классы строкой
-  let classes_icon_str  = classes_icon_list.map((val) => val.join('-')).join(' '); // 'mdi-flag mdi-spin' 'fs-spec0'
+  let classes_icon_str  = classes_icon_list.map((val) => val.join(separator)).join(' '); // 'mdi-flag mdi-spin' 'fs-spec0'
 
 
   // FONT: MDI
@@ -152,9 +128,8 @@ export function icon_get(classes_str='', color='blue', zoom=1) {
 
   }
 
+  // DEFAULT
   return;
-
-
 }
 
 
@@ -172,12 +147,29 @@ export function icon_group_get(color, title, select=false) {
 // путь к файлу иконки
 export function icon_file_path(name, ext='png') {
   // require('@/assets/img/markers/red.png');
-  return process.env.BASE_URL+MAP_ITEM.FC.STYLE.MARKER.PATH+name+'.'+ext;
+  return process.env.BASE_URL+MAP_ITEM.FC.FEATURES.PROPERTIES.CLASS.ICON_PATH+name+'.'+ext;
 }
 
 
 // цвет
+const COLOR_EQU = {
+  '#000'    : 'black',
+  '#000000' : 'black',
+  '#f00'    : 'red',
+  '#ff0000' : 'red',
+  '#0f0'    : 'green',
+  '#00ff00' : 'green',
+  '#00f'    : 'blue',
+  '#0000ff' : 'blue',
+  '#ff0'    : 'yellow',
+  '#ffff00' : 'yellow',
+  '#808080' : 'gray',
+  '#ee82ee' : 'violet',
+  '#ffd700' : 'gold',
+  '#ffa500' : 'orange',
+};
 export function icon_file_color2class(color) {
+  if (color) color = color.toLowerCase();
   if (COLOR_EQU[color]) { color = COLOR_EQU[color]; }
   return
     MAP_ITEM.FC.FEATURES.PROPERTIES.CLASS.ICON_TYPE+
