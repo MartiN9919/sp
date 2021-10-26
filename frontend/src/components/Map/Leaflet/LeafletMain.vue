@@ -380,7 +380,7 @@ export default {
 
         // стиль маркеров
         pointToLayer: function(feature, latlng) {
-          let classAny = feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES.CLASS.KEY]??'';
+          let classAny = feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES.CLASS]??'';
           let classSel = feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._SEL_]?MAP_CONST.CLASS.SEL:'';
           let layer = marker_get(latlng, classAny+' '+classSel, self.SCRIPT_GET_ITEM_COLOR(map_ind));
           return layer;
