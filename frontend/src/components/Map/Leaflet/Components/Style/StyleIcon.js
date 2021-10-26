@@ -113,8 +113,8 @@ export function icon_get(classes_str='', color='blue', zoom=1) {
     if (icon_type != MAP_ITEM.FC.FEATURES.PROPERTIES.CLASS.ICON_TYPE_FILE) { classes_icon_list = [[undefined, color]]; }
     let file   = classes_icon_list[0][1];
     if (COLOR_EQU[file]) { file = COLOR_EQU[file]; }
-    let size_w = (classes_icon_list[0][2] ?? 25) * zoom|0; //(marker[MAP_ITEM.FC.STYLE.MARKER.SIZE_W.KEY] ?? 25) * zoom|0;
-    let size_h = (classes_icon_list[0][3] ?? 41) * zoom|0; //(marker[MAP_ITEM.FC.STYLE.MARKER.SIZE_H.KEY] ?? 41) * zoom|0;
+    let size_w = (classes_icon_list[0][2] ?? 25) * zoom|0;
+    let size_h = (classes_icon_list[0][3] ?? 41) * zoom|0;
     return new L.Icon({
       className:   classes_other_str,
       shadowUrl:   icon_file_path('shadow-marker'),

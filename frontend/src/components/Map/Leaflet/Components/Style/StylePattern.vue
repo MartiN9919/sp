@@ -13,11 +13,11 @@
 
 import 'leaflet-polylinedecorator'
 
-import { MAP_ITEM } from '@/components/Map/Leaflet/Lib/Const';
+import { MAP_CONST, MAP_ITEM } from '@/components/Map/Leaflet/Lib/Const';
 import { get_feature_class, get_feature_coordinates } from '@/components/Map/Leaflet/Lib/LibFc';
 import { dict_get } from '@/components/Map/Leaflet/Lib/Lib';
 import { DATA_PATTERN } from '@/components/Map/Leaflet/Components/Style/StylePatternData';
-//import { icon_path } from '@/components/Map/Leaflet/Components/Style/StyleIcon';
+//import { icon_file_path } from '@/components/Map/Leaflet/Components/Style/StyleIcon';
 
 import { findRealParent, propsBinder } from 'vue2-leaflet';
 
@@ -65,8 +65,8 @@ export default {
 
       // L.объекты
       let l_obj         = get_feature_coordinates(feature, true);
-      l_obj[MAP_ITEM.FC.FEATURES.GEOMETRY.TYPE.LINE   ] = l_obj[MAP_ITEM.FC.FEATURES.GEOMETRY.TYPE.LINE   ].map((val) => L.polyline(val));
-      l_obj[MAP_ITEM.FC.FEATURES.GEOMETRY.TYPE.POLYGON] = l_obj[MAP_ITEM.FC.FEATURES.GEOMETRY.TYPE.POLYGON].map((val) => L.polygon (val));
+      l_obj[MAP_CONST.GEOMETRY_TYPE.LINE   ] = l_obj[MAP_CONST.GEOMETRY_TYPE.LINE   ].map((val) => L.polyline(val));
+      l_obj[MAP_CONST.GEOMETRY_TYPE.POLYGON] = l_obj[MAP_CONST.GEOMETRY_TYPE.POLYGON].map((val) => L.polygon (val));
 
       // patterns на основании classes и color
       let classes = get_feature_class(feature);
@@ -82,8 +82,8 @@ export default {
         propsBinder(self, decorator, props);
         self.parent_obj.mapObject.addLayer(decorator, !self.visible);
       }
-      set_decorator(l_obj[MAP_ITEM.FC.FEATURES.GEOMETRY.TYPE.POLYGON]);
-      set_decorator(l_obj[MAP_ITEM.FC.FEATURES.GEOMETRY.TYPE.LINE   ]);
+      set_decorator(l_obj[MAP_CONST.GEOMETRY_TYPE.POLYGON]);
+      set_decorator(l_obj[MAP_CONST.GEOMETRY_TYPE.LINE   ]);
     }
   },
 

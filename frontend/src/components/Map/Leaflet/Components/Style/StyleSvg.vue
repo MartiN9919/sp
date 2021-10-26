@@ -25,8 +25,7 @@
  */
 
 import { mapGetters }             from 'vuex';
-import { MAP_ITEM }               from '@/components/Map/Leaflet/Lib/Const';
-import { dict_get }               from '@/components/Map/Leaflet/Lib/Lib';
+import { MAP_CONST, MAP_ITEM }    from '@/components/Map/Leaflet/Lib/Const';
 import { fc_properties_keys_get } from '@/components/Map/Leaflet/Lib/LibFc'
 import { data_svg }               from '@/components/Map/Leaflet/Components/Style/StyleSvgData';
 
@@ -56,7 +55,7 @@ export default {
       let defs = '';
       for(let ind=0; ind<items.length; ind++) {
         let item    = items[ind];
-        let color   = dict_get(item, [MAP_ITEM.COLOR.KEY], 'gray');
+        let color   = item[MAP_ITEM.COLOR] ?? MAP_CONST.COLOR.DEFAULT_STYLE_PATH;
         let classes = fc_properties_keys_get(item.fc, MAP_ITEM.FC.FEATURES.PROPERTIES.CLASS.KEY);  // список fc.features[i].properties.class
         let data    = data_svg(classes.join(' '), ind, color);
         if (data.style!='') style += data.style;

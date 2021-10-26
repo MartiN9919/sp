@@ -5,7 +5,7 @@
 
 import { mapGetters, mapActions, } from 'vuex';
 
-import { MAP_ITEM } from '@/components/Map/Leaflet/Lib/Const';
+import { MAP_CONST, MAP_ITEM } from '@/components/Map/Leaflet/Lib/Const';
 import { color_scale_log, color_array, } from '@/components/Map/Leaflet/Lib/LibColor'
 import { fc_properties_keys_get, fc_types_del, } from '@/components/Map/Leaflet/Lib/LibFc'
 
@@ -22,7 +22,7 @@ export default {
   },
 
   methods: {
-    // ЗАПОЛНИТЬ fc.features[i][MAP_ITEM.COLOR.KEY]
+    // ЗАПОЛНИТЬ fc.features[i][MAP_ITEM.COLOR]
     data_normalize_color(map_item) {
       // данные на шине
       let color_green = this.color_green(map_item);
@@ -32,7 +32,7 @@ export default {
       if (this.color_valid(color_green)) {
 
         // исключить ненужные геометрии
-        fc_types_del(fc, ['LineString', 'Point']);
+        fc_types_del(fc, [MAP_CONST.GEOMETRY_TYPE.LINE, MAP_CONST.GEOMETRY_TYPE.POINT]);
 
         // начальный и конечный цвет
         var [color_begin, color_end] = this.color_set(color_green);
@@ -79,10 +79,10 @@ export default {
           });
         }
 
-      // // иначе: копировать цвет MAP_ITEM.COLOR.KEY каждому feature
-      // } else if (MAP_ITEM.COLOR.KEY in map_item) {
+      // // иначе: копировать цвет MAP_ITEM.COLOR каждому feature
+      // } else if (MAP_ITEM.COLOR in map_item) {
       //   // for (let i=0; i<fc.features.length; i++) {
-      //   //   fc.features[i][MAP_ITEM.COLOR.KEY] = map_item[MAP_ITEM.COLOR.KEY];
+      //   //   fc.features[i][MAP_ITEM.FC.FEATURES.PROPERTIES._COLOR_] = map_item[MAP_ITEM.COLOR];
       //   // }
       }
     },

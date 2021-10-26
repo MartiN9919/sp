@@ -1,5 +1,31 @@
+export const MAP_CONST = {
+  COLOR: {
+    DEFAULT:            '#f00',           // цвет по умолчанию
+    DEFAULT_STYLE_PATH: 'gray',           // цвет по умолчанию для стилизации (декорирования) фигур
+    EDITOR_ORIGIN:      '#000',           // редактор: цвет ДО    ИЗМЕНЕНИЯ
+    EDITOR_MODIFY:      '#f00',           // редактор: цвет ПОСЛЕ ИЗМЕНЕНИЯ
+    SCRIPT_OFF:         '#696969FF',      // цвет неактивного скрипта
+    SCRIPT_BANK: [                        // цвета активных скриптов
+      '#FF0000FF',
+      '#0008FFFF',
+      '#008E00FF',
+      '#A400A0FF',
+      '#A400A0FF',
+      '#4DD6D6FF',
+      '#E3F017FF',
+    ],
+  },
+
+  GEOMETRY_TYPE: {
+    GC:        'GeometryCollection',
+    POINT:     'Point',
+    LINE:      'LineString',
+    POLYGON:   'Polygon',
+  },
+};
 
 export const MAP_ITEM = {
+  COLOR: 'color',                        // копия в FC.STYLE._COLOR_
   FC: {
     KEY: 'fc',
     TYPE: {
@@ -37,11 +63,6 @@ export const MAP_ITEM = {
         KEY:     'geometry',
         TYPE: {
           KEY:       'type',
-          GC:        'GeometryCollection',
-          MARKER:    'Marker',           // кажется нужно использовать POINT
-          POINT:     'Point',
-          LINE:      'LineString',
-          POLYGON:   'Polygon',
         },
         COORDINATES: {
           KEY:       'coordinates',
@@ -96,22 +117,6 @@ export const MAP_ITEM = {
     },
   },
 
-  COLOR: {                               // копия в FC.STYLE._COLOR_
-    KEY:        'color',
-    DEF:        '#f00',                  // цвет по умолчанию
-    ORIGIN:     '#000',                  // редактор: цвет ДО    ИЗМЕНЕНИЯ
-    MODIFY:     '#f00',                  // редактор: цвет ПОСЛЕ ИЗМЕНЕНИЯ
-    SCRIPT_OFF: '#696969FF',             // цвет неактивного скрипта
-    SCRIPT_BANK: [                       // цвета активных скриптов
-      '#FF0000FF',
-      '#0008FFFF',
-      '#008E00FF',
-      '#A400A0FF',
-      '#A400A0FF',
-      '#4DD6D6FF',
-      '#E3F017FF',
-    ],
-  },
 
   // ZOOM: {
   //   KEY: 'zoom',                      // увеличение карты

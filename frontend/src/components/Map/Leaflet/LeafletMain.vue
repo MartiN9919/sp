@@ -119,7 +119,7 @@ import {
 import Vue2LeafletMarkerCluster from 'vue2-leaflet-markercluster';
 import LControlPolylineMeasure  from 'vue2-leaflet-polyline-measure';
 
-import { MAP_ITEM }             from '@/components/Map/Leaflet/Lib/Const';
+import { MAP_CONST, MAP_ITEM }  from '@/components/Map/Leaflet/Lib/Const';
 import { get_feature_class }    from '@/components/Map/Leaflet/Lib/LibFc';
 import {
   icon_ini,
@@ -368,12 +368,9 @@ export default {
           );
 
           // класс для стилей линий и полигонов
-          let style = {};
-          if (feature.geometry.type == MAP_ITEM.FC.FEATURES.GEOMETRY.TYPE.LINE)    { style = self.SCRIPT_GET_ITEM_FC_STYLE_LINE   (map_ind); }
-          if (feature.geometry.type == MAP_ITEM.FC.FEATURES.GEOMETRY.TYPE.POLYGON) { style = self.SCRIPT_GET_ITEM_FC_STYLE_POLYGON(map_ind); }
-          let className = get_feature_class(feature);
-          className = classes_name_correct(className, map_ind);  // коррекция названий классом для избежания повторов из разных скриптов
-          if ((className != '') && (layer.setStyle)) { layer.setStyle({'className': className, }); }
+          let classes_str = get_feature_class(feature);
+          classes_str = classes_name_correct(classes_str, map_ind);  // коррекция названий классов для избежания повторов из разных скриптов
+          if ((classes_str != '') && (layer.setStyle)) { layer.setStyle({'className': classes_str, }); }
 
           // редактирование запрещено - удалить pm - для уменьшения объема вычислений
           if (layer.pm) { delete layer.pm; }

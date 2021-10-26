@@ -1,4 +1,4 @@
-import { MAP_ITEM } from '@/components/Map/Leaflet/Lib/Const';
+import { MAP_CONST, MAP_ITEM } from '@/components/Map/Leaflet/Lib/Const';
 import { dict_get } from '@/components/Map/Leaflet/Lib/Lib';
 
 /**
@@ -130,9 +130,9 @@ export function get_feature_class(feature) {
 // invert  - поменять местами x и y
 export function get_feature_coordinates(feature, invert=false) {
   let ret = {
-    [MAP_ITEM.FC.FEATURES.GEOMETRY.TYPE.POINT]: [],
-    [MAP_ITEM.FC.FEATURES.GEOMETRY.TYPE.LINE]: [],
-    [MAP_ITEM.FC.FEATURES.GEOMETRY.TYPE.POLYGON]: [],
+    [MAP_CONST.GEOMETRY_TYPE.POINT]: [],
+    [MAP_CONST.GEOMETRY_TYPE.LINE]: [],
+    [MAP_CONST.GEOMETRY_TYPE.POLYGON]: [],
   }
 
   //=========================================================
@@ -144,13 +144,13 @@ export function get_feature_coordinates(feature, invert=false) {
 
     if (invert) {
       switch (item_type) {
-        case MAP_ITEM.FC.FEATURES.GEOMETRY.TYPE.POINT:                                  // для точек [x,y]
+        case MAP_CONST.GEOMETRY_TYPE.POINT:                                             // для точек [x,y]
           item_coordinates = [item_coordinates[1], item_coordinates[0]];
           break;
-        case MAP_ITEM.FC.FEATURES.GEOMETRY.TYPE.LINE:                                   // для линий [[x,y],...]
+        case MAP_CONST.GEOMETRY_TYPE.LINE:                                              // для линий [[x,y],...]
           item_coordinates = item_coordinates.map((val) => { return [val[1], val[0]] });
           break;
-        case MAP_ITEM.FC.FEATURES.GEOMETRY.TYPE.POLYGON:                                // для полигонов [[[x,y],...],...]
+        case MAP_CONST.GEOMETRY_TYPE.POLYGON:                                           // для полигонов [[[x,y],...],...]
           if (invert) {
             for(let i=0; i<item_coordinates.length;i++) {
               item_coordinates[i] = item_coordinates[i].map((val) => { return [val[1], val[0]] });
@@ -169,7 +169,7 @@ export function get_feature_coordinates(feature, invert=false) {
   let geometry_type = geometry[MAP_ITEM.FC.FEATURES.GEOMETRY.TYPE.KEY];
 
   // GeometryCollection: вложенные геометрии
-  if (geometry_type == MAP_ITEM.FC.FEATURES.GEOMETRY.TYPE.GC) {
+  if (geometry_type == MAP_CONST.GEOMETRY_TYPE.GC) {
     for(let i=0; i<geometry[MAP_ITEM.FC.FEATURES.GEOMETRY.GEOMETRIES.KEY].length; i++) {
       parse_item(geometry[MAP_ITEM.FC.FEATURES.GEOMETRY.GEOMETRIES.KEY][i]);
     }
