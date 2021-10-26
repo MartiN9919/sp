@@ -49,7 +49,7 @@ export default {
 
     SCRIPT_GET:                       state =>        state.selectedTemplate.activeAnalysts,
     SCRIPT_GET_ITEM:                  state => ind => state.selectedTemplate.activeAnalysts[ind],
-    SCRIPT_GET_ITEM_FC_STYLE:         state => ind => state.selectedTemplate.activeAnalysts[ind].fc.style                 ?? {},
+  //SCRIPT_GET_ITEM_FC_STYLE:         state => ind => state.selectedTemplate.activeAnalysts[ind].fc.style                 ?? {},
     SCRIPT_GET_ITEM_FC_STYLE_MARKER:  state => ind => state.selectedTemplate.activeAnalysts[ind].fc.style?.marker         ?? {},
     SCRIPT_GET_ITEM_FC_STYLE_LINE:    state => ind => state.selectedTemplate.activeAnalysts[ind].fc.style?.line           ?? {},
     SCRIPT_GET_ITEM_FC_STYLE_POLYGON: state => ind => state.selectedTemplate.activeAnalysts[ind].fc.style?.polygon        ?? {},

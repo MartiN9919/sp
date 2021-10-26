@@ -16,8 +16,8 @@ import 'leaflet-polylinedecorator'
 import { MAP_ITEM } from '@/components/Map/Leaflet/Lib/Const';
 import { get_feature_class, get_feature_coordinates } from '@/components/Map/Leaflet/Lib/LibFc';
 import { dict_get } from '@/components/Map/Leaflet/Lib/Lib';
-import { CONST_PATTERN } from '@/components/Map/Leaflet/Components/DecoratorPatternConst';
-//import { icon_path } from '@/components/Map/Leaflet/Markers/Fun';
+import { DATA_PATTERN } from '@/components/Map/Leaflet/Components/Style/StylePatternData';
+//import { icon_path } from '@/components/Map/Leaflet/Components/Style/StyleIcon';
 
 import { findRealParent, propsBinder } from 'vue2-leaflet';
 
@@ -35,7 +35,7 @@ const props = {
 };
 
 export default {
-  name: 'LDecoratorPattern',
+  name: 'LStylePattern',
   props,
   data() {
     return {
@@ -44,10 +44,16 @@ export default {
     }
   },
   mounted() {
+    // // test
+    // const test = new DECORATOR_CLASSES(color);
+    // var   dd = test.get_patterns('mark_zabor_ograd line_border_1');
+    // debugger
+
+
     const self         = this;
     const features     = this.fc[MAP_ITEM.FC.FEATURES.KEY];
     const color        = dict_get(this.fc, [MAP_ITEM.FC.STYLE.KEY, MAP_ITEM.FC.STYLE._COLOR_.KEY], 'gray');
-    const obj_pattern  = new CONST_PATTERN(color);
+    const obj_pattern  = new DATA_PATTERN(color);
     this.parent_obj    = findRealParent(this.$parent);
 
     this.ready = true;
