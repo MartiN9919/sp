@@ -522,20 +522,8 @@ export default {
 
 
     // иконки
-    icon_origin() {
-      return icon_get({
-        [MAP_ITEM.FC.STYLE.MARKER.KEY]: {
-          [MAP_ITEM.FC.STYLE.MARKER.ICON.KEY]: MAP_ITEM.COLOR.ORIGIN,
-        },
-      });
-    },
-    icon_modify() {
-      return icon_get({
-        [MAP_ITEM.FC.STYLE.MARKER.KEY]: {
-          [MAP_ITEM.FC.STYLE.MARKER.ICON.KEY]: MAP_ITEM.COLOR.MODIFY,
-        },
-      });
-    },
+    icon_origin() { return icon_get('', MAP_ITEM.COLOR.ORIGIN); },
+    icon_modify() { return icon_get('', MAP_ITEM.COLOR.MODIFY); },
 
     // маркеры
     marker_origin(latlng) {

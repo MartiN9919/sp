@@ -5,7 +5,7 @@
  * repeat - смещение, через которое повторить маркер, можно в %: '50%'
  */
 
-import { icon_path } from '@/components/Map/Leaflet/Components/Style/StyleIcon';
+import { icon_file_path } from '@/components/Map/Leaflet/Components/Style/StyleIcon';
 
 export class DATA_PATTERN {
   constructor(color='gray') {
@@ -40,7 +40,7 @@ export class DATA_PATTERN {
           rotate: true,
           markerOptions: {
             icon: L.icon({
-              iconUrl: icon_path('zabor_ogradit'),
+              iconUrl: icon_file_path('zabor_ogradit'),
               iconSize: [10, 10],   // original: [16, 16]
               iconAnchor: [5, 5],
             }),
@@ -58,7 +58,7 @@ export class DATA_PATTERN {
           rotate: true,
           markerOptions: {
             icon: L.icon({
-              iconUrl: icon_path('zagragd_signal'),
+              iconUrl: icon_file_path('zagragd_signal'),
               //iconSize: [2, 10],   // original: [3, 16]
               iconAnchor: [8, 0],
             }),
@@ -99,7 +99,7 @@ export class DATA_PATTERN {
           rotate: false,
           markerOptions: {
             icon: L.icon({
-              iconUrl: icon_path('test2'),
+              iconUrl: icon_file_path('test2'),
               iconAnchor: [30, 40],
             }),
           },

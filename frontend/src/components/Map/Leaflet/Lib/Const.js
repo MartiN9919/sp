@@ -15,7 +15,8 @@ export const MAP_ITEM = {
           KEY: 'class',                  // key: класс для стилизации
           SEL: 'sel',                    // название класса: выделено (pulse)
           ANT: 'ant',                    // название класса: бегущая линия
-          ICON_TYPE:       'icon',       // иконка
+          ICON_TYPE:           'icon',   // иконка
+          ICON_TYPE_SEPARATOR: '-',      // иконка: разделитель
           ICON_TYPE_MDI:   'mdi',        // иконка: шрифт mdi
           ICON_TYPE_FS:    'fs',         // иконка: шрифт fs
           ICON_TYPE_FILE:  'file',       // иконка: файл

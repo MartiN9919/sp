@@ -31,7 +31,7 @@ const COLOR_EQU = {
 
 // получить иконку
 // используется только первый совпавший класс из списка допустимых
-export function data_icon(classes_str='', color='blue', zoom=1) {
+export function get_icon(classes_str='', color='blue', zoom=1) {
   let classes_list = classes_str.trim().replace(/\s+/g, ' ').split(' ');  // убрать лишние пробелы
   classes_list = [...new Set(classes_list)];                              // исключить повторы
 
@@ -116,9 +116,9 @@ export function data_icon(classes_str='', color='blue', zoom=1) {
       let size_h = (classes_icon_list[0][3] ?? 41) * zoom|0; //(marker[MAP_ITEM.FC.STYLE.MARKER.SIZE_H.KEY] ?? 41) * zoom|0;
       ret = new L.Icon({
         className:   classes_other_str,
-        shadowUrl:   icon_path('shadow-marker'),
+        shadowUrl:   icon_file_path('shadow-marker'),
         shadowSize:  [size_h, size_h],
-        iconUrl:     icon_path(file),
+        iconUrl:     icon_file_path(file),
         iconSize:    [size_w, size_h],
         iconAnchor:  [size_w/2|0, size_h],
         popupAnchor: [1, -34 * zoom|0],
@@ -133,7 +133,7 @@ export function data_icon(classes_str='', color='blue', zoom=1) {
 }
 
 
-export function icon_path(name, ext='png') {
+export function icon_file_path(name, ext='png') {
   // require('@/assets/img/markers/red.png');
   return process.env.BASE_URL+MAP_ITEM.FC.STYLE.MARKER.PATH+name+'.'+ext;
 }

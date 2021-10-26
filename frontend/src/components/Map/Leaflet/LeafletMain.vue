@@ -124,7 +124,7 @@ import { get_feature_class }    from '@/components/Map/Leaflet/Lib/LibFc';
 import {
   icon_ini,
   marker_get,
-  icon_get_group,
+  icon_group_get,
 } from '@/components/Map/Leaflet/Components/Style/StyleIcon';
 
 import StyleSvg         from '@/components/Map/Leaflet/Components/Style/StyleSvg';
@@ -325,7 +325,7 @@ export default {
         // подмена иконки кластера
         iconCreateFunction: function (cluster) {
           // select фактически не имеет смысла, т.к. могут группироваться маркеры с разными id
-          return icon_get_group(color, cluster.getChildCount()); //, feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._SEL_.KEY]
+          return icon_group_get(color, cluster.getChildCount()); //, feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._SEL_.KEY]
         },
 
         // цвет региона сгруппированного кластера
