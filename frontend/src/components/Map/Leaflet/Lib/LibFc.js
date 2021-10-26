@@ -99,17 +99,13 @@ export function fc_properties_keys_get(FC, key) {
 
 // удалить из FeatureCollection: объекты типов types_del ['LineString', 'Point', ...]
 export function fc_types_del(FC, types_del) {
-    for (let key in FC) {
-        // недопустимые типы удалить
-        if (key=='type') {
-            if (types_del.indexOf(FC[key])>-1) return false;
-        }
-        // рекурсия
-        if (typeof(FC[key])==='object') {
-            if (!fc_types_del(FC[key], types_del)) delete(FC[key]);
-        }
+  if (FC.type != 'FeatureCollection') return;
+
+  for(let i=FC.features.length-1; i>=0; i--) {
+    if (types_del.indexOf(FC.features[i].geometry.type)>-1) {
+      FC.features.splice(i, 1);
     }
-    return true;
+  }
 }
 
 

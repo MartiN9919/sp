@@ -248,20 +248,27 @@ export const MAP_TEST_ITEM_3 = {
   "color": "#493",
   "fc": {
     "style": {
-      "marker": {
-        "icon": "pulse",
-        "zoom": 2,
-      },
-      "line": {
-      },
-      "polygon": {
-        "coloring": {
-          "green": "max",
-        },
-      },
+      "coloring": "green_max",
+
+      "marker": {},
+      "line": {},
+      "polygon": {},
     },
     "type": "FeatureCollection",
     "features": [
+      //должно удалиться
+      {
+        "type": "Feature",
+        "properties": {
+          "class": "icon-mdi-flag sss icon-mdi-spin tst",
+          "hint": "Подсказка 4",
+          "date": "2021-01-03",
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [13.928222656250004,53.028000167735165]
+        },
+      },
       {
         "type": "Feature",
         "properties": {
@@ -335,6 +342,19 @@ export const MAP_TEST_ITEM_3 = {
               [30.926513671875,54.17529672404642],
             ]
           ]
+        },
+      },
+      //должно удалиться
+      {
+        "type": "Feature",
+        "properties": {
+          "class": "icon-mdi-flag sss icon-mdi-spin tst",
+          "hint": "Подсказка 4",
+          "date": "2021-01-03",
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [13.928222656250004,53.028000167735165]
         },
       },
     ],

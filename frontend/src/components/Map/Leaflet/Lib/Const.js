@@ -14,6 +14,12 @@ export const MAP_CONST = {
       '#4DD6D6FF',
       '#E3F017FF',
     ],
+    COLORING: {                           // цвет в зависимости от значения
+      GREEN_MIN: 'green_min',             // зеленый(хуже)  -> красный(лучше) https://leafletjs.com/examples/choropleth/example.html
+      GREEN_MAX: 'green_max',             // зеленый(лучше) -> красный(хуже)
+      BEGIN:     '00FF00',                // цвет: начальный
+      END:       'FF0000',                // цвет: конечный
+    },
   },
 
   GEOMETRY_TYPE: {
@@ -49,9 +55,7 @@ export const MAP_ITEM = {
           ICON_TYPE_FILE:  'file',       // иконка: файл
           ICON_TYPE_PULSE: 'pulse',      // иконка: пульсирующая
         },
-        VALUE: {                         // key: для полигона - вход:  fc.features[i].property.VALUE - значение, которое определяет цвет полигона
-          KEY: 'value',
-        },
+        VALUE: 'value',                  // значение, которое определяет цвет полигона
         _COLOR_: {                       // key: заполняется программой, цвет заливки фигуры
           KEY: 'color',
         },
@@ -78,23 +82,10 @@ export const MAP_ITEM = {
       _COLOR_: {                         // в некоторых случаях транслируется сюда из MAP_ITEM.COLOR (чтобы использовать в стилях)
         KEY:   'color',
       },
+      COLORING: 'coloring',               // цвет полигона в зависимости от значения. MAP_CONST.COLOR.COLORING.GREEN_MIN (GREEN_MAX)
 
       MARKER: {
         KEY:  'marker',
-        ICON: {
-          KEY:      'icon',
-          DEF:      '',                  // значение по умолчанию
-          PREF_MDI: 'mdi-',              // маркер: шрифт mdi
-          PREF_FS:  'fs-',               // маркер: шрифт дополнительный
-          PULSE:    'pulse',             // маркер: пульсирующий
-        },
-        ZOOM:   { KEY: 'zoom' },
-        SIZE:   { KEY: 'size', },
-        SIZE_W: { KEY: 'size_w', },
-        SIZE_H: { KEY: 'size_h', },
-        // CLASS: {                      // классы, без decoratorPath и decoratorSVG (не задействовано)
-        //   KEY: 'class',
-        // },
       },
 
       LINE: {
@@ -103,16 +94,6 @@ export const MAP_ITEM = {
 
       POLYGON: {
         KEY: 'polygon',
-        COLORING: {
-          KEY:   'coloring',
-          GREEN: {
-            KEY:   'green',
-            MIN:   'min',                // цвет полигона в зависимости от значения: зеленый(хуже)  -> красный(лучше) https://leafletjs.com/examples/choropleth/example.html
-            MAX:   'max',                // цвет полигона в зависимости от значения: зеленый(лучше) -> красный(хуже)
-          },
-          BEGIN:     '00FF00',           // цвет: начальный
-          END:       'FF0000',           // цвет: конечный
-        },
       },
     },
   },
