@@ -229,7 +229,6 @@ export default {
 
       'SCRIPT_GET',
       'SCRIPT_GET_ITEM_COLOR',
-      'SCRIPT_GET_ITEM_FC_STYLE',
       'SCRIPT_GET_ITEM_FC_STYLE_LINE',
       'SCRIPT_GET_ITEM_FC_STYLE_POLYGON',
       'SCRIPT_GET_ITEM_SEL',
@@ -385,7 +384,7 @@ export default {
         pointToLayer: function(feature, latlng) {
           let classAny = feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES.CLASS.KEY]??'';
           let classSel = feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._SEL_.KEY]?MAP_ITEM.FC.FEATURES.PROPERTIES.CLASS.SEL:'';
-          let layer = marker_get(latlng, self.SCRIPT_GET_ITEM_FC_STYLE (map_ind), classAny+' '+classSel);
+          let layer = marker_get(latlng, classAny+' '+classSel, self.SCRIPT_GET_ITEM_COLOR(map_ind));
           return layer;
         },
 

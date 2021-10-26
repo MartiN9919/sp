@@ -16,20 +16,17 @@ export function icon_ini() {
 }
 
 
-export function marker_get(latlng, style={}, classes_str='') {
-  let icon = icon_get(classes_str);
-  return icon_2_marker(latlng, icon, undefined, classes_str);
+export function marker_get(latlng, classes_str='', color='blue', param={}) {
+  let icon = icon_get(classes_str, color);
+  return icon_2_marker(latlng, icon, param);
 }
 
-export function icon_2_marker(latlng, icon, style={}, classes_str='') {
-  let param = (icon) ? { icon:icon, } : {};
-  let ret = L.marker(latlng, {...param, ...style});
-
-  // класс при отсутствии иконки. Для заданных иконок он установлен в icon_get
-  if (!icon) { ret.options.icon.options.className = classes_str; }
-
+export function icon_2_marker(latlng, icon, param={}) {
+  let param2 = (icon) ? { icon:icon, } : {};
+  let ret = L.marker(latlng, { ...param, ...param2, });
   return ret
-
+  // // класс при отсутствии иконки. Для заданных иконок он установлен в icon_get
+  // if (!icon) { ret.options.icon.options.className = classes_str; }
 }
 
 // export function icon_get(style={}, className='') {
@@ -43,7 +40,7 @@ const COLOR_EQU = {
   '#000000' : 'black',
   '#f00'    : 'red',
   '#ff0000' : 'red',
-  '#0f0   ' : 'green',
+  '#0f0'    : 'green',
   '#00ff00' : 'green',
   '#00f'    : 'blue',
   '#0000ff' : 'blue',
