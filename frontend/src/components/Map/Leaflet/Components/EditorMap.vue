@@ -318,7 +318,7 @@ export default {
           pointToLayer:  function(feature, latlng) { return self.marker_modify(latlng); },
           style:         function(feature)         { return self.path_modify(); },
         };
-      let layer = (fc.type==MAP_ITEM.FC.TYPE.VAL)?L.geoJSON(fc, style):L.GeoJSON.geometryToLayer(fc, style);
+      let layer = (fc.type==MAP_CONST.TYPE.FC)?L.geoJSON(fc, style):L.GeoJSON.geometryToLayer(fc, style);
 
       // слой: настроить
       this.layer_set(layer);

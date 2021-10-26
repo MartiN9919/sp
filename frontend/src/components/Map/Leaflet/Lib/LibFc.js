@@ -26,7 +26,7 @@ export function fc_normalize(gj) {
 
   if (type === 'geometry') {
     return {
-      type: MAP_ITEM.FC.TYPE.VAL,
+      type: MAP_CONST.TYPE.FC,
       features: [{
         type: 'Feature',
         properties: {},
@@ -35,7 +35,7 @@ export function fc_normalize(gj) {
     };
   } else if (type === 'feature') {
     return {
-      type: MAP_ITEM.FC.TYPE.VAL,
+      type: MAP_CONST.TYPE.FC,
       features: [gj],
     };
   } else if (type === 'featurecollection') {
@@ -72,7 +72,7 @@ export function fc_normalize(gj) {
  */
 export function fc_merge (inputs) {
   let output = {
-    type: MAP_ITEM.FC.TYPE.VAL,
+    type: MAP_CONST.TYPE.FC,
     features: []
   };
   for (let i = 0; i < inputs.length; i++) {
@@ -99,7 +99,7 @@ export function fc_properties_keys_get(FC, key) {
 
 // удалить из FeatureCollection: объекты типов types_del ['LineString', 'Point', ...]
 export function fc_types_del(FC, types_del) {
-  if (FC.type != 'FeatureCollection') return;
+  if (FC.type != MAP_CONST.TYPE.FC) return;
 
   for(let i=FC.features.length-1; i>=0; i--) {
     if (types_del.indexOf(FC.features[i].geometry.type)>-1) {
@@ -117,7 +117,7 @@ export function fc_exist(FC) {
 
 // читать из Feature: список feature.properties.class
 export function get_feature_class(feature) {
-  let ret = dict_get(feature, [MAP_ITEM.FC.FEATURES.PROPERTIES.KEY, MAP_ITEM.FC.FEATURES.PROPERTIES.CLASS.KEY], '');
+  let ret = dict_get(feature, [MAP_ITEM.FC.FEATURES.PROPERTIES.KEY, MAP_ITEM.FC.FEATURES.PROPERTIES.CLASS], '');
   return ret.trim().replace(/\s+/g, ' ');
 }
 
@@ -126,9 +126,9 @@ export function get_feature_class(feature) {
 // invert  - поменять местами x и y
 export function get_feature_coordinates(feature, invert=false) {
   let ret = {
-    [MAP_CONST.GEOMETRY_TYPE.POINT]: [],
-    [MAP_CONST.GEOMETRY_TYPE.LINE]: [],
-    [MAP_CONST.GEOMETRY_TYPE.POLYGON]: [],
+    [MAP_CONST.TYPE.GEOMETRY.POINT]: [],
+    [MAP_CONST.TYPE.GEOMETRY.LINE]: [],
+    [MAP_CONST.TYPE.GEOMETRY.POLYGON]: [],
   }
 
   //=========================================================
@@ -140,13 +140,13 @@ export function get_feature_coordinates(feature, invert=false) {
 
     if (invert) {
       switch (item_type) {
-        case MAP_CONST.GEOMETRY_TYPE.POINT:                                             // для точек [x,y]
+        case MAP_CONST.TYPE.GEOMETRY.POINT:                                             // для точек [x,y]
           item_coordinates = [item_coordinates[1], item_coordinates[0]];
           break;
-        case MAP_CONST.GEOMETRY_TYPE.LINE:                                              // для линий [[x,y],...]
+        case MAP_CONST.TYPE.GEOMETRY.LINE:                                              // для линий [[x,y],...]
           item_coordinates = item_coordinates.map((val) => { return [val[1], val[0]] });
           break;
-        case MAP_CONST.GEOMETRY_TYPE.POLYGON:                                           // для полигонов [[[x,y],...],...]
+        case MAP_CONST.TYPE.GEOMETRY.POLYGON:                                           // для полигонов [[[x,y],...],...]
           if (invert) {
             for(let i=0; i<item_coordinates.length;i++) {
               item_coordinates[i] = item_coordinates[i].map((val) => { return [val[1], val[0]] });
@@ -165,7 +165,7 @@ export function get_feature_coordinates(feature, invert=false) {
   let geometry_type = geometry[MAP_ITEM.FC.FEATURES.GEOMETRY.TYPE];
 
   // GeometryCollection: вложенные геометрии
-  if (geometry_type == MAP_CONST.GEOMETRY_TYPE.GC) {
+  if (geometry_type == MAP_CONST.TYPE.GEOMETRY.GC) {
     for(let i=0; i<geometry[MAP_ITEM.FC.FEATURES.GEOMETRY.GEOMETRIES].length; i++) {
       parse_item(geometry[MAP_ITEM.FC.FEATURES.GEOMETRY.GEOMETRIES][i]);
     }

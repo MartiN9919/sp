@@ -56,7 +56,7 @@ export default {
       for(let ind=0; ind<items.length; ind++) {
         let item    = items[ind];
         let color   = item[MAP_ITEM.COLOR] ?? MAP_CONST.COLOR.DEFAULT_STYLE_PATH;
-        let classes = fc_properties_keys_get(item.fc, MAP_ITEM.FC.FEATURES.PROPERTIES.CLASS.KEY);  // список fc.features[i].properties.class
+        let classes = fc_properties_keys_get(item.fc, MAP_ITEM.FC.FEATURES.PROPERTIES.CLASS);  // список fc.features[i].properties.class
         let data    = data_svg(classes.join(' '), ind, color);
         if (data.style!='') style += data.style;
         if (data.defs !='') defs  += data.defs;

@@ -1,4 +1,14 @@
 export const MAP_CONST = {
+  TYPE: {
+    FC: 'FeatureCollection',
+    GEOMETRY: {
+      GC:        'GeometryCollection',
+      POINT:     'Point',
+      LINE:      'LineString',
+      POLYGON:   'Polygon',
+    },
+  },
+
   CLASS: {
     SEL: 'sel',                           // название класса: выделено (pulse)
   //ANT: 'ant',                           // название класса: бегущая линия
@@ -35,33 +45,20 @@ export const MAP_CONST = {
       END:       'FF0000',                // цвет: конечный
     },
   },
-
-  GEOMETRY_TYPE: {
-    GC:        'GeometryCollection',
-    POINT:     'Point',
-    LINE:      'LineString',
-    POLYGON:   'Polygon',
-  },
 };
 
 export const MAP_ITEM = {
 //ZOOM: 'zoom',                           // увеличение карты
   COLOR: 'color',                         // копия в FC.STYLE._COLOR_
-  _LEGEND_COLOR_: 'legend_color',         // [], заполняется программой
+  _LEGEND_COLOR_: 'legend_color',         // заполняется программой, []
   FC: {
     KEY: 'fc',
-    TYPE: {
-      KEY: 'type',
-      VAL: 'FeatureCollection',
-    },
-
+    //TYPE: 'type',                       // не используется
     FEATURES: {
       KEY: 'features',
       PROPERTIES: {
         KEY:     'properties',
-        CLASS: {
-          KEY: 'class',                   // key: класс для стилизации
-        },
+        CLASS:   'class',                 // key: класс для стилизации
         VALUE:   'value',                 // значение, которое определяет цвет полигона
         _COLOR_: 'color',                 // заполняется программой, цвет заливки фигуры
         _SEL_:   'sel',                   // заполняется программой, выделенный features[], true - выделено
@@ -73,7 +70,6 @@ export const MAP_ITEM = {
         GEOMETRIES:  'geometries',        // вложенные геометрии MAP_ITEM.FC.FEATURES.GEOMETRY
       },
     },
-
     STYLE: {                              // стили маркеров и фигур
       KEY:     'style',
       COLORING: 'coloring',               // цвет полигона в зависимости от значения. MAP_CONST.COLOR.COLORING.GREEN_MIN (GREEN_MAX)

@@ -439,7 +439,7 @@ export default {
     getDataAsGeoJSON () {
       // create FeatureCollection
       const geoJSON = {
-        type: MAP_ITEM.FC.TYPE.VAL,
+        type: MAP_CONST.TYPE.FC,
         features: []
       };
 
