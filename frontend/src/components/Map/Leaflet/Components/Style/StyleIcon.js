@@ -16,17 +16,14 @@ export function icon_ini() {
 }
 
 
-export function marker_get(latlng, classes_str='', color='blue', param={}) {
-  let icon = icon_get(classes_str, color);
+export function marker_get(latlng, classes_str='', color='blue', zoom=1, param={}) {
+  let icon = icon_get(classes_str, color, zoom);
   return icon_2_marker(latlng, icon, param);
 }
 
 export function icon_2_marker(latlng, icon, param={}) {
-  let param2 = (icon) ? { icon:icon, } : {};
-  let ret = L.marker(latlng, { ...param, ...param2, });
-  return ret
-  // // класс при отсутствии иконки. Для заданных иконок он установлен в icon_get
-  // if (!icon) { ret.options.icon.options.className = classes_str; }
+  let param_icon = (icon) ? { icon:icon, } : {};
+  return L.marker(latlng, { ...param, ...param_icon, });
 }
 
 // export function icon_get(style={}, className='') {
