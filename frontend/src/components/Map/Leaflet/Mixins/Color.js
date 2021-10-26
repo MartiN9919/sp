@@ -49,7 +49,7 @@ export default {
               break;
             }
           }
-          feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._COLOR_.KEY] = '#'+ret;    // записать цвет
+          feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._COLOR_] = '#'+ret;    // записать цвет
         }
 
         // построить легенду в MAP_ITEM._LEGEND_COLOR_

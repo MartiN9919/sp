@@ -52,7 +52,7 @@ export default {
 
     const self         = this;
     const features     = this.fc[MAP_ITEM.FC.FEATURES.KEY];
-    const color        = dict_get(this.fc, [MAP_ITEM.FC.STYLE.KEY, MAP_ITEM.FC.STYLE._COLOR_.KEY], 'gray');
+    const color        = dict_get(this.fc, [MAP_ITEM.FC.STYLE.KEY, MAP_ITEM.FC.STYLE._COLOR_], 'gray');
     const obj_pattern  = new DATA_PATTERN(color);
     this.parent_obj    = findRealParent(this.$parent);
 
@@ -61,7 +61,7 @@ export default {
     for(let ind=0; ind<features.length; ind++) {
       let feature       = features[ind];
       let geometry      = feature[MAP_ITEM.FC.FEATURES.GEOMETRY.KEY];
-      let geometry_type = geometry[MAP_ITEM.FC.FEATURES.GEOMETRY.TYPE.KEY];
+      let geometry_type = geometry[MAP_ITEM.FC.FEATURES.GEOMETRY.TYPE];
 
       // L.объекты
       let l_obj         = get_feature_coordinates(feature, true);

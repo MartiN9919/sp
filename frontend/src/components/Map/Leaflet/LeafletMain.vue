@@ -324,7 +324,7 @@ export default {
         // подмена иконки кластера
         iconCreateFunction: function (cluster) {
           // select фактически не имеет смысла, т.к. могут группироваться маркеры с разными id
-          return icon_group_get(color, cluster.getChildCount()); //, feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._SEL_.KEY]
+          return icon_group_get(color, cluster.getChildCount()); //, feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._SEL_]
         },
 
         // цвет региона сгруппированного кластера
@@ -380,7 +380,7 @@ export default {
         // стиль маркеров
         pointToLayer: function(feature, latlng) {
           let classAny = feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES.CLASS.KEY]??'';
-          let classSel = feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._SEL_.KEY]?MAP_ITEM.FC.FEATURES.PROPERTIES.CLASS.SEL:'';
+          let classSel = feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._SEL_]?MAP_CONST.CLASS.SEL:'';
           let layer = marker_get(latlng, classAny+' '+classSel, self.SCRIPT_GET_ITEM_COLOR(map_ind));
           return layer;
         },
@@ -388,13 +388,13 @@ export default {
 
         // стиль фигур
         style: function(feature) {
-          let classSel = feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._SEL_.KEY]?MAP_ITEM.FC.FEATURES.PROPERTIES.CLASS.SEL:'';
+          let classSel = feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._SEL_]?MAP_CONST.CLASS.SEL:'';
           return {
             weight:      2,
             opacity:     .5,
             color:       self.SCRIPT_GET_ITEM_COLOR(map_ind),
             fillOpacity: .3,
-            fillColor:   feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._COLOR_.KEY],    // set in mixin: Color
+            fillColor:   feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._COLOR_],    // set in mixin: Color
             fillRule:    'evenodd',
             className:   classSel,
           };

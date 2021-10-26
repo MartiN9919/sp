@@ -1,4 +1,18 @@
 export const MAP_CONST = {
+  CLASS: {
+    SEL: 'sel',                           // название класса: выделено (pulse)
+  //ANT: 'ant',                           // название класса: бегущая линия
+    ICON: {
+      TYPE:      'icon',                  // иконка: тип
+      PATH:      'img/markers/',          // иконка: путь к файлам иконок
+      SEPARATOR: '-',                     // иконка: разделитель
+      MDI:       'mdi',                   // иконка: шрифт mdi
+      FS:        'fs',                    // иконка: шрифт fs
+      FILE:      'file',                  // иконка: файл
+      PULSE:     'pulse',                 // иконка: пульсирующая
+    },
+  },
+
   COLOR: {
     DEFAULT:            '#f00',           // цвет по умолчанию
     DEFAULT_STYLE_PATH: 'gray',           // цвет по умолчанию для стилизации (декорирования) фигур
@@ -31,7 +45,9 @@ export const MAP_CONST = {
 };
 
 export const MAP_ITEM = {
-  COLOR: 'color',                        // копия в FC.STYLE._COLOR_
+//ZOOM: 'zoom',                           // увеличение карты
+  COLOR: 'color',                         // копия в FC.STYLE._COLOR_
+  _LEGEND_COLOR_: 'legend_color',         // [], заполняется программой
   FC: {
     KEY: 'fc',
     TYPE: {
@@ -44,65 +60,24 @@ export const MAP_ITEM = {
       PROPERTIES: {
         KEY:     'properties',
         CLASS: {
-          KEY: 'class',                  // key: класс для стилизации
-          SEL: 'sel',                    // название класса: выделено (pulse)
-          ANT: 'ant',                    // название класса: бегущая линия
-          ICON_TYPE: 'icon',             // иконка
-          ICON_PATH: 'img/markers/',     // иконка: путь к файлам иконок
-          ICON_TYPE_SEPARATOR: '-',      // иконка: разделитель
-          ICON_TYPE_MDI:   'mdi',        // иконка: шрифт mdi
-          ICON_TYPE_FS:    'fs',         // иконка: шрифт fs
-          ICON_TYPE_FILE:  'file',       // иконка: файл
-          ICON_TYPE_PULSE: 'pulse',      // иконка: пульсирующая
+          KEY: 'class',                    // key: класс для стилизации
         },
-        VALUE: 'value',                  // значение, которое определяет цвет полигона
-        _COLOR_: {                       // key: заполняется программой, цвет заливки фигуры
-          KEY: 'color',
-        },
-        _SEL_: {                         // key: заполняется программой, выделенный features[], true - выделено
-          KEY: 'sel',
-        },
+        VALUE:   'value',                 // значение, которое определяет цвет полигона
+        _COLOR_: 'color',                 // заполняется программой, цвет заливки фигуры
+        _SEL_:   'sel',                   // заполняется программой, выделенный features[], true - выделено
       },
       GEOMETRY:  {
-        KEY:     'geometry',
-        TYPE: {
-          KEY:       'type',
-        },
-        COORDINATES: {
-          KEY:       'coordinates',
-        },
-        GEOMETRIES: {                    // вложенные геометрии MAP_ITEM.FC.FEATURES.GEOMETRY
-          KEY:      'geometries',
-        },
+        KEY:         'geometry',
+        TYPE:        'type',
+        COORDINATES: 'coordinates',
+        GEOMETRIES:  'geometries',        // вложенные геометрии MAP_ITEM.FC.FEATURES.GEOMETRY
       },
     },
 
-    STYLE: {                             // стили маркеров и фигур
+    STYLE: {                              // стили маркеров и фигур
       KEY:     'style',
-      _COLOR_: {                         // в некоторых случаях транслируется сюда из MAP_ITEM.COLOR (чтобы использовать в стилях)
-        KEY:   'color',
-      },
+      _COLOR_: 'color',                   // транслируется сюда из MAP_ITEM.COLOR (чтобы использовать в стилях)
       COLORING: 'coloring',               // цвет полигона в зависимости от значения. MAP_CONST.COLOR.COLORING.GREEN_MIN (GREEN_MAX)
-
-      MARKER: {
-        KEY:  'marker',
-      },
-
-      LINE: {
-        KEY:   'line',
-      },
-
-      POLYGON: {
-        KEY: 'polygon',
-      },
     },
   },
-
-
-  // ZOOM: {
-  //   KEY: 'zoom',                      // увеличение карты
-  // },
-
-  _LEGEND_COLOR_: 'legend_color',        // [], заполняется программой
-
 };

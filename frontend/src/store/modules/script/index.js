@@ -46,7 +46,7 @@ export default {
     SCRIPT_GET_ITEM_FC_STYLE_MARKER:  state => ind => state.selectedTemplate.activeAnalysts[ind].fc.style?.marker         ?? {},
     SCRIPT_GET_ITEM_FC_STYLE_LINE:    state => ind => state.selectedTemplate.activeAnalysts[ind].fc.style?.line           ?? {},
     SCRIPT_GET_ITEM_FC_STYLE_POLYGON: state => ind => state.selectedTemplate.activeAnalysts[ind].fc.style?.polygon        ?? {},
-    SCRIPT_GET_ITEM_COLOR:            state => ind => state.selectedTemplate.activeAnalysts[ind][MAP_ITEM.COLOR]      ?? MAP_CONST.COLOR.DEFAULT,
+    SCRIPT_GET_ITEM_COLOR:            state => ind => state.selectedTemplate.activeAnalysts[ind][MAP_ITEM.COLOR]          ?? MAP_CONST.COLOR.DEFAULT,
     SCRIPT_GET_ITEM_LEGEND_COLOR:     state => ind => state.selectedTemplate.activeAnalysts[ind][MAP_ITEM._LEGEND_COLOR_] ?? [],
     SCRIPT_GET_ITEM_REFRESH:          state => ind => state.selectedTemplate.activeAnalysts[ind].refresh,
     SCRIPT_GET_ITEM_SEL:              state =>        JSON.stringify(state.selectedFC),
@@ -64,7 +64,7 @@ export default {
     changeColorActiveAnalysts: (state, parameters) => {
       let item = state.selectedTemplate.activeAnalysts.find(analytics => analytics === parameters.analytics);
       item[MAP_ITEM.COLOR] = parameters.color;
-      dict_set(item, [MAP_ITEM.FC.KEY, MAP_ITEM.FC.STYLE.KEY, MAP_ITEM.FC.STYLE._COLOR_.KEY], parameters.color); // дублирование цвета
+      dict_set(item, [MAP_ITEM.FC.KEY, MAP_ITEM.FC.STYLE.KEY, MAP_ITEM.FC.STYLE._COLOR_], parameters.color); // дублирование цвета
     },
     loadTemplatesList: (state, templates) => state.templatesList = templates,
     addSelectedTemplate: (state, template) => {
@@ -118,7 +118,7 @@ export default {
         // записать найденный цвет
         item[MAP_ITEM.COLOR] = color;
       }
-      dict_set(item, [MAP_ITEM.FC.KEY, MAP_ITEM.FC.STYLE.KEY, MAP_ITEM.FC.STYLE._COLOR_.KEY], item[MAP_ITEM.COLOR]); // дублирование цвета
+      dict_set(item, [MAP_ITEM.FC.KEY, MAP_ITEM.FC.STYLE.KEY, MAP_ITEM.FC.STYLE._COLOR_], item[MAP_ITEM.COLOR]); // дублирование цвета
 
       let item_copy = JSON.parse(JSON.stringify(item));        // deep copy
       item_copy.refresh = new Date().getTime();
@@ -129,7 +129,7 @@ export default {
     SCRIPT_MUT_ITEM_COLOR: (state, param)   => {
       let item = state.selectedTemplate.activeAnalysts[param.ind];
       item[MAP_ITEM.COLOR] = param.color;
-      dict_set(item, [MAP_ITEM.FC.KEY, MAP_ITEM.FC.STYLE.KEY, MAP_ITEM.FC.STYLE._COLOR_.KEY], param.color); // дублирование цвета
+      dict_set(item, [MAP_ITEM.FC.KEY, MAP_ITEM.FC.STYLE.KEY, MAP_ITEM.FC.STYLE._COLOR_], param.color); // дублирование цвета
     },
 
 
@@ -166,8 +166,8 @@ export default {
       for (let item_script of state.selectedTemplate.activeAnalysts) {
         for (let item of item_script.fc.features) {
           sel_items = state.selectedFC.find(sel_item => ((item.rec_id == sel_item.rec_id) && (item.obj_id == sel_item.obj_id)));
-          if (sel_items) { item.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._SEL_.KEY] = true; }
-          else { if (item.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._SEL_.KEY]) { delete item.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._SEL_.KEY]; } }
+          if (sel_items) { item.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._SEL_] = true; }
+          else { if (item.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._SEL_]) { delete item.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._SEL_]; } }
         }
       }
     },

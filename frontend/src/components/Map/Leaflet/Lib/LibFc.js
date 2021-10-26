@@ -135,8 +135,8 @@ export function get_feature_coordinates(feature, invert=false) {
   // разбор одной записи
   //=========================================================
   function parse_item(item_geometry) {
-    let item_type        = item_geometry[MAP_ITEM.FC.FEATURES.GEOMETRY.TYPE.KEY];
-    let item_coordinates = item_geometry[MAP_ITEM.FC.FEATURES.GEOMETRY.COORDINATES.KEY] ?? {};
+    let item_type        = item_geometry[MAP_ITEM.FC.FEATURES.GEOMETRY.TYPE];
+    let item_coordinates = item_geometry[MAP_ITEM.FC.FEATURES.GEOMETRY.COORDINATES] ?? {};
 
     if (invert) {
       switch (item_type) {
@@ -162,12 +162,12 @@ export function get_feature_coordinates(feature, invert=false) {
 
 
   let geometry      = feature[MAP_ITEM.FC.FEATURES.GEOMETRY.KEY];
-  let geometry_type = geometry[MAP_ITEM.FC.FEATURES.GEOMETRY.TYPE.KEY];
+  let geometry_type = geometry[MAP_ITEM.FC.FEATURES.GEOMETRY.TYPE];
 
   // GeometryCollection: вложенные геометрии
   if (geometry_type == MAP_CONST.GEOMETRY_TYPE.GC) {
-    for(let i=0; i<geometry[MAP_ITEM.FC.FEATURES.GEOMETRY.GEOMETRIES.KEY].length; i++) {
-      parse_item(geometry[MAP_ITEM.FC.FEATURES.GEOMETRY.GEOMETRIES.KEY][i]);
+    for(let i=0; i<geometry[MAP_ITEM.FC.FEATURES.GEOMETRY.GEOMETRIES].length; i++) {
+      parse_item(geometry[MAP_ITEM.FC.FEATURES.GEOMETRY.GEOMETRIES][i]);
     }
   }
 
