@@ -60,7 +60,7 @@ export const MAP_ITEM = {
       PROPERTIES: {
         KEY:     'properties',
         CLASS: {
-          KEY: 'class',                    // key: класс для стилизации
+          KEY: 'class',                   // key: класс для стилизации
         },
         VALUE:   'value',                 // значение, которое определяет цвет полигона
         _COLOR_: 'color',                 // заполняется программой, цвет заливки фигуры
@@ -76,7 +76,6 @@ export const MAP_ITEM = {
 
     STYLE: {                              // стили маркеров и фигур
       KEY:     'style',
-      _COLOR_: 'color',                   // транслируется сюда из MAP_ITEM.COLOR (чтобы использовать в стилях)
       COLORING: 'coloring',               // цвет полигона в зависимости от значения. MAP_CONST.COLOR.COLORING.GREEN_MIN (GREEN_MAX)
     },
   },

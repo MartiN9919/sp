@@ -74,12 +74,6 @@ export default {
             to:    (to!=undefined)?'–'+to:'+',
           });
         }
-
-      // // иначе: копировать цвет MAP_ITEM.COLOR каждому feature
-      // } else if (MAP_ITEM.COLOR in map_item) {
-      //   // for (let i=0; i<fc.features.length; i++) {
-      //   //   fc.features[i][MAP_ITEM.FC.FEATURES.PROPERTIES._COLOR_] = map_item[MAP_ITEM.COLOR];
-      //   // }
       }
     },
 

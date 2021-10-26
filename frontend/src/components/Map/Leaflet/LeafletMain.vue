@@ -44,6 +44,7 @@
         <!-- ДЕКОРАТОР ФИГУР: PATTERN -->
         <l-style-pattern
           :fc="data_normalize(map_ind, map_item)"
+          :color="SCRIPT_GET_ITEM_COLOR(map_ind)"
         />
 
       </l-layer-group>

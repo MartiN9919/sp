@@ -7,7 +7,6 @@ import {
 
 import { MAP_CONST, MAP_ITEM } from '@/components/Map/Leaflet/Lib/Const';
 import { color_random } from '@/components/Map/Leaflet/Lib/LibColor';
-import { dict_set } from '@/components/Map/Leaflet/Lib/Lib';
 
 
 export default {
@@ -64,7 +63,6 @@ export default {
     changeColorActiveAnalysts: (state, parameters) => {
       let item = state.selectedTemplate.activeAnalysts.find(analytics => analytics === parameters.analytics);
       item[MAP_ITEM.COLOR] = parameters.color;
-      dict_set(item, [MAP_ITEM.FC.KEY, MAP_ITEM.FC.STYLE.KEY, MAP_ITEM.FC.STYLE._COLOR_], parameters.color); // дублирование цвета
     },
     loadTemplatesList: (state, templates) => state.templatesList = templates,
     addSelectedTemplate: (state, template) => {
@@ -118,18 +116,16 @@ export default {
         // записать найденный цвет
         item[MAP_ITEM.COLOR] = color;
       }
-      dict_set(item, [MAP_ITEM.FC.KEY, MAP_ITEM.FC.STYLE.KEY, MAP_ITEM.FC.STYLE._COLOR_], item[MAP_ITEM.COLOR]); // дублирование цвета
 
       let item_copy = JSON.parse(JSON.stringify(item));        // deep copy
       item_copy.refresh = new Date().getTime();
       state.selectedTemplate.activeAnalysts.push(item_copy);
     },
 
-    SCRIPT_MUT_ITEM_DEL:   (state, id)      => state.selectedTemplate.activeAnalysts.splice(id, 1),
-    SCRIPT_MUT_ITEM_COLOR: (state, param)   => {
+    SCRIPT_MUT_ITEM_DEL:   (state, id)    => state.selectedTemplate.activeAnalysts.splice(id, 1),
+    SCRIPT_MUT_ITEM_COLOR: (state, param) => {
       let item = state.selectedTemplate.activeAnalysts[param.ind];
       item[MAP_ITEM.COLOR] = param.color;
-      dict_set(item, [MAP_ITEM.FC.KEY, MAP_ITEM.FC.STYLE.KEY, MAP_ITEM.FC.STYLE._COLOR_], param.color); // дублирование цвета
     },
 
 

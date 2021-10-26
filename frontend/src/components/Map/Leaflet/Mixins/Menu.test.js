@@ -249,10 +249,6 @@ export const MAP_TEST_ITEM_3 = {
   "fc": {
     "style": {
       "coloring": "green_max",
-
-      "marker": {},
-      "line": {},
-      "polygon": {},
     },
     "type": "FeatureCollection",
     "features": [

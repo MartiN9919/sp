@@ -53,9 +53,11 @@ export function icon_get(classes_str='', color='blue', zoom=1) {
   let classes_icon_str  = classes_icon_list.map((val) => val.join(separator)).join(' '); // 'mdi-flag mdi-spin' 'fs-spec0'
 
 
+
+
   // FONT: MDI
   if (icon_type == MAP_CONST.CLASS.ICON.MDI) {
-    return L.divIcon({
+    return new L.divIcon({
       className: classes_other_str,
       iconSize:  null,
       color:     color,
@@ -77,7 +79,7 @@ export function icon_get(classes_str='', color='blue', zoom=1) {
 
   // FONT.FS
   if (icon_type == MAP_CONST.CLASS.ICON.FS) {
-    return L.divIcon({
+    return new L.divIcon({
       className: classes_other_str,
       iconSize:  null,
       color:     color,
@@ -94,7 +96,7 @@ export function icon_get(classes_str='', color='blue', zoom=1) {
   // PULSE
   if (icon_type == MAP_CONST.CLASS.ICON.PULSE) {
     let size  = (classes_icon_list[0][1] ?? 12) * zoom|0;
-    return L.icon.pulse({
+    return new L.icon.pulse({
       className: classes_other_str,
       iconSize:  [size, size],
       color:     color,
@@ -124,12 +126,21 @@ export function icon_get(classes_str='', color='blue', zoom=1) {
       iconAnchor:  [size_w/2|0, size_h],
       popupAnchor: [1, -34 * zoom|0],
     });
-
-
   }
 
+
   // DEFAULT
-  return;
+  let size_w = 25 * zoom|0;
+  let size_h = 41 * zoom|0;
+  return new L.Icon({
+      className:   classes_other_str,                 // иначе сторонние классы не применятся
+      shadowUrl:   icon_file_path('shadow-marker'),
+      shadowSize:  [size_h, size_h],
+      iconUrl:     icon_file_path('blue'),
+      iconSize:    [size_w, size_h],
+      iconAnchor:  [size_w/2|0, size_h],
+      popupAnchor: [1, -34 * zoom|0],
+    });
 }
 
 

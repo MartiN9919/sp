@@ -27,6 +27,10 @@ const props = {
     type: Object,
     default: () => {},
   },
+  color: {
+    type: String,
+    default: () => MAP_CONST.COLOR.DEFAULT_STYLE_PATH,
+  },
   visible: {
     type: Boolean,
     custom: true,
@@ -44,17 +48,10 @@ export default {
     }
   },
   mounted() {
-    // // test
-    // const test = new DECORATOR_CLASSES(color);
-    // var   dd = test.get_patterns('mark_zabor_ograd line_border_1');
-    // debugger
-
-
-    const self         = this;
-    const features     = this.fc[MAP_ITEM.FC.FEATURES.KEY];
-    const color        = dict_get(this.fc, [MAP_ITEM.FC.STYLE.KEY, MAP_ITEM.FC.STYLE._COLOR_], 'gray');
-    const obj_pattern  = new DATA_PATTERN(color);
-    this.parent_obj    = findRealParent(this.$parent);
+    const self        = this;
+    const features    = this.fc[MAP_ITEM.FC.FEATURES.KEY];
+    const obj_pattern = new DATA_PATTERN(this.color);
+    this.parent_obj   = findRealParent(this.$parent);
 
     this.ready = true;
 
