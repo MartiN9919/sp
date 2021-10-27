@@ -89,14 +89,20 @@ export default {
     prop_hint() {
       let ret;
       if ((this.options.hover_map_ind>-1) && (this.options.hover_feature_ind>-1))
-        ret = this.SCRIPT_GET_ITEM(this.options.hover_map_ind)[MAP_ITEM.FC.KEY].features[this.options.hover_feature_ind].properties.hint
+        ret = this.SCRIPT_GET_ITEM(this.options.hover_map_ind)
+          .fc
+          .features[this.options.hover_feature_ind]
+          .properties[MAP_ITEM.FC.FEATURES.PROPERTIES.HINT];
       this.block_hint = (ret)?true:false;
       return ret
     },
     prop_val() {
       let ret;
       if ((this.options.hover_map_ind>-1) && (this.options.hover_feature_ind>-1))
-        ret = this.SCRIPT_GET_ITEM(this.options.hover_map_ind)[MAP_ITEM.FC.KEY].features[this.options.hover_feature_ind].properties.value
+        ret = this.SCRIPT_GET_ITEM(this.options.hover_map_ind)
+          .fc
+          .features[this.options.hover_feature_ind]
+          .properties[MAP_ITEM.FC.FEATURES.PROPERTIES.VALUE];
       this.block_value = (ret)?true:false;
       return ret
     },
@@ -105,9 +111,12 @@ export default {
     class_select(legend_color_item) {
       // цвет фигуры
       let feature_color =
-        ((this.options.hover_map_ind>-1) && (this.options.hover_feature_ind>-1))
-        ?this.SCRIPT_GET_ITEM(this.options.hover_map_ind)[MAP_ITEM.FC.KEY].features[this.options.hover_feature_ind].color
-        :undefined;
+        ((this.options.hover_map_ind>-1) && (this.options.hover_feature_ind>-1))?
+        this.SCRIPT_GET_ITEM(this.options.hover_map_ind)
+          .fc
+          .features[this.options.hover_feature_ind]
+          .properties[MAP_ITEM.FC.FEATURES.PROPERTIES._COLOR_]:
+        undefined;
       return {
         // выделить совпадение цвета фигуры и пункта легенды
         'legend-color-select': (feature_color==legend_color_item.color),

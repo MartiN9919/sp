@@ -363,8 +363,12 @@ export default {
           });
 
           // подсказка
-          if (self.MAP_GET_HINT && feature.properties.hint && feature.properties.hint!='') layer.bindTooltip(
-            "<div>"+feature.properties.hint+"</div>",
+          if (
+            self.MAP_GET_HINT &&
+            feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES.HINT] &&
+            feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES.HINT]!=''
+          ) layer.bindTooltip(
+            "<div>"+feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES.HINT]+"</div>",
             { permanent: false, sticky: true, }
           );
 

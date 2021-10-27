@@ -17,9 +17,7 @@ export default {
      * state.selectedTemplateactiveAnalysts            - список активных скриптов
      * state.selectedTemplate.activeAnalysts[ind]
      *   id     (int)                                  - id скрипта (НЕ УНИКАЛЬНЫЙ)
-     *   fc                                            - FeatureCollection
      *   fc.id     (str, int)                          - уникальный идентификатор слоя, ПОКА НЕ НУЖЕН - НЕ УДАЛЯЛ
-     *   fc.features[i].properties.hint (str) ['']     - всплывающая подсказка, НЕТ РЕАКТИВНОСТИ
      */
     selectedTemplate: {
       title: '',
