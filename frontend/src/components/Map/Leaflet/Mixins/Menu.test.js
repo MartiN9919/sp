@@ -91,18 +91,18 @@ export const MAP_TEST_ITEM_1 = {
           ]
         },
       },
-      {
-        "type": "Feature",
-        "properties": {
-          "class": "icon-mdi-flag sss icon-mdi-spin tst",
-          "hint": "Подсказка 4",
-          "date": "2021-01-03",
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [23.928222656250004,53.028000167735165]
-        },
-      },
+      // {
+      //   "type": "Feature",
+      //   "properties": {
+      //     "class": "icon-mdi-flag sss icon-mdi-spin tst",
+      //     "hint": "Подсказка 4",
+      //     "date": "2021-01-03",
+      //   },
+      //   "geometry": {
+      //     "type": "Point",
+      //     "coordinates": [23.928222656250004,53.028000167735165]
+      //   },
+      // },
       {
         "type": "Feature",
         "properties": {
@@ -115,37 +115,37 @@ export const MAP_TEST_ITEM_1 = {
           "coordinates": [23.532714843750004,53.94315470224928]
         },
       },
-      {
-        "type": "Feature",
-        "properties": {
-          "hint": "Контроль 5",
-          "date": "2021-01-02",
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [23.532714843750003,53.94315470224927]
-        },
-      },
-      {
-        "type": "Feature",
-        "properties": {
-          //"class": "sel",
-          "hint": "Test",
-          "date": "2021-01-01",
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [25.7080078125,54.16243396806781]
-        },
-      },
       // {
       //   "type": "Feature",
-      //   "properties": {},
+      //   "properties": {
+      //     "hint": "Контроль 5",
+      //     "date": "2021-01-02",
+      //   },
       //   "geometry": {
       //     "type": "Point",
-      //     "coordinates": [-0.52509765625,48.104642388766935]
-      //   }
+      //     "coordinates": [23.532714843750003,53.94315470224927]
+      //   },
       // },
+      // {
+      //   "type": "Feature",
+      //   "properties": {
+      //     //"class": "sel",
+      //     "hint": "Test",
+      //     "date": "2021-01-01",
+      //   },
+      //   "geometry": {
+      //     "type": "Point",
+      //     "coordinates": [25.7080078125,54.16243396806781]
+      //   },
+      // },
+      // // {
+      // //   "type": "Feature",
+      // //   "properties": {},
+      // //   "geometry": {
+      // //     "type": "Point",
+      // //     "coordinates": [-0.52509765625,48.104642388766935]
+      // //   }
+      // // },
     ],
   }
 };

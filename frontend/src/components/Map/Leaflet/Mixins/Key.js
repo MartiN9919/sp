@@ -1,10 +1,9 @@
 import { cook_set, cook_get_str } from '@/plugins/sys'
-import KeyDialog from '@/components/Map/Leaflet/Components/KeyDialog';
+import { MAP_CONST } from '@/components/Map/Leaflet/Lib/Const';
+import KeyDialog     from '@/components/Map/Leaflet/Components/KeyDialog';
 
-const KEY_POS         = 'KEY_POS_';
-const KEY_NAME        = 'KEY_NAME_';
-const KEY_SEPARATOR   = '_';
-const KEY_POS_DEFAULT = '27.537231445312504_53.64138139745019_7';
+const KEY_POS  = 'KEY_POS_';
+const KEY_NAME = 'KEY_NAME_';
 
 export default {
   components: {
@@ -104,7 +103,7 @@ export default {
     key_save_ok: function(ind, val) {
       let center = this.map.getCenter();
       let zoom   = this.map.getZoom();
-      let s = center.lng.toString()+KEY_SEPARATOR+center.lat.toString()+KEY_SEPARATOR+zoom.toString();
+      let s = center.lng.toString()+MAP_CONST.POS.SEPARATOR+center.lat.toString()+MAP_CONST.POS.SEPARATOR+zoom.toString();
       cook_set(KEY_POS+ind.toString(), s);
       cook_set(KEY_NAME+ind.toString(), val);
       this.appendErrorAlert({status: 501, content: 'Фрагмент сохранен в слот '+ind+': ['+val+']' , show_time: 3, });
@@ -112,7 +111,7 @@ export default {
 
     // cookies: загрузить
     key_load_pos: function(ind) {
-      let s = cook_get_str(KEY_POS+ind.toString(), KEY_POS_DEFAULT).split(KEY_SEPARATOR);
+      let s = cook_get_str(KEY_POS+ind.toString(), MAP_CONST.POS.DEFAULT).split(MAP_CONST.POS.SEPARATOR);
       this.map.setView([parseFloat(s[1]), parseFloat(s[0])], parseFloat(s[2]));
     },
     key_load_name: function(ind) {

@@ -24,6 +24,7 @@ export default {
     logo:       cook_get_bool('MAP_LOGO',    false), // (bool) показывать ли логотип
     notify:     cook_get_bool('MAP_NOTIFY',  true),  // (bool) показывать ли заметки
 
+    zoom:       0,                                   // текущее приближение
     edit:       undefined,                           // FeatureCollection РЕДАКТИРУЕМЫХ фигур и маркеров
   },
 
@@ -39,7 +40,8 @@ export default {
         // getters.SCRIPT_GET_ITEM_FC_STYLE_POLYGON(ind)+'-'+
         getters.SCRIPT_GET_ITEM_COLOR              (ind)+'-'+
         getters.MAP_GET_CLUSTER                         +'-'+
-        getters.MAP_GET_HINT;
+        getters.MAP_GET_HINT                            +'-'+
+        getters.MAP_GET_ZOOM;
       return ret;
     },
 
@@ -58,6 +60,7 @@ export default {
     MAP_GET_LOGO:              (state) =>  state.logo,
     MAP_GET_NOTIFY:            (state) =>  state.notify,
 
+    MAP_GET_ZOOM:              (state) =>  state.zoom,
     MAP_GET_EDIT:              (state) =>  state.edit,
   },
 
@@ -76,10 +79,9 @@ export default {
     MAP_MUT_LOGO:              (state, on)   => state.logo       = on,
     MAP_MUT_NOTIFY:            (state, on)   => state.notify     = on,
 
-    MAP_MUT_CENTER_X:          (state, val)  => state.center_x   = val,
-    MAP_MUT_CENTER_Y:          (state, val)  => state.center_y   = val,
+  //MAP_MUT_CENTER_X:          (state, val)  => state.center_x   = val,
+  //MAP_MUT_CENTER_Y:          (state, val)  => state.center_y   = val,
     MAP_MUT_ZOOM:              (state, val)  => state.zoom       = val,
-
     MAP_MUT_EDIT:              (state, data) => state.edit       = data, // data || { "type": "FeatureCollection", "features": [], },
   },
 
@@ -125,6 +127,7 @@ export default {
       commit('MAP_MUT_RANGE_SEL', [sel_min, sel_max]);
     },
 
+    MAP_ACT_ZOOM:       ({commit}, zoom)     => commit('MAP_MUT_ZOOM', zoom),
     MAP_ACT_EDIT:       ({commit}, param={}) => commit('MAP_MUT_EDIT', param.data),
   },
 }

@@ -13,6 +13,7 @@
       :crs="MAP_GET_TILES[MAP_GET_TILE].crs"
       @ready="on_map_ready"
       @resize="on_map_resize"
+      @zoomend="on_map_zoom"
       @click="on_map_click"
       @dblclick="on_map_dblclick"
       @contextmenu="on_menu_show"
@@ -226,6 +227,7 @@ export default {
       'MAP_GET_CLUSTER',
       'MAP_GET_HINT',
 
+      'MAP_GET_ZOOM',
       'MAP_GET_EDIT',
 
       'SCRIPT_GET',
@@ -245,6 +247,7 @@ export default {
 
   methods: {
     ...mapActions([
+      'MAP_ACT_ZOOM',
       'MAP_ACT_EDIT',
       'SCRIPT_ACT_SEL_SET',
       'SCRIPT_ACT_SEL_CLEAR',
@@ -386,8 +389,9 @@ export default {
         pointToLayer: function(feature, latlng) {
           let classAny = feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES.CLASS]??'';
           let classSel = feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._SEL_]?MAP_CONST.CLASS.SEL:'';
-          let layer = marker_get(latlng, classAny+' '+classSel, self.SCRIPT_GET_ITEM_COLOR(map_ind));
-          return layer;
+          let color    = self.SCRIPT_GET_ITEM_COLOR(map_ind);
+          let zoom     = MAP_CONST.POS.ZOOM_ICON(self.MAP_GET_ZOOM);
+          return marker_get(latlng, classAny+' '+classSel, color, zoom);
         },
 
 
@@ -418,6 +422,10 @@ export default {
 
     on_map_resize() {
       this.map.invalidateSize();
+    },
+
+    on_map_zoom(val) {
+      this.MAP_ACT_ZOOM(this.map.getZoom());
     },
 
     on_map_click(e) {

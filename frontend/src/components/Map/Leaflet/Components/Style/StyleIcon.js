@@ -96,7 +96,7 @@ export function icon_get(classes_str='', color='blue', zoom=1) {
   if (icon_type == MAP_CONST.CLASS.ICON.SVG) {
     if (classes_icon_list.length<1) return;
     if (classes_icon_list[0].length<2) return;
-    let data = get_icon_data(classes_icon_list[0][1], color, .6);
+    let data = get_icon_data(classes_icon_list[0][1], color, zoom);
     if (data == undefined) return;
     return new L.DivIcon({
       className:   classes_other_str,
