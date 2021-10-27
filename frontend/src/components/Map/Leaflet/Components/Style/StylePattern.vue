@@ -13,11 +13,11 @@
 
 import 'leaflet-polylinedecorator'
 
-import { MAP_ITEM } from '@/components/Map/Leaflet/Lib/Const';
+import { MAP_CONST, MAP_ITEM } from '@/components/Map/Leaflet/Lib/Const';
 import { get_feature_class, get_feature_coordinates } from '@/components/Map/Leaflet/Lib/LibFc';
 import { dict_get } from '@/components/Map/Leaflet/Lib/Lib';
 import { DATA_PATTERN } from '@/components/Map/Leaflet/Components/Style/StylePatternData';
-//import { icon_path } from '@/components/Map/Leaflet/Components/Style/StyleIcon';
+//import { icon_file_path } from '@/components/Map/Leaflet/Components/Style/StyleIcon';
 
 import { findRealParent, propsBinder } from 'vue2-leaflet';
 
@@ -26,6 +26,10 @@ const props = {
   fc: {
     type: Object,
     default: () => {},
+  },
+  color: {
+    type: String,
+    default: () => MAP_CONST.COLOR.DEFAULT_STYLE_PATH,
   },
   visible: {
     type: Boolean,
@@ -44,29 +48,22 @@ export default {
     }
   },
   mounted() {
-    // // test
-    // const test = new DECORATOR_CLASSES(color);
-    // var   dd = test.get_patterns('mark_zabor_ograd line_border_1');
-    // debugger
-
-
-    const self         = this;
-    const features     = this.fc[MAP_ITEM.FC.FEATURES.KEY];
-    const color        = dict_get(this.fc, [MAP_ITEM.FC.STYLE.KEY, MAP_ITEM.FC.STYLE._COLOR_.KEY], 'gray');
-    const obj_pattern  = new DATA_PATTERN(color);
-    this.parent_obj    = findRealParent(this.$parent);
+    const self        = this;
+    const features    = this.fc[MAP_ITEM.FC.FEATURES.KEY];
+    const obj_pattern = new DATA_PATTERN(this.color);
+    this.parent_obj   = findRealParent(this.$parent);
 
     this.ready = true;
 
     for(let ind=0; ind<features.length; ind++) {
       let feature       = features[ind];
       let geometry      = feature[MAP_ITEM.FC.FEATURES.GEOMETRY.KEY];
-      let geometry_type = geometry[MAP_ITEM.FC.FEATURES.GEOMETRY.TYPE.KEY];
+      let geometry_type = geometry[MAP_ITEM.FC.FEATURES.GEOMETRY.TYPE];
 
       // L.объекты
       let l_obj         = get_feature_coordinates(feature, true);
-      l_obj[MAP_ITEM.FC.FEATURES.GEOMETRY.TYPE.LINE   ] = l_obj[MAP_ITEM.FC.FEATURES.GEOMETRY.TYPE.LINE   ].map((val) => L.polyline(val));
-      l_obj[MAP_ITEM.FC.FEATURES.GEOMETRY.TYPE.POLYGON] = l_obj[MAP_ITEM.FC.FEATURES.GEOMETRY.TYPE.POLYGON].map((val) => L.polygon (val));
+      l_obj[MAP_CONST.TYPE.GEOMETRY.LINE   ] = l_obj[MAP_CONST.TYPE.GEOMETRY.LINE   ].map((val) => L.polyline(val));
+      l_obj[MAP_CONST.TYPE.GEOMETRY.POLYGON] = l_obj[MAP_CONST.TYPE.GEOMETRY.POLYGON].map((val) => L.polygon (val));
 
       // patterns на основании classes и color
       let classes = get_feature_class(feature);
@@ -82,8 +79,8 @@ export default {
         propsBinder(self, decorator, props);
         self.parent_obj.mapObject.addLayer(decorator, !self.visible);
       }
-      set_decorator(l_obj[MAP_ITEM.FC.FEATURES.GEOMETRY.TYPE.POLYGON]);
-      set_decorator(l_obj[MAP_ITEM.FC.FEATURES.GEOMETRY.TYPE.LINE   ]);
+      set_decorator(l_obj[MAP_CONST.TYPE.GEOMETRY.POLYGON]);
+      set_decorator(l_obj[MAP_CONST.TYPE.GEOMETRY.LINE   ]);
     }
   },
 

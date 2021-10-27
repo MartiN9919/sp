@@ -104,7 +104,7 @@
  */
 
 import { LControl, } from "vue2-leaflet";
-import { MAP_ITEM } from '@/components/Map/Leaflet/Lib/Const';
+import { MAP_CONST, MAP_ITEM } from '@/components/Map/Leaflet/Lib/Const';
 import { icon_get, icon_2_marker, } from '@/components/Map/Leaflet/Components/Style/StyleIcon';
 import { fc_normalize, } from '@/components/Map/Leaflet/Lib/LibFc';
 import '@geoman-io/leaflet-geoman-free';
@@ -318,7 +318,7 @@ export default {
           pointToLayer:  function(feature, latlng) { return self.marker_modify(latlng); },
           style:         function(feature)         { return self.path_modify(); },
         };
-      let layer = (fc.type==MAP_ITEM.FC.TYPE.VAL)?L.geoJSON(fc, style):L.GeoJSON.geometryToLayer(fc, style);
+      let layer = (fc.type==MAP_CONST.TYPE.FC)?L.geoJSON(fc, style):L.GeoJSON.geometryToLayer(fc, style);
 
       // слой: настроить
       this.layer_set(layer);
@@ -522,8 +522,8 @@ export default {
 
 
     // иконки
-    icon_origin() { return icon_get('', MAP_ITEM.COLOR.ORIGIN); },
-    icon_modify() { return icon_get('', MAP_ITEM.COLOR.MODIFY); },
+    icon_origin() { return icon_get('', MAP_CONST.COLOR.EDITOR_ORIGIN); },
+    icon_modify() { return icon_get('', MAP_CONST.COLOR.EDITOR_MODIFY); },
 
     // маркеры
     marker_origin(latlng) {
@@ -547,16 +547,16 @@ export default {
       return {
         ...this.layer_editor_prop(),
         ...this.path_common(),
-        color:       MAP_ITEM.COLOR.ORIGIN,
-        fillColor:   MAP_ITEM.COLOR.ORIGIN,
+        color:       MAP_CONST.COLOR.EDITOR_ORIGIN,
+        fillColor:   MAP_CONST.COLOR.EDITOR_ORIGIN,
       }
     },
     path_modify() {
       return {
         ...this.layer_editor_prop(),
         ...this.path_common(),
-        color:       MAP_ITEM.COLOR.MODIFY,
-        fillColor:   MAP_ITEM.COLOR.MODIFY,
+        color:       MAP_CONST.COLOR.EDITOR_MODIFY,
+        fillColor:   MAP_CONST.COLOR.EDITOR_MODIFY,
       }
     },
 

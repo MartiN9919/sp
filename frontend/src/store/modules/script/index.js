@@ -5,9 +5,8 @@ import {
   putResponseAxios,
 } from '@/plugins/axios_settings'
 
-import { MAP_ITEM } from '@/components/Map/Leaflet/Lib/Const';
+import { MAP_CONST, MAP_ITEM } from '@/components/Map/Leaflet/Lib/Const';
 import { color_random } from '@/components/Map/Leaflet/Lib/LibColor';
-import { dict_set } from '@/components/Map/Leaflet/Lib/Lib';
 
 
 export default {
@@ -18,16 +17,7 @@ export default {
      * state.selectedTemplateactiveAnalysts            - список активных скриптов
      * state.selectedTemplate.activeAnalysts[ind]
      *   id     (int)                                  - id скрипта (НЕ УНИКАЛЬНЫЙ)
-     *
-     *   style                                         - стили фигур и маркеров
-     *   style.marker                                  - {}, стиль маркера,  см. MAP_ITEM.FC.STYLE.MARKER. ...
-     *   style.line                                    - {}, стиль линии,    см. MAP_ITEM.FC.STYLE.LINE. ...
-     *   style.polygon                                 - {}, стиль полигона, см. MAP_ITEM.FC.STYLE.POLYGON. ...
-     *   style.color                                   - цвет маркера или фигуры, в т.ч. прозрачность, ЗДЕСЬ транслируется в MAP_ITEM.FC.STYLE._COLOR_
-     *
-     *   fc                                            - FeatureCollection
      *   fc.id     (str, int)                          - уникальный идентификатор слоя, ПОКА НЕ НУЖЕН - НЕ УДАЛЯЛ
-     *   fc.features[i].properties.hint (str) ['']     - всплывающая подсказка, НЕТ РЕАКТИВНОСТИ
      */
     selectedTemplate: {
       title: '',
@@ -53,7 +43,7 @@ export default {
     SCRIPT_GET_ITEM_FC_STYLE_MARKER:  state => ind => state.selectedTemplate.activeAnalysts[ind].fc.style?.marker         ?? {},
     SCRIPT_GET_ITEM_FC_STYLE_LINE:    state => ind => state.selectedTemplate.activeAnalysts[ind].fc.style?.line           ?? {},
     SCRIPT_GET_ITEM_FC_STYLE_POLYGON: state => ind => state.selectedTemplate.activeAnalysts[ind].fc.style?.polygon        ?? {},
-    SCRIPT_GET_ITEM_COLOR:            state => ind => state.selectedTemplate.activeAnalysts[ind][MAP_ITEM.COLOR.KEY]      ?? MAP_ITEM.COLOR.DEF,
+    SCRIPT_GET_ITEM_COLOR:            state => ind => state.selectedTemplate.activeAnalysts[ind][MAP_ITEM.COLOR]          ?? MAP_CONST.COLOR.DEFAULT,
     SCRIPT_GET_ITEM_LEGEND_COLOR:     state => ind => state.selectedTemplate.activeAnalysts[ind][MAP_ITEM._LEGEND_COLOR_] ?? [],
     SCRIPT_GET_ITEM_REFRESH:          state => ind => state.selectedTemplate.activeAnalysts[ind].refresh,
     SCRIPT_GET_ITEM_SEL:              state =>        JSON.stringify(state.selectedFC),
@@ -70,8 +60,7 @@ export default {
 
     changeColorActiveAnalysts: (state, parameters) => {
       let item = state.selectedTemplate.activeAnalysts.find(analytics => analytics === parameters.analytics);
-      item[MAP_ITEM.COLOR.KEY] = parameters.color;
-      dict_set(item, [MAP_ITEM.FC.KEY, MAP_ITEM.FC.STYLE.KEY, MAP_ITEM.FC.STYLE._COLOR_.KEY], parameters.color); // дублирование цвета
+      item[MAP_ITEM.COLOR] = parameters.color;
     },
     loadTemplatesList: (state, templates) => state.templatesList = templates,
     addSelectedTemplate: (state, template) => {
@@ -99,11 +88,11 @@ export default {
 
     SCRIPT_MUT_ITEM_ADD: (state, item) => {
       // item.color: нет или цвет неактивного скрипта -> выбрать цвет
-      if ((item[MAP_ITEM.COLOR.KEY] === MAP_ITEM.COLOR.SCRIPT_OFF) || (item[MAP_ITEM.COLOR.KEY] === undefined)) {
-        // выбрать очередной цвет из MAP_ITEM.COLOR.SCRIPT_BANK
+      if ((item[MAP_ITEM.COLOR] === MAP_CONST.COLOR.SCRIPT_OFF) || (item[MAP_ITEM.COLOR] === undefined)) {
+        // выбрать очередной цвет из MAP_CONST.COLOR.SCRIPT_BANK
         let color = undefined;
-        for(let ind_bank=0; ind_bank<MAP_ITEM.COLOR.SCRIPT_BANK.length; ind_bank++) {
-          let item_bank = MAP_ITEM.COLOR.SCRIPT_BANK[ind_bank];
+        for(let ind_bank=0; ind_bank<MAP_CONST.COLOR.SCRIPT_BANK.length; ind_bank++) {
+          let item_bank = MAP_CONST.COLOR.SCRIPT_BANK[ind_bank];
           // item_bank не должен уже быть в активных скриптах
           for(let ind_script=0; ind_script<state.selectedTemplate.activeAnalysts.length; ind_script++) {
             let item_script = state.selectedTemplate.activeAnalysts[ind_script];
@@ -123,20 +112,18 @@ export default {
         // все цвета заняты -> случайный цвет
         if (!color) { color  = color_random(); }
         // записать найденный цвет
-        item[MAP_ITEM.COLOR.KEY] = color;
+        item[MAP_ITEM.COLOR] = color;
       }
-      dict_set(item, [MAP_ITEM.FC.KEY, MAP_ITEM.FC.STYLE.KEY, MAP_ITEM.FC.STYLE._COLOR_.KEY], item[MAP_ITEM.COLOR.KEY]); // дублирование цвета
 
       let item_copy = JSON.parse(JSON.stringify(item));        // deep copy
       item_copy.refresh = new Date().getTime();
       state.selectedTemplate.activeAnalysts.push(item_copy);
     },
 
-    SCRIPT_MUT_ITEM_DEL:   (state, id)      => state.selectedTemplate.activeAnalysts.splice(id, 1),
-    SCRIPT_MUT_ITEM_COLOR: (state, param)   => {
+    SCRIPT_MUT_ITEM_DEL:   (state, id)    => state.selectedTemplate.activeAnalysts.splice(id, 1),
+    SCRIPT_MUT_ITEM_COLOR: (state, param) => {
       let item = state.selectedTemplate.activeAnalysts[param.ind];
-      item[MAP_ITEM.COLOR.KEY] = param.color;
-      dict_set(item, [MAP_ITEM.FC.KEY, MAP_ITEM.FC.STYLE.KEY, MAP_ITEM.FC.STYLE._COLOR_.KEY], param.color); // дублирование цвета
+      item[MAP_ITEM.COLOR] = param.color;
     },
 
 
@@ -173,8 +160,8 @@ export default {
       for (let item_script of state.selectedTemplate.activeAnalysts) {
         for (let item of item_script.fc.features) {
           sel_items = state.selectedFC.find(sel_item => ((item.rec_id == sel_item.rec_id) && (item.obj_id == sel_item.obj_id)));
-          if (sel_items) { item.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._SEL_.KEY] = true; }
-          else { if (item.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._SEL_.KEY]) { delete item.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._SEL_.KEY]; } }
+          if (sel_items) { item.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._SEL_] = true; }
+          else { if (item.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._SEL_]) { delete item.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._SEL_]; } }
         }
       }
     },
