@@ -106,7 +106,7 @@ export const MAP_TEST_ITEM_1 = {
       {
         "type": "Feature",
         "properties": {
-          "class": "icon-svg-test1",
+          "class": "icon-svg-test2",
           "hint": "Подсказка 5",
           "date": "2021-01-02",
         },

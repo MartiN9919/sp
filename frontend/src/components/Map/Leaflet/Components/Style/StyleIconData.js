@@ -8,6 +8,22 @@ const DATA = {
       <rect x="20" y="23" width="64" height="5" />
     </svg>
   `,
+
+  //
+  'test2': `
+    <svg id="{id}" fill="{color}" width={width} height={height} viewBox="0 0 100 100">
+      <g transform="translate(0,-270.54166)">
+        <path
+           style="fill:none;stroke:{color};stroke-width:2.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
+       d="m 16.071429,363.75595 c 0,-86.25 0,-86.25 0,-86.25 v 0 0 c 71.25,26.25 71.25,26.25 71.25,26.25 -70.892858,22.32142 -70.892858,22.32142 -70.892858,22.32142"
+        />
+        <path
+           style="fill:#ff0000;stroke:#ff0000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
+       d="m 44.642857,287.86309 c -28.214286,14.82143 -28.214286,14.82143 -28.214286,14.82143 27.857143,14.28571 27.857143,14.28571 27.857143,14.28571 0,-28.92857 0.357143,-29.10714 0.357143,-29.10714 z"
+        />
+      </g>
+    </svg>
+  `,
 }
 
 // return {svg: width: height: }
@@ -28,4 +44,3 @@ export function get_icon_data(key, color="gray", zoom=1) {
     height: svg_height,
   }
 }
-
