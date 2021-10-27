@@ -106,12 +106,24 @@ export const MAP_TEST_ITEM_1 = {
       {
         "type": "Feature",
         "properties": {
+          "class": "icon-svg-test1",
           "hint": "Подсказка 5",
           "date": "2021-01-02",
         },
         "geometry": {
           "type": "Point",
           "coordinates": [23.532714843750004,53.94315470224928]
+        },
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "hint": "Контроль 5",
+          "date": "2021-01-02",
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [23.532714843750003,53.94315470224927]
         },
       },
       {

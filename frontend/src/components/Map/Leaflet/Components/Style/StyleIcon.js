@@ -1,4 +1,5 @@
 import { MAP_CONST, MAP_ITEM } from '@/components/Map/Leaflet/Lib/Const';
+import { get_icon_data } from '@/components/Map/Leaflet/Components/Style/StyleIconData';
 import { Icon } from 'leaflet';
 
 
@@ -57,11 +58,10 @@ export function icon_get(classes_str='', color='blue', zoom=1) {
 
   // FONT: MDI
   if (icon_type == MAP_CONST.CLASS.ICON.MDI) {
-    return new L.divIcon({
+    return new L.DivIcon({
       className: classes_other_str,
       iconSize:  null,
       color:     color,
-      //icon:    icon,
       html:
         '<div class="marker-font">'+
           '<div class="marker-font-content" style="border-color: '+color+';">'+
@@ -79,11 +79,10 @@ export function icon_get(classes_str='', color='blue', zoom=1) {
 
   // FONT.FS
   if (icon_type == MAP_CONST.CLASS.ICON.FS) {
-    return new L.divIcon({
+    return new L.DivIcon({
       className: classes_other_str,
       iconSize:  null,
       color:     color,
-      //icon:      icon,
       html:
         '<div class="marker-font" style="color: '+color+';">'+
           '<div class="fs '+classes_icon_str+'" style="border-color: '+color+';">'+
@@ -93,14 +92,19 @@ export function icon_get(classes_str='', color='blue', zoom=1) {
   }
 
 
-  // PULSE
-  if (icon_type == MAP_CONST.CLASS.ICON.PULSE) {
-    let size  = (classes_icon_list[0][1] ?? 12) * zoom|0;
-    return new L.icon.pulse({
-      className: classes_other_str,
-      iconSize:  [size, size],
-      color:     color,
-      fillColor: color,
+  // SVG
+  if (icon_type == MAP_CONST.CLASS.ICON.SVG) {
+    if (classes_icon_list.length<1) return;
+    if (classes_icon_list[0].length<2) return;
+    let data = get_icon_data(classes_icon_list[0][1], color, .6);
+    if (data == undefined) return;
+    return new L.DivIcon({
+      className:   classes_other_str,
+      color:       color,
+      iconSize:    [data.width,     data.height],
+      iconAnchor:  [data.width/2|0, data.height/2|0],                         // указатель: x-center, y-center
+      popupAnchor: [1,             -data.height*1.1|0],
+      html:        data.svg,
     });
   }
 
@@ -122,9 +126,21 @@ export function icon_get(classes_str='', color='blue', zoom=1) {
       shadowUrl:   icon_file_path('shadow-marker'),
       shadowSize:  [size_h, size_h],
       iconUrl:     icon_file_path(file),
-      iconSize:    [size_w, size_h],
-      iconAnchor:  [size_w/2|0, size_h],
-      popupAnchor: [1, -34 * zoom|0],
+      iconSize:    [size_w,     size_h],
+      iconAnchor:  [size_w/2|0, size_h],                                      // указатель: x-center, y-bottom
+      popupAnchor: [1,         -size_h*1.1|0],
+    });
+  }
+
+
+  // PULSE
+  if (icon_type == MAP_CONST.CLASS.ICON.PULSE) {
+    let size  = (classes_icon_list[0][1] ?? 12) * zoom|0;
+    return L.icon.pulse({                                                     // или new L.Icon - в данном случае не работает
+      className: classes_other_str,
+      iconSize:  [size, size],
+      color:     color,
+      fillColor: color,
     });
   }
 
@@ -133,13 +149,13 @@ export function icon_get(classes_str='', color='blue', zoom=1) {
   let size_w = 25 * zoom|0;
   let size_h = 41 * zoom|0;
   return new L.Icon({
-      className:   classes_other_str,                 // иначе сторонние классы не применятся
+      className:   classes_other_str,                                         // иначе сторонние классы не применятся
       shadowUrl:   icon_file_path('shadow-marker'),
       shadowSize:  [size_h, size_h],
       iconUrl:     icon_file_path('blue'),
-      iconSize:    [size_w, size_h],
-      iconAnchor:  [size_w/2|0, size_h],
-      popupAnchor: [1, -34 * zoom|0],
+      iconSize:    [size_w,     size_h],
+      iconAnchor:  [size_w/2|0, size_h],                                      // указатель: x-center, y-bottom
+      popupAnchor: [1,         -size_h*1.1|0],
     });
 }
 

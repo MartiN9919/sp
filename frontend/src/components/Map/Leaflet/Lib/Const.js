@@ -9,6 +9,7 @@ export const MAP_CONST = {
       MDI:       'mdi',                   // иконка: шрифт mdi
       FS:        'fs',                    // иконка: шрифт fs
       FILE:      'file',                  // иконка: файл
+      SVG:       'svg',                   // иконка: svg
       PULSE:     'pulse',                 // иконка: пульсирующая
     },
   },
