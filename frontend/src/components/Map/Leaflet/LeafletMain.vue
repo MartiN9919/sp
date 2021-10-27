@@ -287,7 +287,7 @@ export default {
       this.data_normalize_color(map_item);
 
       // deep copy
-      let fc = map_item[MAP_ITEM.FC.KEY];
+      let fc = map_item.fc;
       fc = JSON.parse(JSON.stringify(fc));
 
       // установить fc.features[ind].ind - порядковый номер фигуры в fc
@@ -297,9 +297,9 @@ export default {
       let range_ts  = this.MAP_GET_RANGE_SEL;
       if ((range_ts[0]>0) && (range_ts[1]>0)) {
         let item_date;
-        let features = fc.features.filter(function(map_item) {
-          if (!map_item.properties.date) return true;
-          item_date = datesql_to_ts(map_item.properties.date);
+        let features = fc.features.filter(function(feature) {
+          if (!feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES.DATE]) return true;
+          item_date = datesql_to_ts(feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES.DATE]);
           return ((item_date >= range_ts[0]) && (item_date <= range_ts[1]));
         });
         fc.features = features;
@@ -443,8 +443,8 @@ export default {
     getDataAsGeoJSON () {
       // create FeatureCollection
       const geoJSON = {
-        type: MAP_CONST.TYPE.FC,
-        features: []
+        type:     'FeatureCollection',
+        features: [],
       };
 
       // export each layer

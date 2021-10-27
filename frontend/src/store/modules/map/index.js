@@ -1,14 +1,7 @@
 
-import {
-  cook_set,
-  cook_get_int,
-  cook_get_bool,
-  datesql_to_ts,
-} from '@/plugins/sys';
-
-import {
-  MAP_DATA_MENU_TILES,
-} from '@/store/modules/map/index_menu';
+import { MAP_ITEM }  from '@/components/Map/Leaflet/Lib/Const';
+import { cook_set, cook_get_int, cook_get_bool, datesql_to_ts } from '@/plugins/sys';
+import { MAP_DATA_MENU_TILES } from '@/store/modules/map/index_menu';
 
 export default {
   state: {
@@ -113,7 +106,7 @@ export default {
       let limit_max = '';
       getters.SCRIPT_GET.forEach(function(layer){
         layer.fc.features.forEach(function(feature){
-          let date = feature.properties.date;
+          let date = feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES.DATE];
           if (!date) return;
           if ((date < limit_min) || (limit_min == '')) limit_min=date;
           if ((date > limit_max) || (limit_max == '')) limit_max=date;

@@ -183,7 +183,7 @@ export default {
       return postResponseAxios(this._vm.$CONST.API.SCRIPT.MAP, parameters.request, parameters.config)
         .then(response => {
           commit('removeAnalytics', parameters.request);
-          parameters.request[MAP_ITEM.FC.KEY] = response.data;
+          parameters.request.fc = response.data;
           commit('SCRIPT_MUT_ITEM_ADD', parameters.request);
           commit('changeSelectedTreeViewItem', {});
           dispatch('MAP_ACT_RANGE_TS');
