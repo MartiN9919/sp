@@ -119,6 +119,8 @@ def get_value_by_key(key, value):
     @param value: значение классификатора
     @return: значение для пользователя
     """
+    if get_key_by_id(key)['type'] == 'checkbox':
+        value = 'Да' if value == '1' else 'Нет'
     if key == SYS_KEY_CONSTANT.PARENT_ID_CLASSIFIER_ID:
         if int(value) == 0:
             return 'корень'

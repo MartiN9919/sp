@@ -43,12 +43,15 @@ def check_object_permission(group_id, object_type, rec_id, write=False):
     permit_groups = {}
     for key in permission_keys:
         if int(key['key_id']) == keys_validation_tuple[4]:
-            push_dict(permit_groups, int(key['key_id']), (key['val']))
+            push_dict(permit_groups, int(key['key_id']), {'val': int(key['val']), 'sec': key['sec']})
         elif int(key['key_id']) == keys_validation_tuple[2]:
             if key['sec'] < date_time_to_sec(datetime.datetime.now()):
                 push_dict(permit_groups, int(key['key_id']), (int(key['val'])))
         else:
             push_dict(permit_groups, int(key['key_id']), (int(key['val'])))
+    if permit_groups.get(keys_validation_tuple[4]):
+        permit_groups[keys_validation_tuple[4]].sort(key=lambda x: x['sec'], reverse=True)
+        permit_groups[keys_validation_tuple[4]] = [item['val'] for item in permit_groups[keys_validation_tuple[4]]]
     return valid_group_object(group_id, permit_groups, keys_validation_tuple, write)
 
 
