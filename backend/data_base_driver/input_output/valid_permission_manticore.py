@@ -42,7 +42,9 @@ def check_object_permission(group_id, object_type, rec_id, write=False):
     permission_keys = [key['_source'] for key in json.loads(response.text)['hits']['hits']]
     permit_groups = {}
     for key in permission_keys:
-        if int(key['key_id']) == keys_validation_tuple[2]:
+        if int(key['key_id']) == keys_validation_tuple[4]:
+            push_dict(permit_groups, int(key['key_id']), (key['val']))
+        elif int(key['key_id']) == keys_validation_tuple[2]:
             if key['sec'] < date_time_to_sec(datetime.datetime.now()):
                 push_dict(permit_groups, int(key['key_id']), (int(key['val'])))
         else:
@@ -63,7 +65,8 @@ def valid_group_object(group_id, permit_group, keys_validation_tuple, write=Fals
     keys_validation_dict = {'owner_add_rw': keys_validation_tuple[0],
                             'owner_add_ro': keys_validation_tuple[1],
                             'owner_add_ro_limit': keys_validation_tuple[2],
-                            'owner_del': keys_validation_tuple[3]}
+                            'owner_del': keys_validation_tuple[3],
+                            'owner_visible': keys_validation_tuple[4]}
     if group_id in permit_group.get(keys_validation_dict['owner_del'], []):
         return False
     if write:

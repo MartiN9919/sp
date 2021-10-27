@@ -53,6 +53,8 @@ class IO_PERMIT():
                 if (item[3] + timedelta(days=7)) >= datetime.now(): groups_ro.add(item[2])
             elif item[1] == DAT_SYS_KEY.NAME_OWNER_DEL:
                 groups_rw.discard(item[2]); groups_ro.discard(item[2])
+            elif item[1] == DAT_SYS_KEY.NAME_OWNER_VISIBLE:
+                continue
             else:
                 raise Exception('Error key_id: ' + str(item))
             self.permits_rw[item[0]] = groups_rw

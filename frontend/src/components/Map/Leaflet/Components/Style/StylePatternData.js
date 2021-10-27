@@ -84,6 +84,10 @@ export class DATA_PATTERN {
         { offset: 5,  repeat: 30, symbol: L.Symbol.dash({ pixelSize: 0,  pathOptions: { color: color, }, }), },
       ],
 
+      'line_border_path': [
+        { offset: 12, repeat: 25, symbol: L.Symbol.dash({ pixelSize: 10, pathOptions: { color: color, weight: 2, }, }), },
+      ],
+
 
 
 

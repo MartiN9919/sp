@@ -64,7 +64,7 @@ def get_permission_params(params, object_id):
                   keys_validation_tuple[2]: [],
                   keys_validation_tuple[3]: []}
     for param in params:
-        if int(param['key_id']) in keys_validation_tuple:
+        if int(param['key_id']) in keys_validation_tuple[:3]:
             permission[int(param['key_id'])].append({
                 'group_id': int(param['val']),
                 'data_time': get_date_time_from_sec(param['sec'])

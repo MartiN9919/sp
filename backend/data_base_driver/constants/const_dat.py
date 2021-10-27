@@ -173,7 +173,8 @@ class DAT_SYS_KEY:
     NAME_OWNER_ADD_RO = 'owner_add_ro'
     NAME_OWNER_ADD_RO_LIMIT = 'owner_add_ro_limit'
     NAME_OWNER_DEL = 'owner_del'
-    NAME_OWNER_LIST = (NAME_OWNER_ADD_RW, NAME_OWNER_ADD_RO, NAME_OWNER_ADD_RO_LIMIT, NAME_OWNER_DEL)
+    NAME_OWNER_VISIBLE = 'owner_visible'
+    NAME_OWNER_LIST = (NAME_OWNER_ADD_RW, NAME_OWNER_ADD_RO, NAME_OWNER_ADD_RO_LIMIT, NAME_OWNER_DEL, NAME_OWNER_VISIBLE)
     NAME_POINT_LOCATION = "ST_AsGeoJSON(ST_PointFromText(CONCAT('POINT(',lon,' ',lat,')'),0)) AS location"  # изменем с 1 на 0 в связи с переходом на новую версию mysql
     NAME_POINT_ADDRESS = 'address'
 

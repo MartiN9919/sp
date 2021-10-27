@@ -8,7 +8,7 @@ from data_base_driver.input_output.io_class import IO
 from requests.exceptions import ConnectionError
 
 
-@io_set_wrap
+# @io_set_wrap
 def io_set(group_id, obj, data):
     """
     функция для добавление объекта в базу данных
