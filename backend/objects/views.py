@@ -1,6 +1,6 @@
 import json
 
-from core.projectSettings.decoraters import login_check, request_log, request_wrap, request_get, write_permission
+from core.projectSettings.decorators import login_check, request_log, request_wrap, request_get, write_permission
 from data_base_driver.constants.const_dat import DAT_OWNER
 from data_base_driver.constants.const_key import SYS_KEY_CONSTANT
 from data_base_driver.record.get_record import get_object_record_by_id_http
