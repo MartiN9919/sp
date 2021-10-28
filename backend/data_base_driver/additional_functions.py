@@ -134,11 +134,13 @@ def io_set_wrap(function):
     """
     Обертка для упрощения функции
     """
-
     def wrap(group_id, obj, data):
         try:
-            data = [(get_id_by_key(item[0]), item[1]) for item in data]
             obj = get_obj_id(obj) if isinstance(obj, str) and not (obj.isdigit()) else int(obj)
+            if obj != 1:
+                data = [(get_id_by_key(item[0]), item[1]) for item in data]
+            else:
+                data = data
             return function(group_id, obj, data)
         except Exception as e:
             raise e
@@ -150,9 +152,8 @@ def io_set_wrap(function):
 
 def io_get_object_wrap(function):
     """
-        Обертка для упрощения функции
-        """
-
+    Обертка для упрощения функции
+    """
     def wrap(group_id, object, keys, ids, ids_max_block, where_dop_row, time_interval):
         try:
             keys = [get_id_by_key(item) for item in keys]
@@ -168,9 +169,8 @@ def io_get_object_wrap(function):
 
 def io_get_rel_wrap(function):
     """
-        Обертка для упрощения функции
-        """
-
+    Обертка для упрощения функции
+    """
     def wrap(group_id, keys, obj_rel_1, obj_rel_2, val, time_interval, is_unique, rec_id=0):
         try:
             keys = [get_id_by_key(item) for item in keys]
