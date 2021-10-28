@@ -127,14 +127,57 @@ export const MAP_TEST_ITEM_1 = {
           "coordinates": [25.7080078125,54.16243396806781]
         },
       },
-      // // {
-      // //   "type": "Feature",
-      // //   "properties": {},
-      // //   "geometry": {
-      // //     "type": "Point",
-      // //     "coordinates": [-0.52509765625,48.104642388766935]
-      // //   }
-      // // },
+      {
+        "type": "Feature",
+        "properties": {
+          "class": "icon-svg-checkpoint_auto",
+          "hint": "Test",
+          "date": "2021-01-01",
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [23.7080078125,53.16243396806781]
+        },
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "class": "icon-svg-place_ops",
+          "text":  '"Прудок"',
+          "hint":  "Test",
+          "date":  "2021-01-01",
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [27.7080078125,53.16243396806781]
+        },
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "class": "icon-svg-place_outpost",
+          "text": "10",
+          "hint": "Test",
+          "date": "2021-01-01",
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [23.7080078125,52.16243396806781]
+        },
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "class": "icon-svg-place_post",
+          "text": "12",
+          "hint": "Test",
+          "date": "2021-01-01",
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [25.7080078125,52.01]
+        },
+      },
     ],
   }
 };
@@ -192,7 +235,7 @@ export const MAP_TEST_ITEM_2 = {
         },
         "geometry": {
           "type": "Point",
-          "coordinates": [23.532714843750004,53.94315470224928]
+          "coordinates": [25.7080078125,52.01]
         },
       },
 

@@ -15,8 +15,8 @@ export function icon_ini() {
 }
 
 
-export function marker_get(latlng, classes_str='', color='blue', zoom=1, param={}) {
-  let icon = icon_get(classes_str, color, zoom);
+export function marker_get(latlng, classes_str='', color='blue', zoom=1, text=undefined, param={}) {
+  let icon = icon_get(classes_str, color, zoom, text);
   return icon_2_marker(latlng, icon, param);
 }
 
@@ -29,7 +29,7 @@ export function icon_2_marker(latlng, icon, param={}) {
 
 
 // получить иконку
-export function icon_get(classes_str='', color='blue', zoom=1) {
+export function icon_get(classes_str='', color='blue', zoom=1, text=undefined) {
   const separator  = MAP_CONST.CLASS.ICON.SEPARATOR;
   let classes_list = classes_str.trim().replace(/\s+/g, ' ').split(' ');  // убрать лишние пробелы
   classes_list = [...new Set(classes_list)];                              // исключить повторы
@@ -96,14 +96,14 @@ export function icon_get(classes_str='', color='blue', zoom=1) {
   if (icon_type == MAP_CONST.CLASS.ICON.SVG) {
     if (classes_icon_list.length<1) return;
     if (classes_icon_list[0].length<2) return;
-    let data = get_icon_data(classes_icon_list[0][1], color, zoom);
+    let data = get_icon_data(classes_icon_list[0][1], color, zoom, text);
     if (data == undefined) return;
     return new L.DivIcon({
       className:   classes_other_str,
       color:       color,
       iconSize:    [data.width,     data.height],
       iconAnchor:  [data.anchor_dx, data.anchor_dy],                         // точка привязки svg относительно верхнего левого угла
-      //popupAnchor: [1,             -data.height*1.1|0],
+      popupAnchor: [1,             -data.height*1.1],
       html:        data.svg,
     });
   }
@@ -128,7 +128,7 @@ export function icon_get(classes_str='', color='blue', zoom=1) {
       iconUrl:     icon_file_path(file),
       iconSize:    [size_w,     size_h],
       iconAnchor:  [size_w/2|0, size_h],                                      // указатель: x-center, y-bottom
-      popupAnchor: [1,         -size_h*1.1|0],
+      popupAnchor: [1,         -size_h*1.1],
     });
   }
 
@@ -155,7 +155,7 @@ export function icon_get(classes_str='', color='blue', zoom=1) {
       iconUrl:     icon_file_path('blue'),
       iconSize:    [size_w,     size_h],
       iconAnchor:  [size_w/2|0, size_h],                                      // указатель: x-center, y-bottom
-      popupAnchor: [1,         -size_h*1.1|0],
+      popupAnchor: [1,         -size_h*1.1],
     });
 }
 

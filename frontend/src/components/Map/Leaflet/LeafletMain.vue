@@ -392,8 +392,9 @@ export default {
           let classDop  = 'upper-markers';                                                // поднять маркеры над фигурами
           let color     = self.SCRIPT_GET_ITEM_COLOR(map_ind);
           let zoom      = self.MAP_GET_ZOOM;
+          let text      = feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES.TEXT];
           zoom          = (zoom < 7) ? Math.pow(2.0, zoom-7) : 1;                         // масштаб иконки
-          return marker_get(latlng, classMain+' '+classSel+' '+classDop, color, zoom);
+          return marker_get(latlng, classMain+' '+classSel+' '+classDop, color, zoom, text);
         },
 
 
