@@ -133,13 +133,13 @@ const DATA = {
     anchor_dy: 100.,
     zoom:      1.2,
     svg: `
-      <svg width={width} height={height} viewBox="0 0 55.537838 100">
+      <svg width={width} height={height} viewBox="0 0 57.360203 100">
         <path
           style="fill:#ffffff;stroke:{color};stroke-width:4"
-          d="M 2.2036433,100 V 3.312438 L 50.729628,25.10104 2.2036433,47.805112"
+          d="M 2.3614687,100.15925 V 4.2910497 L 51.601627,41.985919 2.730309,41.804695"
         />
         <text style="font-style:normal;font-weight:bold;font-size:16px;line-height:1.25;font-family:sans-serif">
-          <tspan x="6" y="29">{text}</tspan>
+          <tspan x="6" y="35">{text}</tspan>
         </text>
       </svg>
     `,

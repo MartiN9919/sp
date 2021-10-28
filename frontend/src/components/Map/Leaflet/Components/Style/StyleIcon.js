@@ -100,11 +100,13 @@ export function icon_get(classes_str='', color='blue', zoom=1, text=undefined) {
     if (data == undefined) return;
     return new L.DivIcon({
       className:   classes_other_str,
-      color:       color,
       iconSize:    [data.width,     data.height],
       iconAnchor:  [data.anchor_dx, data.anchor_dy],                         // точка привязки svg относительно верхнего левого угла
       popupAnchor: [1,             -data.height*1.1],
       html:        data.svg,
+      // shadowUrl:   icon_file_path('shadow-marker'),
+      // shadowSize:  [data.width, data.height],
+      // color:       color,
     });
   }
 
