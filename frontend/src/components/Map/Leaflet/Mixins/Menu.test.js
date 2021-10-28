@@ -212,12 +212,25 @@ export const MAP_TEST_ITEM_1 = {
         "properties": {
           "class": "icon-svg-place_post_temp",
           "text": "15",
-          "hint": "Test",
+          "hint": "place_post_temp",
           "date": "2021-01-01",
         },
         "geometry": {
           "type": "Point",
           "coordinates": [30.5,52.11]
+        },
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "class": "icon-svg-place_post_control",
+          "text": '"Зубренок"',
+          "hint": "place_post_control",
+          "date": "2021-01-01",
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [27.5,51.6]
         },
       },
     ],

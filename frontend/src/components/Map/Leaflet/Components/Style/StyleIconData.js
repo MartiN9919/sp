@@ -203,6 +203,26 @@ const DATA = {
       </svg>
     `,
   },
+  'place_post_control': {
+    anchor_dx: 0,
+    anchor_dy: 100.,
+    zoom:      1.2,
+    svg: `
+      <svg width={width} height={height} viewBox="0 0 200 100">
+        <path
+          style="fill:#ffffff;stroke:{color};stroke-width:4"
+          d="M 1.9,100 2.6,22.7 2.5,3.2 44.0,23.5 2.1,41.0"
+        />
+        <path
+          style="fill:#ff0000;stroke:#ff0000;stroke-width:1px"
+          d="M 22.6,13.1 3.0,22.6 22.8,32.2 44.0,23.5 Z"
+        />
+        <text style="font-style:normal;font-weight:bold;font-size:16px;font-family:sans-serif">
+          <tspan x="6" y="96">{text}</tspan>
+        </text>
+      </svg>
+    `,
+  },
 
 
 }
