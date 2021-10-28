@@ -35,6 +35,9 @@ const DATA = {
 
   //
   'checkpoint_auto': {
+    anchor_dx: 45.,
+    anchor_dy: 50.,
+    zoom:      1.,
     svg: `
       <svg width={width} height={height} viewBox="0 0 100 74">
         <path
@@ -49,6 +52,9 @@ const DATA = {
     `,
   },
   'checkpoint_flyer': {
+    anchor_dx: 45.,
+    anchor_dy: 50.,
+    zoom:      1.,
     svg: `
       <svg width={width} height={height} viewBox="0 0 100 74">
         <path
@@ -63,8 +69,11 @@ const DATA = {
     `,
   },
   'checkpoint_rail': {
+    anchor_dx: 45.,
+    anchor_dy: 50.,
+    zoom:      1.,
     svg: `
-      <svg width={width} height={height} viewBox="0 0 98.490715 73.707695">
+      <svg width={width} height={height} viewBox="0 0 98.490715 74">
         <path
            style="fill:#ffffff;stroke:{color};stroke-width:4"
            d="M 3.8292234,72.585793 46.686366,3.4786426 96.59708,72.496513 Z"
@@ -77,8 +86,10 @@ const DATA = {
     `,
   },
   'checkpoint_simplified': {
+    anchor_dx: 45.,
+    anchor_dy: 50.,
     svg: `
-      <svg width={width} height={height} viewBox="0 0 97.206421 73.215599">
+      <svg width={width} height={height} viewBox="0 0 300 74">
         <path
            style="fill:#ffffff;stroke:{color};stroke-width:4"
            d="M 3.7797086,71.212431 45.327076,3.4753509 93.712449,71.124921 Z"
@@ -87,6 +98,9 @@ const DATA = {
            style="fill:#ff0000;stroke:#fe0000;stroke-width:0.97479194px"
            d="M 45.571896,3.5372209 46.246954,71.072261 93.957269,71.186801 45.571896,3.5372209"
         />
+        <text style="font-style:normal;font-weight:bold;font-size:22px;line-height:1.25;font-family:sans-serif">
+          <tspan x="100" y="70">{text}</tspan>
+        </text>
       </svg>
     `,
   },
@@ -98,7 +112,7 @@ const DATA = {
     anchor_dy: 100.,
     zoom:      1.5,
     svg: `
-      <svg width={width} height={height} viewBox="0 0 150 100">
+      <svg width={width} height={height} viewBox="0 0 200 100">
         <path
            style="fill:#ffffff;stroke:{color};stroke-width:4"
            d="M 2.4354161,99.822978 V 2.5810581 H 71.529824 L 2.6211544,46.900936"
@@ -107,7 +121,7 @@ const DATA = {
           <tspan x="6" y="20">ОПС</tspan>
         </text>
         <text style="font-style:normal;font-weight:bold;font-size:16px;line-height:1.25;font-family:sans-serif">
-          <tspan x="6" y="90">{text}</tspan>
+          <tspan x="6" y="96">{text}</tspan>
         </text>
       </svg>
     `,
@@ -117,7 +131,7 @@ const DATA = {
     anchor_dy: 100.,
     zoom:      1.2,
     svg: `
-      <svg width={width} height={height} viewBox="0 0 55.537838 100">
+      <svg width={width} height={height} viewBox="0 0 55 100">
         <path
           style="fill:#ffffff;stroke:{color};stroke-width:4"
           d="M 2.2036433,100 V 3.312438 L 50.729628,25.10104 2.2036433,47.805112"
@@ -133,13 +147,30 @@ const DATA = {
     anchor_dy: 100.,
     zoom:      1.2,
     svg: `
-      <svg width={width} height={height} viewBox="0 0 57.360203 100">
+      <svg width={width} height={height} viewBox="0 0 57 100">
         <path
           style="fill:#ffffff;stroke:{color};stroke-width:4"
-          d="M 2.3614687,100.15925 V 4.2910497 L 51.601627,41.985919 2.730309,41.804695"
+          d="M 2.3,100.15925 V 4.2910497 L 51.601627,42 2.3,42"
         />
         <text style="font-style:normal;font-weight:bold;font-size:16px;line-height:1.25;font-family:sans-serif">
           <tspan x="6" y="35">{text}</tspan>
+        </text>
+      </svg>
+    `,
+  },
+  'place_post_temp': {
+    anchor_dx: 0,
+    anchor_dy: 100.,
+    zoom:      1.2,
+    svg: `
+      <svg width={width} height={height} viewBox="0 0 60 102">
+        <path
+          style="fill:#ffffff;stroke:{color};stroke-width:4"
+          d="M 7,94 V 4.2910497 L 55,43 7,43"
+        />
+        <ellipse style="opacity:1;fill:#ff0000;stroke:#ff0000;stroke-width:2" cx="7" cy="94" rx="5" ry="5"/>
+        <text style="font-style:normal;font-weight:bold;font-size:16px;line-height:1.25;font-family:sans-serif">
+          <tspan x="10" y="35">{text}</tspan>
         </text>
       </svg>
     `,
