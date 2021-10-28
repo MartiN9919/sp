@@ -76,6 +76,21 @@ const DATA = {
       </svg>
     `,
   },
+  'checkpoint_simplified': {
+    svg: `
+      <svg width={width} height={height} viewBox="0 0 97.206421 73.215599">
+        <path
+           style="fill:#ffffff;stroke:{color};stroke-width:4"
+           d="M 3.7797086,71.212431 45.327076,3.4753509 93.712449,71.124921 Z"
+        />
+        <path
+           style="fill:#ff0000;stroke:#fe0000;stroke-width:0.97479194px"
+           d="M 45.571896,3.5372209 46.246954,71.072261 93.957269,71.186801 45.571896,3.5372209"
+        />
+      </svg>
+    `,
+  },
+
 }
 
 

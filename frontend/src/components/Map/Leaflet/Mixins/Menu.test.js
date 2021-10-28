@@ -106,7 +106,7 @@ export const MAP_TEST_ITEM_1 = {
       {
         "type": "Feature",
         "properties": {
-          "class": "icon-svg-checkpoint_rail",
+          "class": "icon-svg-checkpoint_simplified",
           "hint": "Подсказка 5",
           "date": "2021-01-02",
         },
@@ -115,18 +115,18 @@ export const MAP_TEST_ITEM_1 = {
           "coordinates": [23.532714843750004,53.94315470224928]
         },
       },
-      // {
-      //   "type": "Feature",
-      //   "properties": {
-      //     //"class": "sel",
-      //     "hint": "Test",
-      //     "date": "2021-01-01",
-      //   },
-      //   "geometry": {
-      //     "type": "Point",
-      //     "coordinates": [25.7080078125,54.16243396806781]
-      //   },
-      // },
+      {
+        "type": "Feature",
+        "properties": {
+          "class": "icon-svg-checkpoint_flyer",
+          "hint": "Test",
+          "date": "2021-01-01",
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [25.7080078125,54.16243396806781]
+        },
+      },
       // // {
       // //   "type": "Feature",
       // //   "properties": {},

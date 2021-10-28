@@ -98,7 +98,6 @@ export function icon_get(classes_str='', color='blue', zoom=1) {
     if (classes_icon_list[0].length<2) return;
     let data = get_icon_data(classes_icon_list[0][1], color, zoom);
     if (data == undefined) return;
-    console.log(zoom, data.width, data.height, data.anchor_dx, data.anchor_dy)
     return new L.DivIcon({
       className:   classes_other_str,
       color:       color,

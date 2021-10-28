@@ -387,12 +387,13 @@ export default {
 
         // стиль маркеров
         pointToLayer: function(feature, latlng) {
-          let classAny = feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES.CLASS]??'';
-          let classSel = feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._SEL_]?MAP_CONST.CLASS.SEL:'';
-          let color    = self.SCRIPT_GET_ITEM_COLOR(map_ind);
-          let zoom     = self.MAP_GET_ZOOM;
-          zoom         = (zoom < 7) ? Math.pow(2.0, zoom-7) : 1;                         // масштаб иконки
-          return marker_get(latlng, classAny+' '+classSel, color, zoom);
+          let classMain = feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES.CLASS]??'';
+          let classSel  = feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._SEL_]?MAP_CONST.CLASS.SEL:'';
+          let classDop  = 'upper-markers';                                                // поднять маркеры над фигурами
+          let color     = self.SCRIPT_GET_ITEM_COLOR(map_ind);
+          let zoom      = self.MAP_GET_ZOOM;
+          zoom          = (zoom < 7) ? Math.pow(2.0, zoom-7) : 1;                         // масштаб иконки
+          return marker_get(latlng, classMain+' '+classSel+' '+classDop, color, zoom);
         },
 
 
@@ -512,5 +513,6 @@ export default {
     50%  { opacity: .4; }
     100% { opacity: 1;  }
   }
+  div::v-deep .upper-markers { z-index: 5000 !important; }
 
 </style>
