@@ -40,17 +40,9 @@ const DATA = {
     zoom:      1.,
     svg: `
       <svg width={width} height={height} viewBox="0 0 320 74">
-        <path
-           style="fill:#ffffff;stroke:{color};stroke-width:4"
-           d="M 3.8292234,72.585793 46.686366,3.4786426 96.59708,72.496513 Z"
-        />
-        <path
-           style="fill:#ff0000;stroke:#ff0000;stroke-width:4"
-           d="m 31.965985,38.367703 32.671297,-0.0415 -16.61163,28.456 z"
-        />
-        <text style="font-style:normal;font-weight:bold;font-size:22px;font-family:sans-serif">
-          <tspan x="100" y="70">{text}</tspan>
-        </text>
+        <path style="fill:#ffffff;stroke:{color};stroke-width:4" d="M 3.8,72.6 46.7,3.5 96.6,72.5 Z"/>
+        <path style="fill:#ff0000;stroke:#ff0000;stroke-width:4" d="m 32.0,38.4 32.7,-0.0 -16.6,28.5 z"/>
+        <text style="font-style:normal;font-weight:bold;font-size:22px;font-family:sans-serif"><tspan x="100" y="70">{text}</tspan></text>
       </svg>
     `,
   },
@@ -60,17 +52,9 @@ const DATA = {
     zoom:      1.,
     svg: `
       <svg width={width} height={height} viewBox="0 0 320 74">
-        <path
-           style="fill:#ffffff;stroke:{color};stroke-width:4"
-           d="M 3.8292234,72.585793 46.686366,3.4786426 96.59708,72.496513 Z"
-        />
-        <path
-           style="fill:#0000FF;stroke:#0000FF;stroke-width:4"
-           d="m 31.965985,38.367703 32.671297,-0.0415 -16.61163,28.456 z"
-        />
-        <text style="font-style:normal;font-weight:bold;font-size:22px;font-family:sans-serif">
-          <tspan x="100" y="70">{text}</tspan>
-        </text>
+        <path style="fill:#ffffff;stroke:{color};stroke-width:4" d="M 3.8,72.6 46.7,3.5 96.6,72.5 Z"/>
+        <path style="fill:#0000FF;stroke:#0000FF;stroke-width:4" d="m 32.0,38.4 32.7,-0.0 -16.6,28.5 z"/>
+        <text style="font-style:normal;font-weight:bold;font-size:22px;font-family:sans-serif"><tspan x="100" y="70">{text}</tspan></text>
       </svg>
     `,
   },
@@ -80,17 +64,9 @@ const DATA = {
     zoom:      1.,
     svg: `
       <svg width={width} height={height} viewBox="0 0 320 74">
-        <path
-           style="fill:#ffffff;stroke:{color};stroke-width:4"
-           d="M 3.8292234,72.585793 46.686366,3.4786426 96.59708,72.496513 Z"
-        />
-        <path
-           style="fill:#000000;stroke:#000000;stroke-width:4"
-           d="m 31.965985,38.367703 32.671297,-0.0415 -16.61163,28.456 z"
-        />
-        <text style="font-style:normal;font-weight:bold;font-size:22px;font-family:sans-serif">
-          <tspan x="100" y="70">{text}</tspan>
-        </text>
+        <path style="fill:#ffffff;stroke:{color};stroke-width:4" d="M 3.8,72.6 46.7,3.5 96.6,72.5 Z"/>
+        <path style="fill:#000000;stroke:#000000;stroke-width:4" d="m 31.9,38.4 32.7,-0.0 -16.6,28.5 z"/>
+        <text style="font-style:normal;font-weight:bold;font-size:22px;font-family:sans-serif"><tspan x="100" y="70">{text}</tspan></text>
       </svg>
     `,
   },
@@ -99,127 +75,95 @@ const DATA = {
     anchor_dy: 50.,
     svg: `
       <svg width={width} height={height} viewBox="0 0 320 74">
-        <path
-           style="fill:#ffffff;stroke:{color};stroke-width:4"
-           d="M 3.8,71.2 45.3,3.5 93.7,71.1 Z"
-        />
-        <path
-           style="fill:#ff0000;stroke:#fe0000;stroke-width:0.97479194px"
-           d="M 45.6,3.5 46.2,71.1 94.0,71.2 45.6,3.5"
-        />
-        <text style="font-style:normal;font-weight:bold;font-size:22px;font-family:sans-serif">
-          <tspan x="100" y="70">{text}</tspan>
-        </text>
+        <path style="fill:#ffffff;stroke:{color};stroke-width:4" d="M 3.8,71.2 45.3,3.5 93.7,71.1 Z"/>
+        <path style="fill:{color};stroke:{color};stroke-width:1" d="M 45.6,3.5 46.2,71.1 94.0,71.2 45.6,3.5"/>
+        <text style="font-style:normal;font-weight:bold;font-size:22px;font-family:sans-serif"><tspan x="100" y="70">{text}</tspan></text>
       </svg>
     `,
   },
 
 
 
-  'place_cp': {
+  'control': {
     anchor_dx: 0,
     anchor_dy: 100.,
     zoom:      1.2,
     svg: `
       <svg width={width} height={height} viewBox="0 0 200 100">
-        <path
-          style="fill:#ffffff;stroke:{color};stroke-width:4"
-          d="M 2.2,99.8 V 2.2 H 90.0 L 70.0,38.6 2.3,38.6"
-        />
-        <text style="font-style:normal;font-weight:bold;font-size:16px;font-family:sans-serif">
-            <tspan x="6" y="25">{text}</tspan>
-        </text>
-        <text style="font-style:normal;font-weight:normal;font-size:35px;font-family:sans-serif">
-            <tspan x="17" y="99">КП</tspan>
-        </text>
+        <path style="fill:#ffffff;stroke:{color};stroke-width:4" d="M 2.2,99.8 V 2.2 H 90.0 L 70.0,38.6 2.3,38.6"/>
+        <text style="font-style:normal;font-weight:bold;font-size:16px;font-family:sans-serif"><tspan x="6" y="25">{text}</tspan></text>
+        <text style="font-style:normal;font-weight:normal;font-size:35px;font-family:sans-serif"><tspan x="17" y="99">КП</tspan></text>
       </svg>
     `,
   },
-  'place_ops': {
+  'ops': {
     anchor_dx: 0,
     anchor_dy: 100.,
     zoom:      1.2,
     svg: `
       <svg width={width} height={height} viewBox="0 0 200 100">
-        <path
-           style="fill:#ffffff;stroke:{color};stroke-width:4"
-           d="M 2.4354161,99.822978 V 2.5810581 H 71.529824 L 2.6211544,46.900936"
-        />
-        <text style="font-style:normal;font-weight:bold;font-size:16px;font-family:sans-serif">
-          <tspan x="6" y="20">ОПС</tspan>
-        </text>
-        <text style="font-style:normal;font-weight:bold;font-size:16px;font-family:sans-serif">
-          <tspan x="6" y="96">{text}</tspan>
-        </text>
+        <path style="fill:#ffffff;stroke:{color};stroke-width:4" d="M 2.4,99.8 V 2.6 H 71.5 L 2.6,46.9"/>
+        <text style="font-style:normal;font-weight:bold;font-size:16px;font-family:sans-serif"><tspan x="6" y="20">ОПС</tspan></text>
+        <text style="font-style:normal;font-weight:bold;font-size:16px;font-family:sans-serif"><tspan x="6" y="96">{text}</tspan></text>
       </svg>
     `,
   },
-  'place_outpost': {
+  'outpost': {
     anchor_dx: 0,
     anchor_dy: 100.,
     zoom:      1.2,
     svg: `
       <svg width={width} height={height} viewBox="0 0 55 100">
-        <path
-          style="fill:#ffffff;stroke:{color};stroke-width:4"
-          d="M 2.2036433,100 V 3.312438 L 50.729628,25.10104 2.2036433,47.805112"
-        />
-        <text style="font-style:normal;font-weight:bold;font-size:16px;font-family:sans-serif">
-          <tspan x="6" y="29">{text}</tspan>
-        </text>
+        <path style="fill:#ffffff;stroke:{color};stroke-width:4" d="M 2.2,100 V 3.3 L 50.7,25.1 2.2,47.8"/>
+        <text style="font-style:normal;font-weight:bold;font-size:16px;font-family:sans-serif"><tspan x="6" y="29">{text}</tspan></text>
       </svg>
     `,
   },
-  'place_post': {
+  'post': {
     anchor_dx: 0,
     anchor_dy: 100.,
     zoom:      1.2,
     svg: `
       <svg width={width} height={height} viewBox="0 0 57 100">
-        <path
-          style="fill:#ffffff;stroke:{color};stroke-width:4"
-          d="M 2.3,100.15925 V 4.2910497 L 51.601627,42 2.3,42"
-        />
-        <text style="font-style:normal;font-weight:bold;font-size:16px;font-family:sans-serif">
-          <tspan x="6" y="35">{text}</tspan>
-        </text>
+        <path style="fill:#ffffff;stroke:{color};stroke-width:4" d="M 2.3,100 V 4.3 L 51.6,42 2.3,42"/>
+        <text style="font-style:normal;font-weight:bold;font-size:16px;font-family:sans-serif"><tspan x="6" y="35">{text}</tspan></text>
       </svg>
     `,
   },
-  'place_post_temp': {
+  'post_temp': {
     anchor_dx: 0,
     anchor_dy: 100.,
     zoom:      1.2,
     svg: `
       <svg width={width} height={height} viewBox="0 0 60 102">
-        <path
-          style="fill:#ffffff;stroke:{color};stroke-width:4"
-          d="M 7,94 V 4.2910497 L 55,43 7,43"
-        />
-        <ellipse style="opacity:1;fill:#ff0000;stroke:#ff0000;stroke-width:2" cx="7" cy="94" rx="5" ry="5"/>
-        <text style="font-style:normal;font-weight:bold;font-size:16px;font-family:sans-serif">
-          <tspan x="10" y="35">{text}</tspan>
-        </text>
+        <path style="fill:#ffffff;stroke:{color};stroke-width:4" d="M 7,94 V 4.2910497 L 55,43 7,43"/>
+        <circle style="fill:{color};stroke:{color};stroke-width:2" cx="7" cy="94" r="5"/>
+        <text style="font-style:normal;font-weight:bold;font-size:16px;font-family:sans-serif"><tspan x="10" y="35">{text}</tspan></text>
       </svg>
     `,
   },
-  'place_post_control': {
+  'post_control': {
     anchor_dx: 0,
     anchor_dy: 100.,
     zoom:      1.2,
     svg: `
       <svg width={width} height={height} viewBox="0 0 200 100">
-        <path
-          style="fill:#ffffff;stroke:{color};stroke-width:4"
-          d="M 1.9,100 2.6,22.7 2.5,3.2 44.0,23.5 2.1,41.0"
-        />
-        <path
-          style="fill:#ff0000;stroke:#ff0000;stroke-width:1px"
-          d="M 22.6,13.1 3.0,22.6 22.8,32.2 44.0,23.5 Z"
-        />
-        <text style="font-style:normal;font-weight:bold;font-size:16px;font-family:sans-serif">
-          <tspan x="6" y="96">{text}</tspan>
-        </text>
+        <path style="fill:#ffffff;stroke:{color};stroke-width:4"   d="M 1.9,100 2.6,22.7 2.5,3.2 44.0,23.5 2.1,41.0"/>
+        <path style="fill:{color};stroke:{color};stroke-width:1px" d="M 22.6,13.1 3.0,22.6 22.8,32.2 44.0,23.5 Z"/>
+        <text style="font-style:normal;font-weight:bold;font-size:16px;font-family:sans-serif"><tspan x="6" y="96">{text}</tspan></text>
+      </svg>
+    `,
+  },
+
+  'detention': {
+    anchor_dx: 53,
+    anchor_dy: 50.,
+    zoom:      .7,
+    svg: `
+      <svg width={width} height={height} viewBox="0 0 106 100">
+        <path style="fill:#ffffff00;stroke:#f00;stroke-width:6" d="M 78,6.7 A 53,53 0 0,1 78,93.3"/>
+        <path style="fill:#ffffff00;stroke:#f00;stroke-width:6" d="M 28,93.3 A 53,53 0 0,1 28,6.7"/>
+        <circle style="fill:#fff;stroke:#00f;stroke-width:6" cx="53" cy="53" r="25"/>
       </svg>
     `,
   },

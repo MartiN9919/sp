@@ -91,18 +91,18 @@ export const MAP_TEST_ITEM_1 = {
           ]
         },
       },
-      // {
-      //   "type": "Feature",
-      //   "properties": {
-      //     "class": "icon-mdi-flag sss icon-mdi-spin tst",
-      //     "hint": "Подсказка 4",
-      //     "date": "2021-01-03",
-      //   },
-      //   "geometry": {
-      //     "type": "Point",
-      //     "coordinates": [23.928222656250004,53.028000167735165]
-      //   },
-      // },
+      {
+        "type": "Feature",
+        "properties": {
+          "class": "icon-mdi-flag sss icon-mdi-spin tst",
+          "hint": "Demo",
+          "date": "2021-01-03",
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [35,53.0]
+        },
+      },
       {
         "type": "Feature",
         "properties": {
@@ -126,7 +126,7 @@ export const MAP_TEST_ITEM_1 = {
         },
         "geometry": {
           "type": "Point",
-          "coordinates": [25.7080078125,54.16243396806781]
+          "coordinates": [25.7,54.2],
         },
       },
       {
@@ -139,7 +139,7 @@ export const MAP_TEST_ITEM_1 = {
         },
         "geometry": {
           "type": "Point",
-          "coordinates": [23.7080078125,53.16243396806781]
+          "coordinates": [23.7,53.2]
         },
       },
       {
@@ -158,9 +158,9 @@ export const MAP_TEST_ITEM_1 = {
       {
         "type": "Feature",
         "properties": {
-          "class": "icon-svg-place_cp",
+          "class": "icon-svg-control",
           "text":  '130 пого',
-          "hint":  "place_cp",
+          "hint":  "place_control",
           "date":  "2021-01-01",
         },
         "geometry": {
@@ -171,66 +171,79 @@ export const MAP_TEST_ITEM_1 = {
       {
         "type": "Feature",
         "properties": {
-          "class": "icon-svg-place_ops",
+          "class": "icon-svg-ops",
           "text":  '"Прудок"',
-          "hint":  "place_ops",
+          "hint":  "ops",
           "date":  "2021-01-01",
         },
         "geometry": {
           "type": "Point",
-          "coordinates": [27.7080078125,53.16243396806781]
+          "coordinates": [27.7,53.2]
         },
       },
       {
         "type": "Feature",
         "properties": {
-          "class": "icon-svg-place_outpost",
+          "class": "icon-svg-outpost",
           "text": "10",
-          "hint": "place_outpost",
+          "hint": "outpost",
           "date": "2021-01-01",
         },
         "geometry": {
           "type": "Point",
-          "coordinates": [23.7080078125,52.16243396806781]
+          "coordinates": [23.7, 52.2]
         },
       },
       {
         "type": "Feature",
         "properties": {
-          "class": "icon-svg-place_post",
+          "class": "icon-svg-post",
           "text": "12",
-          "hint": "place_post",
+          "hint": "post",
           "date": "2021-01-01",
         },
         "geometry": {
           "type": "Point",
-          "coordinates": [25.7080078125,52.01]
+          "coordinates": [25.7,52.0]
         },
       },
       {
         "type": "Feature",
         "properties": {
-          "class": "icon-svg-place_post_temp",
+          "class": "icon-svg-post_temp",
           "text": "15",
-          "hint": "place_post_temp",
+          "hint": "post_temp",
           "date": "2021-01-01",
         },
         "geometry": {
           "type": "Point",
-          "coordinates": [30.5,52.11]
+          "coordinates": [30.5,52.1]
         },
       },
       {
         "type": "Feature",
         "properties": {
-          "class": "icon-svg-place_post_control",
+          "class": "icon-svg-post_control",
           "text": '"Зубренок"',
-          "hint": "place_post_control",
+          "hint": "post_control",
           "date": "2021-01-01",
         },
         "geometry": {
           "type": "Point",
           "coordinates": [27.5,51.6]
+        },
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "class": "icon-svg-detention",
+          "text": '"detention"',
+          "hint": "detention",
+          "date": "2021-01-01",
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [31.5,53.6]
         },
       },
     ],
@@ -290,7 +303,7 @@ export const MAP_TEST_ITEM_2 = {
         },
         "geometry": {
           "type": "Point",
-          "coordinates": [23.5,53.9]
+          "coordinates": [31.5,53.6]
         },
       },
 

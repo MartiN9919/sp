@@ -54,6 +54,48 @@ export function icon_get(classes_str='', color='blue', zoom=1, text=undefined) {
   let classes_icon_str  = classes_icon_list.map((val) => val.join(separator)).join(' '); // 'mdi-flag mdi-spin' 'fs-spec0'
 
 
+  // SVG
+  if (icon_type == MAP_CONST.CLASS.ICON.SVG) {
+    if (classes_icon_list.length<1) return;
+    if (classes_icon_list[0].length<2) return;
+    let data = get_icon_data(classes_icon_list[0][1], color, zoom, text);
+    if (data == undefined) return;
+    return new L.DivIcon({
+      className:   classes_other_str,
+      iconSize:    [data.width,     data.height],
+      iconAnchor:  [data.anchor_dx, data.anchor_dy],                         // точка привязки svg относительно верхнего левого угла
+      popupAnchor: [1,             -data.height*1.1],
+      html:        data.svg,
+      shadowUrl:   icon_file_path('shadow-marker'),
+      shadowSize:  [data.width, data.height],
+      shadowAnchor:[data.width, data.height],
+    //color:       color,
+    });
+  }
+
+
+  // FILE
+  if (
+    (icon_type == MAP_CONST.CLASS.ICON.FILE) ||                              // или указан тип FILE
+    ((classes_icon_str == '') &&
+      (COLOR_EQU[color] || Object.values(COLOR_EQU).includes(color))         // или указан color из COLOR_EQU (key или val)
+    )
+  ) {
+    if (icon_type != MAP_CONST.CLASS.ICON.FILE) { classes_icon_list = [[undefined, color]]; }
+    let file   = classes_icon_list[0][1];
+    if (COLOR_EQU[file]) { file = COLOR_EQU[file]; }
+    let size_w = (classes_icon_list[0][2] ?? 25) * zoom|0;
+    let size_h = (classes_icon_list[0][3] ?? 41) * zoom|0;
+    return new L.Icon({
+      className:   classes_other_str,
+      shadowUrl:   icon_file_path('shadow-marker'),
+      shadowSize:  [size_h, size_h],
+      iconUrl:     icon_file_path(file),
+      iconSize:    [size_w,     size_h],
+      iconAnchor:  [size_w/2|0, size_h],                                      // указатель: x-center, y-bottom
+      popupAnchor: [1,         -size_h*1.1],
+    });
+  }
 
 
   // FONT: MDI
@@ -88,49 +130,6 @@ export function icon_get(classes_str='', color='blue', zoom=1, text=undefined) {
           '<div class="fs '+classes_icon_str+'" style="border-color: '+color+';">'+
           '</div>'+
         '</div>',
-    });
-  }
-
-
-  // SVG
-  if (icon_type == MAP_CONST.CLASS.ICON.SVG) {
-    if (classes_icon_list.length<1) return;
-    if (classes_icon_list[0].length<2) return;
-    let data = get_icon_data(classes_icon_list[0][1], color, zoom, text);
-    if (data == undefined) return;
-    return new L.DivIcon({
-      className:   classes_other_str,
-      iconSize:    [data.width,     data.height],
-      iconAnchor:  [data.anchor_dx, data.anchor_dy],                         // точка привязки svg относительно верхнего левого угла
-      popupAnchor: [1,             -data.height*1.1],
-      html:        data.svg,
-      // shadowUrl:   icon_file_path('shadow-marker'),
-      // shadowSize:  [data.width, data.height],
-      // color:       color,
-    });
-  }
-
-
-  // FILE
-  if (
-    (icon_type == MAP_CONST.CLASS.ICON.FILE) ||                              // или указан тип FILE
-    ((classes_icon_str == '') &&
-      (COLOR_EQU[color] || Object.values(COLOR_EQU).includes(color))         // или указан color из COLOR_EQU (key или val)
-    )
-  ) {
-    if (icon_type != MAP_CONST.CLASS.ICON.FILE) { classes_icon_list = [[undefined, color]]; }
-    let file   = classes_icon_list[0][1];
-    if (COLOR_EQU[file]) { file = COLOR_EQU[file]; }
-    let size_w = (classes_icon_list[0][2] ?? 25) * zoom|0;
-    let size_h = (classes_icon_list[0][3] ?? 41) * zoom|0;
-    return new L.Icon({
-      className:   classes_other_str,
-      shadowUrl:   icon_file_path('shadow-marker'),
-      shadowSize:  [size_h, size_h],
-      iconUrl:     icon_file_path(file),
-      iconSize:    [size_w,     size_h],
-      iconAnchor:  [size_w/2|0, size_h],                                      // указатель: x-center, y-bottom
-      popupAnchor: [1,         -size_h*1.1],
     });
   }
 
