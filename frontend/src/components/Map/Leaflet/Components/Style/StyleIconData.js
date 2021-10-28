@@ -48,7 +48,7 @@ const DATA = {
            style="fill:#ff0000;stroke:#ff0000;stroke-width:4"
            d="m 31.965985,38.367703 32.671297,-0.0415 -16.61163,28.456 z"
         />
-        <text style="font-style:normal;font-weight:bold;font-size:22px;line-height:1.25;font-family:sans-serif">
+        <text style="font-style:normal;font-weight:bold;font-size:22px;font-family:sans-serif">
           <tspan x="100" y="70">{text}</tspan>
         </text>
       </svg>
@@ -68,7 +68,7 @@ const DATA = {
            style="fill:#0000FF;stroke:#0000FF;stroke-width:4"
            d="m 31.965985,38.367703 32.671297,-0.0415 -16.61163,28.456 z"
         />
-        <text style="font-style:normal;font-weight:bold;font-size:22px;line-height:1.25;font-family:sans-serif">
+        <text style="font-style:normal;font-weight:bold;font-size:22px;font-family:sans-serif">
           <tspan x="100" y="70">{text}</tspan>
         </text>
       </svg>
@@ -88,7 +88,7 @@ const DATA = {
            style="fill:#000000;stroke:#000000;stroke-width:4"
            d="m 31.965985,38.367703 32.671297,-0.0415 -16.61163,28.456 z"
         />
-        <text style="font-style:normal;font-weight:bold;font-size:22px;line-height:1.25;font-family:sans-serif">
+        <text style="font-style:normal;font-weight:bold;font-size:22px;font-family:sans-serif">
           <tspan x="100" y="70">{text}</tspan>
         </text>
       </svg>
@@ -101,13 +101,13 @@ const DATA = {
       <svg width={width} height={height} viewBox="0 0 320 74">
         <path
            style="fill:#ffffff;stroke:{color};stroke-width:4"
-           d="M 3.7797086,71.212431 45.327076,3.4753509 93.712449,71.124921 Z"
+           d="M 3.8,71.2 45.3,3.5 93.7,71.1 Z"
         />
         <path
            style="fill:#ff0000;stroke:#fe0000;stroke-width:0.97479194px"
-           d="M 45.571896,3.5372209 46.246954,71.072261 93.957269,71.186801 45.571896,3.5372209"
+           d="M 45.6,3.5 46.2,71.1 94.0,71.2 45.6,3.5"
         />
-        <text style="font-style:normal;font-weight:bold;font-size:22px;line-height:1.25;font-family:sans-serif">
+        <text style="font-style:normal;font-weight:bold;font-size:22px;font-family:sans-serif">
           <tspan x="100" y="70">{text}</tspan>
         </text>
       </svg>
@@ -116,20 +116,39 @@ const DATA = {
 
 
 
+  'place_cp': {
+    anchor_dx: 0,
+    anchor_dy: 100.,
+    zoom:      1.2,
+    svg: `
+      <svg width={width} height={height} viewBox="0 0 200 100">
+        <path
+          style="fill:#ffffff;stroke:{color};stroke-width:4"
+          d="M 2.2,99.8 V 2.2 H 90.0 L 70.0,38.6 2.3,38.6"
+        />
+        <text style="font-style:normal;font-weight:bold;font-size:16px;font-family:sans-serif">
+            <tspan x="6" y="25">{text}</tspan>
+        </text>
+        <text style="font-style:normal;font-weight:normal;font-size:35px;font-family:sans-serif">
+            <tspan x="17" y="99">КП</tspan>
+        </text>
+      </svg>
+    `,
+  },
   'place_ops': {
     anchor_dx: 0,
     anchor_dy: 100.,
-    zoom:      1.5,
+    zoom:      1.2,
     svg: `
       <svg width={width} height={height} viewBox="0 0 200 100">
         <path
            style="fill:#ffffff;stroke:{color};stroke-width:4"
            d="M 2.4354161,99.822978 V 2.5810581 H 71.529824 L 2.6211544,46.900936"
         />
-        <text style="font-style:normal;font-weight:bold;font-size:16px;line-height:1.25;font-family:sans-serif">
+        <text style="font-style:normal;font-weight:bold;font-size:16px;font-family:sans-serif">
           <tspan x="6" y="20">ОПС</tspan>
         </text>
-        <text style="font-style:normal;font-weight:bold;font-size:16px;line-height:1.25;font-family:sans-serif">
+        <text style="font-style:normal;font-weight:bold;font-size:16px;font-family:sans-serif">
           <tspan x="6" y="96">{text}</tspan>
         </text>
       </svg>
@@ -145,7 +164,7 @@ const DATA = {
           style="fill:#ffffff;stroke:{color};stroke-width:4"
           d="M 2.2036433,100 V 3.312438 L 50.729628,25.10104 2.2036433,47.805112"
         />
-        <text style="font-style:normal;font-weight:bold;font-size:16px;line-height:1.25;font-family:sans-serif">
+        <text style="font-style:normal;font-weight:bold;font-size:16px;font-family:sans-serif">
           <tspan x="6" y="29">{text}</tspan>
         </text>
       </svg>
@@ -161,7 +180,7 @@ const DATA = {
           style="fill:#ffffff;stroke:{color};stroke-width:4"
           d="M 2.3,100.15925 V 4.2910497 L 51.601627,42 2.3,42"
         />
-        <text style="font-style:normal;font-weight:bold;font-size:16px;line-height:1.25;font-family:sans-serif">
+        <text style="font-style:normal;font-weight:bold;font-size:16px;font-family:sans-serif">
           <tspan x="6" y="35">{text}</tspan>
         </text>
       </svg>
@@ -178,7 +197,7 @@ const DATA = {
           d="M 7,94 V 4.2910497 L 55,43 7,43"
         />
         <ellipse style="opacity:1;fill:#ff0000;stroke:#ff0000;stroke-width:2" cx="7" cy="94" rx="5" ry="5"/>
-        <text style="font-style:normal;font-weight:bold;font-size:16px;line-height:1.25;font-family:sans-serif">
+        <text style="font-style:normal;font-weight:bold;font-size:16px;font-family:sans-serif">
           <tspan x="10" y="35">{text}</tspan>
         </text>
       </svg>

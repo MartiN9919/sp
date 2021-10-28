@@ -158,6 +158,19 @@ export const MAP_TEST_ITEM_1 = {
       {
         "type": "Feature",
         "properties": {
+          "class": "icon-svg-place_cp",
+          "text":  '130 пого',
+          "hint":  "place_cp",
+          "date":  "2021-01-01",
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [27.5,55.1]
+        },
+      },
+      {
+        "type": "Feature",
+        "properties": {
           "class": "icon-svg-place_ops",
           "text":  '"Прудок"',
           "hint":  "place_ops",
