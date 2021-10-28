@@ -39,7 +39,7 @@ const DATA = {
     anchor_dy: 50.,
     zoom:      1.,
     svg: `
-      <svg width={width} height={height} viewBox="0 0 100 74">
+      <svg width={width} height={height} viewBox="0 0 320 74">
         <path
            style="fill:#ffffff;stroke:{color};stroke-width:4"
            d="M 3.8292234,72.585793 46.686366,3.4786426 96.59708,72.496513 Z"
@@ -48,6 +48,9 @@ const DATA = {
            style="fill:#ff0000;stroke:#ff0000;stroke-width:4"
            d="m 31.965985,38.367703 32.671297,-0.0415 -16.61163,28.456 z"
         />
+        <text style="font-style:normal;font-weight:bold;font-size:22px;line-height:1.25;font-family:sans-serif">
+          <tspan x="100" y="70">{text}</tspan>
+        </text>
       </svg>
     `,
   },
@@ -56,15 +59,18 @@ const DATA = {
     anchor_dy: 50.,
     zoom:      1.,
     svg: `
-      <svg width={width} height={height} viewBox="0 0 100 74">
+      <svg width={width} height={height} viewBox="0 0 320 74">
         <path
            style="fill:#ffffff;stroke:{color};stroke-width:4"
            d="M 3.8292234,72.585793 46.686366,3.4786426 96.59708,72.496513 Z"
         />
         <path
-           style="fill:#000080;stroke:#000080;stroke-width:4"
+           style="fill:#0000FF;stroke:#0000FF;stroke-width:4"
            d="m 31.965985,38.367703 32.671297,-0.0415 -16.61163,28.456 z"
         />
+        <text style="font-style:normal;font-weight:bold;font-size:22px;line-height:1.25;font-family:sans-serif">
+          <tspan x="100" y="70">{text}</tspan>
+        </text>
       </svg>
     `,
   },
@@ -73,7 +79,7 @@ const DATA = {
     anchor_dy: 50.,
     zoom:      1.,
     svg: `
-      <svg width={width} height={height} viewBox="0 0 98.490715 74">
+      <svg width={width} height={height} viewBox="0 0 320 74">
         <path
            style="fill:#ffffff;stroke:{color};stroke-width:4"
            d="M 3.8292234,72.585793 46.686366,3.4786426 96.59708,72.496513 Z"
@@ -82,6 +88,9 @@ const DATA = {
            style="fill:#000000;stroke:#000000;stroke-width:4"
            d="m 31.965985,38.367703 32.671297,-0.0415 -16.61163,28.456 z"
         />
+        <text style="font-style:normal;font-weight:bold;font-size:22px;line-height:1.25;font-family:sans-serif">
+          <tspan x="100" y="70">{text}</tspan>
+        </text>
       </svg>
     `,
   },
@@ -89,7 +98,7 @@ const DATA = {
     anchor_dx: 45.,
     anchor_dy: 50.,
     svg: `
-      <svg width={width} height={height} viewBox="0 0 300 74">
+      <svg width={width} height={height} viewBox="0 0 320 74">
         <path
            style="fill:#ffffff;stroke:{color};stroke-width:4"
            d="M 3.7797086,71.212431 45.327076,3.4753509 93.712449,71.124921 Z"

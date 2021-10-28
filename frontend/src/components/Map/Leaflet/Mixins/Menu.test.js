@@ -120,6 +120,7 @@ export const MAP_TEST_ITEM_1 = {
         "type": "Feature",
         "properties": {
           "class": "icon-svg-checkpoint_flyer",
+          "text":  '"Высокое"',
           "hint": "checkpoint_flyer",
           "date": "2021-01-01",
         },
@@ -132,12 +133,26 @@ export const MAP_TEST_ITEM_1 = {
         "type": "Feature",
         "properties": {
           "class": "icon-svg-checkpoint_auto",
+          "text":  '"Молодечненское"',
           "hint": "checkpoint_auto",
           "date": "2021-01-01",
         },
         "geometry": {
           "type": "Point",
           "coordinates": [23.7080078125,53.16243396806781]
+        },
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "class": "icon-svg-checkpoint_rail",
+          "text":  '"Стальное"',
+          "hint": "checkpoint_rail",
+          "date": "2021-01-01",
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [28.7,55.9]
         },
       },
       {
