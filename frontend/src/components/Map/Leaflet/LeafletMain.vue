@@ -390,7 +390,8 @@ export default {
           let classAny = feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES.CLASS]??'';
           let classSel = feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._SEL_]?MAP_CONST.CLASS.SEL:'';
           let color    = self.SCRIPT_GET_ITEM_COLOR(map_ind);
-          let zoom     = MAP_CONST.POS.ZOOM_ICON(self.MAP_GET_ZOOM);
+          let zoom     = self.MAP_GET_ZOOM;
+          zoom         = (zoom < 7) ? Math.pow(2.0, zoom-7) : 1;                         // масштаб иконки
           return marker_get(latlng, classAny+' '+classSel, color, zoom);
         },
 

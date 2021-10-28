@@ -2,8 +2,6 @@ export const MAP_CONST = {
   POS: {                                  // центр и увеличение карты
     SEPARATOR: '_',
     DEFAULT:   '27.537231445312504_53.64138139745019_7',
-    ZOOM_MAX:  19,
-    ZOOM_ICON: (val) => (val<7)?Math.pow(2.0, val-7):1,  // масштаб иконки
   },
 
   CLASS: {

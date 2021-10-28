@@ -98,12 +98,13 @@ export function icon_get(classes_str='', color='blue', zoom=1) {
     if (classes_icon_list[0].length<2) return;
     let data = get_icon_data(classes_icon_list[0][1], color, zoom);
     if (data == undefined) return;
+    console.log(zoom, data.width, data.height, data.anchor_dx, data.anchor_dy)
     return new L.DivIcon({
       className:   classes_other_str,
       color:       color,
       iconSize:    [data.width,     data.height],
-      iconAnchor:  [data.width/2|0, data.height/2|0],                         // указатель: x-center, y-center
-      popupAnchor: [1,             -data.height*1.1|0],
+      iconAnchor:  [data.anchor_dx, data.anchor_dy],                         // точка привязки svg относительно верхнего левого угла
+      //popupAnchor: [1,             -data.height*1.1|0],
       html:        data.svg,
     });
   }

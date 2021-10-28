@@ -106,7 +106,7 @@ export const MAP_TEST_ITEM_1 = {
       {
         "type": "Feature",
         "properties": {
-          "class": "icon-svg-test2",
+          "class": "icon-svg-test3",
           "hint": "Подсказка 5",
           "date": "2021-01-02",
         },
@@ -115,17 +115,6 @@ export const MAP_TEST_ITEM_1 = {
           "coordinates": [23.532714843750004,53.94315470224928]
         },
       },
-      // {
-      //   "type": "Feature",
-      //   "properties": {
-      //     "hint": "Контроль 5",
-      //     "date": "2021-01-02",
-      //   },
-      //   "geometry": {
-      //     "type": "Point",
-      //     "coordinates": [23.532714843750003,53.94315470224927]
-      //   },
-      // },
       // {
       //   "type": "Feature",
       //   "properties": {
@@ -193,61 +182,75 @@ export const MAP_TEST_ITEM_2 = {
           ]
         },
       },
-      {
-        "type": "Feature",
-        "properties": {
-          "class": "icon-pulse-14",
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [30.541992187500004,50.41551870402678]
-        }
-      },
-      {
-        "type": "Feature",
-        "properties": {
-          "class": "icon-fs-spec0",
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [31.24901404693862,51.4907087536248]
-        }
-      },
-      {
-        "type": "Feature",
-        "properties": {
-          "class": "icon-file-gold",
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [29.637048820051557,51.06794583616016]
-        }
-      },
-      {
-        "type": "Feature",
-        "properties": {
-          "class": "icon-file-test-25-41",
-          "hint": "Подсказка 5",
-          "date": "2021-01-06 19:00",
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [30.21580260030736,51.284672727278426]
-        },
-      },
+
 
       {
         "type": "Feature",
         "properties": {
-          "class": "icon-file-#0f0",
-          "hint": "Подсказка 6",
-          "date": "2021-01-09 12:00",
+          "hint": "Контроль 5",
+          "date": "2021-01-02",
         },
         "geometry": {
           "type": "Point",
-          "coordinates": [32.21580260030736,50.284672727278426]
+          "coordinates": [23.532714843750004,53.94315470224928]
         },
       },
+
+      // {
+      //   "type": "Feature",
+      //   "properties": {
+      //     "class": "icon-pulse-14",
+      //   },
+      //   "geometry": {
+      //     "type": "Point",
+      //     "coordinates": [30.541992187500004,50.41551870402678]
+      //   }
+      // },
+      // {
+      //   "type": "Feature",
+      //   "properties": {
+      //     "class": "icon-fs-spec0",
+      //   },
+      //   "geometry": {
+      //     "type": "Point",
+      //     "coordinates": [31.24901404693862,51.4907087536248]
+      //   }
+      // },
+      // {
+      //   "type": "Feature",
+      //   "properties": {
+      //     "class": "icon-file-gold",
+      //   },
+      //   "geometry": {
+      //     "type": "Point",
+      //     "coordinates": [29.637048820051557,51.06794583616016]
+      //   }
+      // },
+      // {
+      //   "type": "Feature",
+      //   "properties": {
+      //     "class": "icon-file-test-25-41",
+      //     "hint": "Подсказка 5",
+      //     "date": "2021-01-06 19:00",
+      //   },
+      //   "geometry": {
+      //     "type": "Point",
+      //     "coordinates": [30.21580260030736,51.284672727278426]
+      //   },
+      // },
+
+      // {
+      //   "type": "Feature",
+      //   "properties": {
+      //     "class": "icon-file-#0f0",
+      //     "hint": "Подсказка 6",
+      //     "date": "2021-01-09 12:00",
+      //   },
+      //   "geometry": {
+      //     "type": "Point",
+      //     "coordinates": [32.21580260030736,50.284672727278426]
+      //   },
+      // },
 
     ],
   }
