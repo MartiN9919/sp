@@ -183,6 +183,22 @@ const DATA = {
     `,
   },
 
+
+
+  'border_sign': {
+    anchor_dx: 50,
+    anchor_dy: 50.,
+    zoom:      .5,
+    svg: `
+      <svg width={width} height={height} viewBox="0 0 500 130">
+        <circle style="fill:#fff;stroke:#000;stroke-width:4" cx="50" cy="50" r="23"/>
+        <circle style="fill:#000" cx="50" cy="50" r="8"/>
+        <text style="font-style:normal;font-weight:bold;font-size:45px;font-family:sans-serif"><tspan x="0" y="115">{text}</tspan></text>
+      </svg>
+    `,
+  },
+
+
   'detention': {
     anchor_dx: 53,
     anchor_dy: 50.,
