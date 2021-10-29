@@ -5,7 +5,7 @@ from django.http import JsonResponse
 from django.http import FileResponse
 from PIL import Image
 
-from core.projectSettings.decoraters import login_check, request_log, request_get, request_download
+from core.projectSettings.decorators import login_check, request_log, request_get, request_download
 from core.settings import MEDIA_ROOT
 from data_base_driver.constants.const_dat import DAT_OWNER
 from data_base_driver.sys_reports.check_file_permission import check_file_permission

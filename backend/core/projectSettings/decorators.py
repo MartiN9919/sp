@@ -5,9 +5,7 @@ import json
 import logging
 import traceback
 
-from django.contrib.auth.decorators import user_passes_test
-from django.core.exceptions import PermissionDenied
-from django.http import HttpResponseBadRequest, HttpResponse, JsonResponse
+from django.http import JsonResponse
 from core.projectSettings.logging_settings import PROJECT_LOG_REQUESTS, PROJECT_LOG_SCRIPT_ERROR
 from core.settings import MEDIA_ROOT
 from data_base_driver.constants.const_dat import DAT_OWNER
@@ -17,7 +15,9 @@ from data_base_driver.sys_notifications.set_notifications_info import add_notifi
 
 def request_wrap(f):
     """
-    Обертка для упрощения функции
+    Функция обертка для обработки всех запросов
+    @param f: оборачиваемая функция обработки запроса
+    @return: если exception - Json с кодом ошибки и статусом, в противном случае резьтат исходной функции в Json
     """
 
     def wrap(request, *args, **kwargs):
@@ -38,6 +38,12 @@ logger_script_error = logging.getLogger(PROJECT_LOG_SCRIPT_ERROR)
 
 
 def script_wrap(f):
+    """
+    Функция обертка для всех функций вызова скриптов
+    @param f: оборачиваемая функция вызова скрипта
+    @return: резуьтат выполнения функции, в случае любого exception - оповещения и дополнительный лог об ошибке
+    """
+
     def wrap(request, *args, **kwargs):
         try:
             return f(request, *args, **kwargs)
@@ -56,7 +62,9 @@ def script_wrap(f):
 
 def request_get(f):
     """
-    Доступ только get-запросам
+    Функция оберкта пропускающая только GET запрос
+    @param f: оборачиваемая функция
+    @return: в случае GET запроса результат выполнения функции
     """
 
     def wrap(request, *args, **kwargs):
@@ -71,7 +79,9 @@ def request_get(f):
 
 def request_post(f):
     """
-    Доступ только post-запросам
+    Функция оберкта пропускающая только POST запрос
+    @param f: оборачиваемая функция
+    @return: в случае POST запроса результат выполнения функции
     """
 
     def wrap(request, *args, **kwargs):
@@ -86,7 +96,9 @@ def request_post(f):
 
 def request_download(f):
     """
-    Доступ только get-запросам
+    Фунцкия обертка для проверки доступа загрузки файла
+    @param f: оборачиваемая функция
+    @return: результат выполнения функции в случае прохождения проверки доступа, если нет - 403 или 404(нет файла) ошибка
     """
 
     def wrap(request, *args, **kwargs):
@@ -127,78 +139,16 @@ def write_permission(f):
     return wrap
 
 
-#########################################################################
-# ДЕКОРАТОР
-# Разрешает доступ в случае нахождения пользователя в одной из групп
-# @decor_required_group('group_one', 'group_two') @decor_required_group('group_one')
-#########################################################################
-def decor_group_verify(user, *group_names):
-    if user.is_authenticated:
-        if len(group_names) == 0 or user.groups.filter(name__in=group_names).exists() or user.is_superuser:
-            return True
-    return False
-
-
-def decor_group_required(*group_names):
-    def in_groups(user):
-        return decor_group_verify(user, *group_names)
-
-    return user_passes_test(in_groups)
-
-
-#########################################################################
-# ДЕКОРАТОР
-# Разрешает доступ только суперпользователю
-# @decor_required_superuser
-#########################################################################
-def decor_required_superuser(function):
-    def _inner(request, *args, **kwargs):
-        if not request.user.is_superuser:
-            raise PermissionDenied
-        return function(request, *args, **kwargs)
-
-    return _inner
-
-
-#########################################################################
-# ДЕКОРАТОР
-# Разрешает доступ только персоналу
-# @decor_required_staff
-#########################################################################
-def decor_required_staff(function):
-    def _inner(request, *args, **kwargs):
-        if not request.user.is_staff:
-            raise PermissionDenied
-        return function(request, *args, **kwargs)
-
-    return _inner
-
-
-#########################################################################
-# ДЕКОРАТОР
-# Разрешает доступ только ajax
-# @decor_required_ajax
-#########################################################################
-def decor_required_ajax(f):
-    def wrap(request, *args, **kwargs):
-        if not request.is_ajax() or request.method != 'POST':
-            return HttpResponseBadRequest()
-        return f(request, *args, **kwargs)
-
-    wrap.__doc__ = f.__doc__
-    wrap.__name__ = f.__name__
-    return wrap
-
-
-#########################################################################
-# ДЕКОРАТОР
-# Логирует request.param для ajax
-# @request_log
-#########################################################################
 logger = logging.getLogger(PROJECT_LOG_REQUESTS)
 
 
 def request_log(function):
+    """
+    Функция обертка для логирования запросов
+    @param function: оборачиваемая функция обработки запроса
+    @return: результат выполнения функции с обработкой лога
+    """
+
     def _inner(request, *args, **kwargs):
         try:
             logger.info(
@@ -223,12 +173,13 @@ def request_log(function):
     return _inner
 
 
-#########################################################################
-# ДЕКОРАТОР
-# Время выполнения функции
-# @decor_timeit
-#########################################################################
 def decor_timeit(method):
+    """
+    Функция обертка для замера времени выполнения
+    @param method: обертываемая функция
+    @return: резьтат выполнения функции и print() с временем выполнения в секундах
+    """
+
     def timed(*args, **kwargs):
         ts = time.time()
         result = method(*args, **kwargs)
@@ -239,20 +190,13 @@ def decor_timeit(method):
     return timed
 
 
-#########################################################################
-# ДЕКОРАТОР
-# результат в JSON
-# @decor_json
-#########################################################################
-def decor_json(function):
-    def _inner(request, *args, **kwargs):
-        response = function(request, *args, **kwargs)
-        return HttpResponse(json.dumps(response), content_type='application/json')
-
-    return _inner
-
-
 def login_check(function):
+    """
+    Функция обертка для проверки аунтификации пользователя
+    @param function: обертываемая функция
+    @return: если пользователь аунтифицирован - результат выполнения исходной функции, если нет - 401 код
+    """
+
     def is_auth(request):
         if request.user.is_authenticated:
             return function(request)

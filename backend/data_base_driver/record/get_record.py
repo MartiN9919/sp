@@ -64,7 +64,7 @@ def get_permission_params(params, object_id):
                   keys_validation_tuple[2]: [],
                   keys_validation_tuple[3]: []}
     for param in params:
-        if int(param['key_id']) in keys_validation_tuple:
+        if int(param['key_id']) in keys_validation_tuple[:3]:
             permission[int(param['key_id'])].append({
                 'group_id': int(param['val']),
                 'data_time': get_date_time_from_sec(param['sec'])
@@ -119,6 +119,8 @@ def get_value_by_key(key, value):
     @param value: значение классификатора
     @return: значение для пользователя
     """
+    if get_key_by_id(key)['type'] == 'checkbox':
+        value = 'Да' if value == '1' else 'Нет'
     if key == SYS_KEY_CONSTANT.PARENT_ID_CLASSIFIER_ID:
         if int(value) == 0:
             return 'корень'

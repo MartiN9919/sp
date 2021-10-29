@@ -1,102 +1,35 @@
-
-export const MAP_ITEM = {
-  FC: {
-    KEY: 'fc',
-    TYPE: {
-      KEY: 'type',
-      VAL: 'FeatureCollection',
-    },
-
-    FEATURES: {
-      KEY: 'features',
-      PROPERTIES: {
-        KEY:     'properties',
-        CLASS: {
-          KEY: 'class',               // key: класс для стилизации
-          SEL: 'sel',                 // название класса: выделено (pulse)
-          ANT: 'ant',                 // название класса: бегущая линия
-        },
-        VALUE: {                      // key: для полигона - вход:  fc.features[i].property.VALUE - значение, которое определяет цвет полигона
-          KEY: 'value',
-        },
-        _COLOR_: {                    // key: заполняется программой, цвет заливки фигуры
-          KEY: 'color',
-        },
-        _SEL_: {                      // key: заполняется программой, выделенный features[], true - выделено
-          KEY: 'sel',
-        },
-      },
-      GEOMETRY:  {
-        KEY:     'geometry',
-        TYPE: {
-          KEY:       'type',
-          GC:        'GeometryCollection',
-          MARKER:    'Marker',        // кажется нужно использовать POINT
-          POINT:     'Point',
-          LINE:      'LineString',
-          POLYGON:   'Polygon',
-        },
-        COORDINATES: {
-          KEY:       'coordinates',
-        },
-        GEOMETRIES: {                 // вложенные геометрии MAP_ITEM.FC.FEATURES.GEOMETRY
-          KEY:      'geometries',
-        },
-      },
-    },
-
-    STYLE: {                          // стили маркеров и фигур
-      KEY:     'style',
-      _COLOR_: {                      // в некоторых случаях транслируется сюда из MAP_ITEM.COLOR (чтобы использовать в стилях)
-        KEY:   'color',
-      },
-
-      MARKER: {
-        KEY:  'marker',
-        PATH: 'img/markers/',         // путь к файлам маркеров
-        ICON: {
-          KEY:      'icon',
-          DEF:      '',               // значение по умолчанию
-          PREF_MDI: 'mdi-',           // маркер: шрифт mdi
-          PREF_FS:  'fs-',            // маркер: шрифт дополнительный
-          PULSE:    'pulse',          // маркер: пульсирующий
-        },
-        ZOOM:   { KEY: 'zoom' },
-        SIZE:   { KEY: 'size', },
-        SIZE_W: { KEY: 'size_w', },
-        SIZE_H: { KEY: 'size_h', },
-        // CLASS: {                      // классы, без decoratorPath и decoratorSVG (не задействовано)
-        //   KEY: 'class',
-        // },
-      },
-
-      LINE: {
-        KEY:   'line',
-      },
-
-      POLYGON: {
-        KEY: 'polygon',
-        COLORING: {
-          KEY:   'coloring',
-          GREEN: {
-            KEY:   'green',
-            MIN:   'min',             // цвет полигона в зависимости от значения: зеленый(хуже)  -> красный(лучше) https://leafletjs.com/examples/choropleth/example.html
-            MAX:   'max',             // цвет полигона в зависимости от значения: зеленый(лучше) -> красный(хуже)
-          },
-          BEGIN:     '00FF00',        // цвет: начальный
-          END:       'FF0000',        // цвет: конечный
-        },
-      },
+export const MAP_CONST = {
+  TYPE: {
+    FC: 'FeatureCollection',
+    GEOMETRY: {
+      GC:        'GeometryCollection',
+      POINT:     'Point',
+      LINE:      'LineString',
+      POLYGON:   'Polygon',
     },
   },
 
-  COLOR: {                            // копия в FC.STYLE._COLOR_
-    KEY:        'color',
-    DEF:        '#f00',               // цвет по умолчанию
-    ORIGIN:     '#000',               // редактор: цвет ДО    ИЗМЕНЕНИЯ
-    MODIFY:     '#f00',               // редактор: цвет ПОСЛЕ ИЗМЕНЕНИЯ
-    SCRIPT_OFF: '#696969FF',          // цвет неактивного скрипта
-    SCRIPT_BANK: [                    // цвета активных скриптов
+  CLASS: {
+    SEL: 'sel',                           // название класса: выделено (pulse)
+  //ANT: 'ant',                           // название класса: бегущая линия
+    ICON: {
+      TYPE:      'icon',                  // иконка: тип
+      PATH:      'img/markers/',          // иконка: путь к файлам иконок
+      SEPARATOR: '-',                     // иконка: разделитель
+      MDI:       'mdi',                   // иконка: шрифт mdi
+      FS:        'fs',                    // иконка: шрифт fs
+      FILE:      'file',                  // иконка: файл
+      PULSE:     'pulse',                 // иконка: пульсирующая
+    },
+  },
+
+  COLOR: {
+    DEFAULT:            '#f00',           // цвет по умолчанию
+    DEFAULT_STYLE_PATH: 'gray',           // цвет по умолчанию для стилизации (декорирования) фигур
+    EDITOR_ORIGIN:      '#000',           // редактор: цвет ДО    ИЗМЕНЕНИЯ
+    EDITOR_MODIFY:      '#f00',           // редактор: цвет ПОСЛЕ ИЗМЕНЕНИЯ
+    SCRIPT_OFF:         '#696969FF',      // цвет неактивного скрипта
+    SCRIPT_BANK: [                        // цвета активных скриптов
       '#FF0000FF',
       '#0008FFFF',
       '#008E00FF',
@@ -105,12 +38,42 @@ export const MAP_ITEM = {
       '#4DD6D6FF',
       '#E3F017FF',
     ],
+    COLORING: {                           // цвет в зависимости от значения
+      GREEN_MIN: 'green_min',             // зеленый(хуже)  -> красный(лучше) https://leafletjs.com/examples/choropleth/example.html
+      GREEN_MAX: 'green_max',             // зеленый(лучше) -> красный(хуже)
+      BEGIN:     '00FF00',                // цвет: начальный
+      END:       'FF0000',                // цвет: конечный
+    },
   },
+};
 
-  // ZOOM: {
-  //   KEY: 'zoom',                      // увеличение карты
-  // },
-
-  _LEGEND_COLOR_: 'legend_color',     // [], заполняется программой
-
+export const MAP_ITEM = {
+//ZOOM: 'zoom',                           // увеличение карты
+  COLOR: 'color',                         // копия в FC.STYLE._COLOR_
+  _LEGEND_COLOR_: 'legend_color',         // заполняется программой, []
+  FC: {
+    KEY: 'fc',
+    //TYPE: 'type',                       // не используется
+    FEATURES: {
+      KEY: 'features',
+      PROPERTIES: {
+        KEY:     'properties',
+        CLASS:   'class',                 // key: класс для стилизации
+        VALUE:   'value',                 // значение, которое определяет цвет полигона
+        HINT:    'hint',                  // всплывающая подсказка, НЕТ РЕАКТИВНОСТИ?
+        _COLOR_: 'color',                 // заполняется программой, цвет заливки фигуры
+        _SEL_:   'sel',                   // заполняется программой, выделенный features[], true - выделено
+      },
+      GEOMETRY:  {
+        KEY:         'geometry',
+        TYPE:        'type',
+        COORDINATES: 'coordinates',
+        GEOMETRIES:  'geometries',        // вложенные геометрии MAP_ITEM.FC.FEATURES.GEOMETRY
+      },
+    },
+    STYLE: {                              // стили маркеров и фигур
+      KEY:     'style',
+      COLORING: 'coloring',               // цвет полигона в зависимости от значения. MAP_CONST.COLOR.COLORING.GREEN_MIN (GREEN_MAX)
+    },
+  },
 };

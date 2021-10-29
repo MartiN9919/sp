@@ -2,6 +2,7 @@ import datetime
 import json
 import requests
 from data_base_driver.constants.const_fulltextsearch import FullTextSearch
+from data_base_driver.sys_key.get_key_dump import get_key_by_id
 
 TEST_MODE = False
 
@@ -34,6 +35,8 @@ def add_row_record_http(index_title, id, date_time, key_id, val):
     """
     if TEST_MODE:
         return False
+    if get_key_by_id(key_id)['type'] == 'checkbox':
+        val = 1 if val == 'True' else 0
     date_time = datetime.datetime.strptime(date_time, "%Y-%m-%d %H:%M:%S")
     days = date_time.date().toordinal() + 365
     seconds = date_time.time().second + date_time.time().minute * 60 + date_time.time().hour * 3600 + days * 86400

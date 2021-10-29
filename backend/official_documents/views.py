@@ -1,4 +1,4 @@
-from core.projectSettings.decoraters import request_log, login_check, request_wrap
+from core.projectSettings.decorators import request_log, login_check, request_wrap
 from data_base_driver.sys_reports.get_files_info import get_list_files_by_user
 
 

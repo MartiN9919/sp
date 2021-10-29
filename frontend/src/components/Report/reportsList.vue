@@ -29,7 +29,9 @@
           <tr @click="changeSelectedReport(item)" :style="selectedReportStyle(item)" style="cursor: pointer">
             <td class="text-center">{{ item.name }}</td>
             <td class="text-center">
-              <div v-for="variable in item.params.variables">{{ variable.title }}: {{ variable.value }}</div>
+              <div v-for="variable in item.params.variables">
+                {{ variable.title }}: {{ typeof variable.value === 'object' ? variable.value.title : variable.value }}
+              </div>
             </td>
             <td class="text-center">{{ item.date }}</td>
             <td class="text-center">

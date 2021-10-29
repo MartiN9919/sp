@@ -18,6 +18,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'channels',
+    'django_ace',
 
     'authentication',
     'script',
@@ -40,6 +41,8 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'core.urls'
+
+APPEND_SLASH = False
 
 TEMPLATES = [
     {

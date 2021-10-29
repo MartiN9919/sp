@@ -4,7 +4,7 @@
     >
 
     <!-- ДЕКОРАТОР ФИГУР: SVG -->
-    <l-decorator-svg/>
+    <l-style-svg/>
 
     <l-map
       ref="map"
@@ -42,8 +42,9 @@
         </l-marker-cluster>
 
         <!-- ДЕКОРАТОР ФИГУР: PATTERN -->
-        <l-decorator-pattern
+        <l-style-pattern
           :fc="data_normalize(map_ind, map_item)"
+          :color="SCRIPT_GET_ITEM_COLOR(map_ind)"
         />
 
       </l-layer-group>
@@ -119,17 +120,19 @@ import {
 import Vue2LeafletMarkerCluster from 'vue2-leaflet-markercluster';
 import LControlPolylineMeasure  from 'vue2-leaflet-polyline-measure';
 
-import { MAP_ITEM }             from '@/components/Map/Leaflet/Lib/Const';
+import { MAP_CONST, MAP_ITEM }  from '@/components/Map/Leaflet/Lib/Const';
 import { get_feature_class }    from '@/components/Map/Leaflet/Lib/LibFc';
 import {
   icon_ini,
   marker_get,
-  icon_get_group,
-} from '@/components/Map/Leaflet/Markers/Fun';
+  icon_group_get,
+} from '@/components/Map/Leaflet/Components/Style/StyleIcon';
 
-import DecoratorSvg     from '@/components/Map/Leaflet/Components/DecoratorSvg';
-import DecoratorPattern from '@/components/Map/Leaflet/Components/DecoratorPattern';
-import                       '@/components/Map/Leaflet/Markers/Pulse';
+import StyleSvg         from '@/components/Map/Leaflet/Components/Style/StyleSvg';
+import { classes_name_correct } from '@/components/Map/Leaflet/Components/Style/StyleSvgData';
+import StylePattern     from '@/components/Map/Leaflet/Components/Style/StylePattern';
+
+import                       '@/components/Map/Leaflet/Components/Style/StyleIconPulse';
 import EditorMap        from '@/components/Map/Leaflet/Components/EditorMap';
 import Range            from '@/components/Map/Leaflet/Components/Range';
 import Legend           from '@/components/Map/Leaflet/Components/Legend';
@@ -176,9 +179,9 @@ export default {
     LControlScale,
     LControl,
     LIcon,
-    'l-marker-cluster':    Vue2LeafletMarkerCluster,
-    'l-decorator-svg':     DecoratorSvg,
-    'l-decorator-pattern': DecoratorPattern,
+    'l-marker-cluster': Vue2LeafletMarkerCluster,
+    'l-style-svg':      StyleSvg,
+    'l-style-pattern':  StylePattern,
     LControlPolylineMeasure,
 
     EditorMap,
@@ -227,7 +230,6 @@ export default {
 
       'SCRIPT_GET',
       'SCRIPT_GET_ITEM_COLOR',
-      'SCRIPT_GET_ITEM_FC_STYLE',
       'SCRIPT_GET_ITEM_FC_STYLE_LINE',
       'SCRIPT_GET_ITEM_FC_STYLE_POLYGON',
       'SCRIPT_GET_ITEM_SEL',
@@ -323,7 +325,7 @@ export default {
         // подмена иконки кластера
         iconCreateFunction: function (cluster) {
           // select фактически не имеет смысла, т.к. могут группироваться маркеры с разными id
-          return icon_get_group(color, cluster.getChildCount()); //, feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._SEL_.KEY]
+          return icon_group_get(color, cluster.getChildCount()); //, feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._SEL_]
         },
 
         // цвет региона сгруппированного кластера
@@ -361,17 +363,19 @@ export default {
           });
 
           // подсказка
-          if (self.MAP_GET_HINT && feature.properties.hint && feature.properties.hint!='') layer.bindTooltip(
-            "<div>"+feature.properties.hint+"</div>",
+          if (
+            self.MAP_GET_HINT &&
+            feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES.HINT] &&
+            feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES.HINT]!=''
+          ) layer.bindTooltip(
+            "<div>"+feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES.HINT]+"</div>",
             { permanent: false, sticky: true, }
           );
 
           // класс для стилей линий и полигонов
-          let style = {};
-          if (feature.geometry.type == MAP_ITEM.FC.FEATURES.GEOMETRY.TYPE.LINE)    { style = self.SCRIPT_GET_ITEM_FC_STYLE_LINE   (map_ind); }
-          if (feature.geometry.type == MAP_ITEM.FC.FEATURES.GEOMETRY.TYPE.POLYGON) { style = self.SCRIPT_GET_ITEM_FC_STYLE_POLYGON(map_ind); }
-          let className = get_feature_class(feature);
-          if (className != '') { layer.setStyle({'className': className, }); }
+          let classes_str = get_feature_class(feature);
+          classes_str = classes_name_correct(classes_str, map_ind);  // коррекция названий классов для избежания повторов из разных скриптов
+          if ((classes_str != '') && (layer.setStyle)) { layer.setStyle({'className': classes_str, }); }
 
           // редактирование запрещено - удалить pm - для уменьшения объема вычислений
           if (layer.pm) { delete layer.pm; }
@@ -380,22 +384,22 @@ export default {
 
         // стиль маркеров
         pointToLayer: function(feature, latlng) {
-          let classSel = feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._SEL_.KEY]?MAP_ITEM.FC.FEATURES.PROPERTIES.CLASS.SEL:'';
-          let layer = marker_get(latlng, self.SCRIPT_GET_ITEM_FC_STYLE (map_ind), classSel);
+          let classAny = feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES.CLASS]??'';
+          let classSel = feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._SEL_]?MAP_CONST.CLASS.SEL:'';
+          let layer = marker_get(latlng, classAny+' '+classSel, self.SCRIPT_GET_ITEM_COLOR(map_ind));
           return layer;
         },
 
 
         // стиль фигур
         style: function(feature) {
-          let classSel = feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._SEL_.KEY]?MAP_ITEM.FC.FEATURES.PROPERTIES.CLASS.SEL:'';
-          console.log(feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._COLOR_.KEY])
+          let classSel = feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._SEL_]?MAP_CONST.CLASS.SEL:'';
           return {
             weight:      2,
             opacity:     .5,
             color:       self.SCRIPT_GET_ITEM_COLOR(map_ind),
             fillOpacity: .3,
-            fillColor:   feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._COLOR_.KEY],    // set in mixin: Color
+            fillColor:   feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._COLOR_],    // set in mixin: Color
             fillRule:    'evenodd',
             className:   classSel,
           };
@@ -439,7 +443,7 @@ export default {
     getDataAsGeoJSON () {
       // create FeatureCollection
       const geoJSON = {
-        type: MAP_ITEM.FC.TYPE.VAL,
+        type: MAP_CONST.TYPE.FC,
         features: []
       };
 
@@ -487,9 +491,9 @@ export default {
 
   @import "~@/components/Map/Leaflet/Lib/Lib.css";
 
-  @import "~@/components/Map/Leaflet/Markers/Cluster.css";
-  @import "~@/components/Map/Leaflet/Markers/Pulse.css";
-  @import "~@/components/Map/Leaflet/Markers/Font.css";
+  @import "~@/components/Map/Leaflet/Components/Style/StyleIconCluster.css";
+  @import "~@/components/Map/Leaflet/Components/Style/StyleIconPulse.css";
+  @import "~@/components/Map/Leaflet/Components/Style/StyleIconFont.css";
 
   @import "~@/components/Map/Leaflet/Mixins/Control.css";
 

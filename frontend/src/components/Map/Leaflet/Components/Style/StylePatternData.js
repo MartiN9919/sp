@@ -5,9 +5,9 @@
  * repeat - смещение, через которое повторить маркер, можно в %: '50%'
  */
 
-import { icon_path } from '@/components/Map/Leaflet/Markers/Fun';
+import { icon_file_path } from '@/components/Map/Leaflet/Components/Style/StyleIcon';
 
-export class CONST_PATTERN {
+export class DATA_PATTERN {
   constructor(color='gray') {
     this.dat = {
 
@@ -19,6 +19,18 @@ export class CONST_PATTERN {
       },
 
 
+      'marker_test': {
+
+      },
+
+    //   "marker": {
+    //     "icon": "test",     // "mdi-flag mdi-spin", "fs-spec0", "pulse" (size: 12), "#0f0", "gold", "file_name" (size_w: 25, size_h: 41)
+    //     "zoom": 2,
+    //   },
+
+
+
+
       //
       // Забор оградительный
       //
@@ -28,7 +40,7 @@ export class CONST_PATTERN {
           rotate: true,
           markerOptions: {
             icon: L.icon({
-              iconUrl: icon_path('zabor_ogradit'),
+              iconUrl: icon_file_path('zabor_ogradit'),
               iconSize: [10, 10],   // original: [16, 16]
               iconAnchor: [5, 5],
             }),
@@ -46,7 +58,7 @@ export class CONST_PATTERN {
           rotate: true,
           markerOptions: {
             icon: L.icon({
-              iconUrl: icon_path('zagragd_signal'),
+              iconUrl: icon_file_path('zagragd_signal'),
               //iconSize: [2, 10],   // original: [3, 16]
               iconAnchor: [8, 0],
             }),
@@ -72,6 +84,10 @@ export class CONST_PATTERN {
         { offset: 5,  repeat: 30, symbol: L.Symbol.dash({ pixelSize: 0,  pathOptions: { color: color, }, }), },
       ],
 
+      'line_border_path': [
+        { offset: 12, repeat: 25, symbol: L.Symbol.dash({ pixelSize: 10, pathOptions: { color: color, weight: 2, }, }), },
+      ],
+
 
 
 
@@ -87,7 +103,7 @@ export class CONST_PATTERN {
           rotate: false,
           markerOptions: {
             icon: L.icon({
-              iconUrl: icon_path('test2'),
+              iconUrl: icon_file_path('test2'),
               iconAnchor: [30, 40],
             }),
           },
@@ -152,13 +168,13 @@ export class CONST_PATTERN {
   }
 
   // список классов в список паттернов
-  get = function(names_str) {
+  get = function(classes_str) {
     let ret = [];
-    let names_list = names_str.trim().replace(/\s+/g, ' ').split(' ');
-    names_list = [...new Set(names_list)];            //
+    let classes_list = classes_str.trim().replace(/\s+/g, ' ').split(' ');  // убрать лишние пробелы
+    classes_list = [...new Set(classes_list)];                              // исключить повторы
 
-    for(let i=0; i<names_list.length; i++) {
-      let val = this.dat[names_list[i]];
+    for(let i=0; i<classes_list.length; i++) {
+      let val = this.dat[classes_list[i]];
       if (val) {
         if (val instanceof Array) { ret = ret.concat(val); }
         else                      { ret.push(val);         }
