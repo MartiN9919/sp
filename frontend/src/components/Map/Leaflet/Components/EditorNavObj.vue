@@ -181,7 +181,7 @@
  */
 
 import router from '@/router';
-import { getResponseAxios, } from '@/plugins/axios_settings';
+import axios from '@/plugins/axios_settings';
 import Treeview from '@/components/Map/Leaflet/Components/Treeview';
 import SelectorInput from "@/components/WebsiteShell/InputForms/selectorInput"
 import MixMenuNavObj from '@/components/Map/Leaflet/Mixins/MenuNavObj';
@@ -228,7 +228,7 @@ export default {
 
   methods: {
     refresh_items() {
-      getResponseAxios(this.$CONST.API.OBJ.GEOMETRY_TREE)
+      axios.get(this.$CONST.API.OBJ.GEOMETRY_TREE)
         .then(response => {
           this.items = response.data;
           if (localStorage[this.key_sel]) { this.item_sel_id = parseInt(localStorage[this.key_sel]); }
@@ -240,7 +240,7 @@ export default {
     on_nav_new(id, name) { this.on_nav(id, name, 'onNavNew') },
     on_nav_add(id, name) { this.on_nav(id, name, 'onNavAdd') },
     on_nav(id, name, emit_name) {
-      getResponseAxios(this.$CONST.API.OBJ.GEOMETRY, { params: {rec_id: id,} })
+      axios.get(this.$CONST.API.OBJ.GEOMETRY, { params: {rec_id: id,} })
         .then(response => {
           this.$emit(emit_name, id, name, fc_normalize(response.data));
           return Promise.resolve(response)

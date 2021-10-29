@@ -22,7 +22,7 @@ def request_wrap(f):
 
     def wrap(request, *args, **kwargs):
         try:
-            return JsonResponse(f(request, *args, **kwargs), status=200)
+            return JsonResponse(f(request, *args, **kwargs), status=200, safe=False)
         except Exception as e:
             if len(e.args) > 1:
                 return JsonResponse({'status': ' ' + str(e)}, status=e.args[0])
@@ -54,6 +54,7 @@ def script_wrap(f):
             logger_script_error.info('user_id: ' + str(
                 request.user.id) + ', info: \n' + message + '\n----------------------------------------------------------------------------------------------------------')
             add_notification(request.user.id, 'warning', message, from_id=1, file_id=None)
+            raise e
 
     wrap.__doc__ = f.__doc__
     wrap.__name__ = f.__name__

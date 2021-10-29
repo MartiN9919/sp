@@ -1,5 +1,5 @@
 <template>
-  <div @click.right="menuShow($event)" @mousedown="clearSelectors">
+  <div @click.right.prevent.stop="menuShow($event)" @mousedown="clearSelectors">
     <screen ref="screen">
       <group v-if="relatedObjects.length" :nodes="relatedObjects"></group>
       <g
@@ -36,6 +36,17 @@
         @click.right.prevent.stop="menuShow($event, object)"
         @click.stop="selectObject(object)"
       >
+        <v-label
+            :ref="`label-${object.id}`"
+            v-show="getTooltipStateObject(object)"
+            :element="object"
+        >
+          <information-label
+              :size-node="object.size"
+              :params="getObjectClassifiers(object)"
+              :show-date="globalDisplaySettings.showGlobalDateObject.state"
+          ></information-label>
+        </v-label>
         <node :ref="`node-${object.id}`" :data="object">
           <body-object
             :node="object"
@@ -43,17 +54,6 @@
             :show-triggers="getTriggersStateObject(object)"
           ></body-object>
         </node>
-        <v-label
-          :ref="`label-${object.id}`"
-          v-show="getTooltipStateObject(object)"
-          :element="object"
-        >
-          <information-label
-            :size-node="object.size"
-            :params="getObjectClassifiers(object)"
-            :show-date="globalDisplaySettings.showGlobalDateObject.state"
-          ></information-label>
-        </v-label>
         <name-object
           v-show="getTitleStateObject(object)"
           :position="getTitlePosition(object)"

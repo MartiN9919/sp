@@ -10,7 +10,7 @@ const routes = [
     path: '/login',
     name: 'Login',
     component: () => import('../views/LoginPage.vue'),
-    meta: { isAuth: false }
+    meta: { isAuth: false },
   },
   {
     path: '/map',
@@ -31,7 +31,8 @@ const routes = [
     meta: { isAuth: true }
   },
   {
-    path: '*', redirect: 'login'
+    path: '*',
+    redirect:  { name: 'Login' }
   },
 ]
 

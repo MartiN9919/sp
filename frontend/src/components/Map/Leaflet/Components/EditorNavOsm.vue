@@ -35,7 +35,7 @@
 <script>
 
 import router from '@/router';
-import { getResponseAxios } from '@/plugins/axios_settings';
+import axios from '@/plugins/axios_settings';
 import Treeview from '@/components/Map/Leaflet/Components/Treeview';
 import { fc_normalize, } from '@/components/Map/Leaflet/Lib/LibFc';
 
@@ -90,7 +90,7 @@ export default {
       let name = this.search_value;
       if (name) { name = name.trim().toLowerCase() }
 
-      getResponseAxios(this.$CONST.API.OBJ.OSM_SEARCH, { params: { text: name, } })
+      axios.get(this.$CONST.API.OBJ.OSM_SEARCH, { params: { text: name, } })
         .then(response => {
           this.found_items = response.data;
 
@@ -116,7 +116,7 @@ export default {
     emit_fc(id, name, emit_name) {
       this.search_wait = true;
 
-      getResponseAxios(this.$CONST.API.OBJ.OSM_FC, { params: {id: id,} })
+      axios.get(this.$CONST.API.OBJ.OSM_FC, { params: {id: id,} })
         .then(response => {
           this.$emit(emit_name, id, name, fc_normalize(response.data));
           this.search_wait = false;

@@ -23,10 +23,11 @@ export default {
     ...mapGetters(['loadStatus'])
   },
   methods: {
-    ...mapActions(['getBaseObjects',]),
+    ...mapActions(['getBaseObjects', 'getBaseLists']),
   },
   mounted(){
     this.getBaseObjects()
+    this.getBaseLists()
   },
 }
 </script>

@@ -56,7 +56,7 @@
       :objects="foundObjects"
       @change="changeObject"
       @select="selectObject"
-      class="overflow-y-hidden"
+      class="overflow-y-hidden found-objects"
     ></found-objects>
   </v-col>
 </template>
@@ -132,5 +132,8 @@ export default {
 
 .tree-item-input >>> .v-input__append-outer {
   margin-top: 2px !important;
+}
+.found-objects {
+  height: calc(100% - 68px);
 }
 </style>

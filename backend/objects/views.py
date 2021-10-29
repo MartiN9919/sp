@@ -27,7 +27,7 @@ def aj_object_type_list(request):
     @return: json содержащих информации по ключу data в формате:
     [{id, name, title, title_single, icon, descript},...{}]
     """
-    return {'data': obj_list()}
+    return obj_list()
 
 
 @login_check
@@ -40,7 +40,7 @@ def aj_list_icons(request):
     @param request: GET запрос на получение списка иконок
     @return: JSON со списком иконок
     """
-    return {'data': get_list_by_top_id(SYS_KEY_CONSTANT.LIST_ICONS_ID)}
+    return get_list_by_top_id(SYS_KEY_CONSTANT.LIST_ICONS_ID)
 
 
 @login_check
@@ -53,7 +53,8 @@ def aj_lists(request):
     @param request: GET запрос на получение всех списков
     @return: json в формате: {id:{name,title,hint,values}, ..., id_n:{}}
     """
-    return {'data': get_lists()}
+    print(get_lists())
+    return get_lists()
 
 
 @login_check
@@ -67,7 +68,7 @@ def aj_list_classifier(request):
     @return: json содержащих информации по ключу data в формате:
     [{id,obj_id,col,need,type,list_id:{name,val:[]},name,title,hint,descript}, ...,{}]
     """
-    return {'data': get_keys_by_object()}
+    return get_keys_by_object()
 
 
 @login_check
@@ -81,7 +82,7 @@ def aj_list_rels(request):
     @return: json содержащих информации по ключу data в формате:
     [{id,title,hint,list:{}},...,{}]
     """
-    return {'data': get_relations_list()}
+    return get_relations_list()
 
 
 @login_check
@@ -101,10 +102,10 @@ def aj_object(request):
     triggers = json.loads(request.headers.get('Set-Cookie'))
     if request.method == 'GET':
         try:
-            return {'data': get_object_record_by_id_http(object_id=int(request.GET['object_id']),
+            return get_object_record_by_id_http(object_id=int(request.GET['object_id']),
                                                                       rec_id=int(request.GET['record_id']),
                                                                       group_id=group_id,
-                                                                      triggers=triggers)}
+                                                                      triggers=triggers)
         except Exception as e:
             raise e
     if request.method == 'POST':
@@ -112,12 +113,12 @@ def aj_object(request):
             data = json.loads(request.POST['data'])
             result = add_data(user=request.user, group_id=group_id, object=data, files=request.FILES)
             if result.get('objects'):
-                return {'data': result}
+                return result
             elif result.get('object'):
-                return {'data': {'object': get_object_record_by_id_http(object_id=data.get('object_id'),
+                return get_object_record_by_id_http(object_id=data.get('object_id'),
                                                                                      rec_id=result.get('object'),
                                                                                      group_id=group_id,
-                                                                                     triggers=triggers)}}
+                                                                                     triggers=triggers)
             else:
                 raise Exception(497, 'ошибка добавления')
         except Exception as e:
@@ -152,7 +153,7 @@ def aj_relation(request):
                              object_2_id=data.get('object_2_id'), rec_2_id=data.get('rec_2_id'),
                              params=data.get('params'),
                              doc_rec_id=data.get('doc_rec_id'))
-            return {'data': result}
+            return result
         except Exception as e:
             raise e
     else:
@@ -170,8 +171,8 @@ def aj_objects_relation(request):
     @return: список объектов через которые могут быть связаны 2 начальных объекта
     """
     group_id = DAT_OWNER.DUMP.get_group(user_id=request.user.id)
-    return({'data': get_objects_relation(group_id, int(request.GET['object_id_1']), int(request.GET['rec_id_1']),
-                                         int(request.GET['object_id_2']), int(request.GET['rec_id_2']), 3)})
+    return get_objects_relation(group_id, int(request.GET['object_id_1']), int(request.GET['rec_id_1']),
+                                         int(request.GET['object_id_2']), int(request.GET['rec_id_2']), 3)
 
 
 @login_check
@@ -189,7 +190,7 @@ def aj_object_relation(request):
             data = json.loads(request.body)
             result = get_object_relation(group_id, int(data.get('object_id')), int(data.get('rec_id')),
                                          data.get('objects'))
-            return {'data': result}
+            return result
         except Exception as e:
             raise e
     else:
@@ -209,7 +210,7 @@ def aj_search_relations(request):
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
-            return {'data': search_relations(group_id, data)}
+            return search_relations(group_id, data)
         except Exception as e:
             raise e
     else:
@@ -231,7 +232,7 @@ def aj_search_objects(request):
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
-            return {'data': search(data, group_id, triggers)}
+            return search(data, group_id, triggers)
         except Exception as e:
             raise e
     else:
@@ -249,7 +250,7 @@ def aj_geometry_tree(request):
     @return:  json дерево в формате: [{id,name,icon,child:[{},{},...,{}]},{},...,{}]
     """
     group_id = DAT_OWNER.DUMP.get_group(user_id=request.user.id)
-    return {'data': get_geometry_tree(group_id=group_id)}
+    return get_geometry_tree(group_id=group_id)
 
 
 @login_check
@@ -267,7 +268,7 @@ def aj_geometry(request):
     if request.method == 'GET':
         try:
             geometry = feature_collection_by_geometry(group_id, 30, [request.GET['rec_id']], [30301, 30303], {})
-            return {'data': geometry}
+            return geometry
         except Exception as e:
             raise e
     elif request.method == 'POST':
@@ -282,7 +283,7 @@ def aj_geometry(request):
                 parent_id = data.get('parent_id'),
                 icon = data.get('icon'),
             )
-            return {'data': result}
+            return result
         except Exception as e:
             raise e
     else:
@@ -299,7 +300,7 @@ def aj_groups(request):
     @param request: GET зарпос без параметров
     @return: список групп пользователей
     """
-    return {'data': DAT_OWNER.DUMP.get_groups_list()}
+    return DAT_OWNER.DUMP.get_groups_list()
 
 
 @login_check
@@ -315,7 +316,7 @@ def aj_osm_search(request):
     geometry = False
     if request.GET.get('geometry', 'False') == 'true':
         geometry = True
-    return {'data': osm_search(text=request.GET.get('text', ''), geometry=geometry)}
+    return osm_search(text=request.GET.get('text', ''), geometry=geometry)
 
 
 @login_check
@@ -328,4 +329,4 @@ def aj_osm_fc(request):
     @param request: id - идентификатор геометрии
     @return: fc
     """
-    return {'data': osm_fc(id=request.GET['id'])}
+    return osm_fc(id=request.GET['id'])

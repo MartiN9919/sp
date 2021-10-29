@@ -27,7 +27,7 @@ def aj_script_list(request):
     """
     script_type = request.GET['script_type']
     group_id = DAT_OWNER.DUMP.get_group(user_id=request.user.id)
-    return {'data': get_script_tree(group_id, script_type)}
+    return get_script_tree(group_id, script_type)
 
 
 @login_check
@@ -39,7 +39,7 @@ def aj_trigger_list(request):
     @param request: GET запрос на получение списка триггеров
     @return: список триггеров в формате JSON
     """
-    return {'data': get_triggers_list()}
+    return get_triggers_list()
 
 
 @login_check
@@ -58,7 +58,7 @@ def aj_script_execute_map(request):
     method_name = 'script_' + str(data.get('id'))
     importlib.invalidate_caches()
     result = execute_script_map(method_name, group_id, data.get('variables'))
-    return {'data': result}
+    return result
 
 
 @login_check
@@ -92,9 +92,9 @@ def aj_script_execute_report(request):
             thread = threading.Thread(target=script_function,
                                       args=(data.get('variables'), group_id, file_id, request.user.id, title, lock))
             thread.start()
-            return {'data': {'id': file_id, 'name': title,
-                             'date': date_time.replace(microsecond=0, tzinfo=None).isoformat(sep=' '),
-                             'status': 'in_progress', 'params': data}}
+            return {'id': file_id, 'name': title,
+                    'date': date_time.replace(microsecond=0, tzinfo=None).isoformat(sep=' '),
+                    'status': 'in_progress', 'params': data}
     except Exception as e:
         raise e
 
@@ -108,7 +108,7 @@ def aj_templates_list(request):
     @param request: POST запрос на получение списка шаблонов
     @return: список шаблонов в формате json
     """
-    return {'data': get_templates_list(request.user.id)}
+    return get_templates_list(request.user.id)
 
 
 @login_check
@@ -123,7 +123,7 @@ def aj_template(request):
 
     if request.method == 'GET':
         try:
-            return {'data': get_template(request.GET['template_id'], request.user.id)}
+            return get_template(request.GET['template_id'], request.user.id)
         except:
             raise Exception(497, '')
     elif request.method == 'POST':
@@ -131,7 +131,7 @@ def aj_template(request):
         data = json.loads(request.body)
         id = add_template(group_id, data.get('title', 'Неизвестное имя'), data.get('activeAnalysts', ''),
                           data.get('passiveAnalysts', ''))
-        return {'data': id}
+        return id
 
     elif request.method == 'PUT':
         data = json.loads(request.body)

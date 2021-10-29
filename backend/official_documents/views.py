@@ -11,5 +11,5 @@ def aj_reports_list(request):
     @param request: POST запрос на получение списка файлов доступных пользователю
     @return: список файлов в json формате
     """
-    return {'data': get_list_files_by_user(request.user.id)}
+    return get_list_files_by_user(request.user.id)
 

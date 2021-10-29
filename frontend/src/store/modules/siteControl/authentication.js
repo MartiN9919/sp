@@ -1,4 +1,4 @@
-import { getResponseAxios, postResponseAxios } from '@/plugins/axios_settings'
+import axios from '@/plugins/axios_settings'
 import router from '@/router'
 
 export default {
@@ -13,24 +13,30 @@ export default {
   },
   actions: {
     authenticateUser ({ commit }, parameters = {}) {
-      return postResponseAxios('auth/authentication/login/', parameters.userInformation, parameters.config)
+      return axios.post('auth/authentication/login/', parameters.userInformation, parameters.config)
         .then(response => {
-          commit('setUserInformation', response.user)
+          commit('setUserInformation', response.data)
           router.push({ name: 'Map' })
         })
         .catch(() => {})
     },
-    logOutUser ({ commit, dispatch }, config = {}) {
-      return getResponseAxios('auth/authentication/logout/', config)
-        .then(() => router.go({ name: 'Login' }))
-        .catch(() => {})
+    logOutUser ({ commit }, config = {}) {
+      commit('setUserInformation', null)
+      return axios.get('auth/authentication/logout/', config)
+        // .then(() => router.go({ name: 'Login' }))
+        // .catch(() => {})
     },
 
     identifyUser ({ commit, dispatch, getters }, config = {}) {
-      return getResponseAxios('auth/authorization/', config)
+      return axios.get('auth/authorization/', config)
         .then(response => {
-          commit('setUserInformation', response.user)
-          if (!getters.baseLists.length) dispatch('getBaseLists')
+          commit('setUserInformation', response.data)
+          // if(!getters.baseObjects.length) {
+          //   dispatch('getBaseObjects')
+          // }
+          // if(!getters.baseLists.length) {
+          //   dispatch('getBaseLists')
+          // }
           if (!getters.socket) {
             dispatch('connectSocket').then(() => {
               dispatch('socketListener')
