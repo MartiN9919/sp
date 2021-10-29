@@ -15,7 +15,6 @@ export function icon_ini() {
 }
 
 
-//export function marker_get(latlng, classes_str='', color='blue', zoom_map, zoom_icon=1, text=undefined, param={}) {
 export function marker_get(latlng, icon_color=undefined, icon_properties={}, zoom_map=undefined, marker_param={}) {
   let icon = icon_get(icon_color, icon_properties, zoom_map);
   return icon_2_marker(latlng, icon, marker_param);
@@ -29,7 +28,6 @@ export function icon_2_marker(latlng, icon, param={}) {
 
 
 
-//export function icon_get(classes_str='', color='blue', zoom=1, text=undefined) {
 /* получить иконку
  * icon_properties - из fc.features[].properties
  * class    = '', тип иконки определяется по ПЕРВОМУ классу иконки
@@ -75,7 +73,7 @@ export function icon_get(icon_color=undefined, icon_properties={}, zoom_map=unde
     return new L.DivIcon({
       className:   classes_other_str,
       iconSize:    [data.width,     data.height],
-      iconAnchor:  [data.anchor_dx, data.anchor_dy],                         // точка привязки svg относительно верхнего левого угла
+      iconAnchor:  [data.anchor_dx, data.anchor_dy],                            // точка привязки svg относительно верхнего левого угла
       popupAnchor: [1,             -data.height*1.1],
       html:        data.svg,
       shadowUrl:   icon_file_path('shadow-marker'),
@@ -87,9 +85,9 @@ export function icon_get(icon_color=undefined, icon_properties={}, zoom_map=unde
 
   // FILE
   if (
-    (icon_type == MAP_CONST.CLASS.ICON.FILE) ||                              // или указан тип FILE
+    (icon_type == MAP_CONST.CLASS.ICON.FILE) ||                                 // или указан тип FILE
     ((classes_icon_str == '') &&
-      (COLOR_EQU[color] || Object.values(COLOR_EQU).includes(color))         // или указан color из COLOR_EQU (key или val)
+      (COLOR_EQU[color] || Object.values(COLOR_EQU).includes(color))            // или указан color из COLOR_EQU (key или val)
     )
   ) {
     if (icon_type != MAP_CONST.CLASS.ICON.FILE) { classes_icon_list = [[undefined, color]]; }
@@ -103,7 +101,7 @@ export function icon_get(icon_color=undefined, icon_properties={}, zoom_map=unde
       shadowSize:  [size_h, size_h],
       iconUrl:     icon_file_path(file),
       iconSize:    [size_w,     size_h],
-      iconAnchor:  [size_w/2|0, size_h],                                      // указатель: x-center, y-bottom
+      iconAnchor:  [size_w/2|0, size_h],                                        // указатель: x-center, y-bottom
       popupAnchor: [1,         -size_h*1.1],
     });
   }
@@ -148,7 +146,7 @@ export function icon_get(icon_color=undefined, icon_properties={}, zoom_map=unde
   // PULSE
   if (icon_type == MAP_CONST.CLASS.ICON.PULSE) {
     let size  = (classes_icon_list[0][1] ?? 12) * zoom|0;
-    return L.icon.pulse({                                                     // или new L.Icon - в данном случае не работает
+    return L.icon.pulse({                                                         // или new L.Icon - в данном случае не работает
       className: classes_other_str,
       iconSize:  [size, size],
       color:     color,
@@ -161,12 +159,12 @@ export function icon_get(icon_color=undefined, icon_properties={}, zoom_map=unde
   let size_w = 25 * zoom|0;
   let size_h = 41 * zoom|0;
   return new L.Icon({
-      className:   classes_other_str,                                         // иначе сторонние классы не применятся
+      className:   classes_other_str,                                             // иначе сторонние классы не применятся
       shadowUrl:   icon_file_path('shadow-marker'),
       shadowSize:  [size_h, size_h],
       iconUrl:     icon_file_path('blue'),
       iconSize:    [size_w,     size_h],
-      iconAnchor:  [size_w/2|0, size_h],                                      // указатель: x-center, y-bottom
+      iconAnchor:  [size_w/2|0, size_h],                                          // указатель: x-center, y-bottom
       popupAnchor: [1,         -size_h*1.1],
     });
 }
