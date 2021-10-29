@@ -106,6 +106,18 @@ export const MAP_TEST_ITEM_1 = {
       {
         "type": "Feature",
         "properties": {
+          "class": "icon-svg-standart",
+          "hint": "standart",
+          "date": "2021-01-02",
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [25.5,52.9]
+        },
+      },
+      {
+        "type": "Feature",
+        "properties": {
           "class": "icon-svg-checkpoint_simplified",
           "text":  '"Леший"',
           "hint": "checkpoint_simplified",
@@ -304,7 +316,7 @@ export const MAP_TEST_ITEM_2 = {
         },
         "geometry": {
           "type": "Point",
-          "coordinates": [31.5,53.6]
+          "coordinates": [25.5,52.9]
         },
       },
 
