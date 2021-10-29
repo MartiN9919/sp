@@ -38,7 +38,7 @@ const DATA = {
   'standart': {
     anchor_dx: 33.1,
     anchor_dy: 98.2,
-    zoom:      1.,
+    zoom:      .8,
     svg: `
       <svg width={width} height={height} viewBox="0 0 67 100">
         <g transform="matrix(4.1640031,0,0,4.0920941,-16.549318,-4208.0243)">

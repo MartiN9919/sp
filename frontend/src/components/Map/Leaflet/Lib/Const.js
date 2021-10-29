@@ -8,14 +8,15 @@ export const MAP_CONST = {
     SEL: 'sel',                           // название класса: выделено (pulse)
   //ANT: 'ant',                           // название класса: бегущая линия
     ICON: {
-      TYPE:      'icon',                  // иконка: тип
-      PATH:      'img/markers/',          // иконка: путь к файлам иконок
-      SEPARATOR: '-',                     // иконка: разделитель
-      MDI:       'mdi',                   // иконка: шрифт mdi
-      FS:        'fs',                    // иконка: шрифт fs
-      FILE:      'file',                  // иконка: файл
-      SVG:       'svg',                   // иконка: svg
-      PULSE:     'pulse',                 // иконка: пульсирующая
+      TYPE:         'icon',               // иконка: тип
+      PATH:         'img/markers/',       // иконка: путь к файлам иконок
+      SEPARATOR:    '-',                  // иконка: разделитель
+      SVG:          'svg',                // иконка: svg
+      SVG_STANDART: 'standart',           // иконка: svg стандарт
+      FILE:         'file',               // иконка: файл
+      MDI:          'mdi',                // иконка: шрифт mdi
+      FS:           'fs',                 // иконка: шрифт fs
+      PULSE:        'pulse',              // иконка: пульсирующая
     },
   },
 

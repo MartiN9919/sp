@@ -43,5 +43,5 @@
 
  icon_get('icon-mdi-flag sss icon-mdi-spin tst')
  icon_get(className, color, 2);
- icon_get('', 'green'); icon_get('', '#00f');  COLOR_EQU
+ icon_get('', 'green'); icon_get('', '#00f');
  icon_get();

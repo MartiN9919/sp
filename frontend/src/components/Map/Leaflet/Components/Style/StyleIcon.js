@@ -52,7 +52,10 @@ export function icon_get(icon_color=undefined, icon_properties={}, zoom_map=unde
       classes_other_list.push(class_item_str);
     }
   }
-  // if (classes_icon_list.length == 0) return undefined;                       // иконки в классах не найдены - пропусить для file, т.к. задан color
+  if (icon_type == undefined) {                                                 // тип иконки не задан: стандартная иконка SVG
+    icon_type = MAP_CONST.CLASS.ICON.SVG;
+    classes_icon_list.push([MAP_CONST.CLASS.ICON.SVG,MAP_CONST.CLASS.ICON.SVG_STANDART]);
+  }
   const classes_other_str = classes_other_list.join(' ');                       // неиспользованные классы строкой
   const classes_icon_str  = classes_icon_list.map((val) => val.join(MAP_CONST.CLASS.ICON.SEPARATOR)).join(' '); // 'mdi-flag mdi-spin' 'fs-spec0'
 
@@ -84,15 +87,9 @@ export function icon_get(icon_color=undefined, icon_properties={}, zoom_map=unde
 
 
   // FILE
-  if (
-    (icon_type == MAP_CONST.CLASS.ICON.FILE) ||                                 // или указан тип FILE
-    ((classes_icon_str == '') &&
-      (COLOR_EQU[color] || Object.values(COLOR_EQU).includes(color))            // или указан color из COLOR_EQU (key или val)
-    )
-  ) {
+  if (icon_type == MAP_CONST.CLASS.ICON.FILE) {
     if (icon_type != MAP_CONST.CLASS.ICON.FILE) { classes_icon_list = [[undefined, color]]; }
-    let file   = classes_icon_list[0][1];
-    if (COLOR_EQU[file]) { file = COLOR_EQU[file]; }
+    let file   =  classes_icon_list[0][1];
     let size_w = (classes_icon_list[0][2] ?? 25) * zoom|0;
     let size_h = (classes_icon_list[0][3] ?? 41) * zoom|0;
     return new L.Icon({
@@ -185,33 +182,4 @@ export function icon_group_get(color, title, select=false) {
 export function icon_file_path(name, ext='png') {
   // require('@/assets/img/markers/red.png');
   return process.env.BASE_URL+MAP_CONST.CLASS.ICON.PATH+name+'.'+ext;
-}
-
-
-// цвет
-const COLOR_EQU = {
-  '#000'    : 'black',
-  '#000000' : 'black',
-  '#f00'    : 'red',
-  '#ff0000' : 'red',
-  '#0f0'    : 'green',
-  '#00ff00' : 'green',
-  '#00f'    : 'blue',
-  '#0000ff' : 'blue',
-  '#ff0'    : 'yellow',
-  '#ffff00' : 'yellow',
-  '#808080' : 'gray',
-  '#ee82ee' : 'violet',
-  '#ffd700' : 'gold',
-  '#ffa500' : 'orange',
-};
-export function icon_file_color2class(color) {
-  if (color) color = color.toLowerCase();
-  if (COLOR_EQU[color]) { color = COLOR_EQU[color]; }
-  return
-    MAP_CONST.CLASS.ICON.TYPE+
-    MAP_CONST.CLASS.ICON.SEPARATOR+
-    MAP_CONST.CLASS.ICON.FILE+
-    MAP_CONST.CLASS.ICON.SEPARATOR+
-    color;
 }
