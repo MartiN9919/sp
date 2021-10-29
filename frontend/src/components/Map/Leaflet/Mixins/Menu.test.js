@@ -159,6 +159,7 @@ export const MAP_TEST_ITEM_1 = {
         "type": "Feature",
         "properties": {
           "class": "icon-svg-control",
+          "zoom":  false,
           "text":  '130 пого',
           "hint":  "place_control",
           "date":  "2021-01-01",

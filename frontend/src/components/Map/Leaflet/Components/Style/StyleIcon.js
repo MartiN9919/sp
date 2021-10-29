@@ -1,6 +1,6 @@
+import { Icon } from 'leaflet';
 import { MAP_CONST, MAP_ITEM } from '@/components/Map/Leaflet/Lib/Const';
 import { get_icon_data } from '@/components/Map/Leaflet/Components/Style/StyleIconData';
-import { Icon } from 'leaflet';
 
 
 
@@ -15,9 +15,10 @@ export function icon_ini() {
 }
 
 
-export function marker_get(latlng, classes_str='', color='blue', zoom=1, text=undefined, param={}) {
-  let icon = icon_get(classes_str, color, zoom, text);
-  return icon_2_marker(latlng, icon, param);
+//export function marker_get(latlng, classes_str='', color='blue', zoom_map, zoom_icon=1, text=undefined, param={}) {
+export function marker_get(latlng, icon_color=undefined, icon_properties={}, zoom_map=undefined, marker_param={}) {
+  let icon = icon_get(icon_color, icon_properties, zoom_map);
+  return icon_2_marker(latlng, icon, marker_param);
 }
 
 export function icon_2_marker(latlng, icon, param={}) {
@@ -28,30 +29,41 @@ export function icon_2_marker(latlng, icon, param={}) {
 
 
 
-// получить иконку
-export function icon_get(classes_str='', color='blue', zoom=1, text=undefined) {
-  const separator  = MAP_CONST.CLASS.ICON.SEPARATOR;
-  let classes_list = classes_str.trim().replace(/\s+/g, ' ').split(' ');  // убрать лишние пробелы
-  classes_list = [...new Set(classes_list)];                              // исключить повторы
-  if (color) color = color.toLowerCase();                                 // цвет к нижнему регистру
-
-  // парсить классы
-  let icon_type          = undefined;                                     // тип иконки
-  let classes_icon_list  = [];                                            // классы,    связанные с иконками: [[mdi, 'flag'], ['mdi', 'spin'], ...]
-  let classes_other_list = [];                                            // классы, не связанные с иконками: ['class1', ...]
-  for(let class_ind=0; class_ind<classes_list.length; class_ind++) {      // классы иконки
-    let class_item_str  = classes_list[class_ind];                        // название класса строкой
-    let class_item_list = class_item_str.split(separator);                // название класса списком
-    if (class_item_list[0] == MAP_CONST.CLASS.ICON.TYPE) {                // класс иконки
-      if (icon_type == undefined) icon_type = class_item_list[1];         // тип определяется по ПЕРВОМУ классу иконки
+//export function icon_get(classes_str='', color='blue', zoom=1, text=undefined) {
+/* получить иконку
+ * icon_properties - из fc.features[].properties
+ * class    = '', тип иконки определяется по ПЕРВОМУ классу иконки
+ * text     = undefined
+ * zoom     = undefined (автоматическое определение), false, 1.2
+ */
+export function icon_get(icon_color=undefined, icon_properties={}, zoom_map=undefined) {
+  // классы, тип иконки
+  const classes_str  = icon_properties.class ?? '';                             // классы строкой
+  let   classes_list = classes_str.trim().replace(/\s+/g, ' ').split(' ');      // классы списком
+  classes_list = [...new Set(classes_list)];                                    // исключить повторы
+  let icon_type          = undefined;                                           // тип иконки
+  let classes_icon_list  = [];                                                  // классы,    связанные с иконками: [[mdi, 'flag'], ['mdi', 'spin'], ...]
+  let classes_other_list = [];                                                  // классы, не связанные с иконками: ['class1', ...]
+  for(let class_ind=0; class_ind<classes_list.length; class_ind++) {            // классы иконки
+    let class_item_str  = classes_list[class_ind];                              // название класса строкой
+    let class_item_list = class_item_str.split(MAP_CONST.CLASS.ICON.SEPARATOR); // название класса списком
+    if (class_item_list[0] == MAP_CONST.CLASS.ICON.TYPE) {                      // класс иконки
+      if (icon_type == undefined) icon_type = class_item_list[1];               // тип иконки определяется по ПЕРВОМУ классу иконки
       classes_icon_list.push(class_item_list.slice(1));
     } else {
       classes_other_list.push(class_item_str);
     }
   }
-  // if (classes_icon_list.length == 0) return undefined;                 // иконки в классах не найдены - пропусить для file, т.к. задан color
-  let classes_other_str = classes_other_list.join(' ');                   // неиспользованные классы строкой
-  let classes_icon_str  = classes_icon_list.map((val) => val.join(separator)).join(' '); // 'mdi-flag mdi-spin' 'fs-spec0'
+  // if (classes_icon_list.length == 0) return undefined;                       // иконки в классах не найдены - пропусить для file, т.к. задан color
+  const classes_other_str = classes_other_list.join(' ');                       // неиспользованные классы строкой
+  const classes_icon_str  = classes_icon_list.map((val) => val.join(MAP_CONST.CLASS.ICON.SEPARATOR)).join(' '); // 'mdi-flag mdi-spin' 'fs-spec0'
+
+  // остальные опции
+  const text  = icon_properties.text;                                           // иконка: надпись
+  const color = (icon_color ?? MAP_CONST.COLOR.DEFAULT_ICON).toLowerCase();     // иконка: цвет
+  const zoom  = (icon_properties.zoom != undefined) ?                           // иконка: масштаб
+    ((icon_properties.zoom !== false) ? icon_properties.zoom : 1):
+    ((zoom_map < 7) ? Math.pow(2.0, zoom_map-7) : 1);
 
 
   // SVG
@@ -69,7 +81,6 @@ export function icon_get(classes_str='', color='blue', zoom=1, text=undefined) {
       shadowUrl:   icon_file_path('shadow-marker'),
       shadowSize:  [data.width, data.height],
       shadowAnchor:[data.width, data.height],
-    //color:       color,
     });
   }
 

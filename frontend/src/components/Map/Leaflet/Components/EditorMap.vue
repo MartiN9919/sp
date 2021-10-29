@@ -522,8 +522,8 @@ export default {
 
 
     // иконки
-    icon_origin() { return icon_get('', MAP_CONST.COLOR.EDITOR_ORIGIN); },
-    icon_modify() { return icon_get('', MAP_CONST.COLOR.EDITOR_MODIFY); },
+    icon_origin() { return icon_get(MAP_CONST.COLOR.EDITOR_ORIGIN); },
+    icon_modify() { return icon_get(MAP_CONST.COLOR.EDITOR_MODIFY); },
 
     // маркеры
     marker_origin(latlng) {
