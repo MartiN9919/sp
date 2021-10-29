@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django_ace import AceWidget
+from django_monaco_editor.widgets import AdminMonacoEditorWidget
 from django import forms
 from script.models import ModelScript, ModelTrigger, ModelScriptVariable, ModelTriggerVariable
 from data_base_driver.constants.const_admin import PROJECT_TITLE_ADMIN
@@ -17,12 +18,7 @@ class ModelScriptForm(forms.ModelForm):
         model = ModelScript
         fields = '__all__'
         widgets = {
-            'content': AceWidget(mode='python',
-                                 width="80%",
-                                 showprintmargin=False,
-                                 fontsize='1.5em',
-                                 toolbar=False,
-                                 )
+            'content': AdminMonacoEditorWidget
         }
 
 

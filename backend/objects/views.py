@@ -53,7 +53,6 @@ def aj_lists(request):
     @param request: GET запрос на получение всех списков
     @return: json в формате: {id:{name,title,hint,values}, ..., id_n:{}}
     """
-    print(get_lists())
     return get_lists()
 
 
