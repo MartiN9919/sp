@@ -372,7 +372,7 @@ export default {
             let date = feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES.DATE] ?? '';
             let hint = feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES.HINT] ?? '';
             let val  =
-              ((text != '') ? ('<span style="font-weight: bold;">'+str_cut(text, 100)+'</span><br>') : '')+
+              ((text != '') ? ('<span style="font-weight: bold;background: #eee;width: 100%;display: inline-block;">'+str_cut(text, 100)+'</span><br>') : '')+
               ((date != '') ? (date+'<br>') : '')+
               str_cut(hint, 100).replace(/\n/, '<br>');
             if (val != '') layer.bindTooltip('<div style="white-space: nowrap;">'+val+'</div>', { permanent: false, sticky: true, });

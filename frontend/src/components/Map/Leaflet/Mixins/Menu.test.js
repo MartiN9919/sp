@@ -277,7 +277,7 @@ export const MAP_TEST_ITEM_1 = {
         "properties": {
           "class": "icon-svg-detention",
           "text": '"detention"',
-          "hint": "icon-svg-detention\ntest",
+          "hint": "icon-svg-detention\ntest\nasdf asd fa sdf a sd fa sd f asd f as df a sd fa sd f asd f asd fa sd fa sdf asd",
           "date": "2021-04-01",
         },
         "geometry": {

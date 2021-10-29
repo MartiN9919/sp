@@ -64,7 +64,7 @@ export function icon_get(icon_color=undefined, icon_properties={}, zoom_map=unde
   const color = (icon_color ?? MAP_CONST.COLOR.DEFAULT_ICON).toLowerCase();     // иконка: цвет
   const zoom  = (icon_properties.zoom != undefined) ?                           // иконка: масштаб
     ((icon_properties.zoom !== false) ? icon_properties.zoom : 1):
-    ((zoom_map < 7) ? Math.pow(2.0, zoom_map-7) : 1);
+    ((zoom_map < 6) ? Math.pow(2.0, zoom_map-6) : 1);
 
 
   // SVG
