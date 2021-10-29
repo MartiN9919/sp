@@ -74,14 +74,11 @@ export function icon_get(icon_color=undefined, icon_properties={}, zoom_map=unde
     let data = get_icon_data(classes_icon_list[0][1], color, zoom, text);
     if (data == undefined) return;
     return new L.DivIcon({
-      className:   classes_other_str,
+      className:   classes_other_str+' svg-shadow',
       iconSize:    [data.width,     data.height],
       iconAnchor:  [data.anchor_dx, data.anchor_dy],                            // точка привязки svg относительно верхнего левого угла
       popupAnchor: [1,             -data.height*1.1],
       html:        data.svg,
-      shadowUrl:   icon_file_path('shadow-marker'),
-      shadowSize:  [data.width, data.height],
-      shadowAnchor:[data.width, data.height],
     });
   }
 

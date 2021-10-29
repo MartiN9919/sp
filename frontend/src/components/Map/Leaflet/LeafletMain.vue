@@ -512,5 +512,4 @@ export default {
     100% { opacity: 1;  }
   }
   div::v-deep .upper-markers { z-index: 5000 !important; }
-
 </style>
