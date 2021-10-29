@@ -1,8 +1,9 @@
 from django.contrib import admin
+from django_ace import AceWidget
+from django import forms
 from script.models import ModelScript, ModelTrigger, ModelScriptVariable, ModelTriggerVariable
-
 from data_base_driver.constants.const_admin import PROJECT_TITLE_ADMIN
-from data_base_driver.constants.const_dat import DAT_SYS_SCRIPT, DAT_SYS_TRIGGER, DAT_SYS_SCRIPT_VARIABLE
+from data_base_driver.constants.const_dat import DAT_SYS_SCRIPT, DAT_SYS_TRIGGER
 
 admin.site.site_header = PROJECT_TITLE_ADMIN
 
@@ -11,8 +12,23 @@ class ModelScriptVariableAdmin(admin.TabularInline):
     model = ModelScriptVariable
 
 
+class ModelScriptForm(forms.ModelForm):
+    class Meta:
+        model = ModelScript
+        fields = '__all__'
+        widgets = {
+            'content': AceWidget(mode='python',
+                                 width="80%",
+                                 showprintmargin=False,
+                                 fontsize='1.5em',
+                                 toolbar=False,
+                                 )
+        }
+
+
 @admin.register(ModelScript)
 class ModelScriptAdmin(admin.ModelAdmin):
+    form = ModelScriptForm
     list_display = (
         'get_parent',
         DAT_SYS_SCRIPT.TITLE,
@@ -82,8 +98,23 @@ class ModelTriggerVariableAdmin(admin.TabularInline):
     model = ModelTriggerVariable
 
 
+class ModelTriggerForm(forms.ModelForm):
+    class Meta:
+        model = ModelTrigger
+        fields = '__all__'
+        widgets = {
+            'content': AceWidget(mode='python',
+                                 width="80%",
+                                 showprintmargin=False,
+                                 fontsize='1.5em',
+                                 toolbar=False,
+                                 )
+        }
+
+
 @admin.register(ModelTrigger)
 class ModelTriggerAdmin(admin.ModelAdmin):
+    form = ModelTriggerForm
     list_display = (
         'get_object_title',
         DAT_SYS_TRIGGER.TITLE,
