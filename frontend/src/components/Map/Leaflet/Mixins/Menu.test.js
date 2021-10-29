@@ -107,7 +107,7 @@ export const MAP_TEST_ITEM_1 = {
         "type": "Feature",
         "properties": {
           "class": "icon-svg-standart",
-          "hint": "standart",
+          "hint": "icon-svg-standart",
           "date": "2021-01-02",
         },
         "geometry": {
@@ -120,7 +120,7 @@ export const MAP_TEST_ITEM_1 = {
         "properties": {
           "class": "icon-svg-checkpoint_simplified",
           "text":  '"Леший"',
-          "hint": "checkpoint_simplified",
+          "hint": "icon-svg-checkpoint_simplified",
           "date": "2021-01-02",
         },
         "geometry": {
@@ -133,7 +133,7 @@ export const MAP_TEST_ITEM_1 = {
         "properties": {
           "class": "icon-svg-checkpoint_flyer",
           "text":  '"Высокое"',
-          "hint": "checkpoint_flyer",
+          "hint": "icon-svg-checkpoint_flyer",
           "date": "2021-01-01",
         },
         "geometry": {
@@ -146,7 +146,7 @@ export const MAP_TEST_ITEM_1 = {
         "properties": {
           "class": "icon-svg-checkpoint_auto",
           "text":  '"Молодечненское"',
-          "hint": "checkpoint_auto",
+          "hint": "icon-svg-checkpoint_auto",
           "date": "2021-01-01",
         },
         "geometry": {
@@ -159,7 +159,7 @@ export const MAP_TEST_ITEM_1 = {
         "properties": {
           "class": "icon-svg-checkpoint_rail",
           "text":  '"Стальное"',
-          "hint": "checkpoint_rail",
+          "hint": "icon-svg-checkpoint_rail",
           "date": "2021-01-01",
         },
         "geometry": {
@@ -173,7 +173,7 @@ export const MAP_TEST_ITEM_1 = {
           "class": "icon-svg-control",
           "zoom":  false,
           "text":  '130 пого',
-          "hint":  "place_control",
+          "hint":  "icon-svg-control",
           "date":  "2021-01-01",
         },
         "geometry": {
@@ -186,7 +186,7 @@ export const MAP_TEST_ITEM_1 = {
         "properties": {
           "class": "icon-svg-ops",
           "text":  '"Прудок"',
-          "hint":  "ops",
+          "hint":  "icon-svg-ops",
           "date":  "2021-01-01",
         },
         "geometry": {
@@ -199,7 +199,7 @@ export const MAP_TEST_ITEM_1 = {
         "properties": {
           "class": "icon-svg-outpost",
           "text": "10",
-          "hint": "outpost",
+          "hint": "icon-svg-outpost",
           "date": "2021-01-01",
         },
         "geometry": {
@@ -212,7 +212,7 @@ export const MAP_TEST_ITEM_1 = {
         "properties": {
           "class": "icon-svg-post",
           "text": "12",
-          "hint": "post",
+          "hint": "icon-svg-post",
           "date": "2021-01-01",
         },
         "geometry": {
@@ -225,7 +225,7 @@ export const MAP_TEST_ITEM_1 = {
         "properties": {
           "class": "icon-svg-post_temp",
           "text": "15",
-          "hint": "post_temp",
+          "hint": "icon-svg-post_temp",
           "date": "2021-01-01",
         },
         "geometry": {
@@ -238,7 +238,7 @@ export const MAP_TEST_ITEM_1 = {
         "properties": {
           "class": "icon-svg-post_control",
           "text": '"Зубренок"',
-          "hint": "post_control",
+          "hint": "icon-svg-post_control",
           "date": "2021-01-01",
         },
         "geometry": {
@@ -249,9 +249,35 @@ export const MAP_TEST_ITEM_1 = {
       {
         "type": "Feature",
         "properties": {
+          "class": "icon-svg-border_sign",
+          "text": "1234",
+          "hint": "icon-svg-border_sign",
+          "date": "2021-01-01",
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [32.5,53.5]
+        },
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "class": "icon-svg-border_sign",
+          "text": "1235",
+          "hint": "icon-svg-border_sign",
+          "date": "2021-01-01",
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [32.5,53.0]
+        },
+      },
+      {
+        "type": "Feature",
+        "properties": {
           "class": "icon-svg-detention",
           "text": '"detention"',
-          "hint": "detention",
+          "hint": "icon-svg-detention",
           "date": "2021-01-01",
         },
         "geometry": {
