@@ -1,4 +1,4 @@
-import { getResponseAxios, postResponseAxios } from '@/plugins/axios_settings'
+import axios from '@/plugins/axios_settings'
 import {getTriggers} from "@/store/modules/graph/graphNodes"
 import store from "@/store"
 import _ from 'lodash'
@@ -66,12 +66,12 @@ export default {
     },
     async getObjectFromServer({commit, dispatch}, config = {}) {
       config.headers = {'set-cookie': JSON.stringify(getTriggers(config.params.object_id))}
-      return await getResponseAxios('objects/object/', config)
+      return await axios.get('objects/object/', config)
         .then(r => { return Promise.resolve(r.data) })
         .catch(e => { return Promise.reject(e) })
     },
     async getRelationFromServer({getters, commit, dispatch}, params, config={}) {
-      return await postResponseAxios('objects/object_relation/', params, config)
+      return await axios.post('objects/object_relation/', params, config)
         .then(r => {
           if(r.data.length === 0){
             let findNode = getters.graphObjects.find(o => o.id === params.object_id.toString() + '-' + params.rec_id.toString())
@@ -88,7 +88,7 @@ export default {
 
     },
     async saveEditableObject({getters, dispatch}, positionObject) {
-      return await postResponseAxios('objects/object',
+      return await axios.post('objects/object',
         getters.editableObjects[positionObject].getRequestStructure(),
         {headers: {
           'Content-Type': 'multipart/form-data',
@@ -112,7 +112,7 @@ export default {
           {doc_rec_id: relation.document ? relation.document.object.recId : null},
           relation.relation.getRequestStructure()
       )
-      return await postResponseAxios('objects/relation', request, {})
+      return await axios.post('objects/relation', request, {})
         .then(r => {
           let object = {o1: r.data.object_id_1, r1: r.data.rec_id_1, o2: r.data.object_id_2, r2: r.data.rec_id_2}
           dispatch('addRelationToGraph', {object: object, relations: r.data.params, noMove: true})

@@ -1,4 +1,4 @@
-import { getResponseAxios } from '@/plugins/axios_settings'
+import axios from '@/plugins/axios_settings'
 import Graph from "@/components/Graph/lib/graph"
 import {DataBaseObject, DataBaseRelation} from '@/store/modules/graph/graphMenu/recordEditor'
 import Vue from 'vue'
@@ -135,7 +135,7 @@ export default {
     },
     async getBaseTriggers({getters, commit}, config = {}) {
       if(!getters.triggers.length)
-        return await getResponseAxios('script/trigger_list/', config)
+        return await axios.get('script/trigger_list/', config)
           .then(r => {
             Object.entries(r.data).forEach(([k, v]) => { v.map(t => commit('addTrigger', new Trigger(k, t))) })
             let triggers = new Map(Object.entries(localStorage).filter(i => i[0].startsWith('trigger')))
@@ -157,7 +157,7 @@ export default {
           rec_id_1: objects[0].object.recId,
           rec_id_2: objects[1].object.recId
         }
-      return await getResponseAxios('objects/objects_relation/', config)
+      return await axios.get('objects/objects_relation/', config)
           .then(response => {
               for (let obj of response.data) {
               dispatch('addObjectToGraph', {recId: obj.rec_id, objectId: obj.object_id})

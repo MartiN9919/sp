@@ -25,12 +25,16 @@ export default {
 </script>
 
 <style scoped>
+  ::-webkit-scrollbar {
+    width: 0;
+  }
   .alert-list {
     position: absolute;
     z-index: 99999999999999;
     bottom: 0;
     max-width: 25em;
     max-height: 50%;
+    overflow-y: auto;
     right: 0;
   }
 </style>

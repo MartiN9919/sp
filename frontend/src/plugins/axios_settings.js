@@ -1,5 +1,6 @@
 import axios from 'axios'
 import store from '../store/index'
+import router from "@/router"
 import CONST from '@/plugins/const'
 
 export const WS_SERVER_IP = 'ws://' + CONST.URL.SERVER_IP
@@ -37,44 +38,23 @@ export function checkErrorStatusCode(statusCode){
   return CRITICAL_STATUS_CODE.includes(statusCode)
 }
 
-function processingErrorResponse(error){
+http.interceptors.request.use(function (config) {
+  store.commit('changeLoadStatus', true)
+  return config
+}, function (error) {
+  return Promise.reject(error)
+})
+
+http.interceptors.response.use(function (response) {
+  store.commit('changeLoadStatus', false)
+  return response
+}, function (error) {
   store.commit('changeLoadStatus', false)
   if(error.response === undefined)
     store.dispatch('appendErrorAlert', { status: 'no connect' })
   else if(!checkErrorStatusCode(error.response.status))
     store.dispatch('appendErrorAlert', error.response)
   return Promise.reject(error)
-}
+})
 
-function processingSuccessResponse(response){
-  store.commit('changeLoadStatus', false)
-  return response.data
-}
-
-export async function getResponseAxios (url, config = {}) {
-  store.commit('changeLoadStatus', true)
-  return await http.get(url, config)
-    .then((response) => { return processingSuccessResponse(response) })
-    .catch(error => { return processingErrorResponse(error) })
-}
-
-export async function postResponseAxios (url, data, config = {}) {
-  store.commit('changeLoadStatus', true)
-  return await http.post(url, data, config)
-    .then((response) => { return processingSuccessResponse(response) })
-    .catch(error => { return processingErrorResponse(error) })
-}
-
-export async function putResponseAxios (url, data, config = {}) {
-  store.commit('changeLoadStatus', true)
-  return await http.put(url, data, config)
-    .then((response) => { return processingSuccessResponse(response) })
-    .catch(error => { return processingErrorResponse(error) })
-}
-
-export async function deleteResponseAxios (url, config = {}) {
-  store.commit('changeLoadStatus', true)
-  return await http.delete(url, config)
-    .then((response) => { return processingSuccessResponse(response) })
-    .catch(error => { return processingErrorResponse(error) })
-}
+export default http

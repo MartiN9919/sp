@@ -25,11 +25,11 @@ def login_user(request):
         user = auth.authenticate(request, username=username, password=password)
         if user is not None:
             auth.login(request, user)
-            return JsonResponse({'user': {
+            return JsonResponse({
                 'username': user.username,
                 'first_name': user.first_name,
                 'last_name': user.last_name,
-            }}, status=200)
+            }, status=200)
         else:
             return JsonResponse({}, status=400)
     else:
@@ -52,7 +52,7 @@ def authorization(request):
     """
     Получение данных пользователя и проверка его сеанса
     """
-    return JsonResponse({'user': {
+    return JsonResponse({
         'username': request.user.username,
         'first_name': request.user.first_name,
         'last_name': request.user.last_name,
@@ -60,7 +60,7 @@ def authorization(request):
         'staff': request.user.is_staff,
         'write': request.user.is_write,
         'group_id': {'list_id': 53, 'id': request.user.owner_groups.id}
-    }}, status=200)
+    }, status=200)
 
 
 

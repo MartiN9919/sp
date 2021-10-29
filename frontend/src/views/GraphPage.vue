@@ -68,11 +68,8 @@ export default {
     }
   },
   mounted() {
-    this.getBaseObjects()
-      .then(() => {
-        this.setDefaultValueActiveTool()
-        this.setRootSearchTreeItem({})
-      })
+    this.setDefaultValueActiveTool()
+    this.setRootSearchTreeItem({})
     this.getBaseTriggers()
     this.getBaseRelations()
     this.getBaseClassifiers()

@@ -1,4 +1,4 @@
-import {getResponseAxios} from '@/plugins/axios_settings'
+import axios from '@/plugins/axios_settings'
 
 export default {
   state: {
@@ -13,7 +13,7 @@ export default {
   },
   actions: {
     async getBaseLists({commit}, config = {}) {
-      await getResponseAxios('objects/lists/', config)
+      await axios.get('objects/lists/', config)
         .then(r => { commit('setBaseLists', r.data) })
         .catch(e => { return Promise.reject(e) })
       return Promise.resolve()

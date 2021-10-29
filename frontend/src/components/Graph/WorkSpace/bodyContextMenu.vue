@@ -1,5 +1,5 @@
 <script>
-import {mapActions, mapGetters} from "vuex";
+import {mapActions} from "vuex"
 
 export default {
   name: "bodyContextMenu",
@@ -7,7 +7,6 @@ export default {
     objectWithActivatedMenu: null,
   }),
   computed: {
-    ...mapGetters(['baseClassifiers']),
     changeTitle: {
       get: function () {
         return this.objectWithActivatedMenu.object.showTitle
@@ -96,12 +95,6 @@ export default {
       else {
         let array = [
           {
-            icon: 'mdi-pencil',
-            title: 'Переупорядочить граф',
-            subtitle: 'Переупорядочить граф',
-            action: 'reorderGraph'
-          },
-          {
             icon: 'mdi-download',
             title: 'Загрузить граф',
             subtitle: 'Загрузить граф из файла',
@@ -114,6 +107,12 @@ export default {
           subtitle: 'Сохранить граф в файл',
           action: 'saveGraphInFile'
         }) : null
+        this.graphObjects.length > 1 ? array.push({
+          icon: 'mdi-pencil',
+          title: 'Переупорядочить граф',
+          subtitle: 'Переупорядочить граф',
+          action: 'reorderGraph'
+        },) : null
         this.checkRelationCreateStatus() ? array.push({
             icon: 'mdi-check',
             title: 'Создать связь',
@@ -215,7 +214,6 @@ export default {
       obj.remove()
     },
   },
-
 }
 </script>
 

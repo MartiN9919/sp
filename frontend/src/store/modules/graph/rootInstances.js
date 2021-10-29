@@ -1,4 +1,4 @@
-import {getResponseAxios} from '@/plugins/axios_settings'
+import axios from '@/plugins/axios_settings'
 
 export default {
   state: {
@@ -24,19 +24,19 @@ export default {
   },
   actions: {
     async getBaseObjects({commit, dispatch}, config = {}) {
-      await getResponseAxios('objects/list_type/', config)
+      await axios.get('objects/list_type/', config)
         .then(r => { commit('setBaseObjects', r.data.map(o => new BaseObject(o))) })
         .catch(e => { return Promise.reject(e) })
       return Promise.resolve()
     },
     async getBaseClassifiers({getters, commit}, config = {}) {
-      await getResponseAxios('objects/list_classifier/', config)
+      await axios.get('objects/list_classifier/', config)
         .then(r => { commit('addBaseClassifiers', r.data.map(c => new BaseClassifier(c))) })
         .catch(e => { return Promise.reject(e) })
       return Promise.resolve()
     },
     async getBaseRelations({getters, commit}, config = {}) {
-      await getResponseAxios('objects/relations/', config)
+      await axios.get('objects/relations/', config)
         .then(r => { commit('setBaseRelations', r.data.map(l => new BaseRelation(l))) })
         .catch(e => { return Promise.reject(e) })
       return Promise.resolve()

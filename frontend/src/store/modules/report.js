@@ -1,4 +1,4 @@
-import { getResponseAxios, postResponseAxios } from '@/plugins/axios_settings'
+import axios from '@/plugins/axios_settings'
 
 export default {
   state: {
@@ -18,12 +18,12 @@ export default {
   },
   actions: {
     getListFiles ({ commit }, config = {}) {
-      return getResponseAxios('reports/list/', config)
+      return axios.get('reports/list/', config)
         .then(response => { for (const file of response.data) commit('addListFiles', file) })
         .catch(() => {})
     },
     executeReportScript ({ commit }, parameters = {}) {
-      return postResponseAxios('script/execute_report/', parameters.request, parameters.config)
+      return axios.post('script/execute_report/', parameters.request, parameters.config)
         .then(response => {
           commit('changeSelectedTreeViewItem', {})
           commit('addListFiles', response.data)

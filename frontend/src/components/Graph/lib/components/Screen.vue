@@ -1,6 +1,6 @@
 <template>
   <svg class="screen" ref="screen">
-    <g>
+    <g id="screen">
       <slot>
       </slot>
     </g>

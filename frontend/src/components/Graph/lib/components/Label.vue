@@ -30,7 +30,10 @@ export default {
   },
   mounted () {
     this.checkTypeElement()
-    this.offset = {x: -this.node.width/2, y: -((this.element.height || 0) + this.node.height)}
+    this.offset = {
+      x: -this.node.width / 2,
+      y: -((this.element.hasOwnProperty('from') ? 40 : this.element.size / 3) + this.node.height)
+    }
     this.oldNodeSize = {width: this.node.width, height: this.node.height}
   },
   methods: {
@@ -40,7 +43,7 @@ export default {
       else this.$nextTick(this.getPositionForNode)
     },
     getPositionForNode () {
-      this.pos = {x: this.element.x + this.element.width / 2, y: this.element.y + this.element.height / 2}
+      this.pos = {x: this.element.x + this.element.size / 6, y: this.element.y + this.element.size / 6}
     },
     getPositionForEdge () {
       const el = document.getElementById(this.element.id)

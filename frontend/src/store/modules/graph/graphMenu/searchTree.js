@@ -1,4 +1,4 @@
-import { postResponseAxios } from '@/plugins/axios_settings'
+import axios from '@/plugins/axios_settings'
 import {getTriggers} from "@/store/modules/graph/graphNodes"
 import store from'@/store'
 
@@ -62,12 +62,12 @@ export default {
     },
     findObjectsOnServer({ commit, state }, config={}) {
       config.headers = {'set-cookie': JSON.stringify(getTriggers(state.searchTreeGraph.object.id))}
-      return postResponseAxios('objects/search', state.searchTreeGraph.getTree(), config)
+      return axios.post('objects/search', state.searchTreeGraph.getTree(), config)
         .then(response => { commit('setFoundObjects', response.data) })
         .catch(error => {  })
     },
     findRelationsOnServer({ dispatch, state }, config={}) {
-      return postResponseAxios('objects/search_relations', state.searchRelationTreeGraph.getTree(), config)
+      return axios.post('objects/search_relations', state.searchRelationTreeGraph.getTree(), config)
         .then(response => {
           for (let obj of response.data) {
             dispatch('addObjectToGraph', {recId: obj.rec_id, objectId: obj.object_id})
@@ -77,7 +77,7 @@ export default {
     },
     simpleFindObject({state}, {objectId, searchRequest}) {
       let request = {actual: false, object_id: objectId, request: searchRequest, rels: []}
-      return postResponseAxios('objects/search', request, {})
+      return axios.post('objects/search', request, {})
     }
   }
 }
