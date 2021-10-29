@@ -216,7 +216,7 @@ const DATA = {
 }
 
 
-const ZOOM_DOP = .5;
+import { MAP_CONST } from '@/components/Map/Leaflet/Lib/Const';
 let regexp_vb  = /<svg[^>]*viewBox\s*=\s*"\s*0\s*0\s*(?<width>\d+(?:\.\d+)?)\s*(?<height>\d+(?:\.\d+)?)\s*"/mi;
 export function get_icon_data(key, color="gray", zoom=1, text=undefined) {
   let data = DATA[key];
@@ -228,7 +228,7 @@ export function get_icon_data(key, color="gray", zoom=1, text=undefined) {
   let svg_width  = svg_size?.width;
   let svg_height = svg_size?.height;
   if ((svg_width==undefined) || (svg_height==undefined)) return;
-  let zoom_common = zoom*ZOOM_DOP*(data.zoom??1.);
+  let zoom_common = zoom*MAP_CONST.CLASS.ICON.SVG_ZOOM_BASE*(data.zoom??1.);
   svg_width  = svg_width *zoom_common;//|0;
   svg_height = svg_height*zoom_common;//|0;
   return {

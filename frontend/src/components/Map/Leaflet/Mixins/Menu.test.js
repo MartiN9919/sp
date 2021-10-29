@@ -100,7 +100,20 @@ export const MAP_TEST_ITEM_1 = {
         },
         "geometry": {
           "type": "Point",
-          "coordinates": [35,53.0]
+          "coordinates": [45,53.0]
+        },
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "class": "icon-svg-standart",
+          "hint": "icon-svg-standart",
+          "date": "2021-01-02",
+          "zoom": false,
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [25.5,52.9]
         },
       },
       {
@@ -112,7 +125,21 @@ export const MAP_TEST_ITEM_1 = {
         },
         "geometry": {
           "type": "Point",
-          "coordinates": [25.5,52.9]
+          "coordinates": [26.0,52.9]
+        },
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "class": "icon-svg-detention",
+          "text": '"detention"',
+          "hint": "icon-svg-detention\ntest\nasdf asd fa sdf a sd fa sd f asd f as df a sd fa sd f asd f asd fa sd fa sdf asd",
+          "date": "2021-04-01",
+          "zoom": false,
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [31.5,53.6]
         },
       },
       {
@@ -270,19 +297,6 @@ export const MAP_TEST_ITEM_1 = {
         "geometry": {
           "type": "Point",
           "coordinates": [32.5,53.0]
-        },
-      },
-      {
-        "type": "Feature",
-        "properties": {
-          "class": "icon-svg-detention",
-          "text": '"detention"',
-          "hint": "icon-svg-detention\ntest\nasdf asd fa sdf a sd fa sd f asd f as df a sd fa sd f asd f asd fa sd fa sdf asd",
-          "date": "2021-04-01",
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [31.5,53.6]
         },
       },
     ],
