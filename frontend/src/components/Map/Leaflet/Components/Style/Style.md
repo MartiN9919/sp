@@ -14,6 +14,7 @@
 - для уникальности к имени класса дописывается постфикс (индекс в state.selectedTemplate.activeAnalysts)
 
 ## icon
+- icon-svg- ...
 - icon-file- ...
 - icon-mdi- ...  [icon-mdi-spin]
 - icon-fc- ...
@@ -27,7 +28,20 @@
   'icon-file-gold-25-41'
   'icon-file-#00f'
 
+
+
+  PROPERTIES: {
+    CLASS:   'class',                 // key: класс для стилизации
+    TEXT:    'text',                  // надпись на маркере, пока что только для svg-маркеров
+    ZOOM:    'zoom',                  // масштабирование маркера: ['auto'], false, Numeric, пока что только для svg-маркеров
+    HINT:    'hint',                  // всплывающая подсказка, НЕТ РЕАКТИВНОСТИ?
+  },
+
+
+
+
+
  icon_get('icon-mdi-flag sss icon-mdi-spin tst')
  icon_get(className, color, 2);
- icon_get('', 'green'); icon_get('', '#00f');  COLOR_EQU
+ icon_get('', 'green'); icon_get('', '#00f');
  icon_get();

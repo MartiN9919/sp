@@ -95,45 +95,170 @@ export const MAP_TEST_ITEM_1 = {
         "type": "Feature",
         "properties": {
           "class": "icon-mdi-flag sss icon-mdi-spin tst",
-          "hint": "Подсказка 4",
+          "hint": "Demo",
           "date": "2021-01-03",
         },
         "geometry": {
           "type": "Point",
-          "coordinates": [23.928222656250004,53.028000167735165]
+          "coordinates": [35,53.0]
         },
       },
       {
         "type": "Feature",
         "properties": {
-          "hint": "Подсказка 5",
+          "class": "icon-svg-standart",
+          "hint": "standart",
           "date": "2021-01-02",
         },
         "geometry": {
           "type": "Point",
-          "coordinates": [23.532714843750004,53.94315470224928]
+          "coordinates": [25.5,52.9]
         },
       },
       {
         "type": "Feature",
         "properties": {
-          //"class": "sel",
-          "hint": "Test",
+          "class": "icon-svg-checkpoint_simplified",
+          "text":  '"Леший"',
+          "hint": "checkpoint_simplified",
+          "date": "2021-01-02",
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [23.5,53.9]
+        },
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "class": "icon-svg-checkpoint_flyer",
+          "text":  '"Высокое"',
+          "hint": "checkpoint_flyer",
           "date": "2021-01-01",
         },
         "geometry": {
           "type": "Point",
-          "coordinates": [25.7080078125,54.16243396806781]
+          "coordinates": [25.7,54.2],
         },
       },
-      // {
-      //   "type": "Feature",
-      //   "properties": {},
-      //   "geometry": {
-      //     "type": "Point",
-      //     "coordinates": [-0.52509765625,48.104642388766935]
-      //   }
-      // },
+      {
+        "type": "Feature",
+        "properties": {
+          "class": "icon-svg-checkpoint_auto",
+          "text":  '"Молодечненское"',
+          "hint": "checkpoint_auto",
+          "date": "2021-01-01",
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [23.7,53.2]
+        },
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "class": "icon-svg-checkpoint_rail",
+          "text":  '"Стальное"',
+          "hint": "checkpoint_rail",
+          "date": "2021-01-01",
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [28.7,55.9]
+        },
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "class": "icon-svg-control",
+          "zoom":  false,
+          "text":  '130 пого',
+          "hint":  "place_control",
+          "date":  "2021-01-01",
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [27.5,55.1]
+        },
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "class": "icon-svg-ops",
+          "text":  '"Прудок"',
+          "hint":  "ops",
+          "date":  "2021-01-01",
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [27.7,53.2]
+        },
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "class": "icon-svg-outpost",
+          "text": "10",
+          "hint": "outpost",
+          "date": "2021-01-01",
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [23.7, 52.2]
+        },
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "class": "icon-svg-post",
+          "text": "12",
+          "hint": "post",
+          "date": "2021-01-01",
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [25.7,52.0]
+        },
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "class": "icon-svg-post_temp",
+          "text": "15",
+          "hint": "post_temp",
+          "date": "2021-01-01",
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [30.5,52.1]
+        },
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "class": "icon-svg-post_control",
+          "text": '"Зубренок"',
+          "hint": "post_control",
+          "date": "2021-01-01",
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [27.5,51.6]
+        },
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "class": "icon-svg-detention",
+          "text": '"detention"',
+          "hint": "detention",
+          "date": "2021-01-01",
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [31.5,53.6]
+        },
+      },
     ],
   }
 };
@@ -181,61 +306,75 @@ export const MAP_TEST_ITEM_2 = {
           ]
         },
       },
-      {
-        "type": "Feature",
-        "properties": {
-          "class": "icon-pulse-14",
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [30.541992187500004,50.41551870402678]
-        }
-      },
-      {
-        "type": "Feature",
-        "properties": {
-          "class": "icon-fs-spec0",
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [31.24901404693862,51.4907087536248]
-        }
-      },
-      {
-        "type": "Feature",
-        "properties": {
-          "class": "icon-file-gold",
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [29.637048820051557,51.06794583616016]
-        }
-      },
-      {
-        "type": "Feature",
-        "properties": {
-          "class": "icon-file-test-25-41",
-          "hint": "Подсказка 5",
-          "date": "2021-01-06 19:00",
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [30.21580260030736,51.284672727278426]
-        },
-      },
+
 
       {
         "type": "Feature",
         "properties": {
-          "class": "icon-file-#0f0",
-          "hint": "Подсказка 6",
-          "date": "2021-01-09 12:00",
+          "hint": "Контроль 5",
+          "date": "2021-01-02",
         },
         "geometry": {
           "type": "Point",
-          "coordinates": [32.21580260030736,50.284672727278426]
+          "coordinates": [25.5,52.9]
         },
       },
+
+      // {
+      //   "type": "Feature",
+      //   "properties": {
+      //     "class": "icon-pulse-14",
+      //   },
+      //   "geometry": {
+      //     "type": "Point",
+      //     "coordinates": [30.541992187500004,50.41551870402678]
+      //   }
+      // },
+      // {
+      //   "type": "Feature",
+      //   "properties": {
+      //     "class": "icon-fs-spec0",
+      //   },
+      //   "geometry": {
+      //     "type": "Point",
+      //     "coordinates": [31.24901404693862,51.4907087536248]
+      //   }
+      // },
+      // {
+      //   "type": "Feature",
+      //   "properties": {
+      //     "class": "icon-file-gold",
+      //   },
+      //   "geometry": {
+      //     "type": "Point",
+      //     "coordinates": [29.637048820051557,51.06794583616016]
+      //   }
+      // },
+      // {
+      //   "type": "Feature",
+      //   "properties": {
+      //     "class": "icon-file-test-25-41",
+      //     "hint": "Подсказка 5",
+      //     "date": "2021-01-06 19:00",
+      //   },
+      //   "geometry": {
+      //     "type": "Point",
+      //     "coordinates": [30.21580260030736,51.284672727278426]
+      //   },
+      // },
+
+      // {
+      //   "type": "Feature",
+      //   "properties": {
+      //     "class": "icon-file-#0f0",
+      //     "hint": "Подсказка 6",
+      //     "date": "2021-01-09 12:00",
+      //   },
+      //   "geometry": {
+      //     "type": "Point",
+      //     "coordinates": [32.21580260030736,50.284672727278426]
+      //   },
+      // },
 
     ],
   }

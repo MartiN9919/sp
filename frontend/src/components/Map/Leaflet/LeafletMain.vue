@@ -13,6 +13,7 @@
       :crs="MAP_GET_TILES[MAP_GET_TILE].crs"
       @ready="on_map_ready"
       @resize="on_map_resize"
+      @zoomend="on_map_zoom"
       @click="on_map_click"
       @dblclick="on_map_dblclick"
       @contextmenu="on_menu_show"
@@ -226,6 +227,7 @@ export default {
       'MAP_GET_CLUSTER',
       'MAP_GET_HINT',
 
+      'MAP_GET_ZOOM',
       'MAP_GET_EDIT',
 
       'SCRIPT_GET',
@@ -245,6 +247,7 @@ export default {
 
   methods: {
     ...mapActions([
+      'MAP_ACT_ZOOM',
       'MAP_ACT_EDIT',
       'SCRIPT_ACT_SEL_SET',
       'SCRIPT_ACT_SEL_CLEAR',
@@ -287,7 +290,7 @@ export default {
       this.data_normalize_color(map_item);
 
       // deep copy
-      let fc = map_item[MAP_ITEM.FC.KEY];
+      let fc = map_item.fc;
       fc = JSON.parse(JSON.stringify(fc));
 
       // установить fc.features[ind].ind - порядковый номер фигуры в fc
@@ -297,9 +300,9 @@ export default {
       let range_ts  = this.MAP_GET_RANGE_SEL;
       if ((range_ts[0]>0) && (range_ts[1]>0)) {
         let item_date;
-        let features = fc.features.filter(function(map_item) {
-          if (!map_item.properties.date) return true;
-          item_date = datesql_to_ts(map_item.properties.date);
+        let features = fc.features.filter(function(feature) {
+          if (!feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES.DATE]) return true;
+          item_date = datesql_to_ts(feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES.DATE]);
           return ((item_date >= range_ts[0]) && (item_date <= range_ts[1]));
         });
         fc.features = features;
@@ -384,10 +387,11 @@ export default {
 
         // стиль маркеров
         pointToLayer: function(feature, latlng) {
-          let classAny = feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES.CLASS]??'';
-          let classSel = feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._SEL_]?MAP_CONST.CLASS.SEL:'';
-          let layer = marker_get(latlng, classAny+' '+classSel, self.SCRIPT_GET_ITEM_COLOR(map_ind));
-          return layer;
+          let class_main = feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES.CLASS]??'';
+          let class_sel  = feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._SEL_]?MAP_CONST.CLASS.SEL:'';
+          let class_dop  = 'upper-markers';                                                // поднять маркеры над фигурами
+          const options  = {...feature.properties, 'class': class_main+' '+class_sel+' '+class_dop, };
+          return marker_get(latlng, self.SCRIPT_GET_ITEM_COLOR(map_ind), options, self.MAP_GET_ZOOM);
         },
 
 
@@ -420,6 +424,10 @@ export default {
       this.map.invalidateSize();
     },
 
+    on_map_zoom(val) {
+      this.MAP_ACT_ZOOM(this.map.getZoom());
+    },
+
     on_map_click(e) {
       this.SCRIPT_ACT_SEL_CLEAR();
     },
@@ -443,8 +451,8 @@ export default {
     getDataAsGeoJSON () {
       // create FeatureCollection
       const geoJSON = {
-        type: MAP_CONST.TYPE.FC,
-        features: []
+        type:     'FeatureCollection',
+        features: [],
       };
 
       // export each layer
@@ -503,5 +511,6 @@ export default {
     50%  { opacity: .4; }
     100% { opacity: 1;  }
   }
+  div::v-deep .upper-markers { z-index: 5000 !important; }
 
 </style>
