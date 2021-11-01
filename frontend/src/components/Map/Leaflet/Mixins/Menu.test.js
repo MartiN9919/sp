@@ -12,11 +12,11 @@ export const MAP_TEST_ITEM_1 = {
     //     "zoom": 2,
     //   },
     //   "line": {
-    //     "class": "test_mark_auto mark_zabor_ograd arrow-double-end line_zagrad_signal_1",           // "mark_zabor_ograd",
+    //     "class": "test_mark_auto mark_zabor_ograd arrow-double-end line-engeneer_signal",           // "mark_zabor_ograd",
     //     //"class": "hidden", //"ant arrow-double-end dash-3",     // класс объекта (для установки стиля)
     //   },
     //   "polygon": {
-    //     "class": "mark_zabor_ograd hatch-diagonal-1",  //hatch-diagonal-1 line_zagrad_signal_1 test_mark_auto
+    //     "class": "mark_zabor_ograd hatch-diagonal-1",  //hatch-diagonal-1 line-engeneer_signal test_mark_auto
     //   },
     // },
 
@@ -26,7 +26,7 @@ export const MAP_TEST_ITEM_1 = {
       {
         "type": "Feature",
         "properties": {
-          "class": "mark_zabor_ograd hatch-diagonal-1",  //hatch-diagonal-1 line_zagrad_signal_1 test_mark_auto
+          "class": "mark_zabor_ograd hatch-diagonal-1",  //hatch-diagonal-1 line-engeneer_signal test_mark_auto
           "hint": "Подсказка 1",
         },
         "geometry": {
@@ -59,11 +59,27 @@ export const MAP_TEST_ITEM_1 = {
           ]
         },
       },
+      // {
+      //   "type": "Feature",
+      //   "properties": {
+      //     "class": "test_mark_auto arrow-double-end line-engeneer_signal ant",
+      //     "hint": "Подсказка 3-1",
+      //     "date": "2021-01-04",
+      //   },
+      //   "geometry": {
+      //     "type": "LineString",
+      //     "coordinates": [
+      //       [32.02514648437501,54.7943516039205],
+      //       [27.608642578125004,53.904338156274704],
+      //       [23.70849609375,52.0862573323384],
+      //     ]
+      //   },
+      // },
       {
         "type": "Feature",
         "properties": {
-          "class": "test_mark_auto arrow-double-end line_zagrad_signal_1 ant",
-          "hint": "Подсказка 3-1",
+          "class": "arrow-double-end line-engeneer_signal ant",
+          "hint": "test_mark_auto arrow-double-end line-engeneer_signal ant",
           "date": "2021-01-04",
         },
         "geometry": {
@@ -91,18 +107,12 @@ export const MAP_TEST_ITEM_1 = {
           ]
         },
       },
-      {
-        "type": "Feature",
-        "properties": {
-          "class": "icon-mdi-flag sss icon-mdi-spin tst",
-          "hint": "Demo",
-          "date": "2021-01-03",
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [45,53.0]
-        },
-      },
+
+
+
+
+
+
       {
         "type": "Feature",
         "properties": {
@@ -416,6 +426,23 @@ export const MAP_TEST_ITEM_1 = {
         "geometry": {
           "type": "Point",
           "coordinates": [31.5,52.0]
+        },
+      },
+
+
+
+
+
+      {
+        "type": "Feature",
+        "properties": {
+          "class": "icon-mdi-flag sss icon-mdi-spin tst",
+          "hint": "Demo",
+          "date": "2021-01-03",
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [45,53.0]
         },
       },
     ],

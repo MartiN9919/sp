@@ -16,7 +16,7 @@ import 'leaflet-polylinedecorator'
 import { MAP_CONST, MAP_ITEM } from '@/components/Map/Leaflet/Lib/Const';
 import { get_feature_class, get_feature_coordinates } from '@/components/Map/Leaflet/Lib/LibFc';
 import { dict_get } from '@/components/Map/Leaflet/Lib/Lib';
-import { DATA_PATTERN } from '@/components/Map/Leaflet/Components/Style/StylePatternData';
+import { DATA_DECOR } from '@/components/Map/Leaflet/Components/Style/StyleDecorData';
 //import { icon_file_path } from '@/components/Map/Leaflet/Components/Style/StyleIcon';
 
 import { findRealParent, propsBinder } from 'vue2-leaflet';
@@ -39,7 +39,7 @@ const props = {
 };
 
 export default {
-  name: 'LStylePattern',
+  name: 'LStyleDecor',
   props,
   data() {
     return {
@@ -50,7 +50,7 @@ export default {
   mounted() {
     const self        = this;
     const features    = this.fc.features;
-    const obj_pattern = new DATA_PATTERN(this.color);
+    const obj_pattern = new DATA_DECOR(this.color);
     this.parent_obj   = findRealParent(this.$parent);
 
     this.ready = true;

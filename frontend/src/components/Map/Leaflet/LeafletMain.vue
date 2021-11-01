@@ -3,7 +3,7 @@
     style="height: 100%; width: 100%;"
     >
 
-    <!-- ДЕКОРАТОР ФИГУР: SVG -->
+    <!-- SVG DEFS, STYLE -->
     <l-style-svg/>
 
     <l-map
@@ -42,8 +42,8 @@
           />
         </l-marker-cluster>
 
-        <!-- ДЕКОРАТОР ФИГУР: PATTERN -->
-        <l-style-pattern
+        <!-- ДЕКОРАТОР ФИГУР -->
+        <l-style-decor
           :fc="data_normalize(map_ind, map_item)"
           :color="SCRIPT_GET_ITEM_COLOR(map_ind)"
         />
@@ -132,7 +132,7 @@ import {
 
 import StyleSvg         from '@/components/Map/Leaflet/Components/Style/StyleSvg';
 import { classes_name_correct } from '@/components/Map/Leaflet/Components/Style/StyleSvgData';
-import StylePattern     from '@/components/Map/Leaflet/Components/Style/StylePattern';
+import StyleDecor       from '@/components/Map/Leaflet/Components/Style/StyleDecor';
 
 import                       '@/components/Map/Leaflet/Components/Style/StyleIconPulse';
 import EditorMap        from '@/components/Map/Leaflet/Components/EditorMap';
@@ -183,7 +183,7 @@ export default {
     LIcon,
     'l-marker-cluster': Vue2LeafletMarkerCluster,
     'l-style-svg':      StyleSvg,
-    'l-style-pattern':  StylePattern,
+    'l-style-decor':    StyleDecor,
     LControlPolylineMeasure,
 
     EditorMap,
