@@ -230,6 +230,19 @@ export const MAP_TEST_ITEM_1 = {
       {
         "type": "Feature",
         "properties": {
+          "class": "icon-svg-post_simple_outside",
+          "text": "12",
+          "hint": "icon-svg-post_simple_outside",
+          "date": "2021-01-01",
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [22.9,52.5]
+        },
+      },
+      {
+        "type": "Feature",
+        "properties": {
           "class": "icon-svg-post_temp_inside",
           "text": "15",
           "hint": "icon-svg-post_temp_inside",
@@ -287,6 +300,19 @@ export const MAP_TEST_ITEM_1 = {
       {
         "type": "Feature",
         "properties": {
+          "class": "icon-svg-checkpoint_auto_outside",
+          "text":  '"Labas denas"',
+          "hint": "icon-svg-checkpoint_auto_outside",
+          "date": "2021-01-01",
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [23.7,53.4]
+        },
+      },
+      {
+        "type": "Feature",
+        "properties": {
           "class": "icon-svg-checkpoint_flyer_inside",
           "text":  '"Высокое"',
           "hint": "icon-svg-checkpoint_flyer_inside",
@@ -313,6 +339,19 @@ export const MAP_TEST_ITEM_1 = {
       {
         "type": "Feature",
         "properties": {
+          "class": "icon-svg-checkpoint_rail_outside",
+          "text":  '"Bruzg"',
+          "hint": "icon-svg-checkpoint_rail_outside",
+          "date": "2021-01-01",
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [23.7,53.0]
+        },
+      },
+      {
+        "type": "Feature",
+        "properties": {
           "class": "icon-svg-checkpoint_simplified_inside",
           "text":  '"Леший"',
           "hint": "icon-svg-checkpoint_simplified_inside",
@@ -321,6 +360,19 @@ export const MAP_TEST_ITEM_1 = {
         "geometry": {
           "type": "Point",
           "coordinates": [23.5,53.9]
+        },
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "class": "icon-svg-checkpoint_simplified_outside",
+          "text":  '"Швiденькi"',
+          "hint": "icon-svg-checkpoint_simplified_outside",
+          "date": "2021-01-02",
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [23.6,53.6]
         },
       },
 
