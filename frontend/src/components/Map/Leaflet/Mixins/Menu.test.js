@@ -131,9 +131,9 @@ export const MAP_TEST_ITEM_1 = {
       {
         "type": "Feature",
         "properties": {
-          "class": "icon-svg-detention",
+          "class": "icon-svg-point_detention_inside",
           "text": '"detention"',
-          "hint": "icon-svg-detention\ntest\nasdf asd fa sdf a sd fa sd f asd f as df a sd fa sd f asd f asd fa sd fa sdf asd",
+          "hint": "icon-svg-point_detention_inside\ntest\nasdf asd fa sdf a sd fa sd f asd f as df a sd fa sd f asd f asd fa sd fa sdf asd",
           "date": "2021-04-01",
           "zoom": false,
         },
@@ -142,65 +142,18 @@ export const MAP_TEST_ITEM_1 = {
           "coordinates": [31.5,53.6]
         },
       },
+
+
+
+
+
       {
         "type": "Feature",
         "properties": {
-          "class": "icon-svg-checkpoint_simplified",
-          "text":  '"Леший"',
-          "hint": "icon-svg-checkpoint_simplified",
-          "date": "2021-01-02",
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [23.5,53.9]
-        },
-      },
-      {
-        "type": "Feature",
-        "properties": {
-          "class": "icon-svg-checkpoint_flyer",
-          "text":  '"Высокое"',
-          "hint": "icon-svg-checkpoint_flyer",
-          "date": "2021-01-01",
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [25.7,54.2],
-        },
-      },
-      {
-        "type": "Feature",
-        "properties": {
-          "class": "icon-svg-checkpoint_auto",
-          "text":  '"Молодечненское"',
-          "hint": "icon-svg-checkpoint_auto",
-          "date": "2021-01-01",
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [23.7,53.2]
-        },
-      },
-      {
-        "type": "Feature",
-        "properties": {
-          "class": "icon-svg-checkpoint_rail",
-          "text":  '"Стальное"',
-          "hint": "icon-svg-checkpoint_rail",
-          "date": "2021-01-01",
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [28.7,55.9]
-        },
-      },
-      {
-        "type": "Feature",
-        "properties": {
-          "class": "icon-svg-control",
+          "class": "icon-svg-base_manage_inside",
           "zoom":  false,
           "text":  '130 пого',
-          "hint":  "icon-svg-control",
+          "hint":  "icon-svg-base_manage_inside",
           "date":  "2021-01-01",
         },
         "geometry": {
@@ -211,9 +164,23 @@ export const MAP_TEST_ITEM_1 = {
       {
         "type": "Feature",
         "properties": {
-          "class": "icon-svg-ops",
+          "class": "icon-svg-base_manage_outside",
+          "zoom":  false,
+          "text":  '130 пого',
+          "hint":  "icon-svg-base_manage_outside",
+          "date":  "2021-01-01",
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [23.5,53.1]
+        },
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "class": "icon-svg-base_ops_inside",
           "text":  '"Прудок"',
-          "hint":  "icon-svg-ops",
+          "hint":  "icon-svg-base_ops_inside",
           "date":  "2021-01-01",
         },
         "geometry": {
@@ -224,9 +191,9 @@ export const MAP_TEST_ITEM_1 = {
       {
         "type": "Feature",
         "properties": {
-          "class": "icon-svg-outpost",
+          "class": "icon-svg-post_frontier_inside",
           "text": "10",
-          "hint": "icon-svg-outpost",
+          "hint": "icon-svg-post_frontier_inside",
           "date": "2021-01-01",
         },
         "geometry": {
@@ -237,9 +204,22 @@ export const MAP_TEST_ITEM_1 = {
       {
         "type": "Feature",
         "properties": {
-          "class": "icon-svg-post",
+          "class": "icon-svg-post_frontier_outside",
+          "text": "10",
+          "hint": "icon-svg-post_frontier_outside",
+          "date": "2021-01-01",
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [22.9, 54.]
+        },
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "class": "icon-svg-post_simple_inside",
           "text": "12",
-          "hint": "icon-svg-post",
+          "hint": "icon-svg-post_simple_inside",
           "date": "2021-01-01",
         },
         "geometry": {
@@ -250,9 +230,9 @@ export const MAP_TEST_ITEM_1 = {
       {
         "type": "Feature",
         "properties": {
-          "class": "icon-svg-post_temp",
+          "class": "icon-svg-post_temp_inside",
           "text": "15",
-          "hint": "icon-svg-post_temp",
+          "hint": "icon-svg-post_temp_inside",
           "date": "2021-01-01",
         },
         "geometry": {
@@ -263,9 +243,9 @@ export const MAP_TEST_ITEM_1 = {
       {
         "type": "Feature",
         "properties": {
-          "class": "icon-svg-post_control",
+          "class": "icon-svg-post_control_inside",
           "text": '"Зубренок"',
-          "hint": "icon-svg-post_control",
+          "hint": "icon-svg-post_control_inside",
           "date": "2021-01-01",
         },
         "geometry": {
@@ -276,9 +256,83 @@ export const MAP_TEST_ITEM_1 = {
       {
         "type": "Feature",
         "properties": {
-          "class": "icon-svg-border_sign",
+          "class": "icon-svg-post_control_outside",
+          "text": '"Дотишки"',
+          "hint": "icon-svg-post_control_outside",
+          "date": "2021-01-01",
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [22.7,53.6]
+        },
+      },
+
+
+
+
+
+      {
+        "type": "Feature",
+        "properties": {
+          "class": "icon-svg-checkpoint_auto_inside",
+          "text":  '"Молодечненское"',
+          "hint": "icon-svg-checkpoint_auto_inside",
+          "date": "2021-01-01",
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [23.7,53.2]
+        },
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "class": "icon-svg-checkpoint_flyer_inside",
+          "text":  '"Высокое"',
+          "hint": "icon-svg-checkpoint_flyer_inside",
+          "date": "2021-01-01",
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [25.7,54.2],
+        },
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "class": "icon-svg-checkpoint_rail_inside",
+          "text":  '"Стальное"',
+          "hint": "icon-svg-checkpoint_rail_inside",
+          "date": "2021-01-01",
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [28.7,55.9]
+        },
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "class": "icon-svg-checkpoint_simplified_inside",
+          "text":  '"Леший"',
+          "hint": "icon-svg-checkpoint_simplified_inside",
+          "date": "2021-01-02",
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [23.5,53.9]
+        },
+      },
+
+
+
+
+      {
+        "type": "Feature",
+        "properties": {
+          "class": "icon-svg-engineer_border_sign",
           "text": "1234",
-          "hint": "icon-svg-border_sign",
+          "hint": "icon-svg-engineer_border_sign",
           "date": "2021-03-01",
         },
         "geometry": {
@@ -289,9 +343,9 @@ export const MAP_TEST_ITEM_1 = {
       {
         "type": "Feature",
         "properties": {
-          "class": "icon-svg-border_sign",
+          "class": "icon-svg-engineer_border_sign",
           "text": "1235",
-          // "hint": "icon-svg-border_sign",
+          "hint": "icon-svg-engineer_border_sign",
           "date": "2021-02-01",
         },
         "geometry": {
@@ -302,9 +356,9 @@ export const MAP_TEST_ITEM_1 = {
       {
         "type": "Feature",
         "properties": {
-          "class": "icon-svg-observation_technik",
+          "class": "icon-svg-engineer_tower_industrial",
           "text": '"Зоркий"',
-          "hint": "icon-svg-observation_technik",
+          "hint": "icon-svg-engineer_tower_industrial",
           "date": "2021-02-01",
         },
         "geometry": {
