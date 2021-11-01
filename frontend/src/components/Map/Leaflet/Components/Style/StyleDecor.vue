@@ -16,7 +16,7 @@ import 'leaflet-polylinedecorator'
 import { MAP_CONST, MAP_ITEM } from '@/components/Map/Leaflet/Lib/Const';
 import { get_feature_class, get_feature_coordinates } from '@/components/Map/Leaflet/Lib/LibFc';
 import { dict_get } from '@/components/Map/Leaflet/Lib/Lib';
-import { DATA_DECOR } from '@/components/Map/Leaflet/Components/Style/StyleDecorData';
+import { get_decor_data } from '@/components/Map/Leaflet/Components/Style/StyleDecorData';
 //import { icon_file_path } from '@/components/Map/Leaflet/Components/Style/StyleIcon';
 
 import { findRealParent, propsBinder } from 'vue2-leaflet';
@@ -50,7 +50,7 @@ export default {
   mounted() {
     const self        = this;
     const features    = this.fc.features;
-    const obj_pattern = new DATA_DECOR(this.color);
+    //const obj_pattern = new DATA_DECOR(this.color);
     this.parent_obj   = findRealParent(this.$parent);
 
     this.ready = true;
@@ -65,9 +65,9 @@ export default {
       l_obj[MAP_CONST.TYPE_GEOMETRY.LINE   ] = l_obj[MAP_CONST.TYPE_GEOMETRY.LINE   ].map((val) => L.polyline(val));
       l_obj[MAP_CONST.TYPE_GEOMETRY.POLYGON] = l_obj[MAP_CONST.TYPE_GEOMETRY.POLYGON].map((val) => L.polygon (val));
 
-      // patterns на основании classes и color
-      let classes = get_feature_class(feature);
-      let patterns = obj_pattern.get(classes);
+      // patterns на основании classes_str и color
+      let classes_str = get_feature_class(feature);
+      let patterns = get_decor_data(classes_str, ind);
       if (patterns.length == 0) continue;
 
       // создать декорации

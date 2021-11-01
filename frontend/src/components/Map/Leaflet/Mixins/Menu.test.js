@@ -12,11 +12,11 @@ export const MAP_TEST_ITEM_1 = {
     //     "zoom": 2,
     //   },
     //   "line": {
-    //     "class": "test_mark_auto mark_zabor_ograd arrow-double-end line-engeneer_signal",           // "mark_zabor_ograd",
+    //     "class": "test_mark_auto line-engeneer_ograd arrow-double-end line-engeneer_signal",           // "line-engeneer_ograd",
     //     //"class": "hidden", //"ant arrow-double-end dash-3",     // класс объекта (для установки стиля)
     //   },
     //   "polygon": {
-    //     "class": "mark_zabor_ograd hatch-diagonal-1",  //hatch-diagonal-1 line-engeneer_signal test_mark_auto
+    //     "class": "line-engeneer_ograd hatch-diagonal-1",  //hatch-diagonal-1 line-engeneer_signal test_mark_auto
     //   },
     // },
 
@@ -26,7 +26,7 @@ export const MAP_TEST_ITEM_1 = {
       {
         "type": "Feature",
         "properties": {
-          "class": "mark_zabor_ograd hatch-diagonal-1",  //hatch-diagonal-1 line-engeneer_signal test_mark_auto
+          "class": "line-engeneer_ograd hatch-diagonal-1",  //hatch-diagonal-1 line-engeneer_signal test_mark_auto
           "hint": "Подсказка 1",
         },
         "geometry": {
