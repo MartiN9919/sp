@@ -9,6 +9,24 @@ import { icon_get } from '@/components/Map/Leaflet/Components/Style/StyleIcon';
 
 export class DATA_DECOR {
   constructor(color='gray') {
+    this.dat2 = {
+      //
+      // Заграждение сигнализация -|-|-
+      //
+      'line-engeneer_signal': {
+        offset: 8,
+        repeat: 18,
+        symbol_type: 'marker',
+        symbol_options: {
+          rotate: true,
+          markerOptions: {
+            icon: 'icon-svg-engeneer_signal',
+          },
+        },
+      },
+    }
+
+
     this.dat = {
 
       // Маркер обычный
@@ -40,11 +58,6 @@ export class DATA_DECOR {
           rotate: true,
           markerOptions: {
             icon: icon_get(color, {class: 'icon-file-zabor_ogradit-10-10'}),
-            // icon: L.icon({
-            //   iconUrl: icon_file_path('zabor_ogradit'),
-            //   iconSize: [10, 10],   // original: [16, 16]
-            //   iconAnchor: [5, 5],
-            // }),
           },
         }),
       },
@@ -59,11 +72,6 @@ export class DATA_DECOR {
           rotate: true,
           markerOptions: {
             icon: icon_get(color, {class: 'icon-svg-engeneer_signal'}),
-            // icon: L.icon({
-            //   iconUrl: icon_file_path('zagragd_signal'),
-            //   //iconSize: [2, 10],   // original: [3, 16]
-            //   iconAnchor: [8, 0],
-            // }),
           },
         }),
       },
@@ -101,10 +109,6 @@ export class DATA_DECOR {
           rotate: false,
           markerOptions: {
             icon: icon_get(color, {class: 'icon-file-test2-30-40'}),
-            // icon: L.icon({
-            //   iconUrl: icon_file_path('test2'),
-            //   iconAnchor: [30, 40],
-            // }),
           },
         }),
       },
