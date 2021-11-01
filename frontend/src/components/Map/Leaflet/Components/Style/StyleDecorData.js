@@ -8,35 +8,41 @@
 import { icon_get } from '@/components/Map/Leaflet/Components/Style/StyleIcon';
 
 const DATA = {
+  //
+  // Рубеж охраны 1 _ . _
+  //
+  // class="hidden" для основной линии
+  'line_border_1': [
+    { offset: 12, repeat: 25, symbol_type: 'dash', symbol_options: { pixelSize: 10, pathOptions: { color: '#0a0', weight: 2, }, }, },
+    { offset: 0,  repeat: 25, symbol_type: 'dash', symbol_options: { pixelSize: 0,  pathOptions: { color: '#0a0', }, }, },
+  ],
 
   //
-  // Забор оградительный
+  // Рубеж охраны 2 _ .. _
+  //
+  // class="hidden" для основной линии
+  'line_border_2': [
+    { offset: 18, repeat: 30, symbol_type: 'dash', symbol_options: { pixelSize: 10, pathOptions: { color: '#0a0', weight: 2, }, }, },
+    { offset: 0,  repeat: 30, symbol_type: 'dash', symbol_options: { pixelSize: 0,  pathOptions: { color: '#0a0', }, }, },
+    { offset: 5,  repeat: 30, symbol_type: 'dash', symbol_options: { pixelSize: 0,  pathOptions: { color: '#0a0', }, }, },
+  ],
+
+  //
+  // Забор оградительный х х х
   //
   'line-engeneer_ograd': {
-    offset: 8,
-    repeat: 30,
+    offset: 8, repeat: 30,
     symbol_type: 'marker',
-    symbol_options: {
-      rotate: true,
-      markerOptions: {
-        icon: 'icon-file-zabor_ogradit-10-10',
-      },
-    },
+    symbol_options: { rotate: true, markerOptions: { icon: 'icon-file-zabor_ogradit-10-10', }, },
   },
 
   //
   // Заграждение сигнализация -|-|-
   //
   'line-engeneer_signal': {
-    offset: 8,
-    repeat: 18,
+    offset: 8, repeat: 18,
     symbol_type: 'marker',
-    symbol_options: {
-      rotate: true,
-      markerOptions: {
-        icon: 'icon-svg-engeneer_signal',
-      },
-    },
+    symbol_options: { rotate: true, markerOptions: { icon: 'icon-svg-engeneer_signal', }, },
   },
 }
 
@@ -53,16 +59,28 @@ export function get_decor_data(classes_str, index, color="gray", zoom=1) {
     let data = DATA[class_item];
     if (data === undefined) return;
     data = JSON.parse(JSON.stringify(data));
+    if (!(data instanceof Array)) data = [data];                          // к единому формату
 
-    // создать символ
-    if (data.symbol_type == 'marker') {
-      data.symbol_options.markerOptions.icon = icon_get(color, {class: data.symbol_options.markerOptions.icon});
-      data.symbol = L.Symbol.marker(data.symbol_options);
-    }
+    data.forEach(function(data_item, data_ind) {
+      // тип: маркер
+      if (data[data_ind].symbol_type == 'marker') {
+        data[data_ind].symbol_options.markerOptions.icon = icon_get(color, {class: data[data_ind].symbol_options.markerOptions.icon});
+        data[data_ind].symbol = L.Symbol.marker(data[data_ind].symbol_options);
+      }
 
-    if (data.symbol_type    != undefined) delete data['symbol_type'   ];
-    if (data.symbol_options != undefined) delete data['symbol_options'];
-    ret.push(data);
+      // тип: штрих
+      if (data[data_ind].symbol_type == 'dash') {
+        if (data[data_ind].symbol_options.pathOptions.color == '{color}') data[data_ind].symbol_options.pathOptions.color = color;
+        data[data_ind].symbol = L.Symbol.dash(data[data_ind].symbol_options);
+      }
+
+      // удалить ставшие ненужными записи
+      if (data[data_ind].symbol_type    != undefined) delete data[data_ind]['symbol_type'   ];
+      if (data[data_ind].symbol_options != undefined) delete data[data_ind]['symbol_options'];
+
+      // запомнить результат
+      ret.push(data[data_ind]);
+    });
   });
   return ret;
 }

@@ -339,14 +339,12 @@ const DATA = {
 
 
   'engeneer_signal': {
-    anchor_dx: 33,
-    anchor_dy: 94.,
+    anchor_dx: 24,
+    anchor_dy: 5,
     zoom:      .8,
     svg: `
-      <svg width={width} height={height} viewBox="0 0 300 94">
-        <path style="fill:#fff;stroke:#000;stroke-width:4" d="m 3.53,91.11 h 60 l -30,-75.00 z"/>
-        <path style="fill:#fff;stroke:#000;stroke-width:4" d="m 12.53,11.11 h 40 l 6,-10.00 -2,3 h -48 l -2,-3 z"/>
-        <text style="font-style:normal;font-weight:bold;font-size:32px;font-family:sans-serif" x="66" y="88">{text}</text>
+      <svg width={width} height={height} viewBox="0 0 40 10">
+        <path style="fill:none;stroke:#888;stroke-width:10;" d="m 5,0 h 40"/>
       </svg>
     `,
   },
