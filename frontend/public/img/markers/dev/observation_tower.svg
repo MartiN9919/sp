@@ -9,9 +9,9 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="97.064758"
+   width="65.908134"
    height="93.109398"
-   viewBox="0 0 97.064754 93.109394"
+   viewBox="0 0 65.908132 93.109394"
    version="1.1"
    id="svg8"
    inkscape:version="0.92.5 (2060ec1f9f, 2020-04-08)"
@@ -72,22 +72,26 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="2.8"
-     inkscape:cx="-21.932117"
-     inkscape:cy="78.683826"
+     inkscape:cx="-57.867575"
+     inkscape:cy="46.784394"
      inkscape:document-units="px"
      inkscape:current-layer="svg8"
      showgrid="true"
      units="px"
-     inkscape:window-width="1848"
-     inkscape:window-height="1016"
-     inkscape:window-x="72"
+     inkscape:window-width="1920"
+     inkscape:window-height="960"
+     inkscape:window-x="1920"
      inkscape:window-y="27"
      inkscape:window-maximized="1"
-     inkscape:snap-bbox="false">
+     inkscape:snap-bbox="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0">
     <inkscape:grid
        type="xygrid"
        id="grid1631"
-       originx="-11.467619"
+       originx="-12.045934"
        originy="-37.999998" />
   </sodipodi:namedview>
   <metadata
@@ -104,12 +108,13 @@
   </metadata>
   <path
      style="fill:#ffffff;stroke:#000000;stroke-width:4;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-     d="M 3.5323808,91.1094 H 93.532381 l -45,-75 z"
+     d="m 2.954066,91.109396 h 60 l -30,-74.999996 z"
      id="path7931"
-     inkscape:connector-curvature="0" />
+     inkscape:connector-curvature="0"
+     sodipodi:nodetypes="cccc" />
   <path
      style="fill:#ffffff;stroke:#000000;stroke-width:4;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-     d="m 27.532381,11.1094 h 40 l 6,-9.9999996 -2,3 h -48 l -2,-3 z"
+     d="m 11.954066,11.1094 h 40 l 6,-9.9999996 -2,3 h -48 l -2,-3 z"
      id="path7933"
      inkscape:connector-curvature="0"
      sodipodi:nodetypes="ccccccc" />

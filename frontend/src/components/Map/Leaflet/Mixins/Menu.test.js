@@ -299,6 +299,19 @@ export const MAP_TEST_ITEM_1 = {
           "coordinates": [32.5,53.0]
         },
       },
+      {
+        "type": "Feature",
+        "properties": {
+          "class": "icon-svg-observation_technik",
+          "text": '"Зоркий"',
+          "hint": "icon-svg-observation_technik",
+          "date": "2021-02-01",
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [31.5,52.0]
+        },
+      },
     ],
   }
 };
@@ -356,7 +369,7 @@ export const MAP_TEST_ITEM_2 = {
         },
         "geometry": {
           "type": "Point",
-          "coordinates": [25.5,52.9]
+          "coordinates": [31.5,52.0]
         },
       },
 
