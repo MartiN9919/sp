@@ -351,6 +351,19 @@ const DATA = {
 
 
 
+  // текст на линии
+  'text_1': {
+    anchor_dx: 0,
+    anchor_dy: 0,
+    zoom:      .8,
+    svg: `
+      <svg width={width} height={height} viewBox="0 0 20 100">
+        <text style="font-style:normal;font-weight:bold;font-size:30px;font-family:sans-serif;fill:#333" transform="rotate(90)" x="0" y="0">{text}</text>
+      </svg>
+    `,
+  }
+//         <text style="font-style:normal;font-weight:bold;font-size:30px;font-family:sans-serif" transform="rotate(90)" x="0" y="22">{text}</text>
+
 }
 
 

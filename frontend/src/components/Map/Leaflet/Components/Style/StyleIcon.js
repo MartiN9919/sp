@@ -88,7 +88,6 @@ export function icon_get(icon_color=undefined, icon_properties={}, zoom_map=unde
     let file   =  classes_icon_list[0][1];
     let size_w = (classes_icon_list[0][2] ?? 25) * zoom|0;
     let size_h = (classes_icon_list[0][3] ?? 41) * zoom|0;
-    console.log(file, size_w, size_h)
     return new L.Icon({
       className:   classes_other_str,
       shadowUrl:   icon_file_path('shadow-marker'),

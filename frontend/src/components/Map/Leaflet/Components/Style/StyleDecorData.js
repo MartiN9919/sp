@@ -27,13 +27,15 @@ const DATA = {
     { offset: 5,  repeat: 30, symbol_type: 'dash', symbol_options: { pixelSize: 0,  pathOptions: { color: '#0a0', }, }, },
   ],
 
+
+
+
   //
   // Забор оградительный х х х
   //
   'line-engeneer_ograd': {
     offset: 8, repeat: 30,
-    symbol_type: 'marker',
-    symbol_options: { rotate: true, markerOptions: { icon: 'icon-file-zabor_ogradit-10-10', }, },
+    symbol_type: 'marker', symbol_options: { rotate: true, markerOptions: { icon: 'icon-file-zabor_ogradit-10-10', }, },
   },
 
   //
@@ -41,15 +43,23 @@ const DATA = {
   //
   'line-engeneer_signal': {
     offset: 8, repeat: 18,
-    symbol_type: 'marker',
-    symbol_options: { rotate: true, markerOptions: { icon: 'icon-svg-engeneer_signal', }, },
+    symbol_type: 'marker', symbol_options: { rotate: true, markerOptions: { icon: 'icon-svg-engeneer_signal', }, },
   },
+
+
+  'line-text_1': {
+    offset: 8, repeat: 250,
+    symbol_type: 'marker', symbol_options: { rotate: true, markerOptions: { icon: 'icon-svg-text_1', }, },
+  },
+
+
+
 }
 
 
 
-import { MAP_CONST } from '@/components/Map/Leaflet/Lib/Const';
-export function get_decor_data(classes_str, index, color="gray", zoom=1) {
+import { MAP_CONST, MAP_ITEM } from '@/components/Map/Leaflet/Lib/Const';
+export function get_decor_data(classes_str, index, color="gray", zoom=1, text=undefined) {
   let ret = [];
   let classes_list = classes_str.trim().replace(/\s+/g, ' ').split(' ');  // убрать лишние пробелы
   classes_list = [...new Set(classes_list)];                              // исключить повторы
@@ -64,7 +74,10 @@ export function get_decor_data(classes_str, index, color="gray", zoom=1) {
     data.forEach(function(data_item, data_ind) {
       // тип: маркер
       if (data[data_ind].symbol_type == 'marker') {
-        data[data_ind].symbol_options.markerOptions.icon = icon_get(color, {class: data[data_ind].symbol_options.markerOptions.icon});
+        data[data_ind].symbol_options.markerOptions.icon = icon_get(color, {
+          [MAP_ITEM.FC.FEATURES.PROPERTIES.CLASS]: data[data_ind].symbol_options.markerOptions.icon,
+          [MAP_ITEM.FC.FEATURES.PROPERTIES.TEXT]:  text,
+        });
         data[data_ind].symbol = L.Symbol.marker(data[data_ind].symbol_options);
       }
 
@@ -87,26 +100,6 @@ export function get_decor_data(classes_str, index, color="gray", zoom=1) {
 
 
 
-
-  // get = function(classes_str) {
-  //   let ret = [];
-  //   let classes_list = classes_str.trim().replace(/\s+/g, ' ').split(' ');  // убрать лишние пробелы
-  //   classes_list = [...new Set(classes_list)];                              // исключить повторы
-
-  //   for(let i=0; i<classes_list.length; i++) {
-  //     let val = this.dat[classes_list[i]];
-  //     if (val) {
-  //       if (val instanceof Array) { ret = ret.concat(val); }
-  //       else                      { ret.push(val);         }
-  //     }
-  //   }
-  //   return ret;
-  // }
-
-
-//   constructor(color='gray') {
-
-
 //     this.dat = {
 
 //       // Маркер обычный
@@ -125,56 +118,6 @@ export function get_decor_data(classes_str, index, color="gray", zoom=1) {
 //     //     "icon": "test",     // "mdi-flag mdi-spin", "fs-spec0", "pulse" (size: 12), "#0f0", "gold", "file_name" (size_w: 25, size_h: 41)
 //     //     "zoom": 2,
 //     //   },
-
-
-
-
-//       //
-//       // Забор оградительный
-//       //
-//       'mark_zabor_ograd': {
-//         offset: 8, repeat: 30,
-//         symbol: L.Symbol.marker({
-//           rotate: true,
-//           markerOptions: {
-//             icon: icon_get(color, {class: 'icon-file-zabor_ogradit-10-10'}),
-//           },
-//         }),
-//       },
-
-
-//       //
-//       // Заграждение сигнализация -|-|-
-//       //
-//       'line-engeneer_signal': {
-//         offset: 8, repeat: 18,
-//         symbol: L.Symbol.marker({
-//           rotate: true,
-//           markerOptions: {
-//             icon: icon_get(color, {class: 'icon-svg-engeneer_signal'}),
-//           },
-//         }),
-//       },
-
-
-//       //
-//       // Рубеж охраны 1 _ . _
-//       // class="hidden" для основной линии
-//       'line_border_1': [
-//         { offset: 12, repeat: 25, symbol: L.Symbol.dash({ pixelSize: 10, pathOptions: { color: color, weight: 2, }, }), },
-//         { offset: 0,  repeat: 25, symbol: L.Symbol.dash({ pixelSize: 0,  pathOptions: { color: color, }, }), },
-//       ],
-
-//       //
-//       // Рубеж охраны 2 _ .. _
-//       // class="hidden" для основной линии
-//       'line_border_2': [
-//         { offset: 18, repeat: 30, symbol: L.Symbol.dash({ pixelSize: 10, pathOptions: { color: color, weight: 2, }, }), },
-//         { offset: 0,  repeat: 30, symbol: L.Symbol.dash({ pixelSize: 0,  pathOptions: { color: color, }, }), },
-//         { offset: 5,  repeat: 30, symbol: L.Symbol.dash({ pixelSize: 0,  pathOptions: { color: color, }, }), },
-//       ],
-
-
 
 
 
@@ -249,20 +192,3 @@ export function get_decor_data(classes_str, index, color="gray", zoom=1) {
 //     }
 
 //   }
-
-//   // список классов в список паттернов
-//   get = function(classes_str) {
-//     let ret = [];
-//     let classes_list = classes_str.trim().replace(/\s+/g, ' ').split(' ');  // убрать лишние пробелы
-//     classes_list = [...new Set(classes_list)];                              // исключить повторы
-
-//     for(let i=0; i<classes_list.length; i++) {
-//       let val = this.dat[classes_list[i]];
-//       if (val) {
-//         if (val instanceof Array) { ret = ret.concat(val); }
-//         else                      { ret.push(val);         }
-//       }
-//     }
-//     return ret;
-//   }
-// }
