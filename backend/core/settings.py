@@ -18,8 +18,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'channels',
-    'django_ace',
 
+    'django_monaco_editor',
     'authentication',
     'script',
     'classifier',
@@ -42,7 +42,6 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'core.urls'
 
-APPEND_SLASH = False
 
 TEMPLATES = [
     {

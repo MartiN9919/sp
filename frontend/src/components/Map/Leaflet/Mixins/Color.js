@@ -18,17 +18,17 @@ export default {
   },
 
   methods: {
-    // ЗАПОЛНИТЬ fc.features[i].properties.MAP_ITEM.COLOR
+    // ЗАПОЛНИТЬ fc.features[i].properties[MAP_ITEM.FC.FEATURES.PROPERTIES._COLOR_]
     data_normalize_color(map_item) {
       // данные на шине
       let color_green = this.color_green(map_item);
-      let fc          = map_item[MAP_ITEM.FC.KEY];
+      let fc          = map_item.fc;
 
       // если установлена опция раскраски полигона от value
       if (this.color_valid(color_green)) {
 
         // исключить ненужные геометрии
-        fc_types_del(fc, [MAP_CONST.TYPE.GEOMETRY.LINE, MAP_CONST.TYPE.GEOMETRY.POINT]);
+        fc_types_del(fc, [MAP_CONST.TYPE_GEOMETRY.LINE, MAP_CONST.TYPE_GEOMETRY.POINT]);
 
         // начальный и конечный цвет
         var [color_begin, color_end] = this.color_set(color_green);
@@ -89,15 +89,7 @@ export default {
 
     // тип раскраски (по зеленому цвету)
     color_green(map_item) {
-      return dict_get(
-        map_item,
-        [
-          MAP_ITEM.FC.KEY,
-          MAP_ITEM.FC.STYLE.KEY,
-          MAP_ITEM.FC.STYLE.COLORING,
-        ],
-        undefined
-      );
+      return dict_get(map_item, ['fc', MAP_ITEM.FC.STYLE.KEY, MAP_ITEM.FC.STYLE.COLORING, ], undefined);
     },
 
     // значения цветов (с, по)

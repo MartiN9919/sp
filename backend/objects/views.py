@@ -53,7 +53,6 @@ def aj_lists(request):
     @param request: GET запрос на получение всех списков
     @return: json в формате: {id:{name,title,hint,values}, ..., id_n:{}}
     """
-    print(get_lists())
     return get_lists()
 
 
@@ -113,7 +112,7 @@ def aj_object(request):
             data = json.loads(request.POST['data'])
             result = add_data(user=request.user, group_id=group_id, object=data, files=request.FILES)
             if result.get('objects'):
-                return result
+                return result['objects']
             elif result.get('object'):
                 return get_object_record_by_id_http(object_id=data.get('object_id'),
                                                                                      rec_id=result.get('object'),

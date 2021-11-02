@@ -96,12 +96,14 @@ export default {
         }}
       )
         .then(r => {
-          if(r.data.hasOwnProperty('object')) {
-            dispatch('setEditableObject', {objectId: r.data.object.object_id, recId: r.data.object.rec_id})
-            dispatch('addObjectToGraph', {objectId: r.data.object.object_id, recId: r.data.object.rec_id})
+          let response = r.data
+          if(Array.isArray(response)) {
+            dispatch('addEditableObjects', response)
           }
-          if(r.data.hasOwnProperty('objects'))
-            dispatch('addEditableObjects', r.data.objects)
+          else {
+            dispatch('setEditableObject', {objectId: response.object_id, recId: response.rec_id})
+            dispatch('addObjectToGraph', {objectId: response.object_id, recId: response.rec_id})
+          }
           return Promise.resolve(r.data)
         })
         .catch(e => { return Promise.reject(e) })

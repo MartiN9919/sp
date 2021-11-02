@@ -1,31 +1,36 @@
 export const MAP_CONST = {
-  TYPE: {
-    FC: 'FeatureCollection',
-    GEOMETRY: {
-      GC:        'GeometryCollection',
-      POINT:     'Point',
-      LINE:      'LineString',
-      POLYGON:   'Polygon',
-    },
+  POS: {                                  // центр и увеличение карты
+    SEPARATOR: '_',
+    DEFAULT:   '27.537231445312504_53.64138139745019_7',
   },
 
   CLASS: {
     SEL: 'sel',                           // название класса: выделено (pulse)
   //ANT: 'ant',                           // название класса: бегущая линия
     ICON: {
-      TYPE:      'icon',                  // иконка: тип
-      PATH:      'img/markers/',          // иконка: путь к файлам иконок
-      SEPARATOR: '-',                     // иконка: разделитель
-      MDI:       'mdi',                   // иконка: шрифт mdi
-      FS:        'fs',                    // иконка: шрифт fs
-      FILE:      'file',                  // иконка: файл
-      PULSE:     'pulse',                 // иконка: пульсирующая
+      TYPE:         'icon',               // иконка: тип
+      PATH:         'img/markers/',       // иконка: путь к файлам иконок
+      SEPARATOR:    '-',                  // иконка: разделитель
+      SVG:          'svg',                // иконка: svg
+      SVG_STANDART: 'standart',           // иконка: svg стандарт
+      FILE:         'file',               // иконка: файл
+      MDI:          'mdi',                // иконка: шрифт mdi
+      FS:           'fs',                 // иконка: шрифт fs
+      PULSE:        'pulse',              // иконка: пульсирующая
     },
+  },
+
+  TYPE_GEOMETRY: {
+    GC:        'GeometryCollection',
+    POINT:     'Point',
+    LINE:      'LineString',
+    POLYGON:   'Polygon',
   },
 
   COLOR: {
     DEFAULT:            '#f00',           // цвет по умолчанию
     DEFAULT_STYLE_PATH: 'gray',           // цвет по умолчанию для стилизации (декорирования) фигур
+    DEFAULT_ICON:       'blue',           // цвет по умолчанию для иконок (в скрипте как правило определен другой цвет)
     EDITOR_ORIGIN:      '#000',           // редактор: цвет ДО    ИЗМЕНЕНИЯ
     EDITOR_MODIFY:      '#f00',           // редактор: цвет ПОСЛЕ ИЗМЕНЕНИЯ
     SCRIPT_OFF:         '#696969FF',      // цвет неактивного скрипта
@@ -47,25 +52,26 @@ export const MAP_CONST = {
   },
 };
 
+
+// ЭЛЕМЕНТЫ, ДОПОЛНЕННЫЕ К СТАНДАРТНЫМ
 export const MAP_ITEM = {
 //ZOOM: 'zoom',                           // увеличение карты
   COLOR: 'color',                         // копия в FC.STYLE._COLOR_
   _LEGEND_COLOR_: 'legend_color',         // заполняется программой, []
   FC: {
-    KEY: 'fc',
     //TYPE: 'type',                       // не используется
     FEATURES: {
-      KEY: 'features',
       PROPERTIES: {
-        KEY:     'properties',
         CLASS:   'class',                 // key: класс для стилизации
+        DATE:    'date',                  // дата
         VALUE:   'value',                 // значение, которое определяет цвет полигона
+        TEXT:    'text',                  // надпись на маркере, пока что только для svg-маркеров
+        ZOOM:    'zoom',                  // масштабирование маркера: ['auto'], false, Numeric, пока что только для svg-маркеров
         HINT:    'hint',                  // всплывающая подсказка, НЕТ РЕАКТИВНОСТИ?
         _COLOR_: 'color',                 // заполняется программой, цвет заливки фигуры
         _SEL_:   'sel',                   // заполняется программой, выделенный features[], true - выделено
       },
       GEOMETRY:  {
-        KEY:         'geometry',
         TYPE:        'type',
         COORDINATES: 'coordinates',
         GEOMETRIES:  'geometries',        // вложенные геометрии MAP_ITEM.FC.FEATURES.GEOMETRY

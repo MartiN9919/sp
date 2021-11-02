@@ -24,7 +24,8 @@ def feature_collection_by_geometry(group_id, object_type, rec_id, keys, time_int
     @return: feature collection содержащая информацию о искомых геометриях
     """
     if object_type == SYS_KEY_CONSTANT.POINT_ID:
-        keys += [SYS_KEY_CONSTANT.POINT_CLASSIFIER_ID, SYS_KEY_CONSTANT.POINT_TYPE_CLASSIFIER_ID]
+        keys += [SYS_KEY_CONSTANT.POINT_CLASSIFIER_ID, SYS_KEY_CONSTANT.POINT_TYPE_CLASSIFIER_ID,
+                 SYS_KEY_CONSTANT.BORDER_POINT]
     elif object_type == SYS_KEY_CONSTANT.GEOMETRY_ID:
         keys += [SYS_KEY_CONSTANT.GEOMETRY_CLASSIFIER_ID, SYS_KEY_CONSTANT.GEOMETRY_TYPE_CLASSIFIER_ID]
     if len(rec_id) == 0:
@@ -41,6 +42,13 @@ def feature_collection_by_geometry(group_id, object_type, rec_id, keys, time_int
                                                                 DAT_OBJ_ROW.VAL: record[DAT_OBJ_ROW.VAL],
                                                                 DAT_OBJ_ROW.SEC: record[DAT_OBJ_ROW.SEC]})
             objects[record[DAT_OBJ_ROW.ID]]['geometry'].sort(key=lambda x: x[DAT_OBJ_ROW.SEC], reverse=True)
+        elif int(record[DAT_OBJ_ROW.KEY_ID]) == SYS_KEY_CONSTANT.BORDER_POINT:
+            if not objects[record[DAT_OBJ_ROW.ID]].get('text'):
+                objects[record[DAT_OBJ_ROW.ID]]['text'] = []
+            objects[record[DAT_OBJ_ROW.ID]]['text'].append({DAT_OBJ_ROW.KEY_ID: record[DAT_OBJ_ROW.KEY_ID],
+                                                              DAT_OBJ_ROW.VAL: record[DAT_OBJ_ROW.VAL],
+                                                              DAT_OBJ_ROW.SEC: record[DAT_OBJ_ROW.SEC]})
+            objects[record[DAT_OBJ_ROW.ID]]['text'].sort(key=lambda x: x[DAT_OBJ_ROW.SEC], reverse=True)
         elif int(record[DAT_OBJ_ROW.KEY_ID]) in SYS_KEY_CONSTANT.GEOMETRY_TYPES:
             if not objects[record[DAT_OBJ_ROW.ID]].get('type'):
                 objects[record[DAT_OBJ_ROW.ID]]['type'] = []
@@ -65,6 +73,8 @@ def feature_collection_by_geometry(group_id, object_type, rec_id, keys, time_int
                 params['hint'] += param[DAT_OBJ_ROW.VAL] + '; '
             if objects[object].get('type'):
                 params['class'] = objects[object]['type'][0]['val']
+            if objects[object].get('text'):
+                params['text'] = objects[object]['text'][0]['val']
             feature = geojson.Feature(geometry=geometry, properties=params)
             feature['rec_id'] = object
             feature['obj_id'] = object_type

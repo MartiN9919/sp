@@ -13,7 +13,7 @@ def get_function_name(string):
     @param string: строка содержащие вызов функции
     @return: чистое название функции
     """
-    return re.sub(r'\(\w*\)', '', string)
+    return string[:-1]
 
 
 def default_checker(string):
@@ -22,11 +22,14 @@ def default_checker(string):
     @param str: строка из скрипта
     @return: False если строка не прошла проверку, True если проверка пройдена
     """
+    res = re.findall(r'[\'\"](.*?)[\'\"]', string)
+    for temp in res:
+        string = string.replace(temp, 'str')
     if len(list(
             set(string.split()) & set(
                 ENVIRONMENT_VARIABLES))) > 0: return False, 'использование переменной окружения', list(
         set(string.split()) & set(ENVIRONMENT_VARIABLES))
-    wrong_functions = set([get_function_name(func) for func in re.findall(r'[\w]*\(\w*\)', string)]).difference(
+    wrong_functions = set([get_function_name(func) for func in re.findall(r'[\w]\w*?\(', string)]).difference(
             set(ENABLED_FUNCTIONS))
     if len(wrong_functions) > 0:
         return False, ' использование неразрешенной функции ', wrong_functions
@@ -83,10 +86,11 @@ def parse_text_to_python(name, text, params, type):
         if type == 'map':
             file.write('\texcept Exception as e:\n\t\traise e')
         elif type == 'report':
-            file.write('\texcept BaseException:\n');
+            file.write('\texcept BaseException:\n')
             file.write('\t\tset_file_status(file_id, \'error\')\n')
             file.write('\t\tadd_notification(user_id, \'error\', \'ошибка генерации вашего отчета: \' + title,'
                        ' from_id=1, file_id=file_id)\n')
 
     file.close()
     return True, 'all ok', '', ''
+

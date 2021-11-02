@@ -49,7 +49,7 @@ export default {
   },
   mounted() {
     const self        = this;
-    const features    = this.fc[MAP_ITEM.FC.FEATURES.KEY];
+    const features    = this.fc.features;
     const obj_pattern = new DATA_PATTERN(this.color);
     this.parent_obj   = findRealParent(this.$parent);
 
@@ -57,13 +57,13 @@ export default {
 
     for(let ind=0; ind<features.length; ind++) {
       let feature       = features[ind];
-      let geometry      = feature[MAP_ITEM.FC.FEATURES.GEOMETRY.KEY];
+      let geometry      = feature.geometry;
       let geometry_type = geometry[MAP_ITEM.FC.FEATURES.GEOMETRY.TYPE];
 
       // L.объекты
       let l_obj         = get_feature_coordinates(feature, true);
-      l_obj[MAP_CONST.TYPE.GEOMETRY.LINE   ] = l_obj[MAP_CONST.TYPE.GEOMETRY.LINE   ].map((val) => L.polyline(val));
-      l_obj[MAP_CONST.TYPE.GEOMETRY.POLYGON] = l_obj[MAP_CONST.TYPE.GEOMETRY.POLYGON].map((val) => L.polygon (val));
+      l_obj[MAP_CONST.TYPE_GEOMETRY.LINE   ] = l_obj[MAP_CONST.TYPE_GEOMETRY.LINE   ].map((val) => L.polyline(val));
+      l_obj[MAP_CONST.TYPE_GEOMETRY.POLYGON] = l_obj[MAP_CONST.TYPE_GEOMETRY.POLYGON].map((val) => L.polygon (val));
 
       // patterns на основании classes и color
       let classes = get_feature_class(feature);
@@ -79,8 +79,8 @@ export default {
         propsBinder(self, decorator, props);
         self.parent_obj.mapObject.addLayer(decorator, !self.visible);
       }
-      set_decorator(l_obj[MAP_CONST.TYPE.GEOMETRY.POLYGON]);
-      set_decorator(l_obj[MAP_CONST.TYPE.GEOMETRY.LINE   ]);
+      set_decorator(l_obj[MAP_CONST.TYPE_GEOMETRY.POLYGON]);
+      set_decorator(l_obj[MAP_CONST.TYPE_GEOMETRY.LINE   ]);
     }
   },
 

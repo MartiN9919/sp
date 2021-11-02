@@ -318,8 +318,7 @@ export default {
           pointToLayer:  function(feature, latlng) { return self.marker_modify(latlng); },
           style:         function(feature)         { return self.path_modify(); },
         };
-      let layer = (fc.type==MAP_CONST.TYPE.FC)?L.geoJSON(fc, style):L.GeoJSON.geometryToLayer(fc, style);
-
+      let layer = (fc.type.toLowerCase()==='featurecollection')?L.geoJSON(fc, style):L.GeoJSON.geometryToLayer(fc, style);
       // слой: настроить
       this.layer_set(layer);
       // if (!mode_origin) { this.layer_style_modify(layer) } - маркеры не реагируют
@@ -332,8 +331,11 @@ export default {
 
       // позиционирование карты на layer (отложено, так как сначала позиционируется по key[1])
       this.$nextTick(function() {
-        if (Object.keys(layer._layers).length > 0) {
+        if (layer.hasOwnProperty('_layers') && Object.keys(layer._layers).length > 0) {
           this.map.fitBounds(layer.getBounds(), { padding: [30, 30], });
+        }
+        else {
+          this.map.setView(layer._latlng)
         }
       });
     },
@@ -522,8 +524,8 @@ export default {
 
 
     // иконки
-    icon_origin() { return icon_get('', MAP_CONST.COLOR.EDITOR_ORIGIN); },
-    icon_modify() { return icon_get('', MAP_CONST.COLOR.EDITOR_MODIFY); },
+    icon_origin() { return icon_get(MAP_CONST.COLOR.EDITOR_ORIGIN); },
+    icon_modify() { return icon_get(MAP_CONST.COLOR.EDITOR_MODIFY); },
 
     // маркеры
     marker_origin(latlng) {
