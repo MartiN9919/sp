@@ -33,10 +33,10 @@ export const MAP_TEST_ITEM_1 = {
           "type": "Polygon",
           "coordinates": [
             [
-              [23.503812450763203,53.969066992023016],
-              [23.767941692759162,53.305836099082995],
-              [24.917680746153298,53.435614938642495],
-              [23.503812450763203,53.969066992023016],
+              [25.0,55.5],
+              [27.5,56.25],
+              [31.0,55.5],
+              [25.0,55.5],
             ]
           ]
         },
@@ -51,30 +51,14 @@ export const MAP_TEST_ITEM_1 = {
           "type": "Polygon",
           "coordinates": [
             [
-              [24.917680746153298,54.83722712988182],
-              [24.49951171875,54.31011433916155],
-              [23.840332031250004,54.87660665410869],
-              [24.917680746153298,54.83722712988182],
+              [30.0,54.5],
+              [32.0,53.5],
+              [30.0,52.5],
+              [30.0,54.5],
             ]
           ]
         },
       },
-      // {
-      //   "type": "Feature",
-      //   "properties": {
-      //     "class": "test_mark_auto arrow-double-end line-engeneer_signal ant",
-      //     "hint": "Подсказка 3-1",
-      //     "date": "2021-01-04",
-      //   },
-      //   "geometry": {
-      //     "type": "LineString",
-      //     "coordinates": [
-      //       [32.02514648437501,54.7943516039205],
-      //       [27.608642578125004,53.904338156274704],
-      //       [23.70849609375,52.0862573323384],
-      //     ]
-      //   },
-      // },
       {
         "type": "Feature",
         "properties": {
@@ -86,9 +70,26 @@ export const MAP_TEST_ITEM_1 = {
         "geometry": {
           "type": "LineString",
           "coordinates": [
-            [32.02514648437501,54.7943516039205],
-            [27.608642578125004,53.904338156274704],
-            [23.70849609375,52.0862573323384],
+            [32.0,56.5],
+            [27.5,57.5],
+            [24.0,56.5],
+          ]
+        },
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "class": "arrow-double-end line-engeneer_signal line-text_1 ant",
+          "hint": "test_mark_auto arrow-double-end line-engeneer_signal line-text_1 ant",
+          "date": "2021-01-04",
+          "text": "C-120",
+        },
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [24.0,56.0],
+            [27.5,57.0],
+            [32.0,56.0],
           ]
         },
       },
@@ -102,9 +103,9 @@ export const MAP_TEST_ITEM_1 = {
         "geometry": {
           "type": "LineString",
           "coordinates": [
-            [22.939453125,54.09806018306312],
-            [23.829345703125004,53.69020141273198],
-            [27.605584208817955,53.88673288280922],
+            [24.0,55.5],
+            [27.5,56.5],
+            [32.0,55.5],
           ]
         },
       },
@@ -124,7 +125,7 @@ export const MAP_TEST_ITEM_1 = {
         },
         "geometry": {
           "type": "Point",
-          "coordinates": [25.5,52.9]
+          "coordinates": [24.0,55.0]
         },
       },
       {
@@ -136,7 +137,7 @@ export const MAP_TEST_ITEM_1 = {
         },
         "geometry": {
           "type": "Point",
-          "coordinates": [26.0,52.9]
+          "coordinates": [24.5,55.0]
         },
       },
       {
@@ -150,7 +151,7 @@ export const MAP_TEST_ITEM_1 = {
         },
         "geometry": {
           "type": "Point",
-          "coordinates": [31.5,53.6]
+          "coordinates": [25.0,55.0]
         },
       },
 
@@ -169,7 +170,7 @@ export const MAP_TEST_ITEM_1 = {
         },
         "geometry": {
           "type": "Point",
-          "coordinates": [27.5,55.1]
+          "coordinates": [24.0,54.5]
         },
       },
       {
@@ -183,7 +184,7 @@ export const MAP_TEST_ITEM_1 = {
         },
         "geometry": {
           "type": "Point",
-          "coordinates": [23.5,53.1]
+          "coordinates": [24.0,54.0]
         },
       },
       {
@@ -196,7 +197,7 @@ export const MAP_TEST_ITEM_1 = {
         },
         "geometry": {
           "type": "Point",
-          "coordinates": [27.7,53.2]
+          "coordinates": [25.0,54.5]
         },
       },
       {
@@ -209,7 +210,7 @@ export const MAP_TEST_ITEM_1 = {
         },
         "geometry": {
           "type": "Point",
-          "coordinates": [23.7, 52.2]
+          "coordinates": [25.5,54.5]
         },
       },
       {
@@ -222,7 +223,7 @@ export const MAP_TEST_ITEM_1 = {
         },
         "geometry": {
           "type": "Point",
-          "coordinates": [22.9, 54.]
+          "coordinates": [25.5,54.0]
         },
       },
       {
@@ -235,7 +236,7 @@ export const MAP_TEST_ITEM_1 = {
         },
         "geometry": {
           "type": "Point",
-          "coordinates": [25.7,52.0]
+          "coordinates": [26.0,54.5]
         },
       },
       {
@@ -248,7 +249,7 @@ export const MAP_TEST_ITEM_1 = {
         },
         "geometry": {
           "type": "Point",
-          "coordinates": [22.9,52.5]
+          "coordinates": [26.0,54.0]
         },
       },
       {
@@ -261,7 +262,7 @@ export const MAP_TEST_ITEM_1 = {
         },
         "geometry": {
           "type": "Point",
-          "coordinates": [30.5,52.1]
+          "coordinates": [26.5,54.5]
         },
       },
       {
@@ -274,7 +275,7 @@ export const MAP_TEST_ITEM_1 = {
         },
         "geometry": {
           "type": "Point",
-          "coordinates": [27.5,51.6]
+          "coordinates": [27.0,54.5]
         },
       },
       {
@@ -287,7 +288,7 @@ export const MAP_TEST_ITEM_1 = {
         },
         "geometry": {
           "type": "Point",
-          "coordinates": [22.7,53.6]
+          "coordinates": [27.0,54.0]
         },
       },
 
@@ -305,7 +306,7 @@ export const MAP_TEST_ITEM_1 = {
         },
         "geometry": {
           "type": "Point",
-          "coordinates": [23.7,53.2]
+          "coordinates": [24.0,53.5]
         },
       },
       {
@@ -318,7 +319,7 @@ export const MAP_TEST_ITEM_1 = {
         },
         "geometry": {
           "type": "Point",
-          "coordinates": [23.7,53.4]
+          "coordinates": [24.0,53.0]
         },
       },
       {
@@ -331,7 +332,20 @@ export const MAP_TEST_ITEM_1 = {
         },
         "geometry": {
           "type": "Point",
-          "coordinates": [25.7,54.2],
+          "coordinates": [24.5,53.5],
+        },
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "class": "icon-svg-checkpoint_flyer_outside",
+          "text":  '"Высокое"',
+          "hint": "icon-svg-checkpoint_flyer_outside",
+          "date": "2021-01-01",
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [24.5,53.0],
         },
       },
       {
@@ -344,7 +358,7 @@ export const MAP_TEST_ITEM_1 = {
         },
         "geometry": {
           "type": "Point",
-          "coordinates": [28.7,55.9]
+          "coordinates": [25.0,53.5]
         },
       },
       {
@@ -357,7 +371,7 @@ export const MAP_TEST_ITEM_1 = {
         },
         "geometry": {
           "type": "Point",
-          "coordinates": [23.7,53.0]
+          "coordinates": [25.0,53.0]
         },
       },
       {
@@ -370,7 +384,7 @@ export const MAP_TEST_ITEM_1 = {
         },
         "geometry": {
           "type": "Point",
-          "coordinates": [23.5,53.9]
+          "coordinates": [25.5,53.5]
         },
       },
       {
@@ -383,7 +397,7 @@ export const MAP_TEST_ITEM_1 = {
         },
         "geometry": {
           "type": "Point",
-          "coordinates": [23.6,53.6]
+          "coordinates": [25.5,53.0]
         },
       },
 
@@ -400,20 +414,7 @@ export const MAP_TEST_ITEM_1 = {
         },
         "geometry": {
           "type": "Point",
-          "coordinates": [32.5,53.5]
-        },
-      },
-      {
-        "type": "Feature",
-        "properties": {
-          "class": "icon-svg-engineer_border_sign",
-          "text": "1235",
-          "hint": "icon-svg-engineer_border_sign",
-          "date": "2021-02-01",
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [32.5,53.0]
+          "coordinates": [24.0,52.5]
         },
       },
       {
@@ -426,7 +427,7 @@ export const MAP_TEST_ITEM_1 = {
         },
         "geometry": {
           "type": "Point",
-          "coordinates": [31.5,52.0]
+          "coordinates": [24.5,52.5]
         },
       },
 
@@ -440,6 +441,7 @@ export const MAP_TEST_ITEM_1 = {
           "class": "icon-mdi-flag sss icon-mdi-spin tst",
           "hint": "Demo",
           "date": "2021-01-03",
+          //"zoom": false,
         },
         "geometry": {
           "type": "Point",
