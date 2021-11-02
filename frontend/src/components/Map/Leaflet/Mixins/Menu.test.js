@@ -421,6 +421,19 @@ export const MAP_TEST_ITEM_1 = {
       {
         "type": "Feature",
         "properties": {
+          "class": "icon-svg-engineer_video",
+          "text": "1234",
+          "hint": "icon-svg-engineer_video",
+          "date": "2021-04-01",
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [24.5,53.25]
+        },
+      },
+      {
+        "type": "Feature",
+        "properties": {
           "class": "icon-svg-engineer_tower_industrial",
           "text": '"Зоркий"',
           "hint": "icon-svg-engineer_tower_industrial",
@@ -428,7 +441,7 @@ export const MAP_TEST_ITEM_1 = {
         },
         "geometry": {
           "type": "Point",
-          "coordinates": [24.5,53.25]
+          "coordinates": [25.0,53.25]
         },
       },
 
@@ -506,7 +519,7 @@ export const MAP_TEST_ITEM_2 = {
         },
         "geometry": {
           "type": "Point",
-          "coordinates": [31.5,52.0]
+          "coordinates": [24.5,53.25]
         },
       },
 
