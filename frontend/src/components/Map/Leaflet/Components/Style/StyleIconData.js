@@ -351,7 +351,9 @@ const DATA = {
 
 
 
-  // текст для линии
+
+
+  // текст для линий
   'text_line_rl_fill_100': {
     anchor_dx: 14,
     anchor_dy: 0,
