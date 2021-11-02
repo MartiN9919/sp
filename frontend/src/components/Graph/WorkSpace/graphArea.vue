@@ -126,7 +126,6 @@ export default {
       this.$refs.screen.panNode(node, { offsetX: 0, offsetY: 0 })
     },
     addChoosingObject(choosingObject){
-
       let findIndex = this.choosingObjects.findIndex(object => object === choosingObject)
       if(findIndex === -1){
         this.choosingObjects.push(choosingObject)

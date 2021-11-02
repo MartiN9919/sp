@@ -105,9 +105,13 @@ def get_record_photo(object_id, params):
     """
     if object_id == SYS_KEY_CONSTANT.PERSON_P_ID:
         for param in params:
-            if param['id'] == SYS_KEY_CONSTANT.PHOTO_CLASSIFIER_ID:
+            if param['id'] == SYS_KEY_CONSTANT.PHOTO_PERSON_CLASSIFIER_ID:
                 return param['values'][0]['value']
         return None
+    elif object_id == SYS_KEY_CONSTANT.POINT_ID:
+        for param in params:
+            if param['id'] == SYS_KEY_CONSTANT.PHOTO_POINT_CLASSIFIER_ID:
+                return param['values'][0]['value']
     else:
         return None
 

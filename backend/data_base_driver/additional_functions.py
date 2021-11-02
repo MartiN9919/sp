@@ -138,7 +138,7 @@ def io_set_wrap(function):
         try:
             obj = get_obj_id(obj) if isinstance(obj, str) and not (obj.isdigit()) else int(obj)
             if obj != 1:
-                data = [(get_id_by_key(item[0]), item[1]) for item in data]
+                data = [(get_id_by_key(item[0]), item[1], item[2]) for item in data]
             else:
                 data = data
             return function(group_id, obj, data)

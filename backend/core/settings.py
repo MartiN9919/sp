@@ -18,7 +18,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'channels',
-    'django_ace',
+
     'django_monaco_editor',
     'authentication',
     'script',
