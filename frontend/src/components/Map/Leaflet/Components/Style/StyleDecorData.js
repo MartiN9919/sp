@@ -5,7 +5,11 @@
  * repeat - смещение, через которое повторить маркер, можно в %: '50%'
  */
 
-import { icon_get } from '@/components/Map/Leaflet/Components/Style/StyleIcon';
+import { STYLE_DATA_POST_DECOR       } from '@/components/Map/Leaflet/Components/Style/StyleDataPost';
+import { STYLE_DATA_CHECKPOINT_DECOR } from '@/components/Map/Leaflet/Components/Style/StyleDataCheckpoint';
+import { STYLE_DATA_ENGENEER_DECOR   } from '@/components/Map/Leaflet/Components/Style/StyleDataEngeneer';
+import { STYLE_DATA_TEXT_DECOR       } from '@/components/Map/Leaflet/Components/Style/StyleDataText';
+import { icon_get                    } from '@/components/Map/Leaflet/Components/Style/StyleIcon';
 
 const DATA = {
   //
@@ -49,18 +53,11 @@ const DATA = {
   },
 
 
-  //
-  // Текст
-  //
-  'line-text_rl_fill_100': { offset: 8, repeat: 300, symbol_type: 'marker', symbol_options: { rotate: true, markerOptions: { icon: 'icon-svg-text_line_rl_fill_100', }, }, icon_properties: { shadow: false, top: true, }, },
-  'line-text_lr_fill_100': { offset: 8, repeat: 300, symbol_type: 'marker', symbol_options: { rotate: true, markerOptions: { icon: 'icon-svg-text_line_lr_fill_100', }, }, icon_properties: { shadow: false, top: true, }, },
-  'line-text_rl_fill_300': { offset: 8, repeat: 300, symbol_type: 'marker', symbol_options: { rotate: true, markerOptions: { icon: 'icon-svg-text_line_rl_fill_300', }, }, icon_properties: { shadow: false, top: true, }, },
-  'line-text_lr_fill_300': { offset: 8, repeat: 300, symbol_type: 'marker', symbol_options: { rotate: true, markerOptions: { icon: 'icon-svg-text_line_lr_fill_300', }, }, icon_properties: { shadow: false, top: true, }, },
-  'line-text_rl_100':      { offset: 8, repeat: 300, symbol_type: 'marker', symbol_options: { rotate: true, markerOptions: { icon: 'icon-svg-text_line_rl_100',      }, }, icon_properties: { shadow: false, top: true, }, },
-  'line-text_lr_100':      { offset: 8, repeat: 300, symbol_type: 'marker', symbol_options: { rotate: true, markerOptions: { icon: 'icon-svg-text_line_lr_100',      }, }, icon_properties: { shadow: false, top: true, }, },
-  'line-text_rl_300':      { offset: 8, repeat: 300, symbol_type: 'marker', symbol_options: { rotate: true, markerOptions: { icon: 'icon-svg-text_line_rl_300',      }, }, icon_properties: { shadow: false, top: true, }, },
-  'line-text_lr_300':      { offset: 8, repeat: 300, symbol_type: 'marker', symbol_options: { rotate: true, markerOptions: { icon: 'icon-svg-text_line_lr_300',      }, }, icon_properties: { shadow: false, top: true, }, },
 
+  ...STYLE_DATA_POST_DECOR,
+  ...STYLE_DATA_CHECKPOINT_DECOR,
+  ...STYLE_DATA_ENGENEER_DECOR,
+  ...STYLE_DATA_TEXT_DECOR,
 }
 
 

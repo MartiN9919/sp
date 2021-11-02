@@ -1,8 +1,16 @@
-export const STYLE_ICON_DATA_CHECKPOINT = {
-  'checkpoint_auto_inside': {
-    anchor_dx: 45.,
-    anchor_dy: 50.,
-    zoom:      1.,
+const PREF_INSIDE = {
+  anchor_dx: 45.,
+  anchor_dy: 50.,
+  zoom:      1.,
+}
+const PREF_OUTSIDE = {
+  anchor_dx: 275.,
+  anchor_dy: 50.,
+  zoom:      1.,
+}
+
+export const STYLE_DATA_CHECKPOINT_ICON = {
+  'checkpoint_auto_inside': { ...PREF_INSIDE,
     svg: `
       <svg width={width} height={height} viewBox="0 0 320 74">
         <path style="fill:#fff;stroke:#f00;stroke-width:4" d="M 3.8,72.6 46.7,3.5 96.6,72.5 Z"/>
@@ -11,10 +19,7 @@ export const STYLE_ICON_DATA_CHECKPOINT = {
       </svg>
     `,
   },
-  'checkpoint_auto_outside': {
-    anchor_dx: 275.,
-    anchor_dy: 50.,
-    zoom:      1.,
+  'checkpoint_auto_outside': { ...PREF_OUTSIDE,
     svg: `
       <svg width={width} height={height} viewBox="0 0 320 74">
         <path style="fill:#fff;stroke:#00f;stroke-width:4" d="m 223.3,72.1 42.9,-69.1 49.9,69.0 z"/>
@@ -23,10 +28,7 @@ export const STYLE_ICON_DATA_CHECKPOINT = {
       </svg>
     `,
   },
-  'checkpoint_flyer_inside': {
-    anchor_dx: 45.,
-    anchor_dy: 50.,
-    zoom:      1.,
+  'checkpoint_flyer_inside': { ...PREF_INSIDE,
     svg: `
       <svg width={width} height={height} viewBox="0 0 320 74">
         <path style="fill:#fff;stroke:#f00;stroke-width:4" d="M 3.8,72.6 46.7,3.5 96.6,72.5 Z"/>
@@ -35,10 +37,7 @@ export const STYLE_ICON_DATA_CHECKPOINT = {
       </svg>
     `,
   },
-  'checkpoint_flyer_outside': {
-    anchor_dx: 275.,
-    anchor_dy: 50.,
-    zoom:      1.,
+  'checkpoint_flyer_outside': { ...PREF_OUTSIDE,
     svg: `
       <svg width={width} height={height} viewBox="0 0 320 74">
         <path style="fill:#fff;stroke:#00f;stroke-width:4" d="m 223.3,72.1 42.9,-69.1 49.9,69.0 z"/>
@@ -47,10 +46,7 @@ export const STYLE_ICON_DATA_CHECKPOINT = {
       </svg>
     `,
   },
-  'checkpoint_rail_inside': {
-    anchor_dx: 45.,
-    anchor_dy: 50.,
-    zoom:      1.,
+  'checkpoint_rail_inside': { ...PREF_INSIDE,
     svg: `
       <svg width={width} height={height} viewBox="0 0 320 74">
         <path style="fill:#fff;stroke:#f00;stroke-width:4" d="M 3.8,72.6 46.7,3.5 96.6,72.5 Z"/>
@@ -59,10 +55,7 @@ export const STYLE_ICON_DATA_CHECKPOINT = {
       </svg>
     `,
   },
-  'checkpoint_rail_outside': {
-    anchor_dx: 275.,
-    anchor_dy: 50.,
-    zoom:      1.,
+  'checkpoint_rail_outside': { ...PREF_OUTSIDE,
     svg: `
       <svg width={width} height={height} viewBox="0 0 320 74">
         <path style="fill:#fff;stroke:#00f;stroke-width:4" d="m 223.3,72.1 42.9,-69.1 49.9,69.0 z"/>
@@ -71,9 +64,7 @@ export const STYLE_ICON_DATA_CHECKPOINT = {
       </svg>
     `,
   },
-  'checkpoint_simplified_inside': {
-    anchor_dx: 45.,
-    anchor_dy: 50.,
+  'checkpoint_simplified_inside': { ...PREF_INSIDE,
     svg: `
       <svg width={width} height={height} viewBox="0 0 320 74">
         <path style="fill:#fff;stroke:#f00;stroke-width:4" d="M 3.8,71.2 45.3,3.5 93.7,71.1 Z"/>
@@ -82,9 +73,7 @@ export const STYLE_ICON_DATA_CHECKPOINT = {
       </svg>
     `,
   },
-  'checkpoint_simplified_outside': {
-    anchor_dx: 275.,
-    anchor_dy: 50.,
+  'checkpoint_simplified_outside': { ...PREF_OUTSIDE,
     svg: `
       <svg width={width} height={height} viewBox="0 0 320 74">
         <path style="fill:#fff;stroke:#00f;stroke-width:4" d="m 226.17,71.7 41.5,-67.7 48.4,67.6 z"/>
@@ -93,4 +82,10 @@ export const STYLE_ICON_DATA_CHECKPOINT = {
       </svg>
     `,
   },
+}
+
+
+
+export const STYLE_DATA_CHECKPOINT_DECOR = {
+
 }

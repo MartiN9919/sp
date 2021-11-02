@@ -1,4 +1,4 @@
-export const STYLE_ICON_DATA_POST = {
+export const STYLE_DATA_POST_ICON = {
   'base_manage_inside': {
     anchor_dx: 0,
     anchor_dy: 100.,
@@ -114,4 +114,10 @@ export const STYLE_ICON_DATA_POST = {
       </svg>
     `,
   },
+}
+
+
+
+export const STYLE_DATA_POST_DECOR = {
+
 }

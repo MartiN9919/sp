@@ -1,7 +1,7 @@
-import { STYLE_ICON_DATA_POST       } from '@/components/Map/Leaflet/Components/Style/StyleIconDataPost';
-import { STYLE_ICON_DATA_CHECKPOINT } from '@/components/Map/Leaflet/Components/Style/StyleIconDataCheckpoint';
-import { STYLE_ICON_DATA_ENGENEER   } from '@/components/Map/Leaflet/Components/Style/StyleIconDataEngeneer';
-import { STYLE_ICON_DATA_TEXT       } from '@/components/Map/Leaflet/Components/Style/StyleIconDataText';
+import { STYLE_DATA_POST_ICON       } from '@/components/Map/Leaflet/Components/Style/StyleDataPost';
+import { STYLE_DATA_CHECKPOINT_ICON } from '@/components/Map/Leaflet/Components/Style/StyleDataCheckpoint';
+import { STYLE_DATA_ENGENEER_ICON   } from '@/components/Map/Leaflet/Components/Style/StyleDataEngeneer';
+import { STYLE_DATA_TEXT_ICON       } from '@/components/Map/Leaflet/Components/Style/StyleDataText';
 
 const DATA = {
   // стрелка: <=>
@@ -74,10 +74,10 @@ const DATA = {
     `,
   },
 
-  ...STYLE_ICON_DATA_POST,
-  ...STYLE_ICON_DATA_CHECKPOINT,
-  ...STYLE_ICON_DATA_ENGENEER,
-  ...STYLE_ICON_DATA_TEXT,
+  ...STYLE_DATA_POST_ICON,
+  ...STYLE_DATA_CHECKPOINT_ICON,
+  ...STYLE_DATA_ENGENEER_ICON,
+  ...STYLE_DATA_TEXT_ICON,
 }
 
 

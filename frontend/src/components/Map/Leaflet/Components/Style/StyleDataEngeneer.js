@@ -1,4 +1,4 @@
-export const STYLE_ICON_DATA_ENGENEER = {
+export const STYLE_DATA_ENGENEER_ICON = {
   'engineer_border_sign': {
     anchor_dx: 50,
     anchor_dy: 50.,
@@ -34,5 +34,22 @@ export const STYLE_ICON_DATA_ENGENEER = {
         <path style="fill:none;stroke:#888;stroke-width:10;" d="m 5,0 h 40"/>
       </svg>
     `,
+  },
+}
+
+
+
+export const STYLE_DATA_ENGENEER_DECOR = {
+  // Заграждение сигнализация -|-|-
+  'line-engeneer_signal': {
+    offset: 8, repeat: 18,
+    symbol_type: 'marker', symbol_options: { rotate: true, markerOptions: { icon: 'icon-svg-engeneer_signal', }, },
+    icon_properties: { shadow: false, },
+  },
+  // Забор оградительный х х х
+  'line-engeneer_ograd': {
+    offset: 8, repeat: 30,
+    symbol_type: 'marker', symbol_options: { rotate: true, markerOptions: { icon: 'icon-file-zabor_ogradit-10-10', }, },
+    icon_properties: { shadow: false, },
   },
 }
