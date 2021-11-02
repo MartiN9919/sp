@@ -52,24 +52,44 @@ const DATA = {
   //
   // Текст
   //
-  'line-text_fill_100': {
+  'line-text_rl_fill_100': {
     offset: 8, repeat: 300,
-    symbol_type: 'marker', symbol_options: { rotate: true, markerOptions: { icon: 'icon-svg-text_line_fill_100', }, },
+    symbol_type: 'marker', symbol_options: { rotate: true, markerOptions: { icon: 'icon-svg-text_line_rl_fill_100', }, },
     icon_properties: { shadow: false, top: true, },
   },
-  'line-text_fill_300': {
+  'line-text_lr_fill_100': {
     offset: 8, repeat: 300,
-    symbol_type: 'marker', symbol_options: { rotate: true, markerOptions: { icon: 'icon-svg-text_line_fill_300', }, },
+    symbol_type: 'marker', symbol_options: { rotate: true, markerOptions: { icon: 'icon-svg-text_line_lr_fill_100', }, },
     icon_properties: { shadow: false, top: true, },
   },
-  'line-text_100': {
+  'line-text_rl_fill_300': {
     offset: 8, repeat: 300,
-    symbol_type: 'marker', symbol_options: { rotate: true, markerOptions: { icon: 'icon-svg-text_line_100', }, },
+    symbol_type: 'marker', symbol_options: { rotate: true, markerOptions: { icon: 'icon-svg-text_line_rl_fill_300', }, },
     icon_properties: { shadow: false, top: true, },
   },
-  'line-text_300': {
+  'line-text_lr_fill_300': {
     offset: 8, repeat: 300,
-    symbol_type: 'marker', symbol_options: { rotate: true, markerOptions: { icon: 'icon-svg-text_line_300', }, },
+    symbol_type: 'marker', symbol_options: { rotate: true, markerOptions: { icon: 'icon-svg-text_line_lr_fill_300', }, },
+    icon_properties: { shadow: false, top: true, },
+  },
+  'line-text_rl_100': {
+    offset: 8, repeat: 300,
+    symbol_type: 'marker', symbol_options: { rotate: true, markerOptions: { icon: 'icon-svg-text_line_rl_100', }, },
+    icon_properties: { shadow: false, top: true, },
+  },
+  'line-text_lr_100': {
+    offset: 8, repeat: 300,
+    symbol_type: 'marker', symbol_options: { rotate: true, markerOptions: { icon: 'icon-svg-text_line_lr_100', }, },
+    icon_properties: { shadow: false, top: true, },
+  },
+  'line-text_rl_300': {
+    offset: 8, repeat: 300,
+    symbol_type: 'marker', symbol_options: { rotate: true, markerOptions: { icon: 'icon-svg-text_line_rl_300', }, },
+    icon_properties: { shadow: false, top: true, },
+  },
+  'line-text_lr_300': {
+    offset: 8, repeat: 300,
+    symbol_type: 'marker', symbol_options: { rotate: true, markerOptions: { icon: 'icon-svg-text_line_lr_300', }, },
     icon_properties: { shadow: false, top: true, },
   },
 
