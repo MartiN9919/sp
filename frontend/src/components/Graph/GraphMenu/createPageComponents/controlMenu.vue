@@ -3,7 +3,7 @@
     <v-btn
       v-for="button in buttons"
       :key="button.action"
-      :disabled="!button.disabled"
+      :disabled="button.hasOwnProperty('disabled') ? !button.disabled : false"
       @click="$emit(button.action)"
       color="teal"
       text
