@@ -22,6 +22,7 @@ export default {
     },
     logOutUser ({ commit }, config = {}) {
       commit('setUserInformation', null)
+      router.go({name: 'Login'})
       return axios.get('auth/authentication/logout/', config)
         // .then(() => router.go({ name: 'Login' }))
         // .catch(() => {})
@@ -31,12 +32,6 @@ export default {
       return axios.get('auth/authorization/', config)
         .then(response => {
           commit('setUserInformation', response.data)
-          // if(!getters.baseObjects.length) {
-          //   dispatch('getBaseObjects')
-          // }
-          // if(!getters.baseLists.length) {
-          //   dispatch('getBaseLists')
-          // }
           if (!getters.socket) {
             dispatch('connectSocket').then(() => {
               dispatch('socketListener')

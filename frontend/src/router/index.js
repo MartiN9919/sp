@@ -41,7 +41,7 @@ const router = new VueRouter({
   routes
 })
 
-router.beforeResolve((to, from, next) => {
+router.beforeEach((to, from, next) => {
   if (to.matched.some(record => record.meta.isAuth)) {
     store.dispatch('identifyUser', {})
       .then(() => { next() })
@@ -51,6 +51,13 @@ router.beforeResolve((to, from, next) => {
       .then(() => { next({ name: 'Map' }) })
       .catch(() => { next() })
   }
+})
+
+router.beforeResolve((to, from, next) => {
+  next()
+})
+
+router.afterEach((to, from) => {
 })
 
 export default router
