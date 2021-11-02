@@ -56,10 +56,13 @@ export default {
     this.ready = true;
 
     for(let ind=0; ind<features.length; ind++) {
-      let feature       = features[ind];
-      let geometry      = feature.geometry;
-      let geometry_type = geometry[MAP_ITEM.FC.FEATURES.GEOMETRY.TYPE];
-      let text          = feature.properties?.[MAP_ITEM.FC.FEATURES.PROPERTIES.TEXT];
+      let feature         = features[ind];
+      let geometry        = feature.geometry;
+      let geometry_type   = geometry[MAP_ITEM.FC.FEATURES.GEOMETRY.TYPE];
+      let icon_properties = {
+          [MAP_ITEM.FC.FEATURES.PROPERTIES.TEXT  ]: feature.properties?.[MAP_ITEM.FC.FEATURES.PROPERTIES.TEXT  ],
+          [MAP_ITEM.FC.FEATURES.PROPERTIES.SHADOW]: feature.properties?.[MAP_ITEM.FC.FEATURES.PROPERTIES.SHADOW],
+      };
 
       // L.объекты
       let l_obj         = get_feature_coordinates(feature, true);
@@ -68,7 +71,7 @@ export default {
 
       // patterns на основании classes_str и color
       let classes_str = get_feature_class(feature);
-      let patterns = get_decor_data(classes_str, ind, this.color, 1, text);
+      let patterns = get_decor_data(classes_str, ind, this.color, 1, icon_properties);
       if (patterns.length == 0) continue;
 
       // создать декорации

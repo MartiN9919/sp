@@ -66,6 +66,7 @@ export const MAP_TEST_ITEM_1 = {
           "hint": "test_mark_auto arrow-double-end line-engeneer_signal line-text_fill_100 ant",
           "date": "2021-01-04",
           "text": "C-120",
+          //"shadow": false,
         },
         "geometry": {
           "type": "LineString",
@@ -83,6 +84,7 @@ export const MAP_TEST_ITEM_1 = {
           "hint": "test_mark_auto arrow-double-end line-engeneer_signal line-text_100 ant",
           "date": "2021-01-04",
           "text": "C-120",
+          //"shadow": false,
         },
         "geometry": {
           "type": "LineString",

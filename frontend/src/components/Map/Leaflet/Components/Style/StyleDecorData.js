@@ -36,6 +36,7 @@ const DATA = {
   'line-engeneer_ograd': {
     offset: 8, repeat: 30,
     symbol_type: 'marker', symbol_options: { rotate: true, markerOptions: { icon: 'icon-file-zabor_ogradit-10-10', }, },
+    icon_properties: { shadow: false, },
   },
 
   //
@@ -44,16 +45,33 @@ const DATA = {
   'line-engeneer_signal': {
     offset: 8, repeat: 18,
     symbol_type: 'marker', symbol_options: { rotate: true, markerOptions: { icon: 'icon-svg-engeneer_signal', }, },
+    icon_properties: { shadow: false, },
   },
 
 
   //
   // Текст
   //
-  'line-text_fill_100': { offset: 8, repeat: 300, symbol_type: 'marker', symbol_options: { rotate: true, markerOptions: { icon: 'icon-svg-text_line_fill_100', }, }, },
-  'line-text_fill_300': { offset: 8, repeat: 300, symbol_type: 'marker', symbol_options: { rotate: true, markerOptions: { icon: 'icon-svg-text_line_fill_300', }, }, },
-  'line-text_100':      { offset: 8, repeat: 300, symbol_type: 'marker', symbol_options: { rotate: true, markerOptions: { icon: 'icon-svg-text_line_100', }, }, },
-  'line-text_300':      { offset: 8, repeat: 300, symbol_type: 'marker', symbol_options: { rotate: true, markerOptions: { icon: 'icon-svg-text_line_300', }, }, },
+  'line-text_fill_100': {
+    offset: 8, repeat: 300,
+    symbol_type: 'marker', symbol_options: { rotate: true, markerOptions: { icon: 'icon-svg-text_line_fill_100', }, },
+    icon_properties: { shadow: false, },
+  },
+  'line-text_fill_300': {
+    offset: 8, repeat: 300,
+    symbol_type: 'marker', symbol_options: { rotate: true, markerOptions: { icon: 'icon-svg-text_line_fill_300', }, },
+    icon_properties: { shadow: false, },
+  },
+  'line-text_100': {
+    offset: 8, repeat: 300,
+    symbol_type: 'marker', symbol_options: { rotate: true, markerOptions: { icon: 'icon-svg-text_line_100', }, },
+    icon_properties: { shadow: false, },
+  },
+  'line-text_300': {
+    offset: 8, repeat: 300,
+    symbol_type: 'marker', symbol_options: { rotate: true, markerOptions: { icon: 'icon-svg-text_line_300', }, },
+    icon_properties: { shadow: false, },
+  },
 
 
 
@@ -62,7 +80,7 @@ const DATA = {
 
 
 import { MAP_CONST, MAP_ITEM } from '@/components/Map/Leaflet/Lib/Const';
-export function get_decor_data(classes_str, index, color="gray", zoom=1, text=undefined) {
+export function get_decor_data(classes_str, index, color="gray", zoom=1, icon_properties={}) {
   let ret = [];
   let classes_list = classes_str.trim().replace(/\s+/g, ' ').split(' ');  // убрать лишние пробелы
   classes_list = [...new Set(classes_list)];                              // исключить повторы
@@ -79,8 +97,8 @@ export function get_decor_data(classes_str, index, color="gray", zoom=1, text=un
       if (data[data_ind].symbol_type == 'marker') {
         data[data_ind].symbol_options.markerOptions.icon = icon_get(color, {
           [MAP_ITEM.FC.FEATURES.PROPERTIES.CLASS   ]: data[data_ind].symbol_options.markerOptions.icon,
-          [MAP_ITEM.FC.FEATURES.PROPERTIES.TEXT    ]: text,
-        //[MAP_ITEM.FC.FEATURES.PROPERTIES._SHADOW_]: ...,
+          ...icon_properties,
+          ...data[data_ind].icon_properties,
         });
         data[data_ind].symbol = L.Symbol.marker(data[data_ind].symbol_options);
       }
@@ -95,8 +113,9 @@ export function get_decor_data(classes_str, index, color="gray", zoom=1, text=un
       // ...
 
       // удалить ставшие ненужными записи
-      if (data[data_ind].symbol_type    != undefined) delete data[data_ind]['symbol_type'   ];
-      if (data[data_ind].symbol_options != undefined) delete data[data_ind]['symbol_options'];
+      if (data[data_ind].symbol_type     != undefined) delete data[data_ind]['symbol_type'    ];
+      if (data[data_ind].symbol_options  != undefined) delete data[data_ind]['symbol_options' ];
+      if (data[data_ind].icon_properties != undefined) delete data[data_ind]['icon_properties'];
 
       // запомнить результат
       ret.push(data[data_ind]);
