@@ -70,9 +70,6 @@ export default {
   mounted() {
     this.setDefaultValueActiveTool()
     this.setRootSearchTreeItem({})
-    this.getBaseTriggers()
-    this.getBaseRelations()
-    this.getBaseClassifiers()
   }
 }
 </script>
