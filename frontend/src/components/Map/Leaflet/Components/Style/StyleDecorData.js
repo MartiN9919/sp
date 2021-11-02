@@ -32,11 +32,6 @@ const DATA = {
   ],
 
 
-
-
-
-
-
   ...STYLE_DATA_POST_DECOR,
   ...STYLE_DATA_CHECKPOINT_DECOR,
   ...STYLE_DATA_ENGENEER_DECOR,

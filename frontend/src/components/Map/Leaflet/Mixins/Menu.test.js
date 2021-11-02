@@ -3,7 +3,7 @@ export const MAP_TEST_ITEM_1 = {
   //"id": 5,
   "name":  "Test 1",
   "hint":  "Это тест 1",
-  "color": "#F00", // "#FF000055", "green", не работает: rgba(255, 190, 218, 0.5)
+  "color": "#F00",
 
   "fc": {
     // "style": {
@@ -12,13 +12,8 @@ export const MAP_TEST_ITEM_1 = {
     //     "zoom": 2,
     //   },
     //   "line": {
-    //     "class": "test_mark_auto line-engeneer_ograd arrow-double-end line-engeneer_signal",           // "line-engeneer_ograd",
-    //     //"class": "hidden", //"ant arrow-double-end dash-3",     // класс объекта (для установки стиля)
+    //     "class": "test_mark_auto arrow-double-end",
     //   },
-    //   "polygon": {
-    //     "class": "line-engeneer_ograd hatch-diagonal-1",  //hatch-diagonal-1 line-engeneer_signal test_mark_auto
-    //   },
-    // },
 
 
     "type": "FeatureCollection",
@@ -26,8 +21,8 @@ export const MAP_TEST_ITEM_1 = {
       {
         "type": "Feature",
         "properties": {
-          "class": "line-engeneer_ograd line-text_lr_100 hatch-diagonal-1",  //hatch-diagonal-1 line-engeneer_signal test_mark_auto
-          "hint": "line-engeneer_ograd line-text_lr_100 hatch-diagonal-1",
+          "class": "line-zagr_engeneer_zagr_ograd line-text_lr_100 hatch-diagonal-1",  // test_mark_auto
+          "hint": "line-zagr_engeneer_zagr_ograd line-text_lr_100 hatch-diagonal-1",
           "text": "STOP",
         },
         "geometry": {
@@ -63,8 +58,8 @@ export const MAP_TEST_ITEM_1 = {
       {
         "type": "Feature",
         "properties": {
-          "class": "arrow-double-end line-engeneer_signal line-text_rl_fill_100 ant",
-          "hint": "test_mark_auto arrow-double-end line-engeneer_signal line-text_rl_fill_100 ant",
+          "class": "arrow-double-end line-engeneer_zagr_signal line-text_rl_fill_100 ant",
+          "hint": "arrow-double-end line-engeneer_zagr_signal line-text_rl_fill_100 ant",
           "date": "2021-01-04",
           "text": "C-120",
         },
@@ -80,8 +75,8 @@ export const MAP_TEST_ITEM_1 = {
       {
         "type": "Feature",
         "properties": {
-          "class": "arrow-double-end line-engeneer_signal line-text_lr_300 ant",
-          "hint": "test_mark_auto arrow-double-end line-engeneer_signal line-text_lr_300 ant",
+          "class": "arrow-double-end line-engeneer_zagr_signal line-text_lr_300 ant",
+          "hint": "arrow-double-end line-engeneer_zagr_signal line-text_lr_300 ant",
           "date": "2021-01-04",
           "text": "C-120",
         },
@@ -98,7 +93,7 @@ export const MAP_TEST_ITEM_1 = {
         "type": "Feature",
         "properties": {
           "class": "line_border_1 hidden",
-          "hint": "Подсказка 3-2",
+          "hint": "line_border_1 hidden",
           "date": "2021-01-04",
         },
         "geometry": {
@@ -107,6 +102,22 @@ export const MAP_TEST_ITEM_1 = {
             [24.0,55.5],
             [27.5,56.5],
             [32.0,55.5],
+          ]
+        },
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "class": "line-engeneer_zagr_invisible",
+          "hint": "line-engeneer_zagr_invisible",
+          "date": "2021-05-04",
+        },
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [24.0,57.0],
+            [27.5,58.0],
+            [32.0,57.0],
           ]
         },
       },

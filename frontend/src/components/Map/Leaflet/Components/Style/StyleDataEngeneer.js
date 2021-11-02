@@ -42,7 +42,7 @@ export const STYLE_DATA_ENGENEER_ICON = {
   },
 
   // Заграждение сигнализация -|-|-
-  'engeneer_signal': {
+  'engeneer_zagr_signal': {
     anchor_dx: 24,
     anchor_dy: 5,
     zoom:      .8,
@@ -53,8 +53,23 @@ export const STYLE_DATA_ENGENEER_ICON = {
     `,
   },
 
+  // Заграждение малозам -0-0-
+  'engeneer_zagr_invisible': {
+    anchor_dx: 16,
+    anchor_dy: 5,
+    zoom:      .8,
+    svg: `
+      <svg width={width} height={height} viewBox="0 0 32 26">
+        <path
+          style="fill:none;stroke:#888;stroke-width:3"
+          d="m 0.50,0.07 c 0,0 3.81,27.26 19.45,22.63 C 26.08,20.88 29.99,18.37 30.37,13.80 30.63,10.65 27.60,6.59 20.45,4.26 4.22,-1.45 -0.18,28.26 1.0,25.75"
+        />
+      </svg>
+    `,
+  },
+
   // Забор оградительный х х х
-  'engeneer_ograd': {
+  'engeneer_zagr_ograd': {
     anchor_dx: 15,
     anchor_dy: 15,
     zoom:      .7,
@@ -70,16 +85,23 @@ export const STYLE_DATA_ENGENEER_ICON = {
 
 export const STYLE_DATA_ENGENEER_DECOR = {
   // Заграждение сигнализация -|-|-
-  'line-engeneer_signal': {
+  'line-engeneer_zagr_signal': {
     offset: 8, repeat: 18,
-    symbol_type: 'marker', symbol_options: { rotate: true, markerOptions: { icon: 'icon-svg-engeneer_signal', }, },
+    symbol_type: 'marker', symbol_options: { rotate: true, markerOptions: { icon: 'icon-svg-engeneer_zagr_signal', }, },
+    icon_properties: { shadow: false, },
+  },
+
+  // Заграждение малозам -0-0-
+  'line-engeneer_zagr_invisible': {
+    offset: 8, repeat: 9,
+    symbol_type: 'marker', symbol_options: { rotate: true, markerOptions: { icon: 'icon-svg-engeneer_zagr_invisible', }, },
     icon_properties: { shadow: false, },
   },
 
   // Забор оградительный х х х
-  'line-engeneer_ograd': {
+  'line-engeneer_zagr_ograd': {
     offset: 8, repeat: 30,
-    symbol_type: 'marker', symbol_options: { rotate: true, markerOptions: { icon: 'icon-svg-engeneer_ograd', }, },
+    symbol_type: 'marker', symbol_options: { rotate: true, markerOptions: { icon: 'icon-svg-engeneer_zagr_ograd', }, },
     icon_properties: { shadow: false, },
   },
 }
