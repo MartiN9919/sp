@@ -55,22 +55,22 @@ const DATA = {
   'line-text_fill_100': {
     offset: 8, repeat: 300,
     symbol_type: 'marker', symbol_options: { rotate: true, markerOptions: { icon: 'icon-svg-text_line_fill_100', }, },
-    icon_properties: { shadow: false, },
+    icon_properties: { shadow: false, top: true, },
   },
   'line-text_fill_300': {
     offset: 8, repeat: 300,
     symbol_type: 'marker', symbol_options: { rotate: true, markerOptions: { icon: 'icon-svg-text_line_fill_300', }, },
-    icon_properties: { shadow: false, },
+    icon_properties: { shadow: false, top: true, },
   },
   'line-text_100': {
     offset: 8, repeat: 300,
     symbol_type: 'marker', symbol_options: { rotate: true, markerOptions: { icon: 'icon-svg-text_line_100', }, },
-    icon_properties: { shadow: false, },
+    icon_properties: { shadow: false, top: true, },
   },
   'line-text_300': {
     offset: 8, repeat: 300,
     symbol_type: 'marker', symbol_options: { rotate: true, markerOptions: { icon: 'icon-svg-text_line_300', }, },
-    icon_properties: { shadow: false, },
+    icon_properties: { shadow: false, top: true, },
   },
 
 

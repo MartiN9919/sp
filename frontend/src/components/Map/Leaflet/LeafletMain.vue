@@ -122,8 +122,7 @@ import Vue2LeafletMarkerCluster from 'vue2-leaflet-markercluster';
 import LControlPolylineMeasure  from 'vue2-leaflet-polyline-measure';
 
 import { MAP_CONST, MAP_ITEM }  from '@/components/Map/Leaflet/Lib/Const';
-import { str_cut }              from '@/components/Map/Leaflet/Lib/Lib';
-import { get_feature_class }    from '@/components/Map/Leaflet/Lib/LibFc';
+import { get_feature_class, set_feature_hint } from '@/components/Map/Leaflet/Lib/LibFc';
 import {
   icon_ini,
   marker_get,
@@ -367,16 +366,7 @@ export default {
           });
 
           // подсказка
-          if (self.MAP_GET_HINT) {
-            let text = feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES.TEXT] ?? '';
-            let date = feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES.DATE] ?? '';
-            let hint = feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES.HINT] ?? '';
-            let val  =
-              ((text != '') ? ('<span style="font-weight: bold;background: #eee;width: 100%;display: inline-block;">'+str_cut(text, 100)+'</span><br>') : '')+
-              ((date != '') ? (date+'<br>') : '')+
-              str_cut(hint, 100).replace(/\n/, '<br>');
-            if (val != '') layer.bindTooltip('<div style="white-space: nowrap;">'+val+'</div>', { permanent: false, sticky: true, });
-          }
+          if (self.MAP_GET_HINT) { set_feature_hint(layer, feature.properties); }
 
           // класс для стилей линий и полигонов
           let classes_str = get_feature_class(feature);

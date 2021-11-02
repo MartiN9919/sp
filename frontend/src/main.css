@@ -28,7 +28,7 @@
   -webkit-filter: drop-shadow( 1px 1px 1px rgba(0, 0, 0, .7));
   filter: drop-shadow( 1px 1px 1px rgba(0, 0, 0, .7));
 }
-.svg-shadow-off {
-  -webkit-filter: drop-shadow( 0px 0px 0px rgba(0, 0, 0, 0)) !important;
-  filter: drop-shadow( 0px 0px 0px rgba(0, 0, 0, 0)) !important;
+/* поднять svg-объект над другими */
+.svg-top {
+  z-index: 999999 !important;
 }

@@ -75,8 +75,11 @@ export function icon_get(icon_color=undefined, icon_properties={}, zoom_map=unde
     let data = get_icon_data(classes_icon_list[0][1], color, zoom, text);
     if (data == undefined) return;
     let shadow = (icon_properties[MAP_ITEM.FC.FEATURES.PROPERTIES.SHADOW]!==false);
+    let top    = (icon_properties[MAP_ITEM.FC.FEATURES.PROPERTIES.TOP   ]===true);
     return new L.DivIcon({
-      className:   classes_other_str+((shadow)?' svg-shadow':''),
+      className:   classes_other_str+
+                   ((shadow)?' svg-shadow':'')+
+                   ((top   )?' svg-top'   :''),
       iconSize:    [data.width,     data.height],
       iconAnchor:  [data.anchor_dx, data.anchor_dy],                            // точка привязки svg относительно верхнего левого угла
       popupAnchor: [1,             -data.height*1.1],
