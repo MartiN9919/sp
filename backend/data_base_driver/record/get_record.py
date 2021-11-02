@@ -103,17 +103,10 @@ def get_record_photo(object_id, params):
     @param params: список параметров объекта
     @return: название файла фотографии или None если фото нет
     """
-    if object_id == SYS_KEY_CONSTANT.PERSON_P_ID:
-        for param in params:
-            if param['id'] == SYS_KEY_CONSTANT.PHOTO_PERSON_CLASSIFIER_ID:
-                return param['values'][0]['value']
-        return None
-    elif object_id == SYS_KEY_CONSTANT.POINT_ID:
-        for param in params:
-            if param['id'] == SYS_KEY_CONSTANT.PHOTO_POINT_CLASSIFIER_ID:
-                return param['values'][0]['value']
-    else:
-        return None
+    for param in params:
+        if param['id'] in SYS_KEY_CONSTANT.PHOTO_CLASSIFIER_LIST:
+            return param['values'][0]['value']
+    return None
 
 
 def get_value_by_key(key, value):

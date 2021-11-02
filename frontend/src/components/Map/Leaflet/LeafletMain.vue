@@ -375,7 +375,21 @@ export default {
               ((text != '') ? ('<span style="font-weight: bold;background: #eee;width: 100%;display: inline-block;">'+str_cut(text, 100)+'</span><br>') : '')+
               ((date != '') ? (date+'<br>') : '')+
               str_cut(hint, 100).replace(/\n/, '<br>');
-            if (val != '') layer.bindTooltip('<div style="white-space: nowrap;">'+val+'</div>', { permanent: false, sticky: true, });
+            if (val !== '') {
+              if(layer.hasOwnProperty('_layers')) {
+                for(let tempLayer in layer._layers) {
+                  layer._layers[tempLayer].bindTooltip('<div style="white-space: nowrap;">' + val + '</div>', {
+                    permanent: false,
+                    sticky: true,
+                  });
+                }
+              }
+              else
+                layer.bindTooltip('<div style="white-space: nowrap;">' + val + '</div>', {
+                  permanent: false,
+                  sticky: true,
+                });
+            }
           }
 
           // класс для стилей линий и полигонов
