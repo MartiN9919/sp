@@ -35,8 +35,19 @@ export const STYLE_DATA_ENGENEER_ICON = {
       </svg>
     `,
   },
-}
+  // Забор оградительный х х х
+  'engeneer_ograd': {
+    anchor_dx: 15,
+    anchor_dy: 15,
+    zoom:      .7,
+    svg: `
+      <svg width={width} height={height} viewBox="0 0 30 30">
+        <path style="fill:none;stroke:#888;stroke-width:4" d="M 0,0 L 30 30 M 30,0 L 0,30" />
+      </svg>
+    `,
+  }
 
+}
 
 
 export const STYLE_DATA_ENGENEER_DECOR = {
@@ -49,7 +60,8 @@ export const STYLE_DATA_ENGENEER_DECOR = {
   // Забор оградительный х х х
   'line-engeneer_ograd': {
     offset: 8, repeat: 30,
-    symbol_type: 'marker', symbol_options: { rotate: true, markerOptions: { icon: 'icon-file-zabor_ogradit-10-10', }, },
+  //symbol_type: 'marker', symbol_options: { rotate: true, markerOptions: { icon: 'icon-file-zabor_ogradit-10-10', }, },
+    symbol_type: 'marker', symbol_options: { rotate: true, markerOptions: { icon: 'icon-svg-engeneer_ograd', }, },
     icon_properties: { shadow: false, },
   },
 }

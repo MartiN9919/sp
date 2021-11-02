@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-      <svg viewBox="0 0 30 100">
-        <rect x="-10" y="-2" width="38" height="102" fill="#fff" />
-        <text class="ddd" style="font-style:normal;font-weight:bold;font-size:30px;font-family:sans-serif;fill:#444;text-anchor:middle" transform="rotate(270)" x="50" y="-3">{text}</text>
+      <svg  viewBox="0 0 30 30">
+        <path style="fill:none;stroke:#000;stroke-width:2" d="M 0,0 M 30 30" />
+        <path style="fill:none;stroke:#000;stroke-width:2" d="M 30,0 M 0,30"/>
       </svg>

@@ -34,23 +34,6 @@ const DATA = {
 
 
 
-  //
-  // Забор оградительный х х х
-  //
-  'line-engeneer_ograd': {
-    offset: 8, repeat: 30,
-    symbol_type: 'marker', symbol_options: { rotate: true, markerOptions: { icon: 'icon-file-zabor_ogradit-10-10', }, },
-    icon_properties: { shadow: false, },
-  },
-
-  //
-  // Заграждение сигнализация -|-|-
-  //
-  'line-engeneer_signal': {
-    offset: 8, repeat: 18,
-    symbol_type: 'marker', symbol_options: { rotate: true, markerOptions: { icon: 'icon-svg-engeneer_signal', }, },
-    icon_properties: { shadow: false, },
-  },
 
 
 

@@ -26,8 +26,9 @@ export const MAP_TEST_ITEM_1 = {
       {
         "type": "Feature",
         "properties": {
-          "class": "line-engeneer_ograd hatch-diagonal-1",  //hatch-diagonal-1 line-engeneer_signal test_mark_auto
-          "hint": "Подсказка 1",
+          "class": "line-engeneer_ograd line-text_lr_100 hatch-diagonal-1",  //hatch-diagonal-1 line-engeneer_signal test_mark_auto
+          "hint": "line-engeneer_ograd line-text_lr_100 hatch-diagonal-1",
+          "text": "STOP",
         },
         "geometry": {
           "type": "Polygon",
@@ -66,7 +67,6 @@ export const MAP_TEST_ITEM_1 = {
           "hint": "test_mark_auto arrow-double-end line-engeneer_signal line-text_rl_fill_100 ant",
           "date": "2021-01-04",
           "text": "C-120",
-          //"shadow": false,
         },
         "geometry": {
           "type": "LineString",
@@ -84,7 +84,6 @@ export const MAP_TEST_ITEM_1 = {
           "hint": "test_mark_auto arrow-double-end line-engeneer_signal line-text_lr_300 ant",
           "date": "2021-01-04",
           "text": "C-120",
-          //"shadow": false,
         },
         "geometry": {
           "type": "LineString",
