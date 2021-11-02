@@ -91,6 +91,9 @@ export function get_decor_data(classes_str, index, color="gray", zoom=1, text=un
         data[data_ind].symbol = L.Symbol.dash(data[data_ind].symbol_options);
       }
 
+      // тип: стрелка
+      // ...
+
       // удалить ставшие ненужными записи
       if (data[data_ind].symbol_type    != undefined) delete data[data_ind]['symbol_type'   ];
       if (data[data_ind].symbol_options != undefined) delete data[data_ind]['symbol_options'];
