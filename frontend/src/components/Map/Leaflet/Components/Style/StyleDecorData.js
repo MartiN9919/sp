@@ -47,10 +47,13 @@ const DATA = {
   },
 
 
-  'line-text_1': {
-    offset: 8, repeat: 250,
-    symbol_type: 'marker', symbol_options: { rotate: true, markerOptions: { icon: 'icon-svg-text_1', }, },
-  },
+  //
+  // Текст
+  //
+  'line-text_fill_100': { offset: 8, repeat: 300, symbol_type: 'marker', symbol_options: { rotate: true, markerOptions: { icon: 'icon-svg-text_line_fill_100', }, }, },
+  'line-text_fill_300': { offset: 8, repeat: 300, symbol_type: 'marker', symbol_options: { rotate: true, markerOptions: { icon: 'icon-svg-text_line_fill_300', }, }, },
+  'line-text_100':      { offset: 8, repeat: 300, symbol_type: 'marker', symbol_options: { rotate: true, markerOptions: { icon: 'icon-svg-text_line_100', }, }, },
+  'line-text_300':      { offset: 8, repeat: 300, symbol_type: 'marker', symbol_options: { rotate: true, markerOptions: { icon: 'icon-svg-text_line_300', }, }, },
 
 
 
@@ -75,8 +78,9 @@ export function get_decor_data(classes_str, index, color="gray", zoom=1, text=un
       // тип: маркер
       if (data[data_ind].symbol_type == 'marker') {
         data[data_ind].symbol_options.markerOptions.icon = icon_get(color, {
-          [MAP_ITEM.FC.FEATURES.PROPERTIES.CLASS]: data[data_ind].symbol_options.markerOptions.icon,
-          [MAP_ITEM.FC.FEATURES.PROPERTIES.TEXT]:  text,
+          [MAP_ITEM.FC.FEATURES.PROPERTIES.CLASS   ]: data[data_ind].symbol_options.markerOptions.icon,
+          [MAP_ITEM.FC.FEATURES.PROPERTIES.TEXT    ]: text,
+        //[MAP_ITEM.FC.FEATURES.PROPERTIES._SHADOW_]: ...,
         });
         data[data_ind].symbol = L.Symbol.marker(data[data_ind].symbol_options);
       }

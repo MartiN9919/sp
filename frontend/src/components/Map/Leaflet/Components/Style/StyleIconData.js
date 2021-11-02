@@ -351,19 +351,49 @@ const DATA = {
 
 
 
-  // текст на линии
-  'text_1': {
-    anchor_dx: 0,
+  // текст для линии
+  'text_line_fill_100': {
+    anchor_dx: 12,
     anchor_dy: 0,
     zoom:      .8,
     svg: `
-      <svg width={width} height={height} viewBox="0 0 20 100">
-        <text style="font-style:normal;font-weight:bold;font-size:30px;font-family:sans-serif;fill:#333" transform="rotate(90)" x="0" y="0">{text}</text>
+      <svg width={width} height={height} viewBox="0 0 30 100">
+        <rect x="-10" y="-2" width="38" height="102" fill="#fff" />
+        <text style="font-style:normal;font-weight:bold;font-size:30px;font-family:sans-serif;fill:#444;text-anchor:middle" transform="rotate(90)" x="50" y="-3">{text}</text>
       </svg>
     `,
-  }
-//         <text style="font-style:normal;font-weight:bold;font-size:30px;font-family:sans-serif" transform="rotate(90)" x="0" y="22">{text}</text>
-
+  },
+  'text_line_fill_300': {
+    anchor_dx: 12,
+    anchor_dy: 0,
+    zoom:      .8,
+    svg: `
+      <svg width={width} height={height} viewBox="0 0 30 300">
+        <rect x="-10" y="-2" width="38" height="302" fill="#fff" />
+        <text style="font-style:normal;font-weight:bold;font-size:30px;font-family:sans-serif;fill:#444;text-anchor:middle" transform="rotate(90)" x="150" y="-3">{text}</text>
+      </svg>
+    `,
+  },
+  'text_line_100': {
+    anchor_dx: 12,
+    anchor_dy: 0,
+    zoom:      .8,
+    svg: `
+      <svg width={width} height={height} viewBox="0 0 30 100">
+        <text style="font-style:normal;font-weight:bold;font-size:30px;font-family:sans-serif;fill:#444;text-anchor:middle" transform="rotate(90)" x="50" y="-3">{text}</text>
+      </svg>
+    `,
+  },
+  'text_line_300': {
+    anchor_dx: 12,
+    anchor_dy: 0,
+    zoom:      .8,
+    svg: `
+      <svg width={width} height={height} viewBox="0 0 30 300">
+        <text style="font-style:normal;font-weight:bold;font-size:30px;font-family:sans-serif;fill:#444;text-anchor:middle" transform="rotate(90)" x="150" y="-3">{text}</text>
+      </svg>
+    `,
+  },
 }
 
 

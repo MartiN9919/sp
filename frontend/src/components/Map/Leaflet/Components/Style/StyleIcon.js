@@ -60,11 +60,12 @@ export function icon_get(icon_color=undefined, icon_properties={}, zoom_map=unde
   const classes_icon_str  = classes_icon_list.map((val) => val.join(MAP_CONST.CLASS.ICON.SEPARATOR)).join(' '); // 'mdi-flag mdi-spin' 'fs-spec0'
 
   // остальные опции
-  const text  = icon_properties.text;                                           // иконка: надпись
+  const text  = icon_properties[MAP_ITEM.FC.FEATURES.PROPERTIES.TEXT];          // иконка: надпись
   const color = (icon_color ?? MAP_CONST.COLOR.DEFAULT_ICON).toLowerCase();     // иконка: цвет
-  const zoom  = (icon_properties.zoom != undefined) ?                           // иконка: масштаб
-    ((icon_properties.zoom !== false) ? icon_properties.zoom : 1):
-    ((zoom_map < MAP_CONST.CLASS.ICON.SVG_ZOOM_START) ? Math.pow(2.0, zoom_map-MAP_CONST.CLASS.ICON.SVG_ZOOM_START) : 1);
+  const zoom  =                                                                 // иконка: масштаб
+    (icon_properties[MAP_ITEM.FC.FEATURES.PROPERTIES.ZOOM] != undefined) ?
+      ((icon_properties[MAP_ITEM.FC.FEATURES.PROPERTIES.ZOOM] !== false) ? icon_properties[MAP_ITEM.FC.FEATURES.PROPERTIES.ZOOM] : 1):
+      ((zoom_map < MAP_CONST.CLASS.ICON.SVG_ZOOM_START) ? Math.pow(2.0, zoom_map-MAP_CONST.CLASS.ICON.SVG_ZOOM_START) : 1);
 
 
   // SVG

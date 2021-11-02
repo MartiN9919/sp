@@ -62,8 +62,8 @@ export const MAP_TEST_ITEM_1 = {
       {
         "type": "Feature",
         "properties": {
-          "class": "arrow-double-end line-engeneer_signal line-text_1 ant",
-          "hint": "test_mark_auto arrow-double-end line-engeneer_signal line-text_1 ant",
+          "class": "arrow-double-end line-engeneer_signal line-text_fill_100 ant",
+          "hint": "test_mark_auto arrow-double-end line-engeneer_signal line-text_fill_100 ant",
           "date": "2021-01-04",
           "text": "C-120",
         },
@@ -79,8 +79,8 @@ export const MAP_TEST_ITEM_1 = {
       {
         "type": "Feature",
         "properties": {
-          "class": "arrow-double-end line-engeneer_signal line-text_1 ant",
-          "hint": "test_mark_auto arrow-double-end line-engeneer_signal line-text_1 ant",
+          "class": "arrow-double-end line-engeneer_signal line-text_100 ant",
+          "hint": "test_mark_auto arrow-double-end line-engeneer_signal line-text_100 ant",
           "date": "2021-01-04",
           "text": "C-120",
         },
