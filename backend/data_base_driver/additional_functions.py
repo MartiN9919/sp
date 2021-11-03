@@ -122,7 +122,7 @@ def get_second_range(date_start, date_end):
 
 
 def get_id_by_key(key):
-    if key == 'id':
+    if isinstance(key, str) and key == 'id':
         return key
     if isinstance(key, str) and not (key.isdigit()):
         return get_key_by_name(key)['id']

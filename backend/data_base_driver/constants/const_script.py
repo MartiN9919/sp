@@ -59,7 +59,8 @@ ENABLED_FUNCTIONS = [
     'search',
     'io_get_rel',
     'int',
-    'get_date_time_from_str'
+    'get_date_time_from_str',
+    'get_related_objects',
 ]
 
 PATH_TO_REPORTS_DIR = '/reports/'
