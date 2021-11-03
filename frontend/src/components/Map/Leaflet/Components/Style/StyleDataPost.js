@@ -117,10 +117,20 @@ export const STYLE_DATA_POST_ICON = {
   'post_observation_hidden': {
     anchor_dx: 40.,
     anchor_dy: 40.,
-    zoom:      1.2,
+    zoom:      .8,
     svg: `
       <svg width={width} height={height} viewBox="0 0 80 80">
-        <path style="fill:#fff;stroke:#444;stroke-width:2" d="M 1,1 V 79 H 79 V 1 Z m 9,9 H 70 M 40.5,13 4,70 h 72 z"/>
+        <path style="fill:#fff;stroke:#444;stroke-width:4" d="M 2,2 V 78 H 78 V 2 Z m 9,9 H 70 M 40.5,17 8,70 h 64 z"/>
+      </svg>
+    `,
+  },
+  'post_observation_open': {
+    anchor_dx: 40.,
+    anchor_dy: 40.,
+    zoom:      .8,
+    svg: `
+      <svg width={width} height={height} viewBox="0 0 80 80">
+        <path style="fill:#fff;stroke:#444;stroke-width:4" d="M 2,2 V 78 H 78 V 2 Z M 40.5,17 8,70 h 64 z"/>
       </svg>
     `,
   },
@@ -150,7 +160,7 @@ export const STYLE_DATA_POST_TEST = [
     },
     "geometry": {
       "type": "Point",
-      "coordinates": [23.5,54.25]
+      "coordinates": [23.5,54.25],
     },
   },
   {
@@ -164,7 +174,7 @@ export const STYLE_DATA_POST_TEST = [
     },
     "geometry": {
       "type": "Point",
-      "coordinates": [23.5,54.0]
+      "coordinates": [23.5,54.0],
     },
   },
   {
@@ -177,7 +187,7 @@ export const STYLE_DATA_POST_TEST = [
     },
     "geometry": {
       "type": "Point",
-      "coordinates": [24.0,54.25]
+      "coordinates": [24.0,54.25],
     },
   },
   {
@@ -190,7 +200,7 @@ export const STYLE_DATA_POST_TEST = [
     },
     "geometry": {
       "type": "Point",
-      "coordinates": [24.5,54.25]
+      "coordinates": [24.5,54.25],
     },
   },
   {
@@ -203,7 +213,7 @@ export const STYLE_DATA_POST_TEST = [
     },
     "geometry": {
       "type": "Point",
-      "coordinates": [24.5,54.0]
+      "coordinates": [24.5,54.0],
     },
   },
   {
@@ -216,7 +226,7 @@ export const STYLE_DATA_POST_TEST = [
     },
     "geometry": {
       "type": "Point",
-      "coordinates": [25.0,54.25]
+      "coordinates": [25.0,54.25],
     },
   },
   {
@@ -229,7 +239,7 @@ export const STYLE_DATA_POST_TEST = [
     },
     "geometry": {
       "type": "Point",
-      "coordinates": [25.0,54.0]
+      "coordinates": [25.0,54.0],
     },
   },
   {
@@ -242,7 +252,7 @@ export const STYLE_DATA_POST_TEST = [
     },
     "geometry": {
       "type": "Point",
-      "coordinates": [25.5,54.25]
+      "coordinates": [25.5,54.25],
     },
   },
   {
@@ -255,7 +265,7 @@ export const STYLE_DATA_POST_TEST = [
     },
     "geometry": {
       "type": "Point",
-      "coordinates": [26.0,54.25]
+      "coordinates": [26.0,54.25],
     },
   },
   {
@@ -268,7 +278,31 @@ export const STYLE_DATA_POST_TEST = [
     },
     "geometry": {
       "type": "Point",
-      "coordinates": [26.0,54.0]
+      "coordinates": [26.0,54.0],
+    },
+  },
+  {
+    "type": "Feature",
+    "properties": {
+      "class": "icon-svg-post_observation_hidden",
+      "hint": "icon-svg-post_observation_hidden",
+      "date": "2021-05-01",
+    },
+    "geometry": {
+      "type": "Point",
+      "coordinates": [26.5,54.25],
+    },
+  },
+  {
+    "type": "Feature",
+    "properties": {
+      "class": "icon-svg-post_observation_open",
+      "hint": "icon-svg-post_observation_open",
+      "date": "2021-05-01",
+    },
+    "geometry": {
+      "type": "Point",
+      "coordinates": [26.5,54.0],
     },
   },
 ]
