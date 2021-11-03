@@ -29,8 +29,8 @@ export const STYLE_DATA_POST_ICON = {
     svg: `
       <svg width={width} height={height} viewBox="0 0 200 100">
         <path style="fill:#fff;stroke:{color};stroke-width:4" d="M 2.4,99.8 V 2.6 H 71.5 L 2.6,46.9"/>
-        <text style="font-style:normal;font-weight:bold;font-size:16px;font-family:sans-serif" x="6" y="20">ОПС</text>
-        <text style="font-style:normal;font-weight:bold;font-size:16px;font-family:sans-serif" x="6" y="96">{text}</text>
+        <text style="font-style:normal;font-size:16px;font-family:sans-serif;font-weight:bold" x="6" y="20">ОПС</text>
+        <text style="font-style:normal;font-size:16px;font-family:sans-serif;font-weight:normal" x="6" y="96">{text}</text>
       </svg>
     `,
   },
@@ -98,7 +98,7 @@ export const STYLE_DATA_POST_ICON = {
       <svg width={width} height={height} viewBox="0 0 200 100">
         <path style="fill:#fff;stroke:#f00;stroke-width:4"   d="M 1.9,100 2.6,22.7 2.5,3.2 44.0,23.5 2.1,41.0"/>
         <path style="fill:#f00;stroke:#f00;stroke-width:1px" d="M 22.6,13.1 3.0,22.6 22.8,32.2 44.0,23.5 Z"/>
-        <text style="font-style:normal;font-weight:bold;font-size:16px;font-family:sans-serif" x="6" y="96">{text}</text>
+        <text style="font-style:normal;font-size:16px;font-family:sans-serif" x="6" y="96">{text}</text>
       </svg>
     `,
   },
@@ -110,7 +110,7 @@ export const STYLE_DATA_POST_ICON = {
       <svg width={width} height={height} viewBox="0 0 200 100">
         <path style="fill:#fff;stroke:#00f;stroke-width:4"   d="m 198.0,100.1 -0.7,-77.3 0.1,-19.5 -41.5,20.3 41.9,17.5"/>
         <path style="fill:#00f;stroke:#00f;stroke-width:1px" d="m 177.3,13.2 19.6,9.5 -19.8,9.6 -21.2,-8.7 z"/>
-        <text style="font-style:normal;font-weight:bold;font-size:16px;font-family:sans-serif;text-anchor:end" x="190" y="96">{text}</text>
+        <text style="font-style:normal;font-size:16px;font-family:sans-serif;text-anchor:end" x="190" y="96">{text}</text>
       </svg>
     `,
   },

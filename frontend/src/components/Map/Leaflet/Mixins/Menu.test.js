@@ -196,7 +196,7 @@ export const MAP_TEST_ITEM_1 = {
         },
         "geometry": {
           "type": "Point",
-          "coordinates": [23.0,54.0]
+          "coordinates": [23.5,54.0]
         },
       },
       {
