@@ -95,6 +95,7 @@ export const MAP_TEST_ITEM_1 = {
           "class": "line_border_1 hidden",
           "hint": "line_border_1 hidden",
           "date": "2021-01-04",
+          "color": "green",
         },
         "geometry": {
           "type": "LineString",
@@ -108,8 +109,8 @@ export const MAP_TEST_ITEM_1 = {
       {
         "type": "Feature",
         "properties": {
-          "class": "line-engeneer_zagr_invisible",
-          "hint": "line-engeneer_zagr_invisible",
+          "class": "line-engeneer_zagr_invisible hidden",
+          "hint": "line-engeneer_zagr_invisible hidden",
           "date": "2021-05-04",
         },
         "geometry": {
