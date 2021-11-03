@@ -95,7 +95,6 @@ export const MAP_TEST_ITEM_1 = {
           "class": "line_border_1 hidden",
           "hint": "line_border_1 hidden",
           "date": "2021-01-04",
-          "color": "green",
         },
         "geometry": {
           "type": "LineString",
