@@ -54,6 +54,15 @@ export const STYLE_DATA_TEST_DECOR = {
     icon_properties: { shadow: false, },
   },
 
+
+
+  // штрих линия
+  'line-test2': {
+    offset: 0, repeat: 10,
+    symbol_type: 'dash', symbol_options: { pixelSize: 5, pathOptions: { color: '#f0f', weight: 1, opacity: 0.5, }, },
+    icon_properties: { shadow: false, },
+  },
+
 }
 
 
@@ -129,6 +138,26 @@ export const STYLE_DATA_TEST_TEST = [
       ]
     },
   },
+  // штрих линия
+  {
+    "type": "Feature",
+    "properties": {
+      "class": "line-test2 hidden",
+      "hint":  "line-test2 hidden",
+      "date":  "2021-01-06 09:00",
+    },
+    "geometry": {
+      "type": "LineString",
+      "coordinates": [
+        [43,57.5],
+        [46,58.5],
+        [48,57.5],
+      ]
+    },
+  },
+
+
+
   // иконка font-mdi
   {
     "type": "Feature",
@@ -166,8 +195,8 @@ export const STYLE_DATA_TEST_TEST = [
   {
     "type": "Feature",
     "properties": {
-      "class": "line-test_arrow_stroke",
-      "hint":  "line-test_arrow_stroke",
+      "class": "line-test_arrow_stroke hatch-diagonal-1",
+      "hint":  "line-test_arrow_stroke hatch-diagonal-1",
       "date":  "2021-01-05 09:00",
     },
     "geometry": {
@@ -183,24 +212,3 @@ export const STYLE_DATA_TEST_TEST = [
     },
   },
 ]
-
-
-  // "style": {
-  //   "line": {
-  //     "class": "arrow-double-end",
-  //   },
-
-
-//       // штрих линия светло-серая
-//       'test2': {
-//         offset: 0,
-//         repeat: 10,
-//         symbol: L.Symbol.dash({
-//           pixelSize: 5,
-//           pathOptions: {
-//             color: '#000',
-//             weight: 1,
-//             opacity: 0.2
-//           },
-//         }),
-//       },

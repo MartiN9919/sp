@@ -1,7 +1,6 @@
 // ОБЩИЙ ХАРАКТЕР
 export const STYLE_DATA_COMMON_ICON = {
-  // ИКОНКИ: СТАНДАРТНЫЕ
-  // тор внутри <path style="fill:#fff" d="m 12,1031.2033 c -2.7613995,0 -4.9999995,2.2386 -4.9999995,5 0,2.761 2.2386,5 4.9999995,5 2.761,0 5,-2.239 5,-5 0,-2.7614 -2.239,-5 -5,-5 z m 0,2 c 1.657,0 3,1.3431 3,3 0,1.6569 -1.343,3 -3,3 -1.657,0 -2.9999995,-1.3431 -2.9999995,-3 0,-1.6569 1.3429995,-3 2.9999995,-3 z"/>
+  // иконка стандарт
   'standart': {
     anchor_dx: 33.1,
     anchor_dy: 98.2,
@@ -23,6 +22,8 @@ export const STYLE_DATA_COMMON_ICON = {
     `,
   },
 
+
+  // ПРОИСШЕСТВИЕ
   'point_detention_inside': {
     anchor_dx: 53,
     anchor_dy: 50.,
@@ -44,7 +45,7 @@ export const STYLE_DATA_COMMON_ICON = {
 export const STYLE_DATA_COMMON_DECOR = {
   // обычные маркеры
   'line-standart': {
-    offset: 10, repeat: 100,
+    offset: 10, repeat: 150,
     symbol_type: 'marker', symbol_options: { rotate: false, markerOptions: { icon: 'icon-svg-standart', }, },
   },
 }
