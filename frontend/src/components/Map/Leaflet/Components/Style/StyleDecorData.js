@@ -5,36 +5,18 @@
  * repeat - смещение, через которое повторить маркер, можно в %: '50%'
  */
 
-import { STYLE_DATA_POST_DECOR       } from '@/components/Map/Leaflet/Components/Style/StyleDataPost';
+import { STYLE_DATA_FORCE_DECOR      } from '@/components/Map/Leaflet/Components/Style/StyleDataForce';
 import { STYLE_DATA_CHECKPOINT_DECOR } from '@/components/Map/Leaflet/Components/Style/StyleDataCheckpoint';
 import { STYLE_DATA_ENGENEER_DECOR   } from '@/components/Map/Leaflet/Components/Style/StyleDataEngeneer';
+import { STYLE_DATA_LAYOUT_DECOR     } from '@/components/Map/Leaflet/Components/Style/StyleDataLayout';
 import { STYLE_DATA_TEXT_DECOR       } from '@/components/Map/Leaflet/Components/Style/StyleDataText';
 import { icon_get                    } from '@/components/Map/Leaflet/Components/Style/StyleIcon';
 
 const DATA = {
-  //
-  // Рубеж охраны 1 _ . _
-  //
-  // class="hidden" для основной линии
-  'line_border_1': [
-    { offset: 12, repeat: 25, symbol_type: 'dash', symbol_options: { pixelSize: 10, pathOptions: { color: '#0a0', weight: 2, }, }, },
-    { offset: 0,  repeat: 25, symbol_type: 'dash', symbol_options: { pixelSize: 0,  pathOptions: { color: '#0a0', }, }, },
-  ],
-
-  //
-  // Рубеж охраны 2 _ .. _
-  //
-  // class="hidden" для основной линии
-  'line_border_2': [
-    { offset: 18, repeat: 30, symbol_type: 'dash', symbol_options: { pixelSize: 10, pathOptions: { color: '#0a0', weight: 2, }, }, },
-    { offset: 0,  repeat: 30, symbol_type: 'dash', symbol_options: { pixelSize: 0,  pathOptions: { color: '#0a0', }, }, },
-    { offset: 5,  repeat: 30, symbol_type: 'dash', symbol_options: { pixelSize: 0,  pathOptions: { color: '#0a0', }, }, },
-  ],
-
-
-  ...STYLE_DATA_POST_DECOR,
+  ...STYLE_DATA_FORCE_DECOR,
   ...STYLE_DATA_CHECKPOINT_DECOR,
   ...STYLE_DATA_ENGENEER_DECOR,
+  ...STYLE_DATA_LAYOUT_DECOR,
   ...STYLE_DATA_TEXT_DECOR,
 }
 

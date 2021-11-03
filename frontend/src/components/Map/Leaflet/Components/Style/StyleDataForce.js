@@ -1,5 +1,6 @@
-export const STYLE_DATA_POST_ICON = {
-  'base_manage_inside': {
+// СИЛЫ
+export const STYLE_DATA_FORCE_ICON = {
+  'force_manage_inside': {
     anchor_dx: 0,
     anchor_dy: 100.,
     zoom:      1.2,
@@ -11,7 +12,7 @@ export const STYLE_DATA_POST_ICON = {
       </svg>
     `,
   },
-  'base_manage_outside': {
+  'force_manage_outside': {
     anchor_dx: 92,
     anchor_dy: 100.,
     zoom:      1.2,
@@ -22,7 +23,7 @@ export const STYLE_DATA_POST_ICON = {
       </svg>
     `,
   },
-  'base_ops_inside': {
+  'force_ops_inside': {
     anchor_dx: 0,
     anchor_dy: 100.,
     zoom:      1.2,
@@ -34,7 +35,7 @@ export const STYLE_DATA_POST_ICON = {
       </svg>
     `,
   },
-  'post_frontier_inside': {
+  'force_frontier_inside': {
     anchor_dx: 0,
     anchor_dy: 100.,
     zoom:      1.2,
@@ -45,7 +46,7 @@ export const STYLE_DATA_POST_ICON = {
       </svg>
     `,
   },
-  'post_frontier_outside': {
+  'force_frontier_outside': {
     anchor_dx: 54,
     anchor_dy: 100.,
     zoom:      1.2,
@@ -56,7 +57,7 @@ export const STYLE_DATA_POST_ICON = {
       </svg>
     `,
   },
-  'post_simple_inside': {
+  'force_guard_inside': {
     anchor_dx: 0,
     anchor_dy: 100.,
     zoom:      1.2,
@@ -67,7 +68,7 @@ export const STYLE_DATA_POST_ICON = {
       </svg>
     `,
   },
-  'post_simple_outside': {
+  'force_guard_outside': {
     anchor_dx: 54,
     anchor_dy: 100.,
     zoom:      1.2,
@@ -78,7 +79,7 @@ export const STYLE_DATA_POST_ICON = {
       </svg>
     `,
   },
-  'post_temp_inside': {
+  'force_guard_temp_inside': {
     anchor_dx: 0,
     anchor_dy: 100.,
     zoom:      1.2,
@@ -90,7 +91,7 @@ export const STYLE_DATA_POST_ICON = {
       </svg>
     `,
   },
-  'post_control_inside': {
+  'force_unit_control_inside': {
     anchor_dx: 0,
     anchor_dy: 100.,
     zoom:      1.2,
@@ -102,7 +103,7 @@ export const STYLE_DATA_POST_ICON = {
       </svg>
     `,
   },
-  'post_control_outside': {
+  'force_unit_control_outside': {
     anchor_dx: 198,
     anchor_dy: 100.,
     zoom:      1.2,
@@ -114,7 +115,7 @@ export const STYLE_DATA_POST_ICON = {
       </svg>
     `,
   },
-  'post_observation_hidden': {
+  'force_observation_hidden': {
     anchor_dx: 40.,
     anchor_dy: 40.,
     zoom:      .8,
@@ -124,7 +125,7 @@ export const STYLE_DATA_POST_ICON = {
       </svg>
     `,
   },
-  'post_observation_open': {
+  'force_observation_open': {
     anchor_dx: 40.,
     anchor_dy: 40.,
     zoom:      .8,
@@ -140,7 +141,7 @@ export const STYLE_DATA_POST_ICON = {
 
 
 
-export const STYLE_DATA_POST_DECOR = {
+export const STYLE_DATA_FORCE_DECOR = {
 
 }
 
@@ -148,14 +149,14 @@ export const STYLE_DATA_POST_DECOR = {
 
 
 
-export const STYLE_DATA_POST_TEST = [
+export const STYLE_DATA_FORCE_TEST = [
   {
     "type": "Feature",
     "properties": {
-      "class": "icon-svg-base_manage_inside",
+      "class": "icon-svg-force_manage_inside",
       "zoom":  false,
       "text":  '130 пого',
-      "hint":  "icon-svg-base_manage_inside",
+      "hint":  "icon-svg-force_manage_inside",
       "date":  "2021-01-01",
     },
     "geometry": {
@@ -166,10 +167,10 @@ export const STYLE_DATA_POST_TEST = [
   {
     "type": "Feature",
     "properties": {
-      "class": "icon-svg-base_manage_outside",
+      "class": "icon-svg-force_manage_outside",
       "zoom":  false,
       "text":  '150',
-      "hint":  "icon-svg-base_manage_outside",
+      "hint":  "icon-svg-force_manage_outside",
       "date":  "2021-01-01",
     },
     "geometry": {
@@ -180,9 +181,9 @@ export const STYLE_DATA_POST_TEST = [
   {
     "type": "Feature",
     "properties": {
-      "class": "icon-svg-base_ops_inside",
+      "class": "icon-svg-force_ops_inside",
       "text":  '"Прудок"',
-      "hint":  "icon-svg-base_ops_inside",
+      "hint":  "icon-svg-force_ops_inside",
       "date":  "2021-01-01",
     },
     "geometry": {
@@ -193,9 +194,9 @@ export const STYLE_DATA_POST_TEST = [
   {
     "type": "Feature",
     "properties": {
-      "class": "icon-svg-post_frontier_inside",
+      "class": "icon-svg-force_frontier_inside",
       "text": "10",
-      "hint": "icon-svg-post_frontier_inside",
+      "hint": "icon-svg-force_frontier_inside",
       "date": "2021-01-01",
     },
     "geometry": {
@@ -206,9 +207,9 @@ export const STYLE_DATA_POST_TEST = [
   {
     "type": "Feature",
     "properties": {
-      "class": "icon-svg-post_frontier_outside",
+      "class": "icon-svg-force_frontier_outside",
       "text": "10",
-      "hint": "icon-svg-post_frontier_outside",
+      "hint": "icon-svg-force_frontier_outside",
       "date": "2021-01-01",
     },
     "geometry": {
@@ -219,9 +220,9 @@ export const STYLE_DATA_POST_TEST = [
   {
     "type": "Feature",
     "properties": {
-      "class": "icon-svg-post_simple_inside",
+      "class": "icon-svg-force_guard_inside",
       "text": "12",
-      "hint": "icon-svg-post_simple_inside",
+      "hint": "icon-svg-force_guard_inside",
       "date": "2021-01-01",
     },
     "geometry": {
@@ -232,9 +233,9 @@ export const STYLE_DATA_POST_TEST = [
   {
     "type": "Feature",
     "properties": {
-      "class": "icon-svg-post_simple_outside",
+      "class": "icon-svg-force_guard_outside",
       "text": "12",
-      "hint": "icon-svg-post_simple_outside",
+      "hint": "icon-svg-force_guard_outside",
       "date": "2021-01-01",
     },
     "geometry": {
@@ -245,9 +246,9 @@ export const STYLE_DATA_POST_TEST = [
   {
     "type": "Feature",
     "properties": {
-      "class": "icon-svg-post_temp_inside",
+      "class": "icon-svg-force_guard_temp_inside",
       "text": "15",
-      "hint": "icon-svg-post_temp_inside",
+      "hint": "icon-svg-force_guard_temp_inside",
       "date": "2021-01-01",
     },
     "geometry": {
@@ -258,9 +259,9 @@ export const STYLE_DATA_POST_TEST = [
   {
     "type": "Feature",
     "properties": {
-      "class": "icon-svg-post_control_inside",
+      "class": "icon-svg-force_unit_control_inside",
       "text": '"Зубренок"',
-      "hint": "icon-svg-post_control_inside",
+      "hint": "icon-svg-force_unit_control_inside",
       "date": "2021-01-01",
     },
     "geometry": {
@@ -271,9 +272,9 @@ export const STYLE_DATA_POST_TEST = [
   {
     "type": "Feature",
     "properties": {
-      "class": "icon-svg-post_control_outside",
+      "class": "icon-svg-force_unit_control_outside",
       "text": '"Дотишки"',
-      "hint": "icon-svg-post_control_outside",
+      "hint": "icon-svg-force_unit_control_outside",
       "date": "2021-01-01",
     },
     "geometry": {
@@ -284,8 +285,8 @@ export const STYLE_DATA_POST_TEST = [
   {
     "type": "Feature",
     "properties": {
-      "class": "icon-svg-post_observation_hidden",
-      "hint": "icon-svg-post_observation_hidden",
+      "class": "icon-svg-force_observation_hidden",
+      "hint": "icon-svg-force_observation_hidden",
       "date": "2021-05-01",
     },
     "geometry": {
@@ -296,8 +297,8 @@ export const STYLE_DATA_POST_TEST = [
   {
     "type": "Feature",
     "properties": {
-      "class": "icon-svg-post_observation_open",
-      "hint": "icon-svg-post_observation_open",
+      "class": "icon-svg-force_observation_open",
+      "hint": "icon-svg-force_observation_open",
       "date": "2021-05-01",
     },
     "geometry": {

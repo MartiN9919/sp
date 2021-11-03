@@ -27,6 +27,20 @@ export const STYLE_DATA_ENGENEER_ICON = {
     `,
   },
 
+
+  // КСП
+  'engeneer_ksp': {
+    anchor_dx: 20,
+    anchor_dy: 10,
+    zoom:      .8,
+    svg: `
+      <svg width={width} height={height} viewBox="0 0 40 20">
+        <path style="fill:none;stroke:#888;stroke-width:4;" d="M 2,0 V 20 M 4,10 H 40 M 38,0 v 20"/>
+      </svg>
+    `,
+  },
+
+
   // вышка промышленная
   'engineer_tower_industrial': {
     anchor_dx: 150,
@@ -84,6 +98,13 @@ export const STYLE_DATA_ENGENEER_ICON = {
 
 
 export const STYLE_DATA_ENGENEER_DECOR = {
+  // КСП
+  'line-engeneer_ksp': {
+    offset: 8, repeat: 8,
+    symbol_type: 'marker', symbol_options: { rotate: true, markerOptions: { icon: 'icon-svg-engeneer_ksp', }, },
+    icon_properties: { shadow: false, },
+  },
+
   // Заграждение сигнализация -|-|-
   'line-engeneer_zagr_signal': {
     offset: 8, repeat: 18,
@@ -109,6 +130,116 @@ export const STYLE_DATA_ENGENEER_DECOR = {
 
 
 export const STYLE_DATA_ENGENEER_TEST = [
+  {
+    "type": "Feature",
+    "properties": {
+      "class": "line-engeneer_zagr_ograd line-text_lr_100 hatch-diagonal-1",  // test_mark_auto
+      "hint": "line-engeneer_zagr_ograd line-text_lr_100 hatch-diagonal-1",
+      "text": "STOP",
+    },
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [25.0,55.5],
+          [27.5,56.25],
+          [31.0,55.5],
+          [25.0,55.5],
+        ]
+      ]
+    },
+  },
+  {
+    "type": "Feature",
+    "properties": {
+      "class": "arrow-double-end line-engeneer_zagr_signal line-text_rl_fill_100 ant",
+      "hint": "arrow-double-end line-engeneer_zagr_signal line-text_rl_fill_100 ant",
+      "date": "2021-01-04",
+      "text": "C-120",
+    },
+    "geometry": {
+      "type": "LineString",
+      "coordinates": [
+        [32.0,56.5],
+        [27.5,57.5],
+        [24.0,56.5],
+      ]
+    },
+  },
+  {
+    "type": "Feature",
+    "properties": {
+      "class": "arrow-double-end line-engeneer_zagr_signal line-text_lr_300 ant",
+      "hint": "arrow-double-end line-engeneer_zagr_signal line-text_lr_300 ant",
+      "date": "2021-01-04",
+      "text": "C-120",
+    },
+    "geometry": {
+      "type": "LineString",
+      "coordinates": [
+        [24.0,56.0],
+        [27.5,57.0],
+        [32.0,56.0],
+      ]
+    },
+  },
+  {
+    "type": "Feature",
+    "properties": {
+      "class": "line-engeneer_zagr_invisible hidden",
+      "hint": "line-engeneer_zagr_invisible hidden",
+      "date": "2021-05-04",
+    },
+    "geometry": {
+      "type": "LineString",
+      "coordinates": [
+        [24.0,57.0],
+        [27.5,58.0],
+        [32.0,57.0],
+      ]
+    },
+  },
+  {
+    "type": "Feature",
+    "properties": {
+      "class": "line-engeneer_zagr_ograd",
+      "hint": "line-engeneer_zagr_ograd",
+      "date": "2021-05-04",
+      "color": "#888",
+    },
+    "geometry": {
+      "type": "LineString",
+      "coordinates": [
+        [24.0,57.5],
+        [27.5,58.5],
+        [32.0,57.5],
+      ]
+    },
+  },
+  {
+    "type": "Feature",
+    "properties": {
+      "class": "line-engeneer_ksp hidden",
+      "hint": "line-engeneer_ksp hidden",
+      "date": "2021-05-04",
+      //"color": "#888",
+    },
+    "geometry": {
+      "type": "LineString",
+      "coordinates": [
+        [24.0,58.0],
+        [27.5,59.0],
+        [32.0,58.0],
+      ]
+    },
+  },
+
+
+
+
+
+
+
   {
     "type": "Feature",
     "properties": {

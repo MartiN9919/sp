@@ -1,6 +1,7 @@
-import { STYLE_DATA_POST_ICON       } from '@/components/Map/Leaflet/Components/Style/StyleDataPost';
+import { STYLE_DATA_FORCE_ICON      } from '@/components/Map/Leaflet/Components/Style/StyleDataForce';
 import { STYLE_DATA_CHECKPOINT_ICON } from '@/components/Map/Leaflet/Components/Style/StyleDataCheckpoint';
 import { STYLE_DATA_ENGENEER_ICON   } from '@/components/Map/Leaflet/Components/Style/StyleDataEngeneer';
+import { STYLE_DATA_LAYOUT_ICON     } from '@/components/Map/Leaflet/Components/Style/StyleDataLayout';
 import { STYLE_DATA_TEXT_ICON       } from '@/components/Map/Leaflet/Components/Style/StyleDataText';
 
 const DATA = {
@@ -77,9 +78,10 @@ const DATA = {
 
 
 
-  ...STYLE_DATA_POST_ICON,
+  ...STYLE_DATA_FORCE_ICON,
   ...STYLE_DATA_CHECKPOINT_ICON,
   ...STYLE_DATA_ENGENEER_ICON,
+  ...STYLE_DATA_LAYOUT_ICON,
   ...STYLE_DATA_TEXT_ICON,
 }
 
