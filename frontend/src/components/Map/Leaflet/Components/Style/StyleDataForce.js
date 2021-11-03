@@ -115,7 +115,7 @@ export const STYLE_DATA_FORCE_ICON = {
       </svg>
     `,
   },
-  'force_observation_hidden': {
+  'force_point_observation_hidden': {
     anchor_dx: 40.,
     anchor_dy: 40.,
     zoom:      .8,
@@ -125,13 +125,24 @@ export const STYLE_DATA_FORCE_ICON = {
       </svg>
     `,
   },
-  'force_observation_open': {
+  'force_point_observation_open': {
     anchor_dx: 40.,
     anchor_dy: 40.,
     zoom:      .8,
     svg: `
       <svg width={width} height={height} viewBox="0 0 80 80">
         <path style="fill:#fff;stroke:#444;stroke-width:4" d="M 2,2 V 78 H 78 V 2 Z M 40.5,17 8,70 h 64 z"/>
+      </svg>
+    `,
+  },
+  'force_point_control': {
+    anchor_dx: 50.,
+    anchor_dy: 25.,
+    zoom:      1.2,
+    svg: `
+      <svg width={width} height={height} viewBox="0 0 100 50">
+        <path style="fill:#fff;stroke:#222;stroke-width:4" d="M 2,10 V 40 M 100,10 V 40 M 2,24.5 h 96"/>
+        <circle style="fill:#fff;stroke:#222;stroke-width:4" cx="50" cy="24.5" r="22"/>
       </svg>
     `,
   },
@@ -285,8 +296,8 @@ export const STYLE_DATA_FORCE_TEST = [
   {
     "type": "Feature",
     "properties": {
-      "class": "icon-svg-force_observation_hidden",
-      "hint": "icon-svg-force_observation_hidden",
+      "class": "icon-svg-force_point_observation_hidden",
+      "hint": "icon-svg-force_point_observation_hidden",
       "date": "2021-05-01",
     },
     "geometry": {
@@ -297,13 +308,25 @@ export const STYLE_DATA_FORCE_TEST = [
   {
     "type": "Feature",
     "properties": {
-      "class": "icon-svg-force_observation_open",
-      "hint": "icon-svg-force_observation_open",
+      "class": "icon-svg-force_point_observation_open",
+      "hint": "icon-svg-force_point_observation_open",
       "date": "2021-05-01",
     },
     "geometry": {
       "type": "Point",
       "coordinates": [26.5,54.0],
+    },
+  },
+  {
+    "type": "Feature",
+    "properties": {
+      "class": "icon-svg-force_point_control",
+      "hint": "icon-svg-force_point_control",
+      "date": "2021-05-09",
+    },
+    "geometry": {
+      "type": "Point",
+      "coordinates": [27.0,54.25],
     },
   },
 ]
