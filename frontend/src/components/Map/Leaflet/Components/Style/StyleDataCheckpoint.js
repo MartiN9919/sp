@@ -89,3 +89,112 @@ export const STYLE_DATA_CHECKPOINT_ICON = {
 export const STYLE_DATA_CHECKPOINT_DECOR = {
 
 }
+
+
+
+export const STYLE_DATA_CHECKPOINT_TEST = [
+  {
+    "type": "Feature",
+    "properties": {
+      "class": "icon-svg-checkpoint_auto_inside",
+      "text":  '"Молодечненское"',
+      "hint": "icon-svg-checkpoint_auto_inside",
+      "date": "2021-01-01",
+    },
+    "geometry": {
+      "type": "Point",
+      "coordinates": [24.0,53.75],
+    },
+  },
+  {
+    "type": "Feature",
+    "properties": {
+      "class": "icon-svg-checkpoint_auto_outside",
+      "text":  '"Labas denas"',
+      "hint": "icon-svg-checkpoint_auto_outside",
+      "date": "2021-01-01",
+    },
+    "geometry": {
+      "type": "Point",
+      "coordinates": [24.0,53.50],
+    },
+  },
+  {
+    "type": "Feature",
+    "properties": {
+      "class": "icon-svg-checkpoint_flyer_inside",
+      "text":  '"Высокое"',
+      "hint": "icon-svg-checkpoint_flyer_inside",
+      "date": "2021-01-01",
+    },
+    "geometry": {
+      "type": "Point",
+      "coordinates": [24.5,53.75],
+    },
+  },
+  {
+    "type": "Feature",
+    "properties": {
+      "class": "icon-svg-checkpoint_flyer_outside",
+      "text":  '"Высокое"',
+      "hint": "icon-svg-checkpoint_flyer_outside",
+      "date": "2021-01-01",
+    },
+    "geometry": {
+      "type": "Point",
+      "coordinates": [24.5,53.50],
+    },
+  },
+  {
+    "type": "Feature",
+    "properties": {
+      "class": "icon-svg-checkpoint_rail_inside",
+      "text":  '"Стальное"',
+      "hint": "icon-svg-checkpoint_rail_inside",
+      "date": "2021-01-01",
+    },
+    "geometry": {
+      "type": "Point",
+      "coordinates": [25.0,53.75],
+    },
+  },
+  {
+    "type": "Feature",
+    "properties": {
+      "class": "icon-svg-checkpoint_rail_outside",
+      "text":  '"Bruzg"',
+      "hint": "icon-svg-checkpoint_rail_outside",
+      "date": "2021-01-01",
+    },
+    "geometry": {
+      "type": "Point",
+      "coordinates": [25.0,53.50],
+    },
+  },
+  {
+    "type": "Feature",
+    "properties": {
+      "class": "icon-svg-checkpoint_simplified_inside",
+      "text":  '"Леший"',
+      "hint": "icon-svg-checkpoint_simplified_inside",
+      "date": "2021-01-02",
+    },
+    "geometry": {
+      "type": "Point",
+      "coordinates": [25.5,53.75],
+    },
+  },
+  {
+    "type": "Feature",
+    "properties": {
+      "class": "icon-svg-checkpoint_simplified_outside",
+      "text":  '"Швiденькi"',
+      "hint": "icon-svg-checkpoint_simplified_outside",
+      "date": "2021-01-02",
+    },
+    "geometry": {
+      "type": "Point",
+      "coordinates": [25.5,53.50],
+    },
+  },
+]

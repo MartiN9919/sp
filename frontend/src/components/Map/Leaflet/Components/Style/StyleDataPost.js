@@ -114,10 +114,161 @@ export const STYLE_DATA_POST_ICON = {
       </svg>
     `,
   },
+  'post_observation_hidden': {
+    anchor_dx: 40.,
+    anchor_dy: 40.,
+    zoom:      1.2,
+    svg: `
+      <svg width={width} height={height} viewBox="0 0 80 80">
+        <path style="fill:#fff;stroke:#444;stroke-width:2" d="M 1,1 V 79 H 79 V 1 Z m 9,9 H 70 M 40.5,13 4,70 h 72 z"/>
+      </svg>
+    `,
+  },
 }
+
+
 
 
 
 export const STYLE_DATA_POST_DECOR = {
 
 }
+
+
+
+
+
+export const STYLE_DATA_POST_TEST = [
+  {
+    "type": "Feature",
+    "properties": {
+      "class": "icon-svg-base_manage_inside",
+      "zoom":  false,
+      "text":  '130 пого',
+      "hint":  "icon-svg-base_manage_inside",
+      "date":  "2021-01-01",
+    },
+    "geometry": {
+      "type": "Point",
+      "coordinates": [23.5,54.25]
+    },
+  },
+  {
+    "type": "Feature",
+    "properties": {
+      "class": "icon-svg-base_manage_outside",
+      "zoom":  false,
+      "text":  '150',
+      "hint":  "icon-svg-base_manage_outside",
+      "date":  "2021-01-01",
+    },
+    "geometry": {
+      "type": "Point",
+      "coordinates": [23.5,54.0]
+    },
+  },
+  {
+    "type": "Feature",
+    "properties": {
+      "class": "icon-svg-base_ops_inside",
+      "text":  '"Прудок"',
+      "hint":  "icon-svg-base_ops_inside",
+      "date":  "2021-01-01",
+    },
+    "geometry": {
+      "type": "Point",
+      "coordinates": [24.0,54.25]
+    },
+  },
+  {
+    "type": "Feature",
+    "properties": {
+      "class": "icon-svg-post_frontier_inside",
+      "text": "10",
+      "hint": "icon-svg-post_frontier_inside",
+      "date": "2021-01-01",
+    },
+    "geometry": {
+      "type": "Point",
+      "coordinates": [24.5,54.25]
+    },
+  },
+  {
+    "type": "Feature",
+    "properties": {
+      "class": "icon-svg-post_frontier_outside",
+      "text": "10",
+      "hint": "icon-svg-post_frontier_outside",
+      "date": "2021-01-01",
+    },
+    "geometry": {
+      "type": "Point",
+      "coordinates": [24.5,54.0]
+    },
+  },
+  {
+    "type": "Feature",
+    "properties": {
+      "class": "icon-svg-post_simple_inside",
+      "text": "12",
+      "hint": "icon-svg-post_simple_inside",
+      "date": "2021-01-01",
+    },
+    "geometry": {
+      "type": "Point",
+      "coordinates": [25.0,54.25]
+    },
+  },
+  {
+    "type": "Feature",
+    "properties": {
+      "class": "icon-svg-post_simple_outside",
+      "text": "12",
+      "hint": "icon-svg-post_simple_outside",
+      "date": "2021-01-01",
+    },
+    "geometry": {
+      "type": "Point",
+      "coordinates": [25.0,54.0]
+    },
+  },
+  {
+    "type": "Feature",
+    "properties": {
+      "class": "icon-svg-post_temp_inside",
+      "text": "15",
+      "hint": "icon-svg-post_temp_inside",
+      "date": "2021-01-01",
+    },
+    "geometry": {
+      "type": "Point",
+      "coordinates": [25.5,54.25]
+    },
+  },
+  {
+    "type": "Feature",
+    "properties": {
+      "class": "icon-svg-post_control_inside",
+      "text": '"Зубренок"',
+      "hint": "icon-svg-post_control_inside",
+      "date": "2021-01-01",
+    },
+    "geometry": {
+      "type": "Point",
+      "coordinates": [26.0,54.25]
+    },
+  },
+  {
+    "type": "Feature",
+    "properties": {
+      "class": "icon-svg-post_control_outside",
+      "text": '"Дотишки"',
+      "hint": "icon-svg-post_control_outside",
+      "date": "2021-01-01",
+    },
+    "geometry": {
+      "type": "Point",
+      "coordinates": [26.0,54.0]
+    },
+  },
+]

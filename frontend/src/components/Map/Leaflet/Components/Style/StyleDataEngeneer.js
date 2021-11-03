@@ -105,3 +105,47 @@ export const STYLE_DATA_ENGENEER_DECOR = {
     icon_properties: { shadow: false, },
   },
 }
+
+
+
+export const STYLE_DATA_ENGENEER_TEST = [
+  {
+    "type": "Feature",
+    "properties": {
+      "class": "icon-svg-engineer_border_sign",
+      "text": "1234",
+      "hint": "icon-svg-engineer_border_sign",
+      "date": "2021-03-01",
+    },
+    "geometry": {
+      "type": "Point",
+      "coordinates": [24.0,53.25],
+    },
+  },
+  {
+    "type": "Feature",
+    "properties": {
+      "class": "icon-svg-engineer_video",
+      "text": "1234",
+      "hint": "icon-svg-engineer_video",
+      "date": "2021-04-01",
+    },
+    "geometry": {
+      "type": "Point",
+      "coordinates": [24.5,53.25],
+    },
+  },
+  {
+    "type": "Feature",
+    "properties": {
+      "class": "icon-svg-engineer_tower_industrial",
+      "text": '"Зоркий"',
+      "hint": "icon-svg-engineer_tower_industrial",
+      "date": "2021-02-01",
+    },
+    "geometry": {
+      "type": "Point",
+      "coordinates": [25.0,53.25],
+    },
+  },
+]
