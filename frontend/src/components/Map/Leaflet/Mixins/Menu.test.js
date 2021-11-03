@@ -3,6 +3,8 @@ import { STYLE_DATA_CHECKPOINT_TEST } from '@/components/Map/Leaflet/Components/
 import { STYLE_DATA_ENGENEER_TEST   } from '@/components/Map/Leaflet/Components/Style/StyleDataEngeneer';
 import { STYLE_DATA_LAYOUT_TEST     } from '@/components/Map/Leaflet/Components/Style/StyleDataLayout';
 import { STYLE_DATA_TEXT_TEST       } from '@/components/Map/Leaflet/Components/Style/StyleDataText';
+import { STYLE_DATA_COMMON_TEST     } from '@/components/Map/Leaflet/Components/Style/StyleDataCommon';
+import { STYLE_DATA_TEST_TEST       } from '@/components/Map/Leaflet/Components/Style/StyleDataTest';
 
 
 export const MAP_TEST_ITEM_1 = {
@@ -10,18 +12,7 @@ export const MAP_TEST_ITEM_1 = {
   "name":  "Test 1",
   "hint":  "Это тест 1",
   "color": "#F00",
-
-  "fc": {
-    // "style": {
-    //   "marker": {
-    //     "icon": "test",     // "mdi-flag mdi-spin", "fs-spec0", "pulse" (size: 12), "#0f0", "gold", "file_name" (size_w: 25, size_h: 41)
-    //     "zoom": 2,
-    //   },
-    //   "line": {
-    //     "class": "test_mark_auto arrow-double-end",
-    //   },
-
-
+  "fc":    {
     "type": "FeatureCollection",
     "features": [
       ...STYLE_DATA_FORCE_TEST,
@@ -29,84 +20,8 @@ export const MAP_TEST_ITEM_1 = {
       ...STYLE_DATA_ENGENEER_TEST,
       ...STYLE_DATA_LAYOUT_TEST,
       ...STYLE_DATA_TEXT_TEST,
-      {
-        "type": "Feature",
-        "properties": {
-          "hint": "Подсказка 2",
-          "date": "2021-01-05 09:00",
-        },
-        "geometry": {
-          "type": "Polygon",
-          "coordinates": [
-            [
-              [30.0,54.5],
-              [32.0,53.5],
-              [30.0,52.5],
-              [30.0,54.5],
-            ]
-          ]
-        },
-      },
-
-
-
-
-
-
-      {
-        "type": "Feature",
-        "properties": {
-          "class": "icon-svg-standart",
-          "hint": "icon-svg-standart",
-          "date": "2021-01-02",
-          "zoom": false,
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [24.0,54.5]
-        },
-      },
-      {
-        "type": "Feature",
-        "properties": {
-          "class": "icon-svg-standart",
-          "hint": "icon-svg-standart",
-          "date": "2021-01-02",
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [24.5,54.5]
-        },
-      },
-      {
-        "type": "Feature",
-        "properties": {
-          "class": "icon-svg-point_detention_inside",
-          "text": '"detention"',
-          "hint": "icon-svg-point_detention_inside\ntest\nasdf asd fa sdf a sd fa sd f asd f as df a sd fa sd f asd f asd fa sd fa sdf asd",
-          "date": "2021-04-01",
-          "zoom": false,
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [25.0,54.5]
-        },
-      },
-
-
-      {
-        "type": "Feature",
-        "properties": {
-          "class": "icon-mdi-flag sss icon-mdi-spin tst",
-          "hint": "Demo",
-          "date": "2021-01-03",
-          //"zoom": false,
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [45,53.0]
-        },
-      },
+      ...STYLE_DATA_COMMON_TEST,
+      ...STYLE_DATA_TEST_TEST,
     ],
   }
 };

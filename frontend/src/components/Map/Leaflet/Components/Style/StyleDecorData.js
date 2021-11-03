@@ -10,6 +10,8 @@ import { STYLE_DATA_CHECKPOINT_DECOR } from '@/components/Map/Leaflet/Components
 import { STYLE_DATA_ENGENEER_DECOR   } from '@/components/Map/Leaflet/Components/Style/StyleDataEngeneer';
 import { STYLE_DATA_LAYOUT_DECOR     } from '@/components/Map/Leaflet/Components/Style/StyleDataLayout';
 import { STYLE_DATA_TEXT_DECOR       } from '@/components/Map/Leaflet/Components/Style/StyleDataText';
+import { STYLE_DATA_COMMON_DECOR     } from '@/components/Map/Leaflet/Components/Style/StyleDataCommon';
+import { STYLE_DATA_TEST_DECOR       } from '@/components/Map/Leaflet/Components/Style/StyleDataTest';
 import { icon_get                    } from '@/components/Map/Leaflet/Components/Style/StyleIcon';
 
 const DATA = {
@@ -18,6 +20,8 @@ const DATA = {
   ...STYLE_DATA_ENGENEER_DECOR,
   ...STYLE_DATA_LAYOUT_DECOR,
   ...STYLE_DATA_TEXT_DECOR,
+  ...STYLE_DATA_COMMON_DECOR,
+  ...STYLE_DATA_TEST_DECOR,
 }
 
 
