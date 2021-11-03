@@ -26,7 +26,7 @@ const props = {
     type: Object,
     default: () => {},
   },
-  color: {
+  color: {                  // цвет скрипта, цвет фигуры имеет приоритет над цветом скрипта
     type: String,
     default: () => MAP_CONST.COLOR.DEFAULT_STYLE_PATH,
   },
@@ -57,6 +57,8 @@ export default {
       let feature         = features[ind];
       let geometry        = feature.geometry;
       let geometry_type   = geometry[MAP_ITEM.FC.FEATURES.GEOMETRY.TYPE];
+      let color           = feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES.COLOR];
+      if (color == undefined) { color = this.color; }           // приоритет цвета фигуры над цветом скрипта
       let icon_properties = {                                   // распространяем свойства фигуры на декорации
       //[MAP_ITEM.FC.FEATURES.PROPERTIES.DATE  ]: feature.properties?.[MAP_ITEM.FC.FEATURES.PROPERTIES.DATE  ],
       //[MAP_ITEM.FC.FEATURES.PROPERTIES.HINT  ]: feature.properties?.[MAP_ITEM.FC.FEATURES.PROPERTIES.HINT  ],
@@ -65,13 +67,13 @@ export default {
       };
 
       // L.объекты
-      let l_obj         = get_feature_coordinates(feature, true);
+      let l_obj = get_feature_coordinates(feature, true);
       l_obj[MAP_CONST.TYPE_GEOMETRY.LINE   ] = l_obj[MAP_CONST.TYPE_GEOMETRY.LINE   ].map((val) => L.polyline(val));
       l_obj[MAP_CONST.TYPE_GEOMETRY.POLYGON] = l_obj[MAP_CONST.TYPE_GEOMETRY.POLYGON].map((val) => L.polygon (val));
 
       // patterns на основании classes_str и color
       let classes_str = get_feature_class(feature);
-      let patterns    = get_decor_data(classes_str, ind, this.color, 1, icon_properties);
+      let patterns    = get_decor_data(classes_str, ind, color, 1, icon_properties);
       if (patterns.length == 0) continue;
 
       // создать декорации

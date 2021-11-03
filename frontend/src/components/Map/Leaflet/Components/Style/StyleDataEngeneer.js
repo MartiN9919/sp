@@ -70,12 +70,12 @@ export const STYLE_DATA_ENGENEER_ICON = {
 
   // Забор оградительный х-х-х
   'engeneer_zagr_ograd': {
-    anchor_dx: 15,
+    anchor_dx: 18,
     anchor_dy: 15,
     zoom:      .7,
     svg: `
       <svg width={width} height={height} viewBox="0 0 30 30">
-        <path style="fill:none;stroke:#888;stroke-width:4" d="M 0,0 L 30 30 M 30,0 L 0,30" />
+        <path style="fill:none;stroke:{color};stroke-width:4" d="M 0,0 L 30 30 M 30,0 L 0,30" />
       </svg>
     `,
   }

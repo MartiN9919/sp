@@ -380,23 +380,32 @@ export default {
 
         // стиль маркеров
         pointToLayer: function(feature, latlng) {
+          // приоритет цвета в feature над цветом скрипта
+          let color = feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES.COLOR];
+          if (color == undefined) color = self.SCRIPT_GET_ITEM_COLOR(map_ind);
+
           let class_main = feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES.CLASS]??'';
           let class_sel  = feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._SEL_]?MAP_CONST.CLASS.SEL:'';
           let class_dop  = 'upper-markers';                                                // поднять маркеры над фигурами
-          const options  = {...feature.properties, 'class': class_main+' '+class_sel+' '+class_dop, };
-          return marker_get(latlng, self.SCRIPT_GET_ITEM_COLOR(map_ind), options, self.MAP_GET_ZOOM);
+          const classes  = {...feature.properties, 'class': class_main+' '+class_sel+' '+class_dop, };
+
+          return marker_get(latlng, color, classes, self.MAP_GET_ZOOM);
         },
 
 
         // стиль фигур
         style: function(feature) {
+          // приоритет цвета в feature над цветом скрипта
+          let color = feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES.COLOR];
+          if (color == undefined) color = self.SCRIPT_GET_ITEM_COLOR(map_ind);
+
           let classSel = feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._SEL_]?MAP_CONST.CLASS.SEL:'';
           return {
             weight:      2,
             opacity:     .5,
-            color:       self.SCRIPT_GET_ITEM_COLOR(map_ind),
+            color:       color,
             fillOpacity: .3,
-            fillColor:   feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._COLOR_],    // set in mixin: Color
+            fillColor:   feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._FILL_COLOR_],    // set in mixin: Color
             fillRule:    'evenodd',
             className:   classSel,
           };

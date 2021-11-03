@@ -115,7 +115,7 @@ export default {
         this.SCRIPT_GET_ITEM(this.options.hover_map_ind)
           .fc
           .features[this.options.hover_feature_ind]
-          .properties[MAP_ITEM.FC.FEATURES.PROPERTIES._COLOR_]:
+          .properties[MAP_ITEM.FC.FEATURES.PROPERTIES._FILL_COLOR_]:
         undefined;
       return {
         // выделить совпадение цвета фигуры и пункта легенды

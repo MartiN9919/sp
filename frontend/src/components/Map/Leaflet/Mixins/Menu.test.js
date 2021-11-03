@@ -124,9 +124,10 @@ export const MAP_TEST_ITEM_1 = {
       {
         "type": "Feature",
         "properties": {
-          "class": "line-engeneer_zagr_ograd hidden",
-          "hint": "line-engeneer_zagr_ograd hidden",
+          "class": "line-engeneer_zagr_ograd",
+          "hint": "line-engeneer_zagr_ograd",
           "date": "2021-05-04",
+          "color": "#888",
         },
         "geometry": {
           "type": "LineString",
