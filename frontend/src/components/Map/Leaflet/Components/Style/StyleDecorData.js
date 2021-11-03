@@ -24,8 +24,6 @@ const DATA = {
   ...STYLE_DATA_TEST_DECOR,
 }
 
-
-
 import { MAP_CONST, MAP_ITEM } from '@/components/Map/Leaflet/Lib/Const';
 export function get_decor_data(classes_str, index, color="gray", zoom=1, icon_properties={}) {
   let ret = [];
@@ -57,7 +55,10 @@ export function get_decor_data(classes_str, index, color="gray", zoom=1, icon_pr
       }
 
       // тип: стрелка
-      // ...
+      if (data[data_ind].symbol_type == 'arrow') {
+        if (data[data_ind].symbol_options.pathOptions.color == '{color}') data[data_ind].symbol_options.pathOptions.color = color;
+        data[data_ind].symbol = L.Symbol.arrowHead(data[data_ind].symbol_options);
+      }
 
       // удалить ставшие ненужными записи
       if (data[data_ind].symbol_type     != undefined) delete data[data_ind]['symbol_type'    ];
@@ -70,98 +71,3 @@ export function get_decor_data(classes_str, index, color="gray", zoom=1, icon_pr
   });
   return ret;
 }
-
-
-
-//     this.dat = {
-
-//       // Маркер обычный
-//       'mark': {
-//         offset: 10,
-//         repeat: 100,
-//         symbol: L.Symbol.marker(),
-//       },
-
-
-//       'marker_test': {
-
-//       },
-
-//     //   "marker": {
-//     //     "icon": "test",     // "mdi-flag mdi-spin", "fs-spec0", "pulse" (size: 12), "#0f0", "gold", "file_name" (size_w: 25, size_h: 41)
-//     //     "zoom": 2,
-//     //   },
-
-
-
-
-//       //
-//       // РАЗНОЕ ДЛЯ ПРИМЕРОВ
-//       //
-//       'test_mark_auto': {
-//         offset: 25,
-//         repeat: 120,
-//         symbol: L.Symbol.marker({
-//           rotate: false,
-//           markerOptions: {
-//             icon: icon_get(color, {class: 'icon-file-test2-30-40'}),
-//           },
-//         }),
-//       },
-
-//       'test_mark_iz2': {
-//         offset: 12,
-//         repeat: 25,
-//         symbol: L.Symbol.arrowHead({
-//           pixelSize: 15,
-//           polygon: false,
-//           pathOptions: { color: color, weight: 2, stroke: true },
-//         }),
-//       },
-
-
-//       // стрелки с окантовкой
-//       'test_arrow': {
-//         offset: 12,
-//         repeat: 25,
-//         symbol: L.Symbol.arrowHead({ pixelSize: 15, pathOptions: { color: color, weight: 2, stroke: true }, }),
-//       },
-
-//       // стрелки закрашенные
-//       'test_arrow2': {
-//         offset: 25,
-//         repeat: 50,
-//         symbol: L.Symbol.arrowHead({ pixelSize: 15, pathOptions: { color: color, fillOpacity: 1, weight: 0, }, }),
-//       },
-
-//       // стрелка в конце, для полигонов не подходит
-//       'test_arrow3': {
-//         offset: '100%',
-//         repeat: 0,
-//         symbol: L.Symbol.arrowHead({
-//           pixelSize: 15,
-//           polygon: false,
-//           pathOptions: {
-//             color: color,
-//             stroke: true,
-//           }
-//         }),
-//       },
-
-//       // штрих линия светло-серая
-//       'test2': {
-//         offset: 0,
-//         repeat: 10,
-//         symbol: L.Symbol.dash({
-//           pixelSize: 5,
-//           pathOptions: {
-//             color: '#000',
-//             weight: 1,
-//             opacity: 0.2
-//           },
-//         }),
-//       },
-
-//     }
-
-//   }

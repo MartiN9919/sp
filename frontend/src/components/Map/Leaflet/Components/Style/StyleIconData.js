@@ -19,8 +19,8 @@ const DATA = {
 
 import { MAP_CONST } from '@/components/Map/Leaflet/Lib/Const';
 let regexp_vb  = /<svg[^>]*viewBox\s*=\s*"\s*0\s*0\s*(?<width>\d+(?:\.\d+)?)\s*(?<height>\d+(?:\.\d+)?)\s*"/mi;
-export function get_icon_data(key, color="gray", zoom=1, text=undefined) {
-  let data = DATA[key];
+export function get_icon_data(icon_data_key, color="gray", zoom=1, text=undefined) {
+  let data = DATA[icon_data_key];
   if (data === undefined) return;
   if (text === undefined) text = '';
   let id   = 'icon_'+(new Date().getTime())+'_'+((Math.random()*1000000000)|0);

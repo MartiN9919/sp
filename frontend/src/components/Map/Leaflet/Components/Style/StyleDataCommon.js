@@ -42,7 +42,11 @@ export const STYLE_DATA_COMMON_ICON = {
 
 
 export const STYLE_DATA_COMMON_DECOR = {
-
+  // обычные маркеры
+  'line-standart': {
+    offset: 10, repeat: 100,
+    symbol_type: 'marker', symbol_options: { rotate: false, markerOptions: { icon: 'icon-svg-standart', }, },
+  },
 }
 
 
@@ -50,44 +54,107 @@ export const STYLE_DATA_COMMON_DECOR = {
 
 
 export const STYLE_DATA_COMMON_TEST = [
-      {
-        "type": "Feature",
-        "properties": {
-          "class": "icon-svg-standart",
-          "hint": "icon-svg-standart",
-          "date": "2021-01-02",
-          "zoom": false,
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [24.0,54.5]
-        },
-      },
-      {
-        "type": "Feature",
-        "properties": {
-          "class": "icon-svg-standart",
-          "hint": "icon-svg-standart",
-          "date": "2021-01-02",
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [24.5,54.5]
-        },
-      },
-      {
-        "type": "Feature",
-        "properties": {
-          "class": "icon-svg-point_detention_inside",
-          "text": '"detention"',
-          "hint": "icon-svg-point_detention_inside\ntest\nasdf asd fa sdf a sd fa sd f asd f as df a sd fa sd f asd f asd fa sd fa sdf asd",
-          "date": "2021-04-01",
-          "zoom": false,
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [25.0,54.5]
-        },
-      },
+  {
+    "type": "Feature",
+    "properties": {
+      "class": "line-standart line-text_lr_100 hatch-diagonal-1",
+      "hint": "line-standart line-text_lr_100 hatch-diagonal-1",
+      "text": "STOP",
+    },
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [25.0,55.5],
+          [27.5,56.25],
+          [31.0,55.5],
+          [25.0,55.5],
+        ]
+      ]
+    },
+  },
+
+  // иконка стандарт
+  {
+    "type": "Feature",
+    "properties": {
+      "class": "icon-svg-standart",
+      "hint": "icon-svg-standart",
+      "date": "2021-01-02",
+    },
+    "geometry": {
+      "type": "Point",
+      "coordinates": [24.0,54.5],
+    },
+  },
+  {
+    "type": "Feature",
+    "properties": {
+      "hint":  "class=undefined color=undefined",
+      "date":  "2021-01-04",
+      "zoom":  false,
+    },
+    "geometry": {
+      "type": "Point",
+      "coordinates": [24.5,54.5],
+    },
+  },
+  {
+    "type": "Feature",
+    "properties": {
+      "class": "icon-svg-standart",
+      "hint": "class=icon-svg-standart zoom=false",
+      "date": "2021-01-02",
+      "zoom": false,
+    },
+    "geometry": {
+      "type": "Point",
+      "coordinates": [25.0,54.5],
+    },
+  },
+  {
+    "type": "Feature",
+    "properties": {
+      "hint":  "class=undefined color='gold'",
+      "date":  "2021-01-04",
+      "color": "gold",
+      "zoom":  false,
+    },
+    "geometry": {
+      "type": "Point",
+      "coordinates": [25.5,54.5],
+    },
+  },
+  {
+    "type": "Feature",
+    "properties": {
+      "hint":  "class=undefined color='#8d0099'",
+      "date":  "2021-01-04",
+      "color": "#8d0099",
+      "zoom":  false,
+    },
+    "geometry": {
+      "type": "Point",
+      "coordinates": [26.0,54.5],
+    },
+  },
+
+
+
+
+  {
+    "type": "Feature",
+    "properties": {
+      "class": "icon-svg-point_detention_inside",
+      "text": '"detention"',
+      "hint": "icon-svg-point_detention_inside\ntest\nasdf asd fa sdf a sd fa sd f asd f as df a sd fa sd f asd f asd fa sd fa sdf asd",
+      "date": "2021-04-01",
+      "zoom": false,
+    },
+    "geometry": {
+      "type": "Point",
+      "coordinates": [24.0,54.75],
+    },
+  },
 
 ]

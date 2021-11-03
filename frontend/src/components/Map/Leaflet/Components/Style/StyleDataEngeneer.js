@@ -133,25 +133,6 @@ export const STYLE_DATA_ENGENEER_TEST = [
   {
     "type": "Feature",
     "properties": {
-      "class": "line-engeneer_zagr_ograd line-text_lr_100 hatch-diagonal-1",  // test_mark_auto
-      "hint": "line-engeneer_zagr_ograd line-text_lr_100 hatch-diagonal-1",
-      "text": "STOP",
-    },
-    "geometry": {
-      "type": "Polygon",
-      "coordinates": [
-        [
-          [25.0,55.5],
-          [27.5,56.25],
-          [31.0,55.5],
-          [25.0,55.5],
-        ]
-      ]
-    },
-  },
-  {
-    "type": "Feature",
-    "properties": {
       "class": "arrow-double-end line-engeneer_zagr_signal line-text_rl_fill_100 ant",
       "hint": "arrow-double-end line-engeneer_zagr_signal line-text_rl_fill_100 ant",
       "date": "2021-01-04",

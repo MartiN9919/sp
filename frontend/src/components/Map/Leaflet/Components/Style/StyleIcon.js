@@ -61,31 +61,14 @@ export function icon_get(icon_color=undefined, icon_properties={}, zoom_map=unde
 
   // остальные опции
   const text  = icon_properties[MAP_ITEM.FC.FEATURES.PROPERTIES.TEXT];          // иконка: надпись
-  const color = (icon_color ?? MAP_CONST.COLOR.DEFAULT_ICON).toLowerCase();     // иконка: цвет
+  const color =                                                                 // иконка: цвет, приоритет fc.prop.color перед цветом скрипта
+    ( icon_properties[MAP_ITEM.FC.FEATURES.PROPERTIES.COLOR] != undefined) ?
+      icon_properties[MAP_ITEM.FC.FEATURES.PROPERTIES.COLOR] :
+    ((icon_color ?? MAP_CONST.COLOR.DEFAULT_ICON).toLowerCase());
   const zoom  =                                                                 // иконка: масштаб
     (icon_properties[MAP_ITEM.FC.FEATURES.PROPERTIES.ZOOM] != undefined) ?
       ((icon_properties[MAP_ITEM.FC.FEATURES.PROPERTIES.ZOOM] !== false) ? icon_properties[MAP_ITEM.FC.FEATURES.PROPERTIES.ZOOM] : 1):
       ((zoom_map < MAP_CONST.CLASS.ICON.SVG_ZOOM_START) ? Math.pow(2.0, zoom_map-MAP_CONST.CLASS.ICON.SVG_ZOOM_START) : 1);
-
-
-  // SVG
-  if (icon_type == MAP_CONST.CLASS.ICON.SVG) {
-    if (classes_icon_list.length<1) return;
-    if (classes_icon_list[0].length<2) return;
-    let data = get_icon_data(classes_icon_list[0][1], color, zoom, text);
-    if (data == undefined) return;
-    let shadow = (icon_properties[MAP_ITEM.FC.FEATURES.PROPERTIES.SHADOW]!==false);
-    let top    = (icon_properties[MAP_ITEM.FC.FEATURES.PROPERTIES.TOP   ]===true);
-    return new L.DivIcon({
-      className:   classes_other_str+
-                   ((shadow)?' svg-shadow':'')+
-                   ((top   )?' svg-top'   :''),
-      iconSize:    [data.width,     data.height],
-      iconAnchor:  [data.anchor_dx, data.anchor_dy],                            // точка привязки svg относительно верхнего левого угла
-      popupAnchor: [1,             -data.height*1.1],
-      html:        data.svg,
-    });
-  }
 
 
   // FILE
@@ -153,18 +136,38 @@ export function icon_get(icon_color=undefined, icon_properties={}, zoom_map=unde
   }
 
 
-  // DEFAULT
-  let size_w = 25 * zoom|0;
-  let size_h = 41 * zoom|0;
-  return new L.Icon({
-      className:   classes_other_str,                                             // иначе сторонние классы не применятся
-      shadowUrl:   icon_file_path('shadow-marker'),
-      shadowSize:  [size_h, size_h],
-      iconUrl:     icon_file_path('blue'),
-      iconSize:    [size_w,     size_h],
-      iconAnchor:  [size_w/2|0, size_h],                                          // указатель: x-center, y-bottom
-      popupAnchor: [1,         -size_h*1.1],
+  // SVG (DEFAULT)
+  if (icon_type == MAP_CONST.CLASS.ICON.SVG) {
+    if (classes_icon_list.length<1) return;
+    if (classes_icon_list[0].length<2) return;
+    let data = get_icon_data(classes_icon_list[0][1], color, zoom, text);
+    if (data == undefined) return;
+    let shadow = (icon_properties[MAP_ITEM.FC.FEATURES.PROPERTIES.SHADOW]!==false);
+    let top    = (icon_properties[MAP_ITEM.FC.FEATURES.PROPERTIES.TOP   ]===true);
+    return new L.DivIcon({
+      className:   classes_other_str+
+                   ((shadow)?' svg-shadow':'')+
+                   ((top   )?' svg-top'   :''),
+      iconSize:    [data.width,     data.height],
+      iconAnchor:  [data.anchor_dx, data.anchor_dy],                            // точка привязки svg относительно верхнего левого угла
+      popupAnchor: [1,             -data.height*1.1],
+      html:        data.svg,
     });
+  }
+
+
+  // // DEFAULT
+  // let size_w = 25 * zoom|0;
+  // let size_h = 41 * zoom|0;
+  // return new L.Icon({
+  //     className:   classes_other_str,                                             // иначе сторонние классы не применятся
+  //     shadowUrl:   icon_file_path('shadow-marker'),
+  //     shadowSize:  [size_h, size_h],
+  //     iconUrl:     icon_file_path('blue'),
+  //     iconSize:    [size_w,     size_h],
+  //     iconAnchor:  [size_w/2|0, size_h],                                          // указатель: x-center, y-bottom
+  //     popupAnchor: [1,         -size_h*1.1],
+  //   });
 }
 
 

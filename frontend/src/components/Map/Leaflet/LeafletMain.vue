@@ -386,7 +386,7 @@ export default {
 
           let class_main = feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES.CLASS]??'';
           let class_sel  = feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._SEL_]?MAP_CONST.CLASS.SEL:'';
-          let class_dop  = 'upper-markers';                                                // поднять маркеры над фигурами
+          let class_dop  = 'upper-markers';                                                // поднять маркеры над фигурами-декораторами
           const classes  = {...feature.properties, 'class': class_main+' '+class_sel+' '+class_dop, };
 
           return marker_get(latlng, color, classes, self.MAP_GET_ZOOM);
