@@ -28,3 +28,7 @@
   -webkit-filter: drop-shadow( 1px 1px 1px rgba(0, 0, 0, .7));
   filter: drop-shadow( 1px 1px 1px rgba(0, 0, 0, .7));
 }
+/* поднять svg-объект над другими */
+.svg-top {
+  z-index: 999999 !important;
+}

@@ -1,6 +1,6 @@
 // РАСКРАСКА ПОЛИГОНА ОТ ЗНАЧЕНИЯ
-// вход:  fc.features[i].properties.value - значение определяет цвет полигона
-// выход: fc.features[i].properties.color - расчитанный цвет полигона
+// вход:  fc.features[i].properties[MAP_ITEM.FC.FEATURES.PROPERTIES.VALUE       ] - значение определяет цвет полигона
+// выход: fc.features[i].properties[MAP_ITEM.FC.FEATURES.PROPERTIES._FILL_COLOR_] - расчитанный цвет полигона
 
 
 import { mapGetters, mapActions, } from 'vuex';
@@ -18,7 +18,7 @@ export default {
   },
 
   methods: {
-    // ЗАПОЛНИТЬ fc.features[i].properties[MAP_ITEM.FC.FEATURES.PROPERTIES._COLOR_]
+    // ЗАПОЛНИТЬ fc.features[i].properties[MAP_ITEM.FC.FEATURES.PROPERTIES._FILL_COLOR_]
     data_normalize_color(map_item) {
       // данные на шине
       let color_green = this.color_green(map_item);
@@ -49,7 +49,7 @@ export default {
               break;
             }
           }
-          feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._COLOR_] = '#'+ret;    // записать цвет
+          feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._FILL_COLOR_] = '#'+ret;    // записать цвет
         }
 
         // построить легенду в MAP_ITEM._LEGEND_COLOR_
