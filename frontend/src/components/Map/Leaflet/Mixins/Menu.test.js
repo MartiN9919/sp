@@ -21,8 +21,8 @@ export const MAP_TEST_ITEM_1 = {
       {
         "type": "Feature",
         "properties": {
-          "class": "line-zagr_engeneer_zagr_ograd line-text_lr_100 hatch-diagonal-1",  // test_mark_auto
-          "hint": "line-zagr_engeneer_zagr_ograd line-text_lr_100 hatch-diagonal-1",
+          "class": "line-engeneer_zagr_ograd line-text_lr_100 hatch-diagonal-1",  // test_mark_auto
+          "hint": "line-engeneer_zagr_ograd line-text_lr_100 hatch-diagonal-1",
           "text": "STOP",
         },
         "geometry": {
@@ -119,6 +119,22 @@ export const MAP_TEST_ITEM_1 = {
             [24.0,57.0],
             [27.5,58.0],
             [32.0,57.0],
+          ]
+        },
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "class": "line-engeneer_zagr_ograd hidden",
+          "hint": "line-engeneer_zagr_ograd hidden",
+          "date": "2021-05-04",
+        },
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [24.0,57.5],
+            [27.5,58.5],
+            [32.0,57.5],
           ]
         },
       },

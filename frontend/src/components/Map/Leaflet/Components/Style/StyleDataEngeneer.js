@@ -53,7 +53,7 @@ export const STYLE_DATA_ENGENEER_ICON = {
     `,
   },
 
-  // Заграждение малозам -0-0-
+  // Заграждение малозам 0-0-0
   'engeneer_zagr_invisible': {
     anchor_dx: 16,
     anchor_dy: 5,
@@ -68,7 +68,7 @@ export const STYLE_DATA_ENGENEER_ICON = {
     `,
   },
 
-  // Забор оградительный х х х
+  // Забор оградительный х-х-х
   'engeneer_zagr_ograd': {
     anchor_dx: 15,
     anchor_dy: 15,
@@ -91,14 +91,14 @@ export const STYLE_DATA_ENGENEER_DECOR = {
     icon_properties: { shadow: false, },
   },
 
-  // Заграждение малозам -0-0-
+  // Заграждение малозам 0-0-0
   'line-engeneer_zagr_invisible': {
     offset: 8, repeat: 9,
     symbol_type: 'marker', symbol_options: { rotate: true, markerOptions: { icon: 'icon-svg-engeneer_zagr_invisible', }, },
     icon_properties: { shadow: false, },
   },
 
-  // Забор оградительный х х х
+  // Забор оградительный х-х-х
   'line-engeneer_zagr_ograd': {
     offset: 8, repeat: 30,
     symbol_type: 'marker', symbol_options: { rotate: true, markerOptions: { icon: 'icon-svg-engeneer_zagr_ograd', }, },
