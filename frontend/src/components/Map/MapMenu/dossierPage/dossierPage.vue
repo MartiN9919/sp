@@ -4,7 +4,7 @@
       <div class="params">
         <v-card v-for="param in selectedItem.params" :key="param.id + selectedItem.rec_id" tile class="mb-2">
           <v-hover v-if="getClassifierType(param)  === 'file_photo'" v-slot="{ hover }">
-            <v-carousel hide-delimiters show-arrows-on-hover :show-arrows="param.values.length !== 1" class="carousel">
+            <v-carousel hide-delimiters show-arrows-on-hover :show-arrows="param.values.length !== 1" height="200">
               <v-expand-transition>
                 <div v-show="hover && param.values.length !== 1" class="delimiters">
                   <v-dialog width="min-content" class="dialog">
@@ -126,10 +126,6 @@ export default {
 </script>
 
 <style scoped>
-.carousel >>> .v-image__image {
-  height: 200px;
-}
-
 .picture-classifier {
   position: absolute;
   left: 20px;
