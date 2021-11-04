@@ -26,6 +26,7 @@ class MonacoEditorWidget(forms.Textarea):
             'external/js/marked.min.js',
             'external/monaco-editor/min/vs/loader.js',
             'django_monaco_editor/js/editor.js',
+            'django_monaco_editor/js/resize.js',
         )
 
 

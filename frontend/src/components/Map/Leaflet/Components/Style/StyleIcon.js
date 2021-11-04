@@ -60,11 +60,12 @@ export function icon_get(icon_color=undefined, icon_properties={}, zoom_map=unde
   const classes_icon_str  = classes_icon_list.map((val) => val.join(MAP_CONST.CLASS.ICON.SEPARATOR)).join(' '); // 'mdi-flag mdi-spin' 'fs-spec0'
 
   // остальные опции
-  const text  = icon_properties.text;                                           // иконка: надпись
+  const text  = icon_properties[MAP_ITEM.FC.FEATURES.PROPERTIES.TEXT];          // иконка: надпись
   const color = (icon_color ?? MAP_CONST.COLOR.DEFAULT_ICON).toLowerCase();     // иконка: цвет
-  const zoom  = (icon_properties.zoom != undefined) ?                           // иконка: масштаб
-    ((icon_properties.zoom !== false) ? icon_properties.zoom : 1):
-    ((zoom_map < 6) ? Math.pow(2.0, zoom_map-6) : 1);
+  const zoom  =                                                                 // иконка: масштаб
+    (icon_properties[MAP_ITEM.FC.FEATURES.PROPERTIES.ZOOM] != undefined) ?
+      ((icon_properties[MAP_ITEM.FC.FEATURES.PROPERTIES.ZOOM] !== false) ? icon_properties[MAP_ITEM.FC.FEATURES.PROPERTIES.ZOOM] : 1):
+      ((zoom_map < MAP_CONST.CLASS.ICON.SVG_ZOOM_START) ? Math.pow(2.0, zoom_map-MAP_CONST.CLASS.ICON.SVG_ZOOM_START) : 1);
 
 
   // SVG
@@ -73,8 +74,12 @@ export function icon_get(icon_color=undefined, icon_properties={}, zoom_map=unde
     if (classes_icon_list[0].length<2) return;
     let data = get_icon_data(classes_icon_list[0][1], color, zoom, text);
     if (data == undefined) return;
+    let shadow = (icon_properties[MAP_ITEM.FC.FEATURES.PROPERTIES.SHADOW]!==false);
+    let top    = (icon_properties[MAP_ITEM.FC.FEATURES.PROPERTIES.TOP   ]===true);
     return new L.DivIcon({
-      className:   classes_other_str+' svg-shadow',
+      className:   classes_other_str+
+                   ((shadow)?' svg-shadow':'')+
+                   ((top   )?' svg-top'   :''),
       iconSize:    [data.width,     data.height],
       iconAnchor:  [data.anchor_dx, data.anchor_dy],                            // точка привязки svg относительно верхнего левого угла
       popupAnchor: [1,             -data.height*1.1],
@@ -85,7 +90,6 @@ export function icon_get(icon_color=undefined, icon_properties={}, zoom_map=unde
 
   // FILE
   if (icon_type == MAP_CONST.CLASS.ICON.FILE) {
-    if (icon_type != MAP_CONST.CLASS.ICON.FILE) { classes_icon_list = [[undefined, color]]; }
     let file   =  classes_icon_list[0][1];
     let size_w = (classes_icon_list[0][2] ?? 25) * zoom|0;
     let size_h = (classes_icon_list[0][3] ?? 41) * zoom|0;

@@ -14,20 +14,19 @@
 import 'leaflet-polylinedecorator'
 
 import { MAP_CONST, MAP_ITEM } from '@/components/Map/Leaflet/Lib/Const';
-import { get_feature_class, get_feature_coordinates } from '@/components/Map/Leaflet/Lib/LibFc';
+import { get_feature_class, get_feature_coordinates, set_feature_hint } from '@/components/Map/Leaflet/Lib/LibFc';
 import { dict_get } from '@/components/Map/Leaflet/Lib/Lib';
-import { DATA_PATTERN } from '@/components/Map/Leaflet/Components/Style/StylePatternData';
+import { get_decor_data } from '@/components/Map/Leaflet/Components/Style/StyleDecorData';
 //import { icon_file_path } from '@/components/Map/Leaflet/Components/Style/StyleIcon';
 
 import { findRealParent, propsBinder } from 'vue2-leaflet';
-
 
 const props = {
   fc: {
     type: Object,
     default: () => {},
   },
-  color: {
+  color: {                  // цвет скрипта, цвет фигуры имеет приоритет над цветом скрипта
     type: String,
     default: () => MAP_CONST.COLOR.DEFAULT_STYLE_PATH,
   },
@@ -39,7 +38,7 @@ const props = {
 };
 
 export default {
-  name: 'LStylePattern',
+  name: 'LStyleDecor',
   props,
   data() {
     return {
@@ -48,36 +47,46 @@ export default {
     }
   },
   mounted() {
-    const self        = this;
-    const features    = this.fc.features;
-    const obj_pattern = new DATA_PATTERN(this.color);
-    this.parent_obj   = findRealParent(this.$parent);
+    const self      = this;
+    const features  = this.fc.features;
+    this.parent_obj = findRealParent(this.$parent);
 
     this.ready = true;
 
     for(let ind=0; ind<features.length; ind++) {
-      let feature       = features[ind];
-      let geometry      = feature.geometry;
-      let geometry_type = geometry[MAP_ITEM.FC.FEATURES.GEOMETRY.TYPE];
+      let feature         = features[ind];
+      let geometry        = feature.geometry;
+      let geometry_type   = geometry[MAP_ITEM.FC.FEATURES.GEOMETRY.TYPE];
+      let color           = feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES.COLOR];
+      if (color == undefined) { color = this.color; }           // приоритет цвета фигуры над цветом скрипта
+      let icon_properties = {                                   // распространяем свойства фигуры на декорации
+      //[MAP_ITEM.FC.FEATURES.PROPERTIES.DATE  ]: feature.properties?.[MAP_ITEM.FC.FEATURES.PROPERTIES.DATE  ],
+      //[MAP_ITEM.FC.FEATURES.PROPERTIES.HINT  ]: feature.properties?.[MAP_ITEM.FC.FEATURES.PROPERTIES.HINT  ],
+        [MAP_ITEM.FC.FEATURES.PROPERTIES.TEXT  ]: feature.properties?.[MAP_ITEM.FC.FEATURES.PROPERTIES.TEXT  ],
+        [MAP_ITEM.FC.FEATURES.PROPERTIES.SHADOW]: feature.properties?.[MAP_ITEM.FC.FEATURES.PROPERTIES.SHADOW],
+      };
 
       // L.объекты
-      let l_obj         = get_feature_coordinates(feature, true);
+      let l_obj = get_feature_coordinates(feature, true);
       l_obj[MAP_CONST.TYPE_GEOMETRY.LINE   ] = l_obj[MAP_CONST.TYPE_GEOMETRY.LINE   ].map((val) => L.polyline(val));
       l_obj[MAP_CONST.TYPE_GEOMETRY.POLYGON] = l_obj[MAP_CONST.TYPE_GEOMETRY.POLYGON].map((val) => L.polygon (val));
 
-      // patterns на основании classes и color
-      let classes = get_feature_class(feature);
-      let patterns = obj_pattern.get(classes);
+      // patterns на основании classes_str и color
+      let classes_str = get_feature_class(feature);
+      let patterns    = get_decor_data(classes_str, ind, color, 1, icon_properties);
       if (patterns.length == 0) continue;
 
       // создать декорации
       function set_decorator(objects) {
         if (objects.length == 0) return;
-        const decorator = L.polylineDecorator(objects, { patterns: patterns, });
-        self.decorators.push(decorator);
-        L.DomEvent.on(decorator, self.$listeners);
-        propsBinder(self, decorator, props);
-        self.parent_obj.mapObject.addLayer(decorator, !self.visible);
+        const layer_decor = L.polylineDecorator(objects, { patterns: patterns, });
+
+        set_feature_hint(layer_decor, feature.properties, true);
+
+        self.decorators.push(layer_decor);
+        L.DomEvent.on(layer_decor, self.$listeners);
+        propsBinder(self, layer_decor, props);
+        self.parent_obj.mapObject.addLayer(layer_decor, !self.visible);
       }
       set_decorator(l_obj[MAP_CONST.TYPE_GEOMETRY.POLYGON]);
       set_decorator(l_obj[MAP_CONST.TYPE_GEOMETRY.LINE   ]);

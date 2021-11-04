@@ -1,5 +1,35 @@
 import { MAP_CONST, MAP_ITEM } from '@/components/Map/Leaflet/Lib/Const';
-import { dict_get } from '@/components/Map/Leaflet/Lib/Lib';
+import { dict_get, str_cut }   from '@/components/Map/Leaflet/Lib/Lib';
+
+
+
+/**
+ * Установить hint
+ * only_parent = true - устанавливать для вложенных слоев (GeometryCollection)
+ */
+export function set_feature_hint(layer, fc_properties, only_parent=false) {
+  let text = fc_properties[MAP_ITEM.FC.FEATURES.PROPERTIES.TEXT] ?? '';
+  let date = fc_properties[MAP_ITEM.FC.FEATURES.PROPERTIES.DATE] ?? '';
+  let hint = fc_properties[MAP_ITEM.FC.FEATURES.PROPERTIES.HINT] ?? '';
+  let val  =
+    ((text != '') ? ('<span style="font-weight: bold;background: #eee;width: 100%;display: inline-block;">'+str_cut(text, 100)+'</span><br>') : '')+
+    ((date != '') ? (date+'<br>') : '')+
+    str_cut(hint, 100).replace(/\n/, '<br>');
+  if (val == '') return;
+
+  function set_hint(layer_item) {
+    layer_item.bindTooltip('<div style="white-space: nowrap;">' + val + '</div>', {permanent: false, sticky: true, });
+  }
+  if ((only_parent==false) && (layer.hasOwnProperty('_layers'))) {
+    for(let tempLayer in layer._layers) { set_hint(layer._layers[tempLayer]); }
+  }
+  else {
+    set_hint(layer);
+  };
+}
+
+
+
 
 /**
  * Normalize a GeoJSON feature into a FeatureCollection.

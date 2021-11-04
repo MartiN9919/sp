@@ -59,7 +59,14 @@ def feature_collection_by_geometry(group_id, object_type, rec_id, keys, time_int
         else:
             if not objects[record[DAT_OBJ_ROW.ID]].get('params'):
                 objects[record[DAT_OBJ_ROW.ID]]['params'] = []
-            objects[record[DAT_OBJ_ROW.ID]]['params'].append({DAT_OBJ_ROW.KEY_ID: record[DAT_OBJ_ROW.KEY_ID],
+            old_params = [item for item in objects[record[DAT_OBJ_ROW.ID]]['params'] if
+                          item['key_id'] == record[DAT_OBJ_ROW.KEY_ID]]
+            if len(old_params) > 0:
+                old_params[0] = {DAT_OBJ_ROW.KEY_ID: record[DAT_OBJ_ROW.KEY_ID],
+                                                              DAT_OBJ_ROW.VAL: record[DAT_OBJ_ROW.VAL],
+                                                              DAT_OBJ_ROW.SEC: record[DAT_OBJ_ROW.SEC]}
+            else:
+                objects[record[DAT_OBJ_ROW.ID]]['params'].append({DAT_OBJ_ROW.KEY_ID: record[DAT_OBJ_ROW.KEY_ID],
                                                               DAT_OBJ_ROW.VAL: record[DAT_OBJ_ROW.VAL],
                                                               DAT_OBJ_ROW.SEC: record[DAT_OBJ_ROW.SEC]})
     temp = []
@@ -70,7 +77,7 @@ def feature_collection_by_geometry(group_id, object_type, rec_id, keys, time_int
             for param in objects[object].get('params', []):
                 params[get_key_by_id(param[DAT_OBJ_ROW.KEY_ID])[DAT_SYS_KEY.NAME]] = \
                     [param[DAT_OBJ_ROW.VAL], get_date_time_from_sec(param[DAT_OBJ_ROW.SEC])]
-                params['hint'] += param[DAT_OBJ_ROW.VAL] + '; '
+                params['hint'] += param[DAT_OBJ_ROW.VAL]
             if objects[object].get('type'):
                 params['class'] = objects[object]['type'][0]['val']
             if objects[object].get('text'):

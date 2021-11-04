@@ -1,290 +1,27 @@
+import { STYLE_DATA_FORCE_TEST      } from '@/components/Map/Leaflet/Components/Style/StyleDataForce';
+import { STYLE_DATA_CHECKPOINT_TEST } from '@/components/Map/Leaflet/Components/Style/StyleDataCheckpoint';
+import { STYLE_DATA_ENGENEER_TEST   } from '@/components/Map/Leaflet/Components/Style/StyleDataEngeneer';
+import { STYLE_DATA_LAYOUT_TEST     } from '@/components/Map/Leaflet/Components/Style/StyleDataLayout';
+import { STYLE_DATA_TEXT_TEST       } from '@/components/Map/Leaflet/Components/Style/StyleDataText';
+import { STYLE_DATA_COMMON_TEST     } from '@/components/Map/Leaflet/Components/Style/StyleDataCommon';
+import { STYLE_DATA_TEST_TEST       } from '@/components/Map/Leaflet/Components/Style/StyleDataTest';
+
 
 export const MAP_TEST_ITEM_1 = {
   //"id": 5,
   "name":  "Test 1",
   "hint":  "Это тест 1",
-  "color": "#F00", // "#FF000055", "green", не работает: rgba(255, 190, 218, 0.5)
-
-  "fc": {
-    // "style": {
-    //   "marker": {
-    //     "icon": "test",     // "mdi-flag mdi-spin", "fs-spec0", "pulse" (size: 12), "#0f0", "gold", "file_name" (size_w: 25, size_h: 41)
-    //     "zoom": 2,
-    //   },
-    //   "line": {
-    //     "class": "test_mark_auto mark_zabor_ograd arrow-double-end line_zagrad_signal_1",           // "mark_zabor_ograd",
-    //     //"class": "hidden", //"ant arrow-double-end dash-3",     // класс объекта (для установки стиля)
-    //   },
-    //   "polygon": {
-    //     "class": "mark_zabor_ograd hatch-diagonal-1",  //hatch-diagonal-1 line_zagrad_signal_1 test_mark_auto
-    //   },
-    // },
-
-
+  "color": "#F00",
+  "fc":    {
     "type": "FeatureCollection",
     "features": [
-      {
-        "type": "Feature",
-        "properties": {
-          "class": "mark_zabor_ograd hatch-diagonal-1",  //hatch-diagonal-1 line_zagrad_signal_1 test_mark_auto
-          "hint": "Подсказка 1",
-        },
-        "geometry": {
-          "type": "Polygon",
-          "coordinates": [
-            [
-              [23.503812450763203,53.969066992023016],
-              [23.767941692759162,53.305836099082995],
-              [24.917680746153298,53.435614938642495],
-              [23.503812450763203,53.969066992023016],
-            ]
-          ]
-        },
-      },
-      {
-        "type": "Feature",
-        "properties": {
-          "hint": "Подсказка 2",
-          "date": "2021-01-05 09:00",
-        },
-        "geometry": {
-          "type": "Polygon",
-          "coordinates": [
-            [
-              [24.917680746153298,54.83722712988182],
-              [24.49951171875,54.31011433916155],
-              [23.840332031250004,54.87660665410869],
-              [24.917680746153298,54.83722712988182],
-            ]
-          ]
-        },
-      },
-      {
-        "type": "Feature",
-        "properties": {
-          "class": "test_mark_auto arrow-double-end line_zagrad_signal_1 ant",
-          "hint": "Подсказка 3-1",
-          "date": "2021-01-04",
-        },
-        "geometry": {
-          "type": "LineString",
-          "coordinates": [
-            [32.02514648437501,54.7943516039205],
-            [27.608642578125004,53.904338156274704],
-            [23.70849609375,52.0862573323384],
-          ]
-        },
-      },
-      {
-        "type": "Feature",
-        "properties": {
-          "class": "line_border_1 hidden",
-          "hint": "Подсказка 3-2",
-          "date": "2021-01-04",
-        },
-        "geometry": {
-          "type": "LineString",
-          "coordinates": [
-            [22.939453125,54.09806018306312],
-            [23.829345703125004,53.69020141273198],
-            [27.605584208817955,53.88673288280922],
-          ]
-        },
-      },
-      {
-        "type": "Feature",
-        "properties": {
-          "class": "icon-mdi-flag sss icon-mdi-spin tst",
-          "hint": "Demo",
-          "date": "2021-01-03",
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [35,53.0]
-        },
-      },
-      {
-        "type": "Feature",
-        "properties": {
-          "class": "icon-svg-standart",
-          "hint": "icon-svg-standart",
-          "date": "2021-01-02",
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [25.5,52.9]
-        },
-      },
-      {
-        "type": "Feature",
-        "properties": {
-          "class": "icon-svg-checkpoint_simplified",
-          "text":  '"Леший"',
-          "hint": "icon-svg-checkpoint_simplified",
-          "date": "2021-01-02",
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [23.5,53.9]
-        },
-      },
-      {
-        "type": "Feature",
-        "properties": {
-          "class": "icon-svg-checkpoint_flyer",
-          "text":  '"Высокое"',
-          "hint": "icon-svg-checkpoint_flyer",
-          "date": "2021-01-01",
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [25.7,54.2],
-        },
-      },
-      {
-        "type": "Feature",
-        "properties": {
-          "class": "icon-svg-checkpoint_auto",
-          "text":  '"Молодечненское"',
-          "hint": "icon-svg-checkpoint_auto",
-          "date": "2021-01-01",
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [23.7,53.2]
-        },
-      },
-      {
-        "type": "Feature",
-        "properties": {
-          "class": "icon-svg-checkpoint_rail",
-          "text":  '"Стальное"',
-          "hint": "icon-svg-checkpoint_rail",
-          "date": "2021-01-01",
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [28.7,55.9]
-        },
-      },
-      {
-        "type": "Feature",
-        "properties": {
-          "class": "icon-svg-control",
-          "zoom":  false,
-          "text":  '130 пого',
-          "hint":  "icon-svg-control",
-          "date":  "2021-01-01",
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [27.5,55.1]
-        },
-      },
-      {
-        "type": "Feature",
-        "properties": {
-          "class": "icon-svg-ops",
-          "text":  '"Прудок"',
-          "hint":  "icon-svg-ops",
-          "date":  "2021-01-01",
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [27.7,53.2]
-        },
-      },
-      {
-        "type": "Feature",
-        "properties": {
-          "class": "icon-svg-outpost",
-          "text": "10",
-          "hint": "icon-svg-outpost",
-          "date": "2021-01-01",
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [23.7, 52.2]
-        },
-      },
-      {
-        "type": "Feature",
-        "properties": {
-          "class": "icon-svg-post",
-          "text": "12",
-          "hint": "icon-svg-post",
-          "date": "2021-01-01",
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [25.7,52.0]
-        },
-      },
-      {
-        "type": "Feature",
-        "properties": {
-          "class": "icon-svg-post_temp",
-          "text": "15",
-          "hint": "icon-svg-post_temp",
-          "date": "2021-01-01",
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [30.5,52.1]
-        },
-      },
-      {
-        "type": "Feature",
-        "properties": {
-          "class": "icon-svg-post_control",
-          "text": '"Зубренок"',
-          "hint": "icon-svg-post_control",
-          "date": "2021-01-01",
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [27.5,51.6]
-        },
-      },
-      {
-        "type": "Feature",
-        "properties": {
-          "class": "icon-svg-border_sign",
-          "text": "1234",
-          "hint": "icon-svg-border_sign",
-          "date": "2021-03-01",
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [32.5,53.5]
-        },
-      },
-      {
-        "type": "Feature",
-        "properties": {
-          "class": "icon-svg-border_sign",
-          "text": "1235",
-          // "hint": "icon-svg-border_sign",
-          "date": "2021-02-01",
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [32.5,53.0]
-        },
-      },
-      {
-        "type": "Feature",
-        "properties": {
-          "class": "icon-svg-detention",
-          "text": '"detention"',
-          "hint": "icon-svg-detention\ntest\nasdf asd fa sdf a sd fa sd f asd f as df a sd fa sd f asd f asd fa sd fa sdf asd",
-          "date": "2021-04-01",
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [31.5,53.6]
-        },
-      },
+      ...STYLE_DATA_FORCE_TEST,
+      ...STYLE_DATA_CHECKPOINT_TEST,
+      ...STYLE_DATA_ENGENEER_TEST,
+      ...STYLE_DATA_LAYOUT_TEST,
+      ...STYLE_DATA_TEXT_TEST,
+      ...STYLE_DATA_COMMON_TEST,
+      ...STYLE_DATA_TEST_TEST,
     ],
   }
 };
@@ -342,7 +79,7 @@ export const MAP_TEST_ITEM_2 = {
         },
         "geometry": {
           "type": "Point",
-          "coordinates": [25.5,52.9]
+          "coordinates": [24.5,53.25]
         },
       },
 

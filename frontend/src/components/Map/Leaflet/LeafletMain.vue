@@ -3,7 +3,7 @@
     style="height: 100%; width: 100%;"
     >
 
-    <!-- ДЕКОРАТОР ФИГУР: SVG -->
+    <!-- SVG DEFS, STYLE -->
     <l-style-svg/>
 
     <l-map
@@ -42,8 +42,8 @@
           />
         </l-marker-cluster>
 
-        <!-- ДЕКОРАТОР ФИГУР: PATTERN -->
-        <l-style-pattern
+        <!-- ДЕКОРАТОР ФИГУР -->
+        <l-style-decor
           :fc="data_normalize(map_ind, map_item)"
           :color="SCRIPT_GET_ITEM_COLOR(map_ind)"
         />
@@ -122,8 +122,7 @@ import Vue2LeafletMarkerCluster from 'vue2-leaflet-markercluster';
 import LControlPolylineMeasure  from 'vue2-leaflet-polyline-measure';
 
 import { MAP_CONST, MAP_ITEM }  from '@/components/Map/Leaflet/Lib/Const';
-import { str_cut }              from '@/components/Map/Leaflet/Lib/Lib';
-import { get_feature_class }    from '@/components/Map/Leaflet/Lib/LibFc';
+import { get_feature_class, set_feature_hint } from '@/components/Map/Leaflet/Lib/LibFc';
 import {
   icon_ini,
   marker_get,
@@ -132,7 +131,7 @@ import {
 
 import StyleSvg         from '@/components/Map/Leaflet/Components/Style/StyleSvg';
 import { classes_name_correct } from '@/components/Map/Leaflet/Components/Style/StyleSvgData';
-import StylePattern     from '@/components/Map/Leaflet/Components/Style/StylePattern';
+import StyleDecor       from '@/components/Map/Leaflet/Components/Style/StyleDecor';
 
 import                       '@/components/Map/Leaflet/Components/Style/StyleIconPulse';
 import EditorMap        from '@/components/Map/Leaflet/Components/EditorMap';
@@ -183,7 +182,7 @@ export default {
     LIcon,
     'l-marker-cluster': Vue2LeafletMarkerCluster,
     'l-style-svg':      StyleSvg,
-    'l-style-pattern':  StylePattern,
+    'l-style-decor':    StyleDecor,
     LControlPolylineMeasure,
 
     EditorMap,
@@ -367,30 +366,7 @@ export default {
           });
 
           // подсказка
-          if (self.MAP_GET_HINT) {
-            let text = feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES.TEXT] ?? '';
-            let date = feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES.DATE] ?? '';
-            let hint = feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES.HINT] ?? '';
-            let val  =
-              ((text != '') ? ('<span style="font-weight: bold;background: #eee;width: 100%;display: inline-block;">'+str_cut(text, 100)+'</span><br>') : '')+
-              ((date != '') ? (date+'<br>') : '')+
-              str_cut(hint, 100).replace(/\n/, '<br>');
-            if (val !== '') {
-              if(layer.hasOwnProperty('_layers')) {
-                for(let tempLayer in layer._layers) {
-                  layer._layers[tempLayer].bindTooltip('<div style="white-space: nowrap;">' + val + '</div>', {
-                    permanent: false,
-                    sticky: true,
-                  });
-                }
-              }
-              else
-                layer.bindTooltip('<div style="white-space: nowrap;">' + val + '</div>', {
-                  permanent: false,
-                  sticky: true,
-                });
-            }
-          }
+          if (self.MAP_GET_HINT) { set_feature_hint(layer, feature.properties); }
 
           // класс для стилей линий и полигонов
           let classes_str = get_feature_class(feature);
@@ -404,23 +380,32 @@ export default {
 
         // стиль маркеров
         pointToLayer: function(feature, latlng) {
+          // приоритет цвета в feature над цветом скрипта
+          let color = feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES.COLOR];
+          if (color == undefined) color = self.SCRIPT_GET_ITEM_COLOR(map_ind);
+
           let class_main = feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES.CLASS]??'';
           let class_sel  = feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._SEL_]?MAP_CONST.CLASS.SEL:'';
           let class_dop  = 'upper-markers';                                                // поднять маркеры над фигурами
-          const options  = {...feature.properties, 'class': class_main+' '+class_sel+' '+class_dop, };
-          return marker_get(latlng, self.SCRIPT_GET_ITEM_COLOR(map_ind), options, self.MAP_GET_ZOOM);
+          const classes  = {...feature.properties, 'class': class_main+' '+class_sel+' '+class_dop, };
+
+          return marker_get(latlng, color, classes, self.MAP_GET_ZOOM);
         },
 
 
         // стиль фигур
         style: function(feature) {
+          // приоритет цвета в feature над цветом скрипта
+          let color = feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES.COLOR];
+          if (color == undefined) color = self.SCRIPT_GET_ITEM_COLOR(map_ind);
+
           let classSel = feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._SEL_]?MAP_CONST.CLASS.SEL:'';
           return {
             weight:      2,
             opacity:     .5,
-            color:       self.SCRIPT_GET_ITEM_COLOR(map_ind),
+            color:       color,
             fillOpacity: .3,
-            fillColor:   feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._COLOR_],    // set in mixin: Color
+            fillColor:   feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._FILL_COLOR_],    // set in mixin: Color
             fillRule:    'evenodd',
             className:   classSel,
           };
