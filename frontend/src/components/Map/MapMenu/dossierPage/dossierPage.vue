@@ -3,15 +3,30 @@
     <div class="content" v-if="selectedItem">
       <div class="params">
         <v-card v-for="param in selectedItem.params" :key="param.id + selectedItem.rec_id" tile class="mb-2">
-          <v-carousel v-if="getClassifierType(param)  === 'file_photo'" :show-arrows="param.values.length !== 1" class="carousel" height="200">
-            <div class="picture-classifier">{{ getClassifierTitle(param) }}</div>
-            <v-dialog v-for="(v, key) in param.values" :key="key" width="min-content" class="dialog">
-              <template v-slot:activator="{ on, attrs }">
-                <v-carousel-item v-on="on" :src="getFile(v.value)"></v-carousel-item>
-              </template>
-              <v-img :src="getFile(v.value)"></v-img>
-            </v-dialog>
-          </v-carousel>
+          <v-hover v-if="getClassifierType(param)  === 'file_photo'" v-slot="{ hover }">
+            <v-carousel hide-delimiters show-arrows-on-hover :show-arrows="param.values.length !== 1" class="carousel">
+              <v-expand-transition>
+                <div v-show="hover && param.values.length !== 1" class="delimiters">
+                  <v-dialog width="min-content" class="dialog">
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-btn text v-on="on" width="100%">
+                        Посмотреть все
+                        <v-icon right>mdi-image-multiple</v-icon>
+                      </v-btn>
+                    </template>
+                      <v-img v-for="(v, key) in param.values" :key="key" :src="getFile(v.value)"></v-img>
+                  </v-dialog>
+                </div>
+              </v-expand-transition>
+              <div class="picture-classifier">{{ getClassifierTitle(param) }}</div>
+              <v-dialog v-for="(v, key) in param.values" :key="key" width="min-content" class="dialog">
+                <template v-slot:activator="{ on, attrs }">
+                  <v-carousel-item v-on="on" :src="getFile(v.value)"></v-carousel-item>
+                </template>
+                <v-img :src="getFile(v.value)"></v-img>
+              </v-dialog>
+            </v-carousel>
+          </v-hover>
           <div v-else class="d-flex justify-space-between">
             <v-card-title style="word-break: inherit">{{ getClassifierTitle(param) }}</v-card-title>
             <v-card-text class="py-1 text-end d-flex flex-column justify-center" style="width: max-content">
@@ -64,9 +79,7 @@ export default {
         },
       ]
   }),
-  computed: {
-    ...mapGetters(['SCRIPT_GET_ITEM_SEL', 'baseClassifier']),
-  },
+  computed: mapGetters(['SCRIPT_GET_ITEM_SEL', 'baseClassifier']),
   methods: {
     ...mapActions(['getObjectFromServer', 'setEditableObject', 'addObjectToGraph']),
     getFile(link) {
@@ -89,12 +102,12 @@ export default {
     },
     addToGraph() {
       router.push({name: 'Graph'})
-        .then(() => {
-          this.addObjectToGraph({
-            objectId: this.selectedItem.object_id,
-            recId: this.selectedItem.rec_id
-          })
+      .then(() => {
+        this.addObjectToGraph({
+          objectId: this.selectedItem.object_id,
+          recId: this.selectedItem.rec_id
         })
+      })
     },
   },
   watch: {
@@ -123,6 +136,18 @@ export default {
   z-index: 1;
   color: white;
   text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+}
+
+.delimiters {
+  position: absolute;
+  bottom: 0;
+  z-index: 1;
+  height: min-content;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .dialog {
