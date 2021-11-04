@@ -41,7 +41,7 @@ def aj_download_condense_image(request):
     new_height = height/(width/new_width)
     resized_image = original_image.resize((int(new_width), int(new_height)))
     temp_file = TemporaryFile()
-    resized_image.save(temp_file, "jpeg")
+    resized_image.save(temp_file, "png")
     temp_file.seek(0)
     return FileResponse(temp_file)
 
