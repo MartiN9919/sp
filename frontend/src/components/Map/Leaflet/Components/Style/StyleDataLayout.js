@@ -19,6 +19,19 @@ export const ICON = {
 
 
 export const DECOR = {
+  // линия _ . _ произвольного цвета
+  'line_layout_1': [
+    { offset: 12, repeat: 25, symbol_type: 'dash', symbol_options: { pixelSize: 10, pathOptions: { color: '{color}', weight: 2, }, }, },
+    { offset: 0,  repeat: 25, symbol_type: 'dash', symbol_options: { pixelSize: 0,  pathOptions: { color: '{color}', }, }, },
+  ],
+
+  // линия _ .. _ произвольного цвета
+  'line_layout_2': [
+    { offset: 18, repeat: 30, symbol_type: 'dash', symbol_options: { pixelSize: 10, pathOptions: { color: '{color}', weight: 2, }, }, },
+    { offset: 0,  repeat: 30, symbol_type: 'dash', symbol_options: { pixelSize: 0,  pathOptions: { color: '{color}', }, }, },
+    { offset: 5,  repeat: 30, symbol_type: 'dash', symbol_options: { pixelSize: 0,  pathOptions: { color: '{color}', }, }, },
+  ],
+
   // Госграница
   // class="hidden" для основной линии
   'line_layout_border': { offset: 0, repeat: 31, symbol_type: 'marker', symbol_options: { rotate: true, markerOptions: { icon: 'icon-svg-layout_border', }, }, icon_properties: { shadow: 'red', }, },
@@ -68,8 +81,8 @@ export const TEST = [
   {
     "type": "Feature",
     "properties": {
-      "class": "line_layout_border_1 hidden",
-      "hint": "line_layout_border_1 hidden",
+      "class": "line_layout_2 hidden",
+      "hint": "line_layout_2 hidden",
       "date": "2021-01-04",
     },
     "geometry": {
