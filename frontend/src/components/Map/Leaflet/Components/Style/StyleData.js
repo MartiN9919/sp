@@ -45,7 +45,7 @@ const DATA_SVG = {
  *
  */
 let regexp_vb  = /<svg[^>]*viewBox\s*=\s*"\s*0\s*0\s*(?<width>\d+(?:\.\d+)?)\s*(?<height>\d+(?:\.\d+)?)\s*"/mi;
-export function get_style_data_icon(icon_data_key, color="gray", zoom=1, text=undefined) {
+export function get_style_data_icon(icon_data_key, color=MAP_CONST.COLOR.DEFAULT_STYLE_ICON, zoom=1, text=undefined) {
   let data = DATA_ICON[icon_data_key];
   if (data === undefined) return;
   if (text === undefined) text = '';
@@ -78,7 +78,7 @@ export function get_style_data_icon(icon_data_key, color="gray", zoom=1, text=un
  * offset - смещение первого маркера от начала, можно в %: '100%'
  * repeat - смещение, через которое повторить маркер, можно в %: '50%'
  */
-export function get_style_data_decor(classes_str, index, color="gray", zoom=1, icon_properties={}) {
+export function get_style_data_decor(classes_str, index, color=MAP_CONST.COLOR.DEFAULT_STYLE_PATH, zoom=1, icon_properties={}) {
   let ret = [];
   let classes_list = classes_str.trim().replace(/\s+/g, ' ').split(' ');  // убрать лишние пробелы
   classes_list = [...new Set(classes_list)];                              // исключить повторы
@@ -134,7 +134,7 @@ export function get_style_data_decor(classes_str, index, color="gray", zoom=1, i
 // список классов в словарь строк style, defs
 // индекс item в state.selectedTemplate.activeAnalysts
 // return {style: '...', defs: '...'}
-export function get_style_data_svg(classes_str, index, color="gray") {
+export function get_style_data_svg(classes_str, index, color=MAP_CONST.COLOR.DEFAULT_STYLE_PATH) {
   let ret = {style: '', defs: ''};
   let classes_list = classes_str.trim().replace(/\s+/g, ' ').split(' ');  // убрать лишние пробелы
   classes_list = [...new Set(classes_list)];                              // исключить повторы

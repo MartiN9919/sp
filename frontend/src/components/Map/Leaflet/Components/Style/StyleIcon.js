@@ -64,7 +64,7 @@ export function icon_get(icon_color=undefined, icon_properties={}, zoom_map=unde
   const color =                                                                 // иконка: цвет, приоритет fc.prop.color перед цветом скрипта
     ( icon_properties[MAP_ITEM.FC.FEATURES.PROPERTIES.COLOR] != undefined) ?
       icon_properties[MAP_ITEM.FC.FEATURES.PROPERTIES.COLOR] :
-    ((icon_color ?? MAP_CONST.COLOR.DEFAULT_ICON).toLowerCase());
+    ((icon_color ?? MAP_CONST.COLOR.DEFAULT_STYLE_ICON).toLowerCase());
   const zoom  =                                                                 // иконка: масштаб
     (icon_properties[MAP_ITEM.FC.FEATURES.PROPERTIES.ZOOM] != undefined) ?
       ((icon_properties[MAP_ITEM.FC.FEATURES.PROPERTIES.ZOOM] !== false) ? icon_properties[MAP_ITEM.FC.FEATURES.PROPERTIES.ZOOM] : 1):
