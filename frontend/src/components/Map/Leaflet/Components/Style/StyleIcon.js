@@ -142,12 +142,12 @@ export function icon_get(icon_color=undefined, icon_properties={}, zoom_map=unde
     if (classes_icon_list[0].length<2) return;
     let data = get_icon_data(classes_icon_list[0][1], color, zoom, text);
     if (data == undefined) return;
-    let shadow = (icon_properties[MAP_ITEM.FC.FEATURES.PROPERTIES.SHADOW]!==false);
-    let top    = (icon_properties[MAP_ITEM.FC.FEATURES.PROPERTIES.TOP   ]===true);
+    // let shadow =  (icon_properties[MAP_ITEM.FC.FEATURES.PROPERTIES.SHADOW] !== false);
+    let class_top    =  (icon_properties[MAP_ITEM.FC.FEATURES.PROPERTIES.TOP   ] ===  true) ? ' svg-top' : '';
+    let class_shadow =  (icon_properties[MAP_ITEM.FC.FEATURES.PROPERTIES.SHADOW] ==  'red') ? ' svg-shadow-red' :
+                       ((icon_properties[MAP_ITEM.FC.FEATURES.PROPERTIES.SHADOW] !== false) ? ' svg-shadow'     : '');
     return new L.DivIcon({
-      className:   classes_other_str+
-                   ((shadow)?' svg-shadow':'')+
-                   ((top   )?' svg-top'   :''),
+      className:   classes_other_str+class_shadow+class_top,
       iconSize:    [data.width,     data.height],
       iconAnchor:  [data.anchor_dx, data.anchor_dy],                            // точка привязки svg относительно верхнего левого угла
       popupAnchor: [1,             -data.height*1.1],

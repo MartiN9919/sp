@@ -1,6 +1,17 @@
 // РАЗМЕТКА
 export const STYLE_DATA_LAYOUT_ICON = {
-
+  // Госграница
+  'layout_border': {
+    anchor_dx: 10,
+    anchor_dy: 25,
+    zoom:      .8,
+    svg: `
+      <svg width={width} height={height} viewBox="0 0 40 70">
+        <path style="fill:none;stroke:#444;stroke-width:8;" d="M 0,2 H 20 M 10,0 V 50 M 0,48 h 20"/>
+        <circle style="fill:#444" cx="10" cy="65" r="5" />
+      </svg>
+    `,
+  },
 }
 
 
@@ -8,6 +19,16 @@ export const STYLE_DATA_LAYOUT_ICON = {
 
 
 export const STYLE_DATA_LAYOUT_DECOR = {
+  // Госграница
+  // class="hidden" для основной линии
+  'line_layout_border': [
+    {
+      offset: 0, repeat: 31,
+      symbol_type: 'marker', symbol_options: { rotate: true, markerOptions: { icon: 'icon-svg-layout_border', }, },
+      icon_properties: { shadow: 'red', },
+    },
+  ],
+
   // Рубеж охраны 1 _ . _
   // class="hidden" для основной линии
   'line_layout_border_1': [
@@ -29,6 +50,22 @@ export const STYLE_DATA_LAYOUT_DECOR = {
 
 
 export const STYLE_DATA_LAYOUT_TEST = [
+  {
+    "type": "Feature",
+    "properties": {
+      "class": "line_layout_border hidden",
+      "hint": "line_layout_border hidden",
+      "date": "2021-01-08",
+    },
+    "geometry": {
+      "type": "LineString",
+      "coordinates": [
+        [24.0,55.75],
+        [27.5,56.75],
+        [32.0,55.75],
+      ]
+    },
+  },
   {
     "type": "Feature",
     "properties": {
