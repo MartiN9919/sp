@@ -2,7 +2,7 @@ export const STYLE_DATA_ENGENEER_ICON = {
   'engineer_border_sign': {
     anchor_dx: 100,
     anchor_dy: 50.,
-    zoom:      .5,
+    zoom:      1.,   // .5;
     svg: `
       <svg width={width} height={height} viewBox="0 0 200 125">
         <circle style="fill:#fff;stroke:#000;stroke-width:4" cx="100" cy="50" r="23"/>
@@ -16,7 +16,7 @@ export const STYLE_DATA_ENGENEER_ICON = {
   'engineer_video': {
     anchor_dx: 100,
     anchor_dy: 20.,
-    zoom:      .5,
+    zoom:      .8,  // .5
     svg: `
       <svg width={width} height={height} viewBox="0 0 200 95">
         <rect style="fill:#fff;stroke:#000;stroke-width:2" width="70" height="40" x="60" y="1"/>
