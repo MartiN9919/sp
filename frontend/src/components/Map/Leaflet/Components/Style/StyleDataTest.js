@@ -50,6 +50,7 @@ export const DECOR = {
 export const SVG = {
   // стрелка: <=>
   'arrow-double-end': {
+    zoom: 4,
     style: '{class} { marker-end: url(#{id}); }',
     defs: `
       <marker id="{id}" viewBox="0 0 50 100" fill="{color}" orient="auto" markerUnits='userSpaceOnUse' markerWidth='101' markerHeight='33' refX='0' refY='16.5' opacity='.5'>

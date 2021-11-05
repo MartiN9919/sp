@@ -160,6 +160,7 @@ export const TEST = [
       "hint": "arrow-double-end line-engeneer_zagr_signal line-text_lr_300 ant",
       "date": "2021-01-04",
       "text": "C-120",
+      "zoom": 5,
     },
     "geometry": {
       "type": "LineString",

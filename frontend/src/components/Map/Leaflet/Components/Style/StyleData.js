@@ -29,6 +29,12 @@ const DATA_DECOR = {
   ...DATA_TEST.DECOR,
 }
 
+/* СПИСКИ ДЕКОРАТОРОВ ДЛЯ ЛИНИЙ И ГРАНИЦ ПОЛИГОНОВ
+ * key - название класса, указывается в MAP_ITEM.FC.FEATURES.PROPERTIES.CLASS
+ * color - подставляется автоматически
+ * offset - смещение первого маркера от начала, можно в %: '100%'
+ * repeat - смещение, через которое повторить маркер, можно в %: '50%'
+ */
 const DATA_SVG = {
   ...DATA_FORCE.SVG,
   ...DATA_CHECKPOINT.SVG,
@@ -44,12 +50,12 @@ const DATA_SVG = {
  * ICON
  *
  */
-let regexp_vb  = /<svg[^>]*viewBox\s*=\s*"\s*0\s*0\s*(?<width>\d+(?:\.\d+)?)\s*(?<height>\d+(?:\.\d+)?)\s*"/mi;
+const regexp_vb  = /<svg[^>]*viewBox\s*=\s*"\s*0\s*0\s*(?<width>\d+(?:\.\d+)?)\s*(?<height>\d+(?:\.\d+)?)\s*"/mi;
 export function get_style_data_icon(icon_data_key, color=MAP_CONST.COLOR.DEFAULT_STYLE_ICON, zoom=1, text=undefined) {
-  let data = DATA_ICON[icon_data_key];
+  const data = DATA_ICON[icon_data_key];
   if (data === undefined) return;
   if (text === undefined) text = '';
-  let id   = 'icon_'+(new Date().getTime())+'_'+((Math.random()*1000000000)|0);
+  const id = 'icon_'+(new Date().getTime())+'_'+((Math.random()*1000000000)|0);
   let svg  = JSON.parse(JSON.stringify(data.svg)).replace(/{color}/g, color).replace(/{text}/g, text).replace(/{id}/g, id);
   let svg_size   = svg.match(regexp_vb)?.groups;
   let svg_width  = svg_size?.width;
@@ -71,12 +77,7 @@ export function get_style_data_icon(icon_data_key, color=MAP_CONST.COLOR.DEFAULT
 
 /*
  * DECOR
- *
- * СПИСКИ ДЕКОРАТОРОВ ДЛЯ ЛИНИЙ И ГРАНИЦ ПОЛИГОНОВ
- * key - название класса, указывается в MAP_ITEM.FC.FEATURES.PROPERTIES.CLASS
- * color - подставляется автоматически
- * offset - смещение первого маркера от начала, можно в %: '100%'
- * repeat - смещение, через которое повторить маркер, можно в %: '50%'
+ * zoom - пока не используется
  */
 export function get_style_data_decor(classes_str, index, color=MAP_CONST.COLOR.DEFAULT_STYLE_PATH, zoom=1, icon_properties={}) {
   let ret = [];
@@ -134,7 +135,7 @@ export function get_style_data_decor(classes_str, index, color=MAP_CONST.COLOR.D
 // список классов в словарь строк style, defs
 // индекс item в state.selectedTemplate.activeAnalysts
 // return {style: '...', defs: '...'}
-export function get_style_data_svg(classes_str, index, color=MAP_CONST.COLOR.DEFAULT_STYLE_PATH) {
+export function get_style_data_svg(classes_str, index, color=MAP_CONST.COLOR.DEFAULT_STYLE_PATH, zoom=1) {
   let ret = {style: '', defs: ''};
   let classes_list = classes_str.trim().replace(/\s+/g, ' ').split(' ');  // убрать лишние пробелы
   classes_list = [...new Set(classes_list)];                              // исключить повторы
@@ -146,6 +147,8 @@ export function get_style_data_svg(classes_str, index, color=MAP_CONST.COLOR.DEF
     if (data === undefined) return;
     let data_style = (data.style)?JSON.parse(JSON.stringify(data.style)):undefined;
     let data_defs  = (data.defs )?JSON.parse(JSON.stringify(data.defs)) :undefined;
+  //console.log(data.zoom)
+    let zoom_common = zoom*MAP_CONST.CLASS.ICON.SVG_ZOOM_BASE*(data.zoom??1.);
 
     // уникальные id и имя класса
     let id        = 'svg-'+(new Date().getTime())+'-'+Math.round(Math.random()*100000); //+'-'+index+'-'+class_ind;
