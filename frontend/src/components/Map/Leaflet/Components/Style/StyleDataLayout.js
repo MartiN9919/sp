@@ -50,13 +50,72 @@ export const DECOR = {
     { offset: 0,  repeat: 30, symbol_type: 'dash', symbol_options: { pixelSize: 0,  pathOptions: { color: '#0a0', }, }, },
     { offset: 5,  repeat: 30, symbol_type: 'dash', symbol_options: { pixelSize: 0,  pathOptions: { color: '#0a0', }, }, },
   ],
+
+
+
+  // стрелки с окантовкой
+  'line-test_arrow_stroke': {
+    offset: 12, repeat: 100,
+    symbol_type: 'arrow', symbol_options: { pixelSize: 8, pathOptions: { color: '{color}', weight: 2, stroke: true, }, },
+    icon_properties: { shadow: false, },
+  },
+
+  // стрелки закрашенные
+  'line-test_arrow_fill': {
+    offset: 12, repeat: 100,
+    symbol_type: 'arrow', symbol_options: { pixelSize: 8, pathOptions: { color: '{color}', weight: 0, fillOpacity: 1, }, },
+    icon_properties: { shadow: false, },
+  },
+
+  // стрелка в конце, для полигонов не подходит
+  'line-test_arrow_end': {
+    offset: '100%', repeat: 0,
+    symbol_type: 'arrow', symbol_options: { pixelSize: 8, polygon: false, pathOptions: { color: '{color}', stroke: true, }, },
+    icon_properties: { shadow: false, },
+  },
 }
 
 
 
 
 export const SVG = {
-
+  // штриховка: диагональные штрихи тонкие
+  'hatch-diagonal-1': {
+    style: '{class} { fill: url(#{id}); }',
+    defs: `
+      <pattern id="{id}" patternUnits="userSpaceOnUse" width="4" height="4">
+        <path d="M-1,1 l2,-2 M0,4 l4,-4 M3,5 l2,-2" style="stroke:{color}; stroke-width:1;" />
+      </pattern>
+      `,
+  },
+  // штриховка: сетка  rotate-любой угол
+  'hatch-grid-1': {
+    style: '{class} { fill: url(#{id}); }',
+    defs: `
+      <pattern id="{id}" patternUnits="userSpaceOnUse" width="10" height="10" patternTransform="rotate(45)">
+        <path d="M 5,0 V 10 M 0,5 H 10" style="stroke:{color}; stroke-width:1;" />
+      </pattern>
+    `,
+  },
+  // штриховка: сетка  rotate-любой угол
+  'hatch-grid-2': {
+    style: '{class} { fill: url(#{id}); }',
+    defs: `
+      <pattern id="{id}" patternUnits="userSpaceOnUse" width="10" height="10" patternTransform="rotate(25)">
+        <path d="M 5,0 V 10 M 0,5 H 10" style="stroke:{color}; stroke-width:2;" />
+      </pattern>
+    `,
+  },
+  // штриховка: узор
+  'hatch-uzor-1': {
+    style: '{class} { fill: url(#{id}); }',
+    defs: `
+      <pattern id="{id}" patternUnits="userSpaceOnUse" width="10" height="10" style="stroke:{color}; stroke-width:4">
+        <line x1="5" y1="0" x2="5" y2="10" opacity=".4" transform="rotate(16 5 5)"/>
+        <line x1="5" y1="0" x2="5" y2="10" opacity=".4" transform="rotate(72 5 5)"/>
+      </pattern>
+    `,
+  },
 }
 
 

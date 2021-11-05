@@ -26,35 +26,12 @@ export const DECOR = {
     icon_properties: { shadow: false, },
   },
 
-  // стрелки с окантовкой
-  'line-test_arrow_stroke': {
-    offset: 12, repeat: 50,
-    symbol_type: 'arrow', symbol_options: { pixelSize: 15, pathOptions: { color: '{color}', weight: 2, stroke: true, }, },
-    icon_properties: { shadow: false, },
-  },
-
-  // стрелки закрашенные
-  'line-test_arrow_fill': {
-    offset: 12, repeat: 50,
-    symbol_type: 'arrow', symbol_options: { pixelSize: 5, pathOptions: { color: '{color}', weight: 0, fillOpacity: 1, }, },
-    icon_properties: { shadow: false, },
-  },
-
-  // стрелка в конце, для полигонов не подходит
-  'line-test_arrow_end': {
-    offset: '100%', repeat: 0,
-    symbol_type: 'arrow', symbol_options: { pixelSize: 15, polygon: false, pathOptions: { color: '{color}', stroke: true, }, },
-    icon_properties: { shadow: false, },
-  },
-
   // иконка file
   'line-test_file': {
     offset: 25, repeat: 120,
     symbol_type: 'marker', symbol_options: { rotate: false, markerOptions: { icon: 'icon-file-test_auto-30-20', }, },
     icon_properties: { shadow: false, },
   },
-
-
 
   // штрих линия
   'line-test2': {
@@ -82,12 +59,6 @@ export const SVG = {
   },
 
 
-
-
-  //
-  // РАЗНОЕ ДЛЯ ПРИМЕРОВ
-  //
-
   // черта: тройная
   'dash-3': {
     style: '{class} { marker-pattern: "40 url(#{id}_2) 40 url(#{id}_1)"; }',
@@ -100,17 +71,6 @@ export const SVG = {
         <rect x="-1" y="-5" width="2" height="10"/>
       </marker>
     `,
-  },
-
-
-  // тест
-  'fill-test': {
-    style: '{class} { fill: url(#{id}); }',
-    defs: `
-        <pattern id="{id}" fill="{color}" x="0" y="0" width="25" height="25" patternUnits="userSpaceOnUse">
-          <circle cx="10" cy="10" r="10"/>
-        </pattern>
-      `,
   },
 }
 
