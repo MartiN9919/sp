@@ -1,6 +1,6 @@
 import { Icon } from 'leaflet';
 import { MAP_CONST, MAP_ITEM } from '@/components/Map/Leaflet/Lib/Const';
-import { get_icon_data } from '@/components/Map/Leaflet/Components/Style/StyleIconData';
+import { get_style_data_icon } from '@/components/Map/Leaflet/Components/Style/StyleData';
 
 
 
@@ -140,7 +140,7 @@ export function icon_get(icon_color=undefined, icon_properties={}, zoom_map=unde
   if (icon_type == MAP_CONST.CLASS.ICON.SVG) {
     if (classes_icon_list.length<1) return;
     if (classes_icon_list[0].length<2) return;
-    let data = get_icon_data(classes_icon_list[0][1], color, zoom, text);
+    let data = get_style_data_icon(classes_icon_list[0][1], color, zoom, text);
     if (data == undefined) return;
     // let shadow =  (icon_properties[MAP_ITEM.FC.FEATURES.PROPERTIES.SHADOW] !== false);
     let class_top    =  (icon_properties[MAP_ITEM.FC.FEATURES.PROPERTIES.TOP   ] ===  true) ? ' svg-top' : '';

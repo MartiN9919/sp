@@ -1,5 +1,5 @@
 const DATA = {
-  // скрыто
+  // скрыть основную фигуру или точку
   'hidden': {
     style: '{class} { opacity: 0; }',
   },

@@ -1,5 +1,5 @@
 // РАЗРАБОТКА
-export const STYLE_DATA_TEST_ICON = {
+export const ICON = {
   // стрелка: <=> использовать в качестве конечной не получается
   'test_arrow_double': {
     anchor_dx: 0,
@@ -18,7 +18,7 @@ export const STYLE_DATA_TEST_ICON = {
 
 
 
-export const STYLE_DATA_TEST_DECOR = {
+export const DECOR = {
   // стрелка: <=>
   'line-test_arrow_double_end': {
     offset: '100%', repeat: 0,

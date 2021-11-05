@@ -1,5 +1,5 @@
 // СИЛЫ
-export const STYLE_DATA_FORCE_ICON = {
+export const ICON = {
   'force_manage_inside': {
     anchor_dx: 0,
     anchor_dy: 100.,
@@ -152,7 +152,7 @@ export const STYLE_DATA_FORCE_ICON = {
 
 
 
-export const STYLE_DATA_FORCE_DECOR = {
+export const DECOR = {
 
 }
 

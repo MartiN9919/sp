@@ -1,5 +1,5 @@
 // ОБЩИЙ ХАРАКТЕР
-export const STYLE_DATA_COMMON_ICON = {
+export const ICON = {
   // иконка стандарт
   'standart': {
     anchor_dx: 33.1,
@@ -42,7 +42,7 @@ export const STYLE_DATA_COMMON_ICON = {
 
 
 
-export const STYLE_DATA_COMMON_DECOR = {
+export const DECOR = {
   // обычные маркеры
   'line-standart': {
     offset: 10, repeat: 150,

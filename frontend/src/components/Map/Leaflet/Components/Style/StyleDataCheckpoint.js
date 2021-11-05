@@ -9,7 +9,7 @@ const PREF_OUTSIDE = {
   zoom:      1.,
 }
 
-export const STYLE_DATA_CHECKPOINT_ICON = {
+export const ICON = {
   'checkpoint_auto_inside': { ...PREF_INSIDE,
     svg: `
       <svg width={width} height={height} viewBox="0 0 320 74">
@@ -86,7 +86,7 @@ export const STYLE_DATA_CHECKPOINT_ICON = {
 
 
 
-export const STYLE_DATA_CHECKPOINT_DECOR = {
+export const DECOR = {
 
 }
 

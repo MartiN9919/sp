@@ -54,7 +54,6 @@ export default {
       let defs = '';
       for(let items_ind=0; items_ind<items.length; items_ind++) {
         let item    = items[items_ind];
-        console.log(item)
         for(let features_ind=0; features_ind<item.fc.features.length; features_ind++) {
           let properties = item.fc.features[features_ind].properties;
           let color =                                                             // цвет, приоритет fc.features[i].prop.color перед цветом скрипта

@@ -1,4 +1,4 @@
-export const STYLE_DATA_ENGENEER_ICON = {
+export const ICON = {
   'engineer_border_sign': {
     anchor_dx: 100,
     anchor_dy: 50.,
@@ -97,7 +97,7 @@ export const STYLE_DATA_ENGENEER_ICON = {
 }
 
 
-export const STYLE_DATA_ENGENEER_DECOR = {
+export const DECOR = {
   // КСП
   'line-engeneer_ksp': {
     offset: 8, repeat: 8,

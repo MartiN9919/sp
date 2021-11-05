@@ -1,5 +1,5 @@
 // РАЗМЕТКА
-export const STYLE_DATA_LAYOUT_ICON = {
+export const ICON = {
   // Госграница
   'layout_border': {
     anchor_dx: 10,
@@ -18,7 +18,7 @@ export const STYLE_DATA_LAYOUT_ICON = {
 
 
 
-export const STYLE_DATA_LAYOUT_DECOR = {
+export const DECOR = {
   // Госграница
   // class="hidden" для основной линии
   'line_layout_border': { offset: 0, repeat: 31, symbol_type: 'marker', symbol_options: { rotate: true, markerOptions: { icon: 'icon-svg-layout_border', }, }, icon_properties: { shadow: 'red', }, },
