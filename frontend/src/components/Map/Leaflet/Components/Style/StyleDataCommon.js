@@ -146,6 +146,87 @@ export const TEST = [
       "coordinates": [26.0,54.5],
     },
   },
+  // иконка pulse
+  {
+    "type": "Feature",
+    "properties": {
+      "class": "icon-pulse-14",
+      "date":  "2021-01-08",
+      "hint":  "icon-pulse-14",
+    },
+    "geometry": {
+      "type": "Point",
+      "coordinates": [26.5,54.5],
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {
+      "class": "icon-pulse",
+      "date":  "2021-01-09",
+      "color": "blue",
+      "zoom":  false,
+      "hint":  "class='icon-pulse' color='blue' zoom='false'",
+    },
+    "geometry": {
+      "type": "Point",
+      "coordinates": [27.0,54.5],
+    }
+  },
+  // иконка font-mdi
+  {
+    "type": "Feature",
+    "properties": {
+      "class": "icon-mdi-car",
+      "hint": "icon-mdi-car color='blue'",
+      "date": "2021-01-03",
+      "color": "blue",
+      //"zoom": false, - не масштабируется
+    },
+    "geometry": {
+      "type": "Point",
+      "coordinates": [27.5,54.5],
+    },
+  },
+  {
+    "type": "Feature",
+    "properties": {
+      "class": "icon-mdi-car-brake-alert",
+      "hint": "icon-mdi-car-brake-alert",
+      "date": "2021-01-03",
+      //"zoom": false, - не масштабируется
+    },
+    "geometry": {
+      "type": "Point",
+      "coordinates": [28.0,54.5],
+    },
+  },
+  {
+    "type": "Feature",
+    "properties": {
+      "class": "icon-mdi-run",
+      "hint": "icon-mdi-run",
+      "date": "2021-01-03",
+      //"zoom": false, - не масштабируется
+    },
+    "geometry": {
+      "type": "Point",
+      "coordinates": [28.5,54.5],
+    },
+  },
+  // иконка font-fs
+  {
+    "type": "Feature",
+    "properties": {
+      "class": "icon-fs-spec0",
+      "hint": "icon-fs-spec0",
+      "date": "2021-01-04",
+    },
+    "geometry": {
+      "type": "Point",
+      "coordinates": [29.0,54.5],
+    },
+  },
 
 
 
