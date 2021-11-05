@@ -12,14 +12,13 @@
  */
 
 import 'leaflet-polylinedecorator'
+import { findRealParent, propsBinder } from 'vue2-leaflet';
 
 import { MAP_CONST, MAP_ITEM } from '@/components/Map/Leaflet/Lib/Const';
-import { get_feature_class, get_feature_coordinates, set_feature_hint } from '@/components/Map/Leaflet/Lib/LibFc';
 import { dict_get } from '@/components/Map/Leaflet/Lib/Lib';
+import { get_feature_class, get_feature_coordinates, set_feature_hint } from '@/components/Map/Leaflet/Lib/LibFc';
 import { get_style_data_decor } from '@/components/Map/Leaflet/Components/Style/StyleData';
-//import { icon_file_path } from '@/components/Map/Leaflet/Components/Style/StyleIcon';
 
-import { findRealParent, propsBinder } from 'vue2-leaflet';
 
 const props = {
   fc: {

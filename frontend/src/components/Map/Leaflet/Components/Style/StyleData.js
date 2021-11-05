@@ -29,6 +29,12 @@ const DATA_DECOR = {
   ...DATA_TEST.DECOR,
 }
 
+
+/*
+ *
+ * ICON
+ *
+ */
 let regexp_vb  = /<svg[^>]*viewBox\s*=\s*"\s*0\s*0\s*(?<width>\d+(?:\.\d+)?)\s*(?<height>\d+(?:\.\d+)?)\s*"/mi;
 export function get_style_data_icon(icon_data_key, color="gray", zoom=1, text=undefined) {
   let data = DATA_ICON[icon_data_key];
@@ -54,14 +60,15 @@ export function get_style_data_icon(icon_data_key, color="gray", zoom=1, text=un
 
 
 
-/* СПИСКИ ДЕКОРАТОРОВ ДЛЯ ЛИНИЙ И ГРАНИЦ ПОЛИГОНОВ
+/*
+ * DECOR
+ *
+ * СПИСКИ ДЕКОРАТОРОВ ДЛЯ ЛИНИЙ И ГРАНИЦ ПОЛИГОНОВ
  * key - название класса, указывается в MAP_ITEM.FC.FEATURES.PROPERTIES.CLASS
  * color - подставляется автоматически
  * offset - смещение первого маркера от начала, можно в %: '100%'
  * repeat - смещение, через которое повторить маркер, можно в %: '50%'
  */
-
-
 export function get_style_data_decor(classes_str, index, color="gray", zoom=1, icon_properties={}) {
   let ret = [];
   let classes_list = classes_str.trim().replace(/\s+/g, ' ').split(' ');  // убрать лишние пробелы
@@ -108,3 +115,10 @@ export function get_style_data_decor(classes_str, index, color="gray", zoom=1, i
   });
   return ret;
 }
+
+
+/*
+ *
+ * ICON
+ *
+ */
