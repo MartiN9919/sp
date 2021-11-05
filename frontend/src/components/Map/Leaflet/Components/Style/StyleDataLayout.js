@@ -42,6 +42,11 @@ export const DECOR = {
 
 
 
+export const SVG = {
+
+}
+
+
 
 export const TEST = [
   {

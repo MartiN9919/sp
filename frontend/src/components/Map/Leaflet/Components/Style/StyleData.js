@@ -29,6 +29,15 @@ const DATA_DECOR = {
   ...DATA_TEST.DECOR,
 }
 
+const DATA_SVG = {
+  ...DATA_FORCE.SVG,
+  ...DATA_CHECKPOINT.SVG,
+  ...DATA_ENGENEER.SVG,
+  ...DATA_LAYOUT.SVG,
+  ...DATA_TEXT.SVG,
+  ...DATA_COMMON.SVG,
+  ...DATA_TEST.SVG,
+}
 
 /*
  *
