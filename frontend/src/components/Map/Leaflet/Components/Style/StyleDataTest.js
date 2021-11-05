@@ -36,7 +36,7 @@ export const DECOR = {
   // стрелки закрашенные
   'line-test_arrow_fill': {
     offset: 12, repeat: 50,
-    symbol_type: 'arrow', symbol_options: { pixelSize: 15, pathOptions: { color: '{color}', weight: 0, fillOpacity: 1, }, },
+    symbol_type: 'arrow', symbol_options: { pixelSize: 5, pathOptions: { color: '{color}', weight: 0, fillOpacity: 1, }, },
     icon_properties: { shadow: false, },
   },
 
@@ -68,50 +68,6 @@ export const DECOR = {
 
 
 export const SVG = {
-  // скрыть основную фигуру или точку
-  'hidden': {
-    style: '{class} { opacity: 0; }',
-  },
-
-
-  // штриховка: диагональные штрихи тонкие
-  'hatch-diagonal-1': {
-    style: '{class} { fill: url(#{id}); }',
-    defs: `
-      <pattern id="{id}" patternUnits="userSpaceOnUse" width="4" height="4">
-        <path d="M-1,1 l2,-2 M0,4 l4,-4 M3,5 l2,-2" style="stroke:{color}; stroke-width:1;" />
-      </pattern>
-      `,
-  },
-  // штриховка: сетка  rotate-любой угол
-  'hatch-grid-1': {
-    style: '{class} { fill: url(#{id}); }',
-    defs: `
-      <pattern id="{id}" patternUnits="userSpaceOnUse" width="10" height="10" patternTransform="rotate(45)">
-        <path d="M 5,0 V 10 M 0,5 H 10" style="stroke:{color}; stroke-width:1;" />
-      </pattern>
-    `,
-  },
-  // штриховка: сетка  rotate-любой угол
-  'hatch-grid-2': {
-    style: '{class} { fill: url(#{id}); }',
-    defs: `
-      <pattern id="{id}" patternUnits="userSpaceOnUse" width="10" height="10" patternTransform="rotate(25)">
-        <path d="M 5,0 V 10 M 0,5 H 10" style="stroke:{color}; stroke-width:2;" />
-      </pattern>
-    `,
-  },
-  // штриховка: узор
-  'hatch-uzor-1': {
-    style: '{class} { fill: url(#{id}); }',
-    defs: `
-      <pattern id="{id}" patternUnits="userSpaceOnUse" width="10" height="10" style="stroke:{color}; stroke-width:4">
-        <line x1="5" y1="0" x2="5" y2="10" opacity=".4" transform="rotate(16 5 5)"/>
-        <line x1="5" y1="0" x2="5" y2="10" opacity=".4" transform="rotate(72 5 5)"/>
-      </pattern>
-    `,
-  },
-
   // стрелка: <=>
   'arrow-double-end': {
     style: '{class} { marker-end: url(#{id}); }',
