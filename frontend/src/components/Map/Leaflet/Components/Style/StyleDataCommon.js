@@ -214,6 +214,45 @@ export const TEST = [
       "coordinates": [28.5,54.5],
     },
   },
+  {
+    "type": "Feature",
+    "properties": {
+      "class": "icon-mdi-helicopter",
+      "hint": "icon-mdi-helicopter",
+      "date": "2021-01-03",
+      //"zoom": false, - не масштабируется
+    },
+    "geometry": {
+      "type": "Point",
+      "coordinates": [29.0,54.5],
+    },
+  },
+  {
+    "type": "Feature",
+    "properties": {
+      "class": "icon-mdi-drone",
+      "hint": "icon-mdi-drone",
+      "date": "2021-01-03",
+      //"zoom": false, - не масштабируется
+    },
+    "geometry": {
+      "type": "Point",
+      "coordinates": [29.5,54.5],
+    },
+  },
+  {
+    "type": "Feature",
+    "properties": {
+      "class": "icon-mdi-quadcopter",
+      "hint": "icon-mdi-quadcopter",
+      "date": "2021-01-03",
+      //"zoom": false, - не масштабируется
+    },
+    "geometry": {
+      "type": "Point",
+      "coordinates": [30.0,54.5],
+    },
+  },
   // иконка font-fs
   {
     "type": "Feature",
@@ -224,7 +263,7 @@ export const TEST = [
     },
     "geometry": {
       "type": "Point",
-      "coordinates": [29.0,54.5],
+      "coordinates": [30.5,54.5],
     },
   },
 
