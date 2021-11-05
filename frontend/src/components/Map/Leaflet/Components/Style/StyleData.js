@@ -128,6 +128,62 @@ export function get_style_data_decor(classes_str, index, color="gray", zoom=1, i
 
 /*
  *
- * ICON
+ * SVG
  *
  */
+// список классов в словарь строк style, defs
+// индекс item в state.selectedTemplate.activeAnalysts
+// return {style: '...', defs: '...'}
+export function get_style_data_svg(classes_str, index, color="gray") {
+  let ret = {style: '', defs: ''};
+  let classes_list = classes_str.trim().replace(/\s+/g, ' ').split(' ');  // убрать лишние пробелы
+  classes_list = [...new Set(classes_list)];                              // исключить повторы
+
+  // перебрать классы
+  classes_list.forEach(function(class_item, class_ind) {
+    // для класса: стиль и defs
+    let data = DATA_SVG[class_item];
+    if (data === undefined) return;
+    let data_style = (data.style)?JSON.parse(JSON.stringify(data.style)):undefined;
+    let data_defs  = (data.defs )?JSON.parse(JSON.stringify(data.defs)) :undefined;
+
+    // уникальные id и имя класса
+    let id        = 'svg-'+(new Date().getTime())+'-'+Math.round(Math.random()*100000); //+'-'+index+'-'+class_ind;
+    let class_str = '.'+class_name_correct(class_item, index);
+
+    // заменить переменные
+    if (data_style) {
+      data_style = data_style.replace(/{id}/g, id).replace(/{color}/g, color).replace(/{class}/g, class_str);
+      ret.style += data_style+'\n';
+    }
+
+    if (data_defs) {
+      data_defs = data_defs.replace(/{id}/g, id).replace(/{color}/g, color);
+      ret.defs += data_defs+'\n';
+    }
+  });
+
+  return ret;
+}
+
+
+// скоректированный список классов с учетом state.selectedTemplate.activeAnalysts[index]
+export function classes_name_correct(classes_str, index) {
+  let classes_list = classes_str.trim().replace(/\s+/g, ' ').split(' ');  // убрать лишние пробелы
+  classes_list = [...new Set(classes_list)];                              // исключить повторы
+
+  classes_list.forEach(function(class_item, class_ind) {
+    let data = DATA_SVG[class_item];
+    if (data !== undefined) {
+      classes_list[class_ind] = class_name_correct(class_item, index);
+    }
+  });
+
+  return classes_list.join(' ');
+}
+
+
+// скоректированное название класса с учетом state.selectedTemplate.activeAnalysts[index]
+function class_name_correct(class_str, index) {
+  return class_str+'-'+index;
+}

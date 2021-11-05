@@ -130,7 +130,7 @@ import {
 } from '@/components/Map/Leaflet/Components/Style/StyleIcon';
 
 import StyleSvg         from '@/components/Map/Leaflet/Components/Style/StyleSvg';
-import { classes_name_correct } from '@/components/Map/Leaflet/Components/Style/StyleSvgData';
+import { classes_name_correct } from '@/components/Map/Leaflet/Components/Style/StyleData';
 import StyleDecor       from '@/components/Map/Leaflet/Components/Style/StyleDecor';
 
 import                       '@/components/Map/Leaflet/Components/Style/StyleIconPulse';

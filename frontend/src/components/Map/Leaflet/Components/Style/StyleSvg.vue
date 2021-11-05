@@ -26,7 +26,7 @@
 
 import { mapGetters }             from 'vuex';
 import { MAP_CONST, MAP_ITEM }    from '@/components/Map/Leaflet/Lib/Const';
-import { data_svg }               from '@/components/Map/Leaflet/Components/Style/StyleSvgData';
+import { get_style_data_svg }     from '@/components/Map/Leaflet/Components/Style/StyleData';
 
 export default {
   name: 'LStyleSvg',
@@ -61,7 +61,7 @@ export default {
               properties[MAP_ITEM.FC.FEATURES.PROPERTIES.COLOR] :
             ((item[MAP_ITEM.COLOR] ?? MAP_CONST.COLOR.DEFAULT_STYLE_PATH).toLowerCase());
           let classes = properties[MAP_ITEM.FC.FEATURES.PROPERTIES.CLASS] ?? '';  // список fc.features[i].properties.class
-          let data    = data_svg(classes, items_ind, color);
+          let data    = get_style_data_svg(classes, items_ind, color);
           if (data.style!='') style += data.style;
           if (data.defs !='') defs  += data.defs;
         }

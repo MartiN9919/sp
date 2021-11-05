@@ -68,7 +68,94 @@ export const DECOR = {
 
 
 export const SVG = {
+  // скрыть основную фигуру или точку
+  'hidden': {
+    style: '{class} { opacity: 0; }',
+  },
 
+
+  // штриховка: диагональные штрихи тонкие
+  'hatch-diagonal-1': {
+    style: '{class} { fill: url(#{id}); }',
+    defs: `
+      <pattern id="{id}" patternUnits="userSpaceOnUse" width="4" height="4">
+        <path d="M-1,1 l2,-2 M0,4 l4,-4 M3,5 l2,-2" style="stroke:{color}; stroke-width:1;" />
+      </pattern>
+      `,
+  },
+  // штриховка: сетка  rotate-любой угол
+  'hatch-grid-1': {
+    style: '{class} { fill: url(#{id}); }',
+    defs: `
+      <pattern id="{id}" patternUnits="userSpaceOnUse" width="10" height="10" patternTransform="rotate(45)">
+        <path d="M 5,0 V 10 M 0,5 H 10" style="stroke:{color}; stroke-width:1;" />
+      </pattern>
+    `,
+  },
+  // штриховка: сетка  rotate-любой угол
+  'hatch-grid-2': {
+    style: '{class} { fill: url(#{id}); }',
+    defs: `
+      <pattern id="{id}" patternUnits="userSpaceOnUse" width="10" height="10" patternTransform="rotate(25)">
+        <path d="M 5,0 V 10 M 0,5 H 10" style="stroke:{color}; stroke-width:2;" />
+      </pattern>
+    `,
+  },
+  // штриховка: узор
+  'hatch-uzor-1': {
+    style: '{class} { fill: url(#{id}); }',
+    defs: `
+      <pattern id="{id}" patternUnits="userSpaceOnUse" width="10" height="10" style="stroke:{color}; stroke-width:4">
+        <line x1="5" y1="0" x2="5" y2="10" opacity=".4" transform="rotate(16 5 5)"/>
+        <line x1="5" y1="0" x2="5" y2="10" opacity=".4" transform="rotate(72 5 5)"/>
+      </pattern>
+    `,
+  },
+
+  // стрелка: <=>
+  'arrow-double-end': {
+    style: '{class} { marker-end: url(#{id}); }',
+    defs: `
+      <marker id="{id}" fill="{color}" orient="auto" markerUnits='userSpaceOnUse' markerWidth='101' markerHeight='33' refX='0' refY='16.5' opacity='.5'>
+        <path d='M1,17 L21,1 L21,33 Z'/>
+        <path d='M101,17 L82,1 L82,33 Z'/>
+        <rect x="20" y="6" width="64" height="5" />
+        <rect x="20" y="23" width="64" height="5" />
+      </marker>
+    `,
+  },
+
+
+
+
+  //
+  // РАЗНОЕ ДЛЯ ПРИМЕРОВ
+  //
+
+  // черта: тройная
+  'dash-3': {
+    style: '{class} { marker-pattern: "40 url(#{id}_2) 40 url(#{id}_1)"; }',
+    defs: `
+      <marker id="{id}_2" orient="auto" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="12" refX="0" refY="0" viewBox="-4 -6 8 12">
+        <rect x="-3" y="-5" width="2" height="10"/>
+        <rect x="1" y="-5" width="2" height="10"/>
+      </marker>
+      <marker id="{id}_1" orient="auto" markerUnits="userSpaceOnUse" markerWidth="4" markerHeight="12" refX="0" refY="0" viewBox="-2 -6 4 12">
+        <rect x="-1" y="-5" width="2" height="10"/>
+      </marker>
+    `,
+  },
+
+
+  // тест
+  'fill-test': {
+    style: '{class} { fill: url(#{id}); }',
+    defs: `
+        <pattern id="{id}" fill="{color}" x="0" y="0" width="25" height="25" patternUnits="userSpaceOnUse">
+          <circle cx="10" cy="10" r="10"/>
+        </pattern>
+      `,
+  },
 }
 
 
