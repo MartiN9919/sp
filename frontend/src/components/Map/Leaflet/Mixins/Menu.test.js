@@ -10,7 +10,7 @@ import { STYLE_DATA_TEST_TEST       } from '@/components/Map/Leaflet/Components/
 export const MAP_TEST_ITEM_1 = {
   //"id": 5,
   "name":  "Test 1",
-  "hint":  "Это тест 1",
+  //"hint":  "Это тест 1",
   "color": "#F00",
   "fc":    {
     "type": "FeatureCollection",
@@ -30,7 +30,7 @@ export const MAP_TEST_ITEM_1 = {
 export const MAP_TEST_ITEM_2 = {
   //"id": 6,
   "name":  "Test 2",
-  "hint":  "Это тест 2",
+  //"hint":  "Это тест 2",
   "color": "green",  // "#923"
   "fc": {
     "type": "FeatureCollection",
@@ -146,7 +146,7 @@ export const MAP_TEST_ITEM_2 = {
 
 export const MAP_TEST_ITEM_3 = {
   "name": "Test 3",
-  "hint": "Это тест 3",
+  //"hint": "Это тест 3",
   "color": "#493",
   "fc": {
     "style": {

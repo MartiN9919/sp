@@ -15,6 +15,25 @@ const DATA = {
       `,
   },
 
+  // штриховка: сетка  rotate-любой угол
+  'hatch-grid-1': {
+    style: '{class} { fill: url(#{id}); }',
+    defs: `
+        <pattern id="{id}" patternUnits="userSpaceOnUse" width="10" height="10" patternTransform="rotate(45)">
+          <path d="M 5,0 V 10 M 0,5 H 10" style="stroke:{color}; stroke-width:1;" />
+        </pattern>
+      `,
+  },
+  // штриховка: сетка  rotate-любой угол
+  'hatch-grid-2': {
+    style: '{class} { fill: url(#{id}); }',
+    defs: `
+        <pattern id="{id}" patternUnits="userSpaceOnUse" width="10" height="10" patternTransform="rotate(25)">
+          <path d="M 5,0 V 10 M 0,5 H 10" style="stroke:{color}; stroke-width:2;" />
+        </pattern>
+      `,
+  },
+
 
   // стрелка: <=>
   'arrow-double-end': {

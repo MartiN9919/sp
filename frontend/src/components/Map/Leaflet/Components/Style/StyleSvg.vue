@@ -32,10 +32,10 @@ import { data_svg }               from '@/components/Map/Leaflet/Components/Styl
 export default {
   name: 'LStyleSvg',
 
-  // beforeDestroy: function() {
-  //   this.$refs.defs .innerHTML = '';
-  //   this.$refs.style.innerHTML = '';
-  // },
+  beforeDestroy: function() {
+    this.$refs.defs .innerHTML = '';
+    this.$refs.style.innerHTML = '';
+  },
 
   watch: {
     SCRIPT_GET: {
@@ -55,7 +55,12 @@ export default {
       let defs = '';
       for(let ind=0; ind<items.length; ind++) {
         let item    = items[ind];
+        //console.log(item)
         let color   = item[MAP_ITEM.COLOR] ?? MAP_CONST.COLOR.DEFAULT_STYLE_PATH;
+        // const color =                                                                          // цвет, приоритет fc.prop.color перед цветом скрипта
+        //   ( icon_properties[MAP_ITEM.FC.FEATURES.PROPERTIES.COLOR] != undefined) ?
+        //     icon_properties[MAP_ITEM.FC.FEATURES.PROPERTIES.COLOR] :
+        //   ((item[MAP_ITEM.COLOR] ?? MAP_CONST.COLOR.DEFAULT_STYLE_PATH).toLowerCase());
         let classes = fc_properties_keys_get(item.fc, MAP_ITEM.FC.FEATURES.PROPERTIES.CLASS);  // список fc.features[i].properties.class
         let data    = data_svg(classes.join(' '), ind, color);
         if (data.style!='') style += data.style;

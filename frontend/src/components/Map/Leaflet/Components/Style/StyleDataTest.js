@@ -195,8 +195,9 @@ export const STYLE_DATA_TEST_TEST = [
   {
     "type": "Feature",
     "properties": {
-      "class": "line-test_arrow_stroke hatch-diagonal-1",
-      "hint":  "line-test_arrow_stroke hatch-diagonal-1",
+      "class": "line-test_arrow_stroke hatch-grid-2",
+      "color": "blue",
+      "hint":  "line-test_arrow_stroke hatch-grid-2",
       "date":  "2021-01-05 09:00",
     },
     "geometry": {
