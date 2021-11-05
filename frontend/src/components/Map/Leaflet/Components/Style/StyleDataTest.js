@@ -69,7 +69,7 @@ export const DECOR = {
 
 
 
-export const STYLE_DATA_TEST_TEST = [
+export const TEST = [
   // стрелки с окантовкой
   {
     "type": "Feature",

@@ -54,7 +54,7 @@ export const DECOR = {
 
 
 
-export const STYLE_DATA_COMMON_TEST = [
+export const TEST = [
   {
     "type": "Feature",
     "properties": {

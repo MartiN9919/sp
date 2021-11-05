@@ -92,7 +92,7 @@ export const DECOR = {
 
 
 
-export const STYLE_DATA_CHECKPOINT_TEST = [
+export const TEST = [
   {
     "type": "Feature",
     "properties": {

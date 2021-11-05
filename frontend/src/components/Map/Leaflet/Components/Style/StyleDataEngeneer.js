@@ -129,7 +129,7 @@ export const DECOR = {
 
 
 
-export const STYLE_DATA_ENGENEER_TEST = [
+export const TEST = [
   {
     "type": "Feature",
     "properties": {

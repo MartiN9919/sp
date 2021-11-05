@@ -43,7 +43,7 @@ export const DECOR = {
 
 
 
-export const STYLE_DATA_LAYOUT_TEST = [
+export const TEST = [
   {
     "type": "Feature",
     "properties": {

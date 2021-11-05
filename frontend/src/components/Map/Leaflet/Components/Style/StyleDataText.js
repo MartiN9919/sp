@@ -84,6 +84,6 @@ export const DECOR = {
 
 
 
-export const STYLE_DATA_TEXT_TEST = [
+export const TEST = [
 
 ]

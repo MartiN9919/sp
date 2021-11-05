@@ -160,7 +160,7 @@ export const DECOR = {
 
 
 
-export const STYLE_DATA_FORCE_TEST = [
+export const TEST = [
   {
     "type": "Feature",
     "properties": {
