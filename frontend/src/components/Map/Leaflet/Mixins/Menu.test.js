@@ -1,4 +1,4 @@
-import { TEST as DATA_FORCE      }  from '@/components/Map/Leaflet/Components/Style/StyleDataForce';
+import { TEST as DATA_FORCE      } from '@/components/Map/Leaflet/Components/Style/StyleDataForce';
 import { TEST as DATA_CHECKPOINT } from '@/components/Map/Leaflet/Components/Style/StyleDataCheckpoint';
 import { TEST as DATA_ENGENEER   } from '@/components/Map/Leaflet/Components/Style/StyleDataEngeneer';
 import { TEST as DATA_LAYOUT     } from '@/components/Map/Leaflet/Components/Style/StyleDataLayout';
