@@ -26,7 +26,6 @@
 
 import { mapGetters }             from 'vuex';
 import { MAP_CONST, MAP_ITEM }    from '@/components/Map/Leaflet/Lib/Const';
-import { fc_properties_keys_get } from '@/components/Map/Leaflet/Lib/LibFc'
 import { data_svg }               from '@/components/Map/Leaflet/Components/Style/StyleSvgData';
 
 export default {
@@ -53,18 +52,20 @@ export default {
       // сформировать defs и style
       let style = '';
       let defs = '';
-      for(let ind=0; ind<items.length; ind++) {
-        let item    = items[ind];
-        //console.log(item)
-        let color   = item[MAP_ITEM.COLOR] ?? MAP_CONST.COLOR.DEFAULT_STYLE_PATH;
-        // const color =                                                                          // цвет, приоритет fc.prop.color перед цветом скрипта
-        //   ( icon_properties[MAP_ITEM.FC.FEATURES.PROPERTIES.COLOR] != undefined) ?
-        //     icon_properties[MAP_ITEM.FC.FEATURES.PROPERTIES.COLOR] :
-        //   ((item[MAP_ITEM.COLOR] ?? MAP_CONST.COLOR.DEFAULT_STYLE_PATH).toLowerCase());
-        let classes = fc_properties_keys_get(item.fc, MAP_ITEM.FC.FEATURES.PROPERTIES.CLASS);  // список fc.features[i].properties.class
-        let data    = data_svg(classes.join(' '), ind, color);
-        if (data.style!='') style += data.style;
-        if (data.defs !='') defs  += data.defs;
+      for(let items_ind=0; items_ind<items.length; items_ind++) {
+        let item    = items[items_ind];
+        console.log(item)
+        for(let features_ind=0; features_ind<item.fc.features.length; features_ind++) {
+          let properties = item.fc.features[features_ind].properties;
+          let color =                                                             // цвет, приоритет fc.features[i].prop.color перед цветом скрипта
+            ( properties[MAP_ITEM.FC.FEATURES.PROPERTIES.COLOR] != undefined) ?
+              properties[MAP_ITEM.FC.FEATURES.PROPERTIES.COLOR] :
+            ((item[MAP_ITEM.COLOR] ?? MAP_CONST.COLOR.DEFAULT_STYLE_PATH).toLowerCase());
+          let classes = properties[MAP_ITEM.FC.FEATURES.PROPERTIES.CLASS] ?? '';  // список fc.features[i].properties.class
+          let data    = data_svg(classes, items_ind, color);
+          if (data.style!='') style += data.style;
+          if (data.defs !='') defs  += data.defs;
+        }
       }
       this.$refs.defs .innerHTML = defs;
       this.$refs.style.innerHTML = style;

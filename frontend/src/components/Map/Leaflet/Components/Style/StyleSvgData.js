@@ -100,7 +100,7 @@ export function data_svg(classes_str, index, color="gray") {
     let data_defs  = (data.defs )?JSON.parse(JSON.stringify(data.defs)) :undefined;
 
     // уникальные id и имя класса
-    let id        = 'svg_'+(new Date().getTime())+'_'+index+'_'+class_ind;
+    let id        = 'svg-'+(new Date().getTime())+'-'+Math.round(Math.random()*100000); //+'-'+index+'-'+class_ind;
     let class_str = '.'+class_name_correct(class_item, index);
 
     // заменить переменные
