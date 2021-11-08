@@ -22,7 +22,7 @@ export const DECOR = {
   // стрелка: <=>
   'line-test_arrow_double_end': {
     offset: '100%', repeat: 0,
-    symbol_type: 'marker', symbol_options: { rotate: true, markerOptions: { icon: 'icon-svg-test_arrow_double', }, },
+    symbol_type: 'marker', symbol_options: { rotate: 90, markerOptions: { icon: 'icon-svg-test_arrow_double', }, },
     icon_properties: { shadow: false, },
   },
 

@@ -158,7 +158,6 @@ export function get_style_data_svg(classes_str, color=MAP_CONST.COLOR.DEFAULT_ST
     if (data_defs) {
       const [svg_width, svg_height] = calc_svg_size(data_defs, zoom_common);
       if ((svg_width!=undefined) && (svg_height!=undefined)) {
-        console.log(svg_width, svg_height);
         data_defs = data_defs.replace(/{width}/g, svg_width).replace(/{height}/g, svg_height);
       }
       data_defs = data_defs.replace(/{id}/g, id).replace(/{color}/g, color);

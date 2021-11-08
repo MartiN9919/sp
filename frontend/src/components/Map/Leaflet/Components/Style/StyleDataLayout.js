@@ -80,7 +80,7 @@ export const DECOR = {
 
 export const SVG = {
   // стрелка: <=>
-  'layout-arrow-double': {
+  'arrow-layout-double-end': {
     zoom: 1.8,
     style: '{class} { marker-end: url(#{id}); }',
     defs: `
