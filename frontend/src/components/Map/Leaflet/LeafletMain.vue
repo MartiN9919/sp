@@ -294,7 +294,7 @@ export default {
       fc = JSON.parse(JSON.stringify(fc));
 
       // установить fc.features[ind].ind - порядковый номер фигуры в fc
-      for(let ind=0; ind<fc.features.length; ind++) { fc.features[ind].ind = ind; }
+      for(let ind=0; ind<fc.features.length; ind++) { fc.features[ind][MAP_ITEM.FC.FEATURES.IND] = ind; }
 
       // отфильтровать с допустимыми датами
       let range_ts  = this.MAP_GET_RANGE_SEL;
@@ -348,7 +348,7 @@ export default {
           // control-легенда: установка onHover
           // события повторно вызывают this.data_normalize_color
           let self = this;
-          layer.on('mouseover', function(e) { self.hover_map_ind = map_ind;  self.hover_feature_ind = feature.ind; });
+          layer.on('mouseover', function(e) { self.hover_map_ind = map_ind;  self.hover_feature_ind = feature[MAP_ITEM.FC.FEATURES.IND]; });
           layer.on('mouseout',  function(e) {
             if (!e.originalEvent.ctrlKey) self.hover_map_ind = -1;
             self.hover_feature_ind = -1;
@@ -370,7 +370,8 @@ export default {
 
           // класс для стилей линий и полигонов
           let classes_str = get_feature_class(feature);
-          classes_str = classes_name_correct(classes_str, map_ind);  // коррекция названий классов для избежания повторов из разных скриптов
+          // коррекция названий классов для избежания повторов из разных скриптов
+          classes_str = classes_name_correct(classes_str, map_ind, feature[MAP_ITEM.FC.FEATURES.IND]);
           if ((classes_str != '') && (layer.setStyle)) { layer.setStyle({'className': classes_str, }); }
 
           // редактирование запрещено - удалить pm - для уменьшения объема вычислений

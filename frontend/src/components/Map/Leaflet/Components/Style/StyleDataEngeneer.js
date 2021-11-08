@@ -139,8 +139,8 @@ export const TEST = [
   {
     "type": "Feature",
     "properties": {
-      "class": "arrow-double-end line-engeneer_zagr_signal line-text_rl_fill_100 ant",
-      "hint": "arrow-double-end line-engeneer_zagr_signal line-text_rl_fill_100 ant",
+      "class": "layout-arrow-double line-engeneer_zagr_signal line-text_rl_fill_100 ant",
+      "hint": "layout-arrow-double line-engeneer_zagr_signal line-text_rl_fill_100 ant",
       "date": "2021-01-04",
       "text": "C-120",
     },
@@ -156,11 +156,11 @@ export const TEST = [
   {
     "type": "Feature",
     "properties": {
-      "class": "arrow-double-end line-engeneer_zagr_signal line-text_lr_300 ant",
-      "hint": "arrow-double-end line-engeneer_zagr_signal line-text_lr_300 ant",
+      "class": "layout-arrow-double line-engeneer_zagr_signal line-text_lr_300 ant",
+      "hint": "layout-arrow-double line-engeneer_zagr_signal line-text_lr_300 ant",
       "date": "2021-01-04",
       "text": "C-120",
-      "zoom": 5,
+      // "zoom": 2,
     },
     "geometry": {
       "type": "LineString",

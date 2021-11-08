@@ -79,6 +79,21 @@ export const DECOR = {
 
 
 export const SVG = {
+  // стрелка: <=>
+  'layout-arrow-double': {
+    zoom: 1.8,
+    style: '{class} { marker-end: url(#{id}); }',
+    defs: `
+      <marker id="{id}" viewBox="0 0 101 82" fill="{color}" orient="auto" markerUnits="userSpaceOnUse" markerWidth="{width}" markerHeight="{height}" refX='0' refY='16.5' opacity='.7'>
+        <path d='M1,17 L21,1 L21,33 Z'/>
+        <path d='M101,17 L82,1 L82,33 Z'/>
+        <rect x="20" y="6"  width="64" height="5" />
+        <rect x="20" y="23" width="64" height="5" />
+      </marker>
+    `,
+  },
+
+
   // штриховка: диагональные штрихи тонкие
   'hatch-diagonal-1': {
     style: '{class} { fill: url(#{id}); }',

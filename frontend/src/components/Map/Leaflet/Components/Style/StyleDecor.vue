@@ -72,7 +72,7 @@ export default {
 
       // patterns на основании classes_str и color
       let classes_str = get_feature_class(feature);
-      let patterns    = get_style_data_decor(classes_str, ind, color, 1, icon_properties);
+      let patterns    = get_style_data_decor(classes_str, color, icon_properties);
       if (patterns.length == 0) continue;
 
       // создать декорации
