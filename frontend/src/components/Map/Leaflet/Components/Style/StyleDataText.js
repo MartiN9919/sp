@@ -6,7 +6,7 @@ const PREF = {
   zoom:      .8,
 }
 
-export const STYLE_DATA_TEXT_ICON = {
+export const ICON = {
   'text_line_rl_fill_100': { ...PREF,
     svg: `
       <svg width={width} height={height} viewBox="0 0 30 100">
@@ -71,7 +71,7 @@ export const STYLE_DATA_TEXT_ICON = {
 
 
 
-export const STYLE_DATA_TEXT_DECOR = {
+export const DECOR = {
   'line-text_rl_fill_100': { offset: 8, repeat: 300, symbol_type: 'marker', symbol_options: { rotate: true, markerOptions: { icon: 'icon-svg-text_line_rl_fill_100', }, }, icon_properties: { shadow: false, top: true, }, },
   'line-text_lr_fill_100': { offset: 8, repeat: 300, symbol_type: 'marker', symbol_options: { rotate: true, markerOptions: { icon: 'icon-svg-text_line_lr_fill_100', }, }, icon_properties: { shadow: false, top: true, }, },
   'line-text_rl_fill_300': { offset: 8, repeat: 300, symbol_type: 'marker', symbol_options: { rotate: true, markerOptions: { icon: 'icon-svg-text_line_rl_fill_300', }, }, icon_properties: { shadow: false, top: true, }, },
@@ -84,6 +84,12 @@ export const STYLE_DATA_TEXT_DECOR = {
 
 
 
-export const STYLE_DATA_TEXT_TEST = [
+export const SVG = {
+
+}
+
+
+
+export const TEST = [
 
 ]

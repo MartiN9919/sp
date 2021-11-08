@@ -12,14 +12,13 @@
  */
 
 import 'leaflet-polylinedecorator'
+import { findRealParent, propsBinder } from 'vue2-leaflet';
 
 import { MAP_CONST, MAP_ITEM } from '@/components/Map/Leaflet/Lib/Const';
-import { get_feature_class, get_feature_coordinates, set_feature_hint } from '@/components/Map/Leaflet/Lib/LibFc';
 import { dict_get } from '@/components/Map/Leaflet/Lib/Lib';
-import { get_decor_data } from '@/components/Map/Leaflet/Components/Style/StyleDecorData';
-//import { icon_file_path } from '@/components/Map/Leaflet/Components/Style/StyleIcon';
+import { get_feature_class, get_feature_coordinates, set_feature_hint } from '@/components/Map/Leaflet/Lib/LibFc';
+import { get_style_data_decor } from '@/components/Map/Leaflet/Components/Style/StyleData';
 
-import { findRealParent, propsBinder } from 'vue2-leaflet';
 
 const props = {
   fc: {
@@ -73,7 +72,7 @@ export default {
 
       // patterns на основании classes_str и color
       let classes_str = get_feature_class(feature);
-      let patterns    = get_decor_data(classes_str, ind, color, 1, icon_properties);
+      let patterns    = get_style_data_decor(classes_str, ind, color, 1, icon_properties);
       if (patterns.length == 0) continue;
 
       // создать декорации

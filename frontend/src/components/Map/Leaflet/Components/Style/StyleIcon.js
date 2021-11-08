@@ -1,6 +1,6 @@
 import { Icon } from 'leaflet';
 import { MAP_CONST, MAP_ITEM } from '@/components/Map/Leaflet/Lib/Const';
-import { get_icon_data } from '@/components/Map/Leaflet/Components/Style/StyleIconData';
+import { get_style_data_icon } from '@/components/Map/Leaflet/Components/Style/StyleData';
 
 
 
@@ -61,31 +61,14 @@ export function icon_get(icon_color=undefined, icon_properties={}, zoom_map=unde
 
   // остальные опции
   const text  = icon_properties[MAP_ITEM.FC.FEATURES.PROPERTIES.TEXT];          // иконка: надпись
-  const color = (icon_color ?? MAP_CONST.COLOR.DEFAULT_ICON).toLowerCase();     // иконка: цвет
+  const color =                                                                 // иконка: цвет, приоритет fc.prop.color перед цветом скрипта
+    ( icon_properties[MAP_ITEM.FC.FEATURES.PROPERTIES.COLOR] != undefined) ?
+      icon_properties[MAP_ITEM.FC.FEATURES.PROPERTIES.COLOR] :
+    ((icon_color ?? MAP_CONST.COLOR.DEFAULT_STYLE_ICON).toLowerCase());
   const zoom  =                                                                 // иконка: масштаб
     (icon_properties[MAP_ITEM.FC.FEATURES.PROPERTIES.ZOOM] != undefined) ?
       ((icon_properties[MAP_ITEM.FC.FEATURES.PROPERTIES.ZOOM] !== false) ? icon_properties[MAP_ITEM.FC.FEATURES.PROPERTIES.ZOOM] : 1):
       ((zoom_map < MAP_CONST.CLASS.ICON.SVG_ZOOM_START) ? Math.pow(2.0, zoom_map-MAP_CONST.CLASS.ICON.SVG_ZOOM_START) : 1);
-
-
-  // SVG
-  if (icon_type == MAP_CONST.CLASS.ICON.SVG) {
-    if (classes_icon_list.length<1) return;
-    if (classes_icon_list[0].length<2) return;
-    let data = get_icon_data(classes_icon_list[0][1], color, zoom, text);
-    if (data == undefined) return;
-    let shadow = (icon_properties[MAP_ITEM.FC.FEATURES.PROPERTIES.SHADOW]!==false);
-    let top    = (icon_properties[MAP_ITEM.FC.FEATURES.PROPERTIES.TOP   ]===true);
-    return new L.DivIcon({
-      className:   classes_other_str+
-                   ((shadow)?' svg-shadow':'')+
-                   ((top   )?' svg-top'   :''),
-      iconSize:    [data.width,     data.height],
-      iconAnchor:  [data.anchor_dx, data.anchor_dy],                            // точка привязки svg относительно верхнего левого угла
-      popupAnchor: [1,             -data.height*1.1],
-      html:        data.svg,
-    });
-  }
 
 
   // FILE
@@ -94,7 +77,7 @@ export function icon_get(icon_color=undefined, icon_properties={}, zoom_map=unde
     let size_w = (classes_icon_list[0][2] ?? 25) * zoom|0;
     let size_h = (classes_icon_list[0][3] ?? 41) * zoom|0;
     return new L.Icon({
-      className:   classes_other_str,
+      className:   classes_other_str,                                           // иначе сторонние классы не применятся
       shadowUrl:   icon_file_path('shadow-marker'),
       shadowSize:  [size_h, size_h],
       iconUrl:     icon_file_path(file),
@@ -108,7 +91,7 @@ export function icon_get(icon_color=undefined, icon_properties={}, zoom_map=unde
   // FONT: MDI
   if (icon_type == MAP_CONST.CLASS.ICON.MDI) {
     return new L.DivIcon({
-      className: classes_other_str,
+      className: classes_other_str,                                             // иначе сторонние классы не применятся
       iconSize:  null,
       color:     color,
       html:
@@ -153,18 +136,24 @@ export function icon_get(icon_color=undefined, icon_properties={}, zoom_map=unde
   }
 
 
-  // DEFAULT
-  let size_w = 25 * zoom|0;
-  let size_h = 41 * zoom|0;
-  return new L.Icon({
-      className:   classes_other_str,                                             // иначе сторонние классы не применятся
-      shadowUrl:   icon_file_path('shadow-marker'),
-      shadowSize:  [size_h, size_h],
-      iconUrl:     icon_file_path('blue'),
-      iconSize:    [size_w,     size_h],
-      iconAnchor:  [size_w/2|0, size_h],                                          // указатель: x-center, y-bottom
-      popupAnchor: [1,         -size_h*1.1],
+  // SVG (DEFAULT)
+  if (icon_type == MAP_CONST.CLASS.ICON.SVG) {
+    if (classes_icon_list.length<1) return;
+    if (classes_icon_list[0].length<2) return;
+    let data = get_style_data_icon(classes_icon_list[0][1], color, zoom, text);
+    if (data == undefined) return;
+    // let shadow =  (icon_properties[MAP_ITEM.FC.FEATURES.PROPERTIES.SHADOW] !== false);
+    let class_top    =  (icon_properties[MAP_ITEM.FC.FEATURES.PROPERTIES.TOP   ] ===  true) ? ' svg-top' : '';
+    let class_shadow =  (icon_properties[MAP_ITEM.FC.FEATURES.PROPERTIES.SHADOW] ==  'red') ? ' svg-shadow-red' :
+                       ((icon_properties[MAP_ITEM.FC.FEATURES.PROPERTIES.SHADOW] !== false) ? ' svg-shadow'     : '');
+    return new L.DivIcon({
+      className:   classes_other_str+class_shadow+class_top,
+      iconSize:    [data.width,     data.height],
+      iconAnchor:  [data.anchor_dx, data.anchor_dy],                            // точка привязки svg относительно верхнего левого угла
+      popupAnchor: [1,             -data.height*1.1],
+      html:        data.svg,
     });
+  }
 }
 
 
