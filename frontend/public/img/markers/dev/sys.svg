@@ -7,27 +7,26 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   viewBox="0 0 20 73"
+   viewBox="0 0 101 82"
+   orient="auto"
+   markerUnits="userSpaceOnUse"
    version="1.1"
-   id="svg44"
+   id="svg18"
    sodipodi:docname="sys.svg"
-   width="20"
-   height="73"
    inkscape:version="0.92.5 (2060ec1f9f, 2020-04-08)">
   <metadata
-     id="metadata50">
+     id="metadata24">
     <rdf:RDF>
       <cc:Work
          rdf:about="">
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
   <defs
-     id="defs48" />
+     id="defs22" />
   <sodipodi:namedview
      pagecolor="#ffffff"
      bordercolor="#666666"
@@ -38,29 +37,20 @@
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
      inkscape:window-width="1920"
-     inkscape:window-height="1043"
-     id="namedview46"
+     inkscape:window-height="960"
+     id="namedview20"
      showgrid="false"
-     fit-margin-top="0"
-     fit-margin-left="0"
-     fit-margin-right="0"
-     fit-margin-bottom="0"
-     inkscape:zoom="12.356691"
-     inkscape:cx="13.625745"
-     inkscape:cy="49.468324"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
+     inkscape:zoom="9.5365854"
+     inkscape:cx="50.5"
+     inkscape:cy="61.971867"
+     inkscape:window-x="1920"
+     inkscape:window-y="27"
      inkscape:window-maximized="1"
-     inkscape:current-layer="svg44" />
-  <path
-     style="fill:none;stroke:#888888;stroke-width:4"
-     d="M 0,2 H 20 M 10,0 V 50 M 0,48 h 20"
-     id="path42"
-     inkscape:connector-curvature="0" />
+     inkscape:current-layer="svg18" />
   <circle
-     style="fill:#888888"
-     id="path52"
-     cx="10"
-     cy="65"
-     r="8" />
+     style="fill:none;stroke:#000000;stroke-width:4"
+     id="path3729"
+     cx="22"
+     cy="0"
+     r="20" />
 </svg>
