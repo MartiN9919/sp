@@ -36,7 +36,6 @@
           :options="cluster_options(map_ind)"
         >
           <l-geo-json
-            ref="geoJson"
             :geojson="data_normalize(map_ind, map_item)"
             :options="geojson_options(map_ind)"
           />
@@ -130,7 +129,7 @@ import {
 } from '@/components/Map/Leaflet/Components/Style/StyleIcon';
 
 import StyleSvg         from '@/components/Map/Leaflet/Components/Style/StyleSvg';
-import { classes_name_correct } from '@/components/Map/Leaflet/Components/Style/StyleData';
+import { correct_classes_name } from '@/components/Map/Leaflet/Components/Style/StyleData';
 import StyleDecor       from '@/components/Map/Leaflet/Components/Style/StyleDecor';
 
 import                       '@/components/Map/Leaflet/Components/Style/StyleIconPulse';
@@ -256,7 +255,6 @@ export default {
       'setActiveTool',
     ]),
 
-
     // ===============
     // RANGE
     // ===============
@@ -307,8 +305,6 @@ export default {
         });
         fc.features = features;
       }
-
-      // console.log(this.$refs.geoJson)
       return fc;
     },
 
@@ -371,7 +367,7 @@ export default {
           // класс для стилей линий и полигонов
           let classes_str = get_feature_class(feature);
           // коррекция названий классов для избежания повторов из разных скриптов
-          classes_str = classes_name_correct(classes_str, map_ind, feature[MAP_ITEM.FC.FEATURES.IND]);
+          classes_str = correct_classes_name(classes_str, map_ind, feature[MAP_ITEM.FC.FEATURES.IND]);
           if ((classes_str != '') && (layer.setStyle)) { layer.setStyle({'className': classes_str, }); }
 
           // редактирование запрещено - удалить pm - для уменьшения объема вычислений
@@ -409,6 +405,8 @@ export default {
             fillColor:   feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._FILL_COLOR_],    // set in mixin: Color
             fillRule:    'evenodd',
             className:   classSel,
+            // smoothFactor: 50,
+            // noClip:       true,
           };
         },
       };
@@ -444,7 +442,6 @@ export default {
     on_edit_ok(e, dat) {
       this.MAP_ACT_EDIT({data: dat});
     },
-
 
     // GET BUTTON
     btn_get_click(e) {

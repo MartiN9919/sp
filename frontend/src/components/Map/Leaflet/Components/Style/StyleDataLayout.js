@@ -102,7 +102,7 @@ export const SVG = {
       </marker>
     `,
   },
-  'arc-layout-joint-start-180': {
+  'arc-layout-start-180': {
     zoom: 5.0,
     style: '{class} { marker-start: url(#{id}); }',
     defs: `

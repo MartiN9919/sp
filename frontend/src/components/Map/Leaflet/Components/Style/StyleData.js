@@ -184,7 +184,8 @@ function calc_svg_size(svg, zoom_common=1) {
 
 
 // скоректированный список классов с учетом state.selectedTemplate.activeAnalysts[index_item]
-export function classes_name_correct(classes_str, index_item, index_feature) {
+// сейчас только для DATA_SVG
+export function correct_classes_name(classes_str, index_item, index_feature) {
   let classes_list = classes_str.trim().replace(/\s+/g, ' ').split(' ');  // убрать лишние пробелы
   classes_list = [...new Set(classes_list)];                              // исключить повторы
 
