@@ -63,6 +63,7 @@ export const MAP_ITEM = {
   FC: {
     //TYPE: 'type',                       // не используется
     FEATURES: {
+      IND:        'ind',                  // порядковый номер фигуры в fc.features
       PROPERTIES: {
         CLASS:        'class',            // key: класс для стилизации
         DATE:         'date',             // дата

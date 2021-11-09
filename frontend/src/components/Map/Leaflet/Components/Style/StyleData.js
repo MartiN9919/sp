@@ -48,22 +48,17 @@ const DATA_SVG = {
 /*
  *
  * ICON
- *
+ * zoom - вычислено с учетом zoom_map, feature[].properties.[MAP_ITEM.FC.FEATURES.PROPERTIES.ZOOM]
  */
-const regexp_vb  = /<svg[^>]*viewBox\s*=\s*"\s*0\s*0\s*(?<width>\d+(?:\.\d+)?)\s*(?<height>\d+(?:\.\d+)?)\s*"/mi;
-export function get_style_data_icon(icon_data_key, color=MAP_CONST.COLOR.DEFAULT_STYLE_ICON, zoom=1, text=undefined) {
-  const data = DATA_ICON[icon_data_key];
+export function get_style_data_icon(class_item, color=MAP_CONST.COLOR.DEFAULT_STYLE_ICON, zoom=1, text=undefined) {
+  const data = DATA_ICON[class_item];
   if (data === undefined) return;
   if (text === undefined) text = '';
-  const id = 'icon_'+(new Date().getTime())+'_'+((Math.random()*1000000000)|0);
-  let svg  = JSON.parse(JSON.stringify(data.svg)).replace(/{color}/g, color).replace(/{text}/g, text).replace(/{id}/g, id);
-  let svg_size   = svg.match(regexp_vb)?.groups;
-  let svg_width  = svg_size?.width;
-  let svg_height = svg_size?.height;
+  const id  = 'icon-'+get_random();
+  const svg = JSON.parse(JSON.stringify(data.svg)).replace(/{color}/g, color).replace(/{text}/g, text).replace(/{id}/g, id);
+  const zoom_common = zoom*MAP_CONST.CLASS.ICON.SVG_ZOOM_BASE*(data.zoom??1.);
+  const [svg_width, svg_height] = calc_svg_size(svg, zoom_common);
   if ((svg_width==undefined) || (svg_height==undefined)) return;
-  let zoom_common = zoom*MAP_CONST.CLASS.ICON.SVG_ZOOM_BASE*(data.zoom??1.);
-  svg_width  = svg_width *zoom_common;//|0;
-  svg_height = svg_height*zoom_common;//|0;
   return {
     svg:       svg.replace(/{width}/g, svg_width).replace(/{height}/g, svg_height),
     width:     svg_width,
@@ -77,9 +72,9 @@ export function get_style_data_icon(icon_data_key, color=MAP_CONST.COLOR.DEFAULT
 
 /*
  * DECOR
- * zoom - пока не используется
+ * zoom - вычислено с учетом zoom_map, feature[].properties.[MAP_ITEM.FC.FEATURES.PROPERTIES.ZOOM]
  */
-export function get_style_data_decor(classes_str, index, color=MAP_CONST.COLOR.DEFAULT_STYLE_PATH, zoom=1, icon_properties={}) {
+export function get_style_data_decor(classes_str, color=MAP_CONST.COLOR.DEFAULT_STYLE_PATH, icon_properties={}) {
   let ret = [];
   let classes_list = classes_str.trim().replace(/\s+/g, ' ').split(' ');  // убрать лишние пробелы
   classes_list = [...new Set(classes_list)];                              // исключить повторы
@@ -130,12 +125,13 @@ export function get_style_data_decor(classes_str, index, color=MAP_CONST.COLOR.D
 /*
  *
  * SVG
+ * zoom - вычислено с учетом zoom_map, feature[].properties.[MAP_ITEM.FC.FEATURES.PROPERTIES.ZOOM]
  *
  */
 // список классов в словарь строк style, defs
 // индекс item в state.selectedTemplate.activeAnalysts
 // return {style: '...', defs: '...'}
-export function get_style_data_svg(classes_str, index, color=MAP_CONST.COLOR.DEFAULT_STYLE_PATH, zoom=1) {
+export function get_style_data_svg(classes_str, color=MAP_CONST.COLOR.DEFAULT_STYLE_PATH, zoom=1, index_item, index_feature) {
   let ret = {style: '', defs: ''};
   let classes_list = classes_str.trim().replace(/\s+/g, ' ').split(' ');  // убрать лишние пробелы
   classes_list = [...new Set(classes_list)];                              // исключить повторы
@@ -147,12 +143,11 @@ export function get_style_data_svg(classes_str, index, color=MAP_CONST.COLOR.DEF
     if (data === undefined) return;
     let data_style = (data.style)?JSON.parse(JSON.stringify(data.style)):undefined;
     let data_defs  = (data.defs )?JSON.parse(JSON.stringify(data.defs)) :undefined;
-  //console.log(data.zoom)
     let zoom_common = zoom*MAP_CONST.CLASS.ICON.SVG_ZOOM_BASE*(data.zoom??1.);
 
     // уникальные id и имя класса
-    let id        = 'svg-'+(new Date().getTime())+'-'+Math.round(Math.random()*100000); //+'-'+index+'-'+class_ind;
-    let class_str = '.'+class_name_correct(class_item, index);
+    let id        = 'svg-'+get_random();
+    let class_str = '.'+correct_class_name(class_item, index_item, index_feature);
 
     // заменить переменные
     if (data_style) {
@@ -161,6 +156,10 @@ export function get_style_data_svg(classes_str, index, color=MAP_CONST.COLOR.DEF
     }
 
     if (data_defs) {
+      const [svg_width, svg_height] = calc_svg_size(data_defs, zoom_common);
+      if ((svg_width!=undefined) && (svg_height!=undefined)) {
+        data_defs = data_defs.replace(/{width}/g, svg_width).replace(/{height}/g, svg_height);
+      }
       data_defs = data_defs.replace(/{id}/g, id).replace(/{color}/g, color);
       ret.defs += data_defs+'\n';
     }
@@ -170,15 +169,30 @@ export function get_style_data_svg(classes_str, index, color=MAP_CONST.COLOR.DEF
 }
 
 
-// скоректированный список классов с учетом state.selectedTemplate.activeAnalysts[index]
-export function classes_name_correct(classes_str, index) {
+// расчитать реальный размер SVG
+const regexp_vb  = /^\s*<[^>]*viewBox\s*=\s*"\s*0\s*0\s*(?<width>\d+(?:\.\d+)?)\s*(?<height>\d+(?:\.\d+)?)\s*"/mi;
+function calc_svg_size(svg, zoom_common=1) {
+  let svg_size   = svg.match(regexp_vb)?.groups;
+  let svg_width  = svg_size?.width;
+  let svg_height = svg_size?.height;
+  if ((svg_width==undefined) || (svg_height==undefined)) return [undefined, undefined];
+  svg_width  = svg_width *zoom_common;//|0;
+  svg_height = svg_height*zoom_common;//|0;
+  return [svg_width, svg_height];
+}
+
+
+
+// скоректированный список классов с учетом state.selectedTemplate.activeAnalysts[index_item]
+// сейчас только для DATA_SVG
+export function correct_classes_name(classes_str, index_item, index_feature) {
   let classes_list = classes_str.trim().replace(/\s+/g, ' ').split(' ');  // убрать лишние пробелы
   classes_list = [...new Set(classes_list)];                              // исключить повторы
 
   classes_list.forEach(function(class_item, class_ind) {
     let data = DATA_SVG[class_item];
     if (data !== undefined) {
-      classes_list[class_ind] = class_name_correct(class_item, index);
+      classes_list[class_ind] = correct_class_name(class_item, index_item, index_feature);
     }
   });
 
@@ -187,6 +201,12 @@ export function classes_name_correct(classes_str, index) {
 
 
 // скоректированное название класса с учетом state.selectedTemplate.activeAnalysts[index]
-function class_name_correct(class_str, index) {
-  return class_str+'-'+index;
+function correct_class_name(class_str, index_item, index_feature) {
+  return class_str+'-'+index_item+'-'+index_feature;
+}
+
+
+
+function get_random() {
+  return (new Date().getTime())+'_'+((Math.random()*1000000000)|0);
 }

@@ -20,6 +20,7 @@ export const ICON = {
 
 export const DECOR = {
   // стрелка: <=>
+  // надо певернуть svg на 90 градусов
   'line-test_arrow_double_end': {
     offset: '100%', repeat: 0,
     symbol_type: 'marker', symbol_options: { rotate: true, markerOptions: { icon: 'icon-svg-test_arrow_double', }, },
@@ -48,21 +49,6 @@ export const DECOR = {
  * viewBox: <symbol> <image> <marker> <pattern> <view>
  */
 export const SVG = {
-  // стрелка: <=>
-  'arrow-double-end': {
-    zoom: 4,
-    style: '{class} { marker-end: url(#{id}); }',
-    defs: `
-      <marker id="{id}" viewBox="0 0 50 100" fill="{color}" orient="auto" markerUnits='userSpaceOnUse' markerWidth='101' markerHeight='33' refX='0' refY='16.5' opacity='.5'>
-        <path d='M1,17 L21,1 L21,33 Z'/>
-        <path d='M101,17 L82,1 L82,33 Z'/>
-        <rect x="20" y="6"  width="64" height="5" />
-        <rect x="20" y="23" width="64" height="5" />
-      </marker>
-    `,
-  },
-
-
   // черта: тройная
   'dash-3': {
     style: '{class} { marker-pattern: "40 url(#{id}_2) 40 url(#{id}_1)"; }',

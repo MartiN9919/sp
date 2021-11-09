@@ -5,6 +5,11 @@ path {
   stroke-width: 3;
 }
 
+/* УСТРАНЕНИЕ БАГА */
+/* https://github.com/Leaflet/Leaflet/issues/2680 */
+path[d="M0 0"] { display:none }
+
+
 /* БЕГУЩАЯ ПУНКТИРНАЯ ЛИНИЯ-ГРАНИЦА */
 .ant {
   stroke-dasharray: 8;

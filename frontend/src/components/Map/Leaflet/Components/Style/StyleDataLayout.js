@@ -79,6 +79,40 @@ export const DECOR = {
 
 
 export const SVG = {
+  // стыки: стрелка <=>
+  'arrow-layout-double-end': {
+    zoom: 1.8,
+    style: '{class} { marker-end: url(#{id}); }',
+    defs: `
+      <marker id="{id}" viewBox="0 0 101 82" fill="{color}" orient="auto" markerUnits="userSpaceOnUse" markerWidth="{width}" markerHeight="{height}" refX='0' refY='16.5' opacity='.7'>
+        <path d='M1,17 L21,1 L21,33 Z M101,17 L82,1 L82,33 Z'/>
+        <rect x="20" y="6"  width="64" height="5" />
+        <rect x="20" y="23" width="64" height="5" />
+      </marker>
+    `,
+  },
+
+  // стыки: дуга начало
+  'arc-layout-start': {
+    zoom: 5.0,
+    style: '{class} { marker-start: url(#{id}); }',
+    defs: `
+      <marker id="{id}" viewBox="0 0 44 22" fill="{color}" orient="auto" markerUnits="userSpaceOnUse" markerWidth="{width}" markerHeight="{height}" refX='44' refY='0' opacity='.7'>
+        <circle style="fill:none;stroke:{color};stroke-width:4" cx="22" cy="0" r="20" />
+      </marker>
+    `,
+  },
+  'arc-layout-start-180': {
+    zoom: 5.0,
+    style: '{class} { marker-start: url(#{id}); }',
+    defs: `
+      <marker id="{id}" viewBox="0 0 44 22" fill="{color}" orient="auto" markerUnits="userSpaceOnUse" markerWidth="{width}" markerHeight="{height}" refX='44' refY='22' opacity='.7'>
+        <circle style="fill:none;stroke:{color};stroke-width:4" cx="22" cy="24" r="20" />
+      </marker>
+    `,
+  },
+
+
   // штриховка: диагональные штрихи тонкие
   'hatch-diagonal-1': {
     style: '{class} { fill: url(#{id}); }',
