@@ -174,6 +174,21 @@ export const ICON = {
       </svg>
     `,
   },
+  // пограничный наряд закордон
+  'force_patrol_control_outside': {
+    anchor_dx: 172,
+    anchor_dy: 70,
+    zoom:      1.2,
+    svg: `
+      <svg width={width} height={height} viewBox="0 0 244 140">
+        <g transform="rotate({rotate} 172 70)">
+          <circle style="fill:#fff;stroke:#00f;stroke-width:4" cx="172" cy="70" r="20"/>
+          <path style="fill:none;stroke:#00f;stroke-width:4" d="M172,51 V5 M182,26 172,5 162,26"/>
+        </g>
+        <text style="font-style:normal;font-size:16px;font-family:sans-serif;text-anchor:end" x="140" y="75">{text}</text>
+      </svg>
+    `,
+  },
 }
 
 
@@ -367,13 +382,27 @@ export const TEST = [
     "properties": {
       "class": "icon-svg-force_patrol_control_inside",
       "hint": "icon-svg-force_patrol_control_inside",
-      "rotate": 90,
+      "rotate": 270,
       "date": "2021-06-09",
-      "text": "Д-2чел.-3 погз",
+      "text": "Д-2чел-3погз",
     },
     "geometry": {
       "type": "Point",
       "coordinates": [27.5,54.25],
+    },
+  },
+  {
+    "type": "Feature",
+    "properties": {
+      "class": "icon-svg-force_patrol_control_outside",
+      "hint": "icon-svg-force_patrol_control_outside",
+      "rotate": 90,
+      "date": "2021-03-09",
+      "text": "Д-3чел-2погз",
+    },
+    "geometry": {
+      "type": "Point",
+      "coordinates": [27.5,54.0],
     },
   },
 ]
