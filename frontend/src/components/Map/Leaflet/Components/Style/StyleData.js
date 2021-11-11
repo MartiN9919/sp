@@ -46,16 +46,31 @@ const DATA_SVG = {
 }
 
 /*
- *
  * ICON
- * zoom - вычислено с учетом zoom_map, feature[].properties.[MAP_ITEM.FC.FEATURES.PROPERTIES.ZOOM]
+ *
+ * options:
+ *   class_item - класс иконки (без icon-svg-)
+ *   color
+ *   zoom - вычислено с учетом zoom_map, feature[].properties.[MAP_ITEM.FC.FEATURES.PROPERTIES.ZOOM]
+ *   rotate - угол поворота, в градусах
+ *   text -
  */
-export function get_style_data_icon(class_item, color=MAP_CONST.COLOR.DEFAULT_STYLE_ICON, zoom=1, text=undefined) {
-  const data = DATA_ICON[class_item];
+export function get_style_data_icon(options) {
+  // const class_item = options.class_item;
+  const color  = options.color  ?? MAP_CONST.COLOR.DEFAULT_STYLE_ICON;
+  const zoom   = options.zoom   ?? 1;
+  const rotate = options.rotate ?? 0;
+  const text   = options.text   ?? '';
+
+  const data   = DATA_ICON[options.class_item];
   if (data === undefined) return;
-  if (text === undefined) text = '';
-  const id  = 'icon-'+get_random();
-  const svg = JSON.parse(JSON.stringify(data.svg)).replace(/{color}/g, color).replace(/{text}/g, text).replace(/{id}/g, id);
+  const id     = 'icon-'+get_random();
+  const svg    =
+    JSON.parse(JSON.stringify(data.svg))
+      .replace(/{color}/g, color)
+      .replace(/{text}/g, text)
+      .replace(/{id}/g, id)
+      .replace(/{rotate}/g, rotate);
   const zoom_common = zoom*MAP_CONST.CLASS.ICON.SVG_ZOOM_BASE*(data.zoom??1.);
   const [svg_width, svg_height] = calc_svg_size(svg, zoom_common);
   if ((svg_width==undefined) || (svg_height==undefined)) return;
@@ -72,9 +87,17 @@ export function get_style_data_icon(class_item, color=MAP_CONST.COLOR.DEFAULT_ST
 
 /*
  * DECOR
- * zoom - вычислено с учетом zoom_map, feature[].properties.[MAP_ITEM.FC.FEATURES.PROPERTIES.ZOOM]
+ *
+ * options:
+ *   classes_str - список классов
+ *   color
+ *   icon_properties
  */
-export function get_style_data_decor(classes_str, color=MAP_CONST.COLOR.DEFAULT_STYLE_PATH, icon_properties={}) {
+export function get_style_data_decor(options) {
+  const classes_str     = options.classes_str;
+  const color           = options.color ?? MAP_CONST.COLOR.DEFAULT_STYLE_PATH;
+  const icon_properties = options.icon_properties ?? {};
+
   let ret = [];
   let classes_list = classes_str.trim().replace(/\s+/g, ' ').split(' ');  // убрать лишние пробелы
   classes_list = [...new Set(classes_list)];                              // исключить повторы
@@ -123,16 +146,26 @@ export function get_style_data_decor(classes_str, color=MAP_CONST.COLOR.DEFAULT_
 
 
 /*
- *
  * SVG
- * zoom - вычислено с учетом zoom_map, feature[].properties.[MAP_ITEM.FC.FEATURES.PROPERTIES.ZOOM]
  *
+ * options:
+ *   classes_str - список классов
+ *   color
+ *   zoom - вычислено с учетом zoom_map, feature[].properties.[MAP_ITEM.FC.FEATURES.PROPERTIES.ZOOM]
+ *   rotate - угол поворота, в градусах
+ *   index_item - state.selectedTemplate.activeAnalysts
+ *   index_feature
+ * return {style: '...', defs: '...'}
  */
-// список классов в словарь строк style, defs
-// индекс item в state.selectedTemplate.activeAnalysts
-// return {style: '...', defs: '...'}
-export function get_style_data_svg(classes_str, color=MAP_CONST.COLOR.DEFAULT_STYLE_PATH, zoom=1, index_item, index_feature) {
+export function get_style_data_svg(options) {
+  const classes_str   = options.classes_str;
+  const color         = options.color  ?? MAP_CONST.COLOR.DEFAULT_STYLE_PATH;
+  const zoom          = options.zoom   ?? 1;
+  const rotate        = options.rotate ?? 0;
+  const index_item    = options.index_item;
+  const index_feature = options.index_feature;
   let ret = {style: '', defs: ''};
+
   let classes_list = classes_str.trim().replace(/\s+/g, ' ').split(' ');  // убрать лишние пробелы
   classes_list = [...new Set(classes_list)];                              // исключить повторы
 
@@ -151,7 +184,7 @@ export function get_style_data_svg(classes_str, color=MAP_CONST.COLOR.DEFAULT_ST
 
     // заменить переменные
     if (data_style) {
-      data_style = data_style.replace(/{id}/g, id).replace(/{color}/g, color).replace(/{class}/g, class_str);
+      data_style = data_style.replace(/{id}/g, id).replace(/{color}/g, color).replace(/{class}/g, class_str).replace(/{rotate}/g, rotate);
       ret.style += data_style+'\n';
     }
 
@@ -160,7 +193,7 @@ export function get_style_data_svg(classes_str, color=MAP_CONST.COLOR.DEFAULT_ST
       if ((svg_width!=undefined) && (svg_height!=undefined)) {
         data_defs = data_defs.replace(/{width}/g, svg_width).replace(/{height}/g, svg_height);
       }
-      data_defs = data_defs.replace(/{id}/g, id).replace(/{color}/g, color);
+      data_defs = data_defs.replace(/{id}/g, id).replace(/{color}/g, color).replace(/{rotate}/g, rotate);
       ret.defs += data_defs+'\n';
     }
   });
@@ -186,6 +219,7 @@ function calc_svg_size(svg, zoom_common=1) {
 // скоректированный список классов с учетом state.selectedTemplate.activeAnalysts[index_item]
 // сейчас только для DATA_SVG
 export function correct_classes_name(classes_str, index_item, index_feature) {
+  classes_str, index_item, index_feature
   let classes_list = classes_str.trim().replace(/\s+/g, ' ').split(' ');  // убрать лишние пробелы
   classes_list = [...new Set(classes_list)];                              // исключить повторы
 

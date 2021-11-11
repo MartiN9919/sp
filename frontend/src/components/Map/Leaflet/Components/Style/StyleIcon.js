@@ -60,12 +60,13 @@ export function icon_get(icon_color=undefined, icon_properties={}, zoom_map=unde
   const classes_icon_str  = classes_icon_list.map((val) => val.join(MAP_CONST.CLASS.ICON.SEPARATOR)).join(' '); // 'mdi-flag mdi-spin' 'fs-spec0'
 
   // остальные опции
-  const text  = icon_properties[MAP_ITEM.FC.FEATURES.PROPERTIES.TEXT];          // иконка: надпись
-  const color =                                                                 // иконка: цвет, приоритет fc.prop.color перед цветом скрипта
+  const text   = icon_properties[MAP_ITEM.FC.FEATURES.PROPERTIES.TEXT];         // иконка: надпись
+  const rotate = icon_properties[MAP_ITEM.FC.FEATURES.PROPERTIES.ROTATE];       // иконка: поворот
+  const color  =                                                                // иконка: цвет, приоритет fc.prop.color перед цветом скрипта
     ( icon_properties[MAP_ITEM.FC.FEATURES.PROPERTIES.COLOR] != undefined) ?
       icon_properties[MAP_ITEM.FC.FEATURES.PROPERTIES.COLOR] :
     ((icon_color ?? MAP_CONST.COLOR.DEFAULT_STYLE_ICON).toLowerCase());
-  const zoom  =                                                                 // иконка: масштаб
+  const zoom   =                                                                // иконка: масштаб
     (icon_properties[MAP_ITEM.FC.FEATURES.PROPERTIES.ZOOM] != undefined) ?
       ((icon_properties[MAP_ITEM.FC.FEATURES.PROPERTIES.ZOOM] !== false) ? icon_properties[MAP_ITEM.FC.FEATURES.PROPERTIES.ZOOM] : 1):
       ((zoom_map < MAP_CONST.CLASS.ICON.SVG_ZOOM_START) ? Math.pow(2.0, zoom_map-MAP_CONST.CLASS.ICON.SVG_ZOOM_START) : 1);
@@ -140,7 +141,14 @@ export function icon_get(icon_color=undefined, icon_properties={}, zoom_map=unde
   if (icon_type == MAP_CONST.CLASS.ICON.SVG) {
     if (classes_icon_list.length<1) return;
     if (classes_icon_list[0].length<2) return;
-    let data = get_style_data_icon(classes_icon_list[0][1], color, zoom, text);
+    let data = get_style_data_icon({
+      class_item: classes_icon_list[0][1],
+      color:      color,
+      zoom:       zoom,
+      rotate:     rotate,
+      text:       text,
+    });
+
     if (data == undefined) return;
     // let shadow =  (icon_properties[MAP_ITEM.FC.FEATURES.PROPERTIES.SHADOW] !== false);
     let class_top    =  (icon_properties[MAP_ITEM.FC.FEATURES.PROPERTIES.TOP   ] ===  true) ? ' svg-top' : '';

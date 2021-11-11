@@ -97,8 +97,8 @@ export const SVG = {
     zoom: 5.0,
     style: '{class} { marker-start: url(#{id}); }',
     defs: `
-      <marker id="{id}" viewBox="0 0 44 22" fill="{color}" orient="auto" markerUnits="userSpaceOnUse" markerWidth="{width}" markerHeight="{height}" refX='44' refY='0' opacity='.7'>
-        <circle style="fill:none;stroke:{color};stroke-width:4" cx="22" cy="0" r="20" />
+      <marker id="{id}" viewBox="0 0 44 22" fill="{color}" orient="auto" markerUnits="userSpaceOnUse" markerWidth="{width}" markerHeight="{height}" refX='41' refY='0' opacity='.7'>
+        <circle style="fill:none;stroke:{color};stroke-width:2" cx="22" cy="0" r="20" />
       </marker>
     `,
   },
@@ -106,8 +106,8 @@ export const SVG = {
     zoom: 5.0,
     style: '{class} { marker-start: url(#{id}); }',
     defs: `
-      <marker id="{id}" viewBox="0 0 44 22" fill="{color}" orient="auto" markerUnits="userSpaceOnUse" markerWidth="{width}" markerHeight="{height}" refX='44' refY='22' opacity='.7'>
-        <circle style="fill:none;stroke:{color};stroke-width:4" cx="22" cy="24" r="20" />
+      <marker id="{id}" viewBox="0 0 44 22" fill="{color}" orient="auto" markerUnits="userSpaceOnUse" markerWidth="{width}" markerHeight="{height}" refX='41' refY='22' opacity='.7'>
+        <circle style="fill:none;stroke:{color};stroke-width:2" cx="22" cy="22" r="20" />
       </marker>
     `,
   },
