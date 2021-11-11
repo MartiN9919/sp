@@ -70,7 +70,6 @@ export default {
             classes_str:   properties[MAP_ITEM.FC.FEATURES.PROPERTIES.CLASS] ?? '',
             color:         color,
             zoom:          zoom,
-            degree:        20,
             index_item:    items_ind,
             index_feature: features_ind,    // item.fc.features[features_ind][MAP_ITEM.FC.FEATURES.IND]
           });

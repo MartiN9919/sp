@@ -161,16 +161,16 @@ export const ICON = {
   },
   // пограничный наряд прикордон
   'force_patrol_control_inside': {
-    anchor_dx: 22,
+    anchor_dx: 72,
     anchor_dy: 70,
     zoom:      1.2,
     svg: `
-      <svg width={width} height={height} viewBox="0 0 244 92">
-        <g transform="rotate({degree} 22 70)">
-          <circle style="fill:#fff;stroke:#f00;stroke-width:4" cx="22" cy="70" r="20"/>
-          <path style="fill:none;stroke:#f00;stroke-width:4" d="M22,51 V5 M32,26 22,5 12,26"/>
+      <svg width={width} height={height} viewBox="0 0 244 140">
+        <g transform="rotate({rotate} 72 70)">
+          <circle style="fill:#fff;stroke:#f00;stroke-width:4" cx="72" cy="70" r="20"/>
+          <path style="fill:none;stroke:#f00;stroke-width:4" d="M72,51 V5 M82,26 72,5 62,26"/>
         </g>
-        <text style="font-style:normal;font-size:16px;font-family:sans-serif;text-anchor:start" x="50" y="75">{text}</text>
+        <text style="font-style:normal;font-size:16px;font-family:sans-serif;text-anchor:start" x="100" y="75">{text}</text>
       </svg>
     `,
   },
@@ -367,6 +367,7 @@ export const TEST = [
     "properties": {
       "class": "icon-svg-force_patrol_control_inside",
       "hint": "icon-svg-force_patrol_control_inside",
+      "rotate": 90,
       "date": "2021-06-09",
       "text": "Д-2чел.-3 погз",
     },
