@@ -1,5 +1,6 @@
 import axios from 'axios'
 import store from '../store/index'
+import router from "@/router"
 import CONST from '@/plugins/const'
 
 export const WS_SERVER_IP = 'ws://' + CONST.URL.SERVER_IP
@@ -53,6 +54,9 @@ http.interceptors.response.use(function (response) {
     store.dispatch('appendErrorAlert', { status: 'no connect' })
   else if(!checkErrorStatusCode(error.response.status))
     store.dispatch('appendErrorAlert', error.response)
+  else if(checkErrorStatusCode(error.response.status) && router.history.current.meta.isAuth && !router.history.pending) {
+    router.go({name: 'Login'})
+  }
   return Promise.reject(error)
 })
 

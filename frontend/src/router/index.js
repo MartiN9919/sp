@@ -5,6 +5,7 @@ import {checkErrorStatusCode} from '@/plugins/axios_settings'
 
 Vue.use(VueRouter)
 
+
 const routes = [
   {
     path: '/login',
@@ -41,7 +42,7 @@ const router = new VueRouter({
   routes
 })
 
-router.beforeEach((to, from, next) => {
+router.beforeResolve((to, from, next) => {
   if (to.matched.some(record => record.meta.isAuth)) {
     store.dispatch('identifyUser', {})
       .then(() => { next() })
@@ -51,13 +52,6 @@ router.beforeEach((to, from, next) => {
       .then(() => { next({ name: 'Map' }) })
       .catch(() => { next() })
   }
-})
-
-router.beforeResolve((to, from, next) => {
-  next()
-})
-
-router.afterEach((to, from) => {
 })
 
 export default router
