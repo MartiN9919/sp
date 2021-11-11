@@ -224,6 +224,17 @@ export const ICON = {
       </svg>
     `,
   },
+  // квадрокоптер для траектории
+  'force_quadcopter_route': {
+    anchor_dx: 20,
+    anchor_dy: 20,
+    zoom:      .8,
+    svg: `
+      <svg width={width} height={height} viewBox="0 0 40 40">
+        <path style="fill:none;stroke:{color};stroke-width:4" d="M6,6 34,34 M6,34 34,6 M2,10 10,2 M30,2 38,10  M30,38 38,30  M2,30 10,38"/>
+      </svg>
+    `,
+  },
 }
 
 
@@ -243,7 +254,18 @@ export const DECOR = {
     { offset: 0,      repeat: 150, symbol_type: 'marker', symbol_options: { rotate: true,  markerOptions: { color: '#00f', icon: 'icon-svg-force_helicopter_route', }, }, icon_properties: { shadow: false, }, },
     { offset: 0,      repeat: 20,  symbol_type: 'dash',   symbol_options: { pixelSize: 10, pathOptions:   { color: '#00f', weight: 2, }, }, },
   ],
-
+  // линия - Х - траектория вертолета прикордон
+  'line-force_quadcopter_route_inside': [
+    { offset: '100%', repeat: 0,   symbol_type: 'arrow',  symbol_options: { pixelSize: 8,  pathOptions:   { color: '#f00', weight: 2, stroke: true, }, }, icon_properties: { shadow: false, }, },
+    { offset: 0,      repeat: 150, symbol_type: 'marker', symbol_options: { rotate: true,  markerOptions: { color: '#f00', icon: 'icon-svg-force_quadcopter_route', }, }, icon_properties: { shadow: false, }, },
+    { offset: 0,      repeat: 20,  symbol_type: 'dash',   symbol_options: { pixelSize: 10, pathOptions:   { color: '#f00', weight: 2, }, }, },
+  ],
+  // линия - Х - траектория вертолета закордон
+  'line-force_quadcopter_route_outside': [
+    { offset: '100%', repeat: 0,   symbol_type: 'arrow',  symbol_options: { pixelSize: 8,  pathOptions:   { color: '#00f', weight: 2, stroke: true, }, }, icon_properties: { shadow: false, }, },
+    { offset: 0,      repeat: 150, symbol_type: 'marker', symbol_options: { rotate: true,  markerOptions: { color: '#00f', icon: 'icon-svg-force_quadcopter_route', }, }, icon_properties: { shadow: false, }, },
+    { offset: 0,      repeat: 20,  symbol_type: 'dash',   symbol_options: { pixelSize: 10, pathOptions:   { color: '#00f', weight: 2, }, }, },
+  ],
 }
 
 
@@ -501,8 +523,8 @@ export const TEST = [
   {
     "type": "Feature",
     "properties": {
-      "class": "line-force_helicopter_route_outside hidden",
-      "hint": "line-force_helicopter_route_outside hidden",
+      "class": "line-force_quadcopter_route_outside hidden",
+      "hint": "line-force_quadcopter_route_outside hidden",
       "date": "2021-05-03",
       //"color": "#888",
     },
