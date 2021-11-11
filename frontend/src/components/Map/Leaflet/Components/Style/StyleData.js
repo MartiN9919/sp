@@ -87,9 +87,17 @@ export function get_style_data_icon(options) {
 
 /*
  * DECOR
- * zoom - вычислено с учетом zoom_map, feature[].properties.[MAP_ITEM.FC.FEATURES.PROPERTIES.ZOOM]
+ *
+ * options:
+ *   classes_str - список классов
+ *   color
+ *   icon_properties
  */
-export function get_style_data_decor(classes_str, color=MAP_CONST.COLOR.DEFAULT_STYLE_PATH, icon_properties={}) {
+export function get_style_data_decor(options) {
+  const classes_str     = options.classes_str;
+  const color           = options.color ?? MAP_CONST.COLOR.DEFAULT_STYLE_PATH;
+  const icon_properties = options.icon_properties ?? {};
+
   let ret = [];
   let classes_list = classes_str.trim().replace(/\s+/g, ' ').split(' ');  // убрать лишние пробелы
   classes_list = [...new Set(classes_list)];                              // исключить повторы
@@ -211,6 +219,7 @@ function calc_svg_size(svg, zoom_common=1) {
 // скоректированный список классов с учетом state.selectedTemplate.activeAnalysts[index_item]
 // сейчас только для DATA_SVG
 export function correct_classes_name(classes_str, index_item, index_feature) {
+  classes_str, index_item, index_feature
   let classes_list = classes_str.trim().replace(/\s+/g, ' ').split(' ');  // убрать лишние пробелы
   classes_list = [...new Set(classes_list)];                              // исключить повторы
 
