@@ -95,7 +95,7 @@ export function get_style_data_icon(options) {
  */
 export function get_style_data_decor(options) {
   const classes_str     = options.classes_str;
-  const color           = options.color ?? MAP_CONST.COLOR.DEFAULT_STYLE_PATH;
+  let   color           = options.color ?? MAP_CONST.COLOR.DEFAULT_STYLE_PATH;
   const icon_properties = options.icon_properties ?? {};
 
   let ret = [];
@@ -112,6 +112,8 @@ export function get_style_data_decor(options) {
     data.forEach(function(data_item, data_ind) {
       // тип: маркер
       if (data[data_ind].symbol_type == 'marker') {
+        // приоритет цвета декорации над цветом фигуры и цветом скрипта
+        if (data[data_ind].symbol_options.markerOptions.color != undefined) color = data[data_ind].symbol_options.markerOptions.color;
         data[data_ind].symbol_options.markerOptions.icon = icon_get(color, {
           [MAP_ITEM.FC.FEATURES.PROPERTIES.CLASS   ]: data[data_ind].symbol_options.markerOptions.icon,
           ...icon_properties,

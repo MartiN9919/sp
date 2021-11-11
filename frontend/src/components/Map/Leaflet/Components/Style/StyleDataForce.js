@@ -213,6 +213,17 @@ export const ICON = {
       </svg>
     `,
   },
+  // вертолет для траектории
+  'force_helicopter_route': {
+    anchor_dx: 20,
+    anchor_dy: 20,
+    zoom:      .8,
+    svg: `
+      <svg width={width} height={height} viewBox="0 0 40 40">
+        <path style="fill:none;stroke:{color};stroke-width:4" d="M2,2 38,38 M2,38 38,2"/>
+      </svg>
+    `,
+  },
 }
 
 
@@ -220,6 +231,18 @@ export const ICON = {
 
 
 export const DECOR = {
+  // линия - Х - траектория вертолета прикордон
+  'line-force_helicopter_route_inside': [
+    { offset: '100%', repeat: 0,   symbol_type: 'arrow',  symbol_options: { pixelSize: 8,  pathOptions:   { color: '#f00', weight: 2, stroke: true, }, }, icon_properties: { shadow: false, }, },
+    { offset: 0,      repeat: 150, symbol_type: 'marker', symbol_options: { rotate: true,  markerOptions: { color: '#f00', icon: 'icon-svg-force_helicopter_route', }, }, icon_properties: { shadow: false, }, },
+    { offset: 0,      repeat: 20,  symbol_type: 'dash',   symbol_options: { pixelSize: 10, pathOptions:   { color: '#f00', weight: 2, }, }, },
+  ],
+  // линия - Х - траектория вертолета закордон
+  'line-force_helicopter_route_outside': [
+    { offset: '100%', repeat: 0,   symbol_type: 'arrow',  symbol_options: { pixelSize: 8,  pathOptions:   { color: '#00f', weight: 2, stroke: true, }, }, icon_properties: { shadow: false, }, },
+    { offset: 0,      repeat: 150, symbol_type: 'marker', symbol_options: { rotate: true,  markerOptions: { color: '#00f', icon: 'icon-svg-force_helicopter_route', }, }, icon_properties: { shadow: false, }, },
+    { offset: 0,      repeat: 20,  symbol_type: 'dash',   symbol_options: { pixelSize: 10, pathOptions:   { color: '#00f', weight: 2, }, }, },
+  ],
 
 }
 
@@ -453,6 +476,42 @@ export const TEST = [
     "geometry": {
       "type": "Point",
       "coordinates": [28.0,54.0],
+    },
+  },
+
+
+
+
+  {
+    "type": "Feature",
+    "properties": {
+      "class": "line-force_helicopter_route_inside hidden",
+      "hint": "line-force_helicopter_route_inside hidden",
+      "date": "2021-05-03",
+      //"color": "#888",
+    },
+    "geometry": {
+      "type": "LineString",
+      "coordinates": [
+        [24.0,58.5],
+        [27.5,59.5],
+      ]
+    },
+  },
+  {
+    "type": "Feature",
+    "properties": {
+      "class": "line-force_helicopter_route_outside hidden",
+      "hint": "line-force_helicopter_route_outside hidden",
+      "date": "2021-05-03",
+      //"color": "#888",
+    },
+    "geometry": {
+      "type": "LineString",
+      "coordinates": [
+        [27.5,59.5],
+        [32.0,58.5],
+      ]
     },
   },
 ]

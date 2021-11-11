@@ -30,8 +30,8 @@ export const ICON = {
     zoom:      .7,
     svg: `
       <svg width={width} height={height} viewBox="0 0 106 100">
-        <path style="fill:#ffffff00;stroke:#f00;stroke-width:6" d="M 78,6.7 A 53,53 0 0,1 78,93.3"/>
-        <path style="fill:#ffffff00;stroke:#f00;stroke-width:6" d="M 28,93.3 A 53,53 0 0,1 28,6.7"/>
+        <path style="fill:#ffffff00;stroke:#f00;stroke-width:6" d="M78,6.7 A53,53 0 0,1 78,93.3"/>
+        <path style="fill:#ffffff00;stroke:#f00;stroke-width:6" d="M28,93.3 A53,53 0 0,1 28,6.7"/>
         <circle style="fill:#fff;stroke:#00f;stroke-width:6" cx="53" cy="53" r="25"/>
       </svg>
     `,

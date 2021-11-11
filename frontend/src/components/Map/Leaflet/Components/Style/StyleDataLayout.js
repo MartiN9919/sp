@@ -7,7 +7,7 @@ export const ICON = {
     zoom:      .8,
     svg: `
       <svg width={width} height={height} viewBox="0 0 40 70">
-        <path style="fill:none;stroke:#444;stroke-width:8;" d="M 0,2 H 20 M 10,0 V 50 M 0,48 h 20"/>
+        <path style="fill:none;stroke:#444;stroke-width:8;" d="M0,2 H20 M10,0 V50 M0,48 h20"/>
         <circle style="fill:#444" cx="10" cy="65" r="5" />
       </svg>
     `,
