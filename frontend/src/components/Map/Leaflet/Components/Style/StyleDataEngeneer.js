@@ -21,7 +21,7 @@ export const ICON = {
       <svg width={width} height={height} viewBox="0 0 200 95">
         <rect style="fill:#fff;stroke:#000;stroke-width:2" width="70" height="40" x="60" y="1"/>
         <rect style="fill:#000;stroke-width:2" width="70"  height="13" x="60" y="27"/>
-        <path style="fill:#000;stroke:#000;stroke-width:2" d="M 135,20 155,1 155,40 Z"/>
+        <path style="fill:#000;stroke:#000;stroke-width:2" d="M135,20 155,1 155,40 Z"/>
         <text style="font-style:normal;font-size:37px;font-family:sans-serif;text-anchor:middle" x="100" y="90">{text}</text>
       </svg>
     `,
@@ -35,7 +35,7 @@ export const ICON = {
     zoom:      .8,
     svg: `
       <svg width={width} height={height} viewBox="0 0 40 20">
-        <path style="fill:none;stroke:#888;stroke-width:4;" d="M 2,0 V 20 M 4,10 H 40 M 38,0 v 20"/>
+        <path style="fill:none;stroke:#888;stroke-width:4;" d="M2,0 V20 M4,10 H40 M38,0 v20"/>
       </svg>
     `,
   },
@@ -48,8 +48,8 @@ export const ICON = {
     zoom:      .8,
     svg: `
       <svg width={width} height={height} viewBox="0 0 300 130">
-        <path style="fill:#fff;stroke:#000;stroke-width:4" d="M 120.53,91.11 h 60 l -30,-75.00 z"/>
-        <path style="fill:#fff;stroke:#000;stroke-width:4" d="M 129.53,11.11 h 40 l 6,-10.00 -2,3 h -48 l -2,-3 z"/>
+        <path style="fill:#fff;stroke:#000;stroke-width:4" d="M120.53,91.11 h60 l-30,-75.00 z"/>
+        <path style="fill:#fff;stroke:#000;stroke-width:4" d="M129.53,11.11 h40 l6,-10.00 -2,3 h-48 l-2,-3 z"/>
         <text style="font-style:normal;font-size:25px;font-family:sans-serif;text-anchor:middle" x="150" y="125">{text}</text>
       </svg>
     `,
@@ -62,7 +62,7 @@ export const ICON = {
     zoom:      .8,
     svg: `
       <svg width={width} height={height} viewBox="0 0 40 10">
-        <path style="fill:none;stroke:#888;stroke-width:10;" d="m 5,0 h 40"/>
+        <path style="fill:none;stroke:#888;stroke-width:10;" d="m5,0 h40"/>
       </svg>
     `,
   },
@@ -89,7 +89,7 @@ export const ICON = {
     zoom:      .7,
     svg: `
       <svg width={width} height={height} viewBox="0 0 30 30">
-        <path style="fill:none;stroke:{color};stroke-width:4" d="M 0,0 L 30 30 M 30,0 L 0,30" />
+        <path style="fill:none;stroke:{color};stroke-width:4" d="M0,0 L30 30 M30,0 L0,30" />
       </svg>
     `,
   }
