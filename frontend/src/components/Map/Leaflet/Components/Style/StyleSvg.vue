@@ -57,9 +57,8 @@ export default {
       for(let items_ind=0; items_ind<items.length; items_ind++) {
         let item    = items[items_ind];
         for(let features_ind=0; features_ind<item.fc.features.length; features_ind++) {
-          let properties  = item.fc.features[features_ind].properties;
-          let classes = properties[MAP_ITEM.FC.FEATURES.PROPERTIES.CLASS] ?? '';  // список fc.features[i].properties.class
-          let color =                                                             // цвет, приоритет fc.features[i].prop.color перед цветом скрипта
+          let properties = item.fc.features[features_ind].properties;
+          let color =                                               // приоритет fc.features[i].prop.color перед цветом скрипта
             ( properties[MAP_ITEM.FC.FEATURES.PROPERTIES.COLOR] != undefined) ?
               properties[MAP_ITEM.FC.FEATURES.PROPERTIES.COLOR] :
             ((item[MAP_ITEM.COLOR] ?? MAP_CONST.COLOR.DEFAULT_STYLE_PATH).toLowerCase());
@@ -67,7 +66,14 @@ export default {
             ( properties[MAP_ITEM.FC.FEATURES.PROPERTIES.ZOOM] != undefined) ?
               ((properties[MAP_ITEM.FC.FEATURES.PROPERTIES.ZOOM] !== false) ? properties[MAP_ITEM.FC.FEATURES.PROPERTIES.ZOOM] : 1):
               ((zoom_map < MAP_CONST.CLASS.ICON.SVG_ZOOM_START) ? Math.pow(2.0, zoom_map-MAP_CONST.CLASS.ICON.SVG_ZOOM_START) : 1);
-          let data = get_style_data_svg(classes, color, zoom, items_ind, features_ind); // см.item.fc.features[features_ind][MAP_ITEM.FC.FEATURES.IND]
+          let data = get_style_data_svg({
+            classes_str:   properties[MAP_ITEM.FC.FEATURES.PROPERTIES.CLASS] ?? '',
+            color:         color,
+            zoom:          zoom,
+            degree:        20,
+            index_item:    items_ind,
+            index_feature: features_ind,    // item.fc.features[features_ind][MAP_ITEM.FC.FEATURES.IND]
+          });
           if (data.style!='') style += data.style;
           if (data.defs !='') defs  += data.defs;
         }

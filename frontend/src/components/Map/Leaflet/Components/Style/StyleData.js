@@ -125,14 +125,25 @@ export function get_style_data_decor(classes_str, color=MAP_CONST.COLOR.DEFAULT_
 /*
  *
  * SVG
- * zoom - вычислено с учетом zoom_map, feature[].properties.[MAP_ITEM.FC.FEATURES.PROPERTIES.ZOOM]
  *
+ * options:
+ *   classes_str - список классов
+ *   color
+ *   zoom - вычислено с учетом zoom_map, feature[].properties.[MAP_ITEM.FC.FEATURES.PROPERTIES.ZOOM]
+ *   degree - угол поворота
+ *   index_item - state.selectedTemplate.activeAnalysts
+ *   index_feature
+ * return {style: '...', defs: '...'}
  */
-// список классов в словарь строк style, defs
-// индекс item в state.selectedTemplate.activeAnalysts
-// return {style: '...', defs: '...'}
-export function get_style_data_svg(classes_str, color=MAP_CONST.COLOR.DEFAULT_STYLE_PATH, zoom=1, index_item, index_feature) {
+export function get_style_data_svg(options) {
+  const classes_str   = options.classes_str;
+  const color         = options.color  ?? MAP_CONST.COLOR.DEFAULT_STYLE_PATH;
+  const zoom          = options.zoom   ?? 1;
+  const degree        = options.degree ?? 0;
+  const index_item    = options.index_item;
+  const index_feature = options.index_feature;
   let ret = {style: '', defs: ''};
+
   let classes_list = classes_str.trim().replace(/\s+/g, ' ').split(' ');  // убрать лишние пробелы
   classes_list = [...new Set(classes_list)];                              // исключить повторы
 
@@ -151,7 +162,7 @@ export function get_style_data_svg(classes_str, color=MAP_CONST.COLOR.DEFAULT_ST
 
     // заменить переменные
     if (data_style) {
-      data_style = data_style.replace(/{id}/g, id).replace(/{color}/g, color).replace(/{class}/g, class_str);
+      data_style = data_style.replace(/{id}/g, id).replace(/{color}/g, color).replace(/{class}/g, class_str).replace(/{degree}/g, degree);
       ret.style += data_style+'\n';
     }
 
@@ -160,7 +171,7 @@ export function get_style_data_svg(classes_str, color=MAP_CONST.COLOR.DEFAULT_ST
       if ((svg_width!=undefined) && (svg_height!=undefined)) {
         data_defs = data_defs.replace(/{width}/g, svg_width).replace(/{height}/g, svg_height);
       }
-      data_defs = data_defs.replace(/{id}/g, id).replace(/{color}/g, color);
+      data_defs = data_defs.replace(/{id}/g, id).replace(/{color}/g, color).replace(/{degree}/g, degree);
       ret.defs += data_defs+'\n';
     }
   });

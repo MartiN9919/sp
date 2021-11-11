@@ -1,5 +1,6 @@
 // СИЛЫ
 export const ICON = {
+  // пункт управления прикордон
   'force_manage_inside': {
     anchor_dx: 0,
     anchor_dy: 100.,
@@ -12,6 +13,7 @@ export const ICON = {
       </svg>
     `,
   },
+  // пункт управления закордон
   'force_manage_outside': {
     anchor_dx: 92,
     anchor_dy: 100.,
@@ -23,6 +25,7 @@ export const ICON = {
       </svg>
     `,
   },
+  // отдел пограничной службы прикордон
   'force_ops_inside': {
     anchor_dx: 0,
     anchor_dy: 100.,
@@ -35,6 +38,7 @@ export const ICON = {
       </svg>
     `,
   },
+  // подразделение погранзаставы прикордон
   'force_frontier_inside': {
     anchor_dx: 0,
     anchor_dy: 100.,
@@ -46,6 +50,7 @@ export const ICON = {
       </svg>
     `,
   },
+  // подразделение погранохраны закордон
   'force_frontier_outside': {
     anchor_dx: 54,
     anchor_dy: 100.,
@@ -57,6 +62,7 @@ export const ICON = {
       </svg>
     `,
   },
+  // пост погранохраны прикордон
   'force_guard_inside': {
     anchor_dx: 0,
     anchor_dy: 100.,
@@ -68,6 +74,7 @@ export const ICON = {
       </svg>
     `,
   },
+  // пост погранохраны закордон
   'force_guard_outside': {
     anchor_dx: 54,
     anchor_dy: 100.,
@@ -79,6 +86,7 @@ export const ICON = {
       </svg>
     `,
   },
+  // погранпост временный прикордон
   'force_guard_temp_inside': {
     anchor_dx: 0,
     anchor_dy: 100.,
@@ -91,6 +99,7 @@ export const ICON = {
       </svg>
     `,
   },
+  // погранконтроль прикордон
   'force_unit_control_inside': {
     anchor_dx: 0,
     anchor_dy: 100.,
@@ -103,6 +112,7 @@ export const ICON = {
       </svg>
     `,
   },
+  // погранконтроль закордон
   'force_unit_control_outside': {
     anchor_dx: 198,
     anchor_dy: 100.,
@@ -115,6 +125,7 @@ export const ICON = {
       </svg>
     `,
   },
+  // НП скрытый
   'force_point_observation_hidden': {
     anchor_dx: 40.,
     anchor_dy: 40.,
@@ -125,6 +136,7 @@ export const ICON = {
       </svg>
     `,
   },
+  // НП открытый
   'force_point_observation_open': {
     anchor_dx: 40.,
     anchor_dy: 40.,
@@ -135,6 +147,7 @@ export const ICON = {
       </svg>
     `,
   },
+  // контрольный пункт
   'force_point_control': {
     anchor_dx: 50.,
     anchor_dy: 25.,
@@ -143,6 +156,21 @@ export const ICON = {
       <svg width={width} height={height} viewBox="0 0 100 50">
         <path style="fill:#fff;stroke:#222;stroke-width:4" d="M 2,10 V 40 M 100,10 V 40 M 2,24.5 h 96"/>
         <circle style="fill:#fff;stroke:#222;stroke-width:4" cx="50" cy="24.5" r="22"/>
+      </svg>
+    `,
+  },
+  // пограничный наряд прикордон
+  'force_patrol_control_inside': {
+    anchor_dx: 22,
+    anchor_dy: 70,
+    zoom:      1.2,
+    svg: `
+      <svg width={width} height={height} viewBox="0 0 244 92">
+        <g transform="rotate({degree} 22 70)">
+          <circle style="fill:#fff;stroke:#f00;stroke-width:4" cx="22" cy="70" r="20"/>
+          <path style="fill:none;stroke:#f00;stroke-width:4" d="M22,51 V5 M32,26 22,5 12,26"/>
+        </g>
+        <text style="font-style:normal;font-size:16px;font-family:sans-serif;text-anchor:start" x="50" y="75">{text}</text>
       </svg>
     `,
   },
@@ -332,6 +360,19 @@ export const TEST = [
     "geometry": {
       "type": "Point",
       "coordinates": [27.0,54.25],
+    },
+  },
+  {
+    "type": "Feature",
+    "properties": {
+      "class": "icon-svg-force_patrol_control_inside",
+      "hint": "icon-svg-force_patrol_control_inside",
+      "date": "2021-06-09",
+      "text": "Д-2чел.-3 погз",
+    },
+    "geometry": {
+      "type": "Point",
+      "coordinates": [27.5,54.25],
     },
   },
 ]
