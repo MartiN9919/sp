@@ -160,7 +160,7 @@ export const ICON = {
     `,
   },
   // пограничный наряд прикордон
-  'force_patrol_control_inside': {
+  'force_patrol_inside': {
     anchor_dx: 72,
     anchor_dy: 70,
     zoom:      1.2,
@@ -175,7 +175,7 @@ export const ICON = {
     `,
   },
   // пограничный наряд закордон
-  'force_patrol_control_outside': {
+  'force_patrol_outside': {
     anchor_dx: 172,
     anchor_dy: 70,
     zoom:      1.2,
@@ -186,6 +186,30 @@ export const ICON = {
           <path style="fill:none;stroke:#00f;stroke-width:4" d="M172,51 V5 M182,26 172,5 162,26"/>
         </g>
         <text style="font-style:normal;font-size:16px;font-family:sans-serif;text-anchor:end" x="140" y="75">{text}</text>
+      </svg>
+    `,
+  },
+  // вертолет прикордон
+  'force_helicopter_inside': {
+    anchor_dx: 20,
+    anchor_dy: 100,
+    zoom:      1.2,
+    svg: `
+      <svg width={width} height={height} viewBox="0 0 200 100">
+        <path style="fill:none;stroke:#f00;stroke-width:4" d="M2,2 38,38 M2,38 38,2 M20,20 V100"/>
+        <text style="font-style:normal;font-size:16px;font-family:sans-serif;text-anchor:start" x="25" y="95">{text}</text>
+      </svg>
+    `,
+  },
+  // вертолет закордон
+  'force_helicopter_outside': {
+    anchor_dx: 180,
+    anchor_dy: 100,
+    zoom:      1.2,
+    svg: `
+      <svg width={width} height={height} viewBox="0 0 200 100">
+        <path style="fill:none;stroke:#00f;stroke-width:4" d="M162,2 198,38 M162,38 198,2 M180,20 V100"/>
+        <text style="font-style:normal;font-size:16px;font-family:sans-serif;text-anchor:end" x="170" y="95">{text}</text>
       </svg>
     `,
   },
@@ -380,8 +404,8 @@ export const TEST = [
   {
     "type": "Feature",
     "properties": {
-      "class": "icon-svg-force_patrol_control_inside",
-      "hint": "icon-svg-force_patrol_control_inside",
+      "class": "icon-svg-force_patrol_inside",
+      "hint": "icon-svg-force_patrol_inside",
       "rotate": 270,
       "date": "2021-06-09",
       "text": "Д-2чел-3погз",
@@ -394,8 +418,8 @@ export const TEST = [
   {
     "type": "Feature",
     "properties": {
-      "class": "icon-svg-force_patrol_control_outside",
-      "hint": "icon-svg-force_patrol_control_outside",
+      "class": "icon-svg-force_patrol_outside",
+      "hint": "icon-svg-force_patrol_outside",
       "rotate": 90,
       "date": "2021-03-09",
       "text": "Д-3чел-2погз",
@@ -403,6 +427,32 @@ export const TEST = [
     "geometry": {
       "type": "Point",
       "coordinates": [27.5,54.0],
+    },
+  },
+  {
+    "type": "Feature",
+    "properties": {
+      "class": "icon-svg-force_helicopter_inside",
+      "hint": "icon-svg-force_helicopter_inside",
+      "date": "2021-06-09",
+      "text": "МИ-8",
+    },
+    "geometry": {
+      "type": "Point",
+      "coordinates": [28.0,54.25],
+    },
+  },
+  {
+    "type": "Feature",
+    "properties": {
+      "class": "icon-svg-force_helicopter_outside",
+      "hint": "icon-svg-force_helicopter_outside",
+      "date": "2021-06-09",
+      "text": "Apache",
+    },
+    "geometry": {
+      "type": "Point",
+      "coordinates": [28.0,54.0],
     },
   },
 ]

@@ -79,7 +79,7 @@ export const MAP_TEST_ITEM_2 = {
         },
         "geometry": {
           "type": "Point",
-          "coordinates": [27.5,54.0],
+          "coordinates": [28.0,54.25],
         },
       },
 
