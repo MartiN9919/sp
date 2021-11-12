@@ -13,7 +13,9 @@
             depressed
             plain
             @click="btn_click(0)"
-          ><</v-btn>
+          >
+            <v-icon size="25">mdi-arrow-left-circle</v-icon>
+          </v-btn>
         </td>
 
         <td>
@@ -41,7 +43,9 @@
             depressed
             plain
             @click="btn_click(1)"
-          >></v-btn>
+          >
+            <v-icon size="25">mdi-arrow-right-circle</v-icon>
+          </v-btn>
         </td>
       </tr>
     </table>
