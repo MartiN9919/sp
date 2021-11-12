@@ -9,7 +9,6 @@
       <tr>
         <td>
           <v-btn
-            ref="btn-left"
             class="btn"
             depressed
             plain
@@ -19,12 +18,12 @@
 
         <td>
           <v-range-slider
+            class="slider"
             v-model="prop_sel"
             :min="MAP_GET_RANGE_MIN"
             :max="MAP_GET_RANGE_MAX"
 
             height="1.5em"
-            class="slider"
             dense
 
             thumb-color="green"
@@ -38,7 +37,6 @@
 
         <td>
           <v-btn
-            ref="btn-right"
             class="btn"
             depressed
             plain
@@ -155,14 +153,14 @@ export default {
 
 
 
-<style lang="scss">
+<style scoped lang="scss">
   .control_range {
     border: 2px solid rgba(0,0,0,0.2);
     background-color: white;
     opacity: .7;
   }
 
-  .control_range .btn {
+  div::v-deep .btn {
     height: 3em!important;
     min-width: 1.5em!important;
     max-width: 1.5em!important;
@@ -171,14 +169,20 @@ export default {
     font-weight: bold;
   }
 
-  .control_range .slider {
-    min-width: 16em;
+  div::v-deep .slider {
+    min-width: 25em;
     height: 2.4em;
     padding: 0;
     margin: 0 0 .4em 0;
   }
 
-  .control_range .v-messages {
+  div::v-deep .v-messages {
     text-align: center;
+  }
+
+  div::v-deep .v-messages__message {
+    text-align: center;
+    font-weight: bold;
+    color: green;
   }
 </style>
