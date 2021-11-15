@@ -1,81 +1,71 @@
 <template>
-  <l-control
-    v-if="MAP_GET_RANGE_SHOW"
-    v-show="visible"
-    position="bottomcenterhorizontal"
-    class="leaflet-bar leaflet-control control_range select_off"
-  >
-    <table>
-      <tr>
-        <td>
-          <v-btn
-            class="btn"
-            depressed
-            plain
-            @click="on_click_btn(0)"
-          >
-            <v-icon size="25">mdi-arrow-left-circle</v-icon>
-          </v-btn>
-        </td>
+  <div>
+    <l-control
+      v-if="MAP_GET_RANGE_SHOW"
+      v-show="visible"
+      position="bottomcenterhorizontal"
+      class="leaflet-bar leaflet-control control_range select_off"
+    >
+      <table>
+        <tr>
+          <td>
+            <v-range-slider
+              ref="slider"
+              class="slider"
+              v-model="prop_sel"
+              :min="MAP_GET_RANGE_MIN"
+              :max="MAP_GET_RANGE_MAX"
 
-        <td>
-          <v-range-slider
-            ref="slider"
-            class="slider"
-            v-model="prop_sel"
-            :min="MAP_GET_RANGE_MIN"
-            :max="MAP_GET_RANGE_MAX"
+              height="1.5em"
+              dense
 
-            height="1.5em"
-            dense
+              thumb-size="8"
+              thumb-color="green"
 
-            thumb-size="8"
-            thumb-color="green"
+              track-fill-color="green"
+              track-color="red"
 
-            track-fill-color="green"
-            track-color="red"
-
-            :hint="hint"
-            persistent-hint
-          />
-        </td>
-
-        <td>
-          <v-btn
-            class="btn"
-            depressed
-            plain
-            @click="on_click_btn(1)"
-          >
-            <v-icon size="25">mdi-arrow-right-circle</v-icon>
-          </v-btn>
-        </td>
-      </tr>
-    </table>
-
-  </l-control>
+              :hint="hint"
+              persistent-hint
+            >
+              <template v-slot:append>
+                <v-icon
+                  @mouseenter.stop="on_menu_show"
+                  size="20"
+                >mdi-format-list-bulleted</v-icon>
+              </template>
+            </v-range-slider>
+          </td>
+        </tr>
+      </table>
+    </l-control>
+    <contextMenuNested
+      ref="menu"
+      :form="form"
+      :items="menu_struct"
+      :isOpenOnHover="true"
+    />
+  </div>
 </template>
 
-
+<!--               <template v-slot:append>
+                <v-hover v-slot="{ hover }" class="action-icon">
+                  <v-icon
+                    v-if="hover"
+                    @mouseenter.stop="on_menu_show"
+                    size="20"
+                  >mdi-format-list-bulleted</v-icon>
+                  <v-icon v-else size="20">mdi-run</v-icon>
+                </v-hover>
+              </template>
+ -->
 
 <script>
-//             @click.capture="on_mousedown_slider"
-//             @mousedown.capture="on_mousedown_slider"
 
-
-import {
-  mapGetters,
-  mapActions,
-} from 'vuex';
-
-import {
-  LControl,
-} from "vue2-leaflet";
-
-import {
-  ts_to_screen,
-} from '@/plugins/sys';
-
+import { mapGetters, mapActions } from 'vuex';
+import { LControl } from "vue2-leaflet";
+import { ts_to_screen } from '@/plugins/sys';
+import contextMenuNested from '@/components/WebsiteShell/ContextMenu/contextMenuNested';
 
 
 const props = {
@@ -90,7 +80,20 @@ export default {
   props,
   components: {
     LControl,
+    contextMenuNested,
   },
+
+  data: () => ({
+    menu_struct: undefined,
+    menu_struct_base: [
+      { title: 'все',    action: 'action_obj_new', },
+      { divider: true },
+      { title: 'месяц',  action: 'action_obj_new', },
+      { title: 'неделя', action: 'action_obj_save', },
+      { title: 'сутки',  action: 'action_obj_change', },
+      { title: 'час',    action: 'action_obj_del', },
+    ],
+  }),
 
   mounted() {
     let el = this.$refs.slider.$el.querySelector('.v-slider');
@@ -113,6 +116,8 @@ export default {
       'MAP_GET_RANGE_MIN',
       'MAP_GET_RANGE_MAX',
     ]),
+
+    form: vm => vm,
 
     prop_sel: {
       set: function(lst) { this.MAP_ACT_RANGE_SEL({lst: lst}); },
@@ -140,10 +145,35 @@ export default {
       'MAP_ACT_RANGE_SEL',
     ]),
 
-    btn_disabled(pos) {
 
+
+
+
+    // MOUSE
+    on_mousedown_slider(e) {
+      let el     = this.$refs.slider.$el;
+      let parent = el.querySelector('.v-slider__track-container');
+      let thumb  = el.querySelectorAll('.v-slider__thumb-container');
+      thumb[0].blur();
+      thumb[1].blur();
+
+      let bounds = parent.getBoundingClientRect();
+      let x = e.clientX - bounds.left; // let y = e.clientY - bounds.top;
+
+      const size = 7;
+      if (x < (thumb[0].offsetLeft - size)) { e.preventDefault(); e.stopPropagation(); this.on_click_btn(0); return; }
+      if (x > (thumb[1].offsetLeft + size)) { e.preventDefault(); e.stopPropagation(); this.on_click_btn(1); return; }
+
+      //e.preventDefault(); e.stopPropagation();
     },
+    on_mouse_reset(e) {
+      let thumb = this.$refs.slider.$el.querySelectorAll('.v-slider__thumb-container');
+      thumb[0].blur();
+      thumb[1].blur();
 
+      e.preventDefault();
+      e.stopPropagation();
+    },
     on_click_btn(pos) {
       let limit_min = this.MAP_GET_RANGE_MIN;
       let limit_max = this.MAP_GET_RANGE_MAX;
@@ -178,30 +208,15 @@ export default {
 
 
 
-    on_mousedown_slider(e) {
-      let el     = this.$refs.slider.$el;
-      let parent = el.querySelector('.v-slider__track-container');
-      let thumb  = el.querySelectorAll('.v-slider__thumb-container');
-      thumb[0].blur();
-      thumb[1].blur();
-
-      let bounds = parent.getBoundingClientRect();
-      let x = e.clientX - bounds.left; // let y = e.clientY - bounds.top;
-
-      const size = 7;
-      if (x < (thumb[0].offsetLeft - size)) { e.preventDefault(); e.stopPropagation(); this.on_click_btn(0); return; }
-      if (x > (thumb[1].offsetLeft + size)) { e.preventDefault(); e.stopPropagation(); this.on_click_btn(1); return; }
-
-      //e.preventDefault(); e.stopPropagation();
-    },
-    on_mouse_reset(e) {
-      let thumb = this.$refs.slider.$el.querySelectorAll('.v-slider__thumb-container');
-      thumb[0].blur();
-      thumb[1].blur();
-
+    // MENU: Показать первый уровень
+    on_menu_show(e) {
       e.preventDefault();
       e.stopPropagation();
-    }
+      this.menu_struct = JSON.parse(JSON.stringify(this.menu_struct_base)); // основа - глубокая копия
+      //this.menu_struct.splice(4, 1);
+      this.$refs.menu.show_root(e.clientX, e.clientY);
+    },
+
   },
 }
 
