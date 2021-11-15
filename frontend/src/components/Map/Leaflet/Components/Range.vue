@@ -12,7 +12,7 @@
             class="btn"
             depressed
             plain
-            @click="btn_click(0)"
+            @click="on_click_btn(0)"
           >
             <v-icon size="25">mdi-arrow-left-circle</v-icon>
           </v-btn>
@@ -20,6 +20,7 @@
 
         <td>
           <v-range-slider
+            ref="slider"
             class="slider"
             v-model="prop_sel"
             :min="MAP_GET_RANGE_MIN"
@@ -28,7 +29,9 @@
             height="1.5em"
             dense
 
+            thumb-size="8"
             thumb-color="green"
+
             track-fill-color="green"
             track-color="red"
 
@@ -42,7 +45,7 @@
             class="btn"
             depressed
             plain
-            @click="btn_click(1)"
+            @click="on_click_btn(1)"
           >
             <v-icon size="25">mdi-arrow-right-circle</v-icon>
           </v-btn>
@@ -56,6 +59,9 @@
 
 
 <script>
+//             @click.capture="on_mousedown_slider"
+//             @mousedown.capture="on_mousedown_slider"
+
 
 import {
   mapGetters,
@@ -87,7 +93,17 @@ export default {
   },
 
   mounted() {
+    let el = this.$refs.slider.$el.querySelector('.v-slider');
+    el.addEventListener('click',     this.on_mouse_reset,      {capture: true});
+    el.addEventListener('mouseup',   this.on_mouse_reset,      {capture: true});
+    el.addEventListener('mousedown', this.on_mousedown_slider, {capture: true});
+  },
 
+  beforeDestroy() {
+    let el = this.$refs.slider.$el.querySelector('.v-slider');
+    el.removeEventListener('click',     this.on_mouse_reset);
+    el.removeEventListener('mouseup',   this.on_mouse_reset);
+    el.removeEventListener('mousedown', this.on_mousedown_slider);
   },
 
   computed: {
@@ -128,7 +144,7 @@ export default {
 
     },
 
-    btn_click(pos) {
+    on_click_btn(pos) {
       let limit_min = this.MAP_GET_RANGE_MIN;
       let limit_max = this.MAP_GET_RANGE_MAX;
       let sel       = this.MAP_GET_RANGE_SEL;
@@ -137,20 +153,56 @@ export default {
       let sel_delta = sel_max - sel_min;
       if (sel_delta==0) return;
 
+      // влево
       if (pos==0) {
-        if ((sel_min - sel_delta) < limit_min) return;
-        sel_min -= sel_delta;
-        sel_max -= sel_delta;
+        if ((sel_min - sel_delta) < limit_min) {
+          sel_min = limit_min;
+          sel_max = limit_min+sel_delta;
+        } else {
+          sel_min -= sel_delta;
+          sel_max -= sel_delta;
+        }
+      // вправо
       } else {
-        if ((sel_max + sel_delta) > limit_max) return;
-        sel_min += sel_delta;
-        sel_max += sel_delta;
+        if ((sel_max + sel_delta) > limit_max) {
+          sel_min = limit_max-sel_delta;
+          sel_max = limit_max;
+        } else {
+          sel_min += sel_delta;
+          sel_max += sel_delta;
+        }
       }
 
       this.MAP_ACT_RANGE_SEL({lst: [sel_min, sel_max]});
     },
-  },
 
+
+
+    on_mousedown_slider(e) {
+      let el     = this.$refs.slider.$el;
+      let parent = el.querySelector('.v-slider__track-container');
+      let thumb  = el.querySelectorAll('.v-slider__thumb-container');
+      thumb[0].blur();
+      thumb[1].blur();
+
+      let bounds = parent.getBoundingClientRect();
+      let x = e.clientX - bounds.left; // let y = e.clientY - bounds.top;
+
+      const size = 7;
+      if (x < (thumb[0].offsetLeft - size)) { e.preventDefault(); e.stopPropagation(); this.on_click_btn(0); return; }
+      if (x > (thumb[1].offsetLeft + size)) { e.preventDefault(); e.stopPropagation(); this.on_click_btn(1); return; }
+
+      //e.preventDefault(); e.stopPropagation();
+    },
+    on_mouse_reset(e) {
+      let thumb = this.$refs.slider.$el.querySelectorAll('.v-slider__thumb-container');
+      thumb[0].blur();
+      thumb[1].blur();
+
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  },
 }
 
 </script>
@@ -180,13 +232,24 @@ export default {
     margin: 0 0 .4em 0;
   }
 
+
+  div::v-deep .v-slider {
+    cursor: pointer;
+  }
+
+  /* высота полоски */
+  div::v-deep .v-slider__track-container {
+    height: 2px;
+  }
+
+  /* формат подсказки */
   div::v-deep .v-messages {
     text-align: center;
   }
-
   div::v-deep .v-messages__message {
     text-align: center;
     font-weight: bold;
     color: green;
   }
+
 </style>
