@@ -23,6 +23,7 @@ def feature_collection_by_geometry(group_id, object_type, rec_id, keys, time_int
     @param time_interval: интервал времени в который должны были быть созданы искомые записи
     @return: feature collection содержащая информацию о искомых геометриях
     """
+    from data_base_driver.sys_key.get_list import get_item_list_value
     if object_type == SYS_KEY_CONSTANT.POINT_ID:
         keys += [SYS_KEY_CONSTANT.POINT_CLASSIFIER_ID, SYS_KEY_CONSTANT.POINT_TYPE_CLASSIFIER_ID,
                  SYS_KEY_CONSTANT.BORDER_POINT]
@@ -50,10 +51,12 @@ def feature_collection_by_geometry(group_id, object_type, rec_id, keys, time_int
                                                               DAT_OBJ_ROW.SEC: record[DAT_OBJ_ROW.SEC]})
             objects[record[DAT_OBJ_ROW.ID]]['text'].sort(key=lambda x: x[DAT_OBJ_ROW.SEC], reverse=True)
         elif int(record[DAT_OBJ_ROW.KEY_ID]) in SYS_KEY_CONSTANT.GEOMETRY_TYPES:
+            temp_value = str(get_item_list_value(record[DAT_OBJ_ROW.VAL]))
+            value = temp_value[temp_value.index('(') + 1:temp_value.index(')')]
             if not objects[record[DAT_OBJ_ROW.ID]].get('type'):
                 objects[record[DAT_OBJ_ROW.ID]]['type'] = []
             objects[record[DAT_OBJ_ROW.ID]]['type'].append({DAT_OBJ_ROW.KEY_ID: record[DAT_OBJ_ROW.KEY_ID],
-                                                              DAT_OBJ_ROW.VAL: record[DAT_OBJ_ROW.VAL],
+                                                              DAT_OBJ_ROW.VAL: value,
                                                               DAT_OBJ_ROW.SEC: record[DAT_OBJ_ROW.SEC]})
             objects[record[DAT_OBJ_ROW.ID]]['type'].sort(key=lambda x: x[DAT_OBJ_ROW.SEC], reverse=True)
         else:
@@ -98,13 +101,15 @@ def relations_to_geometry_id(group_id, geometry_type, object_type, rec_id, keys_
     Функция для преобразования связей в идентификаторы геометрий
     @param group_id: идентификатор группы пользователя
     @param geometry_type: идентификатор типа геометрии (25 - точка, 30 - геометрия)
-    @param object_type: идентификатор связи объекта связь с которым мы ищем
+    @param object_type: идентификатор связи объекта связь с которым мы ищем, если с любым то 0
     @param rec_id: идентификатор объекта, если не известен то 0
     @param keys_relation: список идентификаторов типов связей между геометрией и объектом
     @param time_interval: временной интервал установления связи в секундах
     @return: список идентифкаторов наденных геометрических объектов
     """
-    if rec_id == 0:
+    if object_type == 0:
+        object = []
+    elif rec_id == 0:
         object = [object_type]
     else:
         object = [object_type, rec_id]
