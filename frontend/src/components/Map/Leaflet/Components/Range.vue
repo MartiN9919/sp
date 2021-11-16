@@ -1,8 +1,7 @@
-<template>
+<template v-if="MAP_GET_RANGE_SHOW">
   <div>
     <l-control
-      v-if="MAP_GET_RANGE_SHOW"
-      v-show="visible"
+      v-show="MAP_GET_RANGE_SHOW && visible"
       position="bottomcenterhorizontal"
       class="leaflet-bar leaflet-control control_range select_off"
     >
@@ -100,7 +99,22 @@ export default {
     el.addEventListener('mouseup',   this.on_mouse_reset,      {capture: true});
     el.addEventListener('mousedown', this.on_mousedown_slider, {capture: true});
   },
-
+  updated() {
+    console.log('Updated')
+    // if (this.$refs.slider == undefined) return;
+    // let el = this.$refs.slider.$el.querySelector('.v-slider');
+    // el.addEventListener('click',     this.on_mouse_reset,      {capture: true});
+    // el.addEventListener('mouseup',   this.on_mouse_reset,      {capture: true});
+    // el.addEventListener('mousedown', this.on_mousedown_slider, {capture: true});
+  },
+  beforeUpdate() {
+    console.log('beforeUpdate')
+    // if (this.$refs.slider == undefined) return;
+    // let el = this.$refs.slider.$el.querySelector('.v-slider');
+    // el.removeEventListener('click',     this.on_mouse_reset);
+    // el.removeEventListener('mouseup',   this.on_mouse_reset);
+    // el.removeEventListener('mousedown', this.on_mousedown_slider);
+  },
   beforeDestroy() {
     let el = this.$refs.slider.$el.querySelector('.v-slider');
     el.removeEventListener('click',     this.on_mouse_reset);

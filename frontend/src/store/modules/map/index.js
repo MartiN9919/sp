@@ -5,27 +5,27 @@ import { MAP_DATA_MENU_TILES } from '@/store/modules/map/index_menu';
 
 export default {
   state: {
-    tiles: MAP_DATA_MENU_TILES,                      // источники плиток https://leaflet-extras.github.io/leaflet-providers/preview/
+    tiles: MAP_DATA_MENU_TILES,                        // источники плиток https://leaflet-extras.github.io/leaflet-providers/preview/
 
-    range: {                                         // фильтр отображаемых данных по дате/времени
-      show: cook_get_bool('MAP_RANGE_SHOW', false),  // создавать ли компонент (не путать с visible)
-      sel_min:   0,                                  // выбранное минимальное значение, ts
-      sel_max:   0,                                  // выбранное максимальное значение, ts
-      limit_min: 0,                                  // минимально допустимое значение, ts
-      limit_max: 0,                                  // максимально допустимое значение, ts
+    range_dt: {                                        // фильтр отображаемых данных по дате/времени
+      show: cook_get_bool('MAP_RANGE_SHOW_DT', false), // создавать ли компонент (не путать с visible)
+      sel_min:   0,                                    // выбранное минимальное значение, ts
+      sel_max:   0,                                    // выбранное максимальное значение, ts
+      limit_min: 0,                                    // минимально допустимое значение, ts
+      limit_max: 0,                                    // максимально допустимое значение, ts
     },
 
-    tile:       cook_get_int ('MAP_TILE',    0),     // (int) индекс активного источника плиток tiles[tile]
-    cluster:    cook_get_bool('MAP_CLUSTER', true),  // (bool) допустима ли кластеризация (группировка) близко расположенных маркеров
-    hint:       cook_get_bool('MAP_HINT',    false), // (bool) показывать ли всплывающие подсказки
-    legend:     cook_get_bool('MAP_LEGEND',  true),  // (bool) показывать ли всплывающую легенду
-    scale:      cook_get_bool('MAP_SCALE',   true),  // (bool) отображать ли шкалу масштаба
-    measure:    cook_get_bool('MAP_MEASURE', false), // (bool) отображать ли рулетку
-    logo:       cook_get_bool('MAP_LOGO',    false), // (bool) показывать ли логотип
-    notify:     cook_get_bool('MAP_NOTIFY',  true),  // (bool) показывать ли заметки
+    tile:       cook_get_int ('MAP_TILE',    0),       // (int) индекс активного источника плиток tiles[tile]
+    cluster:    cook_get_bool('MAP_CLUSTER', true),    // (bool) допустима ли кластеризация (группировка) близко расположенных маркеров
+    hint:       cook_get_bool('MAP_HINT',    false),   // (bool) показывать ли всплывающие подсказки
+    legend:     cook_get_bool('MAP_LEGEND',  true),    // (bool) показывать ли всплывающую легенду
+    scale:      cook_get_bool('MAP_SCALE',   true),    // (bool) отображать ли шкалу масштаба
+    measure:    cook_get_bool('MAP_MEASURE', false),   // (bool) отображать ли рулетку
+    logo:       cook_get_bool('MAP_LOGO',    false),   // (bool) показывать ли логотип
+    notify:     cook_get_bool('MAP_NOTIFY',  true),    // (bool) показывать ли заметки
 
-    zoom:       0,                                   // текущее приближение
-    edit:       undefined,                           // FeatureCollection РЕДАКТИРУЕМЫХ фигур и маркеров
+    zoom:       0,                                     // текущее приближение
+    edit:       undefined,                             // FeatureCollection РЕДАКТИРУЕМЫХ фигур и маркеров
   },
 
   getters: {
@@ -45,10 +45,10 @@ export default {
       return ret;
     },
 
-    MAP_GET_RANGE_SHOW:        (state) =>  state.range.show,
-    MAP_GET_RANGE_SEL:         (state) => (state.range.show)?[state.range.sel_min,state.range.sel_max]:[0,0],
-    MAP_GET_RANGE_MIN:         (state) =>  state.range.limit_min,
-    MAP_GET_RANGE_MAX:         (state) =>  state.range.limit_max,
+    MAP_GET_RANGE_SHOW:        (state) =>  state.range_dt.show,
+    MAP_GET_RANGE_SEL:         (state) => (state.range_dt.show)?[state.range_dt.sel_min,state.range_dt.sel_max]:[0,0],
+    MAP_GET_RANGE_MIN:         (state) =>  state.range_dt.limit_min,
+    MAP_GET_RANGE_MAX:         (state) =>  state.range_dt.limit_max,
     MAP_GET_TILES:             (state) =>  state.tiles,
     MAP_GET_TILE:              (state) =>  state.tile,
     MAP_GET_TILE2:             (state) =>  state.tiles[state.tile],
@@ -66,9 +66,9 @@ export default {
 
 
   mutations: {
-    MAP_MUT_RANGE_SHOW:        (state, on)   =>   state.range.show      = on,
-    MAP_MUT_RANGE_LIMIT:       (state, lst)  => { state.range.limit_min = lst[0]; state.range.limit_max = lst[1]; },
-    MAP_MUT_RANGE_SEL:         (state, lst)  => { state.range.sel_min   = lst[0]; state.range.sel_max   = lst[1]; },
+    MAP_MUT_RANGE_SHOW:        (state, on)   =>   state.range_dt.show      = on,
+    MAP_MUT_RANGE_LIMIT:       (state, lst)  => { state.range_dt.limit_min = lst[0]; state.range_dt.limit_max = lst[1]; },
+    MAP_MUT_RANGE_SEL:         (state, lst)  => { state.range_dt.sel_min   = lst[0]; state.range_dt.sel_max   = lst[1]; },
 
     MAP_MUT_TILE:              (state, ind)  => state.tile       = ind,
     MAP_MUT_CLUSTER:           (state, on)   => state.cluster    = on,
@@ -87,16 +87,16 @@ export default {
 
 
   actions: {
-    MAP_ACT_RANGE_SHOW:     ({commit}, param={}) => { commit('MAP_MUT_RANGE_SHOW', param.on);  cook_set('MAP_RANGE_SHOW', param.on ); },
+    MAP_ACT_RANGE_SHOW:     ({commit}, param={}) => { commit('MAP_MUT_RANGE_SHOW', param.on);  cook_set('MAP_RANGE_SHOW_DT', param.on ); },
     MAP_ACT_RANGE_SEL:      ({commit}, param={}) => { commit('MAP_MUT_RANGE_SEL',  param.lst); },
-    MAP_ACT_TILE:           ({commit}, param={}) => { commit('MAP_MUT_TILE',       param.ind); cook_set('MAP_TILE',       param.ind); },
-    MAP_ACT_CLUSTER:        ({commit}, param={}) => { commit('MAP_MUT_CLUSTER',    param.on);  cook_set('MAP_CLUSTER',    param.on ); },
-    MAP_ACT_HINT:           ({commit}, param={}) => { commit('MAP_MUT_HINT',       param.on);  cook_set('MAP_HINT',       param.on ); },
-    MAP_ACT_LEGEND:         ({commit}, param={}) => { commit('MAP_MUT_LEGEND',     param.on);  cook_set('MAP_LEGEND',     param.on ); },
-    MAP_ACT_SCALE:          ({commit}, param={}) => { commit('MAP_MUT_SCALE',      param.on);  cook_set('MAP_SCALE',      param.on ); },
-    MAP_ACT_MEASURE:        ({commit}, param={}) => { commit('MAP_MUT_MEASURE',    param.on);  cook_set('MAP_MEASURE',    param.on ); },
-    MAP_ACT_LOGO:           ({commit}, param={}) => { commit('MAP_MUT_LOGO',       param.on);  cook_set('MAP_LOGO',       param.on ); },
-    MAP_ACT_NOTIFY:         ({commit}, param={}) => { commit('MAP_MUT_NOTIFY',     param.on);  cook_set('MAP_NOTIFY',     param.on ); },
+    MAP_ACT_TILE:           ({commit}, param={}) => { commit('MAP_MUT_TILE',       param.ind); cook_set('MAP_TILE',          param.ind); },
+    MAP_ACT_CLUSTER:        ({commit}, param={}) => { commit('MAP_MUT_CLUSTER',    param.on);  cook_set('MAP_CLUSTER',       param.on ); },
+    MAP_ACT_HINT:           ({commit}, param={}) => { commit('MAP_MUT_HINT',       param.on);  cook_set('MAP_HINT',          param.on ); },
+    MAP_ACT_LEGEND:         ({commit}, param={}) => { commit('MAP_MUT_LEGEND',     param.on);  cook_set('MAP_LEGEND',        param.on ); },
+    MAP_ACT_SCALE:          ({commit}, param={}) => { commit('MAP_MUT_SCALE',      param.on);  cook_set('MAP_SCALE',         param.on ); },
+    MAP_ACT_MEASURE:        ({commit}, param={}) => { commit('MAP_MUT_MEASURE',    param.on);  cook_set('MAP_MEASURE',       param.on ); },
+    MAP_ACT_LOGO:           ({commit}, param={}) => { commit('MAP_MUT_LOGO',       param.on);  cook_set('MAP_LOGO',          param.on ); },
+    MAP_ACT_NOTIFY:         ({commit}, param={}) => { commit('MAP_MUT_NOTIFY',     param.on);  cook_set('MAP_NOTIFY',        param.on ); },
 
     MAP_ACT_ITEM_ADD:       ({commit, dispatch}, param={}) => { commit('SCRIPT_MUT_ITEM_ADD',   param);    dispatch('MAP_ACT_RANGE_TS'); },
     MAP_ACT_ITEM_COLOR:     ({commit}, param={})           =>   commit('SCRIPT_MUT_ITEM_COLOR', param),
