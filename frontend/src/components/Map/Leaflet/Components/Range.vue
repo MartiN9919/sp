@@ -30,7 +30,7 @@
             >
               <template v-slot:append>
                 <v-icon
-                  @mouseenter.stop="on_menu_show"
+                  @click.stop="on_menu_show"
                   size="20"
                 >mdi-format-list-bulleted</v-icon>
               </template>
@@ -43,7 +43,6 @@
       ref="menu"
       :form="form"
       :items="menu_struct"
-      :isOpenOnHover="true"
     />
   </div>
 </template>
@@ -147,6 +146,15 @@ export default {
 
 
 
+    // MENU: Показать первый уровень
+    on_menu_show(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      this.menu_struct = JSON.parse(JSON.stringify(this.menu_struct_base)); // основа - глубокая копия
+      //this.menu_struct.splice(4, 1);
+      this.$refs.menu.show_root(e.clientX, e.clientY);
+    },
+
 
 
     // MOUSE
@@ -205,18 +213,6 @@ export default {
 
       this.MAP_ACT_RANGE_SEL({lst: [sel_min, sel_max]});
     },
-
-
-
-    // MENU: Показать первый уровень
-    on_menu_show(e) {
-      e.preventDefault();
-      e.stopPropagation();
-      this.menu_struct = JSON.parse(JSON.stringify(this.menu_struct_base)); // основа - глубокая копия
-      //this.menu_struct.splice(4, 1);
-      this.$refs.menu.show_root(e.clientX, e.clientY);
-    },
-
   },
 }
 
