@@ -78,12 +78,12 @@ export default {
   data: () => ({
     menu_struct: undefined,
     menu_struct_base: [
-      { title: 'все',    action: 'action_obj_new', },
+      { title: 'все',    ts: 0,     action: 'on_period_dt', },
       { divider: true },
-      { title: 'месяц',  action: 'action_obj_new', },
-      { title: 'неделя', action: 'action_obj_save', },
-      { title: 'сутки',  action: 'action_obj_change', },
-      { title: 'час',    action: 'action_obj_del', },
+      { title: 'месяц',  ts: 55555, action: 'on_period_dt', },
+      { title: 'неделя', ts: 55555, action: 'on_period_dt', },
+      { title: 'сутки',  ts: 55555, action: 'on_period_dt', },
+      { title: 'час',    ts: 55555, action: 'on_period_dt', },
     ],
   }),
 
@@ -164,6 +164,12 @@ export default {
       this.menu_struct = JSON.parse(JSON.stringify(this.menu_struct_base)); // основа - глубокая копия
       //this.menu_struct.splice(4, 1);
       this.$refs.menu.show_root(e.clientX, e.clientY);
+    },
+
+    // MENU: Установить период
+    on_period_dt(menu_item) {
+      console.log(menu_item)
+
     },
 
 
