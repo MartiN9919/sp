@@ -48,10 +48,15 @@
 
 
 <script>
+// компонент недопустимо отключать v-if
+// только скрывать v-show
+// работает с данными на шине
+
 
 import { mapGetters, mapActions } from 'vuex';
 import { LControl } from "vue2-leaflet";
-import { ts_to_screen } from '@/plugins/sys';
+import { MAP_ITEM }  from '@/components/Map/Leaflet/Lib/Const';
+import { datesql_to_ts, ts_to_screen } from '@/plugins/sys';
 import contextMenuNested from '@/components/WebsiteShell/ContextMenu/contextMenuNested';
 
 
@@ -134,6 +139,22 @@ export default {
       'MAP_ACT_RANGE_SEL',
     ]),
 
+    // вызывается извне
+    filter(fc) {
+      if (this.MAP_GET_RANGE_SHOW) {
+        let range_ts  = this.MAP_GET_RANGE_SEL;
+        if ((range_ts[0]>0) && (range_ts[1]>0)) {
+          let item_date;
+          let features = fc.features.filter(function(feature) {
+            if (!feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES.DATE]) return true;
+            item_date = datesql_to_ts(feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES.DATE]);
+            return ((item_date >= range_ts[0]) && (item_date <= range_ts[1]));
+          });
+          fc.features = features;
+        }
+      }
+      return fc;
+    },
 
 
     // MENU: Показать первый уровень

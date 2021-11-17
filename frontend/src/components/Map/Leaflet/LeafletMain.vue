@@ -70,7 +70,7 @@
       />
 
       <!-- ВРЕМЕННОЙ ФИЛЬТР -->
-      <Range :options="range_options()"/>
+      <Range ref="range" :options="range_options()"/>
 
       <!-- ЛЕГЕНДА -->
       <Legend :options="legend_options()"/>
@@ -143,9 +143,6 @@ import MixColor         from '@/components/Map/Leaflet/Mixins/Color';
 import MixControl       from '@/components/Map/Leaflet/Mixins/Control';
 import MixMeasure       from '@/components/Map/Leaflet/Mixins/Measure';
 import MixMenu          from '@/components/Map/Leaflet/Mixins/Menu';
-
-
-import { datesql_to_ts, } from '@/plugins/sys';
 
 
 // устранение бага с путями
@@ -295,18 +292,8 @@ export default {
       for(let ind=0; ind<fc.features.length; ind++) { fc.features[ind][MAP_ITEM.FC.FEATURES.IND] = ind; }
 
       // отфильтровать с допустимыми датами
-      if (this.MAP_GET_RANGE_SHOW) {
-        let range_ts  = this.MAP_GET_RANGE_SEL;
-        if ((range_ts[0]>0) && (range_ts[1]>0)) {
-          let item_date;
-          let features = fc.features.filter(function(feature) {
-            if (!feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES.DATE]) return true;
-            item_date = datesql_to_ts(feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES.DATE]);
-            return ((item_date >= range_ts[0]) && (item_date <= range_ts[1]));
-          });
-          fc.features = features;
-        }
-      }
+      fc = this.$refs.range.filter(fc);
+
       return fc;
     },
 
