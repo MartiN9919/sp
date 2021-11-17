@@ -1,6 +1,6 @@
 
 import { MAP_ITEM }  from '@/components/Map/Leaflet/Lib/Const';
-import { cook_set, cook_get_int, cook_get_bool, datesql_to_ts } from '@/plugins/sys';
+import { cook_set, cook_get_int, cook_get_bool, datesql_to_ts, hash_simple } from '@/plugins/sys';
 import { MAP_DATA_MENU_TILES } from '@/store/modules/map/index_menu';
 
 export default {
@@ -43,7 +43,7 @@ export default {
         getters.MAP_GET_CLUSTER                         +'-'+
         getters.MAP_GET_HINT                            +'-'+
         getters.MAP_GET_ZOOM;
-      return ret;
+      return hash_simple(ret);
     },
 
     MAP_GET_RANGE_SHOW:        (state) =>  state.range_dt.show,
