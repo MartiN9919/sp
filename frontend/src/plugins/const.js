@@ -1,7 +1,7 @@
 export default class CONST {
   static URL = class {
     static SERVER_IP = '127.0.0.1:8000/';
-    // static SERVER_IP = '192.168.56.1:8002/';
+    // static SERVER_IP = '200.200.200.236:80/';
   };
 
 

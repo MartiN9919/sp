@@ -153,7 +153,7 @@ export default {
       /** Создание глубокой копии шаблона */
       const scriptForRequest = JSON.parse(JSON.stringify(this.selectedTemplate))
       /** Удаление имеющихся результатов из активных аналитик шаблона */
-      for (const script of scriptForRequest.activeAnalysts) { delete script.result }
+      for (const script of scriptForRequest.activeAnalysts) { delete script.fc }
       /** Проверка на сохранение, либо пересохранение шаблона */
       if ('id' in scriptForRequest)
         this.putSelectedTemplate({ selectedTemplate: scriptForRequest, config: {} })
