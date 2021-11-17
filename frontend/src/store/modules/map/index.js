@@ -32,6 +32,7 @@ export default {
     MAP_GET_KEY: (state, getters) => (ind) => {
       let ret =
         ind+'-'+
+        getters.MAP_GET_RANGE_SHOW                      +'-'+
         getters.MAP_GET_RANGE_SEL                       +'-'+
         getters.SCRIPT_GET_ITEM_SEL                     +'-'+
         getters.SCRIPT_GET_ITEM_REFRESH            (ind)+'-'+
@@ -46,7 +47,7 @@ export default {
     },
 
     MAP_GET_RANGE_SHOW:        (state) =>  state.range_dt.show,
-    MAP_GET_RANGE_SEL:         (state) => (state.range_dt.show)?[state.range_dt.sel_min,state.range_dt.sel_max]:[0,0],
+    MAP_GET_RANGE_SEL:         (state) => [state.range_dt.sel_min,state.range_dt.sel_max],
     MAP_GET_RANGE_MIN:         (state) =>  state.range_dt.limit_min,
     MAP_GET_RANGE_MAX:         (state) =>  state.range_dt.limit_max,
     MAP_GET_TILES:             (state) =>  state.tiles,

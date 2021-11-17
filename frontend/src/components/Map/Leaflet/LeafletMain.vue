@@ -295,15 +295,17 @@ export default {
       for(let ind=0; ind<fc.features.length; ind++) { fc.features[ind][MAP_ITEM.FC.FEATURES.IND] = ind; }
 
       // отфильтровать с допустимыми датами
-      let range_ts  = this.MAP_GET_RANGE_SEL;
-      if ((range_ts[0]>0) && (range_ts[1]>0)) {
-        let item_date;
-        let features = fc.features.filter(function(feature) {
-          if (!feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES.DATE]) return true;
-          item_date = datesql_to_ts(feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES.DATE]);
-          return ((item_date >= range_ts[0]) && (item_date <= range_ts[1]));
-        });
-        fc.features = features;
+      if (this.MAP_GET_RANGE_SHOW) {
+        let range_ts  = this.MAP_GET_RANGE_SEL;
+        if ((range_ts[0]>0) && (range_ts[1]>0)) {
+          let item_date;
+          let features = fc.features.filter(function(feature) {
+            if (!feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES.DATE]) return true;
+            item_date = datesql_to_ts(feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES.DATE]);
+            return ((item_date >= range_ts[0]) && (item_date <= range_ts[1]));
+          });
+          fc.features = features;
+        }
       }
       return fc;
     },

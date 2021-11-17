@@ -1,7 +1,7 @@
-<template v-if="MAP_GET_RANGE_SHOW">
+<template>
   <div>
     <l-control
-      v-show="MAP_GET_RANGE_SHOW && visible"
+      v-show="visible"
       position="bottomcenterhorizontal"
       class="leaflet-bar leaflet-control control_range select_off"
     >
@@ -46,17 +46,6 @@
   </div>
 </template>
 
-<!--               <template v-slot:append>
-                <v-hover v-slot="{ hover }" class="action-icon">
-                  <v-icon
-                    v-if="hover"
-                    @mouseenter.stop="on_menu_show"
-                    size="20"
-                  >mdi-format-list-bulleted</v-icon>
-                  <v-icon v-else size="20">mdi-run</v-icon>
-                </v-hover>
-              </template>
- -->
 
 <script>
 
@@ -95,31 +84,17 @@ export default {
 
   mounted() {
     let el = this.$refs.slider.$el.querySelector('.v-slider');
-    el.addEventListener('click',     this.on_mouse_reset,      {capture: true});
-    el.addEventListener('mouseup',   this.on_mouse_reset,      {capture: true});
-    el.addEventListener('mousedown', this.on_mousedown_slider, {capture: true});
-  },
-  updated() {
-    console.log('Updated')
-    // if (this.$refs.slider == undefined) return;
-    // let el = this.$refs.slider.$el.querySelector('.v-slider');
-    // el.addEventListener('click',     this.on_mouse_reset,      {capture: true});
-    // el.addEventListener('mouseup',   this.on_mouse_reset,      {capture: true});
-    // el.addEventListener('mousedown', this.on_mousedown_slider, {capture: true});
-  },
-  beforeUpdate() {
-    console.log('beforeUpdate')
-    // if (this.$refs.slider == undefined) return;
-    // let el = this.$refs.slider.$el.querySelector('.v-slider');
-    // el.removeEventListener('click',     this.on_mouse_reset);
-    // el.removeEventListener('mouseup',   this.on_mouse_reset);
-    // el.removeEventListener('mousedown', this.on_mousedown_slider);
+    el.addEventListener('click',      this.on_mouse_reset,      {capture: true});
+    el.addEventListener('mouseup',    this.on_mouse_reset,      {capture: true});
+    el.addEventListener('mouseleave', this.on_mouse_reset,      {capture: true});
+    el.addEventListener('mousedown',  this.on_mousedown_slider, {capture: true});
   },
   beforeDestroy() {
     let el = this.$refs.slider.$el.querySelector('.v-slider');
-    el.removeEventListener('click',     this.on_mouse_reset);
-    el.removeEventListener('mouseup',   this.on_mouse_reset);
-    el.removeEventListener('mousedown', this.on_mousedown_slider);
+    el.removeEventListener('click',      this.on_mouse_reset);
+    el.removeEventListener('mouseup',    this.on_mouse_reset);
+    el.removeEventListener('mouseleave', this.on_mouse_reset);
+    el.removeEventListener('mousedown',  this.on_mousedown_slider);
   },
 
   computed: {
@@ -141,6 +116,7 @@ export default {
       let ts_min = this.MAP_GET_RANGE_MIN;
       let ts_max = this.MAP_GET_RANGE_MAX;
       return (
+        this.MAP_GET_RANGE_SHOW &&
         (ts_min > 0) &&
         (ts_max > 0) &&
         (ts_min != ts_max)
