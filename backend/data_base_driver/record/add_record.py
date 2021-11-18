@@ -1,6 +1,7 @@
 import datetime
 import json
 import os
+import threading
 
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
@@ -87,7 +88,7 @@ def parse_value(param, object, files):
             key['id'] not in SYS_KEY_CONSTANT.GEOMETRY_TRANSFER_LIST and key.get('list_id') != None:
         value = str(get_item_list_value(value))
     if key.get('type') == DAT_SYS_KEY.TYPE_FILE_PHOTO or key.get('type') == DAT_SYS_KEY.TYPE_FILE_ANY:
-        rec_id = get_object_new_rec_id(object['object_id']) if object['rec_id'] == 0 else object['rec_id']
+        rec_id = get_object_new_rec_id(object['object_id']) if object['rec_id'] == 0 else object['rec_id'] # Может приводить к багу
         path = 'files/' + str(object['object_id']) + '/' + str(rec_id) + '/'
         if not os.path.exists(MEDIA_ROOT + '/' + path):
             os.makedirs(MEDIA_ROOT + '/' + path, exist_ok=True)
@@ -95,6 +96,10 @@ def parse_value(param, object, files):
         default_storage.save(path + file.name, ContentFile(file.read()))
         value = file.name
     return [param['id'], value, param.get('date', datetime.datetime.now().strftime("%Y-%m-%d %H:%M")) + ':00']
+
+
+# блокиратор потока для контроля что в один момент времени создается один объект
+lock = threading.Lock()
 
 
 def add_data(user, group_id, object, files=None):
@@ -105,43 +110,42 @@ def add_data(user, group_id, object, files=None):
     @param object: вносимая информация в формате {object_id, rec_id, params:[{id,val,date},...,{}]}
     @return: идентификатор нового/измененного объекта в базе данных
     """
-    try:
-        data = [parse_value(param, object, files) for param in object['params'] if validate_record(param)]
-    except Exception as e:
-        raise e
-    # костыль для добавления классификатора телефона для страны, придумать как переделать-------------------------------
-    additional_processing(user, object, data)
-    # ------------------------------------------------------------------------------------------------------------------
-    if not object.get('force', False):  # проверка на дублирование
-        temp_set = None
-        nums_needed = 0
-        for item in data:
-            if get_key_by_id(int(item[0])).get('need', 0) == 1:
-                nums_needed += 1
-                if type(temp_set) == set:
-                    temp_set.intersection_update(set(find_key_value_http(object.get('object_id'), item[0], item[1])))
-                else:
-                    temp_set = set(find_key_value_http(object.get('object_id'), item[0], item[1], group_id))
-        if temp_set and nums_needed == len(
-                list(filter(lambda x: x['obj_id'] == object.get('object_id') and x['need'], get_keys_by_object()))):
-            return {'objects': [get_object_record_by_id_http(object.get('object_id'), item, group_id)
-                                for item in temp_set]}
-    if object.get('rec_id_old', 0) != 0:  # действия при слиянии объектов
-        old_object = get_object_record_by_id_http(object.get('object_id'), object.get('rec_id_old'), group_id)
-        for param in old_object['params']:
-            for value in param['values']:
-                data.append([param['id'], value['value'], value['date'] + ':00'])
-        add_rel_by_other_object(group_id, object.get('object_id', 0), object.get('rec_id', 0),
-                                object.get('object_id', 0), object.get('rec_id_old', 0))
-    if len(data) == 0:  # проверка на пустой запрос
-        return {'object': object.get('rec_id', 0)}
-    if object.get('rec_id', 0) != 0:  # проверка на внесение новой записи
-        data.append(['id', object.get('rec_id')])
-    result = add_record(group_id=group_id, object_id=object.get('object_id'), object_info=data)
-    if result != -1:
-        return {'object': result}
-    else:
-        return {'result': -1}
+    with lock:
+        try:
+            data = [parse_value(param, object, files) for param in object['params'] if validate_record(param)]
+        except Exception as e:
+            raise e
+        additional_processing(user, object, data)
+        if not object.get('force', False):  # проверка на дублирование
+            temp_set = None
+            nums_needed = 0
+            for item in data:
+                if get_key_by_id(int(item[0])).get('need', 0) == 1:
+                    nums_needed += 1
+                    if type(temp_set) == set:
+                        temp_set.intersection_update(set(find_key_value_http(object.get('object_id'), item[0], item[1])))
+                    else:
+                        temp_set = set(find_key_value_http(object.get('object_id'), item[0], item[1], group_id))
+            if temp_set and nums_needed == len(
+                    list(filter(lambda x: x['obj_id'] == object.get('object_id') and x['need'], get_keys_by_object()))):
+                return {'objects': [get_object_record_by_id_http(object.get('object_id'), item, group_id)
+                                    for item in temp_set]}
+        if object.get('rec_id_old', 0) != 0:  # действия при слиянии объектов
+            old_object = get_object_record_by_id_http(object.get('object_id'), object.get('rec_id_old'), group_id)
+            for param in old_object['params']:
+                for value in param['values']:
+                    data.append([param['id'], value['value'], value['date'] + ':00'])
+            add_rel_by_other_object(group_id, object.get('object_id', 0), object.get('rec_id', 0),
+                                    object.get('object_id', 0), object.get('rec_id_old', 0))
+        if len(data) == 0:  # проверка на пустой запрос
+            return {'object': object.get('rec_id', 0)}
+        if object.get('rec_id', 0) != 0:  # проверка на внесение новой записи
+            data.append(['id', object.get('rec_id')])
+        result = add_record(group_id=group_id, object_id=object.get('object_id'), object_info=data)
+        if result != -1:
+            return {'object': result}
+        else:
+            return {'result': -1}
 
 
 def add_geometry(user, group_id, rec_id, location, name, parent_id, icon):
