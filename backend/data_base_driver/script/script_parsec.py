@@ -24,7 +24,8 @@ def default_checker(string):
     """
     res = re.findall(r'[\'\"](.*?)[\'\"]', string)
     for temp in res:
-        string = string.replace(temp, 'str')
+        if len(temp) > 0:
+            string = string.replace('\'' + temp + '\'', 'str')
     if len(list(
             set(string.split()) & set(
                 ENVIRONMENT_VARIABLES))) > 0: return False, 'использование переменной окружения', list(
@@ -45,6 +46,8 @@ def parse_text_to_python(name, text, params, type):
     @param type: тип скрипта
     @return: не возвращает состояние
     """
+    if not os.path.exists(BASE_PATH_TO_USER_SCRIPTS):
+        os.makedirs(BASE_PATH_TO_USER_SCRIPTS)
     path = BASE_PATH_TO_USER_SCRIPTS + name + '.py'
     file = open(path, 'w')
     file.write(IMPORTS + '\n\n')

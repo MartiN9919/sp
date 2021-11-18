@@ -199,6 +199,8 @@ class ModelScriptVariable(models.Model):
     def save(self, *args, **kwargs):
         self.script_id = ModelScript.objects.get(title=self.script.title).id
         super().save(*args, **kwargs)
+        script = ModelScript.objects.get(title=self.script.title)
+        script.save()
 
     class Meta:
         managed = False
