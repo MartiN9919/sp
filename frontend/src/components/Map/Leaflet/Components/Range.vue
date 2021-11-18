@@ -94,8 +94,8 @@ export default {
         title: 'округлить до',
         icon:  'mdi-content-cut',
         menu: [
-          { title: 'суток', icon: 'mdi-calendar-blank', action: 'on_round_dt', },
-          { title: 'часов', icon: 'mdi-clock',          action: 'on_round_dt', },
+          { title: 'суток', icon: 'mdi-calendar-blank', action: 'on_round_dt', round: 'day', },
+          { title: 'часов', icon: 'mdi-clock',          action: 'on_round_dt', round: 'hour', },
         ],
       },
     ],
@@ -182,7 +182,6 @@ export default {
 
     // MENU: Установить период
     on_period_dt(menu_item) {
-      console.log(menu_item)
       let limit_min = this.MAP_GET_RANGE_MIN;
       let limit_max = this.MAP_GET_RANGE_MAX;
       let sel       = this.MAP_GET_RANGE_SEL;
@@ -214,31 +213,23 @@ export default {
       let sel_min   = sel[0];
       let sel_max   = sel[1];
 
+      sel_min -= myUTC;
       sel_max -= myUTC;
-      //sel_max -= sel_max % (24 * 60 * 60 * 1000);   // округлить до суток
-      sel_max -= sel_max % (60 * 60 * 1000);   // округлить до часов
+      switch (menu_item.round) {
+        case 'day':                               // округлить до суток
+          sel_min -= sel_min % (24 * 60 * 60 * 1000);
+          sel_max -= sel_max % (24 * 60 * 60 * 1000);
+          break;
+        case 'hour':                              // округлить до часов
+          sel_min -= sel_min % (60 * 60 * 1000);
+          sel_max -= sel_max % (60 * 60 * 1000);
+          break;
+      }
+      sel_min += myUTC;
       sel_max += myUTC;
 
       this.MAP_ACT_RANGE_SEL({lst: [sel_min, sel_max]});
-
-
-      return
-      let sel_delta = menu_item.ts*1000;
-
-
-      if (sel_delta == 0) {
-        sel_min = limit_min;
-        sel_max = limit_max;
-      } else if ((sel_max - sel_delta) >= limit_min) {
-        sel_min = sel_max-sel_delta;              // период влево от sel_max полностью
-
-      } else {                                    // период влево от sel_max частично
-        sel_min = limit_min;
-        sel_max = Math.min(sel_min+sel_delta, limit_max);
-      }
-
-      this.MAP_ACT_RANGE_SEL({lst: [sel_min, sel_max]});
-    },
+  },
 
 
     // MOUSE
