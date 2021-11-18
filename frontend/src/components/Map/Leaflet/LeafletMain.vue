@@ -215,7 +215,6 @@ export default {
   computed: {
     ...mapGetters([
       'MAP_GET_KEY',
-      'MAP_GET_RANGE_SEL',
       'MAP_GET_TILES',
       'MAP_GET_TILE',
       'MAP_GET_SCALE',

@@ -14,6 +14,7 @@
               v-model="prop_sel"
               :min="MAP_GET_RANGE_MIN"
               :max="MAP_GET_RANGE_MAX"
+              :step="step"
 
               height="1.5em"
               dense
@@ -76,18 +77,19 @@ export default {
   },
 
   data: () => ({
+    step: 0,
     menu_struct: undefined,
     menu_struct_base: [
       {
-        title: 'установить период',
+        title: 'период',
         icon:  'mdi-arrow-expand-horizontal', //'mdi-clock-start',
         menu:  [
           { title: 'все',      icon: 'mdi-calendar-check', action: 'on_period_dt', ts: 0, },
-          { divider: true },
-          { title: '30 суток', icon: 'mdi-calendar-month', action: 'on_period_dt', ts: 2592000, },
-          { title: '1 неделя', icon: 'mdi-calendar-range', action: 'on_period_dt', ts: 604800, },
-          { title: '1 сутки',  icon: 'mdi-calendar-today', action: 'on_period_dt', ts: 86400, },
-          { title: '1 час',    icon: 'mdi-clock-time-one', action: 'on_period_dt', ts: 3600, },
+          //{ divider: true },
+          { title: '30 суток', icon: 'mdi-calendar-month', action: 'on_period_dt', ts: 1000*2592000, },
+          { title: '1 неделя', icon: 'mdi-calendar-range', action: 'on_period_dt', ts: 1000*604800, },
+          { title: '1 сутки',  icon: 'mdi-calendar-today', action: 'on_period_dt', ts: 1000*86400, },
+          { title: '1 час',    icon: 'mdi-clock-time-one', action: 'on_period_dt', ts: 1000*3600, },
         ],
       },
       {
@@ -173,39 +175,55 @@ export default {
 
     // MENU: Показать первый уровень
     on_menu_show(e) {
-      e.preventDefault();
-      e.stopPropagation();
-      this.menu_struct = JSON.parse(JSON.stringify(this.menu_struct_base)); // основа - глубокая копия
-      //this.menu_struct.splice(4, 1);
-      this.$refs.menu.show_root(e.clientX, e.clientY);
-    },
-
-    // MENU: Установить период
-    on_period_dt(menu_item) {
+      const self    = this;
       let limit_min = this.MAP_GET_RANGE_MIN;
       let limit_max = this.MAP_GET_RANGE_MAX;
       let sel       = this.MAP_GET_RANGE_SEL;
       let sel_min   = sel[0];
       let sel_max   = sel[1];
-      let sel_delta = menu_item.ts*1000;
+      let sel_delta = sel_max - sel_min;
 
+      e.preventDefault();
+      e.stopPropagation();
+      this.menu_struct = JSON.parse(JSON.stringify(this.menu_struct_base)); // основа - глубокая копия
+      // текущий выбор периода недоступен
+      this.menu_struct[0].menu.forEach((item, ind) => {
+        if (                                                                // доступность
+          (self.step  == item.ts) &&                                        // шаг шкалы равен периоду и
+          (sel_delta == ((item.ts==0)?(limit_max-limit_min):self.step))     // выбран только один шаг шкалы (для ВСЕ выбрано все)
+        ) { self.menu_struct[0].menu[ind].disabled = true; }
+        if (self.step  == item.ts) {                                        // текущий выбор: шаг шкалы равен периоду
+          self.menu_struct[0].menu[ind].subtitle = 'Выбрано';
+        }
+      });
+      this.$refs.menu.show_root(e.clientX, e.clientY);
+    },
 
-      if (sel_delta == 0) {
+    // MENU: Установить период
+    async on_period_dt(menu_item) {
+      let limit_min = this.MAP_GET_RANGE_MIN;
+      let limit_max = this.MAP_GET_RANGE_MAX;
+      let sel       = this.MAP_GET_RANGE_SEL;
+      let sel_min   = sel[0];
+      let sel_max   = sel[1];
+      let sel_delta = menu_item.ts;
+
+      if (sel_delta == 0) {                             // период: вся шкала
         sel_min = limit_min;
         sel_max = limit_max;
-      } else if ((sel_max - sel_delta) >= limit_min) {
-        sel_min = sel_max-sel_delta;              // период влево от sel_max полностью
+      } else if ((sel_max - sel_delta) >= limit_min) {  // период: влево от sel_max полностью
+        sel_min = sel_max-sel_delta;
 
-      } else {                                    // период влево от sel_max частично
+      } else {                                          // период: влево от sel_max частично
         sel_min = limit_min;
         sel_max = Math.min(sel_min+sel_delta, limit_max);
       }
 
-      this.MAP_ACT_RANGE_SEL({lst: [sel_min, sel_max]});
+      await this.set_range_sel(sel_min, sel_max, sel_delta);
     },
 
     // MENU: Округлить период
-    on_round_dt(menu_item) {
+    async on_round_dt(menu_item) {
       let limit_min = this.MAP_GET_RANGE_MIN;
       let limit_max = this.MAP_GET_RANGE_MAX;
       let sel       = this.MAP_GET_RANGE_SEL;
@@ -227,7 +245,7 @@ export default {
       sel_min += myUTC;
       sel_max += myUTC;
 
-      this.MAP_ACT_RANGE_SEL({lst: [sel_min, sel_max]});
+      await this.set_range_sel(sel_min, sel_max);
   },
 
 
@@ -246,7 +264,7 @@ export default {
       if (x < (thumb[0].offsetLeft - size)) { e.preventDefault(); e.stopPropagation(); this.on_click_btn(0); return; } // левее  периода
       if (x > (thumb[1].offsetLeft + size)) { e.preventDefault(); e.stopPropagation(); this.on_click_btn(1); return; } // правее  периода
 
-      //e.preventDefault(); e.stopPropagation();
+      // e.preventDefault(); e.stopPropagation(); - нельзя блокировать
     },
     on_mouse_reset(e) {
       let thumb = this.$refs.slider.$el.querySelectorAll('.v-slider__thumb-container');
@@ -256,7 +274,7 @@ export default {
       e.preventDefault();
       e.stopPropagation();
     },
-    on_click_btn(pos) {
+    async on_click_btn(pos) {
       let limit_min = this.MAP_GET_RANGE_MIN;
       let limit_max = this.MAP_GET_RANGE_MAX;
       let sel       = this.MAP_GET_RANGE_SEL;
@@ -285,8 +303,15 @@ export default {
         }
       }
 
-      this.MAP_ACT_RANGE_SEL({lst: [sel_min, sel_max]});
+      await this.set_range_sel(sel_min, sel_max);
     },
+
+    async set_range_sel(sel_min, sel_max, step=undefined) {
+      let step_temp = (step != undefined) ? step : this.step;
+      this.step = 0;
+      await this.MAP_ACT_RANGE_SEL({lst: [sel_min, sel_max]});
+      this.step = step_temp;
+    }
   },
 }
 
