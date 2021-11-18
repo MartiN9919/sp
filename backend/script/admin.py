@@ -24,6 +24,7 @@ class ModelScriptForm(forms.ModelForm):
 @admin.register(ModelScript)
 class ModelScriptAdmin(admin.ModelAdmin):
     form = ModelScriptForm
+    search_fields = (DAT_SYS_SCRIPT.TITLE,)
     list_display = (
         'get_parent',
         DAT_SYS_SCRIPT.TITLE,

@@ -1,27 +1,27 @@
-import { STYLE_DATA_FORCE_TEST      } from '@/components/Map/Leaflet/Components/Style/StyleDataForce';
-import { STYLE_DATA_CHECKPOINT_TEST } from '@/components/Map/Leaflet/Components/Style/StyleDataCheckpoint';
-import { STYLE_DATA_ENGENEER_TEST   } from '@/components/Map/Leaflet/Components/Style/StyleDataEngeneer';
-import { STYLE_DATA_LAYOUT_TEST     } from '@/components/Map/Leaflet/Components/Style/StyleDataLayout';
-import { STYLE_DATA_TEXT_TEST       } from '@/components/Map/Leaflet/Components/Style/StyleDataText';
-import { STYLE_DATA_COMMON_TEST     } from '@/components/Map/Leaflet/Components/Style/StyleDataCommon';
-import { STYLE_DATA_TEST_TEST       } from '@/components/Map/Leaflet/Components/Style/StyleDataTest';
+import { TEST as DATA_FORCE      } from '@/components/Map/Leaflet/Components/Style/StyleDataForce';
+import { TEST as DATA_CHECKPOINT } from '@/components/Map/Leaflet/Components/Style/StyleDataCheckpoint';
+import { TEST as DATA_ENGENEER   } from '@/components/Map/Leaflet/Components/Style/StyleDataEngeneer';
+import { TEST as DATA_LAYOUT     } from '@/components/Map/Leaflet/Components/Style/StyleDataLayout';
+import { TEST as DATA_TEXT       } from '@/components/Map/Leaflet/Components/Style/StyleDataText';
+import { TEST as DATA_COMMON     } from '@/components/Map/Leaflet/Components/Style/StyleDataCommon';
+import { TEST as DATA_TEST       } from '@/components/Map/Leaflet/Components/Style/StyleDataTest';
 
 
 export const MAP_TEST_ITEM_1 = {
   //"id": 5,
   "name":  "Test 1",
-  "hint":  "Это тест 1",
+  //"hint":  "Это тест 1",
   "color": "#F00",
   "fc":    {
     "type": "FeatureCollection",
     "features": [
-      ...STYLE_DATA_FORCE_TEST,
-      ...STYLE_DATA_CHECKPOINT_TEST,
-      ...STYLE_DATA_ENGENEER_TEST,
-      ...STYLE_DATA_LAYOUT_TEST,
-      ...STYLE_DATA_TEXT_TEST,
-      ...STYLE_DATA_COMMON_TEST,
-      ...STYLE_DATA_TEST_TEST,
+      ...DATA_FORCE,
+      ...DATA_CHECKPOINT,
+      ...DATA_ENGENEER,
+      ...DATA_LAYOUT,
+      ...DATA_TEXT,
+      ...DATA_COMMON,
+      ...DATA_TEST,
     ],
   }
 };
@@ -30,7 +30,7 @@ export const MAP_TEST_ITEM_1 = {
 export const MAP_TEST_ITEM_2 = {
   //"id": 6,
   "name":  "Test 2",
-  "hint":  "Это тест 2",
+  //"hint":  "Это тест 2",
   "color": "green",  // "#923"
   "fc": {
     "type": "FeatureCollection",
@@ -79,20 +79,20 @@ export const MAP_TEST_ITEM_2 = {
         },
         "geometry": {
           "type": "Point",
-          "coordinates": [24.5,53.25]
+          "coordinates": [28.0,54.25],
         },
       },
 
-      // {
-      //   "type": "Feature",
-      //   "properties": {
-      //     "class": "icon-pulse-14",
-      //   },
-      //   "geometry": {
-      //     "type": "Point",
-      //     "coordinates": [30.541992187500004,50.41551870402678]
-      //   }
-      // },
+      {
+        "type": "Feature",
+        "properties": {
+          "class": "icon-pulse-14",
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [30.541992187500004,50.41551870402678]
+        }
+      },
       // {
       //   "type": "Feature",
       //   "properties": {
@@ -146,7 +146,7 @@ export const MAP_TEST_ITEM_2 = {
 
 export const MAP_TEST_ITEM_3 = {
   "name": "Test 3",
-  "hint": "Это тест 3",
+  //"hint": "Это тест 3",
   "color": "#493",
   "fc": {
     "style": {

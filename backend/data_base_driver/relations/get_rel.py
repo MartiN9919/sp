@@ -259,7 +259,7 @@ def remove_path(parent, child):
         remove_path(parent['parent'], parent)
 
 
-def search_relations_recursive(group_id, request, parent, root):
+def search_relations_recursive(group_id, request, parent, root): # НЕОБХОДИМО ПОЧИНИТЬ БАГ С НЕПРАВИЛЬНОЙ ДЕГРАДАЦИЕЙ
     """
     Функция для рекурсивного построения дерева связей по запросу
     @param group_id: идентификатор группы пользователя
@@ -279,6 +279,7 @@ def search_relations_recursive(group_id, request, parent, root):
         if len(relation.get('request', '')) != 0:
             rec_ids = find_reliable_http(relation.get('object_id'), relation.get('request', ''),
                                          relation.get('actual'), group_id)
+            fl = False
             for rec_id in rec_ids:
                 temp_result = search_rel_with_key_http(relation.get('rel').get('id'),
                                                        parent.get('object_id'),
@@ -294,8 +295,9 @@ def search_relations_recursive(group_id, request, parent, root):
                     temp = {'object_id': relation.get('object_id'), 'rec_id': int(rec_id), 'rels': [], 'parent': parent}
                     parent['rels'].append(temp)
                     temp_list.append(temp)
-                else:
-                    remove_path(parent.get('parent'), parent)
+                    fl = True
+            if not fl:
+                remove_path(parent.get('parent'), parent)
         else:
             rec_ids = search_rel_with_key_http(relation.get('rel').get('id'),
                                                relation.get('object_id'),
@@ -328,7 +330,7 @@ def get_unique_objects(objects, object_tree):
     """
     for item in object_tree:
         if item.get('degenerated') and \
-                (item['degenerated'] == len(item['rels']) or (item['degenerated'] and len(item['rels']) == 0)):
+                (item['degenerated'] >= len(item['rels']) or (item['degenerated'] and len(item['rels']) == 0)):
             continue
         if len([temp for temp in objects if temp['object_id'] == item['object_id'] and
                                             temp['rec_id'] == item['rec_id']]) == 0:

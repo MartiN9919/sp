@@ -1,5 +1,6 @@
 // СИЛЫ
-export const STYLE_DATA_FORCE_ICON = {
+export const ICON = {
+  // пункт управления прикордон
   'force_manage_inside': {
     anchor_dx: 0,
     anchor_dy: 100.,
@@ -12,6 +13,7 @@ export const STYLE_DATA_FORCE_ICON = {
       </svg>
     `,
   },
+  // пункт управления закордон
   'force_manage_outside': {
     anchor_dx: 92,
     anchor_dy: 100.,
@@ -23,6 +25,7 @@ export const STYLE_DATA_FORCE_ICON = {
       </svg>
     `,
   },
+  // отдел пограничной службы прикордон
   'force_ops_inside': {
     anchor_dx: 0,
     anchor_dy: 100.,
@@ -35,6 +38,7 @@ export const STYLE_DATA_FORCE_ICON = {
       </svg>
     `,
   },
+  // подразделение погранзаставы прикордон
   'force_frontier_inside': {
     anchor_dx: 0,
     anchor_dy: 100.,
@@ -46,6 +50,7 @@ export const STYLE_DATA_FORCE_ICON = {
       </svg>
     `,
   },
+  // подразделение погранохраны закордон
   'force_frontier_outside': {
     anchor_dx: 54,
     anchor_dy: 100.,
@@ -57,6 +62,7 @@ export const STYLE_DATA_FORCE_ICON = {
       </svg>
     `,
   },
+  // пост погранохраны прикордон
   'force_guard_inside': {
     anchor_dx: 0,
     anchor_dy: 100.,
@@ -68,6 +74,7 @@ export const STYLE_DATA_FORCE_ICON = {
       </svg>
     `,
   },
+  // пост погранохраны закордон
   'force_guard_outside': {
     anchor_dx: 54,
     anchor_dy: 100.,
@@ -79,6 +86,7 @@ export const STYLE_DATA_FORCE_ICON = {
       </svg>
     `,
   },
+  // погранпост временный прикордон
   'force_guard_temp_inside': {
     anchor_dx: 0,
     anchor_dy: 100.,
@@ -91,6 +99,7 @@ export const STYLE_DATA_FORCE_ICON = {
       </svg>
     `,
   },
+  // погранконтроль прикордон
   'force_unit_control_inside': {
     anchor_dx: 0,
     anchor_dy: 100.,
@@ -103,6 +112,7 @@ export const STYLE_DATA_FORCE_ICON = {
       </svg>
     `,
   },
+  // погранконтроль закордон
   'force_unit_control_outside': {
     anchor_dx: 198,
     anchor_dy: 100.,
@@ -115,6 +125,7 @@ export const STYLE_DATA_FORCE_ICON = {
       </svg>
     `,
   },
+  // НП скрытый
   'force_point_observation_hidden': {
     anchor_dx: 40.,
     anchor_dy: 40.,
@@ -125,6 +136,7 @@ export const STYLE_DATA_FORCE_ICON = {
       </svg>
     `,
   },
+  // НП открытый
   'force_point_observation_open': {
     anchor_dx: 40.,
     anchor_dy: 40.,
@@ -135,6 +147,7 @@ export const STYLE_DATA_FORCE_ICON = {
       </svg>
     `,
   },
+  // контрольный пункт
   'force_point_control': {
     anchor_dx: 50.,
     anchor_dy: 25.,
@@ -146,21 +159,125 @@ export const STYLE_DATA_FORCE_ICON = {
       </svg>
     `,
   },
+  // пограничный наряд прикордон
+  'force_patrol_inside': {
+    anchor_dx: 72,
+    anchor_dy: 70,
+    zoom:      1.2,
+    svg: `
+      <svg width={width} height={height} viewBox="0 0 244 140">
+        <g transform="rotate({rotate} 72 70)">
+          <circle style="fill:#fff;stroke:#f00;stroke-width:4" cx="72" cy="70" r="20"/>
+          <path style="fill:none;stroke:#f00;stroke-width:4" d="M72,51 V5 M82,26 72,5 62,26"/>
+        </g>
+        <text style="font-style:normal;font-size:16px;font-family:sans-serif;text-anchor:start" x="100" y="75">{text}</text>
+      </svg>
+    `,
+  },
+  // пограничный наряд закордон
+  'force_patrol_outside': {
+    anchor_dx: 172,
+    anchor_dy: 70,
+    zoom:      1.2,
+    svg: `
+      <svg width={width} height={height} viewBox="0 0 244 140">
+        <g transform="rotate({rotate} 172 70)">
+          <circle style="fill:#fff;stroke:#00f;stroke-width:4" cx="172" cy="70" r="20"/>
+          <path style="fill:none;stroke:#00f;stroke-width:4" d="M172,51 V5 M182,26 172,5 162,26"/>
+        </g>
+        <text style="font-style:normal;font-size:16px;font-family:sans-serif;text-anchor:end" x="140" y="75">{text}</text>
+      </svg>
+    `,
+  },
+  // вертолет прикордон
+  'force_helicopter_inside': {
+    anchor_dx: 20,
+    anchor_dy: 100,
+    zoom:      1.2,
+    svg: `
+      <svg width={width} height={height} viewBox="0 0 200 100">
+        <path style="fill:none;stroke:#f00;stroke-width:4" d="M2,2 38,38 M2,38 38,2 M20,20 V100"/>
+        <text style="font-style:normal;font-size:16px;font-family:sans-serif;text-anchor:start" x="25" y="95">{text}</text>
+      </svg>
+    `,
+  },
+  // вертолет закордон
+  'force_helicopter_outside': {
+    anchor_dx: 180,
+    anchor_dy: 100,
+    zoom:      1.2,
+    svg: `
+      <svg width={width} height={height} viewBox="0 0 200 100">
+        <path style="fill:none;stroke:#00f;stroke-width:4" d="M162,2 198,38 M162,38 198,2 M180,20 V100"/>
+        <text style="font-style:normal;font-size:16px;font-family:sans-serif;text-anchor:end" x="170" y="95">{text}</text>
+      </svg>
+    `,
+  },
+  // вертолет для траектории
+  'force_helicopter_route': {
+    anchor_dx: 20,
+    anchor_dy: 20,
+    zoom:      .8,
+    svg: `
+      <svg width={width} height={height} viewBox="0 0 40 40">
+        <path style="fill:none;stroke:{color};stroke-width:4" d="M2,2 38,38 M2,38 38,2"/>
+      </svg>
+    `,
+  },
+  // квадрокоптер для траектории
+  'force_quadcopter_route': {
+    anchor_dx: 20,
+    anchor_dy: 20,
+    zoom:      .8,
+    svg: `
+      <svg width={width} height={height} viewBox="0 0 40 40">
+        <path style="fill:none;stroke:{color};stroke-width:4" d="M6,6 34,34 M6,34 34,6 M2,10 10,2 M30,2 38,10  M30,38 38,30  M2,30 10,38"/>
+      </svg>
+    `,
+  },
 }
 
 
 
 
 
-export const STYLE_DATA_FORCE_DECOR = {
-
+export const DECOR = {
+  // линия - Х - траектория вертолета прикордон
+  'line-force_helicopter_route_inside': [
+    { offset: '100%', repeat: 0,   symbol_type: 'arrow',  symbol_options: { pixelSize: 8,  pathOptions:   { color: '#f00', weight: 2, stroke: true, }, }, icon_properties: { shadow: false, }, },
+    { offset: 0,      repeat: 150, symbol_type: 'marker', symbol_options: { rotate: true,  markerOptions: { color: '#f00', icon: 'icon-svg-force_helicopter_route', }, }, icon_properties: { shadow: false, }, },
+    { offset: 0,      repeat: 20,  symbol_type: 'dash',   symbol_options: { pixelSize: 10, pathOptions:   { color: '#f00', weight: 2, }, }, },
+  ],
+  // линия - Х - траектория вертолета закордон
+  'line-force_helicopter_route_outside': [
+    { offset: '100%', repeat: 0,   symbol_type: 'arrow',  symbol_options: { pixelSize: 8,  pathOptions:   { color: '#00f', weight: 2, stroke: true, }, }, icon_properties: { shadow: false, }, },
+    { offset: 0,      repeat: 150, symbol_type: 'marker', symbol_options: { rotate: true,  markerOptions: { color: '#00f', icon: 'icon-svg-force_helicopter_route', }, }, icon_properties: { shadow: false, }, },
+    { offset: 0,      repeat: 20,  symbol_type: 'dash',   symbol_options: { pixelSize: 10, pathOptions:   { color: '#00f', weight: 2, }, }, },
+  ],
+  // линия - Х - траектория вертолета прикордон
+  'line-force_quadcopter_route_inside': [
+    { offset: '100%', repeat: 0,   symbol_type: 'arrow',  symbol_options: { pixelSize: 8,  pathOptions:   { color: '#f00', weight: 2, stroke: true, }, }, icon_properties: { shadow: false, }, },
+    { offset: 0,      repeat: 150, symbol_type: 'marker', symbol_options: { rotate: true,  markerOptions: { color: '#f00', icon: 'icon-svg-force_quadcopter_route', }, }, icon_properties: { shadow: false, }, },
+    { offset: 0,      repeat: 20,  symbol_type: 'dash',   symbol_options: { pixelSize: 10, pathOptions:   { color: '#f00', weight: 2, }, }, },
+  ],
+  // линия - Х - траектория вертолета закордон
+  'line-force_quadcopter_route_outside': [
+    { offset: '100%', repeat: 0,   symbol_type: 'arrow',  symbol_options: { pixelSize: 8,  pathOptions:   { color: '#00f', weight: 2, stroke: true, }, }, icon_properties: { shadow: false, }, },
+    { offset: 0,      repeat: 150, symbol_type: 'marker', symbol_options: { rotate: true,  markerOptions: { color: '#00f', icon: 'icon-svg-force_quadcopter_route', }, }, icon_properties: { shadow: false, }, },
+    { offset: 0,      repeat: 20,  symbol_type: 'dash',   symbol_options: { pixelSize: 10, pathOptions:   { color: '#00f', weight: 2, }, }, },
+  ],
 }
 
 
 
 
+export const SVG = {
 
-export const STYLE_DATA_FORCE_TEST = [
+}
+
+
+
+export const TEST = [
   {
     "type": "Feature",
     "properties": {
@@ -327,6 +444,96 @@ export const STYLE_DATA_FORCE_TEST = [
     "geometry": {
       "type": "Point",
       "coordinates": [27.0,54.25],
+    },
+  },
+  {
+    "type": "Feature",
+    "properties": {
+      "class": "icon-svg-force_patrol_inside",
+      "hint": "icon-svg-force_patrol_inside",
+      "rotate": 270,
+      "date": "2021-06-09",
+      "text": "Д-2чел-3погз",
+    },
+    "geometry": {
+      "type": "Point",
+      "coordinates": [27.5,54.25],
+    },
+  },
+  {
+    "type": "Feature",
+    "properties": {
+      "class": "icon-svg-force_patrol_outside",
+      "hint": "icon-svg-force_patrol_outside",
+      "rotate": 90,
+      "date": "2021-03-09",
+      "text": "Д-3чел-2погз",
+    },
+    "geometry": {
+      "type": "Point",
+      "coordinates": [27.5,54.0],
+    },
+  },
+  {
+    "type": "Feature",
+    "properties": {
+      "class": "icon-svg-force_helicopter_inside",
+      "hint": "icon-svg-force_helicopter_inside",
+      "date": "2021-06-09",
+      "text": "МИ-8",
+    },
+    "geometry": {
+      "type": "Point",
+      "coordinates": [28.0,54.25],
+    },
+  },
+  {
+    "type": "Feature",
+    "properties": {
+      "class": "icon-svg-force_helicopter_outside",
+      "hint": "icon-svg-force_helicopter_outside",
+      "date": "2021-06-09",
+      "text": "Apache",
+    },
+    "geometry": {
+      "type": "Point",
+      "coordinates": [28.0,54.0],
+    },
+  },
+
+
+
+
+  {
+    "type": "Feature",
+    "properties": {
+      "class": "line-force_helicopter_route_inside hidden",
+      "hint": "line-force_helicopter_route_inside hidden",
+      "date": "2021-05-03",
+      //"color": "#888",
+    },
+    "geometry": {
+      "type": "LineString",
+      "coordinates": [
+        [24.0,58.5],
+        [27.5,59.5],
+      ]
+    },
+  },
+  {
+    "type": "Feature",
+    "properties": {
+      "class": "line-force_quadcopter_route_outside hidden",
+      "hint": "line-force_quadcopter_route_outside hidden",
+      "date": "2021-05-03",
+      //"color": "#888",
+    },
+    "geometry": {
+      "type": "LineString",
+      "coordinates": [
+        [27.5,59.5],
+        [32.0,58.5],
+      ]
     },
   },
 ]

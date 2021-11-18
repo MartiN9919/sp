@@ -5,6 +5,7 @@ VEC_DATA = {
     'HOST': '200.200.200.233',
     'PORT': '3306',
     'NAME': 'smorgon',
+    # 'NAME': 'vec_data',
     'USER': 'dev',
     'PASSWORD': '1',
     'CHARSET': 'utf8',
@@ -21,7 +22,7 @@ OSM = {
 
 MANTICORE = {
     'HOST': '200.200.200.235',
-    'PORT': '9306',
+    'PORT': '9606',
     'NAME': 'Manticore'
 }
 

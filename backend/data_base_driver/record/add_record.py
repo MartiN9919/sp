@@ -83,13 +83,9 @@ def parse_value(param, object, files):
     """
     value = param['value']
     key = get_key_by_id(param['id'])
-    if key.get('list_id') != 0 and key['id'] not in SYS_KEY_CONSTANT.NOT_VALUE_TRANSFER_LIST and key.get(
-            'list_id') != None:
-        if key['id'] in SYS_KEY_CONSTANT.GEOMETRY_TRANSFER_LIST:
-            temp_value = str(get_item_list_value(value))
-            value = temp_value[temp_value.index('(') + 1:temp_value.index(')')]
-        else:
-            value = str(get_item_list_value(value))
+    if key.get('list_id') != 0 and key['id'] not in SYS_KEY_CONSTANT.NOT_VALUE_TRANSFER_LIST and \
+            key['id'] not in SYS_KEY_CONSTANT.GEOMETRY_TRANSFER_LIST and key.get('list_id') != None:
+        value = str(get_item_list_value(value))
     if key.get('type') == DAT_SYS_KEY.TYPE_FILE_PHOTO or key.get('type') == DAT_SYS_KEY.TYPE_FILE_ANY:
         rec_id = get_object_new_rec_id(object['object_id']) if object['rec_id'] == 0 else object['rec_id']
         path = 'files/' + str(object['object_id']) + '/' + str(rec_id) + '/'
