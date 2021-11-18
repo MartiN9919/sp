@@ -36,7 +36,6 @@
           :options="cluster_options(map_ind)"
         >
           <l-geo-json
-            ref="geoJson"
             :geojson="data_normalize(map_ind, map_item)"
             :options="geojson_options(map_ind)"
           />
@@ -130,7 +129,7 @@ import {
 } from '@/components/Map/Leaflet/Components/Style/StyleIcon';
 
 import StyleSvg         from '@/components/Map/Leaflet/Components/Style/StyleSvg';
-import { classes_name_correct } from '@/components/Map/Leaflet/Components/Style/StyleSvgData';
+import { correct_classes_name } from '@/components/Map/Leaflet/Components/Style/StyleData';
 import StyleDecor       from '@/components/Map/Leaflet/Components/Style/StyleDecor';
 
 import                       '@/components/Map/Leaflet/Components/Style/StyleIconPulse';
@@ -256,7 +255,6 @@ export default {
       'setActiveTool',
     ]),
 
-
     // ===============
     // RANGE
     // ===============
@@ -294,7 +292,7 @@ export default {
       fc = JSON.parse(JSON.stringify(fc));
 
       // установить fc.features[ind].ind - порядковый номер фигуры в fc
-      for(let ind=0; ind<fc.features.length; ind++) { fc.features[ind].ind = ind; }
+      for(let ind=0; ind<fc.features.length; ind++) { fc.features[ind][MAP_ITEM.FC.FEATURES.IND] = ind; }
 
       // отфильтровать с допустимыми датами
       let range_ts  = this.MAP_GET_RANGE_SEL;
@@ -307,8 +305,6 @@ export default {
         });
         fc.features = features;
       }
-
-      // console.log(this.$refs.geoJson)
       return fc;
     },
 
@@ -348,7 +344,7 @@ export default {
           // control-легенда: установка onHover
           // события повторно вызывают this.data_normalize_color
           let self = this;
-          layer.on('mouseover', function(e) { self.hover_map_ind = map_ind;  self.hover_feature_ind = feature.ind; });
+          layer.on('mouseover', function(e) { self.hover_map_ind = map_ind;  self.hover_feature_ind = feature[MAP_ITEM.FC.FEATURES.IND]; });
           layer.on('mouseout',  function(e) {
             if (!e.originalEvent.ctrlKey) self.hover_map_ind = -1;
             self.hover_feature_ind = -1;
@@ -370,7 +366,8 @@ export default {
 
           // класс для стилей линий и полигонов
           let classes_str = get_feature_class(feature);
-          classes_str = classes_name_correct(classes_str, map_ind);  // коррекция названий классов для избежания повторов из разных скриптов
+          // коррекция названий классов для избежания повторов из разных скриптов
+          classes_str = correct_classes_name(classes_str, map_ind, feature[MAP_ITEM.FC.FEATURES.IND]);
           if ((classes_str != '') && (layer.setStyle)) { layer.setStyle({'className': classes_str, }); }
 
           // редактирование запрещено - удалить pm - для уменьшения объема вычислений
@@ -386,7 +383,7 @@ export default {
 
           let class_main = feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES.CLASS]??'';
           let class_sel  = feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._SEL_]?MAP_CONST.CLASS.SEL:'';
-          let class_dop  = 'upper-markers';                                                // поднять маркеры над фигурами
+          let class_dop  = 'upper-markers';                                                // поднять маркеры над фигурами-декораторами
           const classes  = {...feature.properties, 'class': class_main+' '+class_sel+' '+class_dop, };
 
           return marker_get(latlng, color, classes, self.MAP_GET_ZOOM);
@@ -408,6 +405,8 @@ export default {
             fillColor:   feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._FILL_COLOR_],    // set in mixin: Color
             fillRule:    'evenodd',
             className:   classSel,
+            // smoothFactor: 50,
+            // noClip:       true,
           };
         },
       };
@@ -443,7 +442,6 @@ export default {
     on_edit_ok(e, dat) {
       this.MAP_ACT_EDIT({data: dat});
     },
-
 
     // GET BUTTON
     btn_get_click(e) {

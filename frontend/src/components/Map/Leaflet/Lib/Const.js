@@ -32,7 +32,7 @@ export const MAP_CONST = {
   COLOR: {
     DEFAULT:            '#f00',           // цвет по умолчанию
     DEFAULT_STYLE_PATH: 'gray',           // цвет по умолчанию для стилизации (декорирования) фигур
-    DEFAULT_ICON:       'blue',           // цвет по умолчанию для иконок (в скрипте как правило определен другой цвет)
+    DEFAULT_STYLE_ICON: 'blue',           // цвет по умолчанию для иконок (в скрипте как правило определен другой цвет)
     EDITOR_ORIGIN:      '#000',           // редактор: цвет ДО    ИЗМЕНЕНИЯ
     EDITOR_MODIFY:      '#f00',           // редактор: цвет ПОСЛЕ ИЗМЕНЕНИЯ
     SCRIPT_OFF:         '#696969FF',      // цвет неактивного скрипта
@@ -48,8 +48,8 @@ export const MAP_CONST = {
     COLORING: {                           // цвет в зависимости от значения
       GREEN_MIN: 'green_min',             // зеленый(хуже)  -> красный(лучше) https://leafletjs.com/examples/choropleth/example.html
       GREEN_MAX: 'green_max',             // зеленый(лучше) -> красный(хуже)
-      BEGIN:     '00FF00',                // цвет: начальный
-      END:       'FF0000',                // цвет: конечный
+      BEGIN:     'FF0000',                // цвет: начальный
+      END:       '00FF00',                // цвет: конечный
     },
   },
 };
@@ -63,6 +63,7 @@ export const MAP_ITEM = {
   FC: {
     //TYPE: 'type',                       // не используется
     FEATURES: {
+      IND:        'ind',                  // порядковый номер фигуры в fc.features
       PROPERTIES: {
         CLASS:        'class',            // key: класс для стилизации
         DATE:         'date',             // дата
@@ -70,8 +71,9 @@ export const MAP_ITEM = {
         VALUE:        'value',            // значение, которое определяет цвет полигона
         TEXT:         'text',             // надпись на маркере, пока что только для svg-маркеров
         ZOOM:         'zoom',             // масштабирование маркера: ['auto'], false, Numeric, пока что только для svg-маркеров
+        ROTATE:       'rotate',           // поворот иконки, в градусах
         HINT:         'hint',             // всплывающая подсказка, НЕТ РЕАКТИВНОСТИ?
-        SHADOW:       'shadow',           // иконки svg: false - отключить тень
+        SHADOW:       'shadow',           // иконки svg: false - отключить тень, 'red'
         TOP:          'top',              // иконки svg: true - поднять выше (важно при декорировании фигур несколькими иконками)
         _FILL_COLOR_: 'fill_color',       // заполняется программой, цвет заливки фигуры
         _SEL_:        'sel',              // заполняется программой, выделенный features[], true - выделено

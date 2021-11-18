@@ -4,7 +4,7 @@ from data_base_driver.constants.const_key import SYS_KEY_CONSTANT
 from data_base_driver.input_output.input_output import io_get_obj
 from data_base_driver.input_output.io_geo import get_geometry_by_id
 from data_base_driver.sys_key.get_key_dump import get_key_by_id
-from data_base_driver.sys_key.get_list import get_groups_list
+from data_base_driver.sys_key.get_list import get_groups_list, get_item_list_value
 from data_base_driver.trigger.trigger_execute import check_triggers
 
 
@@ -123,6 +123,9 @@ def get_value_by_key(key, value):
             return 'корень'
         else:
             return get_geometry_by_id(int(value))['name']
+    elif key in SYS_KEY_CONSTANT.GEOMETRY_TRANSFER_LIST:
+        temp_value = str(get_item_list_value(value))
+        return temp_value[:temp_value.index('(') - 1]
     elif key in SYS_KEY_CONSTANT.NOT_VALUE_TRANSFER_LIST:
         return [item for item in get_groups_list() if item['id'] == int(value)][0]['value']
     return value
