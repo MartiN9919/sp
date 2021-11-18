@@ -206,7 +206,6 @@ export default {
 
     // MENU: Округлить период
     on_round_dt(menu_item) {
-      console.log(menu_item)
       let limit_min = this.MAP_GET_RANGE_MIN;
       let limit_max = this.MAP_GET_RANGE_MAX;
       let sel       = this.MAP_GET_RANGE_SEL;
@@ -244,8 +243,8 @@ export default {
       let x = e.clientX - bounds.left; // let y = e.clientY - bounds.top;
 
       const size = 7;
-      if (x < (thumb[0].offsetLeft - size)) { e.preventDefault(); e.stopPropagation(); this.on_click_btn(0); return; }
-      if (x > (thumb[1].offsetLeft + size)) { e.preventDefault(); e.stopPropagation(); this.on_click_btn(1); return; }
+      if (x < (thumb[0].offsetLeft - size)) { e.preventDefault(); e.stopPropagation(); this.on_click_btn(0); return; } // левее  периода
+      if (x > (thumb[1].offsetLeft + size)) { e.preventDefault(); e.stopPropagation(); this.on_click_btn(1); return; } // правее  периода
 
       //e.preventDefault(); e.stopPropagation();
     },
