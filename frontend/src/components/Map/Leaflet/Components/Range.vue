@@ -181,7 +181,7 @@ export default {
   computed: {
     ...mapGetters([
       'SCRIPT_GET',
-      'MAP_GET_RANGE_SHOW',
+      'MAP_GET_RANGE',
     ]),
 
     form: vm => vm,
@@ -193,7 +193,7 @@ export default {
 
     visible: function() {
       return (
-        this.MAP_GET_RANGE_SHOW &&
+        this.MAP_GET_RANGE &&
         (this.dt.limit_min > 0) &&
         (this.dt.limit_max > 0) &&
         (this.dt.limit_min != this.dt.limit_max)
@@ -206,11 +206,11 @@ export default {
   },
 
   methods: {
-    // ...mapActions([]),
+    ...mapActions([ 'MAP_ACT_REFRESH', ]),
 
     // вызывается извне
     filter(fc) {
-      if (this.MAP_GET_RANGE_SHOW) {
+      if (this.MAP_GET_RANGE) {
         if ((this.dt.sel_min>0) && (this.dt.sel_max>0)) {
           let item_date;
           let self = this;
@@ -351,6 +351,7 @@ export default {
       this.dt.sel_min = sel_min;
       this.dt.sel_max = sel_max;
       this.dt.step    = step_temp;
+      await this.MAP_ACT_REFRESH();
     }
   },
 }

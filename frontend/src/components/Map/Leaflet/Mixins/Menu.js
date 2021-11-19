@@ -24,7 +24,7 @@ export default {
 
   computed: {
     ...mapGetters([
-      'MAP_GET_RANGE_SHOW',
+      'MAP_GET_RANGE',
       'MAP_GET_TILES',
       'MAP_GET_TILE',
       'MAP_GET_CLUSTER',
@@ -43,8 +43,8 @@ export default {
       get: function()    { return this.MAP_GET_TILE; },
     },
     prop_range: {
-      set: function(val) { this.MAP_ACT_RANGE_SHOW({on: val}); },
-      get: function()    { return this.MAP_GET_RANGE_SHOW; },
+      set: function(val) { this.MAP_ACT_RANGE({on: val}); },
+      get: function()    { return this.MAP_GET_RANGE; },
     },
     prop_cluster: {
       set: function(val) { this.MAP_ACT_CLUSTER({on: val}); },
@@ -80,7 +80,7 @@ export default {
 
   methods: {
     ...mapActions([
-      'MAP_ACT_RANGE_SHOW',
+      'MAP_ACT_RANGE',
       'MAP_ACT_TILE',
       'MAP_ACT_CLUSTER',
       'MAP_ACT_HINT',
