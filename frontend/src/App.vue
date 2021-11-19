@@ -20,7 +20,7 @@ export default {
     ...mapGetters(['loadStatus']),
     keepAlivePages: function () {
       return Array.from(this.$router.options.routes.filter(
-          r => r.meta && (this.$route.meta.auth ? r.meta.auth : !r.meta.auth)), r => r.name)
+        r => r.meta && (this.$route.meta.auth ? r.meta.auth : !r.meta.auth)), r => r.name)
     },
   },
 }

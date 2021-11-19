@@ -1,13 +1,12 @@
 <template>
   <split-panel shadow-effect>
     <template v-slot:firstPane>
-      <v-row no-gutters class="graph-menu">
-        <tools-menu></tools-menu>
-        <component :is="changeComponent()" :style="stylesComponent"></component>
-      </v-row>
+      <tools-menu>
+        <component :is="changeComponent()"/>
+      </tools-menu>
     </template>
     <template v-slot:secondPane>
-      <graph-area></graph-area>
+      <graph-area/>
     </template>
   </split-panel>
 </template>
@@ -36,43 +35,32 @@ export default {
     createRelationPage,
     settingsPage
   },
-  computed: {
-    ...mapGetters(['activeTool']),
-    stylesComponent: function () {
-      return { 'max-width': `calc(100% - ${this.$CONST.APP.TOOL_MENU.WIDTH}px)`}
-    },
-    activeWindow: function () {
-      return this.activeTool(router.currentRoute.name)
-    }
-  },
+  computed: mapGetters(['activeTool']),
   methods: {
-    ...mapActions([
-      'setDefaultValueActiveTool',
-      'setRootSearchTreeItem',
-    ]),
+    ...mapActions(['setRootSearchTreeItem']),
     changeComponent() {
-      if (this.activeWindow === 'searchPage')
-        return 'searchPage'
-      if (this.activeWindow === 'searchRelationPage')
-        return 'searchRelationPage'
-      if (this.activeWindow === 'createObjectPage')
-        return 'createObjectPage'
-      if (this.activeWindow === 'createRelationPage')
-        return 'createRelationPage'
-      if (this.activeWindow === 'settingsPage')
-        return 'settingsPage'
+      switch (this.activeTool(router.currentRoute.name)) {
+        case 'searchPage':
+          return 'searchPage'
+        case 'searchRelationPage':
+          return 'searchRelationPage'
+        case 'createObjectPage':
+          return 'createObjectPage'
+        case 'createRelationPage':
+          return 'createRelationPage'
+        case 'settingsPage':
+          return 'settingsPage'
+        default:
+          return 'searchPage'
+      }
     }
   },
   mounted() {
-    this.setDefaultValueActiveTool()
     this.setRootSearchTreeItem({})
   }
 }
 </script>
 
 <style>
-.graph-menu {
-  flex-wrap: nowrap;
-  height: 100%;
-}
+
 </style>

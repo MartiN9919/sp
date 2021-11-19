@@ -1,5 +1,5 @@
 <template>
-  <v-col class="d-flex flex-column">
+  <div class="overflow-x-hidden d-flex flex-column h-100">
     <v-treeview
       :items="searchTreeItems"
       :open="openObject"
@@ -58,7 +58,7 @@
       @select="selectObject"
       class="overflow-y-hidden found-objects"
     ></found-objects>
-  </v-col>
+  </div>
 </template>
 
 <script>
@@ -132,8 +132,5 @@ export default {
 
 .tree-item-input >>> .v-input__append-outer {
   margin-top: 2px !important;
-}
-.found-objects {
-  height: calc(100% - 68px);
 }
 </style>

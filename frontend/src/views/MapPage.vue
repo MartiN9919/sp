@@ -1,10 +1,9 @@
 <template>
   <split-panel shadow-effect>
     <template v-slot:firstPane>
-      <v-row no-gutters class="graph-menu">
-        <tools-menu></tools-menu>
-        <component :is="changeComponent()" :style="stylesComponent"></component>
-      </v-row>
+      <tools-menu>
+        <component :is="changeComponent()"/>
+      </tools-menu>
     </template>
     <template v-slot:secondPane>
       <LeafletMain/>
@@ -24,27 +23,18 @@ import router from "@/router"
 export default {
   name: 'Map',
   components: {SplitPanel, toolsMenu, LeafletMain, MapScriptMenu, MapDossier},
-  computed: {
-    ...mapGetters(['activeTool', 'SCRIPT_GET_ITEM_SEL']),
-    stylesComponent: function () {
-      return { 'width': `calc(100% - ${this.$CONST.APP.TOOL_MENU.WIDTH}px)`}
-    },
-    activeWindow: function () {
-      return this.activeTool(router.currentRoute.name)
-    }
-  },
-
-  mounted() {
-    this.setDefaultValueActiveTool()
-  },
-
+  computed: mapGetters(['activeTool', 'SCRIPT_GET_ITEM_SEL']),
   methods: {
-    ...mapActions(['setDefaultValueActiveTool', 'setNavigationDrawerStatus', 'setActiveTool']),
+    ...mapActions(['setNavigationDrawerStatus', 'setActiveTool']),
     changeComponent() {
-      if (this.activeWindow === 'scriptsPage')
-        return 'MapScriptMenu'
-      if (this.activeWindow === 'dossierPage')
-        return 'MapDossier'
+      switch (this.activeTool(router.currentRoute.name)) {
+        case 'scriptsPage':
+          return 'MapScriptMenu'
+        case 'dossierPage':
+          return 'MapDossier'
+        default:
+          return 'MapScriptMenu'
+      }
     }
   },
   watch: {
@@ -54,13 +44,10 @@ export default {
         this.setActiveTool('dossierPage')
       }
     }
-  }
+  },
 }
 </script>
 
 <style scoped>
-.graph-menu {
-  flex-wrap: nowrap;
-  height: 100%;
-}
+
 </style>

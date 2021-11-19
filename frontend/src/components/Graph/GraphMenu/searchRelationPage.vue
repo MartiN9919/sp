@@ -1,5 +1,5 @@
 <template>
-  <v-col class="d-flex flex-column">
+  <div>
     <v-card flat v-if="!searchRelationTreeGraph">
       <v-card-subtitle class="text-center text-no-wrap">
         Выбирете объект для поиска связей
@@ -60,7 +60,7 @@
         </v-hover>
       </template>
     </v-treeview>
-  </v-col>
+  </div>
 </template>
 
 <script>

@@ -1,10 +1,10 @@
 <template>
-  <v-col>
+  <div>
     <div class="work-place">
       <selector-object
         v-model="selectedEditableObject"
         :items="baseObjects"
-        class="selector-object py-2 v-list--dense"
+        class="selector-object v-list--dense"
       ></selector-object>
       <v-tabs id="tabs" v-model="activeTab" :color="sliderColor" grow show-arrows center-active :class="tabClasses">
         <v-tab v-for="(item, key) in editableObjects" :key="key">
@@ -33,7 +33,7 @@
       @recreate="selectedEditableObject = selectedEditableObject"
       class="control-menu"
     ></control-menu>
-  </v-col>
+  </div>
 </template>
 
 <script>
@@ -121,16 +121,16 @@ export default {
 
 <style scoped>
 .work-place {
-  height: calc(100% - 3em);
+  height: calc(100% - 44px);
 }
 .selector-object {
-  height: 3.3em;
+  height: 44px;
 }
 .height-with-tabs, .height-without-tabs  {
-  max-height: calc(100% - 3.3em);
+  max-height: calc(100% - 44px);
 }
 .control-menu {
-  height: 3em;
+  height: 44px;
   align-items: flex-end;
 }
 .height-with-tabs >>> .v-tab, .height-without-tabs >>> .v-tab {
@@ -140,10 +140,10 @@ export default {
   overflow-y: auto;
 }
 .height-with-tabs >>> .v-tabs-items {
- max-height: calc(100% - 3.3em - 48px);
+ max-height: calc(100% - 44px - 48px);
 }
 .height-without-tabs >>> .v-tabs-items {
-  max-height: calc(100% - 3.3em);
+  max-height: calc(100% - 44px);
 }
 .height-with-tabs >>> .v-slide-group__wrapper, .height-without-tabs  >>> .v-slide-group__wrapper {
   overflow-y: auto;
