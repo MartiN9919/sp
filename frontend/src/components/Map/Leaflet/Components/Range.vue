@@ -9,14 +9,14 @@
         <tr>
           <td>
             <div class="range-info">
-              <div>{{val_dt_from}}</div><div>-</div><div>{{val_dt_to}}</div>
+              <div>{{dt_val_min}}</div><div>-</div><div>{{dt_val_max}}</div>
             </div>
           </td>
           <td>
             <v-range-slider
               ref="slider_dt"
               class="slider"
-              v-model="prop_dt_sel"
+              v-model="dt_prop_sel"
               :min="dt.limit_min"
               :max="dt.limit_max"
               :step="dt.sel_step"
@@ -31,7 +31,7 @@
             >
               <template v-slot:append>
                 <v-icon
-                  @click.stop="on_menu_dt_show"
+                  @click.stop="dt_menu_show"
                   size="24"
                 >mdi-menu</v-icon>
               </template>
@@ -41,14 +41,14 @@
         <tr>
           <td>
             <div class="range-info">
-              <div>{{val_hm_from}}</div><div>-</div><div>{{val_hm_to}}</div>
+              <div>{{hm_val_min}}</div><div>-</div><div>{{hm_val_max}}</div>
             </div>
           </td>
           <td>
             <v-range-slider
               ref="slider_hm"
               class="slider"
-              v-model="prop_dt_sel"
+              v-model="dt_prop_sel"
               :min="dt.limit_min"
               :max="dt.limit_max"
               :step="dt.sel_step"
@@ -63,7 +63,7 @@
             >
               <template v-slot:append>
                 <v-icon
-                  @click.stop="on_menu_dt_show"
+                  @click.stop="dt_menu_show"
                   size="24"
                 >mdi-menu</v-icon>
               </template>
@@ -82,96 +82,28 @@
 
 
 <script>
-              // :hint="hint"
-              // persistent-hint
-
-
 // компонент недопустимо отключать v-if
 // только скрывать v-show
 // работает с данными на шине
 
-
 import { mapGetters, mapActions } from 'vuex';
-import { LControl } from "vue2-leaflet";
-import { MAP_ITEM }  from '@/components/Map/Leaflet/Lib/Const';
-import { myUTC, datesql_to_ts, ts_to_screen } from '@/plugins/sys';
+import { LControl }      from 'vue2-leaflet';
+import { MAP_ITEM }      from '@/components/Map/Leaflet/Lib/Const';
+import { datesql_to_ts } from '@/plugins/sys';
 import contextMenuNested from '@/components/WebsiteShell/ContextMenu/contextMenuNested';
 import MixDt             from '@/components/Map/Leaflet/Components/RangeDt';
 import MixHm             from '@/components/Map/Leaflet/Components/RangeHm';
 
-
-
 export default {
   name: 'Range',
-  mixins: [
-    MixDt,
-    MixHm,
-  ],
-  components: {
-    LControl,
-    contextMenuNested,
-  },
-
-  data: () => ({
-    dt: {
-      limit_min:   0,              // минимально / максимально допустимое значение, ts
-      limit_max:   0,
-      sel_min:     0,              // выбранное минимальное / максимальное значение, ts
-      sel_max:     0,
-      sel_step:    0,
-      menu_struct: undefined,
-      menu_struct_base: [
-        {
-          title: 'период',
-          icon:  'mdi-arrow-expand-horizontal', //'mdi-clock-start',
-          menu:  [
-            { title: 'все',      icon: 'mdi-calendar-check', action: 'on_period_dt', ts: 0, },
-            //{ divider: true },
-            { title: '30 суток', icon: 'mdi-calendar-month', action: 'on_period_dt', ts: 1000*2592000, },
-            { title: '1 неделя', icon: 'mdi-calendar-range', action: 'on_period_dt', ts: 1000*604800, },
-            { title: '1 сутки',  icon: 'mdi-calendar-today', action: 'on_period_dt', ts: 1000*86400, },
-            { title: '1 час',    icon: 'mdi-clock-time-one', action: 'on_period_dt', ts: 1000*3600, },
-          ],
-        },
-        {
-          title: 'округлить до',
-          icon:  'mdi-content-cut',
-          menu: [
-            { title: 'суток', icon: 'mdi-calendar-blank', action: 'on_round_dt', round: 'day', },
-            { title: 'часов', icon: 'mdi-clock',          action: 'on_round_dt', round: 'hour', },
-          ],
-        },
-      ],
-    },
-  }),
-
-  // mounted() {
-  // },
-
-  // beforeDestroy() {
-  // },
-
+  mixins: [ MixDt, MixHm, ],
+  components: { LControl, contextMenuNested, },
   watch: {
     SCRIPT_GET: {
       deep: true,
-      handler: async function(items){ // установить мин и макс
-        let dt_limit_min = '';
-        let dt_limit_max = '';
-        items.forEach(function(item){
-          item.fc.features.forEach(function(feature){
-            let date = feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES.DATE];
-            if (!date) return;
-            if ((date < dt_limit_min) || (dt_limit_min == '')) dt_limit_min=date;
-            if ((date > dt_limit_max) || (dt_limit_max == '')) dt_limit_max=date;
-          }.bind(this));
-        }.bind(this));
-        this.dt.limit_min = datesql_to_ts(dt_limit_min);
-        this.dt.limit_max = datesql_to_ts(dt_limit_max);
-
-        // скорректирвать выбранный диапазон
-        let sel_min = ((this.dt.limit_min <= this.dt.sel_min) && ( this.dt.sel_min <= this.dt.limit_max))?this.dt.sel_min:this.dt.limit_min;
-        let sel_max = ((this.dt.limit_min <= this.dt.sel_max) && ( this.dt.sel_max <= this.dt.limit_max))?this.dt.sel_max:this.dt.limit_max;
-        await this.set_range_dt_sel(sel_min, sel_max);
+      handler: function(items) {
+        this.dt_items_change(items);
+        this.hm_items_change(items);
       },
     }
   },
@@ -184,11 +116,6 @@ export default {
 
     form: vm => vm,
 
-    prop_dt_sel: {
-      set: async function(lst) { await this.set_range_dt_sel(lst[0], lst[1]); },
-      get: function()          { return [this.dt.sel_min, this.dt.sel_max]; },
-    },
-
     visible: function() {
       return (
         this.MAP_GET_RANGE &&
@@ -197,16 +124,12 @@ export default {
         (this.dt.limit_min != this.dt.limit_max)
       );
     },
-    val_dt_from() { return ts_to_screen(this.prop_dt_sel[0]) },
-    val_dt_to()   { return ts_to_screen(this.prop_dt_sel[1]) },
-    val_hm_from() { return ts_to_screen(this.prop_dt_sel[0]) },
-    val_hm_to()   { return ts_to_screen(this.prop_dt_sel[1]) },
   },
 
   methods: {
     ...mapActions([ 'MAP_ACT_REFRESH', ]),
 
-    // вызывается извне
+    // отфильтровать fc, вызывается извне
     filter(fc) {
       if (this.MAP_GET_RANGE) {
         if ((this.dt.sel_min>0) && (this.dt.sel_max>0)) {
@@ -222,77 +145,6 @@ export default {
       }
       return fc;
     },
-
-
-    // MOUSE
-    on_mousedown_slider_dt(e) {
-      let el     = this.$refs.slider_dt.$el;
-      let parent = el.querySelector('.v-slider__track-container');
-      let thumb  = el.querySelectorAll('.v-slider__thumb-container');
-      thumb[0].blur();
-      thumb[1].blur();
-
-      let bounds = parent.getBoundingClientRect();
-      let x = e.clientX - bounds.left; // let y = e.clientY - bounds.top;
-
-      const size = 7;
-      if (x < (thumb[0].offsetLeft - size)) { e.preventDefault(); e.stopPropagation(); this.on_click_btn_dt(0); return; } // левее  периода
-      if (x > (thumb[1].offsetLeft + size)) { e.preventDefault(); e.stopPropagation(); this.on_click_btn_dt(1); return; } // правее  периода
-
-      // e.preventDefault(); e.stopPropagation(); - нельзя блокировать
-    },
-    on_mouse_reset_dt(e) {
-      let thumb = this.$refs.slider_dt.$el.querySelectorAll('.v-slider__thumb-container');
-      thumb[0].blur();
-      thumb[1].blur();
-
-      e.preventDefault();
-      e.stopPropagation();
-    },
-    async on_click_btn_dt(pos) {
-      let sel_min   = this.dt.sel_min;
-      let sel_max   = this.dt.sel_max;
-      let sel_delta = sel_max - sel_min;
-      if (sel_delta==0) return;
-
-      // влево
-      if (pos==0) {
-        if ((sel_min - sel_delta) < this.dt.limit_min) {
-          sel_min = this.dt.limit_min;
-          sel_max = this.dt.limit_min+sel_delta;
-        } else {
-          sel_min -= sel_delta;
-          sel_max -= sel_delta;
-        }
-      // вправо
-      } else {
-        if ((sel_max + sel_delta) > this.dt.limit_max) {
-          sel_min = this.dt.limit_max-sel_delta;
-          sel_max = this.dt.limit_max;
-        } else {
-          sel_min += sel_delta;
-          sel_max += sel_delta;
-        }
-      }
-
-      await this.set_range_dt_sel(sel_min, sel_max);
-    },
-
-    // корректное обновдение периода
-    async set_range_dt_sel(sel_min, sel_max, sel_step_new=undefined) {
-      if (
-        (sel_min == this.dt.sel_min) &&
-        (sel_max == this.dt.sel_max) &&
-        (sel_step_new == undefined)
-      ) return;
-
-      let step_temp = (sel_step_new != undefined) ? sel_step_new : this.dt.sel_step;
-      this.dt.sel_step = 0;
-      this.dt.sel_min  = sel_min;
-      this.dt.sel_max  = sel_max;
-      this.dt.sel_step = step_temp;
-      await this.MAP_ACT_REFRESH();
-    }
   },
 }
 
