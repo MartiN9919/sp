@@ -48,10 +48,10 @@
             <v-range-slider
               ref="slider_hm"
               class="slider"
-              v-model="dt_prop_sel"
-              :min="dt.limit_min"
-              :max="dt.limit_max"
-              :step="dt.sel_step"
+              v-model="hm_prop_sel"
+              :min="hm.limit_min"
+              :max="hm.limit_max"
+              :step="hm.sel_step"
 
               dense
 
@@ -63,7 +63,7 @@
             >
               <template v-slot:append>
                 <v-icon
-                  @click.stop="dt_menu_show"
+                  @click.stop="hm_menu_show"
                   size="24"
                 >mdi-menu</v-icon>
               </template>
@@ -75,7 +75,7 @@
     <contextMenuNested
       ref="menu"
       :form="form"
-      :items="dt.menu_struct"
+      :items="hm.menu_struct"
     />
   </div>
 </template>
