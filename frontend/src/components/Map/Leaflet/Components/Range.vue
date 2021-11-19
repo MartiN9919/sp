@@ -19,7 +19,7 @@
               v-model="prop_dt_sel"
               :min="dt.limit_min"
               :max="dt.limit_max"
-              :step="dt.step"
+              :step="dt.sel_step"
 
               dense
 
@@ -51,7 +51,7 @@
               v-model="prop_dt_sel"
               :min="dt.limit_min"
               :max="dt.limit_max"
-              :step="dt.step"
+              :step="dt.sel_step"
 
               dense
 
@@ -107,11 +107,11 @@ export default {
 
   data: () => ({
     dt: {
-      limit_min: 0,                                    // минимально / максимально допустимое значение, ts
-      limit_max: 0,
-      sel_min:   0,                                    // выбранное минимальное / максимальное значение, ts
-      sel_max:   0,
-      step:      0,
+      limit_min:   0,              // минимально / максимально допустимое значение, ts
+      limit_max:   0,
+      sel_min:     0,              // выбранное минимальное / максимальное значение, ts
+      sel_max:     0,
+      sel_step:    0,
       menu_struct: undefined,
       menu_struct_base: [
         {
@@ -157,7 +157,7 @@ export default {
   watch: {
     SCRIPT_GET: {
       deep: true,
-      handler: function(items){ // установить мин и макс
+      handler: async function(items){ // установить мин и макс
         let dt_limit_min = '';
         let dt_limit_max = '';
         items.forEach(function(item){
@@ -172,8 +172,9 @@ export default {
         this.dt.limit_max = datesql_to_ts(dt_limit_max);
 
         // скорректирвать выбранный диапазон
-        this.dt.sel_min = ((this.dt.limit_min <= this.dt.sel_min) && ( this.dt.sel_min <= this.dt.limit_max))?this.dt.sel_min:this.dt.limit_min;
-        this.dt.sel_max = ((this.dt.limit_min <= this.dt.sel_max) && ( this.dt.sel_max <= this.dt.limit_max))?this.dt.sel_max:this.dt.limit_max;
+        let sel_min = ((this.dt.limit_min <= this.dt.sel_min) && ( this.dt.sel_min <= this.dt.limit_max))?this.dt.sel_min:this.dt.limit_min;
+        let sel_max = ((this.dt.limit_min <= this.dt.sel_max) && ( this.dt.sel_max <= this.dt.limit_max))?this.dt.sel_max:this.dt.limit_max;
+        await this.set_range_dt_sel(sel_min, sel_max);
       },
     }
   },
@@ -187,8 +188,8 @@ export default {
     form: vm => vm,
 
     prop_dt_sel: {
-      set: function(lst) { this.dt.sel_min = lst[0]; this.dt.sel_max = lst[1]; },
-      get: function()    { return [this.dt.sel_min, this.dt.sel_max]; },
+      set: async function(lst) { await this.set_range_dt_sel(lst[0], lst[1]); },
+      get: function()          { return [this.dt.sel_min, this.dt.sel_max]; },
     },
 
     visible: function() {
@@ -233,14 +234,14 @@ export default {
 
       e.preventDefault();
       e.stopPropagation();
-      this.dt.menu_struct = JSON.parse(JSON.stringify(this.dt.menu_struct_base));   // основа - глубокая копия
+      this.dt.menu_struct = JSON.parse(JSON.stringify(this.dt.menu_struct_base));
       // текущий выбор периода недоступен
       this.dt.menu_struct[0].menu.forEach((item, ind) => {
-        if (                                                                        // доступность
-          (self.dt.step  == item.ts) &&                                             // шаг шкалы равен периоду и
-          (sel_delta == ((item.ts==0)?(self.dt.limit_max-self.dt.limit_min):self.dt.step))          // выбран только один шаг шкалы (для ВСЕ выбрано все)
+        if (                                                                                   // доступность
+          (self.dt.sel_step == item.ts) &&                                                     // шаг шкалы равен периоду и
+          (sel_delta == ((item.ts==0)?(self.dt.limit_max-self.dt.limit_min):self.dt.sel_step)) // выбран только один шаг шкалы (для ВСЕ выбрано все)
         ) { self.dt.menu_struct[0].menu[ind].disabled = true; }
-        if (self.dt.step  == item.ts) {                                             // текущий выбор: шаг шкалы равен периоду
+        if (self.dt.step  == item.ts) {                                                        // текущий выбор: шаг шкалы равен периоду
           self.dt.menu_struct[0].menu[ind].subtitle = 'Выбрано';
         }
       });
@@ -253,13 +254,13 @@ export default {
       let sel_max   = this.dt.sel_max;
       let sel_delta = menu_item.ts;
 
-      if (sel_delta == 0) {                             // период: вся шкала
+      if (sel_delta == 0) {                                     // период: вся шкала
         sel_min = this.dt.limit_min;
         sel_max = this.dt.limit_max;
       } else if ((sel_max - sel_delta) >= this.dt.limit_min) {  // период: влево от sel_max полностью
         sel_min = sel_max-sel_delta;
 
-      } else {                                          // период: влево от sel_max частично
+      } else {                                                  // период: влево от sel_max частично
         sel_min = this.dt.limit_min;
         sel_max = Math.min(sel_min+sel_delta, this.dt.limit_max);
       }
@@ -345,12 +346,19 @@ export default {
       await this.set_range_dt_sel(sel_min, sel_max);
     },
 
-    async set_range_dt_sel(sel_min, sel_max, step_new=undefined) {
-      let step_temp = (step_new != undefined) ? step_new : this.dt.step;
-      this.dt.step = 0;
-      this.dt.sel_min = sel_min;
-      this.dt.sel_max = sel_max;
-      this.dt.step    = step_temp;
+    // корректное обновдение периода
+    async set_range_dt_sel(sel_min, sel_max, sel_step_new=undefined) {
+      if (
+        (sel_min == this.dt.sel_min) &&
+        (sel_max == this.dt.sel_max) &&
+        (sel_step_new == undefined)
+      ) return;
+
+      let step_temp = (sel_step_new != undefined) ? sel_step_new : this.dt.sel_step;
+      this.dt.sel_step = 0;
+      this.dt.sel_min  = sel_min;
+      this.dt.sel_max  = sel_max;
+      this.dt.sel_step = step_temp;
       await this.MAP_ACT_REFRESH();
     }
   },
