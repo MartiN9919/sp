@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import store from '../store/index'
-import {checkErrorStatusCode} from '@/plugins/axios_settings'
+import {checkErrorStatusCode} from '@/plugins/axiosSettings'
 
 Vue.use(VueRouter)
 
@@ -10,26 +10,44 @@ const routes = [
   {
     path: '/login',
     name: 'Login',
-    component: () => import('../views/LoginPage.vue'),
-    meta: { isAuth: false },
+    components: {
+      default: () => import('../views/LoginPage.vue'),
+    },
+    beforeEnter: (to, from, next) => {
+      store.commit('resetState')
+      next()
+    },
+    meta: { auth: false },
   },
   {
     path: '/map',
     name: 'Map',
-    component: () => import('../views/MapPage.vue'),
-    meta: { isAuth: true }
+    components: {
+      default: () => import('../views/MapPage.vue'),
+      appbar: () => import('../components/WebsiteShell/AppBar/appBar.vue'),
+      notification: () => import('../components/WebsiteShell/Notifications/alertsList.vue')
+    },
+    meta: { auth: true }
   },
   {
     path: '/graph',
     name: 'Graph',
-    component: () => import('../views/GraphPage.vue'),
-    meta: { isAuth: true }
+    components: {
+      default: () => import('../views/GraphPage.vue'),
+      appbar: () => import('../components/WebsiteShell/AppBar/appBar.vue'),
+      notification: () => import('../components/WebsiteShell/Notifications/alertsList.vue')
+    },
+    meta: { auth: true }
   },
   {
     path: '/report',
     name: 'Report',
-    component: () => import('../views/ReportsPage.vue'),
-    meta: { isAuth: true }
+    components: {
+      default: () => import('../views/ReportsPage.vue'),
+      appbar: () => import('../components/WebsiteShell/AppBar/appBar.vue'),
+      notification: () => import('../components/WebsiteShell/Notifications/alertsList.vue')
+    },
+    meta: { auth: true }
   },
   {
     path: '*',
@@ -43,15 +61,15 @@ const router = new VueRouter({
 })
 
 router.beforeResolve((to, from, next) => {
-  if (to.matched.some(record => record.meta.isAuth)) {
-    store.dispatch('identifyUser', {})
-      .then(() => { next() })
-      .catch(error => { if(checkErrorStatusCode(error.response.status)) next({ name: 'Login' }) })
-  } else {
-    store.dispatch('identifyUser', {})
-      .then(() => { next({ name: 'Map' }) })
-      .catch(() => { next() })
-  }
+  console.log(to.matched.some(record => record.meta.auth))
+  if (to.matched.some(record => record.meta.auth))
+    store.dispatch('identifyUser')
+      .then(() => next())
+      .catch(error => checkErrorStatusCode(error.response) ? next({ name: 'Login' }) : next())
+  else
+    store.dispatch('identifyUser')
+      .then(() => next({ name: 'Map' }))
+      .catch(() => next())
 })
 
 export default router

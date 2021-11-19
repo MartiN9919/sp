@@ -1,26 +1,29 @@
 <template>
-  <div class="d-flex flex-row justify-space-between flex-nowrap">
-    <v-btn
-      v-for="button in buttons"
-      :key="button.action"
-      :disabled="button.hasOwnProperty('disabled') ? !button.disabled : false"
-      @click="$emit(button.action)"
-      color="teal"
-      text
-      right
-      width="40%"
-      height="3.5em"
-    >{{button.title}}</v-btn>
-  </div>
+  <v-row no-gutters class="text-center control flex-nowrap">
+    <v-col v-for="button in buttons" :key="button.action">
+      <v-btn :disabled="disabled(button)" @click="click(button)" color="teal" text large width="100%">{{button.title}}</v-btn>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
 export default {
   name: "controlMenu",
   props: { buttons: Array},
+  methods: {
+    disabled: function (button) { return button.hasOwnProperty('disabled') ? !button.disabled : false },
+    click: function (button) { this.$emit(button.action) }
+  }
 }
 </script>
 
 <style scoped>
-
+.control {
+  border-bottom-width: 1px;
+  border-top-width: 1px;
+  border-bottom-style: solid;
+  border-top-style: solid;
+  border-bottom-color: rgba(0, 0, 0, 0.12);
+  border-top-color: rgba(0, 0, 0, 0.12);
+}
 </style>

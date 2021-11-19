@@ -7,7 +7,7 @@
       :max-size="85"
       :resizerBorderThickness="1"
       :resizerThickness="1"
-      :size="drawer ? sizeColumn : 0"
+      :size="size"
       v-on:update:size="sizeColumn = $event"
       units="percents"
       class="split-panel"
@@ -23,13 +23,12 @@
 
 <script>
 import router from '@/router'
+import {mapGetters} from "vuex"
 import ResSplitPane from 'vue-resize-split-pane'
-import NavigationDrawer from "../Mixins/NavigationDrawer"
 
 export default {
   name: "splitPanel",
-  components: { ResSplitPane, },
-  mixins: [ NavigationDrawer, ],
+  components: {ResSplitPane},
   props: {
     shadowEffect: {
       type: Boolean,
@@ -40,11 +39,14 @@ export default {
     sizeColumn: 30,
     name: null
   }),
+  computed: {
+    ...mapGetters(['navigationDrawerStatus']),
+    size: function () { return this.navigationDrawerStatus(router.currentRoute.name) ? this.sizeColumn : 0 }
+  },
   mounted() {
     this.name = this.$refs.ResSplitPane.$parent.$parent.$options.name
-    if (localStorage['size' + router.currentRoute.name + this.name]) {
+    if (localStorage['size' + router.currentRoute.name + this.name])
       this.sizeColumn = parseInt(localStorage['size' + router.currentRoute.name + this.name])
-    }
     if (this.shadowEffect)
       this.$refs.ResSplitPane.$children[0].$el.className += ' shadow-effect'
   },

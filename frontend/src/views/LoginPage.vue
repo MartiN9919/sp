@@ -44,6 +44,7 @@ import bg_stars from '../views/lib/bg_animate'
 import { mapActions } from 'vuex'
 
 export default {
+  name: 'Login',
   data: () => ({
     valid: true,
     usernameForm: '',
@@ -63,8 +64,7 @@ export default {
           userInformation: {
             username: this.usernameForm,
             password: this.passwordForm
-          },
-          config: {}
+          }
         })
       }
     }

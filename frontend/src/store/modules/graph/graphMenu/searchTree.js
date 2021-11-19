@@ -1,5 +1,5 @@
-import axios from '@/plugins/axios_settings'
-import {getTriggers} from "@/store/modules/graph/graphNodes"
+import axios from '@/plugins/axiosSettings'
+import {getTriggers} from "@/store/modules/siteControl/mainDependencies"
 import store from'@/store'
 
 function createSearchItem(getters, item) {

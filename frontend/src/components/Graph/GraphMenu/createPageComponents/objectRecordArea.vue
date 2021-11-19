@@ -69,8 +69,8 @@ import RecordInput from "./objectRecordComponents/recordInput"
 import DropDownMenu from "../../../WebsiteShell/UI/dropDownMenu"
 import MenuDateTime from "../../../WebsiteShell/UI/selectDateTime"
 import CustomTooltip from "../../../WebsiteShell/UI/customTooltip"
-import LeafletEditor from "../../../Map/Leaflet/LeafletEditor";
-import {getDownloadFileLink} from '@/plugins/axios_settings'
+import LeafletEditor from "../../../Map/Leaflet/LeafletEditor"
+import {getDownloadFileLink} from '@/plugins/axiosSettings'
 import _ from 'lodash'
 
 export default {

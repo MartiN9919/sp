@@ -1,4 +1,4 @@
-import axios from '@/plugins/axios_settings'
+import axios from '@/plugins/axiosSettings'
 
 import { MAP_CONST, MAP_ITEM } from '@/components/Map/Leaflet/Lib/Const';
 import { color_random } from '@/components/Map/Leaflet/Lib/LibColor';

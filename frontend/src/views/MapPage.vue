@@ -19,10 +19,10 @@ import toolsMenu from "../components/WebsiteShell/UI/toolsMenu"
 const MapScriptMenu = () => import("../components/Map/MapMenu/scriptsPage/mapScriptMenu")
 const MapDossier = () => import("../components/Map/MapMenu/dossierPage/dossierPage")
 import { mapGetters, mapActions } from "vuex"
-import router from "@/router";
+import router from "@/router"
 
 export default {
-  name: 'MapPage',
+  name: 'Map',
   components: {SplitPanel, toolsMenu, LeafletMain, MapScriptMenu, MapDossier},
   computed: {
     ...mapGetters(['activeTool', 'SCRIPT_GET_ITEM_SEL']),

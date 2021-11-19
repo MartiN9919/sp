@@ -35,7 +35,7 @@
 <script>
 
 import router from '@/router';
-import axios from '@/plugins/axios_settings';
+import axios from '@/plugins/axiosSettings';
 import Treeview from '@/components/Map/Leaflet/Components/Treeview';
 import { fc_normalize, } from '@/components/Map/Leaflet/Lib/LibFc';
 
