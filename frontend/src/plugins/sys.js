@@ -37,19 +37,23 @@ export function ts_to_datesql(ts, isTime = true) {
 }
 
 // timestamp в отображаемый на экране вид с UTC: "01.01.2021 9:00"
-export function ts_to_screen(ts, isTime = true) {
+export function ts_to_screen(ts, isDate = true, isTime = true) {
+  let ret  = '';
   let d    = new Date(ts);
-  let yyyy = d.getFullYear();
-  let mm   = dig2(d.getMonth() + 1);
-  let dd   = dig2(d.getDate());
-  let ret  = dd+'.'+mm+'.'+yyyy;
-  if (isTime) {
+  if (isDate == true) {
+    let yyyy = d.getFullYear();
+    let mm   = dig2(d.getMonth() + 1);
+    let dd   = dig2(d.getDate());
+    ret      = dd+'.'+mm+'.'+yyyy;
+  }
+  if (isTime == true) {
     let hh  = d.getHours();
     let min = dig2(d.getMinutes());
     ret    += ' '+hh+':'+min;
   }
-  return ret;
+  return ret.trim();
 }
+
 
 
 // timestamp сейчас с UTC

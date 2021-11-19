@@ -103,7 +103,7 @@ export default {
       deep: true,
       handler: function(items) {
         this.dt_items_change(items);
-        this.hm_items_change(items);
+      //this.hm_items_change(items);
       },
     }
   },

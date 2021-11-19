@@ -58,8 +58,8 @@ export default {
       set: function(lst) { this.dt_sel_set(lst[0], lst[1]); },
       get: function()    { return [this.dt.sel_min, this.dt.sel_max]; },
     },
-    dt_val_min() { return ts_to_screen(this.dt_prop_sel[0]) },
-    dt_val_max() { return ts_to_screen(this.dt_prop_sel[1]) },
+    dt_val_min() { return ts_to_screen(this.dt_prop_sel[0], true, true) },
+    dt_val_max() { return ts_to_screen(this.dt_prop_sel[1], true, true) },
   },
 
   methods: {

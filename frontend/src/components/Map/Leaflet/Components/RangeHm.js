@@ -5,10 +5,10 @@ import { myUTC, ts_to_screen, datesql_to_ts } from '@/plugins/sys';
 export default {
   data: () => ({
     hm: {
-      limit_min:   0,              // минимально / максимально допустимое значение, ts
-      limit_max:   0,
-      sel_min:     0,              // выбранное минимальное / максимальное значение, ts
-      sel_max:     0,
+      limit_min:   myUTC,              // минимально / максимально допустимое значение, ts
+      limit_max:   myUTC+60*60*24*1000,
+      sel_min:     myUTC,              // выбранное минимальное / максимальное значение, ts
+      sel_max:     myUTC+60*60*24*1000,
       sel_step:    0,
       menu_struct: undefined,
       menu_struct_base: [
@@ -58,32 +58,13 @@ export default {
       set: function(lst) { this.hm_sel_set(lst[0], lst[1]); },
       get: function()    { return [this.hm.sel_min, this.hm.sel_max]; },
     },
-    hm_val_min() { return ts_to_screen(this.hm_prop_sel[0]) },
-    hm_val_max() { return ts_to_screen(this.hm_prop_sel[1]) },
+    hm_val_min() { return ts_to_screen(this.hm_prop_sel[0], false, true) },
+    hm_val_max() { return ts_to_screen(this.hm_prop_sel[1], false, true) },
   },
 
   methods: {
     // обработчик изменения исходных данных
-    hm_items_change(items) {
-      // установить мин и макс
-      let hm_limit_min = '';
-      let hm_limit_max = '';
-      items.forEach(function(item){
-        item.fc.features.forEach(function(feature){
-          let date = feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES.DATE];
-          if (!date) return;
-          if ((date < hm_limit_min) || (hm_limit_min == '')) hm_limit_min=date;
-          if ((date > hm_limit_max) || (hm_limit_max == '')) hm_limit_max=date;
-        }.bind(this));
-      }.bind(this));
-      this.hm.limit_min = datesql_to_ts(hm_limit_min);
-      this.hm.limit_max = datesql_to_ts(hm_limit_max);
-
-      // скорректирвать выбранный диапазон
-      let sel_min = ((this.hm.limit_min <= this.hm.sel_min) && ( this.hm.sel_min <= this.hm.limit_max))?this.hm.sel_min:this.hm.limit_min;
-      let sel_max = ((this.hm.limit_min <= this.hm.sel_max) && ( this.hm.sel_max <= this.hm.limit_max))?this.hm.sel_max:this.hm.limit_max;
-      this.hm_sel_set(sel_min, sel_max);
-    },
+    // hm_items_change(items) { },
 
 
 
