@@ -9,12 +9,12 @@
         <tr>
           <td>
             <div class="range-info">
-              <div>{{val_dt_from}}</div><div>-</div><div>{{val_dt_to}}</div>
+              <div>{{val_from_dt}}</div><div>-</div><div>{{val_to_dt}}</div>
             </div>
           </td>
           <td>
             <v-range-slider
-              ref="slider"
+              ref="slider_dt"
               class="slider"
               v-model="prop_sel"
               :min="MAP_GET_RANGE_MIN"
@@ -31,7 +31,7 @@
             >
               <template v-slot:append>
                 <v-icon
-                  @click.stop="on_menu_show"
+                  @click.stop="on_menu_show_dt"
                   size="24"
                 >mdi-menu</v-icon>
               </template>
@@ -41,7 +41,7 @@
         <tr>
           <td>
             <div class="range-info">
-              <div>{{val_hm_from}}</div><div>-</div><div>{{val_hm_to}}</div>
+              <div>{{val_from_hm}}</div><div>-</div><div>{{val_to_hm}}</div>
             </div>
           </td>
           <td>
@@ -142,18 +142,18 @@ export default {
   }),
 
   mounted() {
-    let el = this.$refs.slider.$el.querySelector('.v-slider');
-    el.addEventListener('click',      this.on_mouse_reset,      {capture: true});
-    el.addEventListener('mouseup',    this.on_mouse_reset,      {capture: true});
-    el.addEventListener('mouseleave', this.on_mouse_reset,      {capture: true});
-    el.addEventListener('mousedown',  this.on_mousedown_slider, {capture: true});
+    let el = this.$refs.slider_dt.$el.querySelector('.v-slider');
+    el.addEventListener('click',      this.on_mouse_reset_dt,      {capture: true});
+    el.addEventListener('mouseup',    this.on_mouse_reset_dt,      {capture: true});
+    el.addEventListener('mouseleave', this.on_mouse_reset_dt,      {capture: true});
+    el.addEventListener('mousedown',  this.on_mousedown_slider_dt, {capture: true});
   },
   beforeDestroy() {
-    let el = this.$refs.slider.$el.querySelector('.v-slider');
-    el.removeEventListener('click',      this.on_mouse_reset);
-    el.removeEventListener('mouseup',    this.on_mouse_reset);
-    el.removeEventListener('mouseleave', this.on_mouse_reset);
-    el.removeEventListener('mousedown',  this.on_mousedown_slider);
+    let el = this.$refs.slider_dt.$el.querySelector('.v-slider');
+    el.removeEventListener('click',      this.on_mouse_reset_dt);
+    el.removeEventListener('mouseup',    this.on_mouse_reset_dt);
+    el.removeEventListener('mouseleave', this.on_mouse_reset_dt);
+    el.removeEventListener('mousedown',  this.on_mousedown_slider_dt);
   },
 
   computed: {
@@ -181,10 +181,10 @@ export default {
         (ts_min != ts_max)
       );
     },
-    val_dt_from() { return ts_to_screen(this.prop_sel[0]) },
-    val_dt_to()   { return ts_to_screen(this.prop_sel[1]) },
-    val_hm_from() { return ts_to_screen(this.prop_sel[0]) },
-    val_hm_to()   { return ts_to_screen(this.prop_sel[1]) },
+    val_from_dt() { return ts_to_screen(this.prop_sel[0]) },
+    val_to_dt()   { return ts_to_screen(this.prop_sel[1]) },
+    val_from_hm() { return ts_to_screen(this.prop_sel[0]) },
+    val_to_hm()   { return ts_to_screen(this.prop_sel[1]) },
   },
 
   methods: {
@@ -211,7 +211,7 @@ export default {
 
 
     // MENU: Показать первый уровень
-    on_menu_show(e) {
+    on_menu_show_dt(e) {
       const self    = this;
       let limit_min = this.MAP_GET_RANGE_MIN;
       let limit_max = this.MAP_GET_RANGE_MAX;
@@ -256,7 +256,7 @@ export default {
         sel_max = Math.min(sel_min+sel_delta, limit_max);
       }
 
-      await this.set_range_sel(sel_min, sel_max, sel_delta);
+      await this.set_range_sel_dt(sel_min, sel_max, sel_delta);
     },
 
     // MENU: Округлить период
@@ -282,13 +282,13 @@ export default {
       sel_min += myUTC;
       sel_max += myUTC;
 
-      await this.set_range_sel(sel_min, sel_max);
+      await this.set_range_sel_dt(sel_min, sel_max);
   },
 
 
     // MOUSE
-    on_mousedown_slider(e) {
-      let el     = this.$refs.slider.$el;
+    on_mousedown_slider_dt(e) {
+      let el     = this.$refs.slider_dt.$el;
       let parent = el.querySelector('.v-slider__track-container');
       let thumb  = el.querySelectorAll('.v-slider__thumb-container');
       thumb[0].blur();
@@ -298,20 +298,20 @@ export default {
       let x = e.clientX - bounds.left; // let y = e.clientY - bounds.top;
 
       const size = 7;
-      if (x < (thumb[0].offsetLeft - size)) { e.preventDefault(); e.stopPropagation(); this.on_click_btn(0); return; } // левее  периода
-      if (x > (thumb[1].offsetLeft + size)) { e.preventDefault(); e.stopPropagation(); this.on_click_btn(1); return; } // правее  периода
+      if (x < (thumb[0].offsetLeft - size)) { e.preventDefault(); e.stopPropagation(); this.on_click_btn_dt(0); return; } // левее  периода
+      if (x > (thumb[1].offsetLeft + size)) { e.preventDefault(); e.stopPropagation(); this.on_click_btn_dt(1); return; } // правее  периода
 
       // e.preventDefault(); e.stopPropagation(); - нельзя блокировать
     },
-    on_mouse_reset(e) {
-      let thumb = this.$refs.slider.$el.querySelectorAll('.v-slider__thumb-container');
+    on_mouse_reset_dt(e) {
+      let thumb = this.$refs.slider_dt.$el.querySelectorAll('.v-slider__thumb-container');
       thumb[0].blur();
       thumb[1].blur();
 
       e.preventDefault();
       e.stopPropagation();
     },
-    async on_click_btn(pos) {
+    async on_click_btn_dt(pos) {
       let limit_min = this.MAP_GET_RANGE_MIN;
       let limit_max = this.MAP_GET_RANGE_MAX;
       let sel       = this.MAP_GET_RANGE_SEL;
@@ -340,10 +340,10 @@ export default {
         }
       }
 
-      await this.set_range_sel(sel_min, sel_max);
+      await this.set_range_sel_dt(sel_min, sel_max);
     },
 
-    async set_range_sel(sel_min, sel_max, step=undefined) {
+    async set_range_sel_dt(sel_min, sel_max, step=undefined) {
       let step_temp = (step != undefined) ? step : this.step;
       this.step = 0;
       await this.MAP_ACT_RANGE_SEL({lst: [sel_min, sel_max]});
@@ -364,13 +364,10 @@ export default {
   }
 
   div::v-deep .slider { width: 22em; padding: 0 .7em 0 0; margin: 0; }
-
   div::v-deep .v-slider      { cursor: pointer; }
   div::v-deep .v-input__slot { margin: 0 !important; }
   div::v-deep .v-messages    { display: none; }
-
-  /* высота полоски */
-  div::v-deep .v-slider__track-container { height: 2px; }
+  div::v-deep .v-slider__track-container { height: 2px; }  /* высота полоски */
 
   /* информатор */
   div::v-deep .range-info {
