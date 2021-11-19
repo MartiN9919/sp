@@ -8,6 +8,11 @@
       <table>
         <tr>
           <td>
+            <div class="range-info">
+              <div>{{val_dt_from}}</div><div>-</div><div>{{val_dt_to}}</div>
+            </div>
+          </td>
+          <td>
             <v-range-slider
               ref="slider"
               class="slider"
@@ -16,7 +21,6 @@
               :max="MAP_GET_RANGE_MAX"
               :step="step"
 
-              height="1.5em"
               dense
 
               thumb-size="8"
@@ -24,14 +28,43 @@
 
               track-fill-color="green"
               track-color="red"
-
-              :hint="hint"
-              persistent-hint
             >
               <template v-slot:append>
                 <v-icon
                   @click.stop="on_menu_show"
-                  size="20"
+                  size="24"
+                >mdi-menu</v-icon>
+              </template>
+            </v-range-slider>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <div class="range-info">
+              <div>{{val_hm_from}}</div><div>-</div><div>{{val_hm_to}}</div>
+            </div>
+          </td>
+          <td>
+            <v-range-slider
+              ref="slider"
+              class="slider"
+              v-model="prop_sel"
+              :min="MAP_GET_RANGE_MIN"
+              :max="MAP_GET_RANGE_MAX"
+              :step="step"
+
+              dense
+
+              thumb-size="8"
+              thumb-color="green"
+
+              track-fill-color="green"
+              track-color="red"
+            >
+              <template v-slot:append>
+                <v-icon
+                  @click.stop="on_menu_show"
+                  size="24"
                 >mdi-menu</v-icon>
               </template>
             </v-range-slider>
@@ -49,6 +82,10 @@
 
 
 <script>
+              // :hint="hint"
+              // persistent-hint
+
+
 // компонент недопустимо отключать v-if
 // только скрывать v-show
 // работает с данными на шине
@@ -77,6 +114,7 @@ export default {
   },
 
   data: () => ({
+    label_dt: '',
     step: 0,
     menu_struct: undefined,
     menu_struct_base: [
@@ -143,11 +181,10 @@ export default {
         (ts_min != ts_max)
       );
     },
-    hint() {
-      let t_min = ts_to_screen(this.prop_sel[0]);
-      let t_max = ts_to_screen(this.prop_sel[1]);
-      return t_min+" - "+t_max;
-    },
+    val_dt_from() { return ts_to_screen(this.prop_sel[0]) },
+    val_dt_to()   { return ts_to_screen(this.prop_sel[1]) },
+    val_hm_from() { return ts_to_screen(this.prop_sel[0]) },
+    val_hm_to()   { return ts_to_screen(this.prop_sel[1]) },
   },
 
   methods: {
@@ -326,40 +363,25 @@ export default {
     opacity: .7;
   }
 
-  div::v-deep .btn {
-    height: 3em!important;
-    min-width: 1.5em!important;
-    max-width: 1.5em!important;
-    padding: 0;
-    margin: 0;
-    font-weight: bold;
-  }
+  div::v-deep .slider { width: 22em; padding: 0 .7em 0 0; margin: 0; }
 
-  div::v-deep .slider {
-    min-width: 25em;
-    height: 2.4em;
-    padding: 0;
-    margin: 0 0 .4em 0;
-  }
-
-
-  div::v-deep .v-slider {
-    cursor: pointer;
-  }
+  div::v-deep .v-slider      { cursor: pointer; }
+  div::v-deep .v-input__slot { margin: 0 !important; }
+  div::v-deep .v-messages    { display: none; }
 
   /* высота полоски */
-  div::v-deep .v-slider__track-container {
-    height: 2px;
-  }
+  div::v-deep .v-slider__track-container { height: 2px; }
 
-  /* формат подсказки */
-  div::v-deep .v-messages {
-    text-align: center;
-  }
-  div::v-deep .v-messages__message {
-    text-align: center;
+  /* информатор */
+  div::v-deep .range-info {
+    width: 240px;
+    text-align: right;
+    font-size: .8em;
     font-weight: bold;
     color: green;
   }
-
+  div::v-deep .range-info > div { display: inline-block; }
+  div::v-deep .range-info > div:nth-of-type(1) { width: 110px; text-align: right;  }
+  div::v-deep .range-info > div:nth-of-type(2) { width: 15px;  text-align: center; }
+  div::v-deep .range-info > div:nth-of-type(3) { width: 110px; text-align: left;   }
 </style>
