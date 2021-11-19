@@ -9,12 +9,12 @@ export default {
 
     range: {                                           // фильтр отображаемых данных по дате/времени
       show: cook_get_bool('MAP_RANGE_SHOW_DT', false), // создавать ли компонент (не путать с visible)
-      dt_sel_min:   0,                                 // выбранное минимальное значение, ts
-      dt_sel_max:   0,                                 // выбранное максимальное значение, ts
+      dt_sel_min:   0,                                 // выбранное минимальное / максимальное значение, ts
+      dt_sel_max:   0,
+      hm_sel_min:   0,
+      hm_sel_max:   0,
       dt_limit_min: 0,                                 // минимально допустимое значение, ts
       dt_limit_max: 0,                                 // максимально допустимое значение, ts
-      hm_sel_min:   0,                                 // выбранное минимальное значение, ts
-      hm_sel_max:   0,                                 // выбранное максимальное значение, ts
     },
 
     tile:       cook_get_int ('MAP_TILE',    0),       // (int) индекс активного источника плиток tiles[tile]
@@ -93,7 +93,7 @@ export default {
 
   actions: {
     MAP_ACT_RANGE_SHOW:     ({commit}, param={}) => { commit('MAP_MUT_RANGE_SHOW', param.on);  cook_set('MAP_RANGE_SHOW_DT', param.on ); },
-    MAP_ACT_RANGE_SEL:      ({commit}, param={}) => { commit('MAP_MUT_RANGE_SEL',  param.lst); },
+    MAP_ACT_RANGE_DT_SEL:   ({commit}, param={}) => { commit('MAP_MUT_RANGE_SEL',  param.lst); },
     MAP_ACT_TILE:           ({commit}, param={}) => { commit('MAP_MUT_TILE',       param.ind); cook_set('MAP_TILE',          param.ind); },
     MAP_ACT_CLUSTER:        ({commit}, param={}) => { commit('MAP_MUT_CLUSTER',    param.on);  cook_set('MAP_CLUSTER',       param.on ); },
     MAP_ACT_HINT:           ({commit}, param={}) => { commit('MAP_MUT_HINT',       param.on);  cook_set('MAP_HINT',          param.on ); },

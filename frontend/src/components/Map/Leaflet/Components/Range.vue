@@ -31,7 +31,7 @@
             >
               <template v-slot:append>
                 <v-icon
-                  @click.stop="on_menu_show_dt"
+                  @click.stop="on_menu_dt_show"
                   size="24"
                 >mdi-menu</v-icon>
               </template>
@@ -46,7 +46,7 @@
           </td>
           <td>
             <v-range-slider
-              ref="slider"
+              ref="slider_hm"
               class="slider"
               v-model="prop_dt_sel"
               :min="MAP_GET_RANGE_DT_LIMIT_MIN"
@@ -63,7 +63,7 @@
             >
               <template v-slot:append>
                 <v-icon
-                  @click.stop="on_menu_show"
+                  @click.stop="on_menu_dt_show"
                   size="24"
                 >mdi-menu</v-icon>
               </template>
@@ -169,7 +169,7 @@ export default {
     form: vm => vm,
 
     prop_dt_sel: {
-      set: function(lst) { this.MAP_ACT_RANGE_SEL({lst: lst}); },
+      set: function(lst) { this.MAP_ACT_RANGE_DT_SEL({lst: lst}); },
       get: function()    { return this.MAP_GET_RANGE_DT_SEL;   },
     },
 
@@ -191,7 +191,7 @@ export default {
 
   methods: {
     ...mapActions([
-      'MAP_ACT_RANGE_SEL',
+      'MAP_ACT_RANGE_DT_SEL',
     ]),
 
     // вызывается извне
@@ -213,7 +213,7 @@ export default {
 
 
     // MENU: Показать первый уровень
-    on_menu_show_dt(e) {
+    on_menu_dt_show(e) {
       const self    = this;
       let limit_min = this.MAP_GET_RANGE_DT_LIMIT_MIN;
       let limit_max = this.MAP_GET_RANGE_DT_LIMIT_MAX;
@@ -256,7 +256,7 @@ export default {
         sel_max = Math.min(sel_min+sel_delta, limit_max);
       }
 
-      await this.set_range_sel_dt(sel_min, sel_max, sel_delta);
+      await this.set_range_dt_sel(sel_min, sel_max, sel_delta);
     },
 
     // MENU: Округлить период
@@ -281,7 +281,7 @@ export default {
       sel_min += myUTC;
       sel_max += myUTC;
 
-      await this.set_range_sel_dt(sel_min, sel_max);
+      await this.set_range_dt_sel(sel_min, sel_max);
   },
 
 
@@ -338,13 +338,13 @@ export default {
         }
       }
 
-      await this.set_range_sel_dt(sel_min, sel_max);
+      await this.set_range_dt_sel(sel_min, sel_max);
     },
 
-    async set_range_sel_dt(sel_min, sel_max, step=undefined) {
+    async set_range_dt_sel(sel_min, sel_max, step=undefined) {
       let step_temp = (step != undefined) ? step : this.step;
       this.step = 0;
-      await this.MAP_ACT_RANGE_SEL({lst: [sel_min, sel_max]});
+      await this.MAP_ACT_RANGE_DT_SEL({lst: [sel_min, sel_max]});
       this.step = step_temp;
     }
   },
