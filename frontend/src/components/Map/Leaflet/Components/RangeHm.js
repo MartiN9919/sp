@@ -2,14 +2,16 @@
 import { MAP_ITEM } from '@/components/Map/Leaflet/Lib/Const';
 import { myUTC, ts_to_screen, datesql_to_ts } from '@/plugins/sys';
 
+const SEL_STEP = 60;                // посекундно
+
 export default {
   data: () => ({
     hm: {
-      limit_min:   myUTC,              // минимально / максимально допустимое значение, ts
-      limit_max:   myUTC+60*60*24*1000,
-      sel_min:     myUTC,              // выбранное минимальное / максимальное значение, ts
-      sel_max:     myUTC+60*60*24*1000,
-      sel_step:    0,
+      limit_min:   0,               // минимально / максимально допустимое значение, ts
+      limit_max:   (60*60*24)|0,
+      sel_min:     0,               // выбранное минимальное / максимальное значение, ts
+      sel_max:     (60*60*24)|0,
+      sel_step:    SEL_STEP,
       menu_struct: undefined,
       menu_struct_base: [
         {
@@ -58,11 +60,14 @@ export default {
       set: function(lst) { this.hm_sel_set(lst[0], lst[1]); },
       get: function()    { return [this.hm.sel_min, this.hm.sel_max]; },
     },
-    hm_val_min() { return ts_to_screen(this.hm_prop_sel[0], false, true) },
-    hm_val_max() { return ts_to_screen(this.hm_prop_sel[1], false, true) },
+    hm_val_min() { return ts_to_screen(this.hm_correct(this.hm.sel_min), false, true) },
+    hm_val_max() { return ts_to_screen(this.hm_correct(this.hm.sel_max), false, true) },
   },
 
   methods: {
+    // коррекция ts (0 ... 60*60*24)
+    hm_correct(ts) { return ts*1000+myUTC } ,
+
     // обработчик изменения исходных данных
     // hm_items_change(items) { },
 
@@ -218,7 +223,7 @@ export default {
       ) return;
 
       let step_temp = (sel_step_new != undefined) ? sel_step_new : this.hm.sel_step;
-      this.hm.sel_step = 0;
+      this.hm.sel_step = SEL_STEP;
       this.hm.sel_min  = sel_min;
       this.hm.sel_max  = sel_max;
       this.hm.sel_step = step_temp;

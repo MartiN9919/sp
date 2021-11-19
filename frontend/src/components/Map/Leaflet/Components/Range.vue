@@ -133,12 +133,22 @@ export default {
     filter(fc) {
       if (this.MAP_GET_RANGE) {
         if ((this.dt.sel_min>0) && (this.dt.sel_max>0)) {
-          let item_date;
           let self = this;
           let features = fc.features.filter(function(feature) {
             if (!feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES.DATE]) return true;
-            item_date = datesql_to_ts(feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES.DATE]);
-            return ((item_date >= self.dt.sel_min) && (item_date <= self.dt.sel_max));
+            let item_date = datesql_to_ts(feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES.DATE]);
+            let item_time = ((item_date/1000) % (60*60*24) * 1000)|0;
+
+            if (item_time != 75600000) {
+              console.log(item_date, item_time, self.hm.sel_min, self.hm_correct(self.hm.sel_min), self.hm.sel_max, self.hm_correct(self.hm.sel_max))
+            }
+
+            return (
+              (item_date >= self.dt.sel_min) &&
+              (item_date <= self.dt.sel_max) &&
+              (item_time >= self.hm_correct(self.hm.sel_min)) &&
+              (item_time <= self.hm_correct(self.hm.sel_max))
+            );
           });
           fc.features = features;
         }

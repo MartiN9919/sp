@@ -141,7 +141,7 @@ export const TEST = [
     "properties": {
       "class": "arc-layout-start-180 arrow-layout-double-end line-engeneer_zagr_signal line-text_rl_fill_100 ant",
       "hint": "arc-layout-start-180 arrow-layout-double-end line-engeneer_zagr_signal line-text_rl_fill_100 ant",
-      "date": "2021-01-04",
+      "date": "2021-01-04 18:36",
       "text": "C-120",
     },
     "geometry": {
@@ -158,7 +158,7 @@ export const TEST = [
     "properties": {
       "class": "arc-layout-start arrow-layout-double-end line-engeneer_zagr_signal line-text_lr_300 ant",
       "hint": "arc-layout-start arrow-layout-double-end line-engeneer_zagr_signal line-text_lr_300 ant",
-      "date": "2021-01-04",
+      "date": "2021-01-04 02:10",
       "text": "C-120",
       // "zoom": 2,
     },
@@ -176,7 +176,7 @@ export const TEST = [
     "properties": {
       "class": "line-engeneer_zagr_invisible hidden",
       "hint": "line-engeneer_zagr_invisible hidden",
-      "date": "2021-05-04",
+      "date": "2021-05-04 03:45",
     },
     "geometry": {
       "type": "LineString",
@@ -192,7 +192,7 @@ export const TEST = [
     "properties": {
       "class": "line-engeneer_zagr_ograd",
       "hint": "line-engeneer_zagr_ograd",
-      "date": "2021-05-04",
+      "date": "2021-05-04 02:55",
       "color": "#888",
     },
     "geometry": {
