@@ -7,16 +7,7 @@ export default {
   state: {
     tiles: MAP_DATA_MENU_TILES,                        // источники плиток https://leaflet-extras.github.io/leaflet-providers/preview/
 
-    range: {                                           // фильтр отображаемых данных по дате/времени
-      show: cook_get_bool('MAP_RANGE_SHOW_DT', false), // создавать ли компонент (не путать с visible)
-      dt_sel_min:   0,                                 // выбранное минимальное / максимальное значение, ts
-      dt_sel_max:   0,
-      hm_sel_min:   0,
-      hm_sel_max:   0,
-      dt_limit_min: 0,                                 // минимально допустимое значение, ts
-      dt_limit_max: 0,                                 // максимально допустимое значение, ts
-    },
-
+    range:      cook_get_bool('MAP_RANGE',   false),   // фильтр отображаемых данных по дате/времени
     tile:       cook_get_int ('MAP_TILE',    0),       // (int) индекс активного источника плиток tiles[tile]
     cluster:    cook_get_bool('MAP_CLUSTER', true),    // (bool) допустима ли кластеризация (группировка) близко расположенных маркеров
     hint:       cook_get_bool('MAP_HINT',    false),   // (bool) показывать ли всплывающие подсказки
@@ -35,7 +26,7 @@ export default {
       let ret =
         ind+'-'+
         getters.MAP_GET_RANGE_SHOW                      +'-'+
-        getters.MAP_GET_RANGE_DT_SEL                    +'-'+
+///        getters.MAP_GET_RANGE_DT_SEL                    +'-'+
         getters.SCRIPT_GET_ITEM_SEL                     +'-'+
         getters.SCRIPT_GET_ITEM_REFRESH            (ind)+'-'+
         JSON.stringify(getters.SCRIPT_GET_ITEM_FC_STYLE_MARKER(ind))+'-'+
@@ -48,90 +39,57 @@ export default {
       return hash_simple(ret);
     },
 
-    MAP_GET_RANGE_SHOW:         (state) =>  state.range.show,
-    MAP_GET_RANGE_DT_SEL:       (state) => [state.range.dt_sel_min,state.range.dt_sel_max],
-    MAP_GET_RANGE_DT_SEL_MIN:   (state) =>  state.range.dt_sel_min,
-    MAP_GET_RANGE_DT_SEL_MAX:   (state) =>  state.range.dt_sel_max,
-    MAP_GET_RANGE_DT_LIMIT_MIN: (state) =>  state.range.dt_limit_min,
-    MAP_GET_RANGE_DT_LIMIT_MAX: (state) =>  state.range.dt_limit_max,
-    MAP_GET_TILES:              (state) =>  state.tiles,
-    MAP_GET_TILE:               (state) =>  state.tile,
-    MAP_GET_TILE2:              (state) =>  state.tiles[state.tile],
-    MAP_GET_CLUSTER:            (state) =>  state.cluster,
-    MAP_GET_HINT:               (state) =>  state.hint,
-    MAP_GET_LEGEND:             (state) =>  state.legend,
-    MAP_GET_SCALE:              (state) =>  state.scale,
-    MAP_GET_MEASURE:            (state) =>  state.measure,
-    MAP_GET_LOGO:               (state) =>  state.logo,
-    MAP_GET_NOTIFY:             (state) =>  state.notify,
+    MAP_GET_RANGE_SHOW:   (state) =>  state.range,
+    MAP_GET_TILES:        (state) =>  state.tiles,
+    MAP_GET_TILE:         (state) =>  state.tile,
+    MAP_GET_TILE2:        (state) =>  state.tiles[state.tile],
+    MAP_GET_CLUSTER:      (state) =>  state.cluster,
+    MAP_GET_HINT:         (state) =>  state.hint,
+    MAP_GET_LEGEND:       (state) =>  state.legend,
+    MAP_GET_SCALE:        (state) =>  state.scale,
+    MAP_GET_MEASURE:      (state) =>  state.measure,
+    MAP_GET_LOGO:         (state) =>  state.logo,
+    MAP_GET_NOTIFY:       (state) =>  state.notify,
 
-    MAP_GET_ZOOM:               (state) =>  state.zoom,
-    MAP_GET_EDIT:               (state) =>  state.edit,
+    MAP_GET_ZOOM:         (state) =>  state.zoom,
+    MAP_GET_EDIT:         (state) =>  state.edit,
   },
 
 
   mutations: {
-    MAP_MUT_RANGE_SHOW:         (state, on)   =>   state.range.show         = on,
-    MAP_MUT_RANGE_LIMIT:        (state, lst)  => { state.range.dt_limit_min = lst[0]; state.range.dt_limit_max = lst[1]; },
-    MAP_MUT_RANGE_SEL:          (state, lst)  => { state.range.dt_sel_min   = lst[0]; state.range.dt_sel_max   = lst[1]; },
+    MAP_MUT_RANGE_SHOW:   (state, on)   => state.range    = on,
+    MAP_MUT_TILE:         (state, ind)  => state.tile     = ind,
+    MAP_MUT_CLUSTER:      (state, on)   => state.cluster  = on,
+    MAP_MUT_HINT:         (state, on)   => state.hint     = on,
+    MAP_MUT_LEGEND:       (state, on)   => state.legend   = on,
+    MAP_MUT_SCALE:        (state, on)   => state.scale    = on,
+    MAP_MUT_MEASURE:      (state, on)   => state.measure  = on,
+    MAP_MUT_LOGO:         (state, on)   => state.logo     = on,
+    MAP_MUT_NOTIFY:       (state, on)   => state.notify   = on,
 
-    MAP_MUT_TILE:               (state, ind)  => state.tile       = ind,
-    MAP_MUT_CLUSTER:            (state, on)   => state.cluster    = on,
-    MAP_MUT_HINT:               (state, on)   => state.hint       = on,
-    MAP_MUT_LEGEND:             (state, on)   => state.legend     = on,
-    MAP_MUT_SCALE:              (state, on)   => state.scale      = on,
-    MAP_MUT_MEASURE:            (state, on)   => state.measure    = on,
-    MAP_MUT_LOGO:               (state, on)   => state.logo       = on,
-    MAP_MUT_NOTIFY:             (state, on)   => state.notify     = on,
-
-  //MAP_MUT_CENTER_X:           (state, val)  => state.center_x   = val,
-  //MAP_MUT_CENTER_Y:           (state, val)  => state.center_y   = val,
-    MAP_MUT_ZOOM:               (state, val)  => state.zoom       = val,
-    MAP_MUT_EDIT:               (state, data) => state.edit       = data, // data || { "type": "FeatureCollection", "features": [], },
+  //MAP_MUT_CENTER_X:     (state, val)  => state.center_x = val,
+  //MAP_MUT_CENTER_Y:     (state, val)  => state.center_y = val,
+    MAP_MUT_ZOOM:         (state, val)  => state.zoom     = val,
+    MAP_MUT_EDIT:         (state, data) => state.edit     = data, // data || { "type": "FeatureCollection", "features": [], },
   },
 
 
   actions: {
-    MAP_ACT_RANGE_SHOW:     ({commit}, param={}) => { commit('MAP_MUT_RANGE_SHOW', param.on);  cook_set('MAP_RANGE_SHOW_DT', param.on ); },
-    MAP_ACT_RANGE_DT_SEL:   ({commit}, param={}) => { commit('MAP_MUT_RANGE_SEL',  param.lst); },
-    MAP_ACT_TILE:           ({commit}, param={}) => { commit('MAP_MUT_TILE',       param.ind); cook_set('MAP_TILE',          param.ind); },
-    MAP_ACT_CLUSTER:        ({commit}, param={}) => { commit('MAP_MUT_CLUSTER',    param.on);  cook_set('MAP_CLUSTER',       param.on ); },
-    MAP_ACT_HINT:           ({commit}, param={}) => { commit('MAP_MUT_HINT',       param.on);  cook_set('MAP_HINT',          param.on ); },
-    MAP_ACT_LEGEND:         ({commit}, param={}) => { commit('MAP_MUT_LEGEND',     param.on);  cook_set('MAP_LEGEND',        param.on ); },
-    MAP_ACT_SCALE:          ({commit}, param={}) => { commit('MAP_MUT_SCALE',      param.on);  cook_set('MAP_SCALE',         param.on ); },
-    MAP_ACT_MEASURE:        ({commit}, param={}) => { commit('MAP_MUT_MEASURE',    param.on);  cook_set('MAP_MEASURE',       param.on ); },
-    MAP_ACT_LOGO:           ({commit}, param={}) => { commit('MAP_MUT_LOGO',       param.on);  cook_set('MAP_LOGO',          param.on ); },
-    MAP_ACT_NOTIFY:         ({commit}, param={}) => { commit('MAP_MUT_NOTIFY',     param.on);  cook_set('MAP_NOTIFY',        param.on ); },
+    MAP_ACT_RANGE_SHOW:   ({commit}, param={}) => { commit('MAP_MUT_RANGE_SHOW',    param.on);  cook_set('MAP_RANGE',   param.on ); },
+    MAP_ACT_TILE:         ({commit}, param={}) => { commit('MAP_MUT_TILE',          param.ind); cook_set('MAP_TILE',    param.ind); },
+    MAP_ACT_CLUSTER:      ({commit}, param={}) => { commit('MAP_MUT_CLUSTER',       param.on);  cook_set('MAP_CLUSTER', param.on ); },
+    MAP_ACT_HINT:         ({commit}, param={}) => { commit('MAP_MUT_HINT',          param.on);  cook_set('MAP_HINT',    param.on ); },
+    MAP_ACT_LEGEND:       ({commit}, param={}) => { commit('MAP_MUT_LEGEND',        param.on);  cook_set('MAP_LEGEND',  param.on ); },
+    MAP_ACT_SCALE:        ({commit}, param={}) => { commit('MAP_MUT_SCALE',         param.on);  cook_set('MAP_SCALE',   param.on ); },
+    MAP_ACT_MEASURE:      ({commit}, param={}) => { commit('MAP_MUT_MEASURE',       param.on);  cook_set('MAP_MEASURE', param.on ); },
+    MAP_ACT_LOGO:         ({commit}, param={}) => { commit('MAP_MUT_LOGO',          param.on);  cook_set('MAP_LOGO',    param.on ); },
+    MAP_ACT_NOTIFY:       ({commit}, param={}) => { commit('MAP_MUT_NOTIFY',        param.on);  cook_set('MAP_NOTIFY',  param.on ); },
 
-    MAP_ACT_ITEM_ADD:       ({commit, dispatch}, param={}) => { commit('SCRIPT_MUT_ITEM_ADD',   param);    dispatch('MAP_ACT_RANGE_TS'); },
-    MAP_ACT_ITEM_COLOR:     ({commit}, param={})           =>   commit('SCRIPT_MUT_ITEM_COLOR', param),
-    MAP_ACT_ITEM_DEL:       ({commit, dispatch}, param={}) => { commit('SCRIPT_MUT_ITEM_DEL',   param.id); dispatch('MAP_ACT_RANGE_TS'); },
+    MAP_ACT_ITEM_ADD:     ({commit}, param={}) =>   commit('SCRIPT_MUT_ITEM_ADD',   param),
+    MAP_ACT_ITEM_COLOR:   ({commit}, param={}) =>   commit('SCRIPT_MUT_ITEM_COLOR', param),
+    MAP_ACT_ITEM_DEL:     ({commit}, param={}) =>   commit('SCRIPT_MUT_ITEM_DEL',   param.id),
 
-    // установить мин и макс даты
-    MAP_ACT_RANGE_TS:       ({commit, dispatch, getters, rootGetters}) => {
-      let dt_limit_min = '';
-      let dt_limit_max = '';
-      getters.SCRIPT_GET.forEach(function(layer){
-        layer.fc.features.forEach(function(feature){
-          let date = feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES.DATE];
-          if (!date) return;
-          if ((date < dt_limit_min) || (dt_limit_min == '')) dt_limit_min=date;
-          if ((date > dt_limit_max) || (dt_limit_max == '')) dt_limit_max=date;
-        }.bind(this));
-      }.bind(this));
-      dt_limit_min = datesql_to_ts(dt_limit_min);
-      dt_limit_max = datesql_to_ts(dt_limit_max);
-      commit('MAP_MUT_RANGE_LIMIT', [dt_limit_min, dt_limit_max]);
-
-      // скорректирвать выбранный диапазон
-      let dt_sel_min = getters.MAP_GET_RANGE_DT_SEL_MIN;
-      let dt_sel_max = getters.MAP_GET_RANGE_DT_SEL_MAX;
-      dt_sel_min = ((dt_limit_min <= dt_sel_min) && ( dt_sel_min <= dt_limit_max))?dt_sel_min:dt_limit_min;
-      dt_sel_max = ((dt_limit_min <= dt_sel_max) && ( dt_sel_max <= dt_limit_max))?dt_sel_max:dt_limit_max;
-      commit('MAP_MUT_RANGE_SEL', [dt_sel_min, dt_sel_max]);
-    },
-
-    MAP_ACT_ZOOM:       ({commit}, zoom)     => commit('MAP_MUT_ZOOM', zoom),
-    MAP_ACT_EDIT:       ({commit}, param={}) => commit('MAP_MUT_EDIT', param.data),
+    MAP_ACT_ZOOM:         ({commit}, zoom)     =>   commit('MAP_MUT_ZOOM',          zoom),
+    MAP_ACT_EDIT:         ({commit}, param={}) =>   commit('MAP_MUT_EDIT',          param.data),
   },
 }

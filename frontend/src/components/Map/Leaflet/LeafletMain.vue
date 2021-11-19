@@ -70,7 +70,7 @@
       />
 
       <!-- ВРЕМЕННОЙ ФИЛЬТР -->
-      <Range ref="range" :options="range_options()"/>
+      <Range ref="range"/>
 
       <!-- ЛЕГЕНДА -->
       <Legend :options="legend_options()"/>
@@ -250,13 +250,6 @@ export default {
       'setNavigationDrawerStatus',
       'setActiveTool',
     ]),
-
-    // ===============
-    // RANGE
-    // ===============
-    range_options() {
-      return { }
-    },
 
 
     // ===============
