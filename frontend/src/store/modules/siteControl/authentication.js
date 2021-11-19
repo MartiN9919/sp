@@ -1,4 +1,5 @@
-import axios from '@/plugins/axios_settings'
+import axios, {removeInterceptor, addInterceptor} from '@/plugins/axiosSettings'
+import CONST from '@/plugins/const'
 import router from '@/router'
 
 export default {
@@ -12,35 +13,20 @@ export default {
     setUserInformation: (state, userInformation) => state.userInformation = userInformation,
   },
   actions: {
-    authenticateUser ({ commit }, parameters = {}) {
-      return axios.post('auth/authentication/login/', parameters.userInformation, parameters.config)
-        .then(response => {
-          commit('setUserInformation', response.data)
-          router.push({ name: 'Map' })
-        })
-        .catch(() => {})
+    authenticateUser ({commit}, {userInformation, config={}}) {
+      axios.post(CONST.API.AUTH.LOGIN, userInformation, config).then(() => router.push({name: 'Map'}))
     },
     logOutUser ({ commit }, config = {}) {
-      commit('setUserInformation', null)
-      router.go({name: 'Login'})
-      return axios.get('auth/authentication/logout/', config)
-        // .then(() => router.go({ name: 'Login' }))
-        // .catch(() => {})
+      axios.get(CONST.API.AUTH.LOGOUT, config).finally(() => router.push({name: 'Login'}))
     },
-
-    identifyUser ({ commit, dispatch, getters }, config = {}) {
-      return axios.get('auth/authorization/', config)
-        .then(response => {
+    identifyUser ({commit, dispatch}, config = {}) {
+      removeInterceptor()
+      return axios.get(CONST.API.AUTH.IDENTIFY, config)
+        .then(async response => {
+          await dispatch('initialization')
           commit('setUserInformation', response.data)
-          if (!getters.socket) {
-            dispatch('connectSocket').then(() => {
-              dispatch('socketListener')
-              dispatch('sendCookieAlerts')
-            })
-          }
-          return Promise.resolve()
         })
-        .catch(error => { return Promise.reject(error) })
+        .finally(() => addInterceptor())
     }
   }
 }

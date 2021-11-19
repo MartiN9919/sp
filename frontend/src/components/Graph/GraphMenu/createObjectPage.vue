@@ -26,7 +26,6 @@
         </v-tab-item>
       </v-tabs>
     </div>
-    <v-divider></v-divider>
     <control-menu
       v-if="editableObjects"
       :buttons="controlButtons"

@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import {getFileLink} from '@/plugins/axios_settings'
+import {getFileLink} from '@/plugins/axiosSettings'
 
 export default {
   name: "customTooltip",

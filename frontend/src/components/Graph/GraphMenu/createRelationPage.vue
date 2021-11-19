@@ -30,7 +30,6 @@
         ></object-record-area>
       </v-form>
     </div>
-    <v-divider></v-divider>
     <control-menu :buttons="controlButtons" @create="createRelation" class="control-menu"></control-menu>
   </v-col>
 </template>

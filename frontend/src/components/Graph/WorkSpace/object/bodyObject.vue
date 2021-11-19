@@ -14,7 +14,7 @@
 
 <script>
 import TriggerInformation from "@/components/WebsiteShell/UI/triggerInformation"
-import {getFileLink} from "@/plugins/axios_settings"
+import {getFileLink} from "@/plugins/axiosSettings"
 
 export default {
   name: "bodyObject",

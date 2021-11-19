@@ -15,7 +15,7 @@ import contextMenuNested from '@/components/WebsiteShell/ContextMenu/contextMenu
 import MixMenuStruct from '@/components/Map/Leaflet/Mixins/Menu.struct';
 import { str_cut, str_copy_deep, } from '@/components/Map/Leaflet/Lib/Lib';
 import { fc_exist, } from '@/components/Map/Leaflet/Lib/LibFc';
-import axios from '@/plugins/axios_settings';
+import axios from '@/plugins/axiosSettings';
 
 
 const

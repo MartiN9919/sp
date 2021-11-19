@@ -66,14 +66,12 @@
 </template>
 
 <script>
-import NavigationDrawer from "../WebsiteShell/Mixins/NavigationDrawer"
+import {getDownloadReportLink} from "@/plugins/axiosSettings"
 import {mapActions, mapGetters} from 'vuex'
 import router from '@/router'
-import {getDownloadReportLink, getResponseAxios} from "../../plugins/axios_settings";
 
 export default {
   name: 'reportsList',
-  mixins:[NavigationDrawer],
   data() {
     return {
       search: '',
@@ -96,7 +94,7 @@ export default {
     selectReport() { return this.selectedTreeViewItem(router.currentRoute.name) },
   },
   methods: {
-    ...mapActions(['getListFiles', 'changeSelectedTreeViewItem']),
+    ...mapActions(['getListFiles', 'setNavigationDrawerStatus', 'changeSelectedTreeViewItem']),
 
     downloadFile(id) {
       console.log(getDownloadReportLink(id))
@@ -108,7 +106,7 @@ export default {
       fileLink.click();
     },
     changeSelectedReport: function (item) {
-      this.drawer = true
+      this.setNavigationDrawerStatus(true)
       if (this.selectReport && this.selectReport === item.params)
         this.changeSelectedTreeViewItem()
       else this.changeSelectedTreeViewItem(item.params)

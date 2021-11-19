@@ -181,7 +181,7 @@
  */
 
 import router from '@/router';
-import axios from '@/plugins/axios_settings';
+import axios from '@/plugins/axiosSettings';
 import Treeview from '@/components/Map/Leaflet/Components/Treeview';
 import SelectorInput from "@/components/WebsiteShell/InputForms/selectorInput"
 import MixMenuNavObj from '@/components/Map/Leaflet/Mixins/MenuNavObj';

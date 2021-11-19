@@ -22,6 +22,11 @@ export default class CONST {
 
   static API = class {
     static BASE_PREFIX = 'api';
+    static AUTH = class {
+      static LOGIN = 'auth/authentication/login/'
+      static LOGOUT = 'auth/authentication/logout/'
+      static IDENTIFY = 'auth/authorization/'
+    };
     static OBJ = class {
       static GEOMETRY_TREE = 'objects/geometry_tree/';
       static GEOMETRY      = 'objects/geometry/';

@@ -25,7 +25,7 @@ import {mapActions, mapGetters} from "vuex"
 import router from '@/router'
 
 export default {
-  name: 'GraphPage',
+  name: 'Graph',
   components: {
     SplitPanel,
     graphArea,
@@ -48,11 +48,7 @@ export default {
   methods: {
     ...mapActions([
       'setDefaultValueActiveTool',
-      'getBaseObjects',
       'setRootSearchTreeItem',
-      'getBaseTriggers',
-      'getBaseRelations',
-      'getBaseClassifiers'
     ]),
     changeComponent() {
       if (this.activeWindow === 'searchPage')

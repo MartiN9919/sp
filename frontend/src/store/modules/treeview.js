@@ -1,4 +1,4 @@
-import axios  from '@/plugins/axios_settings'
+import axios  from '@/plugins/axiosSettings'
 import router from '@/router'
 
 export default {

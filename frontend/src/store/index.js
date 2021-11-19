@@ -1,22 +1,30 @@
 import Vue      from 'vue'
 import Vuex     from 'vuex'
-import siteControl from './modules/siteControl/index'
-import map      from './modules/map/index'
-import graph    from "./modules/graph/index"
+import siteControl from './modules/siteControl'
+import map      from './modules/map'
+import graph    from './modules/graph'
 import treeview from './modules/treeview'
 import report   from './modules/report'
-import script   from './modules/script/index'
+import script   from './modules/script'
+import _ from 'lodash'
 
 Vue.use(Vuex)
 
+const initialStoreModules = {siteControl, treeview, script, report, map, graph}
+
+const createClearState = function (module=initialStoreModules) {
+  let newState = {}
+  for (const [key, value] of Object.entries(module))
+    newState[key] = value.hasOwnProperty('modules')
+      ? createClearState(Object.assign(value.modules))
+      : _.cloneDeep(value.state)
+  return newState
+}
+
 const store = new Vuex.Store({
-  modules: {
-    siteControl,
-    treeview,
-    script,
-    report,
-    map,
-    graph,
+  modules: _.cloneDeep(initialStoreModules),
+  mutations: {
+    resetState: () => store.replaceState(createClearState()),
   }
 })
 

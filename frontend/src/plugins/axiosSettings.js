@@ -1,5 +1,6 @@
 import axios from 'axios'
 import store from '../store/index'
+import router from "@/router"
 import CONST from '@/plugins/const'
 
 export const WS_SERVER_IP = 'ws://' + CONST.URL.SERVER_IP
@@ -32,9 +33,9 @@ function generateFileLink(objectId, recId, fileName) {
   return `${objectId}/${recId}/${fileName}`
 }
 
-export function checkErrorStatusCode(statusCode){
+export function checkErrorStatusCode(response){
   const CRITICAL_STATUS_CODE = [401, ]
-  return CRITICAL_STATUS_CODE.includes(statusCode)
+  return CRITICAL_STATUS_CODE.includes(response?.status)
 }
 
 http.interceptors.request.use(function (config) {
@@ -46,14 +47,28 @@ http.interceptors.request.use(function (config) {
 
 http.interceptors.response.use(function (response) {
   store.commit('changeLoadStatus', false)
-  return response
+  return response;
 }, function (error) {
   store.commit('changeLoadStatus', false)
-  if(error.response === undefined)
-    store.dispatch('appendErrorAlert', { status: 'no connect' })
-  else if(!checkErrorStatusCode(error.response.status))
-    store.dispatch('appendErrorAlert', error.response)
+  store.dispatch('appendErrorAlert', error.response || { status: 'no connect' })
+  return Promise.reject(error);
+});
+
+
+const responseError = function (error) {
+  if(checkErrorStatusCode(error.response))
+    router.go({name: 'Login'})
   return Promise.reject(error)
-})
+}
+
+addInterceptor()
+
+export function addInterceptor () {
+  http.interceptors.response.use((response) => response, responseError)
+}
+
+export function removeInterceptor () {
+  http.interceptors.response.eject(http.interceptors.response.handlers.pop())
+}
 
 export default http

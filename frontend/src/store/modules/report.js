@@ -1,4 +1,4 @@
-import axios from '@/plugins/axios_settings'
+import axios from '@/plugins/axiosSettings'
 
 export default {
   state: {

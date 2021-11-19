@@ -1,25 +1,12 @@
 <template>
-  <v-app-bar
-    v-if="userInformation"
-    app dense flat dark
-    color="#00796B"
-  >
-    <v-app-bar-nav-icon
-      @click="changeNavigationDrawerStatus"
-    ></v-app-bar-nav-icon>
-
+  <v-app-bar app dense flat dark :color="$CONST.APP.COLOR_OBJ">
+    <v-app-bar-nav-icon @click="changeNavigationDrawerStatus"/>
     <v-tabs fixed-tabs hide-slider>
-      <v-tab
-        v-for="tab in tabs"
-        :key="tab.route"
-        :to="tab.route">
-        {{tab.title}}
-        <v-icon right>{{ tab.icon }}</v-icon>
+      <v-tab v-for="tab in tabs" :key="tab.route" :to="tab.route">
+        {{tab.title}}<v-icon right>{{ tab.icon }}</v-icon>
       </v-tab>
     </v-tabs>
-
-    <v-spacer></v-spacer>
-
+    <v-spacer/>
     <v-menu offset-y z-index="10001">
       <template v-slot:activator="{ on, attrs }">
         <v-btn large plain v-bind="attrs" v-on="on">
@@ -27,7 +14,6 @@
           <v-icon right size="24">mdi-account</v-icon>
         </v-btn>
       </template>
-
       <v-list rounded>
         <v-list-item @click="logOutUser" link>
           <v-list-item-icon><v-icon left>mdi-logout</v-icon></v-list-item-icon>
@@ -39,12 +25,11 @@
 </template>
 
 <script>
-import NavigationDrawer from "../Mixins/NavigationDrawer"
 import { mapActions, mapGetters } from 'vuex'
+import router from "@/router"
 
 export default {
   name: 'appBar',
-  mixins: [NavigationDrawer],
   data () {
     return {
       tabs: [
@@ -54,8 +39,19 @@ export default {
       ]
     }
   },
-  computed: mapGetters(['userInformation']),
-  methods: mapActions(['logOutUser'])
+  computed: {
+    ...mapGetters(['navigationDrawerStatus', 'userInformation']),
+    drawer: {
+      get: function () { return this.navigationDrawerStatus(router.currentRoute.name) },
+      set: function (val) { this.setNavigationDrawerStatus(val) }
+    }
+  },
+  methods: {
+    ...mapActions(['setNavigationDrawerStatus', 'logOutUser']),
+    changeNavigationDrawerStatus() {
+      this.drawer = !this.drawer
+    }
+  }
 }
 </script>
 

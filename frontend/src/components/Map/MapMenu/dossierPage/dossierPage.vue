@@ -49,7 +49,6 @@
           </div>
         </v-card>
       </div>
-      <v-divider></v-divider>
       <control-menu :buttons="controlButtons" @change="editObject" @addToGraph="addToGraph" class="control"></control-menu>
     </div>
     <div v-else class="text-h5 text-uppercase text-center grey--text pt-6">Выбирете объект</div>
@@ -58,7 +57,7 @@
 
 <script>
 import {mapActions, mapGetters} from "vuex"
-import {getDownloadFileLink} from '@/plugins/axios_settings'
+import {getDownloadFileLink} from '@/plugins/axiosSettings'
 import LeafletEditor from "../../../Map/Leaflet/LeafletEditor"
 import ControlMenu from "@/components/Graph/GraphMenu/createPageComponents/controlMenu"
 import router from "@/router"
