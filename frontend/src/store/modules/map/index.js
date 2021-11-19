@@ -7,12 +7,14 @@ export default {
   state: {
     tiles: MAP_DATA_MENU_TILES,                        // источники плиток https://leaflet-extras.github.io/leaflet-providers/preview/
 
-    range_dt: {                                        // фильтр отображаемых данных по дате/времени
+    range: {                                           // фильтр отображаемых данных по дате/времени
       show: cook_get_bool('MAP_RANGE_SHOW_DT', false), // создавать ли компонент (не путать с visible)
-      sel_min:   0,                                    // выбранное минимальное значение, ts
-      sel_max:   0,                                    // выбранное максимальное значение, ts
-      limit_min: 0,                                    // минимально допустимое значение, ts
-      limit_max: 0,                                    // максимально допустимое значение, ts
+      dt_sel_min:   0,                                 // выбранное минимальное значение, ts
+      dt_sel_max:   0,                                 // выбранное максимальное значение, ts
+      dt_limit_min: 0,                                 // минимально допустимое значение, ts
+      dt_limit_max: 0,                                 // максимально допустимое значение, ts
+      hm_sel_min:   0,                                 // выбранное минимальное значение, ts
+      hm_sel_max:   0,                                 // выбранное максимальное значение, ts
     },
 
     tile:       cook_get_int ('MAP_TILE',    0),       // (int) индекс активного источника плиток tiles[tile]
@@ -33,7 +35,7 @@ export default {
       let ret =
         ind+'-'+
         getters.MAP_GET_RANGE_SHOW                      +'-'+
-        getters.MAP_GET_RANGE_SEL                       +'-'+
+        getters.MAP_GET_RANGE_DT_SEL                    +'-'+
         getters.SCRIPT_GET_ITEM_SEL                     +'-'+
         getters.SCRIPT_GET_ITEM_REFRESH            (ind)+'-'+
         JSON.stringify(getters.SCRIPT_GET_ITEM_FC_STYLE_MARKER(ind))+'-'+
@@ -46,44 +48,46 @@ export default {
       return hash_simple(ret);
     },
 
-    MAP_GET_RANGE_SHOW:        (state) =>  state.range_dt.show,
-    MAP_GET_RANGE_SEL:         (state) => [state.range_dt.sel_min,state.range_dt.sel_max],
-    MAP_GET_RANGE_MIN:         (state) =>  state.range_dt.limit_min,
-    MAP_GET_RANGE_MAX:         (state) =>  state.range_dt.limit_max,
-    MAP_GET_TILES:             (state) =>  state.tiles,
-    MAP_GET_TILE:              (state) =>  state.tile,
-    MAP_GET_TILE2:             (state) =>  state.tiles[state.tile],
-    MAP_GET_CLUSTER:           (state) =>  state.cluster,
-    MAP_GET_HINT:              (state) =>  state.hint,
-    MAP_GET_LEGEND:            (state) =>  state.legend,
-    MAP_GET_SCALE:             (state) =>  state.scale,
-    MAP_GET_MEASURE:           (state) =>  state.measure,
-    MAP_GET_LOGO:              (state) =>  state.logo,
-    MAP_GET_NOTIFY:            (state) =>  state.notify,
+    MAP_GET_RANGE_SHOW:         (state) =>  state.range.show,
+    MAP_GET_RANGE_DT_SEL:       (state) => [state.range.dt_sel_min,state.range.dt_sel_max],
+    MAP_GET_RANGE_DT_SEL_MIN:   (state) =>  state.range.dt_sel_min,
+    MAP_GET_RANGE_DT_SEL_MAX:   (state) =>  state.range.dt_sel_max,
+    MAP_GET_RANGE_DT_LIMIT_MIN: (state) =>  state.range.dt_limit_min,
+    MAP_GET_RANGE_DT_LIMIT_MAX: (state) =>  state.range.dt_limit_max,
+    MAP_GET_TILES:              (state) =>  state.tiles,
+    MAP_GET_TILE:               (state) =>  state.tile,
+    MAP_GET_TILE2:              (state) =>  state.tiles[state.tile],
+    MAP_GET_CLUSTER:            (state) =>  state.cluster,
+    MAP_GET_HINT:               (state) =>  state.hint,
+    MAP_GET_LEGEND:             (state) =>  state.legend,
+    MAP_GET_SCALE:              (state) =>  state.scale,
+    MAP_GET_MEASURE:            (state) =>  state.measure,
+    MAP_GET_LOGO:               (state) =>  state.logo,
+    MAP_GET_NOTIFY:             (state) =>  state.notify,
 
-    MAP_GET_ZOOM:              (state) =>  state.zoom,
-    MAP_GET_EDIT:              (state) =>  state.edit,
+    MAP_GET_ZOOM:               (state) =>  state.zoom,
+    MAP_GET_EDIT:               (state) =>  state.edit,
   },
 
 
   mutations: {
-    MAP_MUT_RANGE_SHOW:        (state, on)   =>   state.range_dt.show      = on,
-    MAP_MUT_RANGE_LIMIT:       (state, lst)  => { state.range_dt.limit_min = lst[0]; state.range_dt.limit_max = lst[1]; },
-    MAP_MUT_RANGE_SEL:         (state, lst)  => { state.range_dt.sel_min   = lst[0]; state.range_dt.sel_max   = lst[1]; },
+    MAP_MUT_RANGE_SHOW:         (state, on)   =>   state.range.show         = on,
+    MAP_MUT_RANGE_LIMIT:        (state, lst)  => { state.range.dt_limit_min = lst[0]; state.range.dt_limit_max = lst[1]; },
+    MAP_MUT_RANGE_SEL:          (state, lst)  => { state.range.dt_sel_min   = lst[0]; state.range.dt_sel_max   = lst[1]; },
 
-    MAP_MUT_TILE:              (state, ind)  => state.tile       = ind,
-    MAP_MUT_CLUSTER:           (state, on)   => state.cluster    = on,
-    MAP_MUT_HINT:              (state, on)   => state.hint       = on,
-    MAP_MUT_LEGEND:            (state, on)   => state.legend     = on,
-    MAP_MUT_SCALE:             (state, on)   => state.scale      = on,
-    MAP_MUT_MEASURE:           (state, on)   => state.measure    = on,
-    MAP_MUT_LOGO:              (state, on)   => state.logo       = on,
-    MAP_MUT_NOTIFY:            (state, on)   => state.notify     = on,
+    MAP_MUT_TILE:               (state, ind)  => state.tile       = ind,
+    MAP_MUT_CLUSTER:            (state, on)   => state.cluster    = on,
+    MAP_MUT_HINT:               (state, on)   => state.hint       = on,
+    MAP_MUT_LEGEND:             (state, on)   => state.legend     = on,
+    MAP_MUT_SCALE:              (state, on)   => state.scale      = on,
+    MAP_MUT_MEASURE:            (state, on)   => state.measure    = on,
+    MAP_MUT_LOGO:               (state, on)   => state.logo       = on,
+    MAP_MUT_NOTIFY:             (state, on)   => state.notify     = on,
 
-  //MAP_MUT_CENTER_X:          (state, val)  => state.center_x   = val,
-  //MAP_MUT_CENTER_Y:          (state, val)  => state.center_y   = val,
-    MAP_MUT_ZOOM:              (state, val)  => state.zoom       = val,
-    MAP_MUT_EDIT:              (state, data) => state.edit       = data, // data || { "type": "FeatureCollection", "features": [], },
+  //MAP_MUT_CENTER_X:           (state, val)  => state.center_x   = val,
+  //MAP_MUT_CENTER_Y:           (state, val)  => state.center_y   = val,
+    MAP_MUT_ZOOM:               (state, val)  => state.zoom       = val,
+    MAP_MUT_EDIT:               (state, data) => state.edit       = data, // data || { "type": "FeatureCollection", "features": [], },
   },
 
 
@@ -105,27 +109,26 @@ export default {
 
     // установить мин и макс даты
     MAP_ACT_RANGE_TS:       ({commit, dispatch, getters, rootGetters}) => {
-      let limit_min = '';
-      let limit_max = '';
+      let dt_limit_min = '';
+      let dt_limit_max = '';
       getters.SCRIPT_GET.forEach(function(layer){
         layer.fc.features.forEach(function(feature){
           let date = feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES.DATE];
           if (!date) return;
-          if ((date < limit_min) || (limit_min == '')) limit_min=date;
-          if ((date > limit_max) || (limit_max == '')) limit_max=date;
+          if ((date < dt_limit_min) || (dt_limit_min == '')) dt_limit_min=date;
+          if ((date > dt_limit_max) || (dt_limit_max == '')) dt_limit_max=date;
         }.bind(this));
       }.bind(this));
-      limit_min = datesql_to_ts(limit_min);
-      limit_max = datesql_to_ts(limit_max);
-      commit('MAP_MUT_RANGE_LIMIT', [limit_min, limit_max]);
+      dt_limit_min = datesql_to_ts(dt_limit_min);
+      dt_limit_max = datesql_to_ts(dt_limit_max);
+      commit('MAP_MUT_RANGE_LIMIT', [dt_limit_min, dt_limit_max]);
 
       // скорректирвать выбранный диапазон
-      let sel     = getters.MAP_GET_RANGE_SEL;
-      let sel_min = sel[0];
-      let sel_max = sel[1];
-      sel_min = ((limit_min <= sel_min) && ( sel_min <= limit_max))?sel_min:limit_min;
-      sel_max = ((limit_min <= sel_max) && ( sel_max <= limit_max))?sel_max:limit_max;
-      commit('MAP_MUT_RANGE_SEL', [sel_min, sel_max]);
+      let dt_sel_min = getters.MAP_GET_RANGE_DT_SEL_MIN;
+      let dt_sel_max = getters.MAP_GET_RANGE_DT_SEL_MAX;
+      dt_sel_min = ((dt_limit_min <= dt_sel_min) && ( dt_sel_min <= dt_limit_max))?dt_sel_min:dt_limit_min;
+      dt_sel_max = ((dt_limit_min <= dt_sel_max) && ( dt_sel_max <= dt_limit_max))?dt_sel_max:dt_limit_max;
+      commit('MAP_MUT_RANGE_SEL', [dt_sel_min, dt_sel_max]);
     },
 
     MAP_ACT_ZOOM:       ({commit}, zoom)     => commit('MAP_MUT_ZOOM', zoom),

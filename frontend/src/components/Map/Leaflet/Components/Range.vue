@@ -9,16 +9,16 @@
         <tr>
           <td>
             <div class="range-info">
-              <div>{{val_from_dt}}</div><div>-</div><div>{{val_to_dt}}</div>
+              <div>{{val_dt_from}}</div><div>-</div><div>{{val_dt_to}}</div>
             </div>
           </td>
           <td>
             <v-range-slider
               ref="slider_dt"
               class="slider"
-              v-model="prop_sel"
-              :min="MAP_GET_RANGE_MIN"
-              :max="MAP_GET_RANGE_MAX"
+              v-model="prop_dt_sel"
+              :min="MAP_GET_RANGE_DT_LIMIT_MIN"
+              :max="MAP_GET_RANGE_DT_LIMIT_MAX"
               :step="step"
 
               dense
@@ -41,16 +41,16 @@
         <tr>
           <td>
             <div class="range-info">
-              <div>{{val_from_hm}}</div><div>-</div><div>{{val_to_hm}}</div>
+              <div>{{val_hm_from}}</div><div>-</div><div>{{val_hm_to}}</div>
             </div>
           </td>
           <td>
             <v-range-slider
               ref="slider"
               class="slider"
-              v-model="prop_sel"
-              :min="MAP_GET_RANGE_MIN"
-              :max="MAP_GET_RANGE_MAX"
+              v-model="prop_dt_sel"
+              :min="MAP_GET_RANGE_DT_LIMIT_MIN"
+              :max="MAP_GET_RANGE_DT_LIMIT_MAX"
               :step="step"
 
               dense
@@ -159,21 +159,23 @@ export default {
   computed: {
     ...mapGetters([
       'MAP_GET_RANGE_SHOW',
-      'MAP_GET_RANGE_SEL',
-      'MAP_GET_RANGE_MIN',
-      'MAP_GET_RANGE_MAX',
+      'MAP_GET_RANGE_DT_SEL',
+      'MAP_GET_RANGE_DT_SEL_MIN',
+      'MAP_GET_RANGE_DT_SEL_MAX',
+      'MAP_GET_RANGE_DT_LIMIT_MIN',
+      'MAP_GET_RANGE_DT_LIMIT_MAX',
     ]),
 
     form: vm => vm,
 
-    prop_sel: {
+    prop_dt_sel: {
       set: function(lst) { this.MAP_ACT_RANGE_SEL({lst: lst}); },
-      get: function()    { return this.MAP_GET_RANGE_SEL;      },
+      get: function()    { return this.MAP_GET_RANGE_DT_SEL;   },
     },
 
     visible: function() {
-      let ts_min = this.MAP_GET_RANGE_MIN;
-      let ts_max = this.MAP_GET_RANGE_MAX;
+      let ts_min = this.MAP_GET_RANGE_DT_LIMIT_MIN;
+      let ts_max = this.MAP_GET_RANGE_DT_LIMIT_MAX;
       return (
         this.MAP_GET_RANGE_SHOW &&
         (ts_min > 0) &&
@@ -181,10 +183,10 @@ export default {
         (ts_min != ts_max)
       );
     },
-    val_from_dt() { return ts_to_screen(this.prop_sel[0]) },
-    val_to_dt()   { return ts_to_screen(this.prop_sel[1]) },
-    val_from_hm() { return ts_to_screen(this.prop_sel[0]) },
-    val_to_hm()   { return ts_to_screen(this.prop_sel[1]) },
+    val_dt_from() { return ts_to_screen(this.prop_dt_sel[0]) },
+    val_dt_to()   { return ts_to_screen(this.prop_dt_sel[1]) },
+    val_hm_from() { return ts_to_screen(this.prop_dt_sel[0]) },
+    val_hm_to()   { return ts_to_screen(this.prop_dt_sel[1]) },
   },
 
   methods: {
@@ -195,7 +197,7 @@ export default {
     // вызывается извне
     filter(fc) {
       if (this.MAP_GET_RANGE_SHOW) {
-        let range_ts  = this.MAP_GET_RANGE_SEL;
+        let range_ts  = this.MAP_GET_RANGE_DT_SEL;
         if ((range_ts[0]>0) && (range_ts[1]>0)) {
           let item_date;
           let features = fc.features.filter(function(feature) {
@@ -213,11 +215,10 @@ export default {
     // MENU: Показать первый уровень
     on_menu_show_dt(e) {
       const self    = this;
-      let limit_min = this.MAP_GET_RANGE_MIN;
-      let limit_max = this.MAP_GET_RANGE_MAX;
-      let sel       = this.MAP_GET_RANGE_SEL;
-      let sel_min   = sel[0];
-      let sel_max   = sel[1];
+      let limit_min = this.MAP_GET_RANGE_DT_LIMIT_MIN;
+      let limit_max = this.MAP_GET_RANGE_DT_LIMIT_MAX;
+      let sel_min   = this.MAP_GET_RANGE_DT_SEL_MIN;
+      let sel_max   = this.MAP_GET_RANGE_DT_SEL_MAX;
       let sel_delta = sel_max - sel_min;
 
       e.preventDefault();
@@ -238,11 +239,10 @@ export default {
 
     // MENU: Установить период
     async on_period_dt(menu_item) {
-      let limit_min = this.MAP_GET_RANGE_MIN;
-      let limit_max = this.MAP_GET_RANGE_MAX;
-      let sel       = this.MAP_GET_RANGE_SEL;
-      let sel_min   = sel[0];
-      let sel_max   = sel[1];
+      let limit_min = this.MAP_GET_RANGE_DT_LIMIT_MIN;
+      let limit_max = this.MAP_GET_RANGE_DT_LIMIT_MAX;
+      let sel_min   = this.MAP_GET_RANGE_DT_SEL_MIN;
+      let sel_max   = this.MAP_GET_RANGE_DT_SEL_MAX;
       let sel_delta = menu_item.ts;
 
       if (sel_delta == 0) {                             // период: вся шкала
@@ -261,11 +261,10 @@ export default {
 
     // MENU: Округлить период
     async on_round_dt(menu_item) {
-      let limit_min = this.MAP_GET_RANGE_MIN;
-      let limit_max = this.MAP_GET_RANGE_MAX;
-      let sel       = this.MAP_GET_RANGE_SEL;
-      let sel_min   = sel[0];
-      let sel_max   = sel[1];
+      let limit_min = this.MAP_GET_RANGE_DT_LIMIT_MIN;
+      let limit_max = this.MAP_GET_RANGE_DT_LIMIT_MAX;
+      let sel_min   = this.MAP_GET_RANGE_DT_SEL_MIN;
+      let sel_max   = this.MAP_GET_RANGE_DT_SEL_MAX;
 
       sel_min -= myUTC;
       sel_max -= myUTC;
@@ -312,11 +311,10 @@ export default {
       e.stopPropagation();
     },
     async on_click_btn_dt(pos) {
-      let limit_min = this.MAP_GET_RANGE_MIN;
-      let limit_max = this.MAP_GET_RANGE_MAX;
-      let sel       = this.MAP_GET_RANGE_SEL;
-      let sel_min   = sel[0];
-      let sel_max   = sel[1];
+      let limit_min = this.MAP_GET_RANGE_DT_LIMIT_MIN;
+      let limit_max = this.MAP_GET_RANGE_DT_LIMIT_MAX;
+      let sel_min   = this.MAP_GET_RANGE_DT_SEL_MIN;
+      let sel_max   = this.MAP_GET_RANGE_DT_SEL_MAX;
       let sel_delta = sel_max - sel_min;
       if (sel_delta==0) return;
 
