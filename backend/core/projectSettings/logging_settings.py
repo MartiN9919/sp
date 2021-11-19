@@ -3,7 +3,7 @@ from core.settings import BASE_DIR
 import logging.handlers
 
 
-LOG_DIR  = str(BASE_DIR)+'/log/'
+LOG_DIR = '/log/' if os.path.exists('/log/') else str(BASE_DIR)+'/log/'
 
 PROJECT_LOG_MAIN     = 'MAIN'              # логгер главный
 PROJECT_LOG_USERS    = 'USERS'             # логгер пользователи
