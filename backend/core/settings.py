@@ -17,8 +17,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'channels',
-
     'django_monaco_editor',
     'authentication',
     'script',
@@ -61,10 +59,7 @@ TEMPLATES = [
     },
 ]
 
-# WSGI_APPLICATION = 'core.wsgi.application'
-ASGI_APPLICATION = 'core.asgi.application'
-
-CHANNEL_LAYERS = {}
+WSGI_APPLICATION = 'core.wsgi.application'
 
 DATABASES = {
     'default': {
