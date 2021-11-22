@@ -1,7 +1,7 @@
-from django.conf.urls import url
+from django.urls import path
 from notifications import views
 
 urlpatterns = [
-    url(r'^list', views.aj_notifications_list),
-    url(r'^set', views.aj_set_read),
+    path('', views.aj_notifications_list),
+    path('<int:notification_id>/', views.aj_set_read),
 ]

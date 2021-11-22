@@ -22,8 +22,8 @@
 </template>
 
 <script>
-import CustomTooltip from "@/components/WebsiteShell/UI/customTooltip";
-import TriggerInformation from "@/components/WebsiteShell/UI/triggerInformation";
+import CustomTooltip from "@/components/WebsiteShell/CustomComponents/customTooltip"
+import TriggerInformation from "@/components/WebsiteShell/CustomComponents/triggerInformation"
 export default {
   name: "foundObjects",
   components: {TriggerInformation, CustomTooltip},

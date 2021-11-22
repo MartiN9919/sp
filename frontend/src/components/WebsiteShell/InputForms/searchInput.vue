@@ -73,8 +73,8 @@
 </template>
 
 <script>
-import DropDownMenu from "@/components/WebsiteShell/UI/dropDownMenu"
-import BodyInputForm from "@/components/WebsiteShell/UI/bodyInputForm"
+import DropDownMenu from "@/components/WebsiteShell/CustomComponents/dropDownMenu"
+import BodyInputForm from "@/components/WebsiteShell/CustomComponents/bodyInputForm"
 import {mapActions, mapGetters} from "vuex"
 
 export default {

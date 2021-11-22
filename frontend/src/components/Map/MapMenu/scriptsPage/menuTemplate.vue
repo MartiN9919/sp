@@ -75,7 +75,8 @@
 </template>
 
 <script>
-import DropDownMenu from "@/components/WebsiteShell/UI/dropDownMenu";
+import DropDownMenu from "@/components/WebsiteShell/CustomComponents/dropDownMenu"
+
 export default {
   name: 'menuTemplate',
   components: {DropDownMenu},

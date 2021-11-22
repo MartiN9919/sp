@@ -22,7 +22,7 @@
 
 
 <script>
-import CustomTooltip from "@/components/WebsiteShell/UI/customTooltip"
+import CustomTooltip from "@/components/WebsiteShell/CustomComponents/customTooltip"
 
 export default {
   name: "tooltip",

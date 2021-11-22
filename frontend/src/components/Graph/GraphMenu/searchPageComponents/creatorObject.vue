@@ -59,10 +59,10 @@
 </template>
 
 <script>
-import SelectorInput from "../../../WebsiteShell/InputForms/selectorInput"
-import BooleanInput from "../../../WebsiteShell/InputForms/booleanInput"
-import dateTimeInput from "../../../WebsiteShell/InputForms/dateTimeInput"
-import { mapActions, mapGetters } from "vuex"
+import SelectorInput from "@/components/WebsiteShell/InputForms/selectorInput"
+import BooleanInput from "@/components/WebsiteShell/InputForms/booleanInput"
+import dateTimeInput from "@/components/WebsiteShell/InputForms/dateTimeInput"
+import {mapGetters} from "vuex"
 
 export default {
   name: "creatorObject",

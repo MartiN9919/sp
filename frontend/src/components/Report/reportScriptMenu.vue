@@ -10,7 +10,6 @@
     </template>
 
     <template v-slot:secondPane>
-      <block-header :text-header="textHeaderSettings"></block-header>
       <v-divider></v-divider>
       <v-scroll-y-transition mode="out-in">
           <v-form ref="form" v-if="'id' in selectedItem" class="px-2">
@@ -43,26 +42,18 @@
 <script>
 import { mapActions } from 'vuex'
 import treeView from '../Map/MapMenu/scriptsPage/treeView'
-import ResponsiveInputForm from '../WebsiteShell/UI/responsiveInputForm'
-import blockHeader from '../Map/MapMenu/scriptsPage/blockHeader'
-import CreatorTreeView from '../Map/MapMenu/Mixins/CreatorTreeView'
-import ExecutorScripts from '../Map/MapMenu/Mixins/ExecutorScripts'
-import SelectedScriptFormatter from '../Map/MapMenu/Mixins/SelectedScriptFormatter'
-import SplitPanel from "../WebsiteShell/UI/splitPanel"
-import CustomTooltip from "../WebsiteShell/UI/customTooltip"
+import ResponsiveInputForm from '@/components/WebsiteShell/CustomComponents/responsiveInputForm'
+import CreatorTreeView from '@/components/Map/MapMenu/Mixins/CreatorTreeView'
+import ExecutorScripts from '@/components/Map/MapMenu/Mixins/ExecutorScripts'
+import SelectedScriptFormatter from '@/components/Map/MapMenu/Mixins/SelectedScriptFormatter'
+import SplitPanel from "@/components/WebsiteShell/CustomComponents/splitPanel"
+import CustomTooltip from "@/components/WebsiteShell/CustomComponents/customTooltip"
 
 export default {
   name: 'reportScriptMenu',
   mixins: [CreatorTreeView, ExecutorScripts, SelectedScriptFormatter],
-  components: {SplitPanel, treeView, ResponsiveInputForm, blockHeader, CustomTooltip, },
-  methods: {
-    ...mapActions(['changeSelectedTreeViewItem'])
-  },
-  computed: {
-    textHeaderSettings () {
-      return 'id' in this.selectedItem ? 'Настройки ' + this.selectedItem.name : 'Выберете скрипт'
-    }
-  }
+  components: {SplitPanel, treeView, ResponsiveInputForm, CustomTooltip},
+  methods: mapActions(['changeSelectedTreeViewItem']),
 }
 </script>
 

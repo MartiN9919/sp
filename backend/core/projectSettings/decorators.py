@@ -200,9 +200,9 @@ def login_check(function):
     @return: если пользователь аунтифицирован - результат выполнения исходной функции, если нет - 401 код
     """
 
-    def is_auth(request):
+    def is_auth(request, *args, **kwargs):
         if request.user.is_authenticated:
-            return function(request)
+            return function(request, *args, **kwargs)
         else:
             return JsonResponse({}, status=401)
 

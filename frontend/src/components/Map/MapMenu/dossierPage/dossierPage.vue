@@ -56,10 +56,10 @@
 </template>
 
 <script>
-import {mapActions, mapGetters} from "vuex"
-import {getDownloadFileLink} from '@/plugins/axiosSettings'
-import LeafletEditor from "../../../Map/Leaflet/LeafletEditor"
 import ControlMenu from "@/components/Graph/GraphMenu/createPageComponents/controlMenu"
+import LeafletEditor from "@/components/Map/Leaflet/LeafletEditor"
+import {getDownloadFileLink} from '@/plugins/axiosSettings'
+import {mapActions, mapGetters} from "vuex"
 import router from "@/router"
 
 export default {

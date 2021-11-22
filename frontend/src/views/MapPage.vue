@@ -12,11 +12,11 @@
 </template>
 
 <script>
-import SplitPanel from "../components/WebsiteShell/UI/splitPanel"
-import LeafletMain from '../components/Map/Leaflet/LeafletMain'
-import toolsMenu from "../components/WebsiteShell/UI/toolsMenu"
-const MapScriptMenu = () => import("../components/Map/MapMenu/scriptsPage/mapScriptMenu")
-const MapDossier = () => import("../components/Map/MapMenu/dossierPage/dossierPage")
+import SplitPanel from "@/components/WebsiteShell/CustomComponents/splitPanel"
+import LeafletMain from '@/components/Map/Leaflet/LeafletMain'
+import toolsMenu from "@/components/WebsiteShell/CustomComponents/toolsMenu"
+const MapScriptMenu = () => import("@/components/Map/MapMenu/scriptsPage/mapScriptMenu")
+const MapDossier = () => import("@/components/Map/MapMenu/dossierPage/dossierPage")
 import { mapGetters, mapActions } from "vuex"
 import router from "@/router"
 

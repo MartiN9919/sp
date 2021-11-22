@@ -24,9 +24,9 @@
 </template>
 
 <script>
-import DropDownMenu from "../../../WebsiteShell/UI/dropDownMenu"
-import ChangeRootObject from "./changeRootObject"
-import CreatorObject from "./creatorObject"
+import ChangeRootObject from "@/components/Graph/GraphMenu/searchPageComponents/changeRootObject"
+import CreatorObject from "@/components/Graph/GraphMenu/searchPageComponents/creatorObject"
+import DropDownMenu from "@/components/WebsiteShell/CustomComponents/dropDownMenu"
 
 export default {
   name: "changeTreeItemBtn",

@@ -64,9 +64,9 @@
 </template>
 
 <script>
-import ChangeTreeItemBtn from "./searchPageComponents/changeTreeItemBtn"
-import CreateTreeItemBtn from "./searchPageComponents/createTreeItemBtn"
-import FoundObjects from "./searchPageComponents/foundObjects"
+import ChangeTreeItemBtn from "@/components/Graph/GraphMenu/searchPageComponents/changeTreeItemBtn"
+import CreateTreeItemBtn from "@/components/Graph/GraphMenu/searchPageComponents/createTreeItemBtn"
+import FoundObjects from "@/components/Graph/GraphMenu/searchPageComponents/foundObjects"
 import {mapActions, mapGetters} from "vuex"
 
 export default {

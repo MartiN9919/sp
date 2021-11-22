@@ -21,7 +21,5 @@ def aj_notifications_list(request):
 @login_check
 @request_log
 @request_wrap
-def aj_set_read(request):
-    user_id = request.user.id
-    notification_id = int(request.GET['id'])
-    return set_read(notification_id, user_id)
+def aj_set_read(request, notification_id):
+    return set_read(notification_id, request.user.id)

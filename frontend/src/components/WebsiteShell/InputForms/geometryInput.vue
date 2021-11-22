@@ -53,7 +53,7 @@
 
 <script>
 import LeafletEditor from '@/components/Map/Leaflet/LeafletEditor'
-import BodyInputForm from "../UI/bodyInputForm"
+import BodyInputForm from "@/components/WebsiteShell/CustomComponents/bodyInputForm"
 
 export default {
   name: "geometryInput",

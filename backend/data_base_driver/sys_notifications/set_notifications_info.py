@@ -45,7 +45,7 @@ def set_read(notification_id, user_id):
     @param user_id: идентификатор пользователя
     """
     sql = 'UPDATE ' + DAT_SYS_NOTIFY.TABLE_SHORT \
-        + 'SET ' + DAT_SYS_NOTIFY.IS_READ + ' = 1 '\
+        + ' SET ' + DAT_SYS_NOTIFY.IS_READ + ' = 1 '\
         + 'WHERE ' + DAT_SYS_NOTIFY.ID + ' = ' + str(notification_id) \
-        + ' AND ' + DAT_SYS_NOTIFY.TO_USER + ' = ' + str(user_id) + ';'
+        + ' AND ' + DAT_SYS_NOTIFY.TO_ID + ' = ' + str(user_id) + ';'
     db_sql(sql, read=False)

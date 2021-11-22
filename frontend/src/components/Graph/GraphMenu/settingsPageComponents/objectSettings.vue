@@ -16,8 +16,8 @@
 </template>
 
 <script>
-import BodyBlockSettings from "./bodyBlockSettings"
-import SelectorObject from "../createPageComponents/selectorObject"
+import BodyBlockSettings from "@/components/Graph/GraphMenu/settingsPageComponents/bodyBlockSettings"
+import SelectorObject from "@/components/Graph/GraphMenu/createPageComponents/selectorObject"
 
 export default {
   name: "objectSettings",

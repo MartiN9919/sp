@@ -34,8 +34,8 @@
 </template>
 
 <script>
-import CustomTooltip from "../../../WebsiteShell/UI/customTooltip"
-import CustomColorPicker from "@/components/WebsiteShell/UI/customColorPicker"
+import CustomTooltip from "@/components/WebsiteShell/CustomComponents/customTooltip"
+import CustomColorPicker from "@/components/WebsiteShell/CustomComponents/customColorPicker"
 import {mapGetters} from "vuex"
 
 export default {
@@ -47,7 +47,9 @@ export default {
   },
   computed: {
     ...mapGetters(['baseLists']),
-    pulseAnimation () { return { '--selected-analytics-color': this.selectedTreeViewItem.color } },
+    pulseAnimation: function () {
+      return { '--selected-analytics-color': this.selectedTreeViewItem.color }
+    },
     color: {
       get: function () { return this.analytics.color },
       set: function (color) { this.$emit('changeColor', { analytics: this.analytics, color: color }) }

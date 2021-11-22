@@ -24,8 +24,7 @@ const routes = [
     name: 'Map',
     components: {
       default: () => import('../views/MapPage.vue'),
-      appbar: () => import('../components/WebsiteShell/AppBar/appBar.vue'),
-      notification: () => import('../components/WebsiteShell/Notifications/alertsList.vue')
+      appbar: () => import('../components/WebsiteShell/UIMainComponents/appBar.vue'),
     },
     meta: { auth: true }
   },
@@ -34,8 +33,7 @@ const routes = [
     name: 'Graph',
     components: {
       default: () => import('../views/GraphPage.vue'),
-      appbar: () => import('../components/WebsiteShell/AppBar/appBar.vue'),
-      notification: () => import('../components/WebsiteShell/Notifications/alertsList.vue')
+      appbar: () => import('../components/WebsiteShell/UIMainComponents/appBar.vue'),
     },
     meta: { auth: true }
   },
@@ -44,8 +42,7 @@ const routes = [
     name: 'Report',
     components: {
       default: () => import('../views/ReportsPage.vue'),
-      appbar: () => import('../components/WebsiteShell/AppBar/appBar.vue'),
-      notification: () => import('../components/WebsiteShell/Notifications/alertsList.vue')
+      appbar: () => import('../components/WebsiteShell/UIMainComponents/appBar.vue'),
     },
     meta: { auth: true }
   },

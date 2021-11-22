@@ -11,7 +11,7 @@ import {
   MAP_TEST_EDIT_2,
 } from '@/components/Map/Leaflet/Mixins/Menu.test';
 
-import contextMenuNested from '@/components/WebsiteShell/ContextMenu/contextMenuNested';
+import contextMenuNested from '@/components/WebsiteShell/UIMainComponents/contextMenuNested';
 import MixMenuStruct from '@/components/Map/Leaflet/Mixins/Menu.struct';
 import { str_cut, str_copy_deep, } from '@/components/Map/Leaflet/Lib/Lib';
 import { fc_exist, } from '@/components/Map/Leaflet/Lib/LibFc';

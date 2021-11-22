@@ -1,33 +1,64 @@
-import axios from "@/plugins/axiosSettings";
+import axios from "@/plugins/axiosSettings"
+import uuid from 'uuid'
 
 export default {
   state: {
-    alertsList: [],
+    notifications: [],
     loadStatus: false
   },
   getters: {
-    alertsList: state => state.alertsList,
+    notifications: state => state.notifications,
     loadStatus: state => state.loadStatus,
   },
   mutations: {
     changeLoadStatus: (state, status) => state.loadStatus = status,
-    removeAlertFromList: (state, alert) => state.alertsList.splice(state.alertsList.indexOf(alert), 1),
-    appendAlert: (state, alert) => {
-      alert.id = Date.now().toString() + state.alertsList.length.toString()
-      state.alertsList.unshift(alert)
+    appendNotification: (state, notification) => state.notifications.unshift(notification),
+    removeNotification: (state, notification) => {
+      state.notifications.splice(state.notifications.findIndex(n => n.id === notification.id), 1)
     }
   },
   actions: {
-    appendErrorAlert: ({ commit }, error = {}) => commit('appendAlert', error),
-    removeAlertFromList: ({ commit }, alert = {}) => {
-      if ('id_alert' in alert) addVerifiedAlert(alert.id_alert)
-      commit('removeAlertFromList', alert)
+    appendErrorAlert: ({ commit }, error = {}) => {
+      const alert = new Notification({content: error.data.status, status: error.status})
+      commit('appendNotification', alert)
+      setTimeout(() => commit('removeNotification', alert), 5000)
     },
-    getNotifications: ({ commit, rootState }, conf={}) => {
-      setInterval(() =>
-        axios.get('notifications/list', Object.assign(conf, { params: {list: []}}))
-      , 20000);
-
+    getNotifications: ({ getters, commit }, config={}) => {
+      const getNotifications = function () {
+        const notifications = getters.notifications.filter(a => a.id_notification)
+        const availableNotifications = Array.from(notifications, alert => alert.id_notification)
+        axios.get('notifications/', Object.assign(config, {params: {list: availableNotifications}}))
+        .then(r => r.data.map(n => commit('appendNotification', new Notification(n))))
+      }
+      getNotifications()
+      setInterval(() => getNotifications(), 10000)
+    },
+    setReadNotification: ({commit}, {notification, config = {}}) => {
+      if (notification.id_notification)
+        axios.get(`notifications/${notification.id_notification}/`, config)
+      commit('removeNotification', notification)
     }
+  }
+}
+
+class Notification {
+
+  constructor(notification) {
+    this.id = uuid()
+    this.id_notification = notification.id_alert || null
+    this.content = notification.content
+    this.status = notification.status
+    this.from = notification.from || "Система"
+    this.time = notification.date_time || this.getDateTimeNow()
+  }
+
+  getDateTimeNow() {
+    let m = new Date();
+    return m.getFullYear() + "-" +
+      ("0" + (m.getMonth()+1)).slice(-2) + "-" +
+      ("0" + m.getDate()).slice(-2) + " " +
+      ("0" + m.getHours()).slice(-2) + ":" +
+      ("0" + m.getMinutes()).slice(-2) + ":" +
+      ("0" + m.getSeconds()).slice(-2)
   }
 }

@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import CustomTooltip from "@/components/WebsiteShell/UI/customTooltip"
+import CustomTooltip from "@/components/WebsiteShell/CustomComponents/customTooltip"
 import {mapActions, mapGetters} from "vuex"
 import router from '@/router'
 

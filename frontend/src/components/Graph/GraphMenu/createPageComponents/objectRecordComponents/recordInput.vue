@@ -25,9 +25,9 @@
 </template>
 
 <script>
-import ResponsiveInputForm from "../../../../WebsiteShell/UI/responsiveInputForm"
-import DropDownMenu from "../../../../WebsiteShell/UI/dropDownMenu"
-import SelectDateTime from "../../../../WebsiteShell/UI/selectDateTime"
+import ResponsiveInputForm from "@/components/WebsiteShell/CustomComponents/responsiveInputForm"
+import DropDownMenu from "@/components/WebsiteShell/CustomComponents/dropDownMenu"
+import SelectDateTime from "@/components/WebsiteShell/CustomComponents/selectDateTime"
 
 export default {
   name: "recordInput",
