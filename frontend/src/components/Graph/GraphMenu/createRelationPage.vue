@@ -1,26 +1,20 @@
 <template>
-  <v-col>
+  <v-card flat v-if="!editableRelation">
+    <v-card-subtitle class="text-center text-no-wrap">
+      Выбирете объекты для связи
+    </v-card-subtitle>
+  </v-card>
+  <div v-else>
     <div class="work-place">
-      <v-card flat>
-        <v-card-subtitle v-if="!editableRelation" class="text-center text-no-wrap">
-          Выбирете объекты для связи
-        </v-card-subtitle>
-        <v-card-subtitle v-else class="pa-0">
-          <p v-for="(relation, key) in [editableRelation.relation.o1, editableRelation.relation.o2]" class="mb-0">
-            <v-icon>
-              {{relation.object.object.icon}}
-            </v-icon>
-            {{relation.object.title}}
-          </p>
-          <p class="mb-0" v-if="editableRelation.document">
-            <v-icon>
-              {{editableRelation.document.object.object.icon}}
-            </v-icon>
-            {{editableRelation.document.object.title}}
-          </p>
-        </v-card-subtitle>
-      </v-card>
-      <v-form v-if="editableRelation" ref="form" v-model="valid">
+      <div class="header text-center text-no-wrap py-1">
+        <div v-for="(relation, key) in [editableRelation.relation.o1, editableRelation.relation.o2]" :key="key">
+          <v-icon>{{relation.object.object.icon}}</v-icon>{{relation.object.title}}
+        </div>
+        <div v-if="editableRelation.document">
+          <v-icon>{{editableRelation.document.object.object.icon}}</v-icon>{{editableRelation.document.object.title}}
+        </div>
+      </div>
+      <v-form v-if="editableRelation" ref="form" v-model="valid" class="overflow-y-auto">
         <object-record-area
           v-if="editableRelation.relation"
           :params="editableRelation.relation.params"
@@ -31,7 +25,7 @@
       </v-form>
     </div>
     <control-menu :buttons="controlButtons" @create="createRelation" class="control-menu"></control-menu>
-  </v-col>
+  </div>
 </template>
 
 <script>
@@ -73,8 +67,15 @@ export default {
 </script>
 
 <style scoped>
+.header {
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  border-bottom-color: rgba(0, 0, 0, 0.12);
+}
 .work-place {
   height: calc(100% - 3em);
+  display: flex;
+  flex-direction: column;
 }
 .control-menu {
   height: 3em;

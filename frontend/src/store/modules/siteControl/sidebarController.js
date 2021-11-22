@@ -13,15 +13,15 @@ export default {
     },
     toolsMenu: {
       Map: [
-        { name: 'scriptsPage', icon: 'mdi-script-outline', disabled: false },
-        { name: 'dossierPage', icon: 'mdi-text-box-multiple-outline', disabled: false },
+        { name: 'scriptsPage', icon: 'mdi-script-outline', description: 'Скрипты' },
+        { name: 'dossierPage', icon: 'mdi-text-box-multiple-outline', description: 'Описание объекта' },
       ],
       Graph: [
-        { name: 'searchPage', icon: 'mdi-cloud-search-outline', disabled: false },
-        { name: 'searchRelationPage', icon: 'mdi-vector-link', disabled: false },
-        { name: 'createObjectPage', icon: 'mdi-text-box-plus-outline', disabled: false },
-        { name: 'createRelationPage', icon: 'mdi-link-variant-plus', disabled: false },
-        { name: 'settingsPage', icon: 'mdi-cog-outline', disabled: false },
+        { name: 'searchPage', icon: 'mdi-cloud-search-outline', description: 'Поиск по объектам' },
+        { name: 'searchRelationPage', icon: 'mdi-vector-link', description: 'Поиск по связям' },
+        { name: 'createObjectPage', icon: 'mdi-text-box-plus-outline', description: 'Создание объекта' },
+        { name: 'createRelationPage', icon: 'mdi-link-variant-plus', description: 'Создание связи' },
+        { name: 'settingsPage', icon: 'mdi-cog-outline', description: 'Общие настройки графа' },
       ]
     }
   },
@@ -33,13 +33,9 @@ export default {
   mutations: {
     setNavigationDrawerStatus: (state, status) => state.navigationDrawer[router.currentRoute.name] = status,
     setActiveTool: (state, tool) => state.activeTool[router.currentRoute.name] = tool,
-    setDefaultValueActiveTool: (state) => state.activeTool[router.currentRoute.name] = state.toolsMenu[router.currentRoute.name][0].name,
-    setToolStatus: (state, playLoad) => state.toolsMenu[router.currentRoute.name].find(t => t.name === playLoad.tool).disabled = playLoad.status,
   },
   actions: {
     setNavigationDrawerStatus: ({ getters, commit }, status) => commit('setNavigationDrawerStatus', status),
-    setDefaultValueActiveTool({ commit }) { commit('setDefaultValueActiveTool') },
-    setToolStatus({ commit }, playLoad) { commit('setToolStatus', playLoad) },
     setActiveTool({ commit }, tool) { commit('setActiveTool', tool) },
   }
 }

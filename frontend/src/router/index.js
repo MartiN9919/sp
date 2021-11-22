@@ -61,7 +61,6 @@ const router = new VueRouter({
 })
 
 router.beforeResolve((to, from, next) => {
-  console.log(to.matched.some(record => record.meta.auth))
   if (to.matched.some(record => record.meta.auth))
     store.dispatch('identifyUser')
       .then(() => next())

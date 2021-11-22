@@ -1,5 +1,12 @@
 <template>
-  <v-tooltip v-bind="$attrs" transition="false" color="#00796B" z-index="10001" max-width="30%" content-class='custom-tooltip'>
+  <v-tooltip
+    v-bind="$attrs"
+    :color="$CONST.APP.COLOR_OBJ"
+    transition="false"
+    z-index="10000"
+    max-width="30%"
+    open-delay="1000"
+  >
     <template v-slot:activator="{ on }">
       <slot name="activator" :on="on"></slot>
     </template>
@@ -40,7 +47,7 @@ export default {
 
 <style scoped>
 .v-tooltip__content.menuable__content__active {
-  opacity: 1!important;
+  opacity: 1 !important;
   box-shadow: 0 11px 15px -7px rgba(0, 0, 0, 0.2),
               0 24px 38px 3px rgba(0, 0, 0, 0.14),
               0 9px 46px 8px rgba(0, 0, 0, 0.12);

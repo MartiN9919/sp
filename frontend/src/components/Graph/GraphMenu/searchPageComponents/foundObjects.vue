@@ -44,7 +44,7 @@ export default {
 }
 .body-table {
   overflow-y: auto;
-  height: calc(100% - 2.5em);
+  height: calc(100% - 36px);
 }
 .list-icons {
   position:absolute;

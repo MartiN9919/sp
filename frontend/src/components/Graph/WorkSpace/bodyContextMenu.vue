@@ -173,7 +173,6 @@ export default {
         document: this.choosingObjects.length === 3 ? this.choosingObjects.find(o => o.object.object.id === 20) : null
       })
       this.setNavigationDrawerStatus(true)
-      this.setToolStatus({tool: 'createRelationPage', status: false})
       this.setActiveTool('createRelationPage')
     },
     findRelations(){

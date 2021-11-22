@@ -1,5 +1,5 @@
 <template>
-  <v-container class="overflow-y-auto pa-0">
+  <div class="overflow-y-auto h-100">
     <global-settings
       :settings="globalDisplaySettings"
       @changeSettings="changeGlobalSettingState"
@@ -14,7 +14,7 @@
         <selector-object v-model="idTriggerSettings" start-object :is-get-classifiers="false"></selector-object>
       </v-list-item>
     </trigger-settings>
-  </v-container>
+  </div>
 </template>
 
 <script>
