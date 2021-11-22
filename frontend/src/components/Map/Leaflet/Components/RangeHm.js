@@ -60,13 +60,16 @@ export default {
       set: function(lst) { this.hm_sel_set(lst[0], lst[1]); },
       get: function()    { return [this.hm.sel_min, this.hm.sel_max]; },
     },
-    hm_val_min() { return ts_to_screen(this.hm_correct(this.hm.sel_min), false, true) },
-    hm_val_max() { return ts_to_screen(this.hm_correct(this.hm.sel_max), false, true) },
+    hm_val_min() { return ts_to_screen(this.hm_val_to_ts(this.hm.sel_min), false, true) },
+    hm_val_max() { return ts_to_screen(this.hm_val_to_ts(this.hm.sel_max), false, true) },
   },
 
   methods: {
-    // коррекция ts (0 ... 60*60*24)
-    hm_correct(ts) { return ts*1000+myUTC } ,
+    // val [0...86400]
+    hm_val_to_ts(val) { return val*1000+myUTC },
+
+    // вырезать из ts секунды (для val), 0-начало суток (UTC не используется)
+    hm_ts_cut_sec(ts) { return  (((ts-myUTC)/1000) % (60*60*24))|0; },
 
     // обработчик изменения исходных данных
     // hm_items_change(items) { },
