@@ -15,24 +15,32 @@ export default {
       menu_struct: undefined,
       menu_struct_base: [
         {
-          title: 'установить период',
+          title: 'период',
           icon:  'mdi-arrow-expand-horizontal', //'mdi-clock-start',
           menu:  [
-            { title: 'все',      icon: 'mdi-calendar-check', action: 'dt_menu_period', ts: 0, },
-            { title: '30 суток', icon: 'mdi-calendar-month', action: 'dt_menu_period', ts: 1000*2592000, },
-            { title: '1 неделя', icon: 'mdi-calendar-range', action: 'dt_menu_period', ts: 1000*604800, },
-            { title: '1 сутки',  icon: 'mdi-calendar-today', action: 'dt_menu_period', ts: 1000*86400, },
-            { title: '1 час',    icon: 'mdi-clock-time-one', action: 'dt_menu_period', ts: 1000*3600, },
+            { title: 'все',      icon: 'mdi-calendar-check', action: 'dt_menu_sel', ts: 0, },
+            { title: '30 суток', icon: 'mdi-calendar-month', action: 'dt_menu_sel', ts: 1000*2592000, },
+            { title: '1 неделя', icon: 'mdi-calendar-range', action: 'dt_menu_sel', ts: 1000*604800, },
+            { title: '1 сутки',  icon: 'mdi-calendar-today', action: 'dt_menu_sel', ts: 1000*86400, },
+            { title: '1 час',    icon: 'mdi-clock-time-one', action: 'dt_menu_sel', ts: 1000*3600, },
           ],
         },
         {
-          title: 'округлить до',
+          title: 'шаг',
           icon:  'mdi-content-cut',
           menu: [
-            { title: 'суток', icon: 'mdi-calendar-blank', action: 'dt_menu_round', round: 'day', },
-            { title: 'часов', icon: 'mdi-clock',          action: 'dt_menu_round', round: 'hour', },
+            { title: 'сутки', icon: 'mdi-calendar-blank', action: 'dt_menu_step', ts: 1000*86400, },
+            { title: 'часы',  icon: 'mdi-clock',          action: 'dt_menu_step', ts: 1000*3600, },
           ],
         },
+        // {
+        //   title: 'округлить до',
+        //   icon:  'mdi-content-cut',
+        //   menu: [
+        //     { title: 'суток', icon: 'mdi-calendar-blank', action: 'dt_menu_step', round: 'day', },
+        //     { title: 'часов', icon: 'mdi-clock',          action: 'dt_menu_step', round: 'hour', },
+        //   ],
+        // },
       ],
     },
   }),
@@ -72,7 +80,7 @@ export default {
         let step_temp = (sel_step_new != undefined) ? sel_step_new : this.dt.sel_step;
         //this.dt.sel_step = SEL_STEP_MIN;
         this.dt.sel_max  = sel_max;
-        this.dt.sel_step = step_temp;
+        //this.dt.sel_step = step_temp;
         this.dt.sel_min  = sel_min;
         //this.MAP_ACT_REFRESH();
       },
@@ -133,8 +141,8 @@ export default {
       this.$refs.dt_menu.show_root(e.clientX, e.clientY);
     },
 
-    // MENU: Установить период
-    dt_menu_period(menu_item) {
+    // MENU: Установить выделенный период
+    dt_menu_sel(menu_item) {
       let sel_min   = this.dt.sel_min;
       let sel_max   = this.dt.sel_max;
       let sel_delta = menu_item.ts;
@@ -154,29 +162,38 @@ export default {
       //this.dt_sel_set(sel_min, sel_max, sel_delta);
     },
 
-    // MENU: Округлить период
-    dt_menu_round(menu_item) {
+    // MENU: Установить шаг изменения выделенного периода
+    dt_menu_step(menu_item) {
       let sel_min   = this.dt.sel_min;
       let sel_max   = this.dt.sel_max;
-
-      sel_min -= myUTC;
-      sel_max -= myUTC;
-      switch (menu_item.round) {
-        case 'day':                               // округлить до суток
-          sel_min -= sel_min % (24 * 60 * 60 * 1000);
-          sel_max -= sel_max % (24 * 60 * 60 * 1000);
-          break;
-        case 'hour':                              // округлить до часов
-          sel_min -= sel_min % (60 * 60 * 1000);
-          sel_max -= sel_max % (60 * 60 * 1000);
-          break;
-      }
-      sel_min += myUTC;
-      sel_max += myUTC;
-
-
+      sel_min -= (sel_min-myUTC) % menu_item.ts;
+      sel_max -= (sel_max-myUTC) % menu_item.ts;
       this.dt_prop_sel = [sel_min, sel_max];
-      //this.dt_sel_set(sel_min, sel_max);
+      this.dt.sel_step = menu_item.ts;
+      return
+
+
+      // let sel_min   = this.dt.sel_min;
+      // let sel_max   = this.dt.sel_max;
+
+      // sel_min -= myUTC;
+      // sel_max -= myUTC;
+      // switch (menu_item.round) {
+      //   case 'day':                               // округлить до суток
+      //     sel_min -= sel_min % (24 * 60 * 60 * 1000);
+      //     sel_max -= sel_max % (24 * 60 * 60 * 1000);
+      //     break;
+      //   case 'hour':                              // округлить до часов
+      //     sel_min -= sel_min % (60 * 60 * 1000);
+      //     sel_max -= sel_max % (60 * 60 * 1000);
+      //     break;
+      // }
+      // sel_min += myUTC;
+      // sel_max += myUTC;
+
+
+      // this.dt_prop_sel = [sel_min, sel_max];
+      // //this.dt_sel_set(sel_min, sel_max);
     },
 
 
