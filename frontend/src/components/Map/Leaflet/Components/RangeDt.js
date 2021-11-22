@@ -2,7 +2,7 @@
 import { MAP_ITEM } from '@/components/Map/Leaflet/Lib/Const';
 import { myUTC, ts_to_screen, datesql_to_ts } from '@/plugins/sys';
 
-const SEL_STEP = 60*1000;         // посекундно
+const SEL_STEP_MIN = 60*1000;     // посекундно
 
 export default {
   data: () => ({
@@ -11,7 +11,7 @@ export default {
       limit_max:   0,
       sel_min:     0,             // выбранное минимальное / максимальное значение, ts
       sel_max:     0,
-      sel_step:    SEL_STEP,
+      sel_step:    SEL_STEP_MIN,
       menu_struct: undefined,
       menu_struct_base: [
         {
@@ -56,7 +56,26 @@ export default {
 
   computed: {
     dt_prop_sel: {
-      set: function(lst) { this.dt_sel_set(lst[0], lst[1]); },
+      set: function(lst) {
+        //this.dt_sel_set(lst[0], lst[1]);
+
+        let sel_min = lst[0];
+        let sel_max = lst[1];
+        let sel_step_new = lst[2] ?? undefined;
+
+        if (
+          (sel_min == this.dt.sel_min) &&
+          (sel_max == this.dt.sel_max) &&
+          (sel_step_new == undefined)
+        ) return;
+
+        let step_temp = (sel_step_new != undefined) ? sel_step_new : this.dt.sel_step;
+        //this.dt.sel_step = SEL_STEP_MIN;
+        this.dt.sel_max  = sel_max;
+        this.dt.sel_step = step_temp;
+        this.dt.sel_min  = sel_min;
+        //this.MAP_ACT_REFRESH();
+      },
       get: function()    { return [this.dt.sel_min, this.dt.sel_max]; },
     },
     dt_val_min() { return ts_to_screen(this.dt.sel_min, true, true) },
@@ -83,7 +102,8 @@ export default {
       // скорректирвать выбранный диапазон
       let sel_min = ((this.dt.limit_min <= this.dt.sel_min) && ( this.dt.sel_min <= this.dt.limit_max))?this.dt.sel_min:this.dt.limit_min;
       let sel_max = ((this.dt.limit_min <= this.dt.sel_max) && ( this.dt.sel_max <= this.dt.limit_max))?this.dt.sel_max:this.dt.limit_max;
-      this.dt_sel_set(sel_min, sel_max);
+      //this.dt_sel_set(sel_min, sel_max);
+      this.dt_prop_sel = [sel_min, sel_max];
     },
 
 
@@ -130,7 +150,8 @@ export default {
         sel_max = Math.min(sel_min+sel_delta, this.dt.limit_max);
       }
 
-      this.dt_sel_set(sel_min, sel_max, sel_delta);
+      this.dt_prop_sel = [sel_min, sel_max, sel_delta];
+      //this.dt_sel_set(sel_min, sel_max, sel_delta);
     },
 
     // MENU: Округлить период
@@ -153,7 +174,9 @@ export default {
       sel_min += myUTC;
       sel_max += myUTC;
 
-      this.dt_sel_set(sel_min, sel_max);
+
+      this.dt_prop_sel = [sel_min, sel_max];
+      //this.dt_sel_set(sel_min, sel_max);
     },
 
 
@@ -226,24 +249,9 @@ export default {
         }
       }
 
-      this.dt_sel_set(sel_min, sel_max);
+      //this.dt_sel_set(sel_min, sel_max);
+      this.dt_prop_sel = [sel_min, sel_max];
     },
-
-    // SEL: установить период корректно
-    async dt_sel_set(sel_min, sel_max, sel_step_new=undefined) {
-      if (
-        (sel_min == this.dt.sel_min) &&
-        (sel_max == this.dt.sel_max) &&
-        (sel_step_new == undefined)
-      ) return;
-
-      let step_temp = (sel_step_new != undefined) ? sel_step_new : this.dt.sel_step;
-      this.dt.sel_step = SEL_STEP;
-      this.dt.sel_min  = sel_min;
-      this.dt.sel_max  = sel_max;
-      this.dt.sel_step = step_temp;
-      await this.MAP_ACT_REFRESH();
-    }
 
   },
 

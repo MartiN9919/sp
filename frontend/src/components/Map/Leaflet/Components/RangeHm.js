@@ -2,7 +2,7 @@
 import { MAP_ITEM } from '@/components/Map/Leaflet/Lib/Const';
 import { myUTC, ts_to_screen, datesql_to_ts } from '@/plugins/sys';
 
-const SEL_STEP = 60;                // посекундно
+const SEL_STEP_MIN = 60;            // посекундно
 
 export default {
   data: () => ({
@@ -11,7 +11,7 @@ export default {
       limit_max:   (60*60*24)|0,
       sel_min:     0,               // выбранное минимальное / максимальное значение, ts
       sel_max:     (60*60*24)|0,
-      sel_step:    SEL_STEP,
+      sel_step:    SEL_STEP_MIN,
       menu_struct: undefined,
       menu_struct_base: [
         {
@@ -214,7 +214,7 @@ export default {
       ) return;
 
       let step_temp = (sel_step_new != undefined) ? sel_step_new : this.hm.sel_step;
-      this.hm.sel_step = SEL_STEP;
+      this.hm.sel_step = SEL_STEP_MIN;
       this.hm.sel_min  = sel_min;
       this.hm.sel_max  = sel_max;
       this.hm.sel_step = step_temp;
