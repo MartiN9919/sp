@@ -27,10 +27,11 @@ export default {
         },
         {
           title: 'шаг',
-          icon:  'mdi-content-cut',
+          icon:  'mdi-run',
           menu: [
-            { title: 'сутки', icon: 'mdi-calendar-blank', action: 'dt_menu_step', ts: 1000*86400, },
-            { title: 'часы',  icon: 'mdi-clock',          action: 'dt_menu_step', ts: 1000*3600, },
+            { title: 'сутки',  icon: 'mdi-calendar-blank',         action: 'dt_menu_step', ts: 1000*86400, },
+            { title: 'часы',   icon: 'mdi-clock-time-one',         action: 'dt_menu_step', ts: 1000*3600, },
+            { title: 'минуты', icon: 'mdi-clock-time-one-outline', action: 'dt_menu_step', ts: 1000*60, },
           ],
         },
       ],
@@ -101,22 +102,33 @@ export default {
 
     // MENU: Показать первый уровень
     dt_menu_show(e) {
-      const self    = this;
-      let sel_delta = this.dt.sel_max - this.dt.sel_min;
+      const self      = this;
+      let limit_delta = this.dt.limit_max - this.dt.limit_min;
+      let sel_delta   = this.dt.sel_max   - this.dt.sel_min;
 
       e.preventDefault();
       e.stopPropagation();
       this.dt.menu_struct = JSON.parse(JSON.stringify(this.dt.menu_struct_base));
-      // текущий выбор периода недоступен
+      // меню периодов
       this.dt.menu_struct[0].menu.forEach((item, ind) => {
-        if (                                                                                   // доступность
-          (self.dt.sel_step == item.ts) &&                                                     // шаг шкалы равен периоду и
-          (sel_delta == ((item.ts==0)?(self.dt.limit_max-self.dt.limit_min):self.dt.sel_step)) // выбран только один шаг шкалы (для ВСЕ выбрано все)
+        // пометить:
+        // предлагаемый период равен текущему шагу
+        if (item.ts == self.dt.sel_step) { self.dt.menu_struct[0].menu[ind].subtitle = 'Шаг'; }
+        // недоступно:
+        // предлагаемый период меньше текущего шага и больше 0 или
+        // предлагаемый период равен текущему периоду
+        if (
+          ((item.ts < self.dt.sel_step) && (item.ts > 0)) ||
+          (((item.ts==0)?limit_delta:item.ts) == sel_delta)
         ) { self.dt.menu_struct[0].menu[ind].disabled = true; }
-        if (self.dt.sel_step  == item.ts) {                                                    // текущий выбор: шаг шкалы равен периоду
-          self.dt.menu_struct[0].menu[ind].subtitle = 'Шаг';
-        }
       });
+      // меню шагов
+      this.dt.menu_struct[1].menu.forEach((item, ind) => {
+        // недоступно:
+        // предлагаемый шаг равен текущему шагу
+        if (item.ts == self.dt.sel_step) { self.dt.menu_struct[1].menu[ind].disabled = true; }
+      });
+
       this.$refs.dt_menu.show_root(e.clientX, e.clientY);
     },
 
