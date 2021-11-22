@@ -19,7 +19,3 @@ export default {
   components: { SplitPanel, reportScriptMenu, reportsList},
 }
 </script>
-
-<style>
-
-</style>

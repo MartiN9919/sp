@@ -22,9 +22,9 @@
 </template>
 
 <script>
+import CustomTooltip from "@/components/WebsiteShell/UI/customTooltip"
 import {mapActions, mapGetters} from "vuex"
 import router from '@/router'
-import CustomTooltip from "@/components/WebsiteShell/UI/customTooltip";
 
 export default {
   name: "toolsMenu",
@@ -46,12 +46,7 @@ export default {
       }
     }
   },
-  methods: {
-    ...mapActions(['setActiveTool']),
-    itemStatus(tool) {
-      return tool.name === this.activeItem || tool.disabled
-    },
-  }
+  methods: mapActions(['setActiveTool'])
 }
 </script>
 

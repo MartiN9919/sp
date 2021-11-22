@@ -1,19 +1,17 @@
 <template>
-  <div>
+  <v-card flat v-if="!editableRelation">
+    <v-card-subtitle class="text-center text-no-wrap">
+      Выбирете объекты для связи
+    </v-card-subtitle>
+  </v-card>
+  <div v-else>
     <div class="work-place">
-      <div class="header text-center text-no-wrap mb-1 elevation-2">
-        <div v-if="!editableRelation" class="text-center">
-          Выбирете объекты для связи
+      <div class="header text-center text-no-wrap py-1">
+        <div v-for="(relation, key) in [editableRelation.relation.o1, editableRelation.relation.o2]" :key="key">
+          <v-icon>{{relation.object.object.icon}}</v-icon>{{relation.object.title}}
         </div>
-        <div v-else class="py-1">
-          <div v-for="(relation, key) in [editableRelation.relation.o1, editableRelation.relation.o2]" :key="key">
-            <v-icon>{{relation.object.object.icon}}</v-icon>
-            {{relation.object.title}}
-          </div>
-          <div v-if="editableRelation.document">
-            <v-icon>{{editableRelation.document.object.object.icon}}</v-icon>
-            {{editableRelation.document.object.title}}
-          </div>
+        <div v-if="editableRelation.document">
+          <v-icon>{{editableRelation.document.object.object.icon}}</v-icon>{{editableRelation.document.object.title}}
         </div>
       </div>
       <v-form v-if="editableRelation" ref="form" v-model="valid" class="overflow-y-auto">
@@ -70,11 +68,12 @@ export default {
 
 <style scoped>
 .header {
-  border-radius: 0 0 5px 5px
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  border-bottom-color: rgba(0, 0, 0, 0.12);
 }
 .work-place {
   height: calc(100% - 3em);
-  overflow-y: hidden;
   display: flex;
   flex-direction: column;
 }
