@@ -15,7 +15,7 @@ export default {
       menu_struct: undefined,
       menu_struct_base: [
         {
-          title: 'период 2',
+          title: 'установить период',
           icon:  'mdi-arrow-expand-horizontal', //'mdi-clock-start',
           menu:  [
             { title: 'все',      icon: 'mdi-calendar-check', action: 'hm_menu_period', ts: 0, },
@@ -90,11 +90,11 @@ export default {
           (self.hm.sel_step == item.ts) &&                                                     // шаг шкалы равен периоду и
           (sel_delta == ((item.ts==0)?(self.hm.limit_max-self.hm.limit_min):self.hm.sel_step)) // выбран только один шаг шкалы (для ВСЕ выбрано все)
         ) { self.hm.menu_struct[0].menu[ind].disabled = true; }
-        if (self.hm.step  == item.ts) {                                                        // текущий выбор: шаг шкалы равен периоду
-          self.hm.menu_struct[0].menu[ind].subtitle = 'Выбрано';
+        if (self.hm.sel_step  == item.ts) {                                                    // текущий выбор: шаг шкалы равен периоду
+          self.hm.menu_struct[0].menu[ind].subtitle = 'Шаг';
         }
       });
-      this.$refs.menu.show_root(e.clientX, e.clientY);
+      this.$refs.hm_menu.show_root(e.clientX, e.clientY);
     },
 
     // MENU: Установить период

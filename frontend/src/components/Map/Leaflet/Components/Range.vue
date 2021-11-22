@@ -73,7 +73,12 @@
       </table>
     </l-control>
     <contextMenuNested
-      ref="menu"
+      ref="dt_menu"
+      :form="form"
+      :items="dt.menu_struct"
+    />
+    <contextMenuNested
+      ref="hm_menu"
       :form="form"
       :items="hm.menu_struct"
     />
