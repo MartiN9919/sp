@@ -28,7 +28,10 @@ export default {
         const notifications = getters.notifications.filter(a => a.id_notification)
         const availableNotifications = Array.from(notifications, alert => alert.id_notification)
         axios.get('notifications/', Object.assign(config, {params: {list: availableNotifications}}))
-        .then(r => r.data.map(n => commit('appendNotification', new Notification(n))))
+        .then(r => r.data.map(n => {
+          if(n.file) commit('changeFileStatus', n)
+          commit('appendNotification', new Notification(n))
+        }))
       }
       getNotifications()
       setInterval(() => getNotifications(), 10000)
