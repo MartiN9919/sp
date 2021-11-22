@@ -33,14 +33,6 @@ export default {
             { title: 'часы',  icon: 'mdi-clock',          action: 'dt_menu_step', ts: 1000*3600, },
           ],
         },
-        // {
-        //   title: 'округлить до',
-        //   icon:  'mdi-content-cut',
-        //   menu: [
-        //     { title: 'суток', icon: 'mdi-calendar-blank', action: 'dt_menu_step', round: 'day', },
-        //     { title: 'часов', icon: 'mdi-clock',          action: 'dt_menu_step', round: 'hour', },
-        //   ],
-        // },
       ],
     },
   }),
@@ -65,24 +57,12 @@ export default {
   computed: {
     dt_prop_sel: {
       set: function(lst) {
-        //this.dt_sel_set(lst[0], lst[1]);
-
         let sel_min = lst[0];
         let sel_max = lst[1];
-        let sel_step_new = lst[2] ?? undefined;
-
-        if (
-          (sel_min == this.dt.sel_min) &&
-          (sel_max == this.dt.sel_max) &&
-          (sel_step_new == undefined)
-        ) return;
-
-        let step_temp = (sel_step_new != undefined) ? sel_step_new : this.dt.sel_step;
-        //this.dt.sel_step = SEL_STEP_MIN;
-        this.dt.sel_max  = sel_max;
-        //this.dt.sel_step = step_temp;
-        this.dt.sel_min  = sel_min;
-        //this.MAP_ACT_REFRESH();
+        if ( (sel_min == this.dt.sel_min) && (sel_max == this.dt.sel_max) ) return;
+        this.dt.sel_max = sel_max;
+        this.dt.sel_min = sel_min;
+        this.MAP_ACT_REFRESH();
       },
       get: function()    { return [this.dt.sel_min, this.dt.sel_max]; },
     },
@@ -110,7 +90,6 @@ export default {
       // скорректирвать выбранный диапазон
       let sel_min = ((this.dt.limit_min <= this.dt.sel_min) && ( this.dt.sel_min <= this.dt.limit_max))?this.dt.sel_min:this.dt.limit_min;
       let sel_max = ((this.dt.limit_min <= this.dt.sel_max) && ( this.dt.sel_max <= this.dt.limit_max))?this.dt.sel_max:this.dt.limit_max;
-      //this.dt_sel_set(sel_min, sel_max);
       this.dt_prop_sel = [sel_min, sel_max];
     },
 
@@ -158,8 +137,7 @@ export default {
         sel_max = Math.min(sel_min+sel_delta, this.dt.limit_max);
       }
 
-      this.dt_prop_sel = [sel_min, sel_max, sel_delta];
-      //this.dt_sel_set(sel_min, sel_max, sel_delta);
+      this.dt_prop_sel = [sel_min, sel_max];
     },
 
     // MENU: Установить шаг изменения выделенного периода
@@ -170,30 +148,6 @@ export default {
       sel_max -= (sel_max-myUTC) % menu_item.ts;
       this.dt_prop_sel = [sel_min, sel_max];
       this.dt.sel_step = menu_item.ts;
-      return
-
-
-      // let sel_min   = this.dt.sel_min;
-      // let sel_max   = this.dt.sel_max;
-
-      // sel_min -= myUTC;
-      // sel_max -= myUTC;
-      // switch (menu_item.round) {
-      //   case 'day':                               // округлить до суток
-      //     sel_min -= sel_min % (24 * 60 * 60 * 1000);
-      //     sel_max -= sel_max % (24 * 60 * 60 * 1000);
-      //     break;
-      //   case 'hour':                              // округлить до часов
-      //     sel_min -= sel_min % (60 * 60 * 1000);
-      //     sel_max -= sel_max % (60 * 60 * 1000);
-      //     break;
-      // }
-      // sel_min += myUTC;
-      // sel_max += myUTC;
-
-
-      // this.dt_prop_sel = [sel_min, sel_max];
-      // //this.dt_sel_set(sel_min, sel_max);
     },
 
 
@@ -266,7 +220,6 @@ export default {
         }
       }
 
-      //this.dt_sel_set(sel_min, sel_max);
       this.dt_prop_sel = [sel_min, sel_max];
     },
 
