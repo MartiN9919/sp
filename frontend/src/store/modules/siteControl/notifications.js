@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from "@/plugins/axiosSettings";
 
 export default {
   state: {
@@ -25,8 +25,8 @@ export default {
     },
     getNotifications: ({ commit, rootState }, conf={}) => {
       setInterval(() =>
-        axios.get('notifications/list', Object.assign(conf, { params: {set: [1, 2]}}))
-      , 3000);
+        axios.get('notifications/list', Object.assign(conf, { params: {list: []}}))
+      , 20000);
 
     }
   }

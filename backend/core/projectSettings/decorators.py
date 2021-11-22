@@ -155,7 +155,8 @@ def request_log(function):
             logger.info(
                 str(request.user) + '.' +
                 str(request.user.id) + '|' +
-                request.get_host() + '|' +
+                request.META.get('REMOTE_ADDR') + ':' +
+                str(request.META.get('REMOTE_PORT')) + '|' +
                 request.method + ':' +
                 request.path + '|' +
                 str(request.body.decode("utf-8"))
@@ -164,7 +165,8 @@ def request_log(function):
             logger.info(
                 str(request.user) + '.' +
                 str(request.user.id) + '|' +
-                request.get_host() + '|' +
+                request.META.get('REMOTE_ADDR') + ':' +
+                request.META.get('REMOTE_PORT') + '|' +
                 request.method + ':' +
                 request.path + '|' +
                 request.POST['data']

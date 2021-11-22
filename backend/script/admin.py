@@ -21,6 +21,14 @@ class ModelScriptForm(forms.ModelForm):
         }
 
 
+def delete_scripts(modeladmin, request, queryset):
+    for script in queryset:
+        script.delete()
+
+
+delete_scripts.short_description = "Удалить выбранные Скрипты"
+
+
 @admin.register(ModelScript)
 class ModelScriptAdmin(admin.ModelAdmin):
     form = ModelScriptForm
@@ -39,6 +47,14 @@ class ModelScriptAdmin(admin.ModelAdmin):
         DAT_SYS_SCRIPT.TITLE,
         DAT_SYS_SCRIPT.TYPE,
     )
+
+    actions = [delete_scripts]
+
+    def get_actions(self, request):
+        actions = super().get_actions(request)
+        if 'delete_selected' in actions:
+            del actions['delete_selected']
+        return actions
 
     list_editable = (
         DAT_SYS_SCRIPT.ENEBLED,
@@ -103,6 +119,14 @@ class ModelTriggerForm(forms.ModelForm):
         }
 
 
+def delete_triggers(modeladmin, request, queryset):
+    for script in queryset:
+        script.delete()
+
+
+delete_triggers.short_description = "Удалить выбранные Триггеры"
+
+
 @admin.register(ModelTrigger)
 class ModelTriggerAdmin(admin.ModelAdmin):
     form = ModelTriggerForm
@@ -114,6 +138,15 @@ class ModelTriggerAdmin(admin.ModelAdmin):
     ordering = (
         DAT_SYS_TRIGGER.OBJECT_ID,
     )
+
+    actions = [delete_triggers]
+
+    def get_actions(self, request):
+        actions = super().get_actions(request)
+        if 'delete_selected' in actions:
+            del actions['delete_selected']
+        return actions
+
     fieldsets = (
         (None,
          {'fields':

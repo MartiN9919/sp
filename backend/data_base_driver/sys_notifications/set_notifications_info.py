@@ -1,10 +1,6 @@
-from authentication.models import ModelCustomUser
 from data_base_driver.connect.connect_mysql import db_sql
 from data_base_driver.constants.const_dat import DAT_SYS_NOTIFY
 from datetime import datetime
-
-from data_base_driver.sys_notifications.get_notifications_info import get_alert_json
-from sockets.consumers import send_notification
 
 
 def add_notification(to_id, type, content, date_time=datetime.now(), from_id='NULL', file_id='NULL', geometry='NULL',
@@ -39,20 +35,17 @@ def add_notification(to_id, type, content, date_time=datetime.now(), from_id='NU
           + str(file_id) + ', \'' \
           + geometry + '\');'
     id = db_sql(sql, read=False)[0]
-
-    if test_mode == None:
-        from_user = ModelCustomUser.objects.get(id=from_id).username
-        send_notification(to_id, get_alert_json((id, from_user, content, date_time.replace(tzinfo=None, microsecond=0),
-                                            type, file_id, geometry,)))
     return id
 
 
-def remove_notification(id):
+def set_read(notification_id, user_id):
     """
-    Функция для удаления оповещения из базы данных
-    @param id: идентификационный номер оповещения
+    Функция для установки флага чтения уведомления
+    @param notification_id: идентификатор прочитанного оповещения
+    @param user_id: идентификатор пользователя
     """
-    sql = 'DELETE FROM ' + DAT_SYS_NOTIFY.TABLE_SHORT \
-          + ' WHERE ' + DAT_SYS_NOTIFY.ID \
-          + ' = ' + str(id)
+    sql = 'UPDATE ' + DAT_SYS_NOTIFY.TABLE_SHORT \
+        + 'SET ' + DAT_SYS_NOTIFY.IS_READ + ' = 1 '\
+        + 'WHERE ' + DAT_SYS_NOTIFY.ID + ' = ' + str(notification_id) \
+        + ' AND ' + DAT_SYS_NOTIFY.TO_USER + ' = ' + str(user_id) + ';'
     db_sql(sql, read=False)
