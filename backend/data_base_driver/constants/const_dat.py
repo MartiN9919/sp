@@ -391,6 +391,7 @@ class DAT_SYS_NOTIFY:
     FILE_ID = 'file_id'
     FILE = 'file'
     GEOMETRY = 'geometry'
+    IS_READ = 'is_read'
 
     FROM_USER = 'from_user'
     TO_USER = 'to_user'
