@@ -85,6 +85,7 @@
 // компонент недопустимо отключать v-if
 // только скрывать v-show
 // работает с данными на шине
+// hm всегда устанавливает диапазон 0...75600 (количество секунд в сутках)
 
 import { mapGetters, mapActions } from 'vuex';
 import { LControl }      from 'vue2-leaflet';

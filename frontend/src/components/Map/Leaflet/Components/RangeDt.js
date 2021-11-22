@@ -19,7 +19,6 @@ export default {
           icon:  'mdi-arrow-expand-horizontal', //'mdi-clock-start',
           menu:  [
             { title: 'все',      icon: 'mdi-calendar-check', action: 'dt_menu_period', ts: 0, },
-            //{ divider: true },
             { title: '30 суток', icon: 'mdi-calendar-month', action: 'dt_menu_period', ts: 1000*2592000, },
             { title: '1 неделя', icon: 'mdi-calendar-range', action: 'dt_menu_period', ts: 1000*604800, },
             { title: '1 сутки',  icon: 'mdi-calendar-today', action: 'dt_menu_period', ts: 1000*86400, },

@@ -19,19 +19,15 @@ export default {
           icon:  'mdi-arrow-expand-horizontal', //'mdi-clock-start',
           menu:  [
             { title: 'все',      icon: 'mdi-calendar-check', action: 'hm_menu_period', ts: 0, },
-            //{ divider: true },
-            { title: '30 суток', icon: 'mdi-calendar-month', action: 'hm_menu_period', ts: 1000*2592000, },
-            { title: '1 неделя', icon: 'mdi-calendar-range', action: 'hm_menu_period', ts: 1000*604800, },
-            { title: '1 сутки',  icon: 'mdi-calendar-today', action: 'hm_menu_period', ts: 1000*86400, },
-            { title: '1 час',    icon: 'mdi-clock-time-one', action: 'hm_menu_period', ts: 1000*3600, },
+            { title: '1 час',    icon: 'mdi-clock-time-one', action: 'hm_menu_period', ts: 3600, },
+            { title: '1 минута', icon: 'mdi-clock-time-one', action: 'hm_menu_period', ts: 60, },
           ],
         },
         {
           title: 'округлить до',
           icon:  'mdi-content-cut',
           menu: [
-            { title: 'суток', icon: 'mdi-calendar-blank', action: 'hm_menu_round', round: 'day', },
-            { title: 'часов', icon: 'mdi-clock',          action: 'hm_menu_round', round: 'hour', },
+            { title: 'часов', icon: 'mdi-clock', action: 'hm_menu_round', round: 'hour', },
           ],
         },
       ],
@@ -126,20 +122,12 @@ export default {
       let sel_min   = this.hm.sel_min;
       let sel_max   = this.hm.sel_max;
 
-      sel_min -= myUTC;
-      sel_max -= myUTC;
       switch (menu_item.round) {
-        case 'day':                               // округлить до суток
-          sel_min -= sel_min % (24 * 60 * 60 * 1000);
-          sel_max -= sel_max % (24 * 60 * 60 * 1000);
-          break;
         case 'hour':                              // округлить до часов
-          sel_min -= sel_min % (60 * 60 * 1000);
-          sel_max -= sel_max % (60 * 60 * 1000);
+          sel_min -= sel_min % (60 * 60);
+          sel_max -= sel_max % (60 * 60);
           break;
       }
-      sel_min += myUTC;
-      sel_max += myUTC;
 
       this.hm_sel_set(sel_min, sel_max);
     },
