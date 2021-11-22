@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import BodyBlockSettings from "./bodyBlockSettings"
+import BodyBlockSettings from "@/components/Graph/GraphMenu/settingsPageComponents/bodyBlockSettings"
 
 export default {
   name: "globalSettings",

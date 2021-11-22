@@ -17,8 +17,8 @@
 </template>
 
 <script>
-import CreatorObject from "./creatorObject"
-import DropDownMenu from "../../../WebsiteShell/UI/dropDownMenu"
+import CreatorObject from "@/components/Graph/GraphMenu/searchPageComponents/creatorObject"
+import DropDownMenu from "@/components/WebsiteShell/CustomComponents/dropDownMenu"
 
 export default {
   name: "createButton",

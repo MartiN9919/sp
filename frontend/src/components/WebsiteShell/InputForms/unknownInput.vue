@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import BodyInputForm from "../UI/bodyInputForm"
+import BodyInputForm from "@/components/WebsiteShell/CustomComponents/bodyInputForm"
 
 export default {
   name: "unknownInput",

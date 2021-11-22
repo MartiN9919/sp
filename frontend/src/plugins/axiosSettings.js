@@ -50,7 +50,8 @@ http.interceptors.response.use(function (response) {
   return response;
 }, function (error) {
   store.commit('changeLoadStatus', false)
-  store.dispatch('appendErrorAlert', error.response || { status: 'no connect' })
+  if(!checkErrorStatusCode(error.response))
+    store.dispatch('appendErrorAlert', error.response || { status: 'no connect' })
   return Promise.reject(error);
 });
 

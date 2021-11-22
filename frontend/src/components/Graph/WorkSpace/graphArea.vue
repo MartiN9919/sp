@@ -83,8 +83,8 @@ import BodyObject from "@/components/Graph/WorkSpace/object/bodyObject"
 import NameObject from "@/components/Graph/WorkSpace/object/nameObject"
 import InformationLabel from "@/components/Graph/WorkSpace/object/informationLabel"
 const GraphSearch = () => import("@/components/Graph/GraphMenu/graphSearch")
-const ContextMenuNested = () => import("@/components/WebsiteShell/ContextMenu/contextMenuNested")
-import bodyContextMenu from "./bodyContextMenu"
+const ContextMenuNested = () => import("@/components/WebsiteShell/UIMainComponents/contextMenuNested")
+import bodyContextMenu from "@/components/Graph/WorkSpace/bodyContextMenu"
 import {mapActions, mapGetters} from "vuex"
 
 

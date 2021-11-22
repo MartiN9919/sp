@@ -37,9 +37,9 @@
 </template>
 
 <script>
-import SelectorObject from "./createPageComponents/selectorObject"
-import ObjectRecordArea from "./createPageComponents/objectRecordArea"
-import ControlMenu from "./createPageComponents/controlMenu"
+import SelectorObject from "@/components/Graph/GraphMenu/createPageComponents/selectorObject"
+import ObjectRecordArea from "@/components/Graph/GraphMenu/createPageComponents/objectRecordArea"
+import ControlMenu from "@/components/Graph/GraphMenu/createPageComponents/controlMenu"
 import {mapActions, mapGetters} from "vuex"
 
 export default {

@@ -29,8 +29,8 @@
 </template>
 
 <script>
-import ObjectRecordArea from "./createPageComponents/objectRecordArea"
-import ControlMenu from "./createPageComponents/controlMenu"
+import ObjectRecordArea from "@/components/Graph/GraphMenu/createPageComponents/objectRecordArea"
+import ControlMenu from "@/components/Graph/GraphMenu/createPageComponents/controlMenu"
 import {mapActions, mapGetters} from "vuex"
 
 export default {

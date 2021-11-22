@@ -10,9 +10,9 @@
 </template>
 
 <script>
-import SplitPanel from "../components/WebsiteShell/UI/splitPanel"
-import reportsList from '../components/Report/reportsList'
-import reportScriptMenu from '../components/Report/reportScriptMenu'
+import SplitPanel from "@/components/WebsiteShell/CustomComponents/splitPanel"
+import reportsList from '@/components/Report/reportsList'
+import reportScriptMenu from '@/components/Report/reportScriptMenu'
 
 export default {
   name: 'Reports',

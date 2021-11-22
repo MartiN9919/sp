@@ -69,23 +69,22 @@
 </template>
 
 <script>
-import treeView from './treeView'
-import chipAnalytics from './chipAnalytics'
-import ResponsiveInputForm from '../../../WebsiteShell/UI/responsiveInputForm'
-import menuTemplate from './menuTemplate'
-import blockHeader from './blockHeader'
-import CreatorTreeView from '../Mixins/CreatorTreeView'
-import ExecutorScripts from '../Mixins/ExecutorScripts'
-import SelectedScriptFormatter from '../Mixins/SelectedScriptFormatter'
-import CustomTooltip from "../../../WebsiteShell/UI/customTooltip"
-import SplitPanel from "../../../WebsiteShell/UI/splitPanel"
+import treeView from '@/components/Map/MapMenu/scriptsPage/treeView'
+import chipAnalytics from '@/components/Map/MapMenu/scriptsPage/chipAnalytics'
+import menuTemplate from '@/components/Map/MapMenu/scriptsPage/menuTemplate'
+import CreatorTreeView from '@/components/Map/MapMenu/Mixins/CreatorTreeView'
+import ExecutorScripts from '@/components/Map/MapMenu/Mixins/ExecutorScripts'
+import SelectedScriptFormatter from '@/components/Map/MapMenu/Mixins/SelectedScriptFormatter'
+import ResponsiveInputForm from '@/components/WebsiteShell/CustomComponents/responsiveInputForm'
+import CustomTooltip from "@/components/WebsiteShell/CustomComponents/customTooltip"
+import SplitPanel from "@/components/WebsiteShell/CustomComponents/splitPanel"
+import { MAP_CONST } from '@/components/Map/Leaflet/Lib/Const'
 import { mapActions, mapGetters } from 'vuex'
-import { MAP_CONST } from '@/components/Map/Leaflet/Lib/Const';
 
 export default {
   name: 'mapScriptMenu',
   mixins: [CreatorTreeView, ExecutorScripts, SelectedScriptFormatter],
-  components: {SplitPanel, CustomTooltip, treeView, chipAnalytics, ResponsiveInputForm, menuTemplate, blockHeader},
+  components: {SplitPanel, CustomTooltip, treeView, chipAnalytics, ResponsiveInputForm, menuTemplate},
   computed: mapGetters(['templatesList', 'selectedTemplate']),
   methods: {
     ...mapActions([

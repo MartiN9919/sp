@@ -12,14 +12,14 @@
 </template>
 
 <script>
-const searchPage = () => import("../components/Graph/GraphMenu/searchPage")
-const searchRelationPage = () => import("../components/Graph/GraphMenu/searchRelationPage")
-const createObjectPage = () => import("../components/Graph/GraphMenu/createObjectPage")
-const createRelationPage = () => import("../components/Graph/GraphMenu/createRelationPage")
-const settingsPage = () => import("../components/Graph/GraphMenu/settingsPage")
-import SplitPanel from "../components/WebsiteShell/UI/splitPanel"
-import graphArea from '../components/Graph/WorkSpace/graphArea'
-import toolsMenu from "../components/WebsiteShell/UI/toolsMenu"
+const searchPage = () => import("@/components/Graph/GraphMenu/searchPage")
+const searchRelationPage = () => import("@/components/Graph/GraphMenu/searchRelationPage")
+const createObjectPage = () => import("@/components/Graph/GraphMenu/createObjectPage")
+const createRelationPage = () => import("@/components/Graph/GraphMenu/createRelationPage")
+const settingsPage = () => import("@/components/Graph/GraphMenu/settingsPage")
+import SplitPanel from "@/components/WebsiteShell/CustomComponents/splitPanel"
+import graphArea from '@/components/Graph/WorkSpace/graphArea'
+import toolsMenu from "@/components/WebsiteShell/CustomComponents/toolsMenu"
 import {mapActions, mapGetters} from "vuex"
 import router from '@/router'
 

@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import CustomTooltip from "@/components/WebsiteShell/UI/customTooltip"
+import CustomTooltip from "@/components/WebsiteShell/CustomComponents/customTooltip"
 import _ from 'lodash'
 
 function sleep (time) {

@@ -64,12 +64,12 @@
 </template>
 
 <script>
-import RecordTitle from "./objectRecordComponents/recordTitle"
-import RecordInput from "./objectRecordComponents/recordInput"
-import DropDownMenu from "../../../WebsiteShell/UI/dropDownMenu"
-import MenuDateTime from "../../../WebsiteShell/UI/selectDateTime"
-import CustomTooltip from "../../../WebsiteShell/UI/customTooltip"
-import LeafletEditor from "../../../Map/Leaflet/LeafletEditor"
+import RecordTitle from "@/components/Graph/GraphMenu/createPageComponents/objectRecordComponents/recordTitle"
+import RecordInput from "@/components/Graph/GraphMenu/createPageComponents/objectRecordComponents/recordInput"
+import DropDownMenu from "@/components/WebsiteShell/CustomComponents/dropDownMenu"
+import MenuDateTime from "@/components/WebsiteShell/CustomComponents/selectDateTime"
+import CustomTooltip from "@/components/WebsiteShell/CustomComponents/customTooltip"
+import LeafletEditor from "@/components/Map/Leaflet/LeafletEditor"
 import {getDownloadFileLink} from '@/plugins/axiosSettings'
 import _ from 'lodash'
 

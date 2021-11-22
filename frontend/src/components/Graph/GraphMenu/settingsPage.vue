@@ -18,11 +18,11 @@
 </template>
 
 <script>
-import ResponsiveInputForm from "../../WebsiteShell/UI/responsiveInputForm"
-import GlobalSettings from "./settingsPageComponents/globalSettings"
-import ObjectSettings from "./settingsPageComponents/objectSettings"
-import TriggerSettings from "./settingsPageComponents/triggerSettings"
-import SelectorObject from "./createPageComponents/selectorObject"
+import ResponsiveInputForm from "@/components/WebsiteShell/CustomComponents/responsiveInputForm"
+import GlobalSettings from "@/components/Graph/GraphMenu/settingsPageComponents/globalSettings"
+import ObjectSettings from "@/components/Graph/GraphMenu/settingsPageComponents/objectSettings"
+import TriggerSettings from "@/components/Graph/GraphMenu/settingsPageComponents/triggerSettings"
+import SelectorObject from "@/components/Graph/GraphMenu/createPageComponents/selectorObject"
 import {mapActions, mapGetters} from "vuex"
 
 export default {

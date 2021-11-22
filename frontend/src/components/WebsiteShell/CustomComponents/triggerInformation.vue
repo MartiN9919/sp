@@ -10,8 +10,9 @@
 </template>
 
 <script>
-import CustomTooltip from "@/components/WebsiteShell/UI/customTooltip";
-import {mapGetters} from "vuex";
+import CustomTooltip from "@/components/WebsiteShell/CustomComponents/customTooltip"
+import {mapGetters} from "vuex"
+
 export default {
   name: "triggerInformation",
   components: {CustomTooltip},

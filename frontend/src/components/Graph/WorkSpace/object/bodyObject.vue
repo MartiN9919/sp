@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import TriggerInformation from "@/components/WebsiteShell/UI/triggerInformation"
+import TriggerInformation from "@/components/WebsiteShell/CustomComponents/triggerInformation"
 import {getFileLink} from "@/plugins/axiosSettings"
 
 export default {

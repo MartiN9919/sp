@@ -33,9 +33,9 @@
 </template>
 
 <script>
-import BodyBlockSettings from "./bodyBlockSettings"
-import ResponsiveInputForm from "../../../WebsiteShell/UI/responsiveInputForm"
-import SelectorObject from "../createPageComponents/selectorObject"
+import BodyBlockSettings from "@/components/Graph/GraphMenu/settingsPageComponents/bodyBlockSettings"
+import SelectorObject from "@/components/Graph/GraphMenu/createPageComponents/selectorObject"
+import ResponsiveInputForm from "@/components/WebsiteShell/CustomComponents/responsiveInputForm"
 
 export default {
   name: "triggerSettings",

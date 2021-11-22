@@ -40,7 +40,7 @@
 
 <script>
 import '@/views/lib/tween_max.min.js'
-import bg_stars from '../views/lib/bg_animate'
+import bg_stars from '@/views/lib/bg_animate'
 import { mapActions } from 'vuex'
 
 export default {

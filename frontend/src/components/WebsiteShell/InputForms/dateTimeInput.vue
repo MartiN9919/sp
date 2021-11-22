@@ -27,9 +27,9 @@
 </template>
 
 <script>
-import BodyInputForm from "../UI/bodyInputForm"
-import DropDownMenu from "../UI/dropDownMenu"
-import SelectDateTime from "../UI/selectDateTime"
+import BodyInputForm from "@/components/WebsiteShell/CustomComponents/bodyInputForm"
+import DropDownMenu from "@/components/WebsiteShell/CustomComponents/dropDownMenu"
+import SelectDateTime from "@/components/WebsiteShell/CustomComponents/selectDateTime"
 
 export default {
   name: "dateTimeInput",

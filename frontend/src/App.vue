@@ -6,16 +6,18 @@
       <keep-alive :include="keepAlivePages">  <!--  Сохранение состояния окна при переходах  -->
         <router-view/>  <!--  Основное рабочее окно, для отображения страниц  -->
       </keep-alive>
-      <router-view name="notification"/>  <!--  Уведомления  -->
+      <notifications/>  <!--  Уведомления  -->
     </v-main>
   </v-app>
 </template>
 
 <script>
+import notifications from "@/components/WebsiteShell/UIMainComponents/notifications"
 import {mapGetters} from "vuex"
 
 export default {
   name: 'App',
+  components: {notifications},
   computed: {
     ...mapGetters(['loadStatus']),
     keepAlivePages: function () {
