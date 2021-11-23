@@ -105,24 +105,7 @@ export default {
     dt_menu_show(e) { this.lib_menu_show(e, this.dt, this.$refs.dt_menu); },
 
     // MENU: Установить выделенный период
-    dt_menu_sel(menu_item) {
-      let sel_min   = this.dt.sel_min;
-      let sel_max   = this.dt.sel_max;
-      let sel_delta = menu_item.ts;
-
-      if (sel_delta == 0) {                                     // период: вся шкала
-        sel_min = this.dt.limit_min;
-        sel_max = this.dt.limit_max;
-      } else if ((sel_max - sel_delta) >= this.dt.limit_min) {  // период: влево от sel_max полностью
-        sel_min = sel_max-sel_delta;
-
-      } else {                                                  // период: влево от sel_max частично
-        sel_min = this.dt.limit_min;
-        sel_max = Math.min(sel_min+sel_delta, this.dt.limit_max);
-      }
-
-      this.dt_prop_sel = [sel_min, sel_max];
-    },
+    dt_menu_sel(menu_item) { this.dt_prop_sel = this.lib_menu_sel(menu_item, this.dt); },
 
     // MENU: Установить шаг изменения выделенного периода
     dt_menu_step(menu_item) {

@@ -89,24 +89,7 @@ export default {
     hm_menu_show(e) { this.lib_menu_show(e, this.hm, this.$refs.hm_menu); },
 
     // MENU: Установить выделенный период
-    hm_menu_sel(menu_item) {
-      let sel_min   = this.hm.sel_min;
-      let sel_max   = this.hm.sel_max;
-      let sel_delta = menu_item.ts;
-
-      if (sel_delta == 0) {                                     // период: вся шкала
-        sel_min = this.hm.limit_min;
-        sel_max = this.hm.limit_max;
-      } else if ((sel_max - sel_delta) >= this.hm.limit_min) {  // период: влево от sel_max полностью
-        sel_min = sel_max-sel_delta;
-
-      } else {                                                  // период: влево от sel_max частично
-        sel_min = this.hm.limit_min;
-        sel_max = Math.min(sel_min+sel_delta, this.hm.limit_max);
-      }
-
-      this.hm_prop_sel = [sel_min, sel_max];
-    },
+    hm_menu_sel(menu_item) { this.hm_prop_sel = this.lib_menu_sel(menu_item, this.hm); },
 
     // MENU: Установить шаг изменения выделенного периода
     hm_menu_step(menu_item) {
