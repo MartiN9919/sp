@@ -18,16 +18,17 @@ export default {
           title: 'установить период',
           icon:  'mdi-arrow-expand-horizontal', //'mdi-clock-start',
           menu:  [
-            { title: 'все',      icon: 'mdi-calendar-check', action: 'hm_menu_period', ts: 0, },
-            { title: '1 час',    icon: 'mdi-clock-time-one', action: 'hm_menu_period', ts: 3600, },
-            { title: '1 минута', icon: 'mdi-clock-time-one', action: 'hm_menu_period', ts: 60, },
+            { title: 'все',      icon: 'mdi-calendar-check', action: 'hm_menu_sel', ts: 0, },
+            { title: '1 час',    icon: 'mdi-clock-time-one', action: 'hm_menu_sel', ts: 3600, },
+            { title: '1 минута', icon: 'mdi-clock-time-one', action: 'hm_menu_sel', ts: 60, },
           ],
         },
         {
-          title: 'округлить до',
-          icon:  'mdi-content-cut',
+          title: 'шаг',
+          icon:  'mdi-run',
           menu: [
-            { title: 'часов', icon: 'mdi-clock', action: 'hm_menu_round', round: 'hour', },
+            { title: 'часы',   icon: 'mdi-clock-time-one',         action: 'hm_menu_step', ts: 3600, },
+            { title: 'минуты', icon: 'mdi-clock-time-one-outline', action: 'hm_menu_step', ts: 60, },
           ],
         },
       ],
@@ -53,7 +54,15 @@ export default {
 
   computed: {
     hm_prop_sel: {
-      set: function(lst) { this.hm_sel_set(lst[0], lst[1]); },
+      set: function(lst) {
+        let sel_min = lst[0];
+        let sel_max = lst[1];
+        if ( (sel_min != this.hm.sel_min) || (sel_max != this.hm.sel_max) ) {
+          this.hm.sel_max = sel_max;
+          this.hm.sel_min = sel_min;
+          this.MAP_ACT_REFRESH();
+        }
+      },
       get: function()    { return [this.hm.sel_min, this.hm.sel_max]; },
     },
     hm_val_min() { return ts_to_screen(this.hm_val_to_ts(this.hm.sel_min), false, true) },
@@ -61,14 +70,14 @@ export default {
   },
 
   methods: {
+    // обработчик изменения исходных данных не нужен
+    // hm_items_change(items) { },
+
     // val [0...86400]
     hm_val_to_ts(val) { return val*1000+myUTC },
 
     // вырезать из ts секунды (для val), 0-начало суток (UTC не используется)
     hm_ts_cut_sec(ts) { return  (((ts-myUTC)/1000) % (60*60*24))|0; },
-
-    // обработчик изменения исходных данных
-    // hm_items_change(items) { },
 
 
 
@@ -79,26 +88,39 @@ export default {
     // MENU: Показать первый уровень
     hm_menu_show(e) {
       const self    = this;
-      let sel_delta = this.hm.sel_max - this.hm.sel_min;
+      let limit_delta = this.hm.limit_max - this.hm.limit_min;
+      let sel_delta   = this.hm.sel_max   - this.hm.sel_min;
 
       e.preventDefault();
       e.stopPropagation();
       this.hm.menu_struct = JSON.parse(JSON.stringify(this.hm.menu_struct_base));
-      // текущий выбор периода недоступен
+
+      // меню периодов
       this.hm.menu_struct[0].menu.forEach((item, ind) => {
-        if (                                                                                   // доступность
-          (self.hm.sel_step == item.ts) &&                                                     // шаг шкалы равен периоду и
-          (sel_delta == ((item.ts==0)?(self.hm.limit_max-self.hm.limit_min):self.hm.sel_step)) // выбран только один шаг шкалы (для ВСЕ выбрано все)
+        // пометить:
+        // предлагаемый период равен текущему шагу
+        if (item.ts == self.hm.sel_step) { self.hm.menu_struct[0].menu[ind].subtitle = 'Шаг'; }
+        // недоступно:
+        // предлагаемый период меньше текущего шага и больше 0 или
+        // предлагаемый период равен текущему периоду
+        if (
+          ((item.ts < self.hm.sel_step) && (item.ts > 0)) ||
+          (((item.ts==0)?limit_delta:item.ts) == sel_delta)
         ) { self.hm.menu_struct[0].menu[ind].disabled = true; }
-        if (self.hm.sel_step  == item.ts) {                                                    // текущий выбор: шаг шкалы равен периоду
-          self.hm.menu_struct[0].menu[ind].subtitle = 'Шаг';
-        }
       });
+
+      // меню шагов
+      this.hm.menu_struct[1].menu.forEach((item, ind) => {
+        // недоступно:
+        // предлагаемый шаг равен текущему шагу
+        if (item.ts == self.hm.sel_step) { self.hm.menu_struct[1].menu[ind].disabled = true; }
+      });
+
       this.$refs.hm_menu.show_root(e.clientX, e.clientY);
     },
 
-    // MENU: Установить период
-    hm_menu_period(menu_item) {
+    // MENU: Установить выделенный период
+    hm_menu_sel(menu_item) {
       let sel_min   = this.hm.sel_min;
       let sel_max   = this.hm.sel_max;
       let sel_delta = menu_item.ts;
@@ -114,22 +136,17 @@ export default {
         sel_max = Math.min(sel_min+sel_delta, this.hm.limit_max);
       }
 
-      this.hm_sel_set(sel_min, sel_max, sel_delta);
+      this.hm_prop_sel = [sel_min, sel_max];
     },
 
-    // MENU: Округлить период
-    hm_menu_round(menu_item) {
+    // MENU: Установить шаг изменения выделенного периода
+    hm_menu_step(menu_item) {
       let sel_min   = this.hm.sel_min;
       let sel_max   = this.hm.sel_max;
-
-      switch (menu_item.round) {
-        case 'hour':                              // округлить до часов
-          sel_min -= sel_min % (60 * 60);
-          sel_max -= sel_max % (60 * 60);
-          break;
-      }
-
-      this.hm_sel_set(sel_min, sel_max);
+      sel_min -= (sel_min-myUTC) % menu_item.ts;
+      sel_max -= (sel_max-myUTC) % menu_item.ts;
+      this.hm_prop_sel = [sel_min, sel_max];
+      this.hm.sel_step = menu_item.ts;
     },
 
 
@@ -202,24 +219,8 @@ export default {
         }
       }
 
-      this.hm_sel_set(sel_min, sel_max);
+      this.hm_prop_sel = [sel_min, sel_max];
     },
-
-    // SEL: установить период корректно
-    async hm_sel_set(sel_min, sel_max, sel_step_new=undefined) {
-      if (
-        (sel_min == this.hm.sel_min) &&
-        (sel_max == this.hm.sel_max) &&
-        (sel_step_new == undefined)
-      ) return;
-
-      let step_temp = (sel_step_new != undefined) ? sel_step_new : this.hm.sel_step;
-      this.hm.sel_step = SEL_STEP_MIN;
-      this.hm.sel_min  = sel_min;
-      this.hm.sel_max  = sel_max;
-      this.hm.sel_step = step_temp;
-      await this.MAP_ACT_REFRESH();
-    }
 
   },
 

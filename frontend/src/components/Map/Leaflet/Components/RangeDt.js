@@ -60,10 +60,11 @@ export default {
       set: function(lst) {
         let sel_min = lst[0];
         let sel_max = lst[1];
-        if ( (sel_min == this.dt.sel_min) && (sel_max == this.dt.sel_max) ) return;
-        this.dt.sel_max = sel_max;
-        this.dt.sel_min = sel_min;
-        this.MAP_ACT_REFRESH();
+        if ( (sel_min != this.dt.sel_min) || (sel_max != this.dt.sel_max) ) {
+          this.dt.sel_max = sel_max;
+          this.dt.sel_min = sel_min;
+          this.MAP_ACT_REFRESH();
+        }
       },
       get: function()    { return [this.dt.sel_min, this.dt.sel_max]; },
     },
@@ -109,6 +110,7 @@ export default {
       e.preventDefault();
       e.stopPropagation();
       this.dt.menu_struct = JSON.parse(JSON.stringify(this.dt.menu_struct_base));
+
       // меню периодов
       this.dt.menu_struct[0].menu.forEach((item, ind) => {
         // пометить:
@@ -122,6 +124,7 @@ export default {
           (((item.ts==0)?limit_delta:item.ts) == sel_delta)
         ) { self.dt.menu_struct[0].menu[ind].disabled = true; }
       });
+
       // меню шагов
       this.dt.menu_struct[1].menu.forEach((item, ind) => {
         // недоступно:
