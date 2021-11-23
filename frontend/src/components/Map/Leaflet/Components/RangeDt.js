@@ -97,54 +97,19 @@ export default {
 
 
 
-    //
-    // MENU
-    //
-
     // MENU: Показать первый уровень
     dt_menu_show(e) { this.lib_menu_show(e, this.dt, this.$refs.dt_menu); },
-
     // MENU: Установить выделенный период
     dt_menu_sel(menu_item) { this.dt_prop_sel = this.lib_menu_sel(menu_item, this.dt); },
-
     // MENU: Установить шаг изменения выделенного периода
     dt_menu_step(menu_item) { this.dt_prop_sel = this.lib_menu_step(menu_item, this.dt); this.dt.sel_step = menu_item.ts; },
 
 
 
-
-
-    //
-    // MOUSE
-    //
-
     // MOUSE: обработчик блокировать события мыши
     dt_on_mouse_null(e) { this.lib_on_mouse_null(e, this.$refs.slider_dt); },
-    //   let thumb = this.$refs.slider_dt.$el.querySelectorAll('.v-slider__thumb-container');
-    //   thumb[0].blur();
-    //   thumb[1].blur();
-
-    //   e.preventDefault();
-    //   e.stopPropagation();
-    // },
-
     // MOUSE: обработчик mousedown
-    dt_on_mouse_down(e) {
-      let el     = this.$refs.slider_dt.$el;
-      let parent = el.querySelector('.v-slider__track-container');
-      let thumb  = el.querySelectorAll('.v-slider__thumb-container');
-      thumb[0].blur();
-      thumb[1].blur();
-
-      let bounds = parent.getBoundingClientRect();
-      let x = e.clientX - bounds.left; // let y = e.clientY - bounds.top;
-
-      const size = 7;
-      if (x < (thumb[0].offsetLeft - size)) { e.preventDefault(); e.stopPropagation(); this.dt_sel_move(0); return; } // левее   периода
-      if (x > (thumb[1].offsetLeft + size)) { e.preventDefault(); e.stopPropagation(); this.dt_sel_move(1); return; } // правее  периода
-
-      // e.preventDefault(); e.stopPropagation(); - нельзя блокировать
-    },
+    dt_on_mouse_down(e) { this.lib_on_mouse_down(e, this.$refs.slider_dt, this.dt_sel_move); },
 
 
 
