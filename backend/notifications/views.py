@@ -22,4 +22,10 @@ def aj_notifications_list(request):
 @request_log
 @request_wrap
 def aj_set_read(request, notification_id):
+    """
+    Функция для обработки запроса на установку флага прочитанного уведомления
+    @param request: запрос
+    @param notification_id: идентификатор оповещения
+    @return: -
+    """
     return set_read(notification_id, request.user.id)
