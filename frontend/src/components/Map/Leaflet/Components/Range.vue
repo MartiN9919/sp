@@ -108,6 +108,7 @@ export default {
   watch: {
     SCRIPT_GET: {
       deep: true,
+      immediate: true,
       handler: function(items) {
         this.dt_items_change(items);
       //this.hm_items_change(items);
