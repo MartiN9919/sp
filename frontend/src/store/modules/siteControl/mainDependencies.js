@@ -32,7 +32,7 @@ export default {
     async initialization({getters, dispatch}) {
       if (!getters.userInformation)
         await Promise.all([
-          dispatch('getNotifications'),
+          getters.globalNotificationStatus ? dispatch('getNotifications') : null,
           dispatch('getBaseObjects'),
           dispatch('getBaseLists'),
           dispatch('getBaseTriggers'),

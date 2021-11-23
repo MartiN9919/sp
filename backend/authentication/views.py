@@ -25,11 +25,7 @@ def login_user(request):
         user = auth.authenticate(request, username=username, password=password)
         if user is not None:
             auth.login(request, user)
-            return JsonResponse({
-                'username': user.username,
-                'first_name': user.first_name,
-                'last_name': user.last_name,
-            }, status=200)
+            return JsonResponse({}, status=200)
         else:
             return JsonResponse({}, status=400)
     else:

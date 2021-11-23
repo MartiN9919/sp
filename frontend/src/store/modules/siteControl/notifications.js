@@ -4,7 +4,8 @@ import uuid from 'uuid'
 export default {
   state: {
     notifications: [],
-    loadStatus: false
+    loadStatus: false,
+    notificationInterval: null,
   },
   getters: {
     notifications: state => state.notifications,
@@ -12,6 +13,13 @@ export default {
   },
   mutations: {
     changeLoadStatus: (state, status) => state.loadStatus = status,
+    setNotificationInterval: (state, interval) => state.notificationInterval = interval,
+    stopNotificationInterval: (state) => {
+      if(state.notificationInterval) {
+        clearInterval(state.notificationInterval)
+        state.notificationInterval = null
+      }
+    },
     appendNotification: (state, notification) => state.notifications.unshift(notification),
     removeNotification: (state, notification) => {
       state.notifications.splice(state.notifications.findIndex(n => n.id === notification.id), 1)
@@ -34,7 +42,8 @@ export default {
         }))
       }
       getNotifications()
-      setInterval(() => getNotifications(), 10000)
+      const interval = setInterval(() => getNotifications(), 10000)
+      commit('setNotificationInterval', interval)
     },
     setReadNotification: ({commit}, {notification, config = {}}) => {
       if (notification.id_notification)

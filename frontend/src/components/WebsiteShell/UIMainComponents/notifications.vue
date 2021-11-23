@@ -76,7 +76,7 @@ export default {
   }
   .alert-list {
     position: absolute;
-    z-index: 99999999999999;
+    z-index: 100002;
     bottom: 0;
     max-width: 25em;
     max-height: 50%;

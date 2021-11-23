@@ -1,7 +1,15 @@
 import router from '@/router'
 
+function getDefaultSettings(identifier) {
+  if(!localStorage.getItem(identifier))
+    localStorage.setItem(identifier, 'true')
+  return localStorage.getItem(identifier) === 'true'
+}
+
 export default {
   state: {
+    globalTooltipStatus: getDefaultSettings('globalTooltipStatus'),
+    globalNotificationStatus: getDefaultSettings('globalNotificationStatus'),
     navigationDrawer: {
       Map: false,
       Report: false,
@@ -26,16 +34,32 @@ export default {
     }
   },
   getters: {
-    navigationDrawerStatus: state => page => { return state.navigationDrawer[page] },
-    activeTool: state => page => { return state.activeTool[page] },
-    toolsMenu: state => page => { return state.toolsMenu[page] },
+    navigationDrawerStatus: state => page => state.navigationDrawer[page],
+    activeTool: state => page => state.activeTool[page],
+    toolsMenu: state => page => state.toolsMenu[page],
+    globalTooltipStatus: state => state.globalTooltipStatus,
+    globalNotificationStatus: state => state.globalNotificationStatus,
   },
   mutations: {
     setNavigationDrawerStatus: (state, status) => state.navigationDrawer[router.currentRoute.name] = status,
     setActiveTool: (state, tool) => state.activeTool[router.currentRoute.name] = tool,
+    setGlobalTooltipStatus: (state, status) => state.globalTooltipStatus = status,
+    setGlobalNotificationStatus: (state, status) => state.globalNotificationStatus = status,
   },
   actions: {
     setNavigationDrawerStatus: ({ getters, commit }, status) => commit('setNavigationDrawerStatus', status),
     setActiveTool({ commit }, tool) { commit('setActiveTool', tool) },
+    setGlobalTooltipStatus({ commit }, status) {
+      localStorage.setItem('globalTooltipStatus', status)
+      commit('setGlobalTooltipStatus', status)
+    },
+    setGlobalNotificationStatus({ commit, dispatch }, status) {
+      if(status) 
+        dispatch('getNotifications')
+      else
+        commit('stopNotificationInterval')
+      localStorage.setItem('globalNotificationStatus', status)
+      commit('setGlobalNotificationStatus', status)
+    },
   }
 }

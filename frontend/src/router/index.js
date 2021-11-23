@@ -14,6 +14,7 @@ const routes = [
       default: () => import('../views/LoginPage.vue'),
     },
     beforeEnter: (to, from, next) => {
+      store.commit('stopNotificationInterval')
       store.commit('resetState')
       next()
     },

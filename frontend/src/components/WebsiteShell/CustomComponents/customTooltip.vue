@@ -2,6 +2,7 @@
   <v-tooltip
     v-bind="$attrs"
     :color="$CONST.APP.COLOR_OBJ"
+    :disabled="status"
     transition="false"
     z-index="10000"
     max-width="30%"
@@ -19,6 +20,7 @@
 
 <script>
 import {getFileLink} from '@/plugins/axiosSettings'
+import {mapGetters} from "vuex";
 
 export default {
   name: "customTooltip",
@@ -37,6 +39,8 @@ export default {
     imageTypes: ['jpg', 'jpeg', 'png'],
   }),
   computed: {
+    ...mapGetters(['globalTooltipStatus']),
+    status: function () { return !this.globalTooltipStatus },
     fileLink: function () { return getFileLink(this.settings.objectId, this.settings.recId, this.bodyText) },
     pictureType: function () {
       return this.imageTypes.includes(this.bodyText.split('.').pop().toLowerCase());
