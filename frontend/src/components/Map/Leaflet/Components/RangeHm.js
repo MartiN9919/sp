@@ -82,7 +82,7 @@ export default {
 
 
     //
-    // MOUSE
+    // MENU
     //
 
     // MENU: Показать первый уровень
@@ -92,14 +92,7 @@ export default {
     hm_menu_sel(menu_item) { this.hm_prop_sel = this.lib_menu_sel(menu_item, this.hm); },
 
     // MENU: Установить шаг изменения выделенного периода
-    hm_menu_step(menu_item) {
-      let sel_min   = this.hm.sel_min;
-      let sel_max   = this.hm.sel_max;
-      sel_min -= (sel_min-myUTC) % menu_item.ts;
-      sel_max -= (sel_max-myUTC) % menu_item.ts;
-      this.hm_prop_sel = [sel_min, sel_max];
-      this.hm.sel_step = menu_item.ts;
-    },
+    hm_menu_step(menu_item) { this.hm_prop_sel = this.lib_menu_step(menu_item, this.hm); this.hm.sel_step = menu_item.ts; },
 
 
 
@@ -110,14 +103,15 @@ export default {
     //
 
     // MOUSE: обработчик блокировать события мыши
-    hm_on_mouse_null(e) {
-      let thumb = this.$refs.slider_hm.$el.querySelectorAll('.v-slider__thumb-container');
-      thumb[0].blur();
-      thumb[1].blur();
+    hm_on_mouse_null(e) { this.lib_on_mouse_null(e, this.$refs.slider_hm); },
+    // hm_on_mouse_null(e) {
+    //   let thumb = this.$refs.slider_hm.$el.querySelectorAll('.v-slider__thumb-container');
+    //   thumb[0].blur();
+    //   thumb[1].blur();
 
-      e.preventDefault();
-      e.stopPropagation();
-    },
+    //   e.preventDefault();
+    //   e.stopPropagation();
+    // },
 
     // MOUSE: обработчик mousedown
     hm_on_mouse_down(e) {
