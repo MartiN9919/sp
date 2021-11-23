@@ -8,9 +8,14 @@
       <table>
         <tr>
           <td>
-            <div class="range-info">
-              <div>{{dt_val_min}}</div><div>-</div><div>{{dt_val_max}}</div>
-            </div>
+            <v-tooltip top :color="$CONST.APP.COLOR_OBJ">
+              <template v-slot:activator="{ on }">
+                <div class="range-info" v-on="on">
+                  <div>{{dt_val_min}}</div><div>-</div><div>{{dt_val_max}}</div>
+                </div>
+              </template>
+              <span>{{dt.hint}}</span>
+            </v-tooltip>
           </td>
           <td>
             <v-range-slider
@@ -40,9 +45,14 @@
         </tr>
         <tr>
           <td>
-            <div class="range-info">
-              <div>{{hm_val_min}}</div><div>-</div><div>{{hm_val_max}}</div>
-            </div>
+            <v-tooltip top :color="$CONST.APP.COLOR_OBJ">
+              <template v-slot:activator="{ on }">
+                <div class="range-info" v-on="on">
+                  <div>{{hm_val_min}}</div><div>-</div><div>{{hm_val_max}}</div>
+                </div>
+              </template>
+              <span>{{hm.hint}}</span>
+            </v-tooltip>
           </td>
           <td>
             <v-range-slider

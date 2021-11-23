@@ -12,6 +12,7 @@ export default {
       sel_min:     0,               // выбранное минимальное / максимальное значение, ts
       sel_max:     (60*60*24)|0,
       sel_step:    SEL_STEP_MIN,
+      hint:        '222',
       menu_struct: undefined,
       menu_struct_base: [
         {
