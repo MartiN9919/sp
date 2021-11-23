@@ -166,7 +166,7 @@ def request_log(function):
                 str(request.user) + '.' +
                 str(request.user.id) + '|' +
                 request.META.get('REMOTE_ADDR') + ':' +
-                request.META.get('REMOTE_PORT') + '|' +
+                str(request.META.get('REMOTE_PORT'))+ '|' +
                 request.method + ':' +
                 request.path + '|' +
                 request.POST['data']
