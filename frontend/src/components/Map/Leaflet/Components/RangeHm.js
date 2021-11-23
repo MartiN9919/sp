@@ -15,7 +15,7 @@ export default {
       menu_struct: undefined,
       menu_struct_base: [
         {
-          title: 'установить период',
+          title: 'период',
           icon:  'mdi-arrow-expand-horizontal', //'mdi-clock-start',
           menu:  [
             { title: 'все',      icon: 'mdi-calendar-check', action: 'hm_menu_sel', ts: 0, },
@@ -86,38 +86,7 @@ export default {
     //
 
     // MENU: Показать первый уровень
-    hm_menu_show(e) {
-      const self    = this;
-      let limit_delta = this.hm.limit_max - this.hm.limit_min;
-      let sel_delta   = this.hm.sel_max   - this.hm.sel_min;
-
-      e.preventDefault();
-      e.stopPropagation();
-      this.hm.menu_struct = JSON.parse(JSON.stringify(this.hm.menu_struct_base));
-
-      // меню периодов
-      this.hm.menu_struct[0].menu.forEach((item, ind) => {
-        // пометить:
-        // предлагаемый период равен текущему шагу
-        if (item.ts == self.hm.sel_step) { self.hm.menu_struct[0].menu[ind].subtitle = 'Шаг'; }
-        // недоступно:
-        // предлагаемый период меньше текущего шага и больше 0 или
-        // предлагаемый период равен текущему периоду
-        if (
-          ((item.ts < self.hm.sel_step) && (item.ts > 0)) ||
-          (((item.ts==0)?limit_delta:item.ts) == sel_delta)
-        ) { self.hm.menu_struct[0].menu[ind].disabled = true; }
-      });
-
-      // меню шагов
-      this.hm.menu_struct[1].menu.forEach((item, ind) => {
-        // недоступно:
-        // предлагаемый шаг равен текущему шагу
-        if (item.ts == self.hm.sel_step) { self.hm.menu_struct[1].menu[ind].disabled = true; }
-      });
-
-      this.$refs.hm_menu.show_root(e.clientX, e.clientY);
-    },
+    hm_menu_show(e) { this.lib_menu_show(e, this.hm, this.$refs.hm_menu); },
 
     // MENU: Установить выделенный период
     hm_menu_sel(menu_item) {
