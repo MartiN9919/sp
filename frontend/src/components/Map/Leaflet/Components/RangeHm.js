@@ -89,49 +89,14 @@ export default {
     hm_menu_step(menu_item) { this.hm_prop_sel = this.lib_menu_step(menu_item, this.hm); this.hm.sel_step = menu_item.ts; },
 
 
-
     // MOUSE: обработчик блокировать события мыши
     hm_on_mouse_null(e) { this.lib_on_mouse_null(e, this.$refs.slider_hm); },
     // MOUSE: обработчик mousedown
     hm_on_mouse_down(e) { this.lib_on_mouse_down(e, this.$refs.slider_hm, this.hm_sel_move); },
 
 
-
-
-    //
-    // SEL
-    //
-
     // SEL: переместить период 0 - влево, 1 - вправо
-    hm_sel_move(pos) {
-      let sel_min   = this.hm.sel_min;
-      let sel_max   = this.hm.sel_max;
-      let sel_delta = sel_max - sel_min;
-      if (sel_delta==0) return;
-
-      // влево
-      if (pos==0) {
-        if ((sel_min - sel_delta) < this.hm.limit_min) {
-          sel_min = this.hm.limit_min;
-          sel_max = this.hm.limit_min+sel_delta;
-        } else {
-          sel_min -= sel_delta;
-          sel_max -= sel_delta;
-        }
-      // вправо
-      } else {
-        if ((sel_max + sel_delta) > this.hm.limit_max) {
-          sel_min = this.hm.limit_max-sel_delta;
-          sel_max = this.hm.limit_max;
-        } else {
-          sel_min += sel_delta;
-          sel_max += sel_delta;
-        }
-      }
-
-      this.hm_prop_sel = [sel_min, sel_max];
-    },
-
+    hm_sel_move(pos) { this.hm_prop_sel = this.lib_sel_move(pos, this.hm); },
   },
 
 }
