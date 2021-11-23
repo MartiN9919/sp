@@ -7,16 +7,27 @@
     >
       <table>
         <tr>
-          <td>
-            <v-tooltip top :color="$CONST.APP.COLOR_OBJ">
-              <template v-slot:activator="{ on }">
+          <v-tooltip top :color="$CONST.APP.COLOR_OBJ">
+            <template v-slot:activator="{ on }">
+              <td>
                 <div class="range-info" v-on="on">
                   <div>{{dt_val_min}}</div><div>-</div><div>{{dt_val_max}}</div>
                 </div>
-              </template>
-              <span>{{dt.hint}}</span>
-            </v-tooltip>
-          </td>
+              </td>
+            </template>
+            <!-- ИНФОРМАТОР -->
+            <div class="stat">
+              <table>
+                <tr>
+                  <th></th>
+                  <th>Найдено объектов</th>
+                </tr>
+                <tr><td>Всего</td><td>{{stat.count_all}} из {{stat.count_sel_dt}} ( {{stat.percent_sel_dt}}% )</td></tr>
+                <tr><td>Дата / время</td><td>{{stat.count_sel_all}} из {{stat.count_sel_dt}} ( {{stat.percent_sel_dt}}% )</td></tr>
+                <tr><td>Часы / минуты</td><td>{{stat.count_sel_all}} из {{stat.count_sel_dt}} ( {{stat.percent_sel_dt}}% )</td></tr>
+              </table>
+            </div>
+          </v-tooltip>
           <td>
             <v-range-slider
               ref="slider_dt"
@@ -51,7 +62,7 @@
                   <div>{{hm_val_min}}</div><div>-</div><div>{{hm_val_max}}</div>
                 </div>
               </template>
-              <span>{{hm.hint}}</span>
+              <span>555</span>
             </v-tooltip>
           </td>
           <td>
@@ -115,6 +126,17 @@ export default {
   name: 'Range',
   mixins: [ MixLib, MixDt, MixHm, ],
   components: { LControl, contextMenuNested, },
+  data: () => ({
+    stat: {               // статистика
+      count_all:       0,
+      count_sel_all:   0,
+      count_sel_dt:    0,
+      count_sel_hm:    0,
+      percent_sel_all: 0,
+      percent_sel_dt:  0,
+      percent_sel_hm:  0,
+    },
+  }),
   watch: {
     SCRIPT_GET: {
       deep: true,
@@ -177,6 +199,29 @@ export default {
       }
       return fc;
     },
+
+
+    set_hint() {
+      let self = this;
+      this.stat.count_all       = 0;
+      this.stat.count_sel_all   = 0;
+      this.stat.count_sel_dt    = 0;
+      this.stat.count_sel_hm    = 0;
+      this.stat.percent_sel_all = 0;
+      this.stat.percent_sel_dt  = 0;
+      this.stat.percent_sel_hm  = 0;
+
+      this.SCRIPT_GET.forEach(function(item){
+        item.fc.features.forEach(function(feature){
+          self.stat.count_all++;
+          let date = feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES.DATE];
+          if (!date) return;
+          date = datesql_to_ts(date);
+          if ((date >= self.dt.sel_min) && (date <= self.dt.sel_max)) { self.stat.count_sel_dt++; }
+       });
+      });
+      console.log(self.stat.count_all, self.stat.count_sel_dt)
+    },
   },
 }
 
@@ -209,4 +254,24 @@ export default {
   div::v-deep .range-info > div:nth-of-type(1) { width: 110px; text-align: right;  }
   div::v-deep .range-info > div:nth-of-type(2) { width: 15px;  text-align: center; }
   div::v-deep .range-info > div:nth-of-type(3) { width: 110px; text-align: left;   }
+
+  /* статистика */
+  div::v-deep .stat table {
+    border-collapse: collapse;
+    table-layout: fixed;
+    font-size: 0.9em;
+    color: white;
+    margin: 8px 0;
+    padding: 0 0;
+  }
+
+  div::v-deep .stat th {
+    text-align: center;
+  }
+
+  div::v-deep .stat td, th {
+    border: 1px solid white;
+    padding: 3px 10px;
+    white-space: nowrap;
+  }
 </style>

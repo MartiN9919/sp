@@ -1,4 +1,5 @@
 
+import { mapGetters } from 'vuex';
 import { MAP_ITEM } from '@/components/Map/Leaflet/Lib/Const';
 import { myUTC, ts_to_screen, datesql_to_ts } from '@/plugins/sys';
 
@@ -12,7 +13,6 @@ export default {
       sel_min:     0,             // выбранное минимальное / максимальное значение, ts
       sel_max:     0,
       sel_step:    SEL_STEP_MIN,
-      hint:        '111',
       menu_struct: undefined,
       menu_struct_base: [
         {
@@ -57,6 +57,8 @@ export default {
 
 
   computed: {
+    ...mapGetters([ 'SCRIPT_GET', ]),
+
     dt_prop_sel: {
       set: function(lst) {
         let sel_min = lst[0];
@@ -64,7 +66,8 @@ export default {
         if ( (sel_min != this.dt.sel_min) || (sel_max != this.dt.sel_max) ) {
           this.dt.sel_max = sel_max;
           this.dt.sel_min = sel_min;
-          this.MAP_ACT_REFRESH();
+          this.MAP_ACT_REFRESH();   // перерисовать
+          this.set_hint();          // подсказка
         }
       },
       get: function()    { return [this.dt.sel_min, this.dt.sel_max]; },

@@ -12,7 +12,6 @@ export default {
       sel_min:     0,               // выбранное минимальное / максимальное значение, ts
       sel_max:     (60*60*24)|0,
       sel_step:    SEL_STEP_MIN,
-      hint:        '222',
       menu_struct: undefined,
       menu_struct_base: [
         {
@@ -61,7 +60,7 @@ export default {
         if ( (sel_min != this.hm.sel_min) || (sel_max != this.hm.sel_max) ) {
           this.hm.sel_max = sel_max;
           this.hm.sel_min = sel_min;
-          this.MAP_ACT_REFRESH();
+          this.MAP_ACT_REFRESH();   // перерисовать
         }
       },
       get: function()    { return [this.hm.sel_min, this.hm.sel_max]; },
