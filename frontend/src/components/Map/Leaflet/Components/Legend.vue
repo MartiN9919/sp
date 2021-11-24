@@ -139,14 +139,14 @@ export default {
     opacity: 0.9;
   }
 
-  .legend_top {
+  div::v-deep .legend_top {
     max-width: 10em;
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
   }
 
-  .legend-color i {
+  div::v-deep .legend-color i {
     width: 18px;
     height: 18px;
     float: left;
@@ -154,13 +154,13 @@ export default {
     opacity: 0.6;
   }
 
-  .legend-color-select {
+  div::v-deep .legend-color-select {
     color: blue;
     font-weight: bold;
     background: #eee;
   }
 
-  .pre-formatted {
+  div::v-deep .pre-formatted {
     white-space: pre;
     text-overflow: ellipsis;
   }

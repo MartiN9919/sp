@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="position:absolute;width:0;height:0;z-index:-9999999;"> <!-- display:none нельзя -->
     <svg
       id="map-svg-defs"
       xmlns="http://www.w3.org/2000/svg"
