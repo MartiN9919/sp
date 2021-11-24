@@ -1,184 +1,277 @@
 <template>
-  <l-control
-    v-if="MAP_GET_RANGE_SHOW"
-    v-show="visible"
-    position="bottomcenterhorizontal"
-    class="leaflet-bar leaflet-control control_range select_off"
-  >
-    <table>
-      <tr>
-        <td>
-          <v-btn
-            ref="btn-left"
-            class="btn"
-            depressed
-            plain
-            @click="btn_click(0)"
-          ><</v-btn>
-        </td>
+  <div>
+    <l-control
+      v-show="visible"
+      position="bottomcenterhorizontal"
+      class="leaflet-bar leaflet-control control_range select_off"
+    >
+      <table>
+        <tr>
+          <v-tooltip top :color="$CONST.APP.COLOR_OBJ">
+            <template v-slot:activator="{ on }">
+              <td>
+                <div class="range-info" v-on="on">
+                  <div>{{dt_val_min}}</div><div>-</div><div>{{dt_val_max}}</div>
+                </div>
+              </td>
+            </template>
+            <!-- ИНФОРМАТОР -->
+            <div class="stat">
+              <table>
+                <tr>
+                  <th></th>
+                  <th>Найдено объектов</th>
+                </tr>
+                <tr><td>Всего</td><td>{{stat.count_all}} из {{stat.count_sel_dt}} ( {{stat.percent_sel_dt}}% )</td></tr>
+                <tr><td>Дата / время</td><td>{{stat.count_sel_all}} из {{stat.count_sel_dt}} ( {{stat.percent_sel_dt}}% )</td></tr>
+                <tr><td>Часы / минуты</td><td>{{stat.count_sel_all}} из {{stat.count_sel_dt}} ( {{stat.percent_sel_dt}}% )</td></tr>
+              </table>
+            </div>
+          </v-tooltip>
+          <td>
+            <v-range-slider
+              ref="slider_dt"
+              class="slider"
+              v-model="dt_prop_sel"
+              :min="dt.limit_min"
+              :max="dt.limit_max"
+              :step="dt.sel_step"
 
-        <td>
-          <v-range-slider
-            v-model="prop_sel"
-            :min="MAP_GET_RANGE_MIN"
-            :max="MAP_GET_RANGE_MAX"
+              dense
 
-            height="1.5em"
-            class="slider"
-            dense
+              thumb-size="8"
+              thumb-color="green"
 
-            thumb-color="green"
-            track-fill-color="green"
-            track-color="red"
+              track-fill-color="green"
+              track-color="red"
+            >
+              <template v-slot:append>
+                <v-icon
+                  @click.stop="dt_menu_show"
+                  size="24"
+                >mdi-menu</v-icon>
+              </template>
+            </v-range-slider>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <v-tooltip top :color="$CONST.APP.COLOR_OBJ">
+              <template v-slot:activator="{ on }">
+                <div class="range-info" v-on="on">
+                  <div>{{hm_val_min}}</div><div>-</div><div>{{hm_val_max}}</div>
+                </div>
+              </template>
+              <span>555</span>
+            </v-tooltip>
+          </td>
+          <td>
+            <v-range-slider
+              ref="slider_hm"
+              class="slider"
+              v-model="hm_prop_sel"
+              :min="hm.limit_min"
+              :max="hm.limit_max"
+              :step="hm.sel_step"
 
-            :hint="hint"
-            persistent-hint
-          />
-        </td>
+              dense
 
-        <td>
-          <v-btn
-            ref="btn-right"
-            class="btn"
-            depressed
-            plain
-            @click="btn_click(1)"
-          >></v-btn>
-        </td>
-      </tr>
-    </table>
+              thumb-size="8"
+              thumb-color="green"
 
-  </l-control>
+              track-fill-color="green"
+              track-color="red"
+            >
+              <template v-slot:append>
+                <v-icon
+                  @click.stop="hm_menu_show"
+                  size="24"
+                >mdi-menu</v-icon>
+              </template>
+            </v-range-slider>
+          </td>
+        </tr>
+      </table>
+    </l-control>
+    <contextMenuNested
+      ref="dt_menu"
+      :form="form"
+      :items="dt.menu_struct"
+    />
+    <contextMenuNested
+      ref="hm_menu"
+      :form="form"
+      :items="hm.menu_struct"
+    />
+  </div>
 </template>
 
 
-
 <script>
+// компонент недопустимо отключать v-if
+// только скрывать v-show
+// работает с данными на шине
+// hm всегда устанавливает диапазон 0...75600 (количество секунд в сутках)
 
-import {
-  mapGetters,
-  mapActions,
-} from 'vuex';
-
-import {
-  LControl,
-} from "vue2-leaflet";
-
-import {
-  ts_to_screen,
-} from '@/plugins/sys';
-
-
-
-const props = {
-  options: {
-    type: Object,
-    default() { return {}; },
-  },
-};
+import { mapGetters, mapActions } from 'vuex';
+import { LControl }      from 'vue2-leaflet';
+import { MAP_ITEM }      from '@/components/Map/Leaflet/Lib/Const';
+import { datesql_to_ts, datesql_is_time } from '@/plugins/sys';
+import contextMenuNested from '@/components/WebsiteShell/ContextMenu/contextMenuNested';
+import MixLib            from '@/components/Map/Leaflet/Components/RangeLib';
+import MixDt             from '@/components/Map/Leaflet/Components/RangeDt';
+import MixHm             from '@/components/Map/Leaflet/Components/RangeHm';
 
 export default {
   name: 'Range',
-  props,
-  components: {
-    LControl,
-  },
-
-  mounted() {
-
+  mixins: [ MixLib, MixDt, MixHm, ],
+  components: { LControl, contextMenuNested, },
+  data: () => ({
+    stat: {               // статистика
+      count_all:       0,
+      count_sel_all:   0,
+      count_sel_dt:    0,
+      count_sel_hm:    0,
+      percent_sel_all: 0,
+      percent_sel_dt:  0,
+      percent_sel_hm:  0,
+    },
+  }),
+  watch: {
+    SCRIPT_GET: {
+      deep: true,
+      immediate: true,
+      handler: function(items) {
+        this.dt_items_change(items);
+      //this.hm_items_change(items);
+      },
+    }
   },
 
   computed: {
     ...mapGetters([
-      'MAP_GET_RANGE_SHOW',
-      'MAP_GET_RANGE_SEL',
-      'MAP_GET_RANGE_MIN',
-      'MAP_GET_RANGE_MAX',
+      'SCRIPT_GET',
+      'MAP_GET_RANGE',
     ]),
 
-    prop_sel: {
-      set: function(lst) { this.MAP_ACT_RANGE_SEL({lst: lst}); },
-      get: function()    { return this.MAP_GET_RANGE_SEL;      },
-    },
+    form: vm => vm,
 
     visible: function() {
-      let ts_min = this.MAP_GET_RANGE_MIN;
-      let ts_max = this.MAP_GET_RANGE_MAX;
       return (
-        (ts_min > 0) &&
-        (ts_max > 0) &&
-        (ts_min != ts_max)
+        this.MAP_GET_RANGE &&
+        (this.dt.limit_min > 0) &&
+        (this.dt.limit_max > 0) &&
+        (this.dt.limit_min != this.dt.limit_max)
       );
-    },
-    hint() {
-      let t_min = ts_to_screen(this.prop_sel[0]);
-      let t_max = ts_to_screen(this.prop_sel[1]);
-      return t_min+" - "+t_max;
     },
   },
 
   methods: {
-    ...mapActions([
-      'MAP_ACT_RANGE_SEL',
-    ]),
+    ...mapActions([ 'MAP_ACT_REFRESH', ]),
 
-    btn_disabled(pos) {
+    // отфильтровать fc, вызывается извне
+    filter(fc) {
+      if (this.MAP_GET_RANGE) {
+        if ((this.dt.sel_min>0) && (this.dt.sel_max>0)) {
+          let self = this;
+          let features  = fc.features.filter(function(feature) {
+            let fc_date = feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES.DATE];
+            if (!fc_date) return true;
+            let item_date = datesql_to_ts(fc_date);
+            let is_time   = datesql_is_time(fc_date);                        // если время не указано, его не учитываем
+            let item_time = (is_time) ? self.hm_ts_cut_sec(item_date) : 0;   // в секундах
 
+            return (
+              (item_date >= self.dt.sel_min) &&
+              (item_date <= self.dt.sel_max) &&
+              (
+                (is_time == false) ||
+                (
+                  (is_time == true) &&
+                  (item_time >= self.hm.sel_min) &&
+                  (item_time <= self.hm.sel_max)
+                )
+              )
+            );
+          });
+          fc.features = features;
+        }
+      }
+      return fc;
     },
 
-    btn_click(pos) {
-      let limit_min = this.MAP_GET_RANGE_MIN;
-      let limit_max = this.MAP_GET_RANGE_MAX;
-      let sel       = this.MAP_GET_RANGE_SEL;
-      let sel_min   = sel[0];
-      let sel_max   = sel[1];
-      let sel_delta = sel_max - sel_min;
-      if (sel_delta==0) return;
 
-      if (pos==0) {
-        if ((sel_min - sel_delta) < limit_min) return;
-        sel_min -= sel_delta;
-        sel_max -= sel_delta;
-      } else {
-        if ((sel_max + sel_delta) > limit_max) return;
-        sel_min += sel_delta;
-        sel_max += sel_delta;
-      }
+    set_hint() {
+      let self = this;
+      this.stat.count_all       = 0;
+      this.stat.count_sel_all   = 0;
+      this.stat.count_sel_dt    = 0;
+      this.stat.count_sel_hm    = 0;
+      this.stat.percent_sel_all = 0;
+      this.stat.percent_sel_dt  = 0;
+      this.stat.percent_sel_hm  = 0;
 
-      this.MAP_ACT_RANGE_SEL({lst: [sel_min, sel_max]});
+      this.SCRIPT_GET.forEach(function(item){
+        item.fc.features.forEach(function(feature){
+          self.stat.count_all++;
+          let date = feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES.DATE];
+          if (!date) return;
+          date = datesql_to_ts(date);
+          if ((date >= self.dt.sel_min) && (date <= self.dt.sel_max)) { self.stat.count_sel_dt++; }
+       });
+      });
+      console.log(self.stat.count_all, self.stat.count_sel_dt)
     },
   },
-
 }
 
 </script>
 
 
 
-<style lang="scss">
+<style scoped lang="scss">
   .control_range {
     border: 2px solid rgba(0,0,0,0.2);
     background-color: white;
     opacity: .7;
   }
 
-  .control_range .btn {
-    height: 3em!important;
-    min-width: 1.5em!important;
-    max-width: 1.5em!important;
-    padding: 0;
-    margin: 0;
+  div::v-deep .slider { width: 22em; padding: 0 .7em 0 0; margin: 0; }
+  div::v-deep .v-slider      { cursor: pointer; }
+  div::v-deep .v-input__slot { margin: 0 !important; }
+  div::v-deep .v-messages    { display: none; }
+  div::v-deep .v-slider__track-container { height: 2px; }  /* высота полоски */
+
+  /* информатор */
+  div::v-deep .range-info {
+    width: 240px;
+    text-align: right;
+    font-size: .8em;
     font-weight: bold;
+    color: green;
+  }
+  div::v-deep .range-info > div { display: inline-block; }
+  div::v-deep .range-info > div:nth-of-type(1) { width: 110px; text-align: right;  }
+  div::v-deep .range-info > div:nth-of-type(2) { width: 15px;  text-align: center; }
+  div::v-deep .range-info > div:nth-of-type(3) { width: 110px; text-align: left;   }
+
+  /* статистика */
+  div::v-deep .stat table {
+    border-collapse: collapse;
+    table-layout: fixed;
+    font-size: 0.9em;
+    color: white;
+    margin: 8px 0;
+    padding: 0 0;
   }
 
-  .control_range .slider {
-    min-width: 16em;
-    height: 2.4em;
-    padding: 0;
-    margin: 0 0 .4em 0;
-  }
-
-  .control_range .v-messages {
+  div::v-deep .stat th {
     text-align: center;
+  }
+
+  div::v-deep .stat td, th {
+    border: 1px solid white;
+    padding: 3px 10px;
+    white-space: nowrap;
   }
 </style>

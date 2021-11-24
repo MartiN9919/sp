@@ -166,7 +166,7 @@ export default {
   actions: {
     addPassiveAnalysts: ({ commit }, analytics = {}) => commit('addPassiveAnalysts', analytics),
 
-    removeAnalytics: ({ commit, dispatch }, analytics = {}) => { commit('removeAnalytics', analytics); dispatch('MAP_ACT_RANGE_TS'); },
+    removeAnalytics: ({ commit }, analytics = {}) => commit('removeAnalytics', analytics),
 
     changeColorActiveAnalysts: ({ commit }, parameters = {}) => commit('changeColorActiveAnalysts', parameters),
 
@@ -181,7 +181,6 @@ export default {
           parameters.request.fc = response.data;
           commit('SCRIPT_MUT_ITEM_ADD', parameters.request);
           commit('changeSelectedTreeViewItem', {});
-          dispatch('MAP_ACT_RANGE_TS');
         })
         .catch(() => {})
     },
@@ -199,9 +198,10 @@ export default {
     },
 
 
+
     getTemplatesList ({ commit, dispatch }, config = {}) {
       return axios.get('script/templates/', config)
-        .then(response => { { commit('loadTemplatesList', response.data); dispatch('MAP_ACT_RANGE_TS'); } })
+        .then(response => { { commit('loadTemplatesList', response.data) } })
         .catch(() => {})
     },
     saveSelectedTemplate ({ state, commit }, parameters = {}) {
@@ -231,7 +231,6 @@ export default {
         .then(response => {
           commit('deleteSelectedTemplate', config.params.template_id)
           commit('changeSelectedTreeViewItem', {})
-          dispatch('MAP_ACT_RANGE_TS')
         })
         .catch(() => {})
     }
