@@ -71,10 +71,10 @@ export default {
       if(this.oldNodeSize.height - this.node.height !== 0){
         this.offset.x += (this.oldNodeSize.width - this.node.width)/2
         if(this.oldNodeSize.height - this.node.height > 0 && !this.element.hasOwnProperty('type')){
-          this.offset.y /= 1.05
+          this.offset.y /= 1.5
         }
         if(this.oldNodeSize.height - this.node.height < 0 && !this.element.hasOwnProperty('type')){
-          this.offset.y *= 1.05
+          this.offset.y *= 1.5
         }
         this.oldNodeSize.height = this.node.height
         this.oldNodeSize.width = this.node.width
