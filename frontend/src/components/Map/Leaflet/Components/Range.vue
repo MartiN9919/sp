@@ -28,7 +28,8 @@
               </table>
             </div>
           </v-tooltip>
-          <td>
+          <td class="layer-parent zz">
+            <canvas class="layer-child" ref="review_dt"/>
             <v-range-slider
               ref="slider_dt"
               class="slider"
@@ -65,7 +66,8 @@
               <span>555</span>
             </v-tooltip>
           </td>
-          <td>
+          <td class="layer-parent">
+            <canvas class="layer-child" ref="review_hm"/>
             <v-range-slider
               ref="slider_hm"
               class="slider"
@@ -137,6 +139,28 @@ export default {
       percent_sel_hm:  0,
     },
   }),
+
+  mounted: function() {
+    let el = this.$refs.review_dt;
+    var ctx=el.getContext("2d");
+
+    ctx.strokeStyle = "#ccc";
+    ctx.lineWidth = "2";
+
+
+    ctx.shadowColor = "#999";
+    ctx.shadowBlur = 4;
+    ctx.shadowOffsetX = 0;
+    ctx.shadowOffsetY = 0;
+    ctx.fillStyle = "#300";
+
+    ctx.beginPath();
+    ctx.moveTo(30, 5);
+    ctx.lineTo(30, 25);
+    ctx.stroke();
+    ctx.closePath();
+  },
+
   watch: {
     SCRIPT_GET: {
       deep: true,
@@ -236,7 +260,12 @@ export default {
     opacity: .7;
   }
 
-  div::v-deep .slider { width: 22em; padding: 0 .7em 0 0; margin: 0; }
+  /* наложение друг на друга */
+  div::v-deep .layer-parent  { position: relative; }
+  div::v-deep .layer-child   { position: absolute; top: 0; left: 0; }
+
+
+  div::v-deep .slider        { width: 22em; padding: 0 .7em 0 0; margin: 0; }
   div::v-deep .v-slider      { cursor: pointer; }
   div::v-deep .v-input__slot { margin: 0 !important; }
   div::v-deep .v-messages    { display: none; }
