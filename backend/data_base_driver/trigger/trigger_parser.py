@@ -1,3 +1,5 @@
+import os
+
 from data_base_driver.constants.const_trigger import BASE_PATH_TO_USER_TRIGGERS, IMPORTS
 
 
@@ -8,6 +10,8 @@ def parse_trigger_text_to_python(name, text, variables):
     @param text: текст скрипта
     @param variables: список переменных в текстовом формате
     """
+    if not os.path.exists(BASE_PATH_TO_USER_TRIGGERS):
+        os.makedirs(BASE_PATH_TO_USER_TRIGGERS)
     path = BASE_PATH_TO_USER_TRIGGERS + name + '.py'
     file = open(path, 'w')
     file.write(IMPORTS + '\n\n')

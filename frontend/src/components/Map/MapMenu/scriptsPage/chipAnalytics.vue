@@ -21,8 +21,7 @@
           </tr>
           <tr v-for="variable in analytics.variables">
             <td>{{variable.title}}</td>
-            <td v-if="variable.list">{{ listValue(variable) }}</td>
-            <td v-else>{{variable.value}}</td>
+            <td>{{ getValue(variable) }}</td>
           </tr>
         </table>
         <v-divider dark class="py-1"></v-divider>
@@ -35,8 +34,9 @@
 </template>
 
 <script>
-import CustomTooltip from "../../../WebsiteShell/UI/customTooltip"
-import CustomColorPicker from "@/components/WebsiteShell/UI/customColorPicker"
+import CustomTooltip from "@/components/WebsiteShell/CustomComponents/customTooltip"
+import CustomColorPicker from "@/components/WebsiteShell/CustomComponents/customColorPicker"
+import {mapGetters} from "vuex"
 
 export default {
   name: 'chipAnalytics',
@@ -46,17 +46,37 @@ export default {
     selectedTreeViewItem: Object
   },
   computed: {
-    pulseAnimation () { return { '--selected-analytics-color': this.selectedTreeViewItem.color } },
+    ...mapGetters(['baseLists']),
+    pulseAnimation: function () {
+      return { '--selected-analytics-color': this.selectedTreeViewItem.color }
+    },
     color: {
       get: function () { return this.analytics.color },
       set: function (color) { this.$emit('changeColor', { analytics: this.analytics, color: color }) }
     },
   },
   methods: {
-    listValue (variable) {
-      let findObject = variable.list.find(item => item.id === variable.value)
-      return findObject ? findObject.value : ''
-    }
+    getValue(variable) {
+      switch (variable.type.title) {
+        case 'list':
+          let value
+          for (const [listId, list] of Object.entries(this.baseLists)) {
+            value = list.values.find(item => item.id === variable.value)
+            if (value) return value.value
+          }
+          return value
+        case 'checkbox':
+          return variable.value ? 'ДА' : 'НЕТ'
+        case 'geometry':
+          return variable.value ? 'Геометрия' : ''
+        case 'search':
+          return variable.value ? variable.value.title : ''
+        default:
+          if(variable.type.title.startsWith('file'))
+            return variable.value ? variable.value.file.name : ''
+          else return variable.value
+      }
+    },
   }
 }
 </script>

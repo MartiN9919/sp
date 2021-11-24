@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import ModelNotification
+from notifications.models import ModelNotification
 from data_base_driver.constants.const_dat import DAT_SYS_NOTIFY
 
 

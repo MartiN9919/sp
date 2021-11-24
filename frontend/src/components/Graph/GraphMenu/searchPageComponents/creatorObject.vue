@@ -27,21 +27,21 @@
           <v-list-item>
             <boolean-input
               v-model="newObject.actual"
-              title="Поиск только по актуальным значениям"
+              label="Поиск только по актуальным значениям"
             ></boolean-input>
           </v-list-item>
           <v-list-item>
             <date-time-input
               v-model="newObject.relDateTimeStart"
-              :clearable="true"
-              title="начала"
+              clearable
+              label="начала"
             ></date-time-input>
           </v-list-item>
           <v-list-item>
             <date-time-input
               v-model="newObject.relDateTimeEnd"
-              :clearable="true"
-              title="конца"
+              clearable
+              label="конца"
             ></date-time-input>
           </v-list-item>
         </v-form>
@@ -59,10 +59,10 @@
 </template>
 
 <script>
-import SelectorInput from "../../../WebsiteShell/InputForms/selectorInput"
-import BooleanInput from "../../../WebsiteShell/InputForms/booleanInput"
-import dateTimeInput from "../../../WebsiteShell/InputForms/dateTimeInput"
-import { mapActions, mapGetters } from "vuex"
+import SelectorInput from "@/components/WebsiteShell/InputForms/selectorInput"
+import BooleanInput from "@/components/WebsiteShell/InputForms/booleanInput"
+import dateTimeInput from "@/components/WebsiteShell/InputForms/dateTimeInput"
+import {mapGetters} from "vuex"
 
 export default {
   name: "creatorObject",
@@ -91,7 +91,7 @@ export default {
     },
   }),
   computed: {
-    ...mapGetters(['baseObjects', 'baseRelations']),
+    ...mapGetters(['baseObjects', 'baseRelations', 'baseList']),
     selectedObjectId: {
       get: function () {
         return this.newObject.id
@@ -131,9 +131,11 @@ export default {
       return Array.isArray(relations) ? defaultRelations.concat(relations) : defaultRelations
     },
     listRelationItems: function () {
-      let relationList = this.listRelations.find(relation => relation.id === this.selectedRelationId)?.list
+      let relationObject = this.listRelations.find(relation => relation.id === this.selectedRelationId)
       let defaultRelationList = [{ id: 0, value: 'Не выбрано' }]
-      return Array.isArray(relationList) ? defaultRelationList.concat(relationList) : defaultRelationList
+      if(relationObject && relationObject.hasOwnProperty('type') && relationObject.type.value)
+          return defaultRelationList.concat(this.baseList(relationObject.type.value).values)
+      return defaultRelationList
     },
     checkChildrenChangeObject: function () {
       if(this.changeObject)

@@ -319,7 +319,6 @@ export default {
           style:         function(feature)         { return self.path_modify(); },
         };
       let layer = (fc.type.toLowerCase()==='featurecollection')?L.geoJSON(fc, style):L.GeoJSON.geometryToLayer(fc, style);
-
       // слой: настроить
       this.layer_set(layer);
       // if (!mode_origin) { this.layer_style_modify(layer) } - маркеры не реагируют
@@ -332,8 +331,11 @@ export default {
 
       // позиционирование карты на layer (отложено, так как сначала позиционируется по key[1])
       this.$nextTick(function() {
-        if (Object.keys(layer._layers).length > 0) {
+        if (layer.hasOwnProperty('_layers') && Object.keys(layer._layers).length > 0) {
           this.map.fitBounds(layer.getBounds(), { padding: [30, 30], });
+        }
+        else {
+          this.map.setView(layer._latlng)
         }
       });
     },

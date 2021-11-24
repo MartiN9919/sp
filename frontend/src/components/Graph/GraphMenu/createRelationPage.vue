@@ -1,32 +1,37 @@
 <template>
-  <v-col>
+  <v-card flat v-if="!editableRelation">
+    <v-card-subtitle class="text-center text-no-wrap">
+      Выбирете объекты для связи
+    </v-card-subtitle>
+  </v-card>
+  <div v-else>
     <div class="work-place">
-      <div class="selector-object">
-        <p>{{`${editableRelation.o1.titleSingle}: ${editableRelation.o1Object.title}`}}</p>
-        <p>{{`${editableRelation.o2.titleSingle}: ${editableRelation.o2Object.title}`}}</p>
+      <div class="header text-center text-no-wrap py-1">
+        <div v-for="(relation, key) in [editableRelation.relation.o1, editableRelation.relation.o2]" :key="key">
+          <v-icon>{{relation.object.object.icon}}</v-icon>{{relation.object.title}}
+        </div>
+        <div v-if="editableRelation.document">
+          <v-icon>{{editableRelation.document.object.object.icon}}</v-icon>{{editableRelation.document.object.title}}
+        </div>
       </div>
-      <v-form ref="form" v-model="valid">
+      <v-form v-if="editableRelation" ref="form" v-model="valid" class="overflow-y-auto">
         <object-record-area
-          :params="editableRelation.params"
+          v-if="editableRelation.relation"
+          :params="editableRelation.relation.params"
           @createNewParam="createNewParam"
           @deleteNewParam="deleteNewParam"
+          @addDocumentToGraph="addObjectToGraph"
         ></object-record-area>
       </v-form>
     </div>
-    <v-divider></v-divider>
-    <control-menu
-      v-if="editableRelation"
-      :buttons="controlButtons"
-      @create="create"
-      class="control-menu"
-    ></control-menu>
-  </v-col>
+    <control-menu :buttons="controlButtons" @create="createRelation" class="control-menu"></control-menu>
+  </div>
 </template>
 
 <script>
-import ObjectRecordArea from "./createPageComponents/objectRecordArea";
-import {mapActions, mapGetters} from "vuex";
-import ControlMenu from "./createPageComponents/controlMenu";
+import ObjectRecordArea from "@/components/Graph/GraphMenu/createPageComponents/objectRecordArea"
+import ControlMenu from "@/components/Graph/GraphMenu/createPageComponents/controlMenu"
+import {mapActions, mapGetters} from "vuex"
 
 export default {
   name: "createRelationPage",
@@ -47,14 +52,14 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['addNewParamEditableRelation', 'deleteNewParamEditableRelation', 'saveEditableRelation']),
+    ...mapActions(['addNewParamEditableRelation', 'deleteNewParamEditableRelation', 'saveEditableRelation', 'addObjectToGraph']),
     createNewParam(event) {
       this.addNewParamEditableRelation(event)
     },
     deleteNewParam(event) {
       this.deleteNewParamEditableRelation({param: event.param, id: event.id})
     },
-    create() {
+    createRelation() {
       this.saveEditableRelation()
     }
   }
@@ -62,11 +67,15 @@ export default {
 </script>
 
 <style scoped>
+.header {
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  border-bottom-color: rgba(0, 0, 0, 0.12);
+}
 .work-place {
   height: calc(100% - 3em);
-}
-.selector-object {
-  height: 5em;
+  display: flex;
+  flex-direction: column;
 }
 .control-menu {
   height: 3em;

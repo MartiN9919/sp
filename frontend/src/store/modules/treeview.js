@@ -1,4 +1,4 @@
-import { getResponseAxios } from '@/plugins/axios_settings'
+import axios  from '@/plugins/axiosSettings'
 import router from '@/router'
 
 export default {
@@ -32,7 +32,7 @@ export default {
     changeSelectedTreeViewItem: ({ commit }, selectedItem = {}) => commit('changeSelectedTreeViewItem', selectedItem),
 
     getTreeViewItemsFromServer ({ commit }, config = {}) {
-      return getResponseAxios('script/list/', config)
+      return axios.get('script/list/', config)
         .then(response => commit('setTreeViewItems', response.data))
         .catch(() => {})
     }

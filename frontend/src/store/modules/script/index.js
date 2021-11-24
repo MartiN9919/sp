@@ -1,9 +1,4 @@
-import {
-  postResponseAxios,
-  getResponseAxios,
-  deleteResponseAxios,
-  putResponseAxios,
-} from '@/plugins/axios_settings'
+import axios from '@/plugins/axiosSettings'
 
 import { MAP_CONST, MAP_ITEM } from '@/components/Map/Leaflet/Lib/Const';
 import { color_random } from '@/components/Map/Leaflet/Lib/LibColor';
@@ -179,8 +174,8 @@ export default {
 
     createNewTemplate: ({ commit }) => commit('createNewTemplate'),
 
-    executeMapScript ({ commit }, parameters = {}) {
-      return postResponseAxios(this._vm.$CONST.API.SCRIPT.MAP, parameters.request, parameters.config)
+    executeMapScript ({ commit, dispatch }, parameters = {}) {
+      return axios.post(this._vm.$CONST.API.SCRIPT.MAP, parameters.request, parameters.config)
         .then(response => {
           commit('removeAnalytics', parameters.request);
           parameters.request.fc = response.data;
@@ -203,23 +198,24 @@ export default {
     },
 
 
-    getTemplatesList ({ commit }, config = {}) {
-      return getResponseAxios('script/templates/', config)
-        .then(response => { commit('loadTemplatesList', response.data); })
+
+    getTemplatesList ({ commit, dispatch }, config = {}) {
+      return axios.get('script/templates/', config)
+        .then(response => { { commit('loadTemplatesList', response.data) } })
         .catch(() => {})
     },
     saveSelectedTemplate ({ state, commit }, parameters = {}) {
-      return postResponseAxios('script/template/', parameters.selectedTemplate, parameters.config)
+      return axios.post('script/template/', parameters.selectedTemplate, parameters.config)
         .then(response => { commit('saveSelectedTemplate', response.data) })
         .catch(() => {})
     },
     putSelectedTemplate ({ state, commit }, parameters = {}) {
-      return putResponseAxios('script/template/', parameters.selectedTemplate, parameters.config)
+      return axios.put('script/template/', parameters.selectedTemplate, parameters.config)
         .then(response => { commit('changeTemplateTitle') })
         .catch(() => {})
     },
     getSelectedTemplate ({ state, commit, dispatch }, config = {}) {
-      return getResponseAxios('script/template/', config)
+      return axios.get('script/template/', config)
         .then(response => {
           const activeAnalysts = response.data.activeAnalysts
           const passiveAnalysts = response.data.passiveAnalysts
@@ -230,8 +226,8 @@ export default {
         })
         .catch(() => {})
     },
-    deleteSelectedTemplate ({ commit }, config = {}) {
-      return deleteResponseAxios('script/template/', config)
+    deleteSelectedTemplate ({ commit, dispatch }, config = {}) {
+      return axios.delete('script/template/', config)
         .then(response => {
           commit('deleteSelectedTemplate', config.params.template_id)
           commit('changeSelectedTreeViewItem', {})

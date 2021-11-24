@@ -1,7 +1,9 @@
 <template>
   <split-panel shadow-effect>
     <template v-slot:firstPane>
-      <map-menu></map-menu>
+      <tools-menu>
+        <component :is="changeComponent()"/>
+      </tools-menu>
     </template>
     <template v-slot:secondPane>
       <LeafletMain/>
@@ -10,38 +12,38 @@
 </template>
 
 <script>
-import SplitPanel from "../components/WebsiteShell/UI/splitPanel"
-import LeafletMain from '../components/Map/Leaflet/LeafletMain'
-import MapMenu from "../components/Map/MapMenu/mapMenu"
+import SplitPanel from "@/components/WebsiteShell/CustomComponents/splitPanel"
+import LeafletMain from '@/components/Map/Leaflet/LeafletMain'
+import toolsMenu from "@/components/WebsiteShell/CustomComponents/toolsMenu"
+const MapScriptMenu = () => import("@/components/Map/MapMenu/scriptsPage/mapScriptMenu")
+const MapDossier = () => import("@/components/Map/MapMenu/dossierPage/dossierPage")
 import { mapGetters, mapActions } from "vuex"
+import router from "@/router"
 
 export default {
-  name: 'MapPage',
-  components: { SplitPanel, MapMenu, LeafletMain, },
-
-  mounted() {
-    this.setDefaultValueActiveTool()
-  },
-
-  watch: {
-    SCRIPT_GET_ITEM_SEL: function(obj) {
-      console.log('Выбраны объекты:', obj)
-    },
-  },
-
-  computed: {
-    ...mapGetters([
-      'SCRIPT_GET_ITEM_SEL',
-    ]),
-  },
-
+  name: 'Map',
+  components: {SplitPanel, toolsMenu, LeafletMain, MapScriptMenu, MapDossier},
+  computed: mapGetters(['activeTool', 'SCRIPT_GET_ITEM_SEL']),
   methods: {
-    ...mapActions(['setDefaultValueActiveTool', ]),
+    ...mapActions(['setNavigationDrawerStatus', 'setActiveTool']),
+    changeComponent() {
+      switch (this.activeTool(router.currentRoute.name)) {
+        case 'scriptsPage':
+          return 'MapScriptMenu'
+        case 'dossierPage':
+          return 'MapDossier'
+        default:
+          return 'MapScriptMenu'
+      }
+    }
   },
-
+  watch: {
+    SCRIPT_GET_ITEM_SEL: function (value) {
+      if(JSON.parse(value).length) {
+        this.setNavigationDrawerStatus(true)
+        this.setActiveTool('dossierPage')
+      }
+    }
+  },
 }
 </script>
-
-<style scoped>
-
-</style>

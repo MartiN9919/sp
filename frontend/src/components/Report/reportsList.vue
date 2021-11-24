@@ -29,7 +29,9 @@
           <tr @click="changeSelectedReport(item)" :style="selectedReportStyle(item)" style="cursor: pointer">
             <td class="text-center">{{ item.name }}</td>
             <td class="text-center">
-              <div v-for="variable in item.params.variables">{{ variable.title }}: {{ variable.value }}</div>
+              <div v-for="variable in item.params.variables">
+                {{ variable.title }}: {{ typeof variable.value === 'object' ? variable.value.title : variable.value }}
+              </div>
             </td>
             <td class="text-center">{{ item.date }}</td>
             <td class="text-center">
@@ -64,13 +66,12 @@
 </template>
 
 <script>
-import NavigationDrawer from "../WebsiteShell/Mixins/NavigationDrawer"
+import {getDownloadReportLink} from "@/plugins/axiosSettings"
 import {mapActions, mapGetters} from 'vuex'
 import router from '@/router'
 
 export default {
   name: 'reportsList',
-  mixins:[NavigationDrawer],
   data() {
     return {
       search: '',
@@ -93,11 +94,19 @@ export default {
     selectReport() { return this.selectedTreeViewItem(router.currentRoute.name) },
   },
   methods: {
-    ...mapActions(['getListFiles', 'changeSelectedTreeViewItem']),
+    ...mapActions(['getListFiles', 'setNavigationDrawerStatus', 'changeSelectedTreeViewItem']),
 
-    downloadFile: (id) => console.log(id),
+    downloadFile(id) {
+      console.log(getDownloadReportLink(id))
+      let fileURL = getDownloadReportLink(id);
+      let fileLink = document.createElement('a');
+      fileLink.href = fileURL;
+      fileLink.setAttribute('download', 'file.docx');
+      document.body.appendChild(fileLink);
+      fileLink.click();
+    },
     changeSelectedReport: function (item) {
-      this.drawer = true
+      this.setNavigationDrawerStatus(true)
       if (this.selectReport && this.selectReport === item.params)
         this.changeSelectedTreeViewItem()
       else this.changeSelectedTreeViewItem(item.params)

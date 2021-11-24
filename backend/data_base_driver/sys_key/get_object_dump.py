@@ -25,3 +25,5 @@ def get_object_by_id(id):
     @return: словарь содержащий информацию о объекте
     """
     return DAT_SYS_OBJ.DUMP.get_rec(id=id)
+
+

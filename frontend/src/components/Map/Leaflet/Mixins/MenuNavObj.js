@@ -11,11 +11,11 @@ import {
   MAP_TEST_EDIT_2,
 } from '@/components/Map/Leaflet/Mixins/Menu.test';
 
-import contextMenuNested from '@/components/WebsiteShell/ContextMenu/contextMenuNested';
+import contextMenuNested from '@/components/WebsiteShell/UIMainComponents/contextMenuNested';
 import MixMenuStruct from '@/components/Map/Leaflet/Mixins/Menu.struct';
 import { str_cut, str_copy_deep, } from '@/components/Map/Leaflet/Lib/Lib';
 import { fc_exist, } from '@/components/Map/Leaflet/Lib/LibFc';
-import { postResponseAxios, } from '@/plugins/axios_settings';
+import axios from '@/plugins/axiosSettings';
 
 
 const
@@ -209,7 +209,7 @@ export default {
       this.on_menu_dialog_param_show(MENU_IND_NEW);
     },
     async action_obj_new_execute() {
-      await postResponseAxios(this.$CONST.API.OBJ.GEOMETRY, {
+      await axios.post(this.$CONST.API.OBJ.GEOMETRY, {
         parent_id: (this.menu_item?.parent_id) ? this.menu_item?.parent_id : 0,
         name:      this.menu_dialog_param_name,
         //icon:      (this.menu_dialog_param_icon!='')?this.menu_dialog_param_icon:undefined,
@@ -224,7 +224,7 @@ export default {
 
     // action: save
     async action_obj_save(menu_item) {
-      await postResponseAxios(this.$CONST.API.OBJ.GEOMETRY, {
+      await axios.post(this.$CONST.API.OBJ.GEOMETRY, {
         rec_id:    this.menu_item.id,
         location:  this.fc,
       })
@@ -240,7 +240,7 @@ export default {
       this.on_menu_dialog_param_show(MENU_IND_CHANGE);
     },
     async action_obj_change_execute() {
-      await postResponseAxios(this.$CONST.API.OBJ.GEOMETRY, {
+      await axios.post(this.$CONST.API.OBJ.GEOMETRY, {
         rec_id:    this.menu_item.id,
         name:      this.menu_dialog_param_name,
         //icon:      (this.menu_dialog_param_icon!='')?this.menu_dialog_param_icon:undefined,

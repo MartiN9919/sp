@@ -48,8 +48,8 @@ export const MAP_CONST = {
     COLORING: {                           // цвет в зависимости от значения
       GREEN_MIN: 'green_min',             // зеленый(хуже)  -> красный(лучше) https://leafletjs.com/examples/choropleth/example.html
       GREEN_MAX: 'green_max',             // зеленый(лучше) -> красный(хуже)
-      BEGIN:     '00FF00',                // цвет: начальный
-      END:       'FF0000',                // цвет: конечный
+      BEGIN:     'FF0000',                // цвет: начальный
+      END:       '00FF00',                // цвет: конечный
     },
   },
 };

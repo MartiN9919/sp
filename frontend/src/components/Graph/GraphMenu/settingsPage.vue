@@ -1,5 +1,5 @@
 <template>
-  <v-container class="overflow-y-auto pa-0">
+  <div class="overflow-y-auto h-100">
     <global-settings
       :settings="globalDisplaySettings"
       @changeSettings="changeGlobalSettingState"
@@ -14,15 +14,15 @@
         <selector-object v-model="idTriggerSettings" start-object :is-get-classifiers="false"></selector-object>
       </v-list-item>
     </trigger-settings>
-  </v-container>
+  </div>
 </template>
 
 <script>
-import ResponsiveInputForm from "../../WebsiteShell/UI/responsiveInputForm"
-import GlobalSettings from "./settingsPageComponents/globalSettings"
-import ObjectSettings from "./settingsPageComponents/objectSettings"
-import TriggerSettings from "./settingsPageComponents/triggerSettings"
-import SelectorObject from "./createPageComponents/selectorObject"
+import ResponsiveInputForm from "@/components/WebsiteShell/CustomComponents/responsiveInputForm"
+import GlobalSettings from "@/components/Graph/GraphMenu/settingsPageComponents/globalSettings"
+import ObjectSettings from "@/components/Graph/GraphMenu/settingsPageComponents/objectSettings"
+import TriggerSettings from "@/components/Graph/GraphMenu/settingsPageComponents/triggerSettings"
+import SelectorObject from "@/components/Graph/GraphMenu/createPageComponents/selectorObject"
 import {mapActions, mapGetters} from "vuex"
 
 export default {

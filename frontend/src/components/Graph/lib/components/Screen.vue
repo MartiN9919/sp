@@ -1,6 +1,6 @@
 <template>
   <svg class="screen" ref="screen">
-    <g>
+    <g id="screen">
       <slot>
       </slot>
     </g>
@@ -117,7 +117,15 @@ export default {
       const x = this.$el.clientWidth / 2 - (node.x + node.width / 2) * zoom + offsetX
       const y = this.$el.clientHeight / 2 - (node.y + node.height / 2) * zoom + offsetY
       this.panzoom.pan({ x, y })
-    }
+    },
+    getStartPosition() {
+      let position = {x: 0, y: 0}
+      const zoom = this.panzoom.getZoom()
+      const pan = this.panzoom.getPan()
+      position.x = (this.$el.clientWidth / 2 - pan.x) / zoom + Math.random() * 600 - 300
+      position.y = (this.$el.clientHeight / 2 - pan.y) / zoom + Math.random() * 600 - 300
+      return position
+    },
   },
 }
 </script>

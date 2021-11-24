@@ -1,9 +1,20 @@
 <template>
   <v-card hover width="fit-content">
     <table class="table" :style="{padding: sizeNode / 180}">
-      <tr v-for="param in params" :key="param.id" v-if="param.values.length" :style="{fontSize: sizeNode/40}">
-        <td style="white-space: nowrap">{{param.baseParam.title}}</td>
-        <td class="body-row" :style="{minWidth: sizeNode / 2}" v-if="param.values[0].value">{{param.values[0].value}}</td>
+      <tr
+        v-if="param.values.length"
+        v-for="param in params" :key="param.id"
+        :style="{fontSize: sizeNode/40}"
+      >
+        <td class="information-column">
+          {{param.baseParam.title}}
+        </td>
+        <td v-if="param.values[0].value" :style="{maxWidth: sizeNode / 2}">
+          {{param.values[0].value}}
+        </td>
+        <td v-if="showDate" class="information-column">
+          {{param.values[0].date}}
+        </td>
       </tr>
     </table>
   </v-card>
@@ -11,7 +22,7 @@
 
 
 <script>
-import CustomTooltip from "@/components/WebsiteShell/UI/customTooltip"
+import CustomTooltip from "@/components/WebsiteShell/CustomComponents/customTooltip"
 
 export default {
   name: "tooltip",
@@ -19,23 +30,25 @@ export default {
   props: {
     params: Array,
     sizeNode: Number,
+    showDate: {
+      type: Boolean,
+      default: false,
+    }
   },
 }
 </script>
 
 <style scoped>
 .table {
-  width: 100%;
+  width: max-content;
   border-collapse: collapse;
-  border-bottom: 1px solid #aaaaaa;
   background-color: #f2f2f2;
 }
 td {
   padding: 2px 8px;
 }
-.table tr:nth-child(even){background-color: white;}
-.body-row {
-  width: fit-content;
+.table tr:nth-child(even) {
+  background-color: white;
 }
 thead tr {
   background-color: #555555;
@@ -43,5 +56,8 @@ thead tr {
 }
 .v-item-group {
   position: initial;
+}
+.information-column {
+  white-space: nowrap;
 }
 </style>

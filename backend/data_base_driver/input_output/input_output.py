@@ -1,12 +1,14 @@
 from datetime import datetime
 
-from data_base_driver.additional_functions import get_date_time_from_sec, date_time_to_sec
+from data_base_driver.additional_functions import get_date_time_from_sec, date_time_to_sec, io_set_wrap, \
+    io_get_object_wrap, io_get_rel_wrap
 from data_base_driver.input_output.input_output_manticore import io_get_rel_manticore_dict, io_get_obj_manticore_dict
 from data_base_driver.input_output.input_output_mysql import io_get_rel_mysql_tuple, io_get_obj_mysql_tuple
 from data_base_driver.input_output.io_class import IO
 from requests.exceptions import ConnectionError
 
 
+@io_set_wrap
 def io_set(group_id, obj, data):
     """
     функция для добавление объекта в базу данных
@@ -22,6 +24,7 @@ def io_set(group_id, obj, data):
     )
 
 
+@io_get_object_wrap
 def io_get_obj(group_id, object_type, keys, ids, ids_max_block, where_dop_row, time_interval):
     """
     Функция для получения информации о объекте из мантикоры в формате списка словарей
@@ -84,6 +87,7 @@ def io_get_obj_tuple(group_id, object_type, keys, ids, ids_max_block, where_dop_
                                    time_interval)]
 
 
+@io_get_rel_wrap
 def io_get_rel(group_id, keys, obj_rel_1, obj_rel_2, val, time_interval, is_unique, rec_id=0):
     """
     Функция для получения информации о связях в формате списка словарей
@@ -144,7 +148,8 @@ def io_get_rel_tuple(group_id, keys, obj_rel_1, obj_rel_2, val, time_interval, i
              int(item['rec_id_1']),
              int(item['obj_id_2']),
              int(item['rec_id_2']),
-             item['val']
+             item['val'],
+             item['id']
              ) for item in temp_result]
 
 

@@ -47,6 +47,7 @@ export default {
 <style>
 .content {
   background-color: white;
+  border-radius: 100%;
   position: initial;
   white-space: nowrap;
   width: fit-content;

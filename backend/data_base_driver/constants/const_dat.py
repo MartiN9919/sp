@@ -48,6 +48,7 @@ class DAT_SYS_TRIGGER:
     TABLE = VEC_DATA['NAME'] + '.' + TABLE_SHORT
     ID = 'id'
     OBJECT_ID = 'object_id'
+    OBJECT = 'object'
     TITLE = 'title'
     CONTENT = 'content'
     VARIABLES = 'variables'
@@ -142,10 +143,12 @@ class DAT_SYS_KEY:
     TYPE_PHONE_NUMBER = 'phone_number'
     TYPE_FILE_PHOTO = 'file_photo'
     TYPE_FILE_ANY = 'file_any'
+    TYPE_SEARCH = 'search'
 
     VISIBLE_NONE = 'none'
     VISIBLE_ONLY_VALUE = 'only_value'
     VISIBLE_ALL = 'all'
+
 
     TYPE_LIST = (
         (TYPE_INT, "Число"),
@@ -170,7 +173,8 @@ class DAT_SYS_KEY:
     NAME_OWNER_ADD_RO = 'owner_add_ro'
     NAME_OWNER_ADD_RO_LIMIT = 'owner_add_ro_limit'
     NAME_OWNER_DEL = 'owner_del'
-    NAME_OWNER_LIST = (NAME_OWNER_ADD_RW, NAME_OWNER_ADD_RO, NAME_OWNER_ADD_RO_LIMIT, NAME_OWNER_DEL)
+    NAME_OWNER_VISIBLE = 'owner_visible'
+    NAME_OWNER_LIST = (NAME_OWNER_ADD_RW, NAME_OWNER_ADD_RO, NAME_OWNER_ADD_RO_LIMIT, NAME_OWNER_DEL, NAME_OWNER_VISIBLE)
     NAME_POINT_LOCATION = "ST_AsGeoJSON(ST_PointFromText(CONCAT('POINT(',lon,' ',lat,')'),0)) AS location"  # изменем с 1 на 0 в связи с переходом на новую версию mysql
     NAME_POINT_ADDRESS = 'address'
 
@@ -179,6 +183,52 @@ class DAT_SYS_KEY:
     NAME_GEOMETRY_ICON = 'icon'
     NAME_GEOMETRY_LOCATION = "ST_AsGeoJSON(location) AS location"
 
+
+class DAT_SYS_SCRIPT_VARIABLE:
+
+    TABLE_SHORT = 'sys_script_variable'
+    TABLE = VEC_DATA['NAME'] + '.' + TABLE_SHORT
+    ID = 'id'
+    NAME = 'name'
+    TITLE = 'title'
+    HINT = 'hint'
+    TYPE = 'type'
+    LIST_ID = 'list_id'
+    OBJ_ID = 'obj_id'
+    SCRIPT_ID = 'script_id'
+    NECESSARY = 'necessary'
+
+    TYPE_LIST = 'list'
+
+    TYPE_VARIABLE_LIST = (
+        (DAT_SYS_KEY.TYPE_INT, "Число"),
+        (DAT_SYS_KEY.TYPE_STR, 'Текст'),
+        (DAT_SYS_KEY.TYPE_DATATIME, 'Дата/Время'),
+        (DAT_SYS_KEY.TYPE_DATA, 'Дата'),
+        (DAT_SYS_KEY.TYPE_PHONE_NUMBER, 'Номер телефона'),
+        (DAT_SYS_KEY.TYPE_BIT, 'Да/Нет'),
+        (DAT_SYS_KEY.TYPE_GEOMETRY, 'Точка/Путь/Полигон'),
+        (DAT_SYS_KEY.TYPE_FILE_ANY, 'Файл-любой тип'),
+        (DAT_SYS_KEY.TYPE_SEARCH, 'Поиск объекта'),
+        (TYPE_LIST, 'Список')
+    )
+
+
+class DAT_SYS_TRIGGER_VARIABLE:
+
+    TABLE_SHORT = 'sys_trigger_variable'
+    TABLE = VEC_DATA['NAME'] + '.' + TABLE_SHORT
+    ID = 'id'
+    NAME = 'name'
+    TITLE = 'title'
+    HINT = 'hint'
+    TYPE = 'type'
+    LIST_ID = 'list_id'
+    OBJ_ID = 'obj_id'
+    SCRIPT_ID = 'trigger_id'
+    NECESSARY = 'necessary'
+
+    TYPE_LIST = 'list'
 
 ##################################################################################
 # DAT_OWNER
@@ -261,6 +311,7 @@ class DAT_SYS_LIST_DOP:
     KEY_ID = 'key_id'
     LIST_ID = 'list_id'
     VAL = 'val'
+    DUMP = None
 
 
 class DAT_SYS_FILES:
@@ -340,6 +391,7 @@ class DAT_SYS_NOTIFY:
     FILE_ID = 'file_id'
     FILE = 'file'
     GEOMETRY = 'geometry'
+    IS_READ = 'is_read'
 
     FROM_USER = 'from_user'
     TO_USER = 'to_user'
@@ -383,9 +435,11 @@ class DAT_SYS_SCRIPT_RESULT:
 from data_base_driver.dump.dump_obj import DUMP_OBJ
 from data_base_driver.dump.dump_key import DUMP_KEY
 from data_base_driver.dump.dump_owner import DUMP_OWNER
+from data_base_driver.dump.dump_list import DUMP_LIST
 from data_base_driver.dump.dump_phone_number import DUMP_PHONE_NUMBER_FORMAT
 
 DAT_SYS_OBJ.DUMP = DUMP_OBJ()
 DAT_SYS_KEY.DUMP = DUMP_KEY()
 DAT_OWNER.DUMP = DUMP_OWNER()
 DAT_SYS_PHONE_NUMBER_FORMAT.DUMP = DUMP_PHONE_NUMBER_FORMAT()
+DAT_SYS_LIST_DOP.DUMP = DUMP_LIST()

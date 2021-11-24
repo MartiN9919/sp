@@ -1,25 +1,21 @@
 <template>
   <split-panel shadow-effect>
     <template v-slot:firstPane>
-      <reportScriptMenu></reportScriptMenu>
+      <report-script-menu/>
     </template>
     <template v-slot:secondPane>
-      <reportsList></reportsList>
+      <reports-list/>
     </template>
   </split-panel>
 </template>
 
 <script>
-import reportScriptMenu from '../components/Report/reportScriptMenu'
-import reportsList from '../components/Report/reportsList'
-import SplitPanel from "../components/WebsiteShell/UI/splitPanel";
+import SplitPanel from "@/components/WebsiteShell/CustomComponents/splitPanel"
+import reportsList from '@/components/Report/reportsList'
+import reportScriptMenu from '@/components/Report/reportScriptMenu'
 
 export default {
-  name: 'ReportsPage',
-  components: { SplitPanel, reportScriptMenu, reportsList, },
+  name: 'Reports',
+  components: { SplitPanel, reportScriptMenu, reportsList},
 }
 </script>
-
-<style>
-
-</style>

@@ -24,14 +24,6 @@ export default {
     document.removeEventListener('mouseup', this.stopDrag)
   },
   methods: {
-    preventClicks (e) {
-      if (this.drag.threshold.crossed) {
-        e.preventDefault()
-        e.stopPropagation()
-        e.stopImmediatePropagation()
-        document.removeEventListener('click', this.preventClicks, true)
-      }
-    },
     startDrag (e) {
       let parent = this.$parent
       while (parent) {
@@ -46,7 +38,6 @@ export default {
       this.drag.threshold = {x: 0, y: 0, crossed: false}
       document.addEventListener('mouseup', this.stopDrag)
       document.addEventListener('mousemove', this.applyDrag)
-      document.addEventListener('click', this.preventClicks, true)
     },
     stopDrag () {
      this.drag.active = false

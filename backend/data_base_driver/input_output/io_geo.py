@@ -4,6 +4,7 @@ import requests
 
 from data_base_driver.constants.const_dat import DAT_SYS_OBJ, DAT_SYS_KEY, DAT_OBJ_ROW
 from data_base_driver.constants.const_fulltextsearch import FullTextSearch
+from data_base_driver.constants.const_key import SYS_KEY_CONSTANT
 from data_base_driver.input_output.input_output import io_get_obj, io_get_rel
 from data_base_driver.input_output.input_output_mysql import io_get_obj_mysql_tuple, io_get_rel_mysql_generator
 from data_base_driver.input_output.io_class import IO
@@ -22,10 +23,12 @@ def feature_collection_by_geometry(group_id, object_type, rec_id, keys, time_int
     @param time_interval: интервал времени в который должны были быть созданы искомые записи
     @return: feature collection содержащая информацию о искомых геометриях
     """
-    if object_type == 25:
-        keys.append(25204)
-    elif object_type == 30:
-        keys.append(30304)
+    from data_base_driver.sys_key.get_list import get_item_list_value
+    if object_type == SYS_KEY_CONSTANT.POINT_ID:
+        keys += [SYS_KEY_CONSTANT.POINT_CLASSIFIER_ID, SYS_KEY_CONSTANT.POINT_TYPE_CLASSIFIER_ID,
+                 SYS_KEY_CONSTANT.BORDER_POINT]
+    elif object_type == SYS_KEY_CONSTANT.GEOMETRY_ID:
+        keys += [SYS_KEY_CONSTANT.GEOMETRY_CLASSIFIER_ID, SYS_KEY_CONSTANT.GEOMETRY_TYPE_CLASSIFIER_ID]
     if len(rec_id) == 0:
         return geojson.FeatureCollection(features=[])
     records = io_get_obj(group_id, object_type, keys, rec_id, 1000, '', time_interval)
@@ -40,24 +43,57 @@ def feature_collection_by_geometry(group_id, object_type, rec_id, keys, time_int
                                                                 DAT_OBJ_ROW.VAL: record[DAT_OBJ_ROW.VAL],
                                                                 DAT_OBJ_ROW.SEC: record[DAT_OBJ_ROW.SEC]})
             objects[record[DAT_OBJ_ROW.ID]]['geometry'].sort(key=lambda x: x[DAT_OBJ_ROW.SEC], reverse=True)
+        elif int(record[DAT_OBJ_ROW.KEY_ID]) == SYS_KEY_CONSTANT.BORDER_POINT:
+            if not objects[record[DAT_OBJ_ROW.ID]].get('text'):
+                objects[record[DAT_OBJ_ROW.ID]]['text'] = []
+            objects[record[DAT_OBJ_ROW.ID]]['text'].append({DAT_OBJ_ROW.KEY_ID: record[DAT_OBJ_ROW.KEY_ID],
+                                                              DAT_OBJ_ROW.VAL: record[DAT_OBJ_ROW.VAL],
+                                                              DAT_OBJ_ROW.SEC: record[DAT_OBJ_ROW.SEC]})
+            objects[record[DAT_OBJ_ROW.ID]]['text'].sort(key=lambda x: x[DAT_OBJ_ROW.SEC], reverse=True)
+        elif int(record[DAT_OBJ_ROW.KEY_ID]) in SYS_KEY_CONSTANT.GEOMETRY_TYPES:
+            temp_value = str(get_item_list_value(record[DAT_OBJ_ROW.VAL]))
+            value = temp_value[temp_value.index('(') + 1:temp_value.index(')')]
+            if not objects[record[DAT_OBJ_ROW.ID]].get('type'):
+                objects[record[DAT_OBJ_ROW.ID]]['type'] = []
+            objects[record[DAT_OBJ_ROW.ID]]['type'].append({DAT_OBJ_ROW.KEY_ID: record[DAT_OBJ_ROW.KEY_ID],
+                                                              DAT_OBJ_ROW.VAL: value,
+                                                              DAT_OBJ_ROW.SEC: record[DAT_OBJ_ROW.SEC]})
+            objects[record[DAT_OBJ_ROW.ID]]['type'].sort(key=lambda x: x[DAT_OBJ_ROW.SEC], reverse=True)
         else:
             if not objects[record[DAT_OBJ_ROW.ID]].get('params'):
                 objects[record[DAT_OBJ_ROW.ID]]['params'] = []
-            objects[record[DAT_OBJ_ROW.ID]]['params'].append({DAT_OBJ_ROW.KEY_ID: record[DAT_OBJ_ROW.KEY_ID],
+            old_params = [item for item in objects[record[DAT_OBJ_ROW.ID]]['params'] if
+                          item['key_id'] == record[DAT_OBJ_ROW.KEY_ID]]
+            if len(old_params) > 0:
+                old_params[0] = {DAT_OBJ_ROW.KEY_ID: record[DAT_OBJ_ROW.KEY_ID],
+                                                              DAT_OBJ_ROW.VAL: record[DAT_OBJ_ROW.VAL],
+                                                              DAT_OBJ_ROW.SEC: record[DAT_OBJ_ROW.SEC]}
+            else:
+                objects[record[DAT_OBJ_ROW.ID]]['params'].append({DAT_OBJ_ROW.KEY_ID: record[DAT_OBJ_ROW.KEY_ID],
                                                               DAT_OBJ_ROW.VAL: record[DAT_OBJ_ROW.VAL],
                                                               DAT_OBJ_ROW.SEC: record[DAT_OBJ_ROW.SEC]})
     temp = []
     for object in objects:
         if objects[object].get('geometry'):
             geometry = json.loads(objects[object].get('geometry')[0]['val'])
-            params = {}
+            params = {'hint': ''}
             for param in objects[object].get('params', []):
                 params[get_key_by_id(param[DAT_OBJ_ROW.KEY_ID])[DAT_SYS_KEY.NAME]] = \
                     [param[DAT_OBJ_ROW.VAL], get_date_time_from_sec(param[DAT_OBJ_ROW.SEC])]
+                params['hint'] += param[DAT_OBJ_ROW.VAL]
+            if objects[object].get('type'):
+                params['class'] = objects[object]['type'][0]['val']
+            if objects[object].get('text'):
+                params['text'] = objects[object]['text'][0]['val']
             feature = geojson.Feature(geometry=geometry, properties=params)
-            feature['id'] = object
+            feature['rec_id'] = object
+            feature['obj_id'] = object_type
             temp.append(feature)
     return geojson.FeatureCollection(temp)
+
+
+def get_geometries(group_id, rec_id):
+    return feature_collection_by_geometry(group_id, 30, [rec_id], [], {})['features'][0]['geometry']['geometries']
 
 
 def relations_to_geometry_id(group_id, geometry_type, object_type, rec_id, keys_relation, time_interval):
@@ -65,13 +101,15 @@ def relations_to_geometry_id(group_id, geometry_type, object_type, rec_id, keys_
     Функция для преобразования связей в идентификаторы геометрий
     @param group_id: идентификатор группы пользователя
     @param geometry_type: идентификатор типа геометрии (25 - точка, 30 - геометрия)
-    @param object_type: идентификатор связи объекта связь с которым мы ищем
+    @param object_type: идентификатор связи объекта связь с которым мы ищем, если с любым то 0
     @param rec_id: идентификатор объекта, если не известен то 0
     @param keys_relation: список идентификаторов типов связей между геометрией и объектом
     @param time_interval: временной интервал установления связи в секундах
     @return: список идентифкаторов наденных геометрических объектов
     """
-    if rec_id == 0:
+    if object_type == 0:
+        object = []
+    elif rec_id == 0:
         object = [object_type]
     else:
         object = [object_type, rec_id]
@@ -149,14 +187,21 @@ def get_geometry_folders(group_id):
         'limit': 10000
     })
     response = requests.post(FullTextSearch.SEARCH_URL, data=data)
-    geometries = [{'id': item['_source']['rec_id'], 'name': item['_source']['name'],
-                   'parent_id': item['_source']['parent_id']}
+    geometries = [{'id': item['_source']['rec_id'], 'name': item['_source']['name'], 'sec': item['_source']['sec'],
+                   'parent_id': item['_source']['parent_id'], 'location': item['_source']['location']}
                   for item in json.loads(response.text)['hits']['hits']]
     geometries.sort(key=lambda x: x['id'])
-    result = [{'id': 0, 'value': 'Корень'}]
+    temp = {}
     for geometry in geometries:
-        if len([item for item in result if item['id'] == geometry['parent_id']]) == 0 and geometry['parent_id'] != 0:
-            result.append({'id': geometry['parent_id'], 'value': [item['name'] for item in geometries if item['id'] == geometry['parent_id']][0]})
+        if not temp.get(geometry['id']):
+            temp[geometry['id']] = {'location': geometry['location'], 'sec': geometry['sec'], 'name': geometry['name']}
+        else:
+            if geometry['location'] and geometry['sec'] > temp[geometry['id']]['sec'] < geometry['sec']:
+                temp[geometry['id']]['location'] = geometry['location']
+    result = [{'id': 0, 'value': 'Корень'}]
+    for key in temp:
+        if not temp[key]['location']:
+            result.append({'id': key, 'value': temp[key]['name']})
     return result
 
 

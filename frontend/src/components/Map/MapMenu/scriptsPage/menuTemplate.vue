@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-menu offset-y :disabled="!templates.length" max-height="50%" min-width="95%" max-width="95%" z-index="10001" attach>
+    <drop-down-menu offset-y :disabled="!templates.length" max-height="50%" min-width="95%" max-width="95%" attach>
       <template v-slot:activator="{ on, value }">
         <v-text-field
           autocomplete="off" ref="form"
@@ -59,22 +59,27 @@
           </template>
         </v-text-field>
       </template>
-      <v-list rounded>
-        <v-list-item
-          v-for="temp in templates" :key="temp.id"
-          :disabled="temp.id === parseInt(selectedTemplate.id)"
-          @click="getTemplate(temp.id)"
-        >
-          <v-list-item-title>{{temp.title}}</v-list-item-title>
-        </v-list-item>
-      </v-list>
-    </v-menu>
+      <template v-slot:body="{ closeMenu, status }">
+        <v-list v-if="status" rounded>
+          <v-list-item
+            v-for="temp in templates" :key="temp.id"
+            :disabled="temp.id === parseInt(selectedTemplate.id)"
+            @click="getTemplate(temp.id)"
+          >
+            <v-list-item-title>{{temp.title}}</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </template>
+    </drop-down-menu>
   </div>
 </template>
 
 <script>
+import DropDownMenu from "@/components/WebsiteShell/CustomComponents/dropDownMenu"
+
 export default {
   name: 'menuTemplate',
+  components: {DropDownMenu},
   data: () => ({
     dialogDeleteStatus: false,
     errorMessage: ''

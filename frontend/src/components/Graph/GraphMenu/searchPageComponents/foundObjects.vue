@@ -1,5 +1,5 @@
 <template>
-  <v-list class="py-0">
+  <v-list class="py-0" v-if="objects">
     <v-list-item class="title-table">
       <v-list-item-subtitle class="text-title-table">Найдено объектов: {{objects.length}}</v-list-item-subtitle>
     </v-list-item>
@@ -22,8 +22,8 @@
 </template>
 
 <script>
-import CustomTooltip from "@/components/WebsiteShell/UI/customTooltip";
-import TriggerInformation from "@/components/WebsiteShell/UI/triggerInformation";
+import CustomTooltip from "@/components/WebsiteShell/CustomComponents/customTooltip"
+import TriggerInformation from "@/components/WebsiteShell/CustomComponents/triggerInformation"
 export default {
   name: "foundObjects",
   components: {TriggerInformation, CustomTooltip},
@@ -44,7 +44,7 @@ export default {
 }
 .body-table {
   overflow-y: auto;
-  height: calc(100% - 2.5em);
+  height: calc(100% - 36px);
 }
 .list-icons {
   position:absolute;

@@ -2,10 +2,10 @@
   <split-panel>
     <template v-slot:firstPane>
       <treeView
-        :treeViewItems="treeView"
-        :selectedTreeViewItem="selectedItem"
-        @changeSelectedTreeViewItem="setSelectedTreeViewItem"
-        class="tree-view overflow-y-auto"
+        :items="treeView"
+        :selected="selectedItem"
+        @change="setSelectedItem"
+        class="tree-view"
       ></treeView>
     </template>
 
@@ -35,32 +35,30 @@
         <v-divider v-if="'id' in selectedItem"></v-divider>
 
         <v-scroll-y-transition mode="out-in">
-          <v-form ref="form" v-if="'id' in selectedItem" :key="selectedItem.id" class="px-2">
-            <custom-tooltip v-for="variable in selectedItem.variables" :key="variable.id" :body-text="variable.hint" bottom>
+          <v-form ref="form" v-if="'id' in selectedItem" class="px-2">
+            <custom-tooltip v-for="v in selectedItem.variables" :key="v.id" :body-text="v.hint" bottom>
               <template v-slot:activator="{ on }">
-                <div v-on="on">
+                <div v-on="on" class="pt-2">
                   <responsive-input-form
-                    v-model="variable.value"
-                    :type="variable.type"
-                    :title="variable.title"
-                    :items="variable.list"
-                    hide-details
-                    :rules="[ v => !!v || 'Поле должно быть заполнено', ]"
-                    class="pt-2"
+                    v-model="v.value"
+                    :input-type="v.type"
+                    :label="v.title"
+                    :list-rules="v.necessary ? ['notEmpty'] : []"
+                    clearable
                   ></responsive-input-form>
                 </div>
               </template>
             </custom-tooltip>
             <div class="py-2 d-flex flex-nowrap flex-row justify-center">
               <v-btn
-                  :disabled="selectedTemplate.passiveAnalysts.indexOf(selectedItem) !== -1"
-                  @click="disabledActiveAnalysts()"
-                  outlined color="#00796B"
+                :disabled="selectedTemplate.passiveAnalysts.includes(selectedItem)"
+                @click="disabledActiveAnalysts()"
+                outlined color="#00796B"
               >Отключить</v-btn>
               <v-spacer></v-spacer>
               <v-btn
-                  @click="executeScript(selectedItem)"
-                  outlined color="#00796B"
+                @click="executeScript(selectedItem)"
+                outlined color="#00796B"
               >Выполнить</v-btn>
             </div>
           </v-form>
@@ -71,26 +69,23 @@
 </template>
 
 <script>
-import treeView from './treeView'
-import chipAnalytics from './chipAnalytics'
-import ResponsiveInputForm from '../../../WebsiteShell/UI/responsiveInputForm'
-import menuTemplate from './menuTemplate'
-import blockHeader from './blockHeader'
-import CreatorTreeView from '../Mixins/CreatorTreeView'
-import ExecutorScripts from '../Mixins/ExecutorScripts'
-import SelectedScriptFormatter from '../Mixins/SelectedScriptFormatter'
-import CustomTooltip from "../../../WebsiteShell/UI/customTooltip"
-import SplitPanel from "../../../WebsiteShell/UI/splitPanel"
+import treeView from '@/components/Map/MapMenu/scriptsPage/treeView'
+import chipAnalytics from '@/components/Map/MapMenu/scriptsPage/chipAnalytics'
+import menuTemplate from '@/components/Map/MapMenu/scriptsPage/menuTemplate'
+import CreatorTreeView from '@/components/Map/MapMenu/Mixins/CreatorTreeView'
+import ExecutorScripts from '@/components/Map/MapMenu/Mixins/ExecutorScripts'
+import SelectedScriptFormatter from '@/components/Map/MapMenu/Mixins/SelectedScriptFormatter'
+import ResponsiveInputForm from '@/components/WebsiteShell/CustomComponents/responsiveInputForm'
+import CustomTooltip from "@/components/WebsiteShell/CustomComponents/customTooltip"
+import SplitPanel from "@/components/WebsiteShell/CustomComponents/splitPanel"
+import { MAP_CONST } from '@/components/Map/Leaflet/Lib/Const'
 import { mapActions, mapGetters } from 'vuex'
-import { MAP_CONST } from '@/components/Map/Leaflet/Lib/Const';
 
 export default {
   name: 'mapScriptMenu',
-  mixins: [ CreatorTreeView, ExecutorScripts, SelectedScriptFormatter, ],
-  components: {SplitPanel, CustomTooltip, treeView, chipAnalytics, ResponsiveInputForm, menuTemplate, blockHeader, },
-  computed: {
-    ...mapGetters(['templatesList', 'selectedTemplate'])
-  },
+  mixins: [CreatorTreeView, ExecutorScripts, SelectedScriptFormatter],
+  components: {SplitPanel, CustomTooltip, treeView, chipAnalytics, ResponsiveInputForm, menuTemplate},
+  computed: mapGetters(['templatesList', 'selectedTemplate']),
   methods: {
     ...mapActions([
       'addPassiveAnalysts', 'changeSelectedTreeViewItem', 'changeSelectedTemplateTitle', 'changeColorActiveAnalysts',
@@ -102,7 +97,7 @@ export default {
      * Обработка выбора скрипта в дереве скриптов [ConstructorBlocks.treeView]
      * @param {Object} script - Глубокая копия выбранного пользователем скрипта
      */
-    setSelectedTreeViewItem (script) {
+    setSelectedItem (script) {
       /**
        * transformSelectedScript - функция миксина [Mixins.SelectedScriptFormatter]
        * @type {Object} {id: *, name: *, variables: {title: *, value: *}}
@@ -157,7 +152,7 @@ export default {
       /** Создание глубокой копии шаблона */
       const scriptForRequest = JSON.parse(JSON.stringify(this.selectedTemplate))
       /** Удаление имеющихся результатов из активных аналитик шаблона */
-      for (const script of scriptForRequest.activeAnalysts) { delete script.result }
+      for (const script of scriptForRequest.activeAnalysts) { delete script.fc }
       /** Проверка на сохранение, либо пересохранение шаблона */
       if ('id' in scriptForRequest)
         this.putSelectedTemplate({ selectedTemplate: scriptForRequest, config: {} })
@@ -183,6 +178,7 @@ export default {
 <style scoped>
 .tree-view {
   height: 100%;
+  overflow-y: auto;
 }
 .chip-analytics {
   flex: auto;

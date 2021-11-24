@@ -1,6 +1,7 @@
 from data_base_driver.constants.const_dat import DAT_SYS_TRIGGER
 from data_base_driver.sys_key.get_list import get_list_by_name
 from data_base_driver.connect.connect_mysql import db_sql
+from data_base_driver.trigger.get_trigger_info import get_trigger_variables
 
 
 def parse_variables(variables):
@@ -38,7 +39,22 @@ def get_triggers_list():
                     + DAT_SYS_TRIGGER.VARIABLES + '  FROM ' + DAT_SYS_TRIGGER.TABLE + ';'
     temp_result = db_sql(sql)
     for temp in temp_result:
+        variables = get_trigger_variables(int(temp[0]))
+        variables_result = []
+        for variable in variables:
+            variables_dict = {'name': variable[0],
+                              'title': variable[1],
+                              'hint': variable[2],
+                              'type': {'title': variable[3]},
+                              'necessary': True if variable[6] == 1 else False}
+            if variable[3] == 'list':
+                variables_dict['type']['value'] = int(variable[4])
+            elif variable[3] == 'search':
+                variables_dict['type']['value'] = int(variable[5]) if variable[5] else None
+            else:
+                variables_dict['type']['value'] = None
+            variables_result.append(variables_dict)
         if not result.get(temp[1]):
             result[temp[1]] = []
-        result[temp[1]].append({'id': temp[0], 'name': temp[2], 'hint': temp[3], 'variables': parse_variables(temp[4])})
+        result[temp[1]].append({'id': temp[0], 'name': temp[2], 'hint': temp[3], 'variables': variables_result})
     return result

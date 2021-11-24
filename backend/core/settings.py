@@ -17,8 +17,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'channels',
-
+    'django_monaco_editor',
     'authentication',
     'script',
     'classifier',
@@ -41,6 +40,7 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'core.urls'
 
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -59,10 +59,7 @@ TEMPLATES = [
     },
 ]
 
-# WSGI_APPLICATION = 'core.wsgi.application'
-ASGI_APPLICATION = 'core.asgi.application'
-
-CHANNEL_LAYERS = {}
+WSGI_APPLICATION = 'core.wsgi.application'
 
 DATABASES = {
     'default': {
@@ -100,3 +97,5 @@ STATICFILES_DIRS = [
     "static",
 ]
 MEDIA_ROOT = '/devstorage/saphir_data'
+DOCUMENT_ROOT = '/devstorage/saphir_documents/'
+TEMPLATE_ROOT = '/devstorage/saphir_documents/template/'

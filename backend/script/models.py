@@ -4,8 +4,9 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Q
 
-from classifier.models import ModelObject
-from data_base_driver.constants.const_dat import DAT_SYS_SCRIPT, DAT_SYS_TRIGGER
+from classifier.models import ModelObject, ModelList
+from data_base_driver.constants.const_dat import DAT_SYS_SCRIPT, DAT_SYS_TRIGGER, DAT_SYS_SCRIPT_VARIABLE, \
+    DAT_SYS_TRIGGER_VARIABLE
 from data_base_driver.constants.const_script import BASE_PATH_TO_USER_SCRIPTS
 from data_base_driver.constants.const_trigger import BASE_PATH_TO_USER_TRIGGERS
 from data_base_driver.script.script_parsec import parse_text_to_python
@@ -100,7 +101,8 @@ class ModelScript(models.Model):
         """
         if not self.icon:
             status, error_str, error_code, error_type = parse_text_to_python('script_test', self.content,
-                                                                             self.variables, self.type)
+                                                                             ModelScriptVariable.objects.filter(
+                                                                                 script_id=self.id), self.type)
             if not status:
                 raise ValidationError(
                     'ошибка в синтаксисе скрипта, в строке: ' + error_str + ', ' + error_code + str(error_type))
@@ -116,7 +118,7 @@ class ModelScript(models.Model):
         super().save(*args, **kwargs)
         if not self.icon:
             parse_text_to_python('script_' + str(ModelScript.objects.get(title=self.title).id), self.content,
-                                 self.variables, self.type)
+                                 ModelScriptVariable.objects.filter(script_id=self.id), self.type)
 
     def delete(self, using=None, keep_parents=False):
         """
@@ -133,6 +135,78 @@ class ModelScript(models.Model):
         db_table = DAT_SYS_SCRIPT.TABLE_SHORT
         verbose_name = "Скрипт"
         verbose_name_plural = "Скрипты"
+
+
+class ModelScriptVariable(models.Model):
+    name = models.CharField(
+        max_length=100,
+        verbose_name='Название переменной',
+        help_text='Данное название будет использоваться в теле скрипта',
+    )
+    title = models.CharField(
+        max_length=255,
+        verbose_name='Имя переменной',
+        help_text='Данное имя будет отображаться пользователю',
+    )
+    hint = models.CharField(
+        max_length=255,
+        verbose_name='Всплывающая подсказка',
+        help_text='Данная подсказка будет отображаться пользователю',
+    )
+    type = models.CharField(
+        max_length=25,
+        verbose_name='Тип переменной',
+        choices=DAT_SYS_SCRIPT_VARIABLE.TYPE_VARIABLE_LIST,
+        help_text='К какому типу будет относиться переменная',
+        default='text',
+    )
+    list = models.ForeignKey(
+        ModelList,
+        verbose_name='Закрепленный список',
+        on_delete=models.CASCADE,
+        help_text='Какой список использовать для выбора',
+        blank=True,
+        null=True,
+    )
+    obj = models.ForeignKey(
+        ModelObject,
+        verbose_name='Объект',
+        on_delete=models.CASCADE,
+        help_text='По какому объекту осуществлять поиск',
+        blank=True,
+        null=True,
+    )
+    script = models.ForeignKey(
+        ModelScript,
+        verbose_name='Скрипт',
+        on_delete=models.CASCADE,
+        help_text='По какому объекту осуществлять поиск',
+    )
+    necessary = models.BooleanField(
+        default=True,
+        verbose_name='Обязательная',
+        help_text='Является ли данная переменная обязательной для данного списка',
+    )
+
+    def clean(self):
+        if self.type == 'list' and not self.list_id:
+            raise ValidationError('У переменной типа списка не задан список')
+        elif self.type != 'list' and self.list_id:
+            raise ValidationError('Данная переменная не является списком')
+        elif self.type != 'search' and self.obj_id:
+            raise ValidationError('Данная переменная не является поиском объекта')
+
+    def save(self, *args, **kwargs):
+        self.script_id = ModelScript.objects.get(title=self.script.title).id
+        super().save(*args, **kwargs)
+        script = ModelScript.objects.get(title=self.script.title)
+        script.save()
+
+    class Meta:
+        managed = False
+        db_table = DAT_SYS_SCRIPT_VARIABLE.TABLE_SHORT
+        verbose_name = "Переменная скрипта"
+        verbose_name_plural = "Переменные скриптов"
 
 
 class ModelTrigger(models.Model):
@@ -190,3 +264,73 @@ class ModelTrigger(models.Model):
         db_table = DAT_SYS_TRIGGER.TABLE_SHORT
         verbose_name = "Тригеры"
         verbose_name_plural = "Триггеры"
+
+
+class ModelTriggerVariable(models.Model):
+    name = models.CharField(
+        max_length=100,
+        verbose_name='Название переменной',
+        help_text='Данное название будет использоваться в теле триггера',
+    )
+    title = models.CharField(
+        max_length=255,
+        verbose_name='Имя переменной',
+        help_text='Данное имя будет отображаться пользователю',
+    )
+    hint = models.CharField(
+        max_length=255,
+        verbose_name='Всплывающая подсказка',
+        help_text='Данная подсказка будет отображаться пользователю',
+    )
+    type = models.CharField(
+        max_length=25,
+        verbose_name='Тип переменной',
+        choices=DAT_SYS_SCRIPT_VARIABLE.TYPE_VARIABLE_LIST,
+        help_text='К какому типу будет относиться переменная',
+        default='text',
+    )
+    list = models.ForeignKey(
+        ModelList,
+        verbose_name='Закрепленный список',
+        on_delete=models.CASCADE,
+        help_text='Какой список использовать для выбора',
+        blank=True,
+        null=True,
+    )
+    obj = models.ForeignKey(
+        ModelObject,
+        verbose_name='Объект',
+        on_delete=models.CASCADE,
+        help_text='По какому объекту осуществлять поиск',
+        blank=True,
+        null=True,
+    )
+    trigger = models.ForeignKey(
+        ModelTrigger,
+        verbose_name='Триггер',
+        on_delete=models.CASCADE,
+        help_text='Триггер для данной переменной',
+    )
+    necessary = models.BooleanField(
+        default=True,
+        verbose_name='Обязательная',
+        help_text='Является ли данная переменная обязательной для данного списка',
+    )
+
+    def clean(self):
+        if self.type == 'list' and not self.list_id:
+            raise ValidationError('У переменной типа списка не задан список')
+        elif self.type != 'list' and self.list_id:
+            raise ValidationError('Данная переменная не является списком')
+        elif self.type != 'search' and self.obj_id:
+            raise ValidationError('Данная переменная не является поиском объекта')
+
+    def save(self, *args, **kwargs):
+        self.trigger_id = ModelTrigger.objects.get(title=self.trigger.title).id
+        super().save(*args, **kwargs)
+
+    class Meta:
+        managed = False
+        db_table = DAT_SYS_TRIGGER_VARIABLE.TABLE_SHORT
+        verbose_name = "Переменная триггера"
+        verbose_name_plural = "Переменные триггеров"

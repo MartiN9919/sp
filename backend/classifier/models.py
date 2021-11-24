@@ -1,4 +1,3 @@
-from django import forms
 from django.core.exceptions import ValidationError
 from django.db import models
 from data_base_driver.constants.const_dat import DAT_SYS_OBJ, DAT_SYS_LIST_TOP, DAT_SYS_KEY, DAT_SYS_LIST_DOP, \
@@ -153,6 +152,10 @@ class ModelPhoneNumberFormat(models.Model):
         help_text='С учетом кода страны',
     )
 
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        DAT_SYS_PHONE_NUMBER_FORMAT.DUMP.update(force=True)
+
     class Meta:
         managed = False
         db_table = DAT_SYS_PHONE_NUMBER_FORMAT.TABLE_SHORT
@@ -275,7 +278,7 @@ class ModelKey(models.Model):
                 self.rel_obj_1_id = self.rel_obj_2_id
                 self.rel_obj_2_id = temp_id
         super().save(*args, **kwargs)
-
+        DAT_SYS_KEY.DUMP.update()
 
     class Meta:
         unique_together = (DAT_SYS_KEY.TITLE, DAT_SYS_KEY.OBJ, DAT_SYS_KEY.COL, DAT_SYS_KEY.REL_OBJ_1_ID,

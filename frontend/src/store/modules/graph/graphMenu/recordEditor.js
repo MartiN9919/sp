@@ -1,5 +1,5 @@
-import { getResponseAxios, postResponseAxios } from '@/plugins/axios_settings'
-import {getTriggers} from "@/store/modules/graph/graphNodes"
+import axios from '@/plugins/axiosSettings'
+import {getTriggers} from "@/store/modules/siteControl/mainDependencies"
 import store from "@/store"
 import _ from 'lodash'
 
@@ -13,28 +13,24 @@ export default {
     editableObjects: state => { return state.editableObjects },
   },
   mutations: {
-    setEditableRelation: (state, relation) => state.editableRelation = relation,
-    addNewParamEditableRelation: (state, id) => state.editableRelation.addParam(id),
-    deleteNewParamEditableRelation: (state, {id, param}) => state.editableRelation.deleteParam(id, param),
+    setEditableRelation: (state, {relation, document}) => state.editableRelation = {relation, document},
+    addNewParamEditableRelation: (state, id) => state.editableRelation.relation.addParam(id),
+    deleteNewParamEditableRelation: (state, {id, param}) => state.editableRelation.relation.deleteParam(id, param),
 
-    setEditableObjects: (state, object) => {
-      state.editableObjects = [object]
-    },
+    setEditableObjects: (state, object) => state.editableObjects = [object],
     resetEditableObjects: (state) => state.editableObjects = [state.editableObjects[0]],
     addEditableObjects: (state, object) => state.editableObjects.push(object),
-    addNewParamEditableObject: (state, {id, position}) => {
-      state.editableObjects[position].addParam(id)
-    },
-    deleteNewParamEditableObject: (state, {id, param, position}) => {
-      state.editableObjects[position].deleteParam(id, param)
-    }
+    addNewParamEditableObject: (state, {id, position}) => state.editableObjects[position].addParam(id),
+    deleteNewParamEditableObject: (state, {id, param, position}) => state.editableObjects[position].deleteParam(id, param)
   },
   actions: {
-    setEditableRelation({getters, commit}, relation) {
-      commit('setEditableRelation', new DataBaseRelation(
-        relation.o1, relation.o2, relation.r1, relation.r2,
-        getters.relations(relation)?.relations
-      ))
+    setEditableRelation({getters, commit}, {relations, document}) {
+      let edge = getters.graphRelations.find(
+        e => [e.relation.o1.id, e.relation.o2.id].every(r => Array.from(relations, o => o.id).includes(r)))
+      commit('setEditableRelation', {
+        relation: _.cloneDeep(edge?.relation) || new DataBaseRelation(...relations),
+        document: document
+      })
     },
     addNewParamEditableRelation({commit}, relationId) {
       commit('addNewParamEditableRelation', relationId)
@@ -42,25 +38,22 @@ export default {
     deleteNewParamEditableRelation({commit}, playLoad) {
       commit('deleteNewParamEditableRelation', playLoad)
     },
-    setEditableObject({commit}, object) {
-      commit('setEditableObjects', new DataBaseObject({
-        object_id: object.object_id,
-        rec_id: object.rec_id,
-        title: object.title,
-        params: object.params
-      }))
+    setEditableObject({commit, dispatch}, {objectId, recId=null}) {
+      if(!recId)
+        commit('setEditableObjects', new DataBaseObject({object_id: objectId}))
+      else
+        dispatch('getObjectFromServer', {params: {record_id: recId, object_id: objectId}})
+          .then(r => {
+            commit('setEditableObjects', new DataBaseObject(r))
+            dispatch('setNavigationDrawerStatus', true)
+            dispatch('setActiveTool', 'createObjectPage')
+          })
     },
     addEditableObjects({getters, commit}, objects) {
       commit('resetEditableObjects')
+      const zeroObject = getters.editableObjects[0]
       for(let object of objects) {
-        let zeroObject = getters.editableObjects[0]
-        let newObject = new DataBaseObject({
-          object_id: object.object_id,
-          rec_id: object.rec_id,
-          title: object.title,
-          params: object.params,
-          recIdOld: zeroObject.recId
-        })
+        let newObject = new DataBaseObject(Object.assign(object, {recIdOld: zeroObject.recId}))
         newObject.concatParams(zeroObject)
         commit('addEditableObjects', newObject)
       }
@@ -72,20 +65,22 @@ export default {
       commit('deleteNewParamEditableObject', playLoad)
     },
     async getObjectFromServer({commit, dispatch}, config = {}) {
-      await dispatch('getBaseClassifiers', config)
-        .then(() => {})
-        .catch(e => { return Promise.reject(e) })
       config.headers = {'set-cookie': JSON.stringify(getTriggers(config.params.object_id))}
-      return await getResponseAxios('objects/object/', config)
+      return await axios.get('objects/object/', config)
         .then(r => { return Promise.resolve(r.data) })
         .catch(e => { return Promise.reject(e) })
     },
-    async getRelationFromServer({commit, dispatch}, params, config={}) {
-      return await postResponseAxios('objects/object_relation/', params, config)
+    async getRelationFromServer({getters, commit, dispatch}, params, config={}) {
+      return await axios.post('objects/object_relation/', params, config)
         .then(r => {
+          if(r.data.length === 0){
+            let findNode = getters.graphObjects.find(o => o.id === params.object_id.toString() + '-' + params.rec_id.toString())
+            findNode.object.show = true
+            dispatch('updateObjectFromGraph', {object: findNode, fields: {object: findNode.object}})
+          }
           for(let relation of r.data) {
             let object = {o1: params.object_id, r1: params.rec_id, o2: relation.object_id, r2: relation.rec_id}
-            dispatch('addRelationToGraph', {object: object, relations: relation.relations})
+            dispatch('addRelationToGraph', {object: object, relations: relation.relations, noMove: params.noMove})
           }
           return Promise.resolve(r.data)
         })
@@ -93,7 +88,7 @@ export default {
 
     },
     async saveEditableObject({getters, dispatch}, positionObject) {
-      return await postResponseAxios('objects/object',
+      return await axios.post('objects/object',
         getters.editableObjects[positionObject].getRequestStructure(),
         {headers: {
           'Content-Type': 'multipart/form-data',
@@ -101,22 +96,33 @@ export default {
         }}
       )
         .then(r => {
-          if(r.data.hasOwnProperty('object')) {
-            dispatch('setEditableObject', r.data.object)
+          let response = r.data
+          if(Array.isArray(response)) {
+            dispatch('addEditableObjects', response)
           }
-          if(r.data.hasOwnProperty('objects'))
-            dispatch('addEditableObjects', r.data.objects)
+          else {
+            dispatch('setEditableObject', {objectId: response.object_id, recId: response.rec_id})
+            dispatch('addObjectToGraph', {objectId: response.object_id, recId: response.rec_id})
+          }
           return Promise.resolve(r.data)
         })
         .catch(e => { return Promise.reject(e) })
     },
     async saveEditableRelation({getters, dispatch}) {
       let relation = getters.editableRelation
-      return await postResponseAxios('objects/relation', relation.getRequestStructure(), {})
+      let request = Object.assign(
+          {doc_rec_id: relation.document ? relation.document.object.recId : null},
+          relation.relation.getRequestStructure()
+      )
+      return await axios.post('objects/relation', request, {})
         .then(r => {
-          let object = {o1: relation.o1.id, r1: relation.o1Object.rec_id, o2: relation.o2.id, r2: relation.o2Object.rec_id}
-          // dispatch('addChoosingRelation', {object: object, relations: r.data})
-          dispatch('setEditableRelation', Object.assign({}, object, r.data))
+          let object = {o1: r.data.object_id_1, r1: r.data.rec_id_1, o2: r.data.object_id_2, r2: r.data.rec_id_2}
+          dispatch('addRelationToGraph', {object: object, relations: r.data.params, noMove: true})
+          dispatch('setEditableRelation',
+            {
+              relations: [relation.relation.o1, relation.relation.o2],
+              document: relation.document
+            })
           return Promise.resolve(r.data)
         })
         .catch(e => { return Promise.reject(e) })
@@ -150,7 +156,7 @@ class BaseDbObject {
 export class DataBaseRelation extends BaseDbObject {
   constructor(o1, o2, params=[]) {
     let getter = store.getters.baseRelation
-    let baseObject = store.getters.baseRelations({f_id: o1.object.id, s_id: o2.object.id})
+    let baseObject = store.getters.baseRelations({f_id: o1.object.object.id, s_id: o2.object.object.id})
     super(getter, baseObject, params)
     this.o1 = o1
     this.o2 = o2
@@ -164,10 +170,10 @@ export class DataBaseRelation extends BaseDbObject {
         params.push({id: param.baseParam.id, value: value, date: newValue.date})
       }
     return {
-      object_1_id: this.o1.object.id,
-      object_2_id: this.o2.object.id,
-      rec_1_id: this.o1.recId,
-      rec_2_id: this.o2.recId,
+      object_1_id: this.o1.object.object.id,
+      object_2_id: this.o2.object.object.id,
+      rec_1_id: this.o1.object.recId,
+      rec_2_id: this.o2.object.recId,
       params: params,
     }
   }
@@ -175,14 +181,10 @@ export class DataBaseRelation extends BaseDbObject {
 
 
 export class DataBaseObject extends BaseDbObject {
-  constructor({object_id, rec_id = 0, title = '', photo = null, params = [], triggers = [], recIdOld = null}) {
+  constructor({object_id, rec_id = 0, params = [], recIdOld = null}) {
     super(store.getters.baseClassifier, store.getters.baseClassifiers(object_id), params, recIdOld)
     this.object = store.getters.baseObject(object_id)
     this.recId = rec_id
-    this.title = title
-    this.triggers = triggers
-    if(photo)
-      this.photo = photo
   }
 
   getRequestStructure() {
@@ -190,13 +192,10 @@ export class DataBaseObject extends BaseDbObject {
     let params = []
     for(let param of this.params) {
       for (let newValue of param.new_values) {
-        if(param.baseParam.type.startsWith('file')){
+        if(param.baseParam.type.title.startsWith('file')){
           params.push({id: param.baseParam.id, value: params.length.toString(), date: newValue.date})
           formData.append(params.length - 1, newValue.value.file)
-        } else {
-          let value = newValue.value
-          params.push({id: param.baseParam.id, value: value, date: newValue.date})
-        }
+        } else params.push({id: param.baseParam.id, value: newValue.value, date: newValue.date})
       }
     }
     let request = {
@@ -218,10 +217,6 @@ export class DataBaseObject extends BaseDbObject {
       findParam.new_values = findParam.new_values.concat(_.cloneDeep(param.new_values))
     }
   }
-
-  getGeneratedId() {
-    return `${this.object.id}-${this.recId}`
-  }
 }
 
 class ParamObject {
@@ -230,14 +225,16 @@ class ParamObject {
     this.new_values = newValues
     this.values = []
     for(let v of values)
-      this.values.push(new ValueParam(v.value, v.date))
+      this.values.push(new ValueParam(v.value, v.date, v.doc))
   }
 }
 
 class ValueParam {
-  constructor(value=null, date=this.getDateTime()) {
+  constructor(value=null, date=this.getDateTime(), doc=null) {
     this.value = value
     this.date = date
+    if(doc)
+      this.doc = doc
   }
 
   getDateTime() {

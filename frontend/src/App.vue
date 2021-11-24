@@ -1,27 +1,30 @@
 <template>
   <v-app id="app" class="select_off"> <!--  oncontextmenu="return false" -->
-    <appBar></appBar>  <!--  Меню навигации  -->
+    <router-view name="appbar"/>  <!--  Меню навигации  -->
     <v-main id="main">
-      <v-progress-linear indeterminate absolute color="red" height="2" :active="loadStatus"></v-progress-linear>
-      <keep-alive>  <!--  Сохранение состояния окна при переходах  -->
-        <router-view></router-view>  <!--  Основное рабочее окно, для отображения страниц  -->
+      <v-progress-linear indeterminate absolute color="red" height="2" :active="loadStatus"/>
+      <keep-alive :include="keepAlivePages">  <!--  Сохранение состояния окна при переходах  -->
+        <router-view/>  <!--  Основное рабочее окно, для отображения страниц  -->
       </keep-alive>
-      <alertsList></alertsList>  <!--  Уведомления  -->
+      <notifications/>  <!--  Уведомления  -->
     </v-main>
   </v-app>
 </template>
 
 <script>
-import alertsList from './components/WebsiteShell/Notifications/alertsList'
-import appBar from './components/WebsiteShell/AppBar/appBar'
-import { mapGetters } from "vuex"
+import notifications from "@/components/WebsiteShell/UIMainComponents/notifications"
+import {mapGetters} from "vuex"
 
 export default {
   name: 'App',
-  components: { alertsList, appBar },
+  components: {notifications},
   computed: {
-    ...mapGetters(['loadStatus'])
-  }
+    ...mapGetters(['loadStatus']),
+    keepAlivePages: function () {
+      return Array.from(this.$router.options.routes.filter(
+        r => r.meta && (this.$route.meta.auth ? r.meta.auth : !r.meta.auth)), r => r.name)
+    },
+  },
 }
 </script>
 

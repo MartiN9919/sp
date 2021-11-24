@@ -1,6 +1,12 @@
 <template>
-  <v-col class="d-flex flex-column">
-    <v-treeview :items="searchTreeItems" :open="openObject" item-children="rels" return-object class="search-tree pb-2">
+  <div class="overflow-x-hidden d-flex flex-column h-100">
+    <v-treeview
+      :items="searchTreeItems"
+      :open="openObject"
+      item-children="rels"
+      return-object
+      class="search-tree pb-2"
+    >
       <template v-slot:label="{ item }">
         <span class="message-text-style v-messages">
           <v-icon size="15">{{item.object.icon}}</v-icon>
@@ -11,8 +17,15 @@
           </v-icon>
         </span>
         <v-hover v-slot="{ hover }">
-          <v-text-field v-model="item.request" dense outlined hide-details color="teal" autocomplete="off"
-                        class="tree-item-input">
+          <v-text-field
+            v-model="item.request"
+            dense
+            outlined
+            hide-details
+            color="teal"
+            autocomplete="off"
+            class="tree-item-input"
+          >
             <template v-slot:append-outer="">
               <v-btn v-if="item === searchTreeItems[0]" icon>
                 <v-icon @click.stop="findObject" size="30">mdi-magnify</v-icon>
@@ -40,19 +53,18 @@
       </template>
     </v-treeview>
     <found-objects
-      v-if="foundObjects"
       :objects="foundObjects"
       @change="changeObject"
       @select="selectObject"
-      class="overflow-y-hidden"
+      class="overflow-y-hidden found-objects"
     ></found-objects>
-  </v-col>
+  </div>
 </template>
 
 <script>
-import ChangeTreeItemBtn from "./searchPageComponents/changeTreeItemBtn"
-import CreateTreeItemBtn from "./searchPageComponents/createTreeItemBtn"
-import FoundObjects from "./searchPageComponents/foundObjects"
+import ChangeTreeItemBtn from "@/components/Graph/GraphMenu/searchPageComponents/changeTreeItemBtn"
+import CreateTreeItemBtn from "@/components/Graph/GraphMenu/searchPageComponents/createTreeItemBtn"
+import FoundObjects from "@/components/Graph/GraphMenu/searchPageComponents/foundObjects"
 import {mapActions, mapGetters} from "vuex"
 
 export default {
@@ -66,18 +78,13 @@ export default {
     searchTreeItems: function () { return this.searchTreeGraph ? [this.searchTreeGraph] : [] },
   },
   methods: {
-    ...mapActions(['setRootSearchTreeItem', 'changeSearchTreeItem', 'setActiveTool', 'addSearchTreeItem',
-    'findObjectsOnServer', 'removeSearchTreeItem', 'setEditableObject', 'getObjectFromServer', 'addObjectToGraph', 'getBaseClassifiers']),
+    ...mapActions(['setRootSearchTreeItem', 'changeSearchTreeItem', 'addSearchTreeItem',
+    'findObjectsOnServer', 'removeSearchTreeItem', 'setEditableObject', 'addObjectToGraph']),
     selectObject(object) {
-      this.getObjectFromServer({params: {record_id: object.rec_id, object_id: object.object_id}})
-        .then(response => { this.addObjectToGraph(response) })
+      this.addObjectToGraph({recId: object.rec_id, objectId: object.object_id})
     },
     changeObject(object) {
-      this.getObjectFromServer({params: {record_id: object.rec_id, object_id: object.object_id}})
-      .then(response => {
-        this.setEditableObject(response)
-        this.setActiveTool('createPage')
-      })
+      this.setEditableObject({recId: object.rec_id, objectId: object.object_id})
     },
     findObject () {
       this.findObjectsOnServer()

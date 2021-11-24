@@ -1,41 +1,50 @@
 <template>
-  <v-list dark color="#191122" class="text-center" height="100%" width="100%" style="user-select:none;">
+  <v-card
+    :color="$CONST.APP.LOGIN.BACKGROUND"
+    @keyup.enter="loginUserInSystem"
+    class="text-center select_off"
+    height="100%" width="100%" dark flat tile
+  >
     <canvas id="bg-canvas"></canvas>
 
-    <p id="title_top">информационно-аналитическая система</p>
-    <p id="title_top">оперативного назначения</p>
-    <p id="logo">САПФИР</p>
+    <p class="title_top">информационно-аналитическая система <br/> оперативного назначения</p>
+    <p class="logo">САПФИР</p>
 
-    <v-container class="text-center" style="max-width: 300px;">
+    <v-card-text class="ma-auto" style="max-width: 300px;">
       <v-form ref="form" v-model="valid" lazy-validation>
-        <v-list-item>
-          <v-list-item-content>
-            <v-text-field v-model="usernameForm" :rules="[validations.nullFormRules]" label="Введите логин" outlined></v-text-field>
-          </v-list-item-content>
-        </v-list-item>
-        <v-list-item>
-          <v-list-item-content>
-            <v-text-field type="password" v-model="passwordForm" :rules="[validations.nullFormRules, validations.minLenRules]" label="Введите пароль" outlined></v-text-field>
-          </v-list-item-content>
-        </v-list-item>
-        <v-list-item>
-          <v-list-item-content>
-            <v-btn :disabled="!valid" color="success" class="mr-4" @click="loginUserInSystem">
-              Войти в систему
-            </v-btn>
-          </v-list-item-content>
-        </v-list-item>
+        <v-text-field
+          v-model="usernameForm"
+          :rules="[validations.nullFormRules]"
+          :color="$CONST.APP.COLOR_OBJ"
+          autocomplete="off" label="Введите логин" outlined
+        ></v-text-field>
+        <v-text-field
+          v-model="passwordForm"
+          :rules="[validations.nullFormRules, validations.minLenRules]"
+          :color="$CONST.APP.COLOR_OBJ"
+          type="password" label="Введите пароль" outlined
+        ></v-text-field>
       </v-form>
-    </v-container>
-  </v-list>
+    </v-card-text>
+    <v-card-actions class="justify-center">
+      <v-btn
+        :disabled="!valid"
+        @click="loginUserInSystem"
+        :color="$CONST.APP.COLOR_OBJ" large outlined
+      >
+        Войти в систему
+      </v-btn>
+    </v-card-actions>
+  </v-card>
 </template>
 
 <script>
 import '@/views/lib/tween_max.min.js'
-import bg_stars from '../views/lib/bg_animate'
+import bg_stars from '@/views/lib/bg_animate'
 import { mapActions } from 'vuex'
 
 export default {
+  name: 'Login',
   data: () => ({
     valid: true,
     usernameForm: '',
@@ -55,8 +64,7 @@ export default {
           userInformation: {
             username: this.usernameForm,
             password: this.passwordForm
-          },
-          config: {}
+          }
         })
       }
     }
@@ -75,20 +83,20 @@ export default {
 /************************************************
  * ЗАГОЛОВОК
  ************************************************/
-#title_top {
+.title_top {
     font-family: Verdana;
     font-size: 2.5em;
     font-weight: bold;
     color: #5ad01f;
 }
-#title_top:first-of-type {
-    margin: 1.5em 0 0 0;
+.title_top:first-of-type {
+    padding: 1.5em 0 0 0;
 }
 
 /************************************************
  * ЛОГОТИП
  ************************************************/
-#logo {
+.logo {
   padding: 0 0 0.1em;
   margin: 0 auto;
 
@@ -111,8 +119,8 @@ export default {
  * ФОН
  ************************************************/
 #bg-canvas {
- position: absolute;
-    top: 0;
-    left: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 </style>

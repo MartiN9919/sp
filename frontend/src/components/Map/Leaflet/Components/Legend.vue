@@ -139,11 +139,13 @@ export default {
     opacity: 0.9;
   }
 
+
   div::v-deep .legend_top {
     max-width: 10em;
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
+
   }
 
   div::v-deep .legend-color i {

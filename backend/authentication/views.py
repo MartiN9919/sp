@@ -2,7 +2,7 @@ import json
 from django.contrib import auth
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from core.projectSettings.decoraters import request_log, login_check, request_get
+from core.projectSettings.decorators import request_log, login_check
 
 
 @csrf_exempt
@@ -25,11 +25,7 @@ def login_user(request):
         user = auth.authenticate(request, username=username, password=password)
         if user is not None:
             auth.login(request, user)
-            return JsonResponse({'user': {
-                'username': user.username,
-                'first_name': user.first_name,
-                'last_name': user.last_name,
-            }}, status=200)
+            return JsonResponse({}, status=200)
         else:
             return JsonResponse({}, status=400)
     else:
@@ -52,14 +48,15 @@ def authorization(request):
     """
     Получение данных пользователя и проверка его сеанса
     """
-    return JsonResponse({'user': {
+    return JsonResponse({
         'username': request.user.username,
         'first_name': request.user.first_name,
         'last_name': request.user.last_name,
         'admin': request.user.is_superuser,
         'staff': request.user.is_staff,
         'write': request.user.is_write,
-    }}, status=200)
+        'group_id': {'list_id': 53, 'id': request.user.owner_groups.id}
+    }, status=200)
 
 
 

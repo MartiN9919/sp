@@ -1,13 +1,13 @@
+import notifications from "./notifications"
 import authentication from "./authentication"
-import menuControl from "./menuControl"
-import socket from "./socket"
-import alerts from "./alerts"
+import sidebarController from "./sidebarController"
+import mainDependencies from "./mainDependencies"
 
 export default {
   modules: {
+    notifications,
     authentication,
-    menuControl,
-    socket,
-    alerts,
+    sidebarController,
+    mainDependencies,
   }
 }

@@ -10,17 +10,15 @@
         <v-card tile flat>
           <v-row v-for="(value, key) in param.new_values" :key="key" no-gutters class="flex-nowrap">
             <record-input
-              :param="value"
+              :param="getParam(param, value)"
               :type="param.baseParam.type"
-              :list="param.baseParam.list"
               @deletable="deleteNewParam(param.baseParam.id, value)"
             ></record-input>
           </v-row>
           <table>
-            <tbody class="py-2">
+            <tbody class="py-2" v-if="checkTypeParam(param) === 'file_photo'">
               <custom-tooltip
                 v-for="(item, key) in param.values" :key="key"
-                v-if="param.baseParam.type.startsWith('file')"
                 :body-text="item.value"
                 :settings="settings"
                 bottom
@@ -34,10 +32,29 @@
                   </tr>
                 </template>
               </custom-tooltip>
-            <tr v-for="item in param.values" v-if="!param.baseParam.type.startsWith('file')">
-              <td><span>{{item.value ? item.value : 'Создана'}}</span></td>
-              <td class="text-end text-no-wrap pl-3"><span>{{item.date}}</span></td>
-            </tr>
+            </tbody>
+            <tbody class="py-2" v-else>
+              <tr v-for="item in param.values">
+                <td v-if="checkTypeParam(param) === 'file_any'">
+                  <a :href="getDownloadLink(item.value)">{{item.value}}</a>
+                </td>
+                <td v-else-if="checkTypeParam(param) === 'geometry'">
+                  <v-dialog width="80%" style="z-index: 1000002">
+                    <template v-slot:activator="{ on, attrs }">
+                      <span v-bind="attrs" v-on="on">
+                        Геометрия
+                      </span>
+                    </template>
+                    <LeafletEditor
+                      :fc_parent_prop="JSON.parse(item.value)"
+                      :modeEnabled="{ marker: false , line: false, polygon: false, }"
+                    />
+                  </v-dialog>
+                </td>
+                <td v-else><span>{{item.value ? item.value : 'Создана'}}</span></td>
+                <td class="text-center" @click="addDocumentToGraph(item.doc)" style="cursor: pointer"><span>{{item.doc ? item.doc.title : ''}}</span></td>
+                <td class="text-end text-no-wrap pl-3"><span>{{item.date}}</span></td>
+              </tr>
             </tbody>
           </table>
         </v-card>
@@ -47,28 +64,40 @@
 </template>
 
 <script>
-import RecordTitle from "./objectRecordComponents/recordTitle"
-import RecordInput from "./objectRecordComponents/recordInput"
-import DropDownMenu from "../../../WebsiteShell/UI/dropDownMenu"
-import MenuDateTime from "../../../WebsiteShell/UI/selectDateTime"
-import CustomTooltip from "../../../WebsiteShell/UI/customTooltip"
-import {getDownloadFileLink} from '@/plugins/axios_settings'
+import RecordTitle from "@/components/Graph/GraphMenu/createPageComponents/objectRecordComponents/recordTitle"
+import RecordInput from "@/components/Graph/GraphMenu/createPageComponents/objectRecordComponents/recordInput"
+import DropDownMenu from "@/components/WebsiteShell/CustomComponents/dropDownMenu"
+import MenuDateTime from "@/components/WebsiteShell/CustomComponents/selectDateTime"
+import CustomTooltip from "@/components/WebsiteShell/CustomComponents/customTooltip"
+import LeafletEditor from "@/components/Map/Leaflet/LeafletEditor"
+import {getDownloadFileLink} from '@/plugins/axiosSettings'
+import _ from 'lodash'
 
 export default {
   name: "objectRecordArea",
-  components: {CustomTooltip, RecordInput, RecordTitle, MenuDateTime, DropDownMenu},
+  components: {CustomTooltip, RecordInput, RecordTitle, MenuDateTime, DropDownMenu, LeafletEditor},
   props: {
     settings: Object,
     params: Array,
-    type: {
-      type: Boolean,
-      default: false
-    }
   },
   data: () => ({
     openedPanels: []
   }),
   methods: {
+    getParam(param, value) {
+      if(this.checkTypeParam(param) === 'geometry' && param.values.length > 0){
+        let copyGeometry = _.cloneDeep(param.values[0])
+        value.value = JSON.parse(copyGeometry.value)
+      }
+      return value
+    },
+    addDocumentToGraph(doc) {
+      this.$emit('addDocumentToGraph', {objectId: doc.object_id, recId: doc.rec_id})
+    },
+    checkTypeParam(param) {
+      if(param.baseParam.hasOwnProperty('type'))
+        return param.baseParam.type.title
+    },
     createNewParam(id) {
       this.$emit('createNewParam', id)
     },
@@ -77,7 +106,7 @@ export default {
     },
     getDownloadLink(fileName) {
       return getDownloadFileLink(this.settings.objectId, this.settings.recId, fileName)
-    }
+    },
   },
   mounted() {
     this.openedPanels = [...Array(this.params.length).keys()]

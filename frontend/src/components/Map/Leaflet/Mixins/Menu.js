@@ -11,7 +11,7 @@ import {
   MAP_TEST_EDIT_2,
 } from '@/components/Map/Leaflet/Mixins/Menu.test';
 
-import contextMenuNested from '@/components/WebsiteShell/ContextMenu/contextMenuNested';
+import contextMenuNested from '@/components/WebsiteShell/UIMainComponents/contextMenuNested';
 import MixMenuStruct     from '@/components/Map/Leaflet/Mixins/Menu.struct';
 
 export default {
@@ -47,31 +47,31 @@ export default {
       get: function()    { return this.MAP_GET_RANGE; },
     },
     prop_cluster: {
-      set: function(val) { this.MAP_ACT_CLUSTER({on: val}); },
+      set: function(val) { this.MAP_ACT_CLUSTER({on: !this.MAP_GET_CLUSTER}); },
       get: function()    { return this.MAP_GET_CLUSTER; },
     },
     prop_hint: {
-      set: function(val) { this.MAP_ACT_HINT({on: val}); },
+      set: function(val) { this.MAP_ACT_HINT({on: !this.MAP_GET_HINT}); },
       get: function()    { return this.MAP_GET_HINT; },
     },
     prop_legend: {
-      set: function(val) { this.MAP_ACT_LEGEND({on: val}); },
+      set: function(val) { this.MAP_ACT_LEGEND({on: !this.MAP_GET_LEGEND}); },
       get: function()    { return this.MAP_GET_LEGEND; },
     },
     prop_notify: {
-      set: function(val) { this.MAP_ACT_NOTIFY({on: val}); },
+      set: function(val) { this.MAP_ACT_NOTIFY({on: !this.MAP_GET_NOTIFY}); },
       get: function()    { return this.MAP_GET_NOTIFY; },
     },
     prop_scale: {
-      set: function(val) { this.MAP_ACT_SCALE({on: val}); },
+      set: function(val) { this.MAP_ACT_SCALE({on: !this.MAP_GET_SCALE}); },
       get: function()    { return this.MAP_GET_SCALE; },
     },
     prop_measure: {
-      set: function(val) { this.MAP_ACT_MEASURE({on: val}); },
+      set: function(val) { this.MAP_ACT_MEASURE({on: !this.MAP_GET_MEASURE}); },
       get: function()    { return this.MAP_GET_MEASURE; },
     },
     prop_logo: {
-      set: function(val) { this.MAP_ACT_LOGO({on: val}); },
+      set: function(val) { this.MAP_ACT_LOGO({on: !this.MAP_GET_LOGO}); },
       get: function()    { return this.MAP_GET_LOGO; },
     },
 

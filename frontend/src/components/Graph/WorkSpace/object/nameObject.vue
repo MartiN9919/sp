@@ -1,14 +1,6 @@
 <template>
-  <foreignObject
-      v-show="visible"
-      height="1"
-      :width="sizeNode"
-      overflow="visible"
-      :x="position.x"
-      :y="position.y"
-      class="pt-8"
-  >
-    <div style="text-align: center; color: #444444" :style="{fontSize: sizeNode/40}">{{title}}</div>
+  <foreignObject :x="position.x" :y="position.y" :width="sizeNode" height="1" overflow="visible" class="pt-8">
+    <div class="name-text" :style="{fontSize: sizeNode/40}">{{title}}</div>
   </foreignObject>
 </template>
 
@@ -16,7 +8,6 @@
 export default {
   name: "nameObject",
   props: {
-    visible: Boolean,
     position: Object,
     title: String,
     sizeNode: Number,
@@ -25,5 +16,11 @@ export default {
 </script>
 
 <style scoped>
-
+  .name-text {
+    color: #444444;
+    position: relative;
+    background-color: white;
+    width: fit-content;
+    margin: auto;
+  }
 </style>

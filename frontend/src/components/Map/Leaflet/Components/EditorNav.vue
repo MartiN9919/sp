@@ -89,6 +89,9 @@ export default {
 <style scoped lang="scss">
   /* fix bug: кнопка влево не нужна*/
   div::v-deep .v-slide-group__prev { display: none !important; }
+  div::v-deep .v-tabs-items { height: calc(100% - 48px); }
+  div::v-deep .v-window-item  { height: 100%; }
+  div::v-deep .v-window__container  { height: 100%; }
 
   /* fix bug: tab не нужно сдвигать */
   div::v-deep .v-slide-group__content { transform: translateX(0) !important; }
