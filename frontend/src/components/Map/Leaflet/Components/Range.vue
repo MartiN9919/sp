@@ -16,7 +16,7 @@
               </td>
             </template>
             <!-- ИНФОРМАТОР -->
-            <div class="stat">
+            <div class="info">
               <table>
                 <tr>
                   <th></th>
@@ -29,13 +29,26 @@
             </div>
           </v-tooltip>
           <td class="layer-parent">
+
+            <!-- МАРКЕРЫ -->
             <canvas
               ref="mark_dt"
-              class="layer-child zz"
+              class="layer-child"
               :style="{top: mark.top+'px', left: mark.left+'px', width: mark.width+'px', height: mark.height+'px'}"
               :width="mark.width"
               :height="mark.height"
             />
+
+            <!-- СТАТИСТИКА -->
+            <p
+              ref="stat_dt"
+              class="layer-child stat zz"
+              :style="{top: stat.top+'px', left: stat.left+'px', width: stat.width+'px', height: stat.height+'px'}"
+              :width="stat.width"
+              :height="stat.height"
+            >{{stat.label_dt}}</p>
+
+            <!-- СЛАЙДЕР -->
             <v-range-slider
               ref="slider_dt"
               class="slider"
@@ -47,9 +60,9 @@
               dense
 
               thumb-size="8"
-              thumb-color="green"
+              :thumb-color="color_sel"
 
-              track-fill-color="green"
+              :track-fill-color="color_sel"
               track-color="red"
             >
               <template v-slot:append>
@@ -61,6 +74,7 @@
             </v-range-slider>
           </td>
         </tr>
+        <tr class="divider"/>
         <tr>
           <td>
             <v-tooltip top :color="$CONST.APP.COLOR_OBJ">
@@ -73,6 +87,8 @@
             </v-tooltip>
           </td>
           <td class="layer-parent">
+
+            <!-- МАРКЕРЫ -->
             <canvas
               ref="mark_hm"
               class="layer-child"
@@ -80,6 +96,17 @@
               :width="mark.width"
               :height="mark.height"
             />
+
+            <!-- СТАТИСТИКА -->
+            <p
+              ref="stat_dt"
+              class="layer-child stat zz"
+              :style="{top: stat.top+'px', left: stat.left+'px', width: stat.width+'px', height: stat.height+'px'}"
+              :width="stat.width"
+              :height="stat.height"
+            >{{stat.label_hm}}</p>
+
+            <!-- СЛАЙДЕР -->
             <v-range-slider
               ref="slider_hm"
               class="slider"
@@ -91,9 +118,9 @@
               dense
 
               thumb-size="8"
-              thumb-color="green"
+              :thumb-color="color_sel"
 
-              track-fill-color="green"
+              :track-fill-color="color_sel"
               track-color="red"
             >
               <template v-slot:append>
@@ -141,7 +168,15 @@ export default {
   mixins: [ MixLib, MixDt, MixHm, ],
   components: { LControl, contextMenuNested, },
   data: () => ({
-    stat: {               // статистика
+    color_sel:         'green',
+    stat: {                     // статистика
+      label_dt:        '55 из 100 (100%)',
+      label_hm:        '12 из 1000 (100%)',
+      top:             25,
+      left:            0,
+      width:           307,     // реальная ширина, 307-7-7=293 - логическая ширина
+      height:          15,
+
       count_all:       0,
       count_sel_all:   0,
       count_sel_dt:    0,
@@ -151,14 +186,14 @@ export default {
       percent_sel_hm:  0,
     },
 
-    mark: {                 // маркеры на canvas
-      margin_x: 7,          // вычисляемые отступы слева и справа
-      top:      0,
-      left:     0,
-      width:    307,        // реальная ширина, 307-7-7=293 - логическая ширина
-      height:   15,
+    mark: {                     // маркеры на canvas
+      margin_x:        7,       // вычисляемые отступы слева и справа
+      top:             3,
+      left:            0,
+      width:           307,     // реальная ширина, 307-7-7=293 - логическая ширина
+      height:          15,
 
-      strokeStyle:     "#bbb",  // маркер: цвет
+      strokeStyle:     "#aaa",  // маркер: цвет
       lineWidth:       2,       // маркер: ширина
       lineHeightStart: 1,       // маркер: Y1
       lineHeightEnd:   8,       // маркер: Y2
@@ -273,14 +308,19 @@ export default {
   div::v-deep .layer-parent  { position: relative; }
   div::v-deep .layer-child   { position: absolute; }
 
-
-  div::v-deep .slider        { width: 22em; padding: 0 .7em 0 0; margin: 0; }
+  /* слайдер */
+  div::v-deep .slider        { width: 22em; padding: 0 .7em 0 0; margin: 0.2em 0; }
   div::v-deep .v-slider      { cursor: pointer; }
   div::v-deep .v-input__slot { margin: 0 !important; }
   div::v-deep .v-messages    { display: none; }
-  div::v-deep .v-slider__track-container { height: 2px; }  /* высота полоски */
+  div::v-deep .v-slider__track-container                  { height: 1px; }  /* высота полоски */
+  div::v-deep .v-slider__track-container>div:nth-child(2) { height: 2px; }
+  div::v-deep .divider       { height: 1px; }                               /* разделитель между слайдерами */
 
-  /* информатор */
+  /* статистика */
+  div::v-deep .stat          { text-align: center; font-size: 0.7em; color: green; }
+
+  /* информатор выбора */
   div::v-deep .range-info {
     width: 240px;
     text-align: right;
@@ -293,8 +333,8 @@ export default {
   div::v-deep .range-info > div:nth-of-type(2) { width: 15px;  text-align: center; }
   div::v-deep .range-info > div:nth-of-type(3) { width: 110px; text-align: left;   }
 
-  /* статистика */
-  div::v-deep .stat table {
+  /* УДАЛИТЬ? hint */
+  div::v-deep .info table {
     border-collapse: collapse;
     table-layout: fixed;
     font-size: 0.9em;
@@ -303,11 +343,11 @@ export default {
     padding: 0 0;
   }
 
-  div::v-deep .stat th {
+  div::v-deep .info th {
     text-align: center;
   }
 
-  div::v-deep .stat td, th {
+  div::v-deep .info td, th {
     border: 1px solid white;
     padding: 3px 10px;
     white-space: nowrap;
