@@ -244,7 +244,7 @@ export default {
           if ((date >= self.dt.sel_min) && (date <= self.dt.sel_max)) { self.stat.count_sel_dt++; }
        });
       });
-      console.log(self.stat.count_all, self.stat.count_sel_dt)
+      //console.log(self.stat.count_all, self.stat.count_sel_dt)
     },
   },
 }
