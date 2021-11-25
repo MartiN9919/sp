@@ -41,6 +41,7 @@ export default {
     el.addEventListener('mouseup',    this.hm_on_mouse_null, {capture: true});
     el.addEventListener('mouseleave', this.hm_on_mouse_null, {capture: true});
     el.addEventListener('mousedown',  this.hm_on_mouse_down, {capture: true});
+    this.hm_mark_refresh();
   },
 
   beforeDestroy() {
@@ -60,7 +61,7 @@ export default {
         if ( (sel_min != this.hm.sel_min) || (sel_max != this.hm.sel_max) ) {
           this.hm.sel_max = sel_max;
           this.hm.sel_min = sel_min;
-          this.MAP_ACT_REFRESH();   // перерисовать
+          this.MAP_ACT_REFRESH();   // элементы на карте: обновить
         }
       },
       get: function()    { return [this.hm.sel_min, this.hm.sel_max]; },
@@ -71,7 +72,9 @@ export default {
 
   methods: {
     // обработчик изменения исходных данных не нужен
-    // hm_items_change(items) { },
+    hm_items_change(items) {
+      this.hm_mark_refresh();
+    },
 
     // val [0...86400]
     hm_val_to_ts(val) { return val*1000+myUTC },
@@ -79,6 +82,12 @@ export default {
     // вырезать из ts секунды (для val), 0-начало суток (UTC не используется)
     hm_ts_cut_sec(ts) { return  (((ts-myUTC)/1000) % (60*60*24))|0; },
 
+    // MARK: обновить
+    hm_mark_refresh() {
+      this.lib_mark_refresh(this.hm, this.$refs.mark_hm, function(date){
+        return this.hm_ts_cut_sec(datesql_to_ts(date));
+      }.bind(this));
+    },
 
 
     // MENU: Показать первый уровень

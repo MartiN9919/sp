@@ -1,8 +1,44 @@
 
 import { myUTC } from '@/plugins/sys';
+import { MAP_ITEM } from '@/components/Map/Leaflet/Lib/Const';
 
 export default {
     methods: {
+
+
+
+    // MARK: обновить
+    lib_mark_refresh(data, mark, fun_converter) {
+      if (mark == undefined) return;
+      let ctx = mark.getContext('2d');
+
+      let self        = this;
+      let limit_delta = data.limit_max  - data.limit_min;
+      let logic_width = this.mark.width - this.mark.margin_x - this.mark.margin_x;
+      ctx.beginPath();
+      try {
+        ctx.clearRect(0, 0, this.mark.width, this.mark.height);
+        ctx.strokeStyle   = this.mark.strokeStyle;
+        ctx.lineWidth     = this.mark.lineWidth;
+        ctx.shadowColor   = this.mark.shadowColor;
+        ctx.shadowBlur    = this.mark.shadowBlur;
+
+        let items = this.SCRIPT_GET;
+        items.forEach(function(item){
+          item.fc.features.forEach(function(feature){
+            let date = feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES.DATE];
+            if (!date) return;
+            let x = self.mark.margin_x + ((fun_converter(date)-data.limit_min)*logic_width/limit_delta)|0;
+            ctx.moveTo(x, self.mark.lineHeightStart);
+            ctx.lineTo(x, self.mark.lineHeightEnd);
+          });
+        });
+      } finally {
+        if (ctx != undefined) { ctx.stroke(); ctx.closePath(); }
+      }
+    },
+
+
 
     //
     // MENU

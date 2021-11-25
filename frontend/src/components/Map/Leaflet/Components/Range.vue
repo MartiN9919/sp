@@ -30,7 +30,7 @@
           </v-tooltip>
           <td class="layer-parent">
             <canvas
-              ref="review_dt"
+              ref="mark_dt"
               class="layer-child zz"
               :style="{top: mark.top+'px', left: mark.left+'px', width: mark.width+'px', height: mark.height+'px'}"
               :width="mark.width"
@@ -69,11 +69,12 @@
                   <div>{{hm_val_min}}</div><div>-</div><div>{{hm_val_max}}</div>
                 </div>
               </template>
+              <span>555</span>
             </v-tooltip>
           </td>
           <td class="layer-parent">
             <canvas
-              ref="review_hm"
+              ref="mark_hm"
               class="layer-child"
               :style="{top: mark.top+'px', left: mark.left+'px', width: mark.width+'px', height: mark.height+'px'}"
               :width="mark.width"
@@ -175,7 +176,7 @@ export default {
       immediate: true,
       handler: function(items) {
         this.dt_items_change(items);
-      //this.hm_items_change(items);
+        this.hm_items_change(items);
       },
     }
   },
