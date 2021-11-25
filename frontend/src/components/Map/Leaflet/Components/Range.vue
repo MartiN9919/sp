@@ -155,8 +155,8 @@ export default {
     ctx.fillStyle = "#300";
 
     ctx.beginPath();
-    ctx.moveTo(30, 5);
-    ctx.lineTo(30, 25);
+    ctx.moveTo(30, 0);
+    ctx.lineTo(30, 8);
     ctx.stroke();
     ctx.closePath();
   },
