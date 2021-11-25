@@ -67,7 +67,7 @@
       ref="contextMenu"
       :form="this"
       :items="contextMenu"
-      color="teal"
+      :color="$CONST.APP.COLOR_OBJ"
     ></context-menu-nested>
   </div>
 </template>

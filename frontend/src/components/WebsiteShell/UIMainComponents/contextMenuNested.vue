@@ -1,10 +1,14 @@
 <template>
+  <!--
+    min-width="0" - автоматическое регулирование ширины
+    создание DOM корневого активатора отключается через свойство _root_
+  -->
   <v-menu
     class="select_off"
     style="z-index: 50000;"
     min-width="0"
     :value="open"
-    :absolute="root"
+    :absolute="_root_"
     :close-on-content-click="false"
     :offset-x="isOffsetX"
     :offset-y="isOffsetY"
@@ -14,7 +18,7 @@
     :transition="transition"
   >
     <!-- СЛОТ-АКТИВАТОР ПОДМЕНЮ -->
-    <template v-if="!root" v-slot:activator="{ on }">
+    <template v-if="!_root_" v-slot:activator="{ on }">
       <v-list-item
         class="d-flex justify-space-between"
         v-on="on"
@@ -55,6 +59,7 @@
           :subtitle="item.subtitle"
           :radio="item.radio"
           :model="item.model"
+          :_root_=false
 
           :form="form"
           :items="item.menu"
@@ -144,7 +149,6 @@
 
       </v-list>
   </v-menu>
-
 </template>
 
 <script>
@@ -164,10 +168,10 @@ export default {
     isOpenOnHover: { type: Boolean, default: false },                // открытие при наведении курсора, только для root
     transition:    { type: String,  default: "slide-x-transition" }, // анимация появления меню
     color:         { type: String,  default: "green" },              // цвет по умолчанию (переключатели и т.п.)
+    _root_:        { type: Boolean, default: true },                 // является ли меню корневым, в рекурсии автоматически устанавливается первому меню
   },
 
   data: () => ({
-    root:      false,
     open:      false,
     positionX: undefined,
     positionY: undefined,
@@ -181,7 +185,6 @@ export default {
     // Показать первый уровень меню, вызывается из родителя
     show_root(x, y) {
       this.open      = false;
-      this.root      = true;
       this.positionX = x;
       this.positionY = y;
       this.$nextTick(() => { this.open = true })
@@ -212,7 +215,5 @@ export default {
     },
 
   },
-
-
 }
 </script>
