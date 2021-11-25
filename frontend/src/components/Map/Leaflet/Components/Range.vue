@@ -28,8 +28,14 @@
               </table>
             </div>
           </v-tooltip>
-          <td class="layer-parent zz">
-            <canvas class="layer-child" ref="review_dt"/>
+          <td class="layer-parent">
+            <canvas
+              ref="review_dt"
+              class="layer-child zz"
+              :style="{top: cnv.top+'px', left: cnv.left+'px', width: cnv.width+'px', height: cnv.height+'px'}"
+              :width="cnv.width"
+              :height="cnv.height"
+            />
             <v-range-slider
               ref="slider_dt"
               class="slider"
@@ -67,7 +73,13 @@
             </v-tooltip>
           </td>
           <td class="layer-parent">
-            <canvas class="layer-child" ref="review_hm"/>
+            <canvas
+              ref="review_hm"
+              class="layer-child zzz"
+              :style="{top: cnv.top+'px', left: cnv.left+'px', width: cnv.width+'px', height: cnv.height+'px'}"
+              :width="cnv.width"
+              :height="cnv.height"
+            />
             <v-range-slider
               ref="slider_hm"
               class="slider"
@@ -138,27 +150,17 @@ export default {
       percent_sel_dt:  0,
       percent_sel_hm:  0,
     },
+
+    cnv: {                // canvas
+      margin_x: 7,        // вычисляемые отступы слева и справа
+      top:      0,
+      left:     0,
+      width:    307,      // реальная ширина, 307-7-7=293 - логическая ширина
+      height:   15,
+    },
   }),
 
   mounted: function() {
-    let el = this.$refs.review_dt;
-    var ctx=el.getContext("2d");
-
-    ctx.strokeStyle = "#ccc";
-    ctx.lineWidth = "2";
-
-
-    ctx.shadowColor = "#999";
-    ctx.shadowBlur = 4;
-    ctx.shadowOffsetX = 0;
-    ctx.shadowOffsetY = 0;
-    ctx.fillStyle = "#300";
-
-    ctx.beginPath();
-    ctx.moveTo(30, 0);
-    ctx.lineTo(30, 8);
-    ctx.stroke();
-    ctx.closePath();
   },
 
   watch: {
@@ -167,6 +169,7 @@ export default {
       immediate: true,
       handler: function(items) {
         this.dt_items_change(items);
+        //this.dt_cnv_refresh(items);   // дублируется в mounted
       //this.hm_items_change(items);
       },
     }
@@ -262,7 +265,7 @@ export default {
 
   /* наложение друг на друга */
   div::v-deep .layer-parent  { position: relative; }
-  div::v-deep .layer-child   { position: absolute; top: 0; left: 0; }
+  div::v-deep .layer-child   { position: absolute; }
 
 
   div::v-deep .slider        { width: 22em; padding: 0 .7em 0 0; margin: 0; }
