@@ -45,7 +45,7 @@ export default {
     el.addEventListener('mouseup',    this.dt_on_mouse_null, {capture: true});
     el.addEventListener('mouseleave', this.dt_on_mouse_null, {capture: true});
     el.addEventListener('mousedown',  this.dt_on_mouse_down, {capture: true});
-    this.dt_cnv_refresh();
+    this.dt_mark_refresh();
   },
 
   beforeDestroy() {
@@ -69,7 +69,7 @@ export default {
           this.dt.sel_min = sel_min;
           this.MAP_ACT_REFRESH();   // перерисовать
           this.set_hint();          // подсказка
-          this.dt_cnv_refresh();
+          this.dt_mark_refresh();   // маркеры обновить
         }
       },
       get: function()    { return [this.dt.sel_min, this.dt.sel_max]; },
@@ -101,35 +101,35 @@ export default {
       this.dt_prop_sel = [sel_min, sel_max];
     },
 
-    dt_cnv_refresh() {
+    // маркеры: обновить
+    dt_mark_refresh() {
       let ctx = this.$refs.review_dt?.getContext('2d');
       if (ctx == undefined) return;
 
       let self        = this;
       let limit_delta = this.dt.limit_max - this.dt.limit_min;
-      let cnv_width   = this.cnv.width - this.cnv.margin_x - this.cnv.margin_x;
+      let logic_width = this.mark.width   - this.mark.margin_x - this.mark.margin_x;
       ctx.beginPath();
       try {
-        ctx.clearRect(0, 0, this.cnv.width, this.cnv.height);
-        ctx.strokeStyle   = "#bbb";
-        ctx.lineWidth     = "2";
-        ctx.shadowColor   = "#999";
-        ctx.shadowBlur    = 4;
+        ctx.clearRect(0, 0, this.mark.width, this.mark.height);
+        ctx.strokeStyle   = this.mark.strokeStyle;
+        ctx.lineWidth     = this.mark.lineWidth;
+        ctx.shadowColor   = this.mark.shadowColor;
+        ctx.shadowBlur    = this.mark.shadowBlur;
 
         let items = this.SCRIPT_GET;
         items.forEach(function(item){
           item.fc.features.forEach(function(feature){
             let date = feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES.DATE];
             if (!date) return;
-            let x = self.cnv.margin_x + ((datesql_to_ts(date)-self.dt.limit_min)*cnv_width/limit_delta)|0;
-            ctx.moveTo(x, 1);
-            ctx.lineTo(x, 10);
+            let x = self.mark.margin_x + ((datesql_to_ts(date)-self.dt.limit_min)*logic_width/limit_delta)|0;
+            ctx.moveTo(x, self.mark.lineHeightStart);
+            ctx.lineTo(x, self.mark.lineHeightEnd);
           });
         });
       } finally {
         if (ctx != undefined) { ctx.stroke(); ctx.closePath(); }
       }
-
     },
 
 

@@ -32,9 +32,9 @@
             <canvas
               ref="review_dt"
               class="layer-child zz"
-              :style="{top: cnv.top+'px', left: cnv.left+'px', width: cnv.width+'px', height: cnv.height+'px'}"
-              :width="cnv.width"
-              :height="cnv.height"
+              :style="{top: mark.top+'px', left: mark.left+'px', width: mark.width+'px', height: mark.height+'px'}"
+              :width="mark.width"
+              :height="mark.height"
             />
             <v-range-slider
               ref="slider_dt"
@@ -69,16 +69,15 @@
                   <div>{{hm_val_min}}</div><div>-</div><div>{{hm_val_max}}</div>
                 </div>
               </template>
-              <span>555</span>
             </v-tooltip>
           </td>
           <td class="layer-parent">
             <canvas
               ref="review_hm"
-              class="layer-child zzz"
-              :style="{top: cnv.top+'px', left: cnv.left+'px', width: cnv.width+'px', height: cnv.height+'px'}"
-              :width="cnv.width"
-              :height="cnv.height"
+              class="layer-child"
+              :style="{top: mark.top+'px', left: mark.left+'px', width: mark.width+'px', height: mark.height+'px'}"
+              :width="mark.width"
+              :height="mark.height"
             />
             <v-range-slider
               ref="slider_hm"
@@ -151,12 +150,19 @@ export default {
       percent_sel_hm:  0,
     },
 
-    cnv: {                // canvas
-      margin_x: 7,        // вычисляемые отступы слева и справа
+    mark: {                 // маркеры на canvas
+      margin_x: 7,          // вычисляемые отступы слева и справа
       top:      0,
       left:     0,
-      width:    307,      // реальная ширина, 307-7-7=293 - логическая ширина
+      width:    307,        // реальная ширина, 307-7-7=293 - логическая ширина
       height:   15,
+
+      strokeStyle:     "#bbb",  // маркер: цвет
+      lineWidth:       2,       // маркер: ширина
+      lineHeightStart: 1,       // маркер: Y1
+      lineHeightEnd:   8,       // маркер: Y2
+      shadowColor:     "#999",  // тень: цвет
+      shadowBlur:      4,       // тень: размытие
     },
   }),
 
@@ -169,7 +175,6 @@ export default {
       immediate: true,
       handler: function(items) {
         this.dt_items_change(items);
-        //this.dt_cnv_refresh(items);   // дублируется в mounted
       //this.hm_items_change(items);
       },
     }
