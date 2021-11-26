@@ -4,13 +4,13 @@ from data_base_driver.connect.connect_mysql import db_sql
 from data_base_driver.constants.const_dat import DAT_SYS_FILES, DAT_OWNER
 
 
-def get_list_files_by_user(id):
+def get_list_files_by_user(user_id):
     """
     Функция для получения списка файлов пользователя
-    @param id: идентификационный номер пользователя
+    @param user_id: идентификационный номер пользователя
     @return: список словарей в формате [{id1,name1},{},...{}]
     """
-    group_id = DAT_OWNER.DUMP.get_group(user_id=id)
+    group_id = DAT_OWNER.DUMP.get_group(user_id=user_id)
     sql = 'SELECT ' + DAT_SYS_FILES.ID + ', ' \
           + DAT_SYS_FILES.NAME + ', ' \
           + DAT_SYS_FILES.OWNER_LINE_ID + ', ' \
@@ -28,15 +28,15 @@ def get_list_files_by_user(id):
             for file in files_tuple]
 
 
-def get_file_path(id):
+def get_file_path(file_id):
     """
     Функция для получения пути к файлу
-    @param id: идентификационный номер файла
+    @param file_id: идентификационный номер файла
     @return: путь к файлу в текстовом формате
     """
     sql = 'SELECT ' + DAT_SYS_FILES.PATH + ' FROM ' \
           + DAT_SYS_FILES.TABLE + ' WHERE ' \
-          + DAT_SYS_FILES.ID + ' = ' + str(id)
+          + DAT_SYS_FILES.ID + ' = ' + str(file_id)
     file_path = db_sql(sql)
     if len(file_path) == 0:
         raise ('Error, file dont found')
