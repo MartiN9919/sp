@@ -1,15 +1,15 @@
 <template>
   <v-card hover width="fit-content">
-    <table class="table" :style="{padding: sizeNode / 180}">
+    <table class="table" :style="{padding: `${sizeNode / 180}px`}">
       <tr
         v-if="param.values.length"
         v-for="param in params" :key="param.id"
-        :style="{fontSize: sizeNode/40}"
+        :style="{fontSize: `${sizeNode/40}px`}"
       >
         <td class="information-column">
           {{param.baseParam.title}}
         </td>
-        <td v-if="param.values[0].value" :style="{maxWidth: sizeNode / 2}">
+        <td v-if="param.values[0].value" :style="{maxWidth: `${sizeNode / 2}px`}">
           {{param.values[0].value}}
         </td>
         <td v-if="showDate" class="information-column">

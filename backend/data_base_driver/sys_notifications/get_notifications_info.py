@@ -2,24 +2,9 @@ from data_base_driver.constants.const_dat import DAT_SYS_NOTIFY, DAT_OWNER_USERS
 from data_base_driver.connect.connect_mysql import db_sql
 
 
-def get_status_by_alert(alert, file):
-    """
-    Вспомогательная функция для получения числового статуса в соответствии со строковым типом
-    @param alert: строковый тип
-    @param file: файл закрепленный за оповещением, если нет то None
-    @return: числовой статус оповещения
-    """
-    if alert == 'information':
-        return 501
-    elif alert == 'warning':
-        return 502
-    elif alert == 'error':
-        return 503
-
-
 def get_alert_json(alert):
     return {'id_alert': alert[0], 'from': alert[1], 'content': alert[2], 'date_time': alert[3].isoformat(sep=' '),
-            'status': get_status_by_alert(alert[4], alert[5]), 'file': alert[5], 'geometry': alert[6]}
+            'status': alert[4], 'file': alert[5], 'geometry': alert[6]}
 
 
 def get_notifications_by_user(user_id, previous_list):
@@ -44,7 +29,7 @@ def get_notifications_by_user(user_id, previous_list):
     return [get_alert_json(alert) for alert in user_alerts if not (int(alert[0]) in previous_list)]
 
 
-def get_notifications_list_by_offset(user_id, length, offset, date, notification_type, order='Up'):
+def get_notifications_list_by_offset(user_id, length, offset, date, notification_type, order='up'):
     """
     Функция для ранжироввнного получения оповещений
     @param user_id: идентификатор пользователя, которому предназначены оповещения
@@ -55,7 +40,7 @@ def get_notifications_list_by_offset(user_id, length, offset, date, notification
     @param order: тип сортировки, по умолчанию от новых к старым, для изменения down
     @return: объект содержащий список оповещений и их общее количество при заданных параметрах
     """
-    if order == 'Up':
+    if order == 'up':
         order = True
     else:
         order = False
@@ -76,7 +61,7 @@ def get_notifications_list_by_offset(user_id, length, offset, date, notification
           + DAT_OWNER_USERS.TABLE_SHORT + ' u ON u.id = a.' \
           + DAT_SYS_NOTIFY.FROM_ID + where + ' ORDER BY ' \
           + DAT_SYS_NOTIFY.DATE_TIME + str(' DESC' if order else '') + ' LIMIT ' \
-          + str(length) + ' OFFSET ' + str(length*offset) + ';'
+          + str(length) + ' OFFSET ' + str(length*(offset - 1)) + ';'
     user_alerts = db_sql(sql)
     where_list.pop()
     where_list.append(DAT_SYS_NOTIFY.TO_ID + ' = ' + str(user_id))

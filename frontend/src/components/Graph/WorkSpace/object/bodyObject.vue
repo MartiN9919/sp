@@ -33,8 +33,8 @@ export default {
         return getFileLink(this.node.object.object.id, this.node.object.recId, this.node.object.photo)
       else return null
     },
-    bodySize: function () { return this.node.size / 3 },
-    triggerSize: function () { return this.bodySize / 6 },
+    bodySize: function () { return `${this.node.size / 3}px` },
+    triggerSize: function () { return `${this.node.size / 18}px` },
     bodyIconStyle: function () { return {fontSize: this.bodySize, color: '#aaaaaa', backgroundColor: 'white'} },
     bodyIconClass: function () { return 'mdi ' + this.node.object.object.icon },
     triggers: function () { return this.showTriggers ? this.node.object.triggers : []}
@@ -76,7 +76,6 @@ export default {
               0 0 22px 2px rgba(255, 0, 0, 0.14),
               0 0 28px 5px rgba(255, 0, 0, 0.12) !important;
 }
-
 .body-related {
   box-shadow: 0 0 9px 5px rgba(0, 0, 255, 0.2),
               0 0 22px 2px rgba(0, 0, 255, 0.14),
