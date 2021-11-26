@@ -3,16 +3,17 @@ import { mapGetters } from 'vuex';
 import { MAP_ITEM } from '@/components/Map/Leaflet/Lib/Const';
 import { myUTC, ts_to_screen, datesql_to_ts } from '@/plugins/sys';
 
-const SEL_STEP_MIN = 60*1000;     // посекундно
+const SEL_STEP_MIN = 60*1000;       // посекундно
 
 export default {
   data: () => ({
     dt: {
-      limit_min:   0,             // минимально / максимально допустимое значение, ts
+      limit_min:   0,               // минимально / максимально допустимое значение, ts
       limit_max:   0,
-      sel_min:     0,             // выбранное минимальное / максимальное значение, ts
+      sel_min:     0,               // выбранное минимальное / максимальное значение, ts
       sel_max:     0,
       sel_step:    SEL_STEP_MIN,
+      stat:        '',              // статистика
       menu_struct: undefined,
       menu_struct_base: [
         {
@@ -68,8 +69,8 @@ export default {
           this.dt.sel_max = sel_max;
           this.dt.sel_min = sel_min;
           this.MAP_ACT_REFRESH();   // элементы на карте: обновить
-          this.set_hint();          // подсказка
         }
+        this.dt_stat_refresh();   // статистика: обновить
       },
       get: function()    { return [this.dt.sel_min, this.dt.sel_max]; },
     },
@@ -108,6 +109,25 @@ export default {
       this.lib_mark_refresh(this.dt, this.$refs.mark_dt, function(date){
         return datesql_to_ts(date);
       });
+    },
+
+
+    // STAT: обновить
+    dt_stat_refresh() {
+      let self = this;
+      let count_all = 0;
+      let count_sel = 0;
+      this.SCRIPT_GET.forEach(function(item){
+        item.fc.features.forEach(function(feature){
+          let date = feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES.DATE];
+          if (!date) return;
+          count_all++;
+
+          date = datesql_to_ts(date);
+          if ((date >= self.dt.sel_min) && (date <= self.dt.sel_max)) { count_sel++; }
+       });
+      });
+      this.dt.stat = (count_all>0) ? (count_sel+' из '+count_all+' ( '+(count_sel*100/count_all|0)+' % )') : '';
     },
 
 

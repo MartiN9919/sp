@@ -1,6 +1,6 @@
 
 import { MAP_ITEM } from '@/components/Map/Leaflet/Lib/Const';
-import { myUTC, ts_to_screen, datesql_to_ts } from '@/plugins/sys';
+import { myUTC, ts_to_screen, datesql_to_ts, datesql_is_time } from '@/plugins/sys';
 
 const SEL_STEP_MIN = 60;            // посекундно
 
@@ -12,6 +12,7 @@ export default {
       sel_min:     0,               // выбранное минимальное / максимальное значение, ts
       sel_max:     (60*60*24)|0,
       sel_step:    SEL_STEP_MIN,
+      stat:        '',              // статистика
       menu_struct: undefined,
       menu_struct_base: [
         {
@@ -41,7 +42,7 @@ export default {
     el.addEventListener('mouseup',    this.hm_on_mouse_null, {capture: true});
     el.addEventListener('mouseleave', this.hm_on_mouse_null, {capture: true});
     el.addEventListener('mousedown',  this.hm_on_mouse_down, {capture: true});
-    this.hm_mark_refresh();
+    this.hm_items_change();
   },
 
   beforeDestroy() {
@@ -63,6 +64,7 @@ export default {
           this.hm.sel_min = sel_min;
           this.MAP_ACT_REFRESH();   // элементы на карте: обновить
         }
+        this.hm_stat_refresh();     // статистика: обновить
       },
       get: function()    { return [this.hm.sel_min, this.hm.sel_max]; },
     },
@@ -71,9 +73,10 @@ export default {
   },
 
   methods: {
-    // обработчик изменения исходных данных не нужен
+    // обработчик изменения исходных данных
     hm_items_change(items) {
       this.hm_mark_refresh();
+      this.hm_stat_refresh();
     },
 
     // val [0...86400]
@@ -87,6 +90,27 @@ export default {
       this.lib_mark_refresh(this.hm, this.$refs.mark_hm, function(date){
         return this.hm_ts_cut_sec(datesql_to_ts(date));
       }.bind(this));
+    },
+
+
+    // STAT: обновить
+    hm_stat_refresh() {
+      let self = this;
+      let count_all = 0;
+      let count_sel = 0;
+      this.SCRIPT_GET.forEach(function(item){
+        item.fc.features.forEach(function(feature){
+          let date = feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES.DATE];
+          if (!date) return;
+          if (!datesql_is_time(date)) return;
+          count_all++;
+
+          date = datesql_to_ts(date);
+          let time = self.hm_ts_cut_sec(date);
+          if ((time >= self.hm.sel_min) && (time <= self.hm.sel_max)) { count_sel++; }
+       });
+      });
+      this.hm.stat = (count_all>0) ? (count_sel+' из '+count_all+' ( '+(count_sel*100/count_all|0)+' % )') : '';
     },
 
 

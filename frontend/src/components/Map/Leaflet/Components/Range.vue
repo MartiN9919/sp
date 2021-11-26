@@ -34,7 +34,7 @@
               :style="{top: stat.top+'px', left: stat.left+'px', width: stat.width+'px', height: stat.height+'px'}"
               :width="stat.width"
               :height="stat.height"
-            >{{stat.label_dt}}</p>
+            >{{dt.stat}}</p>
 
             <!-- СЛАЙДЕР -->
             <v-range-slider
@@ -84,7 +84,7 @@
               :style="{top: stat.top+'px', left: stat.left+'px', width: stat.width+'px', height: stat.height+'px'}"
               :width="stat.width"
               :height="stat.height"
-            >{{stat.label_hm}}</p>
+            >{{hm.stat}}</p>
 
             <!-- СЛАЙДЕР -->
             <v-range-slider
@@ -159,8 +159,6 @@ export default {
     },
 
     inf: {                      // информатор
-      //info_dt:        '55 из 100 (100%)',
-      //info_hm:        '12 из 1000 (100%)',
       top:             30,
       left:            18,
       width:           536,     // реальная ширина, 307-7-7=293 - логическая ширина
@@ -168,20 +166,10 @@ export default {
     },
 
     stat: {                     // статистика
-      label_dt:        '55 из 100 (100%)',
-      label_hm:        '12 из 1000 (100%)',
       top:             30,
       left:            18,
       width:           536,     // реальная ширина, 307-7-7=293 - логическая ширина
       height:          15,
-
-      count_all:       0,
-      count_sel_all:   0,
-      count_sel_dt:    0,
-      count_sel_hm:    0,
-      percent_sel_all: 0,
-      percent_sel_dt:  0,
-      percent_sel_hm:  0,
     },
   }),
 
@@ -249,29 +237,6 @@ export default {
         }
       }
       return fc;
-    },
-
-
-    set_hint() {
-      let self = this;
-      this.stat.count_all       = 0;
-      this.stat.count_sel_all   = 0;
-      this.stat.count_sel_dt    = 0;
-      this.stat.count_sel_hm    = 0;
-      this.stat.percent_sel_all = 0;
-      this.stat.percent_sel_dt  = 0;
-      this.stat.percent_sel_hm  = 0;
-
-      this.SCRIPT_GET.forEach(function(item){
-        item.fc.features.forEach(function(feature){
-          self.stat.count_all++;
-          let date = feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES.DATE];
-          if (!date) return;
-          date = datesql_to_ts(date);
-          if ((date >= self.dt.sel_min) && (date <= self.dt.sel_max)) { self.stat.count_sel_dt++; }
-       });
-      });
-      //console.log(self.stat.count_all, self.stat.count_sel_dt)
     },
   },
 }
