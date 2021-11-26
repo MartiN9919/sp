@@ -1,6 +1,6 @@
 <template>
-  <foreignObject :x="position.x" :y="position.y" :width="sizeNode" height="1" overflow="visible" class="pt-8">
-    <div class="name-text" :style="{fontSize: sizeNode/40}">{{title}}</div>
+  <foreignObject :x="position.x" :y="position.y" :width="`${sizeNode}px`" height="1" overflow="visible" class="pt-8">
+    <div class="name-text" :style="{fontSize: `${sizeNode/40}px`}">{{title}}</div>
   </foreignObject>
 </template>
 

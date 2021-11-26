@@ -19,8 +19,8 @@ export default {
   props: {
     activeTriggers: Array,
     size: {
-      type: Number,
-      default: 24,
+      type: String,
+      default: '24px',
     }
   },
   computed: {

@@ -1,8 +1,8 @@
 <template>
-  <v-app-bar app dense flat dark :color="$CONST.APP.COLOR_OBJ">
-    <v-app-bar-nav-icon @click="changeNavigationDrawerStatus"/>
+  <v-app-bar v-if="userInformation" app dense flat dark :color="$CONST.APP.COLOR_OBJ">
+    <v-app-bar-nav-icon @click="this.drawer = !this.drawer"/>
     <v-tabs fixed-tabs hide-slider>
-      <v-tab v-for="tab in tabs" :key="tab.route" :to="tab.route">
+      <v-tab v-for="tab in appbarTabs" :key="tab.route" :to="tab.route">
         {{tab.title}}<v-icon right>{{ tab.icon }}</v-icon>
       </v-tab>
     </v-tabs>
@@ -31,10 +31,10 @@
 
         <v-divider></v-divider>
 
-        <v-list flat>
+        <v-list>
           <v-subheader>Общие настройки системы</v-subheader>
 
-          <v-list-item @click="notificationStatus = !notificationStatus">
+          <v-list-item @click="notificationStatus = !notificationStatus" v-ripple="{ class: 'teal--text' }">
             <v-list-item-icon>
               <v-icon>mdi-bell-outline</v-icon>
             </v-list-item-icon>
@@ -43,11 +43,11 @@
               <v-list-item-subtitle>Получение уведомлений</v-list-item-subtitle>
             </v-list-item-content>
             <v-list-item-action>
-              <v-checkbox v-model="notificationStatus" color="teal" readonly></v-checkbox>
+              <v-switch v-model="notificationStatus" disabled color="teal"></v-switch>
             </v-list-item-action>
           </v-list-item>
 
-          <v-list-item @click="tooltipStatus = !tooltipStatus">
+          <v-list-item @click="tooltipStatus = !tooltipStatus" v-ripple="{ class: 'teal--text' }">
             <v-list-item-icon>
               <v-icon>mdi-help</v-icon>
             </v-list-item-icon>
@@ -56,56 +56,53 @@
               <v-list-item-subtitle>Отображение подсказок</v-list-item-subtitle>
             </v-list-item-content>
             <v-list-item-action>
-              <v-checkbox v-model="tooltipStatus" readonly color="teal"></v-checkbox>
+              <v-switch v-model="tooltipStatus" disabled color="teal"></v-switch>
             </v-list-item-action>
           </v-list-item>
 
           <v-subheader>Действия над системой</v-subheader>
-
-          <v-list-item @click="logOutUser" link>
-            <v-list-item-icon><v-icon left>mdi-history</v-icon></v-list-item-icon>
-            <v-list-item-content>
-              <v-list-item-title>История уведомлений</v-list-item-title>
-              <v-list-item-subtitle>Список всех ваших уведомлений</v-list-item-subtitle>
-            </v-list-item-content>
-          </v-list-item>
-
-          <v-list-item @click="logOutUser" link>
+          <list-notifications v-slot:default="{on}">
+            <v-list-item link v-on="on" v-ripple="{ class: 'teal--text' }">
+              <v-list-item-icon><v-icon left>mdi-history</v-icon></v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title>История уведомлений</v-list-item-title>
+                <v-list-item-subtitle>Список всех ваших уведомлений</v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
+          </list-notifications>
+          <v-list-item @click="logOutUser" link v-ripple="{ class: 'teal--text' }">
             <v-list-item-icon><v-icon left>mdi-logout</v-icon></v-list-item-icon>
             <v-list-item-title>Выйти из системы</v-list-item-title>
           </v-list-item>
         </v-list>
       </v-card>
-<!--      <v-list rounded>-->
-<!--        <v-list-item @click="logOutUser" link>-->
-<!--          <v-list-item-icon><v-icon left>mdi-logout</v-icon></v-list-item-icon>-->
-<!--          <v-list-item-title>Выйти из системы</v-list-item-title>-->
-<!--        </v-list-item>-->
-<!--      </v-list>-->
     </v-menu>
   </v-app-bar>
 </template>
 
 <script>
+import ListNotifications from "@/components/WebsiteShell/UIMainComponents/listNotifications"
 import { mapActions, mapGetters } from 'vuex'
 import router from "@/router"
 
 export default {
   name: 'appBar',
+  components: {ListNotifications},
   data: () => ({
-    settings: [],
     status: {
       admin: 'Администратор',
       staff: 'Модератор'
     },
-    tabs: [
-      { title: 'Карта', route: 'map', icon: 'mdi-map-search-outline' },
-      { title: 'Граф', route: 'graph', icon: 'mdi-graph-outline' },
-      { title: 'Отчеты', route: 'report', icon: 'mdi-file-document-multiple-outline' }
-    ]
   }),
   computed: {
-    ...mapGetters(['baseList', 'navigationDrawerStatus', 'userInformation', 'globalTooltipStatus', 'globalNotificationStatus']),
+    ...mapGetters([
+      'appbarTabs',
+      'baseList',
+      'navigationDrawerStatus',
+      'userInformation',
+      'globalTooltipStatus',
+      'globalNotificationStatus',
+    ]),
     tooltipStatus: {
       get: function () { return this.globalTooltipStatus },
       set: function (value) { this.setGlobalTooltipStatus(value) }
@@ -129,15 +126,14 @@ export default {
       return result.join(', ')
     },
   },
-  methods: {
-    ...mapActions(['setNavigationDrawerStatus', 'logOutUser', 'setGlobalTooltipStatus', 'setGlobalNotificationStatus']),
-    changeNavigationDrawerStatus() {
-      this.drawer = !this.drawer
-    },
-  }
+  methods: mapActions([
+    'logOutUser',
+    'setNavigationDrawerStatus',
+    'setGlobalTooltipStatus',
+    'setGlobalNotificationStatus'
+  ]),
 }
 </script>
 
 <style scoped>
-
 </style>
