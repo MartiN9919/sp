@@ -122,7 +122,10 @@ export default {
     // MOUSE: обработчик блокировать события мыши
     dt_on_mouse_null(e) { this.lib_on_mouse_null(e, this.$refs.slider_dt); },
     // MOUSE: обработчик mousedown
-    dt_on_mouse_down(e) { this.lib_on_mouse_down(e, this.$refs.slider_dt, this.dt_sel_move); },
+    dt_on_mouse_down(e) {
+      if (e.button==2) { e.preventDefault(); e.stopPropagation(); } // right-click - заблокировать, т.к. вызывается контекстное меню
+      else             { this.lib_on_mouse_down(e, this.$refs.slider_dt, this.dt_sel_move); }
+    },
 
 
     // SEL: переместить период 0 - влево, 1 - вправо

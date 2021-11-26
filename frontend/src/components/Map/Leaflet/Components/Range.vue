@@ -5,7 +5,7 @@
       position="bottomcenterhorizontal"
       class="leaflet-bar leaflet-control control_range select_off"
     >
-      <table>
+      <table @contextmenu.stop="dt_menu_show">
         <tr>
           <td class="layer-parent">
 
@@ -52,6 +52,8 @@
 
               :track-fill-color="color_sel"
               track-color="red"
+
+              @contextmenu.stop="dt_menu_show"
             >
               <template v-slot:append>
                 <v-icon
