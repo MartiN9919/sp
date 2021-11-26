@@ -7,27 +7,6 @@
     >
       <table>
         <tr>
-          <v-tooltip top :color="$CONST.APP.COLOR_OBJ">
-            <template v-slot:activator="{ on }">
-              <td>
-                <div class="range-info" v-on="on">
-                  <div>{{dt_val_min}}</div><div>-</div><div>{{dt_val_max}}</div>
-                </div>
-              </td>
-            </template>
-            <!-- ИНФОРМАТОР -->
-            <div class="info">
-              <table>
-                <tr>
-                  <th></th>
-                  <th>Найдено объектов</th>
-                </tr>
-                <tr><td>Всего</td><td>{{stat.count_all}} из {{stat.count_sel_dt}} ( {{stat.percent_sel_dt}}% )</td></tr>
-                <tr><td>Дата / время</td><td>{{stat.count_sel_all}} из {{stat.count_sel_dt}} ( {{stat.percent_sel_dt}}% )</td></tr>
-                <tr><td>Часы / минуты</td><td>{{stat.count_sel_all}} из {{stat.count_sel_dt}} ( {{stat.percent_sel_dt}}% )</td></tr>
-              </table>
-            </div>
-          </v-tooltip>
           <td class="layer-parent">
 
             <!-- МАРКЕРЫ -->
@@ -39,10 +18,19 @@
               :height="mark.height"
             />
 
+            <!-- ИНФОРМАТОР -->
+            <p
+              ref="inf_dt"
+              class="layer-child inf zz"
+              :style="{top: inf.top+'px', left: inf.left+'px', width: inf.width+'px', height: inf.height+'px'}"
+              :width="inf.width"
+              :height="inf.height"
+            >{{dt_val_min}} - {{dt_val_max}}</p>
+
             <!-- СТАТИСТИКА -->
             <p
               ref="stat_dt"
-              class="layer-child stat zz"
+              class="layer-child stat"
               :style="{top: stat.top+'px', left: stat.left+'px', width: stat.width+'px', height: stat.height+'px'}"
               :width="stat.width"
               :height="stat.height"
@@ -76,16 +64,6 @@
         </tr>
         <tr class="divider"/>
         <tr>
-          <td>
-            <v-tooltip top :color="$CONST.APP.COLOR_OBJ">
-              <template v-slot:activator="{ on }">
-                <div class="range-info" v-on="on">
-                  <div>{{hm_val_min}}</div><div>-</div><div>{{hm_val_max}}</div>
-                </div>
-              </template>
-              <span>555</span>
-            </v-tooltip>
-          </td>
           <td class="layer-parent">
 
             <!-- МАРКЕРЫ -->
@@ -96,6 +74,15 @@
               :width="mark.width"
               :height="mark.height"
             />
+
+            <!-- ИНФОРМАТОР -->
+            <p
+              ref="inf_hm"
+              class="layer-child inf"
+              :style="{top: inf.top+'px', left: inf.left+'px', width: inf.width+'px', height: inf.height+'px'}"
+              :width="inf.width"
+              :height="inf.height"
+            >{{hm_val_min}} - {{hm_val_max}}</p>
 
             <!-- СТАТИСТИКА -->
             <p
@@ -169,12 +156,37 @@ export default {
   components: { LControl, contextMenuNested, },
   data: () => ({
     color_sel:         'green',
+
+    mark: {                     // маркеры на canvas
+      margin_x:        3,       // вычисляемые отступы слева и справа
+      top:             3,
+      left:            16,
+      width:           541,     // реальная ширина, width-margin_x-margin_x = логическая ширина
+      height:          15,
+
+      strokeStyle:     "#aaa",  // маркер: цвет
+      lineWidth:       2,       // маркер: ширина
+      lineHeightStart: 1,       // маркер: Y1
+      lineHeightEnd:   8,       // маркер: Y2
+      shadowColor:     "#999",  // тень: цвет
+      shadowBlur:      4,       // тень: размытие
+    },
+
+    inf: {                      // информатор
+      //info_dt:        '55 из 100 (100%)',
+      //info_hm:        '12 из 1000 (100%)',
+      top:             30,
+      left:            18,
+      width:           536,     // реальная ширина, 307-7-7=293 - логическая ширина
+      height:          15,
+    },
+
     stat: {                     // статистика
       label_dt:        '55 из 100 (100%)',
       label_hm:        '12 из 1000 (100%)',
-      top:             25,
-      left:            0,
-      width:           307,     // реальная ширина, 307-7-7=293 - логическая ширина
+      top:             30,
+      left:            18,
+      width:           536,     // реальная ширина, 307-7-7=293 - логическая ширина
       height:          15,
 
       count_all:       0,
@@ -184,21 +196,6 @@ export default {
       percent_sel_all: 0,
       percent_sel_dt:  0,
       percent_sel_hm:  0,
-    },
-
-    mark: {                     // маркеры на canvas
-      margin_x:        7,       // вычисляемые отступы слева и справа
-      top:             3,
-      left:            0,
-      width:           307,     // реальная ширина, 307-7-7=293 - логическая ширина
-      height:          15,
-
-      strokeStyle:     "#aaa",  // маркер: цвет
-      lineWidth:       2,       // маркер: ширина
-      lineHeightStart: 1,       // маркер: Y1
-      lineHeightEnd:   8,       // маркер: Y2
-      shadowColor:     "#999",  // тень: цвет
-      shadowBlur:      4,       // тень: размытие
     },
   }),
 
@@ -309,47 +306,17 @@ export default {
   div::v-deep .layer-child   { position: absolute; }
 
   /* слайдер */
-  div::v-deep .slider        { width: 22em; padding: 0 .7em 0 0; margin: 0.2em 0; }
+  div::v-deep .slider        { width: 600px; padding: 0 5px 5px 10px; margin: 5px 0; }
   div::v-deep .v-slider      { cursor: pointer; }
   div::v-deep .v-input__slot { margin: 0 !important; }
   div::v-deep .v-messages    { display: none; }
-  div::v-deep .v-slider__track-container                  { height: 1px; }  /* высота полоски */
+  div::v-deep .v-slider__track-container                  { height: 1px; }        /* высота полоски */
   div::v-deep .v-slider__track-container>div:nth-child(2) { height: 2px; }
-  div::v-deep .divider       { height: 1px; }                               /* разделитель между слайдерами */
+  div::v-deep .divider       { height: 1px; }                                     /* разделитель между слайдерами */
+
+  /* информатор */
+  div::v-deep .inf           { text-align: center; font-size: 0.7em; font-weight: bold; color: #444; } /* класс info нельзя, т.к. уже есть */
 
   /* статистика */
-  div::v-deep .stat          { text-align: center; font-size: 0.7em; color: green; }
-
-  /* информатор выбора */
-  div::v-deep .range-info {
-    width: 240px;
-    text-align: right;
-    font-size: .8em;
-    font-weight: bold;
-    color: green;
-  }
-  div::v-deep .range-info > div { display: inline-block; }
-  div::v-deep .range-info > div:nth-of-type(1) { width: 110px; text-align: right;  }
-  div::v-deep .range-info > div:nth-of-type(2) { width: 15px;  text-align: center; }
-  div::v-deep .range-info > div:nth-of-type(3) { width: 110px; text-align: left;   }
-
-  /* УДАЛИТЬ? hint */
-  div::v-deep .info table {
-    border-collapse: collapse;
-    table-layout: fixed;
-    font-size: 0.9em;
-    color: white;
-    margin: 8px 0;
-    padding: 0 0;
-  }
-
-  div::v-deep .info th {
-    text-align: center;
-  }
-
-  div::v-deep .info td, th {
-    border: 1px solid white;
-    padding: 3px 10px;
-    white-space: nowrap;
-  }
+  div::v-deep .stat          { text-align: right; font-size: 0.7em; color: #444; }
 </style>
