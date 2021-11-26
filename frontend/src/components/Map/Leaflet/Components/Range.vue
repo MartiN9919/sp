@@ -80,7 +80,7 @@
             <!-- СТАТИСТИКА -->
             <p
               ref="stat_dt"
-              class="layer-child stat zz"
+              class="layer-child stat"
               :style="{top: stat.top+'px', left: stat.left+'px', width: stat.width+'px', height: stat.height+'px'}"
               :width="stat.width"
               :height="stat.height"

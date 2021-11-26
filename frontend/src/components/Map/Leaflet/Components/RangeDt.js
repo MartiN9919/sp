@@ -3,19 +3,24 @@ import { mapGetters } from 'vuex';
 import { MAP_ITEM } from '@/components/Map/Leaflet/Lib/Const';
 import { myUTC, ts_to_screen, datesql_to_ts } from '@/plugins/sys';
 
-const SEL_STEP_MIN = 60*1000;       // посекундно
+const DT_SEL_STEP_MIN_DEFAULT = 60*1000;      // посекундно
 
 export default {
   data: () => ({
     dt: {
-      limit_min:   0,               // минимально / максимально допустимое значение, ts
+      limit_min:   0,                         // минимально / максимально допустимое значение, ts
       limit_max:   0,
-      sel_min:     0,               // выбранное минимальное / максимальное значение, ts
+      sel_min:     0,                         // выбранное минимальное / максимальное значение, ts
       sel_max:     0,
-      sel_step:    SEL_STEP_MIN,
-      stat:        '',              // статистика
+      sel_step:    DT_SEL_STEP_MIN_DEFAULT,
+      stat:        '',                        // статистика
       menu_struct: undefined,
       menu_struct_base: [
+        {
+          title:  'показать все',
+          icon:   'mdi-filter-off',
+          action: 'lib_menu_reset',
+        },
         {
           title: 'период',
           icon:  'mdi-arrow-expand-horizontal', //'mdi-clock-start',
@@ -103,6 +108,8 @@ export default {
       // маркер: обновить
       this.dt_mark_refresh();
     },
+
+    dt_sel_step_min_default() { return DT_SEL_STEP_MIN_DEFAULT },
 
     // MARK: обновить
     dt_mark_refresh() {

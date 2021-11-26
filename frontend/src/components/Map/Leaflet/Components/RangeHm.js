@@ -2,19 +2,24 @@
 import { MAP_ITEM } from '@/components/Map/Leaflet/Lib/Const';
 import { myUTC, ts_to_screen, datesql_to_ts, datesql_is_time } from '@/plugins/sys';
 
-const SEL_STEP_MIN = 60;            // посекундно
+const HM_SEL_STEP_MIN_DEFAULT = 60;           // посекундно
 
 export default {
   data: () => ({
     hm: {
-      limit_min:   0,               // минимально / максимально допустимое значение, ts
+      limit_min:   0,                         // минимально / максимально допустимое значение, ts
       limit_max:   (60*60*24)|0,
-      sel_min:     0,               // выбранное минимальное / максимальное значение, ts
+      sel_min:     0,                         // выбранное минимальное / максимальное значение, ts
       sel_max:     (60*60*24)|0,
-      sel_step:    SEL_STEP_MIN,
-      stat:        '',              // статистика
+      sel_step:    HM_SEL_STEP_MIN_DEFAULT,
+      stat:        '',                        // статистика
       menu_struct: undefined,
       menu_struct_base: [
+        {
+          title:  'показать все',
+          icon:   'mdi-filter-off',
+          action: 'lib_menu_reset',
+        },
         {
           title: 'период',
           icon:  'mdi-arrow-expand-horizontal', //'mdi-clock-start',
@@ -85,6 +90,8 @@ export default {
     // вырезать из ts секунды (для val), 0-начало суток (UTC не используется)
     hm_ts_cut_sec(ts) { return  (((ts-myUTC)/1000) % (60*60*24))|0; },
 
+    hm_sel_step_min_default() { return HM_SEL_STEP_MIN_DEFAULT },
+
     // MARK: обновить
     hm_mark_refresh() {
       this.lib_mark_refresh(this.hm, this.$refs.mark_hm, function(date){
@@ -134,5 +141,4 @@ export default {
     // SEL: переместить период 0 - влево, 1 - вправо
     hm_sel_move(pos) { this.hm_prop_sel = this.lib_sel_move(pos, this.hm); },
   },
-
 }
