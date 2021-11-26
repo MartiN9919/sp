@@ -67,7 +67,7 @@
       ref="contextMenu"
       :form="this"
       :items="contextMenu"
-      color="teal"
+      :color="$CONST.APP.COLOR_OBJ"
     ></context-menu-nested>
   </div>
 </template>
@@ -160,26 +160,26 @@ export default {
       return this.globalDisplaySettings.showGlobalTriggers.state && object.object.showTriggers
     },
     scrollRelation(relation, event) {
-      if(event.deltaY > 0 && relation.size / 1.05 > 300){
-        relation.size /= 1.05
+      if(event.deltaY > 0 && relation.size / 1.5 > 300){
+        relation.size /= 1.5
       }
-      if (event.deltaY < 0 && relation.size * 1.05 < 1200){
-        relation.size *= 1.05
+      if (event.deltaY < 0 && relation.size * 1.5 < 1500){
+        relation.size *= 1.5
       }
       this.$nextTick(() => {
         this.updateLabel(relation.id)
       })
     },
     scroll(node, event) {
-      if(event.deltaY > 0 && node.size / 1.05 > 300){
-        node.x += (((node.size/3) - (node.size/3)/1.05))/2
-        node.y += (((node.size/3) - (node.size/3)/1.05))/2
-        node.size /= 1.05
+      if(event.deltaY > 0 && node.size / 1.5 > 300){
+        node.x += (((node.size/3) - (node.size/3)/1.5))/2
+        node.y += (((node.size/3) - (node.size/3)/1.5))/2
+        node.size /= 1.5
       }
-      if (event.deltaY < 0 && node.size * 1.05 < 1200){
-        node.x -= (((node.size/3)*1.05 - (node.size/3)))/2
-        node.y -= (((node.size/3)*1.05 - (node.size/3)))/2
-        node.size *= 1.05
+      if (event.deltaY < 0 && node.size * 1.5 < 1500){
+        node.x -= (((node.size/3)*1.5 - (node.size/3)))/2
+        node.y -= (((node.size/3)*1.5 - (node.size/3)))/2
+        node.size *= 1.5
       }
       this.$nextTick(() => {
         this.updateLabel(node.id)

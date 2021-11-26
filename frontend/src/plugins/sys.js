@@ -21,6 +21,10 @@ export var myUTC = new Date().getTimezoneOffset()*60*1000;
 // дата/время строкой в timestamp с UTC
 export function datesql_to_ts(datestr) { return (datestr!='')?(Date.parse(datestr+'Z')+myUTC):0; }
 
+// дата/время признак - только дата без времени: "2021-01-01"?
+export function datesql_is_time(datestr) { return  ((((datesql_to_ts(datestr)/1000) % (60*60*24))|0) != 75600); }
+
+
 // timestamp в sql-формат с UTC: "2021-01-01 09:00"
 export function ts_to_datesql(ts, isTime = true) {
   let d    = new Date(ts);
@@ -37,19 +41,23 @@ export function ts_to_datesql(ts, isTime = true) {
 }
 
 // timestamp в отображаемый на экране вид с UTC: "01.01.2021 9:00"
-export function ts_to_screen(ts, isTime = true) {
+export function ts_to_screen(ts, isDate = true, isTime = true) {
+  let ret  = '';
   let d    = new Date(ts);
-  let yyyy = d.getFullYear();
-  let mm   = dig2(d.getMonth() + 1);
-  let dd   = dig2(d.getDate());
-  let ret  = dd+'.'+mm+'.'+yyyy;
-  if (isTime) {
+  if (isDate == true) {
+    let yyyy = d.getFullYear();
+    let mm   = dig2(d.getMonth() + 1);
+    let dd   = dig2(d.getDate());
+    ret      = dd+'.'+mm+'.'+yyyy;
+  }
+  if (isTime == true) {
     let hh  = d.getHours();
     let min = dig2(d.getMinutes());
     ret    += ' '+hh+':'+min;
   }
-  return ret;
+  return ret.trim();
 }
+
 
 
 // timestamp сейчас с UTC
@@ -67,27 +75,25 @@ export function ts_to_screen(ts, isTime = true) {
 
 
 // простой хэш
-// function hashSimple(str) {
-//   if (str.length % 32 >  0) str += Array(33 - str.length % 32).join("z");
-//   var hash = '', bytes = [], i = j = k = a =  0, dict = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','1','2','3','4','5','6','7','8','9'];
-//   for (i =  0; i < str.length; i++ ) {
-//     ch = str.charCodeAt(i);
-//     bytes[j++] = (ch < 127) ? ch & 0xFF : 127;
-//   }
-//   var chunk_len = Math.ceil(bytes.length / 32);
-//   for (i= 0; i<bytes.length; i++) {
-//     j += bytes[i];
-//     k++;
-//     if ((k == chunk_len) || (i == bytes.length-1)) {
-//       a = Math.floor( j / k );
-//       if (a < 32)
-//         hash += '0';
-//       else if (a > 126)
-//         hash += 'z';
-//       else
-//         hash += dict[ Math.floor( (a-32) / 2.76) ];
-//       j = k =  0;
-//     }
+export function hash_simple(str, seed = 0) {
+    let h1 = 0xdeadbeef ^ seed, h2 = 0x41c6ce57 ^ seed;
+    for (let i = 0, ch; i < str.length; i++) {
+        ch = str.charCodeAt(i);
+        h1 = Math.imul(h1 ^ ch, 2654435761);
+        h2 = Math.imul(h2 ^ ch, 1597334677);
+    }
+    h1 = Math.imul(h1 ^ (h1>>>16), 2246822507) ^ Math.imul(h2 ^ (h2>>>13), 3266489909);
+    h2 = Math.imul(h2 ^ (h2>>>16), 2246822507) ^ Math.imul(h1 ^ (h1>>>13), 3266489909);
+    return 4294967296 * (2097151 & h2) + (h1>>>0);
+}
+// этот хэш короче
+// export function hash_simple(str) {
+//   let hash = 0;
+//   if (str.length == 0) return hash;
+//   for (let i = 0; i < str.length; i++) {
+//       const char = str.charCodeAt(i);
+//       hash = ((hash<<5)-hash)+char;
+//       hash &= hash; // Convert to 32bit integer
 //   }
 //   return hash;
 // }
