@@ -5,8 +5,8 @@
       position="bottomcenterhorizontal"
       class="leaflet-bar leaflet-control control_range select_off"
     >
-      <table @contextmenu.stop="dt_menu_show">
-        <tr>
+      <table>
+        <tr @contextmenu.stop="dt_menu_show">
           <td class="layer-parent">
 
             <!-- МАРКЕРЫ -->
@@ -21,11 +21,11 @@
             <!-- ИНФОРМАТОР -->
             <p
               ref="inf_dt"
-              class="layer-child inf zz"
+              class="layer-child inf"
               :style="{top: inf.top+'px', left: inf.left+'px', width: inf.width+'px', height: inf.height+'px'}"
               :width="inf.width"
               :height="inf.height"
-            >{{dt_val_min}} - {{dt_val_max}}</p>
+            >{{dt_label_min}} - {{dt_label_max}}</p>
 
             <!-- СТАТИСТИКА -->
             <p
@@ -52,20 +52,11 @@
 
               :track-fill-color="color_sel"
               track-color="red"
-
-              @contextmenu.stop="dt_menu_show"
-            >
-              <template v-slot:append>
-                <v-icon
-                  @click.stop="dt_menu_show"
-                  size="24"
-                >mdi-menu</v-icon>
-              </template>
-            </v-range-slider>
+            />
           </td>
         </tr>
-        <tr class="divider"/>
-        <tr>
+        <tr class="divider" @contextmenu.stop=""/>
+        <tr @contextmenu.stop="hm_menu_show">
           <td class="layer-parent">
 
             <!-- МАРКЕРЫ -->
@@ -111,14 +102,7 @@
 
               :track-fill-color="color_sel"
               track-color="red"
-            >
-              <template v-slot:append>
-                <v-icon
-                  @click.stop="hm_menu_show"
-                  size="24"
-                >mdi-menu</v-icon>
-              </template>
-            </v-range-slider>
+            />
           </td>
         </tr>
       </table>
@@ -308,7 +292,7 @@ export default {
   div::v-deep .layer-child   { position: absolute; }
 
   /* слайдер */
-  div::v-deep .slider        { width: 600px; padding: 0 5px 5px 10px; margin: 5px 0; }
+  div::v-deep .slider        { width: 572px; padding: 0 10px 5px 10px; margin: 5px 0; }
   div::v-deep .v-slider      { cursor: pointer; }
   div::v-deep .v-input__slot { margin: 0 !important; }
   div::v-deep .v-messages    { display: none; }

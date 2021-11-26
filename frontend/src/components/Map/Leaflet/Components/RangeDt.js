@@ -73,8 +73,8 @@ export default {
       },
       get: function()    { return [this.dt.sel_min, this.dt.sel_max]; },
     },
-    dt_val_min() { return ts_to_screen(this.dt.sel_min, true, true) },
-    dt_val_max() { return ts_to_screen(this.dt.sel_max, true, true) },
+    dt_label_min() { return ts_to_screen(this.dt.sel_min, true, true) },
+    dt_label_max() { return ts_to_screen(this.dt.sel_max, true, true) },
   },
 
   methods: {
