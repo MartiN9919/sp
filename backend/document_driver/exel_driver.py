@@ -48,8 +48,6 @@ def get_xlsx_document_from_template(template_path, name, data):
     return DOCUMENT_ROOT + name + '.xlsx'
 
 
-# get_document_from_template('template.xlsx', 'отчет2.xlsx', {'tops': [10,20,30], 'nums': [100,200,300,], 'test': ['a', 'b', 'c']})
-
 
 
 
