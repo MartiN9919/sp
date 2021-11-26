@@ -1,6 +1,6 @@
 <template>
   <div class="date-input-form">
-    <drop-down-menu min-width="auto" offset-y close-on-click :close-on-content-click="false">
+    <drop-down-menu min-width="auto" close-on-click :close-on-content-click="false">
       <template v-slot:activator="{ on }">
         <div v-on="on">
           <body-input-form

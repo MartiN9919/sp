@@ -31,7 +31,12 @@ export default {
         { name: 'createRelationPage', icon: 'mdi-link-variant-plus', description: 'Создание связи' },
         { name: 'settingsPage', icon: 'mdi-cog-outline', description: 'Общие настройки графа' },
       ]
-    }
+    },
+    appbarTabs: [
+      { title: 'Карта', route: 'map', icon: 'mdi-map-search-outline' },
+      { title: 'Граф', route: 'graph', icon: 'mdi-graph-outline' },
+      { title: 'Отчеты', route: 'report', icon: 'mdi-file-document-multiple-outline' }
+    ]
   },
   getters: {
     navigationDrawerStatus: state => page => state.navigationDrawer[page],
@@ -39,6 +44,7 @@ export default {
     toolsMenu: state => page => state.toolsMenu[page],
     globalTooltipStatus: state => state.globalTooltipStatus,
     globalNotificationStatus: state => state.globalNotificationStatus,
+    appbarTabs: state => state.appbarTabs,
   },
   mutations: {
     setNavigationDrawerStatus: (state, status) => state.navigationDrawer[router.currentRoute.name] = status,

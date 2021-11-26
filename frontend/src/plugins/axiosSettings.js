@@ -51,7 +51,7 @@ http.interceptors.response.use(function (response) {
 }, function (error) {
   store.commit('changeLoadStatus', false)
   if(!checkErrorStatusCode(error.response))
-    store.dispatch('appendErrorAlert', error.response || { status: 'no connect' })
+    store.dispatch('appendErrorAlert', error.response || { status: 500, data: {status: 'Сервер не отвечает'} })
   return Promise.reject(error);
 });
 
