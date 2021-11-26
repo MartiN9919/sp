@@ -78,12 +78,10 @@ export default {
 
     // MENU: Сбросить настройки
     lib_menu_reset() {
-      this.dt.sel_min  = this.dt.limit_min;
-      this.dt.sel_max  = this.dt.limit_max;
       this.dt.sel_step = this.dt_sel_step_min_default();
-      this.hm.sel_min  = this.hm.limit_min;
-      this.hm.sel_max  = this.hm.limit_max;
+      this.dt_prop_sel = [this.dt.limit_min, this.dt.limit_max];
       this.hm.sel_step = this.hm_sel_step_min_default();
+      this.hm_prop_sel = [this.hm.limit_min, this.hm.limit_max];
     },
 
 

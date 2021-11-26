@@ -18,6 +18,15 @@
               :height="mark.height"
             />
 
+            <!-- ЗАГОЛОВОК -->
+            <p
+              ref="titl_hm"
+              class="layer-child titl"
+              :style="{top: titl.top+'px', left: titl.left+'px', width: titl.width+'px', height: titl.height+'px'}"
+              :width="titl.width"
+              :height="titl.height"
+            >Дата и время</p>
+
             <!-- ИНФОРМАТОР -->
             <p
               ref="inf_dt"
@@ -67,6 +76,15 @@
               :width="mark.width"
               :height="mark.height"
             />
+
+            <!-- ЗАГОЛОВОК -->
+            <p
+              ref="titl_hm"
+              class="layer-child titl"
+              :style="{top: titl.top+'px', left: titl.left+'px', width: titl.width+'px', height: titl.height+'px'}"
+              :width="titl.width"
+              :height="titl.height"
+            >Часы и минуты</p>
 
             <!-- ИНФОРМАТОР -->
             <p
@@ -158,17 +176,24 @@ export default {
       shadowBlur:      4,       // тень: размытие
     },
 
+    titl: {                     // заголовок
+      top:             30,
+      left:            18,
+      width:           536,
+      height:          15,
+    },
+
     inf: {                      // информатор
       top:             30,
       left:            18,
-      width:           536,     // реальная ширина, 307-7-7=293 - логическая ширина
+      width:           536,
       height:          15,
     },
 
     stat: {                     // статистика
       top:             30,
       left:            18,
-      width:           536,     // реальная ширина, 307-7-7=293 - логическая ширина
+      width:           536,
       height:          15,
     },
   }),
@@ -264,6 +289,9 @@ export default {
   div::v-deep .v-slider__track-container                  { height: 1px; }        /* высота полоски */
   div::v-deep .v-slider__track-container>div:nth-child(2) { height: 2px; }
   div::v-deep .divider       { height: 1px; }                                     /* разделитель между слайдерами */
+
+  /* заголовок */
+  div::v-deep .titl          { text-align: left; font-size: 0.7em; color: #444; }
 
   /* информатор */
   div::v-deep .inf           { text-align: center; font-size: 0.7em; font-weight: bold; color: #444; } /* класс info нельзя, т.к. уже есть */
