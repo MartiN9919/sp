@@ -1,5 +1,5 @@
 <template>
-  <div @click.right.prevent.stop="menuShow($event)" @mousedown="clearSelectors">
+  <div @click.right.prevent.stop="menuShow($event)" @mousedown="clearSelectors" class="h-100">
     <screen ref="screen">
       <group v-if="relatedObjects.length" :nodes="relatedObjects"></group>
       <g

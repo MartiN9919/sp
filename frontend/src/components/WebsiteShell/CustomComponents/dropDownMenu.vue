@@ -3,8 +3,8 @@
     v-model="status"
     v-bind="$attrs"
     ref="menu"
+    :z-index="$attrs['z-index'] || 10001"
     transition="slide-x-reverse-transition"
-    z-index="10001"
   >
     <template v-slot:activator="{ on, attrs }">
       <slot name="activator" :on="on"></slot>

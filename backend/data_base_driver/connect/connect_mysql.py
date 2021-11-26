@@ -98,15 +98,17 @@ class Singleton(metaclass=SingletonMeta):
         @return: свободный объекта класса MySqlConnection
         """
         with self._lock:
+            free_connection = [connection for connection in self.connections_list if
+                               not (connection.get_connection_status())]
             try:
-                free_connection = [connection for connection in self.connections_list if
-                                   not (connection.get_connection_status())]
                 free_connection[0].set_busy()
                 free_connection[0].get_connection().ping(True)
                 return free_connection[0]
-            except:
+            except IndexError as e:
                 print('not free connection')
                 return False
+            except Exception as e:
+                free_connection[0].free_connection()
 
     def reconnect(self, database):
         """

@@ -3,11 +3,34 @@ import uuid from 'uuid'
 
 export default {
   state: {
+    notificationTypes: {
+      information: {
+        color: '#43A047',
+        text: 'Информация',
+        icon: 'mdi-check'
+      },
+      warning: {
+        color: '#039BE5',
+        text: 'Предупреждение',
+        icon: 'mdi-alert-circle-outline'
+      },
+      error: {
+        color: '#8E24AA',
+        text: 'Ошибка',
+        icon: 'mdi-alert-rhombus-outline'
+      },
+      default: {
+        color: '#D32F2F',
+        text: 'Ошибка системы',
+        icon: 'mdi-alert-rhombus-outline'
+      },
+    },
     notifications: [],
     loadStatus: false,
     notificationInterval: null,
   },
   getters: {
+    notificationType: state => n => state.notificationTypes[n.status] || state.notificationTypes.default,
     notifications: state => state.notifications,
     loadStatus: state => state.loadStatus,
   },
