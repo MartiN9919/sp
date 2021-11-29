@@ -1,31 +1,18 @@
 <template>
-  <v-container>
-    <v-card elevation="15" height="auto" class="overflow-y-auto">
-      <v-data-table
-        :items-per-page='15'
-        :headers="headers"
-        :items="listFiles"
-        :search="search"
-        :footer-props="{
-          showFirstLastPage: true,
-          showCurrentPage: true,
-          'items-per-page-options': [5, 10, 15],
-          'items-per-page-text':'Количество отчетов на странице',
-        }"
-      >
-        <template v-slot:top>
-          <v-spacer></v-spacer>
-          <v-text-field
-              v-model="search"
-              append-icon="mdi-magnify"
-              label="Поиск"
-              single-line
-              hide-details
-              color="teal"
-              class="mx-4"
-          ></v-text-field>
-        </template>
-        <template v-slot:item="{ item }">
+  <v-container class="h-100">
+    <v-data-table
+      :headers="headers"
+      :items="listFiles"
+      :options.sync="options"
+      :footer-props="footer"
+      :server-items-length="totalDesserts"
+      :loading="loading"
+      no-data-text=""
+      class="elevation-11 ma-1"
+      fixed-header
+    >
+      <template v-slot:item="{ item }">
+        <v-hover v-slot="{ hover }">
           <tr @click="changeSelectedReport(item)" :style="selectedReportStyle(item)" style="cursor: pointer">
             <td class="text-center">{{ item.name }}</td>
             <td class="text-center">
@@ -35,33 +22,20 @@
             </td>
             <td class="text-center">{{ item.date }}</td>
             <td class="text-center">
-              <v-hover v-slot="{ hover }" v-if="item.status === 'in_progress'">
-                <v-btn icon v-if="hover">
-                  <v-icon>mdi-close</v-icon>
-                </v-btn>
-                <v-progress-circular v-else indeterminate color="teal" width="2" size="20"></v-progress-circular>
-              </v-hover>
-
-              <v-hover v-slot="{ hover }" v-if="item.status === 'error'">
-                <v-btn icon v-if="hover">
-                  <v-icon color="black">mdi-delete-outline</v-icon>
-                </v-btn>
-                <v-icon v-else color="red">mdi-file-cancel-outline</v-icon>
-              </v-hover>
-              <v-hover v-slot="{ hover }" v-if="item.status === 'done'">
-                <v-btn icon v-if="hover" @click.stop="downloadFile(item.id)">
-                  <v-icon v-if="hover" color="blue">mdi-cloud-download-outline</v-icon>
-                </v-btn>
-                <v-icon v-else color="green">mdi-file-check-outline</v-icon>
-              </v-hover>
+              <v-progress-circular v-if="item.status === 'in_progress'" indeterminate color="teal" width="2" size="20"/>
+              <v-icon v-else-if="item.status === 'error'" color="red">mdi-file-cancel-outline</v-icon>
+              <v-btn icon v-else-if="item.status === 'done' && hover" @click.stop="downloadFile(item.id)">
+                <v-icon color="blue">mdi-cloud-download-outline</v-icon>
+              </v-btn>
+              <v-icon v-else color="green">mdi-file-check-outline</v-icon>
             </td>
           </tr>
-        </template>
-<!--        <template v-slot:footer.page-text="{ pageStart, pageStop, itemsLength }">-->
-<!--          {{pageStart}}-{{pageStop}} из {{itemsLength}}-->
-<!--        </template>-->
-      </v-data-table>
-    </v-card>
+        </v-hover>
+      </template>
+      <template v-slot:footer.page-text="{ pageStart, pageStop, itemsLength }">
+        {{pageStart}}-{{pageStop}} из {{itemsLength}}
+      </template>
+    </v-data-table>
   </v-container>
 </template>
 
@@ -72,23 +46,43 @@ import router from '@/router'
 
 export default {
   name: 'reportsList',
-  data() {
-    return {
-      search: '',
-      headers: [
-        {text: 'Название файла', value: 'name', align: 'center'},
-        {
-          text: 'Параметры, с которыми был вызван скрипт',
-          value: 'params',
-          filterable: false,
-          align: 'center',
-          sortable: false
-        },
-        {text: 'Время удаления', value: 'date', filterable: false, align: 'center'},
-        {text: 'Статус отчета', value: 'status', filterable: false, align: 'center'}
-      ]
-    }
-  },
+  data: () => ({
+    headers: [
+      {
+        text: 'Название файла',
+        value: 'name',
+        align: 'center',
+        sortable: false
+      },
+      {
+        text: 'Параметры, с которыми был вызван скрипт',
+        value: 'params',
+        align: 'center',
+        sortable: false
+      },
+      {
+        text: 'Время удаления',
+        value: 'date',
+        align: 'center',
+        sortable: false
+      },
+      {
+        text: 'Статус отчета',
+        value: 'status',
+        align: 'center',
+        sortable: false
+      }
+    ],
+    footer: {
+      showFirstLastPage: true,
+      showCurrentPage: true,
+      'items-per-page-options': [5, 10, 15],
+      'items-per-page-text':'Количество на странице',
+    },
+    options: {},
+    totalDesserts: 0,
+    loading: true,
+  }),
   computed: {
     ...mapGetters(['listFiles', 'selectedTreeViewItem']),
     selectReport() { return this.selectedTreeViewItem(router.currentRoute.name) },
@@ -116,13 +110,29 @@ export default {
         return {color: 'teal', backgroundColor: '#E0F2F1'}
       else return {color: 'black'}
     },
+    getDataFromApi () {
+      this.loading = true
+      let params = {size: this.options.itemsPerPage, offset: this.options.page}
+      this.getListFiles({params})
+      .then(response => {
+        this.totalDesserts = response.data.total
+        this.loading = false
+      })
+    },
   },
-  created() {
-    this.getListFiles()
+  watch: {
+    options: {
+      deep: true,
+      handler() {
+        this.getDataFromApi()
+      }
+    },
   }
 }
 </script>
 
 <style scoped>
-
+>>> .v-data-table__wrapper {
+  max-height: calc(100% - 59px)
+}
 </style>
