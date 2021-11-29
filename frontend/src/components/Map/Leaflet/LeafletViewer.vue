@@ -1,48 +1,46 @@
 <template>
-  <div style="height: 70vh;">
-    <l-map
-      ref="map"
-      style="z-index: 0;"
-      :options="map_options"
-      :crs="MAP_GET_TILES[MAP_GET_TILE].crs"
-      @ready="on_map_ready"
-      @contextmenu=""
-      @dblclick="on_map_dblclick"
-    >
+  <l-map
+    ref="map"
+    style="height: 100%; width: 100%; z-index: 0;"
+    :options="map_options"
+    :crs="MAP_GET_TILES[MAP_GET_TILE].crs"
+    @ready="on_map_ready"
+    @contextmenu=""
+    @dblclick="on_map_dblclick"
+  >
 
-      <!-- ПОДЛОЖКА -->
-      <l-tile-layer
-        :url="MAP_GET_TILES[MAP_GET_TILE].url"
-        :attribution="MAP_GET_TILES[MAP_GET_TILE].attr"
-        :tms="MAP_GET_TILES[MAP_GET_TILE].tms"
-      />
+    <!-- ПОДЛОЖКА -->
+    <l-tile-layer
+      :url="MAP_GET_TILES[MAP_GET_TILE].url"
+      :attribution="MAP_GET_TILES[MAP_GET_TILE].attr"
+      :tms="MAP_GET_TILES[MAP_GET_TILE].tms"
+    />
 
-      <!-- РЕДАКТОР -->
-      <EditorMap
-        v-model="fc_child"
-        :modeEnabled="{}"
-        modeSelected=""
-        :modeEdit="false"
-        @resetSelect="on_map_reset_select"
-        @setFocus="on_map_set_focus"
-      />
+    <!-- РЕДАКТОР -->
+    <EditorMap
+      v-model="fc_child"
+      :modeEnabled="{}"
+      modeSelected=""
+      :modeEdit="false"
+      @resetSelect="on_map_reset_select"
+      @setFocus="on_map_set_focus"
+    />
 
-      <!-- МАСШТАБ -->
-      <l-control-scale
-        v-if="dop_controls"
-        position="bottomright"
-        :imperial="false"
-        :metric="true"
-      />
+    <!-- МАСШТАБ -->
+    <l-control-scale
+      v-if="dop_controls"
+      position="bottomright"
+      :imperial="false"
+      :metric="true"
+    />
 
-      <!-- ЛИНЕЙКА -->
-      <l-control-polyline-measure
-        v-if="dop_controls"
-        :options="measure_options()"
-      />
+    <!-- ЛИНЕЙКА -->
+    <l-control-polyline-measure
+      v-if="dop_controls"
+      :options="measure_options()"
+    />
 
-    </l-map>
-  </div>
+  </l-map>
 </template>
 
 

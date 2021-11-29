@@ -1,6 +1,6 @@
 <template>
   <EditorSplit
-    style="height: 70vh;"
+    style="height: 100%; width: 100%;"
     :localStorageKeyPostfix="LOCAL_STORAGE_KEY_POSTFIX"
   >
 

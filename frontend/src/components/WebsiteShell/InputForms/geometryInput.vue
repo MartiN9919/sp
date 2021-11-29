@@ -36,6 +36,7 @@
         <v-divider></v-divider>
         <LeafletEditor
           v-if="dialog"
+          style="height: 70vh;"
           v-model="featureCollection"
           :modeEnabled="modeEnabled"
           :modeSelected="modeSelected"
