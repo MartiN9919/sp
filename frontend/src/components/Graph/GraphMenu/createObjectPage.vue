@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="h-100">
     <div class="work-place">
       <selector-object
         v-model="selectedEditableObject"
@@ -122,6 +122,8 @@ export default {
 <style scoped>
 .work-place {
   height: calc(100% - 44px);
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 .selector-object {
   height: 44px;

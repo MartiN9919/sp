@@ -1,5 +1,5 @@
 <template>
-  <v-dialog width="60%" content-class="overflow-y-hidden">
+  <v-dialog scrollable width="60%" content-class="overflow-hidden">
     <template v-slot:activator="{ on, attrs }">
       <slot :on="on"></slot>
     </template>
@@ -13,7 +13,8 @@
         must-sort
         fixed-header
         no-data-text=""
-        class="elevation-1 table"
+        height="calc(100% - 59px)"
+        class="elevation-1"
     >
       <template v-slot:header.date_time="{ header }">
         <drop-down-menu min-width="auto" offset-y left close-on-click :close-on-content-click="false" z-index="100008">
@@ -74,7 +75,7 @@
       <template v-slot:item.date_time="{ item }">
         <span style="white-space: nowrap">{{item.date_time}}</span>
       </template>
-      <template v-slot:[`footer.page-text`]="items">
+      <template v-slot:footer.page-text="items">
         {{ items.pageStart }} - {{ items.pageStop }} из {{ items.itemsLength }}
       </template>
     </v-data-table>
@@ -151,7 +152,4 @@ export default {
 </script>
 
 <style scoped>
-.table >>> .v-data-table__wrapper {
-  max-height: 80%;
-}
 </style>
