@@ -3,12 +3,11 @@ from data_base_driver.constants.const_dat import DAT_SYS_FILES
 from datetime import datetime
 
 
-def add_file(path, owner_line, owner_region, params, date_auto_remove=datetime.now(), status='in_progress'):
+def add_file(path, user_id, params, date_auto_remove=datetime.now(), status='in_progress'):
     """
     Функция для добавления информации о файле в базу данных
     @param path: путь к файлу, из него так же будет получено имя
-    @param owner_line: линия доступа
-    @param owner_region: регион доступа
+    @param user_id: идентификатор пользователя
     @param date_auto_remove: время до авто удаления
     @param params: параметры запуска скрипта получения отчета
     @param status: статус готовности отчета
@@ -17,15 +16,13 @@ def add_file(path, owner_line, owner_region, params, date_auto_remove=datetime.n
     sql = 'INSERT INTO ' + DAT_SYS_FILES.TABLE_SHORT + ' (' \
           + DAT_SYS_FILES.PATH + ', ' \
           + DAT_SYS_FILES.NAME + ', ' \
-          + DAT_SYS_FILES.OWNER_LINE_ID + ', ' \
-          + DAT_SYS_FILES.OWNER_REGION_ID + ', ' \
+          + DAT_SYS_FILES.USER_ID + ', ' \
           + DAT_SYS_FILES.DATE_AUTO_REMOVE + ', ' \
           + DAT_SYS_FILES.STATUS + ', ' \
           + DAT_SYS_FILES.PARAMS + ') VALUES (\'' \
           + path + '\', \'' \
           + path.split('/')[-1] + '\', ' \
-          + str(owner_line) + ', ' \
-          + str(owner_region) + ', \'' \
+          + str(user_id) + ', \'' \
           + date_auto_remove.isoformat(' ') + '\', \'' \
           + status + '\', \'' \
           + params + '\');'
@@ -58,3 +55,4 @@ def set_file_path(file_id, path):
           + DAT_SYS_FILES.ID + ' = ' \
           + str(file_id)
     db_sql(sql, read=False)
+
