@@ -1,7 +1,10 @@
+:root {
+  --app-color-obj: #00796B;
+}
+
 #app, #main, .h-100 {
   height: 100%;
 }
-
 
 .noselect {
   -webkit-touch-callout: none; /* iOS Safari */

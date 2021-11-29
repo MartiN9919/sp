@@ -52,6 +52,7 @@
         <v-icon>mdi-scissors-cutting mdi-18px</v-icon>
       </a>
       <a
+        v-if="modeEdit"
         class="leaflet-buttons-control-button"
         role="button"
         title="Восстановить"
@@ -60,6 +61,7 @@
         <v-icon>mdi-restore mdi-18px</v-icon>
       </a>
       <a
+        v-if="modeEdit"
         class="leaflet-buttons-control-button"
         role="button"
         title="Очистить"
@@ -96,6 +98,7 @@
  *                 undedined      - режим редактирования выключается
  * mode_enabled  - доступные режимы редактирования (marker, line, polygon)
  * mode_selected - активизированный по умолчанию режим ('Marker', 'Line', 'Polygon')
+ * modeEdit      - доступность редактирования, иначе только просмотр
  * @ok           - если задан - активна кнопка ОК
  *                 если задан - при обновлении fc включается режим редактирования
  *                 при нажатии на кнопку вызывается событие (возвращается копия fc) и редактирование завершается
@@ -126,9 +129,10 @@ export default {
   model: { prop:  ['fc_prop'], event: 'fc_change', },
 
   props: {
-    fc_prop:      { type: Object, default: () => undefined, },
-    modeSelected: { type: String, default: () => undefined, }, // включенный по умолчанию режим: 'polygon', 'line', 'marker', 'cut'
-    modeEnabled:  { type: Object, default: () => ({ marker: true, line: true, polygon: true, }), }, // доступные для создания элементы
+    fc_prop:      { type: Object,  default: () => undefined, },
+    modeSelected: { type: String,  default: () => undefined, }, // включенный по умолчанию режим: 'polygon', 'line', 'marker', 'cut'
+    modeEnabled:  { type: Object,  default: () => ({ marker: true, line: true, polygon: true, }), }, // доступные для создания элементы
+    modeEdit:     { type: Boolean, default: () => true, } // доступность редактирования, иначе только просмотр
   },
   emits: [
     'fc_change',                          // изменение fc пользователем
