@@ -77,34 +77,3 @@ def get_dossier_for_object(group_id, object_id, rec_id, title):
     template.save(DOCUMENT_ROOT + title + '.docx')
     return DOCUMENT_ROOT + title + '.docx'
 
-# data = {'POSITION': ['Начальнику отдела'],
-#         'RANK': ['Подполковнику'],
-#         'NAME': ['Иванову И.И.'],
-#         'START': ["01.01.2020"],
-#         'END': ["01.02.2020"],
-#         'N': ["1200"],
-#         'n': ["13"],
-#         'OWNER_POSITION': ["Старший офицер"],
-#         'OWNER_RANK': ["Майор"],
-#         'OWNER_NAME': ["Петров П.П."],
-#         'DATE': ["01.02.2020"]
-#         }
-
-
-# document = Document(TEMPLATE_ROOT + 'template_person_test.docx')
-# for paragraph in document.paragraphs:
-#     for run in paragraph.runs:
-#         print(run.text)
-
-# get_document_from_template('template.docx', 'отчет.docx', data)
-
-# position;Должность руководителя;Должность руководителя;text
-# rank;Звание руководителя;Звание руководителя;text
-# name;ФИО руководителя;ФИО руководителя;text
-# start;Начало отчета;Начало отчета;date
-# end;Конец отчета;Конец  отчета;date
-# num;Номер ТОПС;Номер ТОПС;number
-# owner_position;Должность;Должность;text
-# owner_rank;Звание;Звание;text
-# owner_name;ФИО;ФИО;text
-# owner_date;дата;дата;text

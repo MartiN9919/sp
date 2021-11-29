@@ -3,18 +3,24 @@ import { mapGetters } from 'vuex';
 import { MAP_ITEM } from '@/components/Map/Leaflet/Lib/Const';
 import { myUTC, ts_to_screen, datesql_to_ts } from '@/plugins/sys';
 
-const SEL_STEP_MIN = 60*1000;     // посекундно
+const DT_SEL_STEP_MIN_DEFAULT = 60*1000;      // посекундно
 
 export default {
   data: () => ({
     dt: {
-      limit_min:   0,             // минимально / максимально допустимое значение, ts
+      limit_min:   0,                         // минимально / максимально допустимое значение, ts
       limit_max:   0,
-      sel_min:     0,             // выбранное минимальное / максимальное значение, ts
+      sel_min:     0,                         // выбранное минимальное / максимальное значение, ts
       sel_max:     0,
-      sel_step:    SEL_STEP_MIN,
+      sel_step:    DT_SEL_STEP_MIN_DEFAULT,
+      stat:        '',                        // статистика
       menu_struct: undefined,
       menu_struct_base: [
+        {
+          title:  'показать все',
+          icon:   'mdi-filter-off',
+          action: 'lib_menu_reset',
+        },
         {
           title: 'период',
           icon:  'mdi-arrow-expand-horizontal', //'mdi-clock-start',
@@ -45,6 +51,7 @@ export default {
     el.addEventListener('mouseup',    this.dt_on_mouse_null, {capture: true});
     el.addEventListener('mouseleave', this.dt_on_mouse_null, {capture: true});
     el.addEventListener('mousedown',  this.dt_on_mouse_down, {capture: true});
+    this.dt_mark_refresh();
   },
 
   beforeDestroy() {
@@ -66,20 +73,20 @@ export default {
         if ( (sel_min != this.dt.sel_min) || (sel_max != this.dt.sel_max) ) {
           this.dt.sel_max = sel_max;
           this.dt.sel_min = sel_min;
-          this.MAP_ACT_REFRESH();   // перерисовать
-          this.set_hint();          // подсказка
+          this.MAP_ACT_REFRESH();   // элементы на карте: обновить
         }
+        this.dt_stat_refresh();   // статистика: обновить
       },
       get: function()    { return [this.dt.sel_min, this.dt.sel_max]; },
     },
-    dt_val_min() { return ts_to_screen(this.dt.sel_min, true, true) },
-    dt_val_max() { return ts_to_screen(this.dt.sel_max, true, true) },
+    dt_label_min() { return ts_to_screen(this.dt.sel_min, true, true) },
+    dt_label_max() { return ts_to_screen(this.dt.sel_max, true, true) },
   },
 
   methods: {
     // обработчик изменения исходных данных
     dt_items_change(items) {
-      // установить мин и макс
+      // установить мин и макс, canvas
       let dt_limit_min = '';
       let dt_limit_max = '';
       items.forEach(function(item){
@@ -97,8 +104,38 @@ export default {
       let sel_min = ((this.dt.limit_min <= this.dt.sel_min) && ( this.dt.sel_min <= this.dt.limit_max))?this.dt.sel_min:this.dt.limit_min;
       let sel_max = ((this.dt.limit_min <= this.dt.sel_max) && ( this.dt.sel_max <= this.dt.limit_max))?this.dt.sel_max:this.dt.limit_max;
       this.dt_prop_sel = [sel_min, sel_max];
+
+      // маркер: обновить
+      this.dt_mark_refresh();
     },
 
+    dt_sel_step_min_default() { return DT_SEL_STEP_MIN_DEFAULT },
+
+    // MARK: обновить
+    dt_mark_refresh() {
+      this.lib_mark_refresh(this.dt, this.$refs.mark_dt, function(date){
+        return datesql_to_ts(date);
+      });
+    },
+
+
+    // STAT: обновить
+    dt_stat_refresh() {
+      let self = this;
+      let count_all = 0;
+      let count_sel = 0;
+      this.SCRIPT_GET.forEach(function(item){
+        item.fc.features.forEach(function(feature){
+          let date = feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES.DATE];
+          if (!date) return;
+          count_all++;
+
+          date = datesql_to_ts(date);
+          if ((date >= self.dt.sel_min) && (date <= self.dt.sel_max)) { count_sel++; }
+       });
+      });
+      this.dt.stat = (count_all>0) ? (count_sel+' из '+count_all+' ( '+(count_sel*100/count_all|0)+' % )') : '';
+    },
 
 
     // MENU: Показать первый уровень
@@ -112,7 +149,10 @@ export default {
     // MOUSE: обработчик блокировать события мыши
     dt_on_mouse_null(e) { this.lib_on_mouse_null(e, this.$refs.slider_dt); },
     // MOUSE: обработчик mousedown
-    dt_on_mouse_down(e) { this.lib_on_mouse_down(e, this.$refs.slider_dt, this.dt_sel_move); },
+    dt_on_mouse_down(e) {
+      if (e.button==2) { e.preventDefault(); e.stopPropagation(); } // right-click - заблокировать, т.к. вызывается контекстное меню
+      else             { this.lib_on_mouse_down(e, this.$refs.slider_dt, this.dt_sel_move); }
+    },
 
 
     // SEL: переместить период 0 - влево, 1 - вправо

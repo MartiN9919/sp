@@ -1,9 +1,9 @@
 <template>
   <ResSplitPane
     ref="EditorSplit"
-    style="height:auto; overflow: auto; position: inherit; "
     split-to="columns"
     units="percents"
+    class="split-panel"
     :allow-resize="true"
     :min-size="20"
     :max-size="60"
@@ -12,10 +12,10 @@
     :size="split_visible ? split_pos : 0"
     v-on:update:size="split_pos = $event"
   >
-    <v-col class="pa-0" slot="firstPane">
+    <v-col class="pa-0 split-column" slot="firstPane">
       <slot name="firstPane"></slot>
     </v-col>
-    <v-col class="pa-0" slot="secondPane">
+    <v-col class="pa-0 split-column" slot="secondPane">
       <slot name="secondPane"></slot>
     </v-col>
   </ResSplitPane>
@@ -74,7 +74,12 @@ export default {
 </script>
 
 <style scoped>
-
+.split-panel {
+  position: static;
+}
+.split-column {
+  height: 100%;
+}
   /* полоса прокрутки tree */
   /* div::v-deep div.Pane.column:first-of-type { overflow: auto!important; } */
 

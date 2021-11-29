@@ -1,6 +1,6 @@
 <template>
   <v-app-bar v-if="userInformation" app dense flat dark :color="$CONST.APP.COLOR_OBJ">
-    <v-app-bar-nav-icon @click="this.drawer = !this.drawer"/>
+    <v-app-bar-nav-icon @click="drawer = !drawer"/>
     <v-tabs fixed-tabs hide-slider>
       <v-tab v-for="tab in appbarTabs" :key="tab.route" :to="tab.route">
         {{tab.title}}<v-icon right>{{ tab.icon }}</v-icon>

@@ -21,8 +21,9 @@ export var myUTC = new Date().getTimezoneOffset()*60*1000;
 // дата/время строкой в timestamp с UTC
 export function datesql_to_ts(datestr) { return (datestr!='')?(Date.parse(datestr+'Z')+myUTC):0; }
 
-// дата/время признак - только дата без времени: "2021-01-01"?
-export function datesql_is_time(datestr) { return  ((((datesql_to_ts(datestr)/1000) % (60*60*24))|0) != 75600); }
+// дата/время признак - только дата без времени: "2021-01-01"
+// некорректно когда "2021-01-01 00:00": ((((datesql_to_ts(datestr)/1000) % (60*60*24))|0) != 75600)
+export function datesql_is_time(datestr) { return (datestr.length > 10) }
 
 
 // timestamp в sql-формат с UTC: "2021-01-01 09:00"

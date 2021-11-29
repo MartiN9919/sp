@@ -12,10 +12,10 @@
       units="percents"
       class="split-panel"
   >
-    <v-col :id="name + '1'" class="pa-0 splitColumn" slot="firstPane">
+    <v-col :id="name + '1'" class="pa-0 split-column" slot="firstPane">
       <slot name="firstPane"></slot>
     </v-col>
-    <v-col :id="name + '2'" class="pa-0 splitColumn" slot="secondPane">
+    <v-col :id="name + '2'" class="pa-0 split-column" slot="secondPane">
       <slot name="secondPane"></slot>
     </v-col>
   </ResSplitPane>
@@ -62,7 +62,7 @@ export default {
 .split-panel {
   position: static;
 }
-.splitColumn {
+.split-column {
   height: 100%;
 }
 </style>

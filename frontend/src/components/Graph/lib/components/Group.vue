@@ -69,7 +69,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .group .content {
   width: 100%;
   height: 100%;
