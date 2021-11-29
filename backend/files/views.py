@@ -52,7 +52,7 @@ def aj_download_condense_image(request):
 def aj_download_report(request):
     group_id = DAT_OWNER.DUMP.get_group(user_id=request.user.id)
     file_id = request.path.split('download_report')[1]
-    if not check_file_permission(int(file_id[1:]), group_id):
+    if not check_file_permission(int(file_id[1:]), request.user.id):
         return JsonResponse({}, status=403)
     path = get_file_path(int(file_id[1:]))
     if os.path.exists(path):

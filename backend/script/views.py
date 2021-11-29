@@ -81,8 +81,7 @@ def aj_script_execute_report(request):
         my_module = importlib.import_module('script.user_scripts.' + method_name)
         date_time = datetime.datetime.now()
         file_id = add_file(path=DOCUMENT_ROOT + title,
-                           owner_line=user.owner_groups.owner_lines_id,
-                           owner_region=user.owner_groups.owner_regions_id,
+                           user_id=request.user.id,
                            params=json.dumps(data, ensure_ascii=False),
                            date_auto_remove=date_time,
                            )
@@ -149,3 +148,4 @@ def aj_template(request):
             raise e
     else:
         raise Exception(470, '')
+

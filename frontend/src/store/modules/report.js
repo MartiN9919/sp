@@ -8,27 +8,29 @@ export default {
     listFiles: state => state.listFiles
   },
   mutations: {
-    addListFiles: (state, file) => {
-      state.listFiles.unshift(file)
-    },
+    setListFiles: (state, files) => state.listFiles = files,
+    addFileToList: (state, file) => state.listFiles.unshift(file),
     changeFileStatus: (state, alert) => {
       if (state.listFiles.length) {
-        if (alert.status === 501) state.listFiles.find(file => file.id === alert.file).status = 'done'
-        if (alert.status === 503) state.listFiles.find(file => file.id === alert.file).status = 'error'
+        if (alert.status === 'information') state.listFiles.find(file => file.id === alert.file).status = 'done'
+        if (alert.status === 'error') state.listFiles.find(file => file.id === alert.file).status = 'error'
       }
     }
   },
   actions: {
     getListFiles ({ commit }, config = {}) {
       return axios.get('reports/list/', config)
-        .then(response => { for (const file of response.data) commit('addListFiles', file) })
+        .then(response => {
+          commit('setListFiles', response.data.list)
+          return response
+        })
         .catch(() => {})
     },
     executeReportScript ({ commit }, parameters = {}) {
       return axios.post('script/execute_report/', parameters.request, parameters.config)
         .then(response => {
           commit('changeSelectedTreeViewItem', {})
-          commit('addListFiles', response.data)
+          commit('addFileToList', response.data)
         })
         .catch(() => {})
     }
