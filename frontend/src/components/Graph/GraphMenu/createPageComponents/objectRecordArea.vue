@@ -40,10 +40,11 @@
                 </td>
                 <td v-else-if="checkTypeParam(param) === 'geometry'">
                   <v-dialog
+                    style="z-index:1000002"
                     width="60%"
+                    height="80%"
                     v-model="dialog"
                     @keydown.esc="dialog = false"
-                    style="z-index: 1000002"
                     persistent
                     transition="dialog-bottom-transition"
                   >
@@ -58,7 +59,6 @@
                       <v-divider></v-divider>
                       <LeafletViewer
                         v-if="dialog"
-                        style="height: 70%"
                         :fc_parent_prop="JSON.parse(item.value)"
                         :dop_controls="true"
                       />

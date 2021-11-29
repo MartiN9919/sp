@@ -1,5 +1,5 @@
 <template>
-  <div class="zz">
+  <div style="height: 70vh;">
     <l-map
       ref="map"
       style="z-index: 0;"
