@@ -4,7 +4,7 @@
       Выбирете объекты для связи
     </v-card-subtitle>
   </v-card>
-  <div v-else>
+  <div v-else class="h-100">
     <div class="work-place">
       <div class="header text-center text-no-wrap py-1">
         <div v-for="(relation, key) in [editableRelation.relation.o1, editableRelation.relation.o2]" :key="key">
