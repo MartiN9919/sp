@@ -44,7 +44,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .content {
   background-color: white;
   border-radius: 100%;
