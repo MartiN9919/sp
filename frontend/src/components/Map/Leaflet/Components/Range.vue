@@ -291,11 +291,11 @@ export default {
   div::v-deep .divider       { height: 1px; }                                     /* разделитель между слайдерами */
 
   /* заголовок */
-  div::v-deep .titl          { text-align: left; font-size: 0.7em; color: #444; }
+  div::v-deep .titl          { text-align: left; font-size: 12px; color: #444; }
 
   /* информатор */
-  div::v-deep .inf           { text-align: center; font-size: 0.7em; font-weight: bold; color: #444; } /* класс info нельзя, т.к. уже есть */
+  div::v-deep .inf           { text-align: center; font-size: 12px; font-weight: bold; color: #444; } /* класс info нельзя, т.к. уже есть */
 
   /* статистика */
-  div::v-deep .stat          { text-align: right; font-size: 0.7em; color: #444; }
+  div::v-deep .stat          { text-align: right; font-size: 12px; color: #444; }
 </style>

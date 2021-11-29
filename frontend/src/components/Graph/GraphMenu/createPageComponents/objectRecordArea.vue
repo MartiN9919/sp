@@ -39,16 +39,36 @@
                   <a :href="getDownloadLink(item.value)">{{item.value}}</a>
                 </td>
                 <td v-else-if="checkTypeParam(param) === 'geometry'">
-                  <v-dialog width="80%" style="z-index: 1000002">
+                  <v-dialog
+                    width="60%"
+                    v-model="dialog"
+                    @keydown.esc="dialog = false"
+                    style="z-index: 1000002"
+                    persistent
+                    transition="dialog-bottom-transition"
+                  >
                     <template v-slot:activator="{ on, attrs }">
                       <span v-bind="attrs" v-on="on">
                         Геометрия
                       </span>
                     </template>
-                    <LeafletEditor
-                      :fc_parent_prop="JSON.parse(item.value)"
-                      :modeEnabled="{ marker: false , line: false, polygon: false, }"
-                    />
+
+                    <v-card>
+                      <v-card-title class="text-h7">УКАЗАТЬ ЗДЕСЬ TITLE</v-card-title>
+                      <v-divider></v-divider>
+                      <LeafletViewer
+                        v-if="dialog"
+                        style="height: 70%"
+                        :fc_parent_prop="JSON.parse(item.value)"
+                        :dop_controls="true"
+                      />
+                      <v-divider></v-divider>
+                      <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn :color="$CONST.APP.COLOR_OBJ" text @click="dialog=false">Ок</v-btn>
+                      </v-card-actions>
+                    </v-card>
+
                   </v-dialog>
                 </td>
                 <td v-else><span>{{item.value ? item.value : 'Создана'}}</span></td>
@@ -69,18 +89,19 @@ import RecordInput from "@/components/Graph/GraphMenu/createPageComponents/objec
 import DropDownMenu from "@/components/WebsiteShell/CustomComponents/dropDownMenu"
 import MenuDateTime from "@/components/WebsiteShell/CustomComponents/selectDateTime"
 import CustomTooltip from "@/components/WebsiteShell/CustomComponents/customTooltip"
-import LeafletEditor from "@/components/Map/Leaflet/LeafletEditor"
+import LeafletViewer from "@/components/Map/Leaflet/LeafletViewer"
 import {getDownloadFileLink} from '@/plugins/axiosSettings'
 import _ from 'lodash'
 
 export default {
   name: "objectRecordArea",
-  components: {CustomTooltip, RecordInput, RecordTitle, MenuDateTime, DropDownMenu, LeafletEditor},
+  components: {CustomTooltip, RecordInput, RecordTitle, MenuDateTime, DropDownMenu, LeafletViewer},
   props: {
     settings: Object,
     params: Array,
   },
   data: () => ({
+    dialog: false,
     openedPanels: []
   }),
   methods: {
