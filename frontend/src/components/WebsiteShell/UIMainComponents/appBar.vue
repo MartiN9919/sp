@@ -23,7 +23,7 @@
                 {{userInformation.last_name}}
                 ({{userInformation.username}})
               </v-list-item-title>
-              <v-list-item-subtitle>Статус персонала: {{staffStatus}}</v-list-item-subtitle>
+              <v-list-item-subtitle v-if="!!staffStatus">Статус персонала: {{staffStatus}}</v-list-item-subtitle>
               <v-list-item-subtitle>Группа доступа: {{accessGroup}}</v-list-item-subtitle>
             </v-list-item-content>
           </v-list-item>
@@ -70,6 +70,13 @@
               </v-list-item-content>
             </v-list-item>
           </list-notifications>
+          <v-list-item v-if="isAdmin" href="/admin/" target="_blank" link v-ripple="{ class: 'teal--text' }">
+            <v-list-item-icon><v-icon left>mdi-account-cog-outline</v-icon></v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title>Сайт администратора</v-list-item-title>
+              <v-list-item-subtitle>Открыть страницу администрирования</v-list-item-subtitle>
+            </v-list-item-content>
+          </v-list-item>
           <v-list-item @click="logOutUser" link v-ripple="{ class: 'teal--text' }">
             <v-list-item-icon><v-icon left>mdi-logout</v-icon></v-list-item-icon>
             <v-list-item-title>Выйти из системы</v-list-item-title>
@@ -119,10 +126,12 @@ export default {
       const group = this.userInformation.group_id
       return this.baseList(group.list_id).values.find(v => v.id === group.id).value
     },
+    isAdmin: function () { return this.userInformation.admin },
+    isStaff: function () { return this.userInformation.staff },
     staffStatus: function () {
       let result = []
-      if(this.userInformation.admin) result.push(this.status.admin)
-      if(this.userInformation.staff) result.push(this.status.staff)
+      if(this.isAdmin) result.push(this.status.admin)
+      if(this.isStaff) result.push(this.status.staff)
       return result.join(', ')
     },
   },

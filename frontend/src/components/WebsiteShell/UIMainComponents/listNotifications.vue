@@ -1,5 +1,5 @@
 <template>
-  <v-dialog scrollable width="60%" content-class="overflow-hidden">
+  <v-dialog scrollable width="60%" content-class="overflow-hidden align-self-start">
     <template v-slot:activator="{ on, attrs }">
       <slot :on="on"></slot>
     </template>
@@ -68,7 +68,7 @@
         </v-chip>
       </template>
       <template v-slot:item.content="{ item }">
-        <div style="user-select: text; cursor: text; text-align: justify; color: rgba(0, 0, 0, 0.87)" class="my-1">
+        <div style="user-select: text; cursor: text; color: rgba(0, 0, 0, 0.87); word-wrap: anywhere" class="my-1">
           {{item.content}}
         </div>
       </template>
@@ -152,4 +152,7 @@ export default {
 </script>
 
 <style scoped>
+>>> .v-dialog__content {
+  align-items: start;
+}
 </style>
