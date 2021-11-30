@@ -246,6 +246,7 @@ export default {
       'MAP_ACT_EDIT',
       'SCRIPT_ACT_SEL_SET',
       'SCRIPT_ACT_SEL_CLEAR',
+      'addNotification',
       'appendErrorAlert',
       'setNavigationDrawerStatus',
       'setActiveTool',
