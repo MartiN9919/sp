@@ -32,21 +32,12 @@ def get_total_reports(user_id):
 
 
 def get_in_progress_list(user_id):
-    sql = 'SELECT ' + DAT_SYS_FILES.ID + ', ' \
-          + DAT_SYS_FILES.NAME + ', ' \
-          + DAT_SYS_FILES.DATE_AUTO_REMOVE + ', ' \
+    sql = 'SELECT ' + DAT_SYS_FILES.ID + ' ' \
           + DAT_SYS_FILES.PARAMS + ' FROM ' \
           + DAT_SYS_FILES.TABLE_SHORT + ' WHERE ' \
           + DAT_SYS_FILES.USER_ID + ' = ' + str(user_id) + ' AND ' \
           + DAT_SYS_FILES.STATUS + ' = \'' + DAT_SYS_FILES.IN_PROGRESS + '\';'
-    return [
-        {
-            'id': file[0],
-            'name': file[1],
-            'date': file[2].replace(microsecond=0, tzinfo=None).isoformat(sep=' '),
-            'params': json.loads(file[3])
-        } for file in db_sql(sql)
-    ]
+    return [item[0] for item in db_sql(sql)]
 
 
 def get_reports(user_id, length, offset):
@@ -58,7 +49,7 @@ def get_reports(user_id, length, offset):
 
 def check_progress(user_id, in_progress_list, length, offset):
     in_progress_server_list = get_in_progress_list(user_id)
-    done_list = list(in_progress_list.difference(set([item['id'] for item in in_progress_server_list])))
+    done_list = list(set(in_progress_list).difference(set(in_progress_server_list)))
     if len(done_list) > 0:
         return {
             'list': get_list_files(user_id, length, offset),

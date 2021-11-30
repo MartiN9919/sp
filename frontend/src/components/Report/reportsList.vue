@@ -2,11 +2,10 @@
   <v-container class="h-100">
     <v-data-table
       :headers="headers"
-      :items="listFiles"
+      :items="reportsSlice"
       :options.sync="options"
       :footer-props="footer"
-      :server-items-length="totalDesserts"
-      :loading="loading"
+      :server-items-length="numsTotalReports"
       no-data-text=""
       class="elevation-11 ma-1"
       fixed-header
@@ -61,7 +60,7 @@ export default {
         sortable: false
       },
       {
-        text: 'Время удаления',
+        text: 'Время создания',
         value: 'date',
         align: 'center',
         sortable: false
@@ -79,19 +78,19 @@ export default {
       'items-per-page-options': [5, 10, 15],
       'items-per-page-text':'Количество на странице',
     },
-    options: {},
-    totalDesserts: 0,
-    loading: true,
   }),
   computed: {
-    ...mapGetters(['listFiles', 'selectedTreeViewItem']),
+    ...mapGetters(['reportsSlice', 'selectedTreeViewItem', 'reportTableOptions', 'numsTotalReports', 'inProgressFiles']),
     selectReport() { return this.selectedTreeViewItem(router.currentRoute.name) },
+    options: {
+      get: function () { return this.reportTableOptions },
+      set: function (value) { return this.setReportTableOptions(value) },
+    },
   },
   methods: {
-    ...mapActions(['getListFiles', 'setNavigationDrawerStatus', 'changeSelectedTreeViewItem']),
+    ...mapActions(['setNavigationDrawerStatus', 'changeSelectedTreeViewItem', 'setReportTableOptions']),
 
     downloadFile(id) {
-      console.log(getDownloadReportLink(id))
       let fileURL = getDownloadReportLink(id);
       let fileLink = document.createElement('a');
       fileLink.href = fileURL;
@@ -110,24 +109,7 @@ export default {
         return {color: 'teal', backgroundColor: '#E0F2F1'}
       else return {color: 'black'}
     },
-    getDataFromApi () {
-      this.loading = true
-      let params = {size: this.options.itemsPerPage, offset: this.options.page}
-      this.getListFiles({params})
-      .then(response => {
-        this.totalDesserts = response.data.total
-        this.loading = false
-      })
-    },
   },
-  watch: {
-    options: {
-      deep: true,
-      handler() {
-        this.getDataFromApi()
-      }
-    },
-  }
 }
 </script>
 
