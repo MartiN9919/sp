@@ -3,5 +3,5 @@ from official_documents import views
 
 urlpatterns = [
     url(r'^list', views.aj_reports_list),
-    url(r'^chek_progress', views.aj_chek_progress)
+    url(r'^check_progress', views.aj_check_progress)
 ]

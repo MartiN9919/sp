@@ -12,28 +12,28 @@
     <template v-slot:secondPane>
       <v-divider></v-divider>
       <v-scroll-y-transition mode="out-in">
-          <v-form ref="form" v-if="'id' in selectedItem" class="px-2">
-            <custom-tooltip v-for="v in selectedItem.variables" :key="v.id" :body-text="v.hint" bottom>
-              <template v-slot:activator="{ on }">
-                <div v-on="on" class="pt-2">
-                  <responsive-input-form
-                    v-model="v.value"
-                    :input-type="v.type"
-                    :label="v.title"
-                    :list-rules="v.necessary ? ['notEmpty'] : []"
-                    clearable
-                  ></responsive-input-form>
-                </div>
-              </template>
-            </custom-tooltip>
-            <div class="py-2 d-flex flex-nowrap flex-row justify-center">
-              <v-btn
-                @click="executeScript(selectedItem)"
-                outlined color="#00796B"
-              >Выполнить
-              </v-btn>
-            </div>
-          </v-form>
+        <v-form ref="form" v-if="'id' in selectedItem" class="px-2">
+          <custom-tooltip v-for="v in selectedItem.variables" :key="v.id" :body-text="v.hint" bottom>
+            <template v-slot:activator="{ on }">
+              <div v-on="on" class="pt-2">
+                <responsive-input-form
+                  v-model="v.value"
+                  :input-type="v.type"
+                  :label="v.title"
+                  :list-rules="v.necessary ? ['notEmpty'] : []"
+                  clearable
+                ></responsive-input-form>
+              </div>
+            </template>
+          </custom-tooltip>
+          <div class="py-2 d-flex flex-nowrap flex-row justify-center">
+            <v-btn
+              @click="executeScript(selectedItem)"
+              outlined color="#00796B"
+            >Выполнить
+            </v-btn>
+          </div>
+        </v-form>
         </v-scroll-y-transition>
     </template>
   </split-panel>
