@@ -12,7 +12,7 @@ def get_list_files(user_id, length, offset):
           + DAT_SYS_FILES.PARAMS + ' FROM ' \
           + DAT_SYS_FILES.TABLE_SHORT + ' WHERE ' \
           + DAT_SYS_FILES.USER_ID + ' = ' + str(user_id) + ' ORDER BY ' \
-          + DAT_SYS_FILES.DATE_AUTO_REMOVE + ' LIMIT ' \
+          + DAT_SYS_FILES.DATE_AUTO_REMOVE + ' DESC LIMIT ' \
           + str(length) + ' OFFSET ' + str((offset - 1) * length) + ';'
     return [
         {
