@@ -150,6 +150,10 @@ span, a {
   font-size: 0.8em;
   text-decoration: none;
 }
+tr {
+  line-height: normal;
+  border-spacing: initial;
+}
 tr:hover a, tr:hover span {
   color: #009688;
 }
