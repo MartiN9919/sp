@@ -247,7 +247,6 @@ export default {
       'SCRIPT_ACT_SEL_SET',
       'SCRIPT_ACT_SEL_CLEAR',
       'addNotification',
-      'appendErrorAlert',
       'setNavigationDrawerStatus',
       'setActiveTool',
     ]),
@@ -416,7 +415,7 @@ export default {
     },
 
     on_map_dblclick(e) {
-      this.appendErrorAlert({status: 501, content: e.latlng, show_time: 5, });
+      this.addNotification({content: e.latlng, timeout: 5, });
       this.setNavigationDrawerStatus();
       this.setActiveTool('dossierPage');
     },

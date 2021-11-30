@@ -113,7 +113,7 @@ export default {
       let s = center.lng.toString()+MAP_CONST.POS.SEPARATOR+center.lat.toString()+MAP_CONST.POS.SEPARATOR+zoom.toString();
       cook_set(this.key_pos +ind.toString(), s);
       cook_set(this.key_name+ind.toString(), val);
-      this.addNotification({status: 'information', content: 'Фрагмент сохранен в слот '+ind+': ['+val+']' , show_time: 3, });
+      this.addNotification({content: 'Фрагмент сохранен в слот '+ind+': ['+val+']', timeout: 3});
     },
 
     // cookies: загрузить
