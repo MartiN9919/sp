@@ -87,7 +87,6 @@ import EditorNav    from '@/components/Map/Leaflet/Components/EditorNav';
 import EditorMap    from '@/components/Map/Leaflet/Components/EditorMap';
 import Logo         from '@/components/Map/Leaflet/Components/Logo';
 import Notify       from '@/components/Map/Leaflet/Components/Notify';
-import MixKey       from '@/components/Map/Leaflet/Mixins/Key';
 import MixResize    from '@/components/Map/Leaflet/Mixins/Resize';
 import MixControl   from '@/components/Map/Leaflet/Mixins/Control';
 import MixMeasure   from '@/components/Map/Leaflet/Mixins/Measure';
@@ -105,7 +104,7 @@ export default {
   },
 
   components: { LMap, LTileLayer, LControlScale, Logo, LControlPolylineMeasure, EditorMap, EditorNav, EditorSplit, Notify, },
-  mixins: [ MixKey, MixMeasure, MixMenu, MixResize, MixControl, ],
+  mixins: [ MixMeasure, MixMenu, MixResize, MixControl, ],
 
   data: () => ({
     LOCAL_STORAGE_KEY_POSTFIX: 'geometry',
@@ -152,10 +151,10 @@ export default {
       this.map = this.$refs.map.mapObject;
       this.map.doubleClickZoom.disable();
       this.map.invalidateSize();
-      this.mounted_after_key();
+      this.mounted_menu();                    // добавить обработчики горячих клавиш меню
     },
 
-    on_map_resize () {                   // fire from MixResize
+    on_map_resize () {                        // fire from MixResize
       if (this.map) this.map.invalidateSize();
     },
 

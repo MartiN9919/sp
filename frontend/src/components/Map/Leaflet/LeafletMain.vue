@@ -80,9 +80,9 @@
 
     </l-map>
 
-    <KeyDialog
+    <DialogMenuPos
       ref="key_dialog"
-      @ok="key_save_ok"
+      @ok="menu_pos_save_ok"
     />
 
     <contextMenuNested
@@ -138,7 +138,6 @@ import Range            from '@/components/Map/Leaflet/Components/Range';
 import Legend           from '@/components/Map/Leaflet/Components/Legend';
 import Logo             from '@/components/Map/Leaflet/Components/Logo';
 import MixResize        from '@/components/Map/Leaflet/Mixins/Resize';
-import MixKey           from '@/components/Map/Leaflet/Mixins/Key';
 import MixColor         from '@/components/Map/Leaflet/Mixins/Color';
 import MixControl       from '@/components/Map/Leaflet/Mixins/Control';
 import MixMeasure       from '@/components/Map/Leaflet/Mixins/Measure';
@@ -154,7 +153,6 @@ export default {
 
   mixins: [
     MixResize,
-    MixKey,
     MixColor,
     MixControl,
     MixMeasure,
@@ -207,8 +205,8 @@ export default {
     // установить слушатель map.on_resize
     this.resize_add(this.$refs.map.$el, this.on_map_resize);
 
-    // добавить обработчики событий клавиатуры
-    this.mounted_after_key();
+    // добавить обработчики горячих клавиш меню
+    this.mounted_menu();
   },
 
 

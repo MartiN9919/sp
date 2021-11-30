@@ -13,9 +13,10 @@ import {
 
 import contextMenuNested from '@/components/WebsiteShell/UIMainComponents/contextMenuNested';
 import MixMenuStruct     from '@/components/Map/Leaflet/Mixins/Menu.struct';
+import MixMenuKey        from '@/components/Map/Leaflet/Mixins/Menu.key';
 
 export default {
-  mixins: [ MixMenuStruct, ],
+  mixins: [ MixMenuStruct, MixMenuKey, ],
   components: { contextMenuNested, },
 
   data: () => ({
@@ -96,6 +97,12 @@ export default {
       'MAP_ACT_EDIT',
     ]),
 
+    // ВАЖНО
+    // вызывать из родительского mounted или method.onMapReady
+    // должна быть установлена переменная this.map
+    mounted_menu() {
+      this.mounted_menu_key();
+    },
 
     // Показать первый уровень меню, вызывается из родителя
     on_menu_show(e, mode) {
