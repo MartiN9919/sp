@@ -1,9 +1,7 @@
+import { mapGetters } from 'vuex';
 import { cook_set, cook_get_str } from '@/plugins/sys'
 import { MAP_CONST } from '@/components/Map/Leaflet/Lib/Const';
 import KeyDialog     from '@/components/Map/Leaflet/Components/KeyDialog';
-
-const KEY_POS  = 'KEY_POS_';
-const KEY_NAME = 'KEY_NAME_';
 
 export default {
   components: {
@@ -14,6 +12,15 @@ export default {
     if (this.map) {
       this.map.removeEventListener('keydown', this.key_down);
     };
+  },
+
+  computed: {
+    ...mapGetters([
+      'userInformation',
+    ]),
+
+    key_pos:  function() { return 'KEY_POS_' +this.userInformation.id+'_' },
+    key_name: function() { return 'KEY_NAME_'+this.userInformation.id+'_' },
   },
 
   methods: {
@@ -104,18 +111,18 @@ export default {
       let center = this.map.getCenter();
       let zoom   = this.map.getZoom();
       let s = center.lng.toString()+MAP_CONST.POS.SEPARATOR+center.lat.toString()+MAP_CONST.POS.SEPARATOR+zoom.toString();
-      cook_set(KEY_POS+ind.toString(), s);
-      cook_set(KEY_NAME+ind.toString(), val);
-      this.appendErrorAlert({status: 501, content: 'Фрагмент сохранен в слот '+ind+': ['+val+']' , show_time: 3, });
+      cook_set(this.key_pos +ind.toString(), s);
+      cook_set(this.key_name+ind.toString(), val);
+      this.appendErrorAlert({status: 'information', content: 'Фрагмент сохранен в слот '+ind+': ['+val+']' , show_time: 3, });
     },
 
     // cookies: загрузить
     key_load_pos: function(ind) {
-      let s = cook_get_str(KEY_POS+ind.toString(), MAP_CONST.POS.DEFAULT).split(MAP_CONST.POS.SEPARATOR);
+      let s = cook_get_str(this.key_pos+ind.toString(), MAP_CONST.POS.DEFAULT).split(MAP_CONST.POS.SEPARATOR);
       this.map.setView([parseFloat(s[1]), parseFloat(s[0])], parseFloat(s[2]));
     },
     key_load_name: function(ind) {
-      return cook_get_str(KEY_NAME+ind.toString(), 'Слот '+ind);
+      return cook_get_str(this.key_name+ind.toString(), 'Слот '+ind);
     },
   },
 };
