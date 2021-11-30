@@ -59,10 +59,7 @@ export default {
         const notifications = getters.notifications.filter(a => a.id_notification)
         const availableNotifications = Array.from(notifications, alert => alert.id_notification)
         axios.get('notifications/', Object.assign(config, {params: {list: availableNotifications}}))
-        .then(r => r.data.map(n => {
-          if(n.file) commit('changeFileStatus', n)
-          commit('appendNotification', new Notification(n))
-        }))
+        .then(r => r.data.map(n => commit('appendNotification', new Notification(n))))
       }
       getNotifications()
       const interval = setInterval(() => getNotifications(), 10000)
@@ -73,10 +70,10 @@ export default {
         axios.get(`notifications/${notification.id_notification}/`, config)
       commit('removeNotification', notification)
     },
-    addNotification: ({commit}, notification, timeout=null) => {
+    addNotification: ({commit}, {notification, timeout = null}) => {
       const notify = new Notification(notification)
       commit('appendNotification', notify)
-      timeout && setTimeout(() => commit('removeNotification', notify), timeout)
+      timeout && setTimeout(() => commit('removeNotification', notify), timeout * 1000)
     }
   }
 }

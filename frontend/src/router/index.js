@@ -15,6 +15,7 @@ const routes = [
     },
     beforeEnter: (to, from, next) => {
       store.commit('stopNotificationInterval')
+      store.commit('stopCheckingReportStatusesInterval')
       store.commit('resetState')
       next()
     },

@@ -2,35 +2,69 @@ import axios from '@/plugins/axiosSettings'
 
 export default {
   state: {
-    listFiles: []
+    reportsSlice: [],
+    inProgressReports: [],
+    reportTableOptions: {},
+    numsTotalReports: 0,
+    checkingReportStatusesInterval: null,
   },
   getters: {
-    listFiles: state => state.listFiles
+    reportsSlice: state => state.reportsSlice,
+    inProgressReports: state => state.inProgressReports,
+    reportTableOptions: state => state.reportTableOptions,
+    numsTotalReports: state => state.numsTotalReports,
+    sliceParams: state => { return {size: state.reportTableOptions.itemsPerPage, offset: state.reportTableOptions.page} }
   },
   mutations: {
-    setListFiles: (state, files) => state.listFiles = files,
-    addFileToList: (state, file) => state.listFiles.unshift(file),
-    changeFileStatus: (state, alert) => {
-      if (state.listFiles.length) {
-        if (alert.status === 'information') state.listFiles.find(file => file.id === alert.file).status = 'done'
-        if (alert.status === 'error') state.listFiles.find(file => file.id === alert.file).status = 'error'
+    setReportTableData: (state, response) => {
+      if(response.hasOwnProperty('list'))
+        state.reportsSlice = response.list
+      if(response.hasOwnProperty('total'))
+        state.numsTotalReports = response.total
+      state.inProgressReports = response.in_progress
+    },
+    setInProgressReports: (state, inProgressReports) => state.inProgressReports = inProgressReports,
+    setReportTableOptions: (state, reportTableOptions) => state.reportTableOptions = reportTableOptions,
+    setCheckingReportStatusesInterval: (state, interval) => state.checkingReportStatusesInterval = interval,
+    stopCheckingReportStatusesInterval: (state) => {
+      if(state.checkingReportStatusesInterval) {
+        clearInterval(state.checkingReportStatusesInterval)
+        state.checkingReportStatusesInterval = null
       }
-    }
+    },
   },
   actions: {
-    getListFiles ({ commit }, config = {}) {
+    setReportTableData({state, commit, dispatch}, response) {
+      commit('setReportTableData', response)
+      if(state.checkingReportStatusesInterval && response.in_progress.length === 0)
+        commit('stopCheckingReportStatusesInterval')
+      if(!state.checkingReportStatusesInterval && response.in_progress.length !== 0)
+        dispatch('checkingReportStatuses')
+    },
+    getReportsSlice ({state, getters, dispatch}, config = {}) {
+      config.params = getters.sliceParams
       return axios.get('reports/list/', config)
-        .then(response => {
-          commit('setListFiles', response.data.list)
-          return response
-        })
+        .then(response => dispatch('setReportTableData', response.data))
         .catch(() => {})
     },
-    executeReportScript ({ commit }, parameters = {}) {
+    setReportTableOptions ({commit, dispatch}, reportTableOptions) {
+      commit('setReportTableOptions', reportTableOptions)
+      dispatch('getReportsSlice')
+    },
+    checkingReportStatuses ({getters, commit, dispatch}, config={}) {
+      const interval = setInterval(() => {
+        config.params = Object.assign(getters.sliceParams, {list: getters.inProgressReports})
+        axios.get('reports/check_progress/', config)
+          .then(response => dispatch('setReportTableData', response.data))
+      }, 1000)
+      commit('setCheckingReportStatusesInterval', interval)
+    },
+    executeReportScript ({state, getters, commit, dispatch}, parameters = {}) {
+      Object.assign(parameters.config, {params: getters.sliceParams})
       return axios.post('script/execute_report/', parameters.request, parameters.config)
         .then(response => {
           commit('changeSelectedTreeViewItem', {})
-          commit('addFileToList', response.data)
+          dispatch('setReportTableData', response.data)
         })
         .catch(() => {})
     }
