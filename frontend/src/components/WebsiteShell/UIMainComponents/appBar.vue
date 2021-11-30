@@ -70,7 +70,7 @@
               </v-list-item-content>
             </v-list-item>
           </list-notifications>
-          <v-list-item v-if="isAdmin" href="/admin/" target="_blank" link v-ripple="{ class: 'teal--text' }">
+          <v-list-item v-if="isAdmin || isStaff" href="/admin/" link v-ripple="{ class: 'teal--text' }">
             <v-list-item-icon><v-icon left>mdi-account-cog-outline</v-icon></v-list-item-icon>
             <v-list-item-content>
               <v-list-item-title>Сайт администратора</v-list-item-title>

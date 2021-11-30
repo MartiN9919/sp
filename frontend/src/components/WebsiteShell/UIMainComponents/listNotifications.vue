@@ -1,9 +1,10 @@
 <template>
-  <v-dialog scrollable width="60%" content-class="overflow-hidden align-self-start">
+  <v-dialog v-model="dialog" scrollable width="60%" content-class="overflow-hidden align-self-start">
     <template v-slot:activator="{ on, attrs }">
       <slot :on="on"></slot>
     </template>
     <v-data-table
+        v-if="dialog"
         :headers="headers"
         :items="desserts"
         :options.sync="options"
@@ -104,6 +105,7 @@ export default {
       'items-per-page-options': [5, 10, 15],
       'items-per-page-text':'Количество на странице',
     },
+    dialog: false,
     desserts: [],
     options: {
       sortBy: ['date_time'],
