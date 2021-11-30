@@ -73,8 +73,10 @@ export default {
         axios.get(`notifications/${notification.id_notification}/`, config)
       commit('removeNotification', notification)
     },
-    addNotification: ({commit}, notification) => {
-      commit('appendNotification', new Notification(notification))
+    addNotification: ({commit}, notification, timeout=null) => {
+      const notify = new Notification(notification)
+      commit('appendNotification', notify)
+      timeout && setTimeout(() => commit('removeNotification', notify), timeout)
     }
   }
 }

@@ -21,7 +21,7 @@ def aj_reports_list(request):
 @login_check
 @request_log
 @request_wrap
-def aj_chek_progress(request):
+def aj_check_progress(request):
     in_progress_list = [int(item) for item in request.GET.getlist('list[]')]
     return check_progress(
         request.user.id,
