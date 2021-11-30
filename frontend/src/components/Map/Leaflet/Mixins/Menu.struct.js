@@ -20,51 +20,51 @@ export default {
           menu:     [
             {
               icon:     'mdi-calendar-range',
-              title:    'Дата-время',
-              subtitle: 'Фильтр отображаемых данных по дате-времени',
+              title:    'Фильтр объектов по дате-времени',
+              subtitle: '[Shift+Ф]',
               model:    'prop_range',
               color:    'blue',
             },
             {
               icon:     'mdi-google-circles-group',
-              title:    'Группировка маркеров',
-              subtitle: 'Объединять близлежащие маркеры в группы',
+              title:    'Группировка близлежащих маркеров',
+              subtitle: '[Shift+Г]',
               model:    'prop_cluster',
             },
             {
               icon:     'mdi-message',
-              title:    'Подсказки',
-              subtitle: 'Показывать всплывающие подсказки',
-              model:    'prop_hint',
+              title:    'Информация об объектах при наведении',
+              subtitle: '[Shift+И]',
+              model:    'prop_info',
             },
             {
               icon:     'mdi-map-legend',
               title:    'Легенды',
-              subtitle: 'Показывать всплывающие легенды',
+              subtitle: '[Shift+Л]',
               model:    'prop_legend',
             },
             {
               icon:     'mdi-message-outline',
               title:    'Заметки',
-              subtitle: 'Показывать заметки',
+              subtitle: '[Shift+З]',
               model:    'prop_notify',
             },
             {
               icon:     'mdi-ruler',
-              title:    'Масштаб',
-              subtitle: 'Показывать масштабную линейку',
+              title:    'Масштабная линейка',
+              subtitle: '[Shift+М]',
               model:    'prop_scale',
             },
             {
-              icon:     'mdi-arrow-expand-right', //'mdi-tape-measure',
+              icon:     'mdi-arrow-expand-right',
               title:    'Рулетка',
-              subtitle: 'Показывать рулетку',
+              subtitle: '[Shift+Р]',
               model:    'prop_measure',
             },
             {
               icon:     'mdi-copyright',
               title:    'Логотип',
-              subtitle: 'Показывать логотип',
+              subtitle: '[Shift+С]',
               model:    'prop_logo',
             },
           ],
@@ -75,7 +75,7 @@ export default {
         {
           icon:     'mdi-wrench',
           title:    'ТЕСТЫ',
-          subtitle: 'На этапе разработки',
+          subtitle: 'Для разработчиков',
           menu:     [
             {
               title: 'Отображение элементов карты',
@@ -83,19 +83,19 @@ export default {
                 {
                   icon:     'mdi-map-marker-plus',
                   title:    'Набор 1',
-                  subtitle: 'Добавить набор фигур 1 (font+animation)',
+                  subtitle: 'Добавить набор фигур 1 (font+animation) Shift+[',
                   action:   'test_item_add_1',
                 },
                 {
                   icon:     'mdi-map-marker-plus',
                   title:    'Набор 2',
-                  subtitle: 'Добавить набор фигур 2 (pulse)',
+                  subtitle: 'Добавить набор фигур 2 (pulse) Shift+]',
                   action:   'test_item_add_2',
                 },
                 {
                   icon:     'mdi-map-marker-plus',
                   title:    'Набор 3',
-                  subtitle: 'Добавить набор фигур 3 (color)',
+                  subtitle: 'Добавить набор фигур 3 (color) Shift+"',
                   action:   'test_item_add_3',
                 },
                 {
@@ -109,7 +109,7 @@ export default {
                 {
                   icon:     'mdi-map-marker-remove',
                   title:    'Удалить',
-                  subtitle: 'Удалить набор 1',
+                  subtitle: 'Удалить набор 1 Shift+\\',
                   action:   'test_item_del',
                 },
                 {

@@ -28,7 +28,6 @@ export default {
     // вызывать из родительского mounted или method.onMapReady
     // должна быть установлена переменная this.map
     mounted_menu_key() {
-      console.log(1)
       this.map.addEventListener('keydown', this.menu_key_down);
       this.menu_pos_coord_load(1);
     },
@@ -47,17 +46,17 @@ export default {
               title:    'Загрузить',
               //subtitle: 'Позиция и масштаб карты',
               menu:     [
-                { title: this.menu_pos_name_load(1), subtitle: 'Быстрый вызов: [1]', slot: 1, action: this.action_menu_pos_load, },
+                { title: this.menu_pos_name_load(1), subtitle: '[1]', slot: 1, action: this.action_menu_pos_load, },
                 { divider: true },
-                { title: this.menu_pos_name_load(2), subtitle: 'Быстрый вызов: [2]', slot: 2, action: this.action_menu_pos_load, },
-                { title: this.menu_pos_name_load(3), subtitle: 'Быстрый вызов: [3]', slot: 3, action: this.action_menu_pos_load, },
-                { title: this.menu_pos_name_load(4), subtitle: 'Быстрый вызов: [4]', slot: 4, action: this.action_menu_pos_load, },
-                { title: this.menu_pos_name_load(5), subtitle: 'Быстрый вызов: [5]', slot: 5, action: this.action_menu_pos_load, },
-                { title: this.menu_pos_name_load(6), subtitle: 'Быстрый вызов: [6]', slot: 6, action: this.action_menu_pos_load, },
-                { title: this.menu_pos_name_load(7), subtitle: 'Быстрый вызов: [7]', slot: 7, action: this.action_menu_pos_load, },
-                { title: this.menu_pos_name_load(8), subtitle: 'Быстрый вызов: [8]', slot: 8, action: this.action_menu_pos_load, },
-                { title: this.menu_pos_name_load(9), subtitle: 'Быстрый вызов: [9]', slot: 9, action: this.action_menu_pos_load, },
-                { title: this.menu_pos_name_load(0), subtitle: 'Быстрый вызов: [0]', slot: 0, action: this.action_menu_pos_load, },
+                { title: this.menu_pos_name_load(2), subtitle: '[2]', slot: 2, action: this.action_menu_pos_load, },
+                { title: this.menu_pos_name_load(3), subtitle: '[3]', slot: 3, action: this.action_menu_pos_load, },
+                { title: this.menu_pos_name_load(4), subtitle: '[4]', slot: 4, action: this.action_menu_pos_load, },
+                { title: this.menu_pos_name_load(5), subtitle: '[5]', slot: 5, action: this.action_menu_pos_load, },
+                { title: this.menu_pos_name_load(6), subtitle: '[6]', slot: 6, action: this.action_menu_pos_load, },
+                { title: this.menu_pos_name_load(7), subtitle: '[7]', slot: 7, action: this.action_menu_pos_load, },
+                { title: this.menu_pos_name_load(8), subtitle: '[8]', slot: 8, action: this.action_menu_pos_load, },
+                { title: this.menu_pos_name_load(9), subtitle: '[9]', slot: 9, action: this.action_menu_pos_load, },
+                { title: this.menu_pos_name_load(0), subtitle: '[0]', slot: 0, action: this.action_menu_pos_load, },
               ],
             },
             {
@@ -65,17 +64,17 @@ export default {
               title:    'Сохранить',
               //subtitle: 'Позиция и масштаб карты',
               menu:     [
-                { title: this.menu_pos_name_load(1), subtitle: 'Быстрый вызов: [Shift]+[1]', slot: 1, action: this.action_menu_pos_save, },
+                { title: this.menu_pos_name_load(1), subtitle: '[Shift+1]', slot: 1, action: this.action_menu_pos_save, },
                 { divider: true },
-                { title: this.menu_pos_name_load(2), subtitle: 'Быстрый вызов: [Shift]+[2]', slot: 2, action: this.action_menu_pos_save, },
-                { title: this.menu_pos_name_load(3), subtitle: 'Быстрый вызов: [Shift]+[3]', slot: 3, action: this.action_menu_pos_save, },
-                { title: this.menu_pos_name_load(4), subtitle: 'Быстрый вызов: [Shift]+[4]', slot: 4, action: this.action_menu_pos_save, },
-                { title: this.menu_pos_name_load(5), subtitle: 'Быстрый вызов: [Shift]+[5]', slot: 5, action: this.action_menu_pos_save, },
-                { title: this.menu_pos_name_load(6), subtitle: 'Быстрый вызов: [Shift]+[6]', slot: 6, action: this.action_menu_pos_save, },
-                { title: this.menu_pos_name_load(7), subtitle: 'Быстрый вызов: [Shift]+[7]', slot: 7, action: this.action_menu_pos_save, },
-                { title: this.menu_pos_name_load(8), subtitle: 'Быстрый вызов: [Shift]+[8]', slot: 8, action: this.action_menu_pos_save, },
-                { title: this.menu_pos_name_load(9), subtitle: 'Быстрый вызов: [Shift]+[9]', slot: 9, action: this.action_menu_pos_save, },
-                { title: this.menu_pos_name_load(0), subtitle: 'Быстрый вызов: [Shift]+[0]', slot: 0, action: this.action_menu_pos_save, },
+                { title: this.menu_pos_name_load(2), subtitle: '[Shift+2]', slot: 2, action: this.action_menu_pos_save, },
+                { title: this.menu_pos_name_load(3), subtitle: '[Shift+3]', slot: 3, action: this.action_menu_pos_save, },
+                { title: this.menu_pos_name_load(4), subtitle: '[Shift+4]', slot: 4, action: this.action_menu_pos_save, },
+                { title: this.menu_pos_name_load(5), subtitle: '[Shift+5]', slot: 5, action: this.action_menu_pos_save, },
+                { title: this.menu_pos_name_load(6), subtitle: '[Shift+6]', slot: 6, action: this.action_menu_pos_save, },
+                { title: this.menu_pos_name_load(7), subtitle: '[Shift+7]', slot: 7, action: this.action_menu_pos_save, },
+                { title: this.menu_pos_name_load(8), subtitle: '[Shift+8]', slot: 8, action: this.action_menu_pos_save, },
+                { title: this.menu_pos_name_load(9), subtitle: '[Shift+9]', slot: 9, action: this.action_menu_pos_save, },
+                { title: this.menu_pos_name_load(0), subtitle: '[Shift+0]', slot: 0, action: this.action_menu_pos_save, },
               ],
             },
           ],
@@ -85,6 +84,7 @@ export default {
 
     // событие: нажатие клавиши
     menu_key_down(e) {
+      // позиция: сохранить / восстановить
       let key_ind = -1;                                  // индекс функциональной клавиши 0, 1, ...
       for(let ind of [...Array(10).keys()]) {
         if (e.originalEvent.code == ('Digit'+ind)) {
@@ -92,11 +92,35 @@ export default {
           break;
         }
       }
-      if (key_ind == -1) return;
+      if (key_ind != -1) {
+        if (e.originalEvent.shiftKey) { this.menu_pos_save(key_ind) }
+        else                          { this.menu_pos_coord_load(key_ind) }
+        return
+      }
 
-      // позиция: сохранить / восстановить
-      if (e.originalEvent.shiftKey) { this.menu_pos_save(key_ind) }
-      else                          { this.menu_pos_coord_load(key_ind) }
+      if (e.originalEvent.shiftKey) {
+        switch(e.originalEvent.code) {
+          // Оформление
+          case 'KeyA': { this.prop_range   = 1; return; } // Shift+Ф
+          case 'KeyU': { this.prop_cluster = 1; return; } // Shift+Г
+          case 'KeyB': { this.prop_info    = 1; return; } // Shift+И
+          case 'KeyK': { this.prop_legend  = 1; return; } // Shift+Л
+          case 'KeyP': { this.prop_notify  = 1; return; } // Shift+З
+          case 'KeyV': { this.prop_scale   = 1; return; } // Shift+М
+          case 'KeyH': { this.prop_measure = 1; return; } // Shift+Р
+          case 'KeyC': { this.prop_logo    = 1; return; } // Shift+С
+
+          // Подложка
+
+          // Тесты
+          case 'BracketLeft':  { this.test_item_add_1(); return; }
+          case 'BracketRight': { this.test_item_add_2(); return; }
+          case 'Quote':        { this.test_item_add_3(); return; }
+          case 'Backslash':    { this.test_item_del();   return; }
+        }
+      }
+
+      console.log(e.originalEvent.ctrlKey, e.originalEvent.code)
     },
 
 

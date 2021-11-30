@@ -51,7 +51,7 @@ export default {
       set: function(val) { this.MAP_ACT_CLUSTER({on: !this.MAP_GET_CLUSTER}); },
       get: function()    { return this.MAP_GET_CLUSTER; },
     },
-    prop_hint: {
+    prop_info: {
       set: function(val) { this.MAP_ACT_HINT({on: !this.MAP_GET_HINT}); },
       get: function()    { return this.MAP_GET_HINT; },
     },

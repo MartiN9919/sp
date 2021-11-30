@@ -8,12 +8,12 @@
     <div
       class="legend_top"
     >
-      {{prop_hint()}}
+      {{legend_hint()}}
     </div>
     <div
       class="legend_top legend-color-select"
     >
-      {{prop_val()}}
+      {{legend_val()}}
     </div>
     <div
       v-for="(legend_color_item, legend_color_ind) in SCRIPT_GET_ITEM_LEGEND_COLOR(options.hover_map_ind)"
@@ -86,7 +86,7 @@ export default {
       return ret;
     },
 
-    prop_hint() {
+    legend_hint() {
       let ret;
       if ((this.options.hover_map_ind>-1) && (this.options.hover_feature_ind>-1))
         ret = this.SCRIPT_GET_ITEM(this.options.hover_map_ind)
@@ -96,7 +96,7 @@ export default {
       this.block_hint = (ret)?true:false;
       return ret
     },
-    prop_val() {
+    legend_val() {
       let ret;
       if ((this.options.hover_map_ind>-1) && (this.options.hover_feature_ind>-1))
         ret = this.SCRIPT_GET_ITEM(this.options.hover_map_ind)
