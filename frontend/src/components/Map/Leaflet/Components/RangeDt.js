@@ -134,7 +134,7 @@ export default {
           if ((date >= self.dt.sel_min) && (date <= self.dt.sel_max)) { count_sel++; }
        });
       });
-      this.dt.stat = (count_all>0) ? (count_sel+' из '+count_all+' ( '+(count_sel*100/count_all|0)+' % )') : '';
+      this.dt.stat = (count_all>0) ? (count_sel+' из '+count_all+' ( '+(count_sel*100/count_all|0)+'% )') : '';
     },
 
 

@@ -43,7 +43,7 @@ export default {
       get: function()    { return this.MAP_GET_TILE; },
     },
     prop_range: {
-      set: function(val) { this.MAP_ACT_RANGE({on: val}); },
+      set: function(val) { this.MAP_ACT_RANGE({on: !this.MAP_GET_RANGE}); },
       get: function()    { return this.MAP_GET_RANGE; },
     },
     prop_cluster: {

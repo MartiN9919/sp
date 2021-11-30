@@ -117,7 +117,7 @@ export default {
           if ((time >= self.hm.sel_min) && (time <= self.hm.sel_max)) { count_sel++; }
        });
       });
-      this.hm.stat = (count_all>0) ? (count_sel+' из '+count_all+' ( '+(count_sel*100/count_all|0)+' % )') : '';
+      this.hm.stat = (count_all>0) ? (count_sel+' из '+count_all+' ( '+(count_sel*100/count_all|0)+'% )') : '';
     },
 
 
