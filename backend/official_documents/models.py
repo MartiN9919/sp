@@ -15,15 +15,8 @@ class ModelOfficialDocument(models.Model):
         max_length=100,
         verbose_name='Имя файла',
     )
-    owner_line = models.ForeignKey(
-        ModelOwnerLines,
-        on_delete=models.RESTRICT,
-        verbose_name='Линия',
-    )
-    owner_region = models.ForeignKey(
-        ModelOwnerRegions,
-        on_delete=models.RESTRICT,
-        verbose_name='Регион',
+    user_id = models.IntegerField(
+        verbose_name='Идентификатор пользователя',
     )
     date_auto_remove = models.DateTimeField(
         verbose_name='Дата и время удаления файла'
