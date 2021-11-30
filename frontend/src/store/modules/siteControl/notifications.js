@@ -72,12 +72,23 @@ export default {
       if (notification.id_notification)
         axios.get(`notifications/${notification.id_notification}/`, config)
       commit('removeNotification', notification)
+    },
+    addNotification: ({commit}, notification) => {
+      commit('appendNotification', new Notification(notification))
     }
   }
 }
 
 class Notification {
-
+  /**
+   * @param: {
+   *   "content": String: -'Текст уведомления',
+   *   "status": String: { variant: ["information", "warning", "error"]},
+   *   "id_alert": Number: { default: null } -id в базе,
+   *   "from": String: { default: 'Система' } -Отправитель,
+   *   "date_time": String: { default: getDateTimeNow() } -'Дата создания уведомления',
+   * }
+   */
   constructor(notification) {
     this.id = uuid()
     this.id_notification = notification.id_alert || null
