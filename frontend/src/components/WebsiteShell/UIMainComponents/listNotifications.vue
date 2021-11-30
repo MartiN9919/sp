@@ -1,9 +1,10 @@
 <template>
-  <v-dialog scrollable width="60%" content-class="overflow-hidden">
+  <v-dialog v-model="dialog" scrollable width="60%" content-class="overflow-hidden align-self-start">
     <template v-slot:activator="{ on, attrs }">
       <slot :on="on"></slot>
     </template>
     <v-data-table
+        v-if="dialog"
         :headers="headers"
         :items="desserts"
         :options.sync="options"
@@ -68,7 +69,7 @@
         </v-chip>
       </template>
       <template v-slot:item.content="{ item }">
-        <div style="user-select: text; cursor: text; text-align: justify; color: rgba(0, 0, 0, 0.87)" class="my-1">
+        <div style="user-select: text; cursor: text; color: rgba(0, 0, 0, 0.87); word-wrap: anywhere" class="my-1">
           {{item.content}}
         </div>
       </template>
@@ -104,6 +105,7 @@ export default {
       'items-per-page-options': [5, 10, 15],
       'items-per-page-text':'Количество на странице',
     },
+    dialog: false,
     desserts: [],
     options: {
       sortBy: ['date_time'],
@@ -152,4 +154,7 @@ export default {
 </script>
 
 <style scoped>
+>>> .v-dialog__content {
+  align-items: start;
+}
 </style>
