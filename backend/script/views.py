@@ -3,13 +3,13 @@ import importlib
 import json
 import threading
 
-from authentication.models import ModelCustomUser
 from core.settings import DOCUMENT_ROOT
 from data_base_driver.script.get_script_info import get_script_title
 from data_base_driver.script.script_execute import execute_script_map
 from data_base_driver.script.script_list import get_script_tree
 from data_base_driver.constants.const_dat import DAT_OWNER
 from core.projectSettings.decorators import request_log, login_check, request_wrap, script_wrap
+from data_base_driver.sys_reports.get_files_info import get_reports
 from data_base_driver.sys_reports.set_file_info import add_file
 from data_base_driver.sys_templates.get_template_info import get_templates_list, get_template
 from data_base_driver.sys_templates.set_templates_info import add_template, remove_template, update_template
@@ -73,7 +73,6 @@ def aj_script_execute_report(request):
     """
     data = json.loads(request.body)
     method_name = 'script_' + str(data.get('id'))
-    user = ModelCustomUser.objects.get(id=request.user.id)
     title = get_script_title(data.get('id')) + '-' + datetime.datetime.now().replace(microsecond=0,
                                                                                      tzinfo=None).isoformat(sep='-')
     group_id = DAT_OWNER.DUMP.get_group(user_id=request.user.id)
@@ -91,9 +90,11 @@ def aj_script_execute_report(request):
             thread = threading.Thread(target=script_function,
                                       args=(data.get('variables'), group_id, file_id, request.user.id, title, lock))
             thread.start()
-            return {'id': file_id, 'name': title,
-                    'date': date_time.replace(microsecond=0, tzinfo=None).isoformat(sep=' '),
-                    'status': 'in_progress', 'params': data}
+            return get_reports(
+                request.user.id,
+                int(request.GET.get('size', 10)),
+                int(request.GET.get('offset', 0))
+            )
     except Exception as e:
         raise e
 
@@ -148,4 +149,3 @@ def aj_template(request):
             raise e
     else:
         raise Exception(470, '')
-

@@ -38,7 +38,7 @@
                       <p class="mb-0" style="line-height: 1em; font-size: 0.8em">{{ v.date }}</p>
                     </div>
                   </template>
-                  <LeafletEditor :fc_parent_prop="JSON.parse(v.value)" :modeEnabled="{marker: false , line: false, polygon: false}"/>
+                  <LeafletEditor style="height: 70vh;" :fc_parent_prop="JSON.parse(v.value)" :modeEnabled="{marker: false , line: false, polygon: false}"/>
                 </v-dialog>
                 <div v-else class="py-1">
                   <p class="mb-0 text-body-1" style="line-height: 1em; font-style: oblique">{{v.value}}</p>

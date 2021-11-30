@@ -40,10 +40,11 @@
                 </td>
                 <td v-else-if="checkTypeParam(param) === 'geometry'">
                   <v-dialog
+                    style="z-index:1000002"
                     width="60%"
+                    height="80%"
                     v-model="dialog"
                     @keydown.esc="dialog = false"
-                    style="z-index: 1000002"
                     persistent
                     transition="dialog-bottom-transition"
                   >
@@ -58,7 +59,7 @@
                       <v-divider></v-divider>
                       <LeafletViewer
                         v-if="dialog"
-                        style="height: 70%"
+                        style="height: 70vh;"
                         :fc_parent_prop="JSON.parse(item.value)"
                         :dop_controls="true"
                       />
@@ -148,6 +149,10 @@ span, a {
   color: #555555;
   font-size: 0.8em;
   text-decoration: none;
+}
+tr {
+  line-height: normal;
+  border-spacing: initial;
 }
 tr:hover a, tr:hover span {
   color: #009688;
