@@ -246,6 +246,7 @@ export const TEST = [
       "class": "icon-mdi-quadcopter",
       "hint": "icon-mdi-quadcopter",
       "date": "2021-01-03",
+      "text": 'Дрон',
       //"zoom": false, - не масштабируется
     },
     "geometry": {

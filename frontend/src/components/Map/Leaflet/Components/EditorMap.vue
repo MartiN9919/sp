@@ -546,7 +546,6 @@ export default {
         opacity:     .5,
         fillOpacity: .3,
         dashArray:   '4, 8',
-        //className: 'ddd',
       }
     },
     path_origin() {
