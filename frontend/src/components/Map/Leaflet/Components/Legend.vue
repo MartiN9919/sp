@@ -5,11 +5,13 @@
     class="legend select_off pre-formatted"
     position="topright"
   >
+    <!--
     <div
       class="legend_top"
     >
       {{legend_hint()}}
     </div>
+  -->
     <div
       class="legend_top legend-color-select"
     >

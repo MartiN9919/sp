@@ -98,8 +98,8 @@
 
 <script>
 
-import { mapGetters, mapActions, } from 'vuex';
-import { Icon, } from 'leaflet';
+import { mapGetters, mapActions } from 'vuex';
+import { Icon } from 'leaflet';
 
 import {
   LMap,
