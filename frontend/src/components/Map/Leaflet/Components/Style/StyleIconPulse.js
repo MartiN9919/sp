@@ -1,80 +1,74 @@
 (function(window) {
 
-    L.Icon.Pulse = L.DivIcon.extend({
+  L.Icon.Pulse = L.DivIcon.extend({
 
-        options: {
-            className: '',
-            iconSize: [12,12],
-            fillColor: 'red',
-            color: 'red',
-            animate: true,
-            heartbeat: 1,
-        },
+    options: {
+      className: '',
+      iconSize: [12,12],
+      fillColor: 'red',
+      color: 'red',
+      animate: true,
+      heartbeat: 1,
+    },
 
-        initialize: function (options) {
-            L.setOptions(this,options);
+    initialize: function (options) {
+      L.setOptions(this,options);
 
-            // css
+      // css
+      var uniqueClassName = 'lpi-'+ new Date().getTime()+'-'+Math.round(Math.random()*100000);
+      var before = ['background-color: '+this.options.fillColor];
+      var after  = [
+        'box-shadow: 0 0 6px 2px '+this.options.color,
+        'animation: pulsate ' + this.options.heartbeat + 's ease-out',
+        'animation-iteration-count: infinite',
+        'animation-delay: '+ (this.options.heartbeat + .1) + 's',
+        'position:absolute',
+        'left:0',
+      ];
 
-            var uniqueClassName = 'lpi-'+ new Date().getTime()+'-'+Math.round(Math.random()*100000);
+      if (!this.options.animate){
+        after.push('animation: none');
+        after.push('box-shadow:none');
+      }
 
-            var before = ['background-color: '+this.options.fillColor];
-            var after = [
+      var css = [
+        '.'+uniqueClassName+'{'+before.join(';')+';}',
+        '.'+uniqueClassName+':after{'+after.join(';')+';}',
+      ].join('');
 
-                'box-shadow: 0 0 6px 2px '+this.options.color,
+      var el = document.createElement('style');
+      if (el.styleSheet){
+        el.styleSheet.cssText = css;
+      } else {
+        el.appendChild(document.createTextNode(css));
+      }
 
-                'animation: pulsate ' + this.options.heartbeat + 's ease-out',
-                'animation-iteration-count: infinite',
-                'animation-delay: '+ (this.options.heartbeat + .1) + 's',
-                'position:absolute',
-                'left:0',
-            ];
+      document.getElementsByTagName('head')[0].appendChild(el);
 
-            if (!this.options.animate){
-                after.push('animation: none');
-                after.push('box-shadow:none');
-            }
+      // apply css class
 
-            var css = [
-                '.'+uniqueClassName+'{'+before.join(';')+';}',
-                '.'+uniqueClassName+':after{'+after.join(';')+';}',
-            ].join('');
+      //old (error): this.options.className = this.options.className+' leaflet-pulsing-icon '+uniqueClassName;
+      options.className = options.className+' leaflet-pulsing-icon '+uniqueClassName;
 
-            var el = document.createElement('style');
-            if (el.styleSheet){
-                el.styleSheet.cssText = css;
-            } else {
-                el.appendChild(document.createTextNode(css));
-            }
+      // initialize icon
+      L.DivIcon.prototype.initialize.call(this, options);
+    },
+  });
 
-            document.getElementsByTagName('head')[0].appendChild(el);
-
-            // apply css class
-
-            //old (error): this.options.className = this.options.className+' leaflet-pulsing-icon '+uniqueClassName;
-            options.className = options.className+' leaflet-pulsing-icon '+uniqueClassName;
-
-            // initialize icon
-
-            L.DivIcon.prototype.initialize.call(this, options);
-
-        }
-    });
-
-    L.icon.pulse = function (options) {
-        return new L.Icon.Pulse(options);
-    };
+  L.icon.pulse = function (options) {
+    return new L.Icon.Pulse(options);
+  };
 
 
-    L.Marker.Pulse = L.Marker.extend({
-        initialize: function (latlng,options) {
-            options.icon = L.icon.pulse(options);
-            L.Marker.prototype.initialize.call(this, latlng, options);
-        }
-    });
+  L.Marker.Pulse = L.Marker.extend({
+    initialize: function (latlng,options) {
+      options.icon = L.icon.pulse(options);
+      L.Marker.prototype.initialize.call(this, latlng, options);
+    }
+  });
 
-    L.marker.pulse = function (latlng,options) {
-        return new L.Marker.Pulse(latlng,options);
-    };
+  L.marker.pulse = function (latlng,options) {
+    return new L.Marker.Pulse(latlng,options);
+  };
 
 })(window);
