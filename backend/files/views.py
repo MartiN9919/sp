@@ -7,7 +7,6 @@ from PIL import Image
 
 from core.projectSettings.decorators import login_check, request_log, request_get, request_download
 from core.settings import MEDIA_ROOT
-from data_base_driver.constants.const_dat import DAT_OWNER
 from data_base_driver.sys_reports.check_file_permission import check_file_permission
 from data_base_driver.sys_reports.get_files_info import get_file_path
 
@@ -50,7 +49,6 @@ def aj_download_condense_image(request):
 @request_log
 @request_get
 def aj_download_report(request):
-    group_id = DAT_OWNER.DUMP.get_group(user_id=request.user.id)
     file_id = request.path.split('download_report')[1]
     if not check_file_permission(int(file_id[1:]), request.user.id):
         return JsonResponse({}, status=403)
