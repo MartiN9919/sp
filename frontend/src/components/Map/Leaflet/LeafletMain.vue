@@ -457,12 +457,12 @@ export default {
     left: 50%;
     transform: translate(-50%, 0%);
   }
+
+  /*** рулетка ***/
   .polyline-measure-tooltip-difference {
     color: #060;
     font-style: normal!important;
   }
-
-  /*** кнопка ***/
   .polyline-measure-unicode-icon {
     color: rgba(0, 0, 0, 0.54)!important;
   }

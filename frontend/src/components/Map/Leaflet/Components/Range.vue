@@ -274,7 +274,7 @@ export default {
   .control_range {
     border: 2px solid rgba(0,0,0,0.2);
     background-color: white;
-    opacity: .7;
+    opacity: .85;
   }
 
   /* наложение друг на друга */

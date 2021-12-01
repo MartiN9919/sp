@@ -37,12 +37,13 @@ export default {
               subtitle: '[Shift+И]',
               model:    'prop_info',
             },
-            {
-              icon:     'mdi-map-legend',
-              title:    'Легенда',
-              subtitle: '[Shift+Л]',
-              model:    'prop_legend',
-            },
+            // работоспособен, но не требует регулирования ввиду незначительного функционала
+            // {
+            //   icon:     'mdi-map-legend',
+            //   title:    'Легенда',
+            //   subtitle: '[Shift+Л]',
+            //   model:    'prop_legend',
+            // },
             // работоспособен, но не требует регулирования ввиду незначительного функционала
             // {
             //   icon:     'mdi-message-outline',
