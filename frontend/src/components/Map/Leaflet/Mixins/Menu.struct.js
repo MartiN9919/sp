@@ -33,25 +33,26 @@ export default {
             },
             {
               icon:     'mdi-message',
-              title:    'Информация об объектах при наведении',
+              title:    'Информация об объектах',
               subtitle: '[Shift+И]',
               model:    'prop_info',
             },
             {
               icon:     'mdi-map-legend',
-              title:    'Легенды',
+              title:    'Легенда',
               subtitle: '[Shift+Л]',
               model:    'prop_legend',
             },
-            {
-              icon:     'mdi-message-outline',
-              title:    'Заметки',
-              subtitle: '[Shift+З]',
-              model:    'prop_notify',
-            },
+            // не требует регулирования ввиду незначительного функционала
+            // {
+            //   icon:     'mdi-message-outline',
+            //   title:    'Заметки',
+            //   subtitle: '[Shift+З]',
+            //   model:    'prop_notify',
+            // },
             {
               icon:     'mdi-ruler',
-              title:    'Масштабная линейка',
+              title:    'Масштаб',
               subtitle: '[Shift+М]',
               model:    'prop_scale',
             },
