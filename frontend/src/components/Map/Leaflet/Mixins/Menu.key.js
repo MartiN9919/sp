@@ -105,7 +105,7 @@ export default {
           case 'KeyU': { this.prop_cluster = 1; return; } // Shift+Г
           case 'KeyB': { this.prop_info    = 1; return; } // Shift+И
           case 'KeyK': { this.prop_legend  = 1; return; } // Shift+Л
-          case 'KeyP': { this.prop_notify  = 1; return; } // Shift+З
+        //case 'KeyP': { this.prop_notify  = 1; return; } // Shift+З
           case 'KeyV': { this.prop_scale   = 1; return; } // Shift+М
           case 'KeyH': { this.prop_measure = 1; return; } // Shift+Р
           case 'KeyC': { this.prop_logo    = 1; return; } // Shift+С
@@ -120,7 +120,7 @@ export default {
         }
       }
 
-      console.log(e.originalEvent.ctrlKey, e.originalEvent.code)
+      // console.log(e.originalEvent.ctrlKey, e.originalEvent.code)
     },
 
 
