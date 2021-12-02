@@ -1,4 +1,4 @@
-table {
+table { /* else bug on production */
   display: table;
   border-collapse: separate;
   box-sizing: border-box;
