@@ -140,11 +140,12 @@ export function icon_get(icon_color=undefined, icon_properties={}, zoom_map=unde
       iconSize:  null,
       color:     color,
       html:
-        '<div class="" style="color: '+color+';">'+
-        '</div>',
+        '',
     });
 
   }
+
+
 
 
 /*
@@ -158,6 +159,7 @@ export function icon_get(icon_color=undefined, icon_properties={}, zoom_map=unde
   transform: translate3d(372px, 313px, 0px);
   z-index: 313;"
 >
+  ::after
 </div>
 
 <style>
