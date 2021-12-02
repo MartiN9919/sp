@@ -6,7 +6,7 @@
     >
       <a
         v-if="mode_ok"
-        class="leaflet-buttons-control-button select_off"
+        class="leaflet-buttons-control-button select-off"
         role="button"
         @click="mode_ok_click"
       >OK</a>

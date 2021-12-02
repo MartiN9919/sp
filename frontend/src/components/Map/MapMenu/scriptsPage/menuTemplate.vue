@@ -44,7 +44,7 @@
                     </v-list-item>
                   </template>
                   <v-card>
-                    <v-card-title class="headline select_off">
+                    <v-card-title class="headline select-off">
                       Вы согласны с удалением шаблона?
                     </v-card-title>
                     <v-card-actions>

@@ -44,7 +44,7 @@ export default {
     if (localStorage[this.split_key]) {
       this.split_pos = parseInt(localStorage[this.split_key])
     }
-    this.$refs.EditorSplit.$children[1].$el.classList.add('shadow-effect')
+    this.$refs.EditorSplit.$children[1].$el.classList.add('split-shadow-effect')
   },
 
   watch: {

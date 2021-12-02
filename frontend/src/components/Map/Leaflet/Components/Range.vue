@@ -3,7 +3,7 @@
     <l-control
       v-show="visible"
       position="bottomcenterhorizontal"
-      class="leaflet-bar leaflet-control control_range select_off"
+      class="leaflet-bar leaflet-control control_range select-off"
     >
       <table>
         <tr @contextmenu.stop="dt_menu_show">

@@ -6,22 +6,8 @@
   height: 100%;
 }
 
-.noselect {
-  -webkit-touch-callout: none; /* iOS Safari */
-  -webkit-user-select: none; /* Safari */
-  -khtml-user-select: none; /* Konqueror HTML */
-  -moz-user-select: none; /* Old versions of Firefox */
-  -ms-user-select: none; /* Internet Explorer/Edge */
-  user-select: none; /* Non-prefixed version, currently
-                        supported by Chrome, Edge, Opera and Firefox */
-}
-.shadow-effect {
-  box-shadow: rgb(119 119 119) 6px 0 12px 0 !important;
-  z-index: 9999;
-}
-
 /* отключить выделение текста */
-.select_off {
+.select-off {
   -moz-user-select: none;
   -webkit-user-select: none;
   -ms-user-select: none;
@@ -29,6 +15,14 @@
   user-select: none;
   cursor: default;
 }
+
+/* тень сплиттера */
+.split-shadow-effect {
+  box-shadow: rgb(119 119 119) 6px 0 12px 0 !important;
+  z-index: 9999;
+}
+
+/*  */
 ::-webkit-scrollbar {
   width: 10px;
 }

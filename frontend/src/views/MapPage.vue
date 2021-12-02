@@ -1,5 +1,5 @@
 <template>
-  <split-panel shadow-effect>
+  <split-panel split-shadow-effect>
     <template v-slot:firstPane>
       <tools-menu>
         <component :is="changeComponent()"/>

@@ -2,7 +2,7 @@
   <l-control
     v-if="(MAP_GET_LEGEND && (options.hover_map_ind>-1))"
     v-show="visible()"
-    class="legend select_off pre-formatted"
+    class="legend select-off pre-formatted"
     position="topright"
   >
     <!--
