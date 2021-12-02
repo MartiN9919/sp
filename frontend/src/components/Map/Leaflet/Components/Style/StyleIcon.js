@@ -136,11 +136,11 @@ export function icon_get(icon_color=undefined, icon_properties={}, zoom_map=unde
   //   });
 
     return new L.DivIcon({
-      className: classes_other_str,
+      className: 'leaflet-pulsing-icon '+classes_other_str,
       iconSize:  null,
       color:     color,
       html:
-        '<div class="leaflet-pulsing-icon" style="color: '+color+';">'+
+        '<div class="" style="color: '+color+';">'+
         '</div>',
     });
 
