@@ -476,11 +476,7 @@ export default {
   @import "~leaflet.markercluster/dist/MarkerCluster.Default.css";
 
   @import "~@/components/Map/Leaflet/Lib/Lib.css";
-
-  @import "~@/components/Map/Leaflet/Components/Style/StyleIconCluster.css";
-  @import "~@/components/Map/Leaflet/Components/Style/StyleIconPulse.css";
-  @import "~@/components/Map/Leaflet/Components/Style/StyleIconFont.css";
-
+  @import "~@/components/Map/Leaflet/Components/Style/StyleIcon.css";
   @import "~@/components/Map/Leaflet/Mixins/Control.css";
 
   div::v-deep .sel { animation: 1s ease 0s infinite normal none running pulse; }
