@@ -1,11 +1,14 @@
+import os
+
+
+mode = os.environ.get('MODE')
 """
 Настройки для подключения к базе данных vec_data
 """
 VEC_DATA = {
     'HOST': '200.200.200.233',
     'PORT': '3306',
-    'NAME': 'smorgon',
-    # 'NAME': 'vec_data',
+    'NAME': 'vec_data' if mode == 'deploy' else 'smorgon',
     'USER': 'dev',
     'PASSWORD': '1',
     'CHARSET': 'utf8',
