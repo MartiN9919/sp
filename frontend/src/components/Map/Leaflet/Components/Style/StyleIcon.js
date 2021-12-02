@@ -127,61 +127,46 @@ export function icon_get(icon_color=undefined, icon_properties={}, zoom_map=unde
 
   // PULSE
   if (icon_type == MAP_CONST.CLASS.ICON.PULSE) {
-  //   let size  = (classes_icon_list[0][1] ?? 12) * zoom|0;
-  //   return L.icon.pulse({                                                         // или new L.Icon - в данном случае не работает
-  //     className: classes_other_str,
-  //     iconSize:  [size, size],
-  //     color:     color,
-  //     fillColor: color,
-  //   });
-
+    let size     = (classes_icon_list[0][1] ?? 12) * zoom|0;
+    let size_str = String(size);
+    let size_d2  = String(size/2);
+    let size_d4  = String(size/4);
+    let size_m2  = String(size*2);
+    let size_m4  = String(size*4);
     return new L.DivIcon({
-      className: 'leaflet-pulsing-icon '+classes_other_str,
+      className: classes_other_str,
       iconSize:  null,
       color:     color,
       html:
-        '',
+        '<div '+
+        //'class="leaflet-pulsing-icon" '+
+          'style="'+
+            'margin-left: -'+size_d2 +'px; '+
+            'margin-top: -' +size_d2 +'px; '+
+            'width: '       +size_str+'px; '+
+            'height: '      +size_str+'px; '+
+            'border-radius: 100%; '+
+            'background-color: '+color+'; '+
+            'box-shadow: 1px 1px 8px 0 rgba(0,0,0,0.75); '+
+          '">'+
+          '<div '+
+            'style="'+
+              'position: absolute; '+
+              'width: ' +size_m4+'px; '+
+              'height: '+size_m4+'px; '+
+              'left: -' +size_m2+'px; '+
+              'top: -'  +size_m2+'px; '+
+              'border-radius: 100%; '+
+              'box-shadow: 0 0 6px 2px '+color+'; '+
+              'animation: pulsate 1s ease-out; '+
+              'animation-iteration-count: infinite; '+
+              'animation-delay: 1.1s; '+
+            '"'+
+          '>'+
+          '</div>'+
+        '</div>',
     });
-
   }
-
-
-
-
-/*
-<div
-  class="leaflet-marker-icon upper-markers leaflet-pulsing-icon lpi-1638363044739-82461 leaflet-zoom-animated leaflet-interactive"
-  tabindex="0"
-  style="margin-left: -1.5px;
-  margin-top: -1.5px;
-  width: 3px;
-  height: 3px;
-  transform: translate3d(372px, 313px, 0px);
-  z-index: 313;"
->
-  ::after
-</div>
-
-<style>
-.lpi-1638363044739-82461:after {
-    box-shadow: 0 0 6px 2px #f00;
-    animation: pulsate 1s ease-out;
-    animation-iteration-count: infinite;
-    animation-delay: 1.1s;
-    position: absolute;
-    left: 0;
-}
-
-<style>
-.leaflet-pulsing-icon:after {
-    content: "";
-    border-radius: 100%;
-    height: 300%;
-    width: 300%;
-    position: absolute;
-    margin: -100% 0 0 -100%;
-}
-*/
 
 
   // SVG (DEFAULT)

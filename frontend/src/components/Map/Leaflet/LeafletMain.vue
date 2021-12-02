@@ -132,7 +132,6 @@ import StyleSvg         from '@/components/Map/Leaflet/Components/Style/StyleSvg
 import { correct_classes_name } from '@/components/Map/Leaflet/Components/Style/StyleData';
 import StyleDecor       from '@/components/Map/Leaflet/Components/Style/StyleDecor';
 
-import                       '@/components/Map/Leaflet/Components/Style/StyleIconPulse';
 import EditorMap        from '@/components/Map/Leaflet/Components/EditorMap';
 import Range            from '@/components/Map/Leaflet/Components/Range';
 import Legend           from '@/components/Map/Leaflet/Components/Legend';
