@@ -81,7 +81,7 @@ export const DECOR = {
 export const SVG = {
   // стыки: стрелка <=>
   'arrow-layout-double-end': {
-    zoom: 1.8,
+    zoom: 0.8,
     style: '{class} { marker-end: url(#{id}); }',
     defs: `
       <marker id="{id}" viewBox="0 0 101 82" fill="{color}" orient="auto" markerUnits="userSpaceOnUse" markerWidth="{width}" markerHeight="{height}" refX='0' refY='16.5' opacity='.7'>
@@ -94,7 +94,7 @@ export const SVG = {
 
   // стыки: дуга начало
   'arc-layout-start': {
-    zoom: 5.0,
+    zoom: 1.5,
     style: '{class} { marker-start: url(#{id}); }',
     defs: `
       <marker id="{id}" viewBox="0 0 44 22" fill="{color}" orient="auto" markerUnits="userSpaceOnUse" markerWidth="{width}" markerHeight="{height}" refX='41' refY='0' opacity='.7'>
@@ -103,7 +103,7 @@ export const SVG = {
     `,
   },
   'arc-layout-start-180': {
-    zoom: 5.0,
+    zoom: 1.5,
     style: '{class} { marker-start: url(#{id}); }',
     defs: `
       <marker id="{id}" viewBox="0 0 44 22" fill="{color}" orient="auto" markerUnits="userSpaceOnUse" markerWidth="{width}" markerHeight="{height}" refX='41' refY='22' opacity='.7'>
