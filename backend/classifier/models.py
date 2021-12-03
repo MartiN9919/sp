@@ -126,6 +126,7 @@ class ModelListDop(models.Model):
         else:
             self.fl = 1
             super().save(*args, **kwargs)
+        DAT_SYS_LIST_DOP.DUMP.update()
 
     class Meta:
         managed = False
@@ -154,7 +155,7 @@ class ModelPhoneNumberFormat(models.Model):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        DAT_SYS_PHONE_NUMBER_FORMAT.DUMP.update(force=True)
+        DAT_SYS_PHONE_NUMBER_FORMAT.DUMP.update()
 
     class Meta:
         managed = False

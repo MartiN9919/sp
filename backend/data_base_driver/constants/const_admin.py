@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import json
 
 PROJECT_TITLE       = 'Сапфир'               # отображаемое название проекта
 PROJECT_TITLE_ADMIN = 'САПФИР админ'         # отображаемое название админки проекта
@@ -13,4 +14,4 @@ class RET_ERROR:
     MSG_RECORD = 'Fail record'
 
 
-
+DEPLOY_SETTING = json.load(open('/devstorage/config.json'))

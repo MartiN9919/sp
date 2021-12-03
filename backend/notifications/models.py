@@ -2,6 +2,7 @@ from django.db import models
 from authentication.models import ModelCustomUser
 from official_documents.models import ModelOfficialDocument
 from data_base_driver.constants.const_dat import DAT_SYS_NOTIFY
+from datetime import datetime
 
 
 class ModelNotification(models.Model):
@@ -22,8 +23,8 @@ class ModelNotification(models.Model):
         related_name=DAT_SYS_NOTIFY.TO_USER,
         help_text='Выберите пользователя, которому будет отправлено уведомление.',
     )
-    date_time = models.DateTimeField(
-        auto_now_add=True,
+    date_time = models.CharField(
+        max_length=30,
         verbose_name='Дата создания уведомления',
         help_text='Поле заполняется в автоматическом режиме.',
     )
@@ -50,6 +51,10 @@ class ModelNotification(models.Model):
 
     def __str__(self):
         return self.type
+
+    def save(self,  *args, **kwargs):
+        self.date_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        return super(ModelNotification, self).save(*args, **kwargs)
 
     class Meta:
         managed = False

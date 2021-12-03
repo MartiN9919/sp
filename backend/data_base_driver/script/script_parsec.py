@@ -83,16 +83,11 @@ def parse_text_to_python(name, text, params, type):
         if type == 'report':
             file.write('\t\tset_file_path(file_id, path)\n')
             file.write('\t\tset_file_status(file_id, \'done\')\n')
-            file.write(
-                '\t\t' + 'add_notification(user_id, \'information\', \'ваш отчет: \' + title + \' - сгенерирован\','
-                         ' from_id=1, file_id=file_id)' + '\n')
         if type == 'map':
             file.write('\texcept Exception as e:\n\t\traise e')
         elif type == 'report':
             file.write('\texcept BaseException:\n')
             file.write('\t\tset_file_status(file_id, \'error\')\n')
-            file.write('\t\tadd_notification(user_id, \'error\', \'ошибка генерации вашего отчета: \' + title,'
-                       ' from_id=1, file_id=file_id)\n')
 
     file.close()
     return True, 'all ok', '', ''

@@ -1,3 +1,10 @@
+import os
+
+from core.deploy_settings import DEPLOY_SETTING
+
+mode = os.environ.get('MODE')
+
+
 class FullTextSearch:
     TABLES = {
         10: 'free',
@@ -24,16 +31,7 @@ class FullTextSearch:
     DATE_TIME_START = 'date_time_start'
     DATE_TIME_END = 'date_time_end'
 
-    # SEARCH_URL = 'http://200.200.200.235:9612/search'
-    # TEST_URL = 'http://200.200.200.235:9612/search'
-    # OSM_SEARCH_URL = 'http://200.200.200.235:9512/search'
-    # LOCAL_SEARCH_URL = 'http://127.0.0.1:9312/search'
-    # INSERT_URL = 'http://200.200.200.235:9612/insert'
-    # UPDATE_URL = 'http://200.200.200.235:9612/update'
-
-    SEARCH_URL = 'http://200.200.200.235:9412/search'
-    TEST_URL = 'http://200.200.200.235:9412/search'
-    OSM_SEARCH_URL = 'http://200.200.200.235:9512/search'
-    LOCAL_SEARCH_URL = 'http://127.0.0.1:9312/search'
-    INSERT_URL = 'http://200.200.200.235:9412/insert'
-    UPDATE_URL = 'http://200.200.200.235:9412/update'
+    SEARCH_URL = DEPLOY_SETTING['manticore']['SEARCH_URL'] if mode == 'deploy' else 'http://200.200.200.235:9412/search'
+    OSM_SEARCH_URL = DEPLOY_SETTING['manticore']['OSM_SEARCH_URL'] if mode == 'deploy' else 'http://200.200.200.235:9512/search'
+    INSERT_URL = DEPLOY_SETTING['manticore']['INSERT_URL'] if mode == 'deploy' else 'http://200.200.200.235:9412/insert'
+    UPDATE_URL = DEPLOY_SETTING['manticore']['UPDATE_URL'] if mode == 'deploy' else 'http://200.200.200.235:9412/update'

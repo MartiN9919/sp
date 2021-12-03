@@ -1,13 +1,14 @@
 from pathlib import Path
 from data_base_driver.constants.connect_db import VEC_DATA
+from data_base_driver.constants.const_admin import DEPLOY_SETTING
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = '^7t+b0=(7#x)$7hqca+=9h1q+n40bwf*70gnxh$h#r($p!b=2e'
+SECRET_KEY = DEPLOY_SETTING['secret_key']
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = DEPLOY_SETTING['allowed_hosts']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -45,7 +46,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            BASE_DIR.__str__() + '/static/src/vue/dist/'
+            '/devstorage/static/src/vue/dist/'
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -92,9 +93,9 @@ USE_L10N = True
 USE_TZ = True
 
 STATIC_URL = '/static/'
-STATIC_ROOT = 'var/static_root'
+STATIC_ROOT = '/deploy_storage/static/'
 STATICFILES_DIRS = [
-    "static",
+    "/devstorage/static",
 ]
 MEDIA_ROOT = '/devstorage/saphir_data'
 DOCUMENT_ROOT = '/devstorage/saphir_documents/'
