@@ -8,14 +8,14 @@
       :resizerBorderThickness="1"
       :resizerThickness="1"
       :size="size"
-      v-on:update:size="sizeColumn = $event"
+      v-on:update:size="sizeColumn.value = $event"
       units="percents"
       class="split-panel"
   >
-    <v-col :id="name + '1'" class="pa-0 split-column" slot="firstPane">
+    <v-col :id="$router.currentRoute.name + '1'" class="pa-0 split-column" slot="firstPane">
       <slot name="firstPane"></slot>
     </v-col>
-    <v-col :id="name + '2'" class="pa-0 split-column" slot="secondPane">
+    <v-col :id="$router.currentRoute.name + '2'" class="pa-0 split-column" slot="secondPane">
       <slot name="secondPane"></slot>
     </v-col>
   </ResSplitPane>
@@ -25,6 +25,7 @@
 import router from '@/router'
 import {mapGetters} from "vuex"
 import ResSplitPane from 'vue-resize-split-pane'
+import UserSetting from "@/store/addition";
 
 export default {
   name: "splitPanel",
@@ -36,24 +37,15 @@ export default {
     }
   },
   data: () => ({
-    sizeColumn: 30,
-    name: null
+    sizeColumn: new UserSetting(`size-${router.currentRoute.name}`, 30),
   }),
   computed: {
     ...mapGetters(['navigationDrawerStatus']),
-    size: function () { return this.navigationDrawerStatus(router.currentRoute.name) ? this.sizeColumn : 0 }
+    size: function () { return this.navigationDrawerStatus(router.currentRoute.name) ? this.sizeColumn.value : 0 }
   },
   mounted() {
-    this.name = this.$refs.ResSplitPane.$parent.$parent.$options.name
-    if (localStorage['size' + router.currentRoute.name + this.name])
-      this.sizeColumn = parseInt(localStorage['size' + router.currentRoute.name + this.name])
     if (this.shadowEffect)
       this.$refs.ResSplitPane.$children[0].$el.className += ' shadow-effect'
-  },
-  watch: {
-    sizeColumn (newSizeColumn) {
-      localStorage['size' + router.currentRoute.name + this.name] = newSizeColumn
-    }
   },
 }
 </script>

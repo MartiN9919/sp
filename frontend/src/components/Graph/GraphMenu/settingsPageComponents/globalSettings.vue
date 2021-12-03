@@ -1,16 +1,16 @@
 <template>
   <body-block-settings :icon="icon" :title="title" :sub-title="subTitle">
     <v-list-item
-        v-for="(value, key) in settings" :key="key"
-        @click="$emit('changeSettings', {id: key, value: !value.state})"
+        v-for="(setting, key) in settings" :key="key"
+        @click="$emit('changeSettings', {id: key, value: !setting.state.value})"
         v-ripple="{ class: 'teal--text' }"
     >
       <v-list-item-content>
-        <v-list-item-title>{{ value.title }}</v-list-item-title>
-        <v-list-item-subtitle v-if="value.subTitle">{{ value.subTitle }}</v-list-item-subtitle>
+        <v-list-item-title>{{ setting.title }}</v-list-item-title>
+        <v-list-item-subtitle v-if="setting.subTitle">{{ setting.subTitle }}</v-list-item-subtitle>
       </v-list-item-content>
       <v-list-item-action>
-        <v-switch disabled v-model="value.state" color="teal"></v-switch>
+        <v-switch disabled v-model="setting.state.value" color="teal"></v-switch>
       </v-list-item-action>
     </v-list-item>
   </body-block-settings>
