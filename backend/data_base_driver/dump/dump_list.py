@@ -26,6 +26,9 @@ class DUMP_LIST:
             # актуальность дампа
             self.refreshTime = time.time() + self.refreshDelay
 
+    def update(self):
+        self.refreshTime = time.time() - 1
+
     def get_all(self):
         self._refresh_()
         return self.dump

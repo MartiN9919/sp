@@ -127,12 +127,44 @@ export function icon_get(icon_color=undefined, icon_properties={}, zoom_map=unde
 
   // PULSE
   if (icon_type == MAP_CONST.CLASS.ICON.PULSE) {
-    let size  = (classes_icon_list[0][1] ?? 12) * zoom|0;
-    return L.icon.pulse({                                                         // или new L.Icon - в данном случае не работает
+    let size     = (classes_icon_list[0][1] ?? 12) * zoom|0;
+    let size_str = String(size);
+    let size_d2  = String(size/2);
+    let size_d4  = String(size/4);
+    let size_m2  = String(size*2);
+    let size_m4  = String(size*4);
+    return new L.DivIcon({
       className: classes_other_str,
-      iconSize:  [size, size],
+      iconSize:  null,
       color:     color,
-      fillColor: color,
+      html:
+        '<div '+
+        //'class="leaflet-pulsing-icon" '+
+          'style="'+
+            'margin-left: -'+size_d2 +'px; '+
+            'margin-top: -' +size_d2 +'px; '+
+            'width: '       +size_str+'px; '+
+            'height: '      +size_str+'px; '+
+            'border-radius: 100%; '+
+            'background-color: '+color+'; '+
+            'box-shadow: 1px 1px 8px 0 rgba(0,0,0,0.75); '+
+          '">'+
+          '<div '+
+            'style="'+
+              'position: absolute; '+
+              'width: ' +size_m4+'px; '+
+              'height: '+size_m4+'px; '+
+              'left: -' +size_m2+'px; '+
+              'top: -'  +size_m2+'px; '+
+              'border-radius: 100%; '+
+              'box-shadow: 0 0 6px 2px '+color+'; '+
+              'animation: pulsate 1s ease-out; '+
+              'animation-iteration-count: infinite; '+
+              'animation-delay: 1.1s; '+
+            '"'+
+          '>'+
+          '</div>'+
+        '</div>',
     });
   }
 
@@ -150,7 +182,7 @@ export function icon_get(icon_color=undefined, icon_properties={}, zoom_map=unde
     });
 
     if (data == undefined) return;
-    // let shadow =  (icon_properties[MAP_ITEM.FC.FEATURES.PROPERTIES.SHADOW] !== false);
+  //let shadow       =  (icon_properties[MAP_ITEM.FC.FEATURES.PROPERTIES.SHADOW] !== false);
     let class_top    =  (icon_properties[MAP_ITEM.FC.FEATURES.PROPERTIES.TOP   ] ===  true) ? ' svg-top' : '';
     let class_shadow =  (icon_properties[MAP_ITEM.FC.FEATURES.PROPERTIES.SHADOW] ==  'red') ? ' svg-shadow-red' :
                        ((icon_properties[MAP_ITEM.FC.FEATURES.PROPERTIES.SHADOW] !== false) ? ' svg-shadow'     : '');

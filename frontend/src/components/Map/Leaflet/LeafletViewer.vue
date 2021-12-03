@@ -105,7 +105,7 @@ export default {
 
   methods: {
     ...mapActions([
-      'appendErrorAlert',
+      'addNotification',
     ]),
 
     on_map_ready() {
@@ -119,7 +119,7 @@ export default {
     },
 
     on_map_dblclick(e) {
-      // this.appendErrorAlert({status: 501, content: e.latlng, show_time: 5, });
+      // this.addNotification({content: e.latlng, timeout: 5, });
     },
 
     // сбросить выделение (obj, osm): из child.map в свойство child.nav

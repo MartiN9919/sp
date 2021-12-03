@@ -30,15 +30,14 @@ export default {
   },
   actions: {
     async initialization({getters, dispatch}) {
-      if (!getters.userInformation)
-        await Promise.all([
-          getters.globalNotificationStatus ? dispatch('getNotifications') : null,
-          dispatch('getBaseObjects'),
-          dispatch('getBaseLists'),
-          dispatch('getBaseTriggers'),
-          dispatch('getBaseRelations'),
-          dispatch('getBaseClassifiers')
-        ])
+      await Promise.all([
+        getters.globalNotificationStatus ? dispatch('getNotifications') : null,
+        dispatch('getBaseObjects'),
+        dispatch('getBaseLists'),
+        dispatch('getBaseTriggers'),
+        dispatch('getBaseRelations'),
+        dispatch('getBaseClassifiers')
+      ])
     },
     async getBaseObjects({commit, dispatch}, config = {}) {
       await axios.get('objects/list_type/', config)

@@ -11,6 +11,7 @@
  *
  */
 
+import { mapGetters } from 'vuex';
 import 'leaflet-polylinedecorator'
 import { findRealParent, propsBinder } from 'vue2-leaflet';
 
@@ -83,7 +84,7 @@ export default {
         if (objects.length == 0) return;
         const layer_decor = L.polylineDecorator(objects, { patterns: patterns, });
 
-        set_feature_hint(layer_decor, feature.properties, true);
+        if (self.MAP_GET_HINT) { set_feature_hint(layer_decor, feature.properties, true); }
 
         self.decorators.push(layer_decor);
         L.DomEvent.on(layer_decor, self.$listeners);
@@ -99,6 +100,12 @@ export default {
     for(let i=0; i<this.decorators.length; i++) {
       this.parent_obj.mapObject.removeLayer(this.decorators[i]);
     }
+  },
+
+  computed: {
+    ...mapGetters([
+      'MAP_GET_HINT',
+    ]),
   },
 
   methods: {

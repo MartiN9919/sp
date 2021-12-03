@@ -64,7 +64,7 @@ export default {
       limit_max: 0,                                  // максимально допустимое значение, ts
     },
 
-    tile:       cook_get_int('MAP_TILE',     0),     // (int) индекс активного источника плиток tiles[tile]
+    tile:       cook_get_int ('MAP_TILE',     0),    // (int) индекс активного источника плиток tiles[tile]
     cluster:    cook_get_bool('MAP_CLUSTER', true),  // (bool) допустима ли кластеризация (группировка) близко расположенных маркеров
     hint:       cook_get_bool('MAP_HINT',    false), // (bool) показывать ли всплывающие подсказки
     legend:     cook_get_bool('MAP_LEGEND',  true),  // (bool) показывать ли всплывающую легенду

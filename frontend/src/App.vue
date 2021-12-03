@@ -1,5 +1,5 @@
 <template>
-  <v-app id="app" class="select_off"> <!--  oncontextmenu="return false" -->
+  <v-app id="app" class="select-off"> <!--  oncontextmenu="return false" -->
     <router-view name="appbar"/>  <!--  Меню навигации  -->
     <v-main id="main">
       <v-progress-linear indeterminate absolute color="red" height="2" :active="loadStatus"/>
@@ -29,5 +29,8 @@ export default {
 </script>
 
 <style>
+  @import "~@/assets/css/reset.css";
+  @import "~@/assets/css/normalize_original.css";
+  @import "~@/assets/css/normalize_addition.css";
   @import "~@/main.css";
 </style>

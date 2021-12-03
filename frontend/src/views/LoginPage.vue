@@ -2,7 +2,7 @@
   <v-card
     :color="$CONST.APP.LOGIN.BACKGROUND"
     @keyup.enter="loginUserInSystem"
-    class="text-center select_off"
+    class="text-center select-off"
     height="100%" width="100%" dark flat tile
   >
     <canvas id="bg-canvas"></canvas>
