@@ -1,11 +1,14 @@
 import os
 
+from data_base_driver.constants.const_admin import DEPLOY_SETTING
 
 mode = os.environ.get('MODE')
+
 """
 Настройки для подключения к базе данных vec_data
 """
-VEC_DATA = {
+
+VEC_DATA = DEPLOY_SETTING['data_base'] if mode == 'deploy' else {
     'HOST': '200.200.200.233',
     'PORT': '3306',
     'NAME': 'vec_data' if mode == 'deploy' else 'smorgon',
@@ -14,7 +17,8 @@ VEC_DATA = {
     'CHARSET': 'utf8',
 }
 
-OSM = {
+
+OSM = DEPLOY_SETTING['osm'] if mode == 'deploy' else {
     'HOST': '200.200.200.231',
     'PORT': '5432',
     'NAME': 'gis',
