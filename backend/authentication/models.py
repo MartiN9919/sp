@@ -5,7 +5,8 @@ from django.contrib.auth.models import PermissionsMixin
 from django.utils.translation import gettext_lazy as _
 
 from authentication.managers import CustomUserManager
-from data_base_driver.constants.const_dat import DAT_OWNER_GROUPS, DAT_OWNER_LINES, DAT_OWNER_REGIONS, DAT_OWNER_USERS
+from data_base_driver.constants.const_dat import DAT_OWNER_GROUPS, DAT_OWNER_LINES, DAT_OWNER_REGIONS, DAT_OWNER_USERS, \
+    DAT_OWNER
 
 
 class ModelOwnerRegions(models.Model):
@@ -22,6 +23,10 @@ class ModelOwnerRegions(models.Model):
 
     def __str__(self):
         return self.title
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        DAT_OWNER.DUMP.update()
 
     class Meta:
         managed = False
@@ -44,6 +49,10 @@ class ModelOwnerLines(models.Model):
 
     def __str__(self):
         return self.title
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        DAT_OWNER.DUMP.update()
 
     class Meta:
         managed = False
@@ -81,6 +90,10 @@ class ModelOwnerGroups(models.Model):
 
     def __str__(self):
         return self.title
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        DAT_OWNER.DUMP.update()
 
     class Meta:
         managed = False
@@ -146,6 +159,10 @@ class ModelCustomUser(AbstractBaseUser, PermissionsMixin):
 
     def __repr__(self):
         return self.username
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        DAT_OWNER.DUMP.update()
 
     class Meta:
         verbose_name = _('user')
