@@ -397,6 +397,7 @@ export default {
     // ===============
     on_map_ready() {
       this.map.invalidateSize();
+      this.$refs.map.$el.focus(); // нужно ли при открытой панели?
     },
 
     on_map_resize() {
