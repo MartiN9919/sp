@@ -8,15 +8,17 @@ from django.views.generic import TemplateView
 from core import settings
 
 mode = os.environ.get('MODE')
+INDEX_PATH = 'index_dev.html'
+if mode == 'deploy' or mode == 'test_deploy':
+    INDEX_PATH = 'index.html'
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('api/auth/', include('authentication.urls')),
-    path('api/script/', include('script.urls')),
-    path('api/reports/', include('official_documents.urls')),
-    path('api/objects/', include('objects.urls')),
-    path('api/files/', include('files.urls')),
-    path('api/notifications/', include('notifications.urls')),
-    re_path(r'^(?!.*admin)', TemplateView.as_view(template_name='index.html' if mode == 'deploy' else 'index_dev.html'),
-            name='index'),
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+                  path('admin/', admin.site.urls),
+                  path('api/auth/', include('authentication.urls')),
+                  path('api/script/', include('script.urls')),
+                  path('api/reports/', include('official_documents.urls')),
+                  path('api/objects/', include('objects.urls')),
+                  path('api/files/', include('files.urls')),
+                  path('api/notifications/', include('notifications.urls')),
+                  re_path(r'^(?!.*admin)', TemplateView.as_view(template_name=INDEX_PATH), name='index'),
+              ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
