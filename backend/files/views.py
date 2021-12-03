@@ -7,9 +7,11 @@ from PIL import Image
 
 from core.projectSettings.decorators import login_check, request_log, request_get, request_download
 from core.settings import MEDIA_ROOT
-from data_base_driver.constants.const_dat import DAT_OWNER
 from data_base_driver.sys_reports.check_file_permission import check_file_permission
 from data_base_driver.sys_reports.get_files_info import get_file_path
+from files.additional_function import get_x_accel_response
+
+mode = os.environ.get('MODE')
 
 
 @login_check
@@ -21,8 +23,11 @@ def aj_download_open_file(request):
     @param request: запрос на скачивание
     @return: django file response
     """
-    file_path = MEDIA_ROOT + '/' + request.path.split('download')[1]
-    return FileResponse(open(file_path, 'rb'), as_attachment=True)
+    if mode == 'deploy':
+        return get_x_accel_response(request.path.split('download')[1], request.path.split('download')[1].split('/')[-1])
+    else:
+        file_path = MEDIA_ROOT + '/' + request.path.split('download')[1]
+        return FileResponse(open(file_path, 'rb'), as_attachment=True)
 
 
 @login_check
@@ -50,12 +55,15 @@ def aj_download_condense_image(request):
 @request_log
 @request_get
 def aj_download_report(request):
-    group_id = DAT_OWNER.DUMP.get_group(user_id=request.user.id)
     file_id = request.path.split('download_report')[1]
     if not check_file_permission(int(file_id[1:]), request.user.id):
         return JsonResponse({}, status=403)
     path = get_file_path(int(file_id[1:]))
     if os.path.exists(path):
-        return FileResponse(open(path, 'rb'), as_attachment=True)
+        if mode == 'deploy':
+            return get_x_accel_response('/reports' + path.split('saphir_documents')[1],
+                                        path.split('saphir_documents')[1][1:])
+        else:
+            return FileResponse(open(path, 'rb'), as_attachment=True)
     else:
         return JsonResponse({}, status=404)

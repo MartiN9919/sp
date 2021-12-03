@@ -40,7 +40,7 @@ class DUMP_PHONE_NUMBER_FORMAT:
             # актуальность дампа
             self.refreshTime = time.time() + self.refreshDelay
 
-    def update(self, force):
+    def update(self):
         self.refreshTime = time.time() - 1
 
     def get_all(self):

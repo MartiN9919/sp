@@ -13,11 +13,6 @@ const routes = [
     components: {
       default: () => import('../views/LoginPage.vue'),
     },
-    beforeEnter: (to, from, next) => {
-      store.commit('stopNotificationInterval')
-      store.commit('resetState')
-      next()
-    },
     meta: { auth: false },
   },
   {
@@ -67,6 +62,14 @@ router.beforeResolve((to, from, next) => {
     store.dispatch('identifyUser')
       .then(() => next({ name: 'Map' }))
       .catch(() => next())
+})
+
+router.afterEach((to, from) => {
+  if (to.matched.some(record => !record.meta.auth)) {
+    store.commit('stopNotificationInterval')
+    store.commit('stopCheckingReportStatusesInterval')
+    store.commit('resetState')
+  }
 })
 
 export default router

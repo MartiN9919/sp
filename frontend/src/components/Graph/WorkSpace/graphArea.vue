@@ -3,7 +3,7 @@
     <screen ref="screen">
       <group v-if="relatedObjects.length" :nodes="relatedObjects"></group>
       <g
-        v-show="globalDisplaySettings.showRelations.state"
+        v-show="globalDisplaySettingValue('showRelations')"
         v-for="relation in graphRelations" :key="relation.id"
         @wheel.stop="scrollRelation(relation, $event)"
         @click.right.prevent.stop="menuShow($event, relation)"
@@ -17,7 +17,7 @@
           <information-label
             :size-node="relation.size"
             :params="relation.relation.params"
-            :show-date="globalDisplaySettings.showGlobalDateRelation.state"
+            :show-date="globalDisplaySettingValue('showGlobalDateRelation')"
           ></information-label>
         </v-label>
         <edge
@@ -44,7 +44,7 @@
           <information-label
               :size-node="object.size"
               :params="getObjectClassifiers(object)"
-              :show-date="globalDisplaySettings.showGlobalDateObject.state"
+              :show-date="globalDisplaySettingValue('showGlobalDateObject')"
           ></information-label>
         </v-label>
         <node :ref="`node-${object.id}`" :data="object">
@@ -97,7 +97,7 @@ export default {
   }),
   mixins: [bodyContextMenu, dragMixin],
   computed: {
-    ...mapGetters(['graphObjects', 'graphRelations', 'globalDisplaySettings', 'objectClassifiersSettings']),
+    ...mapGetters(['graphObjects', 'graphRelations', 'globalDisplaySettingValue', 'objectClassifiersSettings']),
     allowRelations() { return Array.from(this.$store.state.graph.rootInstances.relations, r => {return r.id}) },
   },
   methods: {
@@ -145,19 +145,19 @@ export default {
       return {x: object.x + object.width / 2 - object.size / 2, y: object.y + object.height}
     },
     getTitleStateObject(object) {
-      return this.globalDisplaySettings.showGlobalTitle.state && object.object.showTitle
+      return this.globalDisplaySettingValue('showGlobalTitle') && object.object.showTitle
     },
     getTooltipStateObject(object) {
-      let globalState = this.globalDisplaySettings.showGlobalTooltipObject.state
+      let globalState = this.globalDisplaySettingValue('showGlobalTooltipObject')
       let classifiersLength = this.getObjectClassifiers(object).length
       let localState = object.object.showTooltip
       return globalState && classifiersLength && localState
     },
     getTooltipStateRelation(relation) {
-      return this.globalDisplaySettings.showGlobalTooltipRelation.state
+      return this.globalDisplaySettingValue('showGlobalTooltipRelation')
     },
     getTriggersStateObject(object) {
-      return this.globalDisplaySettings.showGlobalTriggers.state && object.object.showTriggers
+      return this.globalDisplaySettingValue('showGlobalTriggers') && object.object.showTriggers
     },
     scrollRelation(relation, event) {
       if(event.deltaY > 0 && relation.size / 1.5 > 300){

@@ -137,6 +137,9 @@ class DUMP_OWNER:
             # актуальность дампа
             self.refreshTime = time.time() + self.refreshDelay
 
+    def update(self):
+        self.refreshTime = time.time() - 1
+
     def __child_nodes__(self, list_src):
         ret_total = {}
 
