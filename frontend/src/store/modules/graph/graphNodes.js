@@ -1,5 +1,6 @@
 import axios from '@/plugins/axiosSettings'
 import Graph from "@/components/Graph/lib/graph"
+import UserSetting from '@/store/addition'
 import {DataBaseObject, DataBaseRelation} from '@/store/modules/graph/graphMenu/recordEditor'
 import Vue from 'vue'
 
@@ -8,48 +9,45 @@ class GlobalSettings {
     this.showGlobalTitle = {
       title: 'Подписи объектов',
       subTitle: 'Подпись под объектомами на графе',
-      state: this.getGlobalSettings('showGlobalTitle', true)
+      state: new UserSetting('showGlobalTitle', true)
     }
     this.showGlobalTooltipObject = {
       title: 'Заголовки объектов',
       subTitle: 'Отображение заголовка над объектами',
-      state: this.getGlobalSettings('showGlobalTooltipObject', false)
+      state: new UserSetting('showGlobalTooltipObject', true)
     }
     this.showGlobalTriggers = {
       title: 'Уведомления о триггерах',
       subTitle: 'Управление отображением значка уведомления о срабатывании триггеров',
-      state: this.getGlobalSettings('showGlobalTriggers', false)
+      state: new UserSetting('showGlobalTriggers', true)
     }
     this.showGlobalDateObject = {
       title: 'Время записи объекта',
       subTitle: 'Управление отображением даты классификатора',
-      state: this.getGlobalSettings('showGlobalDateObject', false)
+      state: new UserSetting('showGlobalDateObject', true)
     }
     this.showGlobalTooltipRelation = {
       title: 'Заголовоки связей',
       subTitle: 'Отображение заголовка над связями',
-      state: this.getGlobalSettings('showGlobalTooltipRelation', true)
+      state: new UserSetting('showGlobalTooltipRelation', true)
     }
     this.showRelations = {
       title: 'Отображение связей',
-      state: this.getGlobalSettings('showRelations', true)
+      state: new UserSetting('showRelations', true)
     }
     this.showGlobalDateRelation = {
       title: 'Время записи связи',
       subTitle: 'Управление отображением даты связи',
-      state: this.getGlobalSettings('showGlobalDateRelation', false)
+      state: new UserSetting('showGlobalDateRelation', true)
     }
   }
 
-  changeState(identifier, value) {
-    localStorage.setItem(identifier, value)
-    this[identifier].state = value
+  getValue(identifier) {
+    return this[identifier].state.value
   }
 
-  getGlobalSettings(identifier, defaultValue) {
-    if(!localStorage.getItem(identifier))
-      localStorage.setItem(identifier, defaultValue)
-    return localStorage.getItem(identifier) === 'true'
+  changeValue(identifier, value) {
+    this[identifier].state.value = value
   }
 }
 
@@ -62,17 +60,18 @@ export default {
     graphObjects: {},
   },
   getters: {
-    graphObjects: state => { return state.graph.nodes },
-    graphRelations: state => { return state.graph.edges },
-    objectClassifiersSettings: state => objectId => { return state.classifiersSettings[objectId] || [] },
-    globalDisplaySettings: state => { return state.globalDisplaySettings },
+    graphObjects: state => state.graph.nodes,
+    graphRelations: state => state.graph.edges,
+    objectClassifiersSettings: state => objectId => state.classifiersSettings[objectId] || [],
+    globalDisplaySettings: state => state.globalDisplaySettings,
+    globalDisplaySettingValue: state => identifier => state.globalDisplaySettings.getValue(identifier),
   },
   mutations: {
     setScreen: (state, screen) => state.screen = screen,
     deleteObjectFromGraph: (state, object) => state.graph.removeNode(object),
     updateObjectFromGraph: (state, {object, fields}) => state.graph.updateNode(object, fields),
     updateRelationFromGraph: (state, {relation, fields}) => state.graph.updateEdge(relation, fields),
-    changeGlobalSettingState: (state, {id, value}) => state.globalDisplaySettings.changeState(id, value),
+    changeGlobalSettingState: (state, {id, value}) => state.globalDisplaySettings.changeValue(id, value),
     setClassifiersSettings: (state, {objectId, classifierId}) => {
       if(state.classifiersSettings.hasOwnProperty(objectId)) {
         let classifierIndex = state.classifiersSettings[objectId].findIndex(id => id === classifierId)
