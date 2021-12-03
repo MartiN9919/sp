@@ -1,7 +1,7 @@
 import os
 from tempfile import TemporaryFile
 
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse
 from django.http import FileResponse
 from PIL import Image
 
@@ -9,19 +9,9 @@ from core.projectSettings.decorators import login_check, request_log, request_ge
 from core.settings import MEDIA_ROOT
 from data_base_driver.sys_reports.check_file_permission import check_file_permission
 from data_base_driver.sys_reports.get_files_info import get_file_path
-
+from files.additional_function import get_x_accel_response
 
 mode = os.environ.get('MODE')
-
-
-def get_x_accel_response(path, name):
-    response = HttpResponse()
-    path = path.encode('utf-8', 'ignore')
-    name = 'attachment; filename=' + name
-    name = name.encode('utf-8', 'ignore')
-    response['X-Accel-Redirect'] = path
-    response['Content-Disposition'] = name
-    return response
 
 
 @login_check
@@ -34,14 +24,7 @@ def aj_download_open_file(request):
     @return: django file response
     """
     if mode == 'deploy':
-        response = HttpResponse()
-        file_path = request.path.split('download')[1]
-        file_path = file_path.encode('utf-8','ignore')
-        file_name = 'attachment; filename=' + request.path.split('download')[1].split('/')[-1]
-        file_name = file_name.encode('utf-8','ignore')
-        response['X-Accel-Redirect'] = file_path
-        response['Content-Disposition'] = file_name
-        return response
+        return get_x_accel_response(request.path.split('download')[1], request.path.split('download')[1].split('/')[-1])
     else:
         file_path = MEDIA_ROOT + '/' + request.path.split('download')[1]
         return FileResponse(open(file_path, 'rb'), as_attachment=True)
@@ -78,14 +61,8 @@ def aj_download_report(request):
     path = get_file_path(int(file_id[1:]))
     if os.path.exists(path):
         if mode == 'deploy':
-            response = HttpResponse()
-            file_path = '/reports' + path.split('saphir_documents')[1]
-            file_path = file_path.encode('utf-8', 'ignore')
-            file_name = 'attachment; filename=' + path.split('saphir_documents')[1][1:]
-            file_name = file_name.encode('utf-8', 'ignore')
-            response['X-Accel-Redirect'] = file_path
-            response['Content-Disposition'] = file_name
-            return response
+            return get_x_accel_response('/reports' + path.split('saphir_documents')[1],
+                                        path.split('saphir_documents')[1][1:])
         else:
             return FileResponse(open(path, 'rb'), as_attachment=True)
     else:
