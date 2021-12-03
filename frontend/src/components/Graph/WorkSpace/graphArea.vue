@@ -145,7 +145,7 @@ export default {
       return {x: object.x + object.width / 2 - object.size / 2, y: object.y + object.height}
     },
     getTitleStateObject(object) {
-      return this.globalDisplaySettingValue('showGlobalTitle') && object.object.showTitle.value
+      return this.globalDisplaySettingValue('showGlobalTitle') && object.object.showTitle
     },
     getTooltipStateObject(object) {
       let globalState = this.globalDisplaySettingValue('showGlobalTooltipObject')

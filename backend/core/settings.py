@@ -45,6 +45,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
+            str(BASE_DIR.joinpath('templates')),
             BASE_DIR.__str__() + '/static/src/vue/dist/'
         ],
         'APP_DIRS': True,
