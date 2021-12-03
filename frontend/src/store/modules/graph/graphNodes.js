@@ -64,7 +64,9 @@ export default {
     graphRelations: state => state.graph.edges,
     objectClassifiersSettings: state => objectId => state.classifiersSettings[objectId] || [],
     globalDisplaySettings: state => state.globalDisplaySettings,
-    globalDisplaySettingValue: state => identifier => state.globalDisplaySettings.getValue(identifier),
+    globalDisplaySettingValue: state => identifier => {
+      return state.globalDisplaySettings.getValue(identifier)
+    },
   },
   mutations: {
     setScreen: (state, screen) => state.screen = screen,
