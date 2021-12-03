@@ -36,7 +36,7 @@
 <script>
 
 export default {
-  name: "KeyDialog",
+  name: "DialogMenuPos",
 
   data: () => ({
     dialog: false,

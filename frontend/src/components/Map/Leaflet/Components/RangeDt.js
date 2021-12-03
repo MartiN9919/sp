@@ -71,11 +71,13 @@ export default {
         let sel_min = lst[0];
         let sel_max = lst[1];
         if ( (sel_min != this.dt.sel_min) || (sel_max != this.dt.sel_max) ) {
-          this.dt.sel_max = sel_max;
+          sel_min -= (sel_min-myUTC) % this.dt.sel_step;  // округлить до шага
+          sel_max -= (sel_max-myUTC) % this.dt.sel_step;
           this.dt.sel_min = sel_min;
-          this.MAP_ACT_REFRESH();   // элементы на карте: обновить
+          this.dt.sel_max = sel_max;
+          this.MAP_ACT_REFRESH();                         // элементы на карте: обновить
         }
-        this.dt_stat_refresh();   // статистика: обновить
+        this.dt_stat_refresh();                           // статистика: обновить
       },
       get: function()    { return [this.dt.sel_min, this.dt.sel_max]; },
     },
@@ -134,7 +136,7 @@ export default {
           if ((date >= self.dt.sel_min) && (date <= self.dt.sel_max)) { count_sel++; }
        });
       });
-      this.dt.stat = (count_all>0) ? (count_sel+' из '+count_all+' ( '+(count_sel*100/count_all|0)+' % )') : '';
+      this.dt.stat = (count_all>0) ? (count_sel+' из '+count_all+' ( '+(count_sel*100/count_all|0)+'% )') : '';
     },
 
 
@@ -143,7 +145,7 @@ export default {
     // MENU: Установить выделенный период
     dt_menu_sel(menu_item) { this.dt_prop_sel = this.lib_menu_sel(menu_item, this.dt); },
     // MENU: Установить шаг изменения выделенного периода
-    dt_menu_step(menu_item) { this.dt_prop_sel = this.lib_menu_step(menu_item, this.dt); this.dt.sel_step = menu_item.ts; },
+    dt_menu_step(menu_item) { this.dt.sel_step = menu_item.ts; this.dt_prop_sel = this.lib_menu_step(menu_item, this.dt); }, // сначала шаг
 
 
     // MOUSE: обработчик блокировать события мыши

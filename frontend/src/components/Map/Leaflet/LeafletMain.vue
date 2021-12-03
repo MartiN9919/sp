@@ -80,9 +80,9 @@
 
     </l-map>
 
-    <KeyDialog
+    <DialogMenuPos
       ref="key_dialog"
-      @ok="key_save_ok"
+      @ok="menu_pos_save_ok"
     />
 
     <contextMenuNested
@@ -98,8 +98,8 @@
 
 <script>
 
-import { mapGetters, mapActions, } from 'vuex';
-import { Icon, } from 'leaflet';
+import { mapGetters, mapActions } from 'vuex';
+import { Icon } from 'leaflet';
 
 import {
   LMap,
@@ -132,13 +132,11 @@ import StyleSvg         from '@/components/Map/Leaflet/Components/Style/StyleSvg
 import { correct_classes_name } from '@/components/Map/Leaflet/Components/Style/StyleData';
 import StyleDecor       from '@/components/Map/Leaflet/Components/Style/StyleDecor';
 
-import                       '@/components/Map/Leaflet/Components/Style/StyleIconPulse';
 import EditorMap        from '@/components/Map/Leaflet/Components/EditorMap';
 import Range            from '@/components/Map/Leaflet/Components/Range';
 import Legend           from '@/components/Map/Leaflet/Components/Legend';
 import Logo             from '@/components/Map/Leaflet/Components/Logo';
 import MixResize        from '@/components/Map/Leaflet/Mixins/Resize';
-import MixKey           from '@/components/Map/Leaflet/Mixins/Key';
 import MixColor         from '@/components/Map/Leaflet/Mixins/Color';
 import MixControl       from '@/components/Map/Leaflet/Mixins/Control';
 import MixMeasure       from '@/components/Map/Leaflet/Mixins/Measure';
@@ -154,7 +152,6 @@ export default {
 
   mixins: [
     MixResize,
-    MixKey,
     MixColor,
     MixControl,
     MixMeasure,
@@ -207,8 +204,8 @@ export default {
     // установить слушатель map.on_resize
     this.resize_add(this.$refs.map.$el, this.on_map_resize);
 
-    // добавить обработчики событий клавиатуры
-    this.mounted_after_key();
+    // добавить обработчики горячих клавиш меню
+    this.mounted_menu();
   },
 
 
@@ -246,7 +243,7 @@ export default {
       'MAP_ACT_EDIT',
       'SCRIPT_ACT_SEL_SET',
       'SCRIPT_ACT_SEL_CLEAR',
-      'appendErrorAlert',
+      'addNotification',
       'setNavigationDrawerStatus',
       'setActiveTool',
     ]),
@@ -400,6 +397,7 @@ export default {
     // ===============
     on_map_ready() {
       this.map.invalidateSize();
+      this.$refs.map.$el.focus(); // нужно ли при открытой панели?
     },
 
     on_map_resize() {
@@ -415,7 +413,7 @@ export default {
     },
 
     on_map_dblclick(e) {
-      this.appendErrorAlert({status: 501, content: e.latlng, show_time: 5, });
+      this.addNotification({content: e.latlng, timeout: 5, });
       this.setNavigationDrawerStatus();
       this.setActiveTool('dossierPage');
     },
@@ -459,12 +457,12 @@ export default {
     left: 50%;
     transform: translate(-50%, 0%);
   }
+
+  /*** рулетка ***/
   .polyline-measure-tooltip-difference {
     color: #060;
     font-style: normal!important;
   }
-
-  /*** кнопка ***/
   .polyline-measure-unicode-icon {
     color: rgba(0, 0, 0, 0.54)!important;
   }
@@ -479,11 +477,7 @@ export default {
   @import "~leaflet.markercluster/dist/MarkerCluster.Default.css";
 
   @import "~@/components/Map/Leaflet/Lib/Lib.css";
-
-  @import "~@/components/Map/Leaflet/Components/Style/StyleIconCluster.css";
-  @import "~@/components/Map/Leaflet/Components/Style/StyleIconPulse.css";
-  @import "~@/components/Map/Leaflet/Components/Style/StyleIconFont.css";
-
+  @import "~@/components/Map/Leaflet/Components/Style/StyleIcon.css";
   @import "~@/components/Map/Leaflet/Mixins/Control.css";
 
   div::v-deep .sel { animation: 1s ease 0s infinite normal none running pulse; }
@@ -493,4 +487,5 @@ export default {
     100% { opacity: 1;  }
   }
   div::v-deep .upper-markers { z-index: 5000 !important; }
+  div::v-deep div.upper-markers > svg { position: absolute; }  /* else bug on production */
 </style>

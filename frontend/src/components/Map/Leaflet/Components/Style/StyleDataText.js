@@ -11,7 +11,7 @@ export const ICON = {
     svg: `
       <svg width={width} height={height} viewBox="0 0 30 100">
         <rect x="-10" y="-2" width="38" height="102" fill="#fff" />
-        <text class="ddd" style="font-style:normal;font-weight:bold;font-size:30px;font-family:sans-serif;fill:#444;text-anchor:middle" transform="rotate(90)" x="50" y="-3">{text}</text>
+        <text style="font-style:normal;font-weight:bold;font-size:30px;font-family:sans-serif;fill:#444;text-anchor:middle" transform="rotate(90)" x="50" y="-3">{text}</text>
       </svg>
     `,
   },
@@ -19,7 +19,7 @@ export const ICON = {
     svg: `
       <svg width={width} height={height} viewBox="0 0 30 100">
         <rect x="-10" y="-2" width="38" height="102" fill="#fff" />
-        <text class="ddd" style="font-style:normal;font-weight:bold;font-size:30px;font-family:sans-serif;fill:#444;text-anchor:middle" transform="rotate(270)" x="-50" y="26">{text}</text>
+        <text style="font-style:normal;font-weight:bold;font-size:30px;font-family:sans-serif;fill:#444;text-anchor:middle" transform="rotate(270)" x="-50" y="26">{text}</text>
       </svg>
     `,
   },

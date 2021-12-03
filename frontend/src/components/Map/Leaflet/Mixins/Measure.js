@@ -5,7 +5,7 @@ export default {
       return {
         position:                'topleft',
         unit:                    'metres',
-        measureControlClasses:   ['select_off'],
+        measureControlClasses:   ['select-off'],
         clearMeasurementsOnStop: true,
         measureControlTitleOn:   'Рулетка: включить',
         measureControlTitleOff:  'Рулетка: выключить',

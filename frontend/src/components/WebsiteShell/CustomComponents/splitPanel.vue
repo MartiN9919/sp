@@ -48,7 +48,7 @@ export default {
     if (localStorage['size' + router.currentRoute.name + this.name])
       this.sizeColumn = parseInt(localStorage['size' + router.currentRoute.name + this.name])
     if (this.shadowEffect)
-      this.$refs.ResSplitPane.$children[0].$el.className += ' shadow-effect'
+      this.$refs.ResSplitPane.$children[0].$el.className += ' split-shadow-effect'
   },
   watch: {
     sizeColumn (newSizeColumn) {
