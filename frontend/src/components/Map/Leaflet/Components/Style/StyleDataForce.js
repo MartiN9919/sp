@@ -132,7 +132,7 @@ export const ICON = {
     zoom:      .8,
     svg: `
       <svg width={width} height={height} viewBox="0 0 80 80">
-        <path style="fill:#fff;stroke:#444;stroke-width:4" d="M 2,2 V 78 H 78 V 2 Z m 9,9 H 70 M 40.5,17 8,70 h 64 z"/>
+        <path style="fill:#fff;stroke:#555;stroke-width:4" d="M 2,2 V 78 H 78 V 2 Z m 9,9 H 70 M 40.5,17 8,70 h 64 z"/>
       </svg>
     `,
   },
@@ -143,7 +143,7 @@ export const ICON = {
     zoom:      .8,
     svg: `
       <svg width={width} height={height} viewBox="0 0 80 80">
-        <path style="fill:#fff;stroke:#444;stroke-width:4" d="M 2,2 V 78 H 78 V 2 Z M 40.5,17 8,70 h 64 z"/>
+        <path style="fill:#fff;stroke:#555;stroke-width:4" d="M 2,2 V 78 H 78 V 2 Z M 40.5,17 8,70 h 64 z"/>
       </svg>
     `,
   },
@@ -154,8 +154,8 @@ export const ICON = {
     zoom:      1.2,
     svg: `
       <svg width={width} height={height} viewBox="0 0 100 50">
-        <path style="fill:#fff;stroke:#222;stroke-width:4" d="M 2,10 V 40 M 100,10 V 40 M 2,24.5 h 96"/>
-        <circle style="fill:#fff;stroke:#222;stroke-width:4" cx="50" cy="24.5" r="22"/>
+        <path style="fill:#fff;stroke:#555;stroke-width:4" d="M 2,10 V 40 M 100,10 V 40 M 2,24.5 h 96"/>
+        <circle style="fill:#fff;stroke:#555;stroke-width:4" cx="50" cy="24.5" r="22"/>
       </svg>
     `,
   },
