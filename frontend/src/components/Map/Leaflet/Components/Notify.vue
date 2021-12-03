@@ -3,7 +3,7 @@
     v-if="MAP_GET_NOTIFY"
     v-show="visible"
     position="topcenterhorizontal"
-    class="leaflet-bar leaflet-control control_notify select_off"
+    class="leaflet-bar leaflet-control control_notify select-off"
   >
     <v-card
       v-for="(message_item, message_ind) in messages"

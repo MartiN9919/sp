@@ -13,9 +13,10 @@ import {
 
 import contextMenuNested from '@/components/WebsiteShell/UIMainComponents/contextMenuNested';
 import MixMenuStruct     from '@/components/Map/Leaflet/Mixins/Menu.struct';
+import MixMenuKey        from '@/components/Map/Leaflet/Mixins/Menu.key';
 
 export default {
-  mixins: [ MixMenuStruct, ],
+  mixins: [ MixMenuStruct, MixMenuKey, ],
   components: { contextMenuNested, },
 
   data: () => ({
@@ -43,14 +44,14 @@ export default {
       get: function()    { return this.MAP_GET_TILE; },
     },
     prop_range: {
-      set: function(val) { this.MAP_ACT_RANGE({on: val}); },
+      set: function(val) { this.MAP_ACT_RANGE({on: !this.MAP_GET_RANGE}); },
       get: function()    { return this.MAP_GET_RANGE; },
     },
     prop_cluster: {
       set: function(val) { this.MAP_ACT_CLUSTER({on: !this.MAP_GET_CLUSTER}); },
       get: function()    { return this.MAP_GET_CLUSTER; },
     },
-    prop_hint: {
+    prop_info: {
       set: function(val) { this.MAP_ACT_HINT({on: !this.MAP_GET_HINT}); },
       get: function()    { return this.MAP_GET_HINT; },
     },
@@ -96,6 +97,12 @@ export default {
       'MAP_ACT_EDIT',
     ]),
 
+    // ВАЖНО
+    // вызывать из родительского mounted или method.onMapReady
+    // должна быть установлена переменная this.map
+    mounted_menu() {
+      this.mounted_menu_key();
+    },
 
     // Показать первый уровень меню, вызывается из родителя
     on_menu_show(e, mode) {

@@ -109,14 +109,12 @@ export default {
 
     // MENU: Установить шаг изменения выделенного периода
     lib_menu_step(menu_item, data) {
-      let sel_min   = data.sel_min;
-      let sel_max   = data.sel_max;
+      let sel_min = data.sel_min;
+      let sel_max = data.sel_max;
       sel_min -= (sel_min-myUTC) % menu_item.ts;
       sel_max -= (sel_max-myUTC) % menu_item.ts;
       return [sel_min, sel_max];
     },
-
-
 
 
     //

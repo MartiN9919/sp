@@ -1,7 +1,7 @@
 <template>
   <l-control
     v-if="MAP_GET_LOGO"
-    class="map-logo select_off"
+    class="map-logo select-off"
     :position="'bottomleft'"
   >
     <v-icon medium>mdi-diamond-stone</v-icon>САПФИР

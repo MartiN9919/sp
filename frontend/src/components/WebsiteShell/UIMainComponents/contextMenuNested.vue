@@ -4,7 +4,7 @@
     создание DOM корневого активатора отключается через свойство _root_
   -->
   <v-menu
-    class="select_off"
+    class="select-off"
     style="z-index: 50000;"
     min-width="0"
     :value="open"

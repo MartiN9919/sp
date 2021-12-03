@@ -45,7 +45,7 @@ export default {
   },
   mounted() {
     if (this.shadowEffect)
-      this.$refs.ResSplitPane.$children[0].$el.className += ' shadow-effect'
+      this.$refs.ResSplitPane.$children[0].$el.className += ' split-shadow-effect'
   },
 }
 </script>

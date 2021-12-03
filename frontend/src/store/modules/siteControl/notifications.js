@@ -70,10 +70,12 @@ export default {
         axios.get(`notifications/${notification.id_notification}/`, config)
       commit('removeNotification', notification)
     },
-    addNotification: ({commit}, {notification, timeout = null}) => {
+    addNotification: ({commit}, notification) => {
+      if (notification?.status === undefined) notification.status = 'information'
       const notify = new Notification(notification)
       commit('appendNotification', notify)
-      timeout && setTimeout(() => commit('removeNotification', notify), timeout * 1000)
+      notification?.timeout && setTimeout(() => commit('removeNotification', notify), notification?.timeout*1000)
+
     }
   }
 }

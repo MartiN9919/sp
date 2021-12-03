@@ -84,7 +84,7 @@ export default {
       //'MAP_ACT_ITEM_DEL',
       //'MAP_ACT_ITEM_COLOR',
       //'MAP_ACT_EDIT',
-      'appendErrorAlert',
+      'addNotification',
     ]),
 
 
@@ -189,7 +189,7 @@ export default {
 
     // всплывающее сообщение
     on_menu_msg(str) {
-      this.appendErrorAlert({status: 501, content: str , show_time: 3, });
+      this.addNotification({content: str, timeout: 3});
     },
 
     // наличие права редактирования объектов

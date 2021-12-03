@@ -31,14 +31,38 @@
             <v-card-title style="word-break: inherit">{{ getClassifierTitle(param) }}</v-card-title>
             <v-card-text class="py-1 text-end d-flex flex-column justify-center" style="width: max-content">
               <div v-for="(v, key) in param.values" :key="key">
-                <v-dialog v-if="getClassifierType(param) === 'geometry'" width="80%" class="dialog">
+                <v-dialog
+                  v-if="getClassifierType(param) === 'geometry'"
+                  class="dialog"
+                  style="z-index:1000002"
+                  width="60%"
+                  height="80%"
+                  v-model="dialog"
+                  @keydown.esc="dialog = false"
+                  persistent
+                  transition="dialog-bottom-transition"
+                >
                   <template v-slot:activator="{ on, attrs }">
                     <div v-bind="attrs" v-on="on" class="py-1 teal--text">
                       <p class="mb-0 text-body-1" style="line-height: 1em; font-style: oblique">Геометрия</p>
                       <p class="mb-0" style="line-height: 1em; font-size: 0.8em">{{ v.date }}</p>
                     </div>
                   </template>
-                  <LeafletEditor style="height: 70vh;" :fc_parent_prop="JSON.parse(v.value)" :modeEnabled="{marker: false , line: false, polygon: false}"/>
+                  <v-card>
+                    <v-card-title class="text-h7">УКАЗАТЬ ЗДЕСЬ TITLE</v-card-title>
+                    <v-divider></v-divider>
+                    <LeafletViewer
+                      v-if="dialog"
+                      style="height: 70vh;"
+                      :fc_parent_prop="JSON.parse(v.value)"
+                      :dop_controls="true"
+                    />
+                    <v-divider></v-divider>
+                    <v-card-actions>
+                      <v-spacer></v-spacer>
+                      <v-btn :color="$CONST.APP.COLOR_OBJ" text @click="dialog=false">Ок</v-btn>
+                    </v-card-actions>
+                  </v-card>
                 </v-dialog>
                 <div v-else class="py-1">
                   <p class="mb-0 text-body-1" style="line-height: 1em; font-style: oblique">{{v.value}}</p>
@@ -57,15 +81,16 @@
 
 <script>
 import ControlMenu from "@/components/Graph/GraphMenu/createPageComponents/controlMenu"
-import LeafletEditor from "@/components/Map/Leaflet/LeafletEditor"
+import LeafletViewer from "@/components/Map/Leaflet/LeafletViewer"
 import {getDownloadFileLink} from '@/plugins/axiosSettings'
 import {mapActions, mapGetters} from "vuex"
 import router from "@/router"
 
 export default {
   name: "map-dossier",
-  components: {ControlMenu, LeafletEditor},
+  components: {ControlMenu, LeafletViewer},
   data: () => ({
+    dialog: false,
     selectedItem: null,
     controlButtons: [
         {

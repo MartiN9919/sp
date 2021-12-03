@@ -2,18 +2,20 @@
   <l-control
     v-if="(MAP_GET_LEGEND && (options.hover_map_ind>-1))"
     v-show="visible()"
-    class="legend select_off pre-formatted"
+    class="legend select-off pre-formatted"
     position="topright"
   >
+    <!--
     <div
       class="legend_top"
     >
-      {{prop_hint()}}
+      {{legend_hint()}}
     </div>
+  -->
     <div
       class="legend_top legend-color-select"
     >
-      {{prop_val()}}
+      {{legend_val()}}
     </div>
     <div
       v-for="(legend_color_item, legend_color_ind) in SCRIPT_GET_ITEM_LEGEND_COLOR(options.hover_map_ind)"
@@ -35,17 +37,10 @@
 <script>
 // https://leafletjs.com/examples/choropleth/
 
-import {
-  mapGetters,
-} from 'vuex';
-
-import {
-  LControl,
-} from "vue2-leaflet";
-
-import {
-  MAP_ITEM,
-} from '@/components/Map/Leaflet/Lib/Const';
+import { mapGetters } from 'vuex';
+import { LControl } from "vue2-leaflet";
+import { MAP_ITEM } from '@/components/Map/Leaflet/Lib/Const';
+import { str_cut } from '@/components/Map/Leaflet/Lib/Lib';
 
 
 const props = {
@@ -82,11 +77,11 @@ export default {
   methods: {
     visible() {
       let block_color = (this.SCRIPT_GET_ITEM_LEGEND_COLOR(this.options.hover_map_ind).length>0);
-      let ret = (this.block_hint || this.block_value || block_color)
+      let ret = (this.block_value || block_color)
       return ret;
     },
 
-    prop_hint() {
+    legend_hint() {
       let ret;
       if ((this.options.hover_map_ind>-1) && (this.options.hover_feature_ind>-1))
         ret = this.SCRIPT_GET_ITEM(this.options.hover_map_ind)
@@ -94,9 +89,9 @@ export default {
           .features[this.options.hover_feature_ind]
           .properties[MAP_ITEM.FC.FEATURES.PROPERTIES.HINT];
       this.block_hint = (ret)?true:false;
-      return ret
+      return str_cut(String(ret), 100);
     },
-    prop_val() {
+    legend_val() {
       let ret;
       if ((this.options.hover_map_ind>-1) && (this.options.hover_feature_ind>-1))
         ret = this.SCRIPT_GET_ITEM(this.options.hover_map_ind)
@@ -141,11 +136,11 @@ export default {
 
 
   div::v-deep .legend_top {
-    max-width: 10em;
+    max-width: 15em;
+    overflow: visible;
     text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
-
+    white-space: pre-line;
+    word-wrap: break-word;
   }
 
   div::v-deep .legend-color i {

@@ -79,20 +79,21 @@ export const MAP_TEST_ITEM_2 = {
         },
         "geometry": {
           "type": "Point",
-          "coordinates": [28.0,54.25],
+          "coordinates": [27.0,54.5],
         },
       },
-
       {
         "type": "Feature",
         "properties": {
-          "class": "icon-pulse-14",
+          "hint": "Контроль 5",
+          "date": "2021-01-02",
         },
         "geometry": {
           "type": "Point",
-          "coordinates": [30.541992187500004,50.41551870402678]
-        }
+          "coordinates": [26.5,54.5],
+        },
       },
+
       // {
       //   "type": "Feature",
       //   "properties": {

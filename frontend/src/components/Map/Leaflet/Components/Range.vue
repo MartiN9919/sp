@@ -3,7 +3,7 @@
     <l-control
       v-show="visible"
       position="bottomcenterhorizontal"
-      class="leaflet-bar leaflet-control control_range select_off"
+      class="leaflet-bar leaflet-control control_range select-off"
     >
       <table>
         <tr @contextmenu.stop="dt_menu_show">
@@ -274,7 +274,7 @@ export default {
   .control_range {
     border: 2px solid rgba(0,0,0,0.2);
     background-color: white;
-    opacity: .7;
+    opacity: .85;
   }
 
   /* наложение друг на друга */
