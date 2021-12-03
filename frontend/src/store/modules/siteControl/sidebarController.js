@@ -1,15 +1,10 @@
 import router from '@/router'
-
-function getDefaultSettings(identifier) {
-  if(!localStorage.getItem(identifier))
-    localStorage.setItem(identifier, 'true')
-  return localStorage.getItem(identifier) === 'true'
-}
+import UserSetting from '@/store/addition'
 
 export default {
   state: {
-    globalTooltipStatus: getDefaultSettings('globalTooltipStatus'),
-    globalNotificationStatus: getDefaultSettings('globalNotificationStatus'),
+    globalTooltipStatus: new UserSetting('globalTooltipStatus', true),
+    globalNotificationStatus: new UserSetting('globalNotificationStatus', true),
     navigationDrawer: {
       Map: false,
       Report: false,
@@ -42,29 +37,24 @@ export default {
     navigationDrawerStatus: state => page => state.navigationDrawer[page],
     activeTool: state => page => state.activeTool[page],
     toolsMenu: state => page => state.toolsMenu[page],
-    globalTooltipStatus: state => state.globalTooltipStatus,
-    globalNotificationStatus: state => state.globalNotificationStatus,
+    globalTooltipStatus: state => state.globalTooltipStatus.value,
+    globalNotificationStatus: state => state.globalNotificationStatus.value,
     appbarTabs: state => state.appbarTabs,
   },
   mutations: {
     setNavigationDrawerStatus: (state, status) => state.navigationDrawer[router.currentRoute.name] = status,
     setActiveTool: (state, tool) => state.activeTool[router.currentRoute.name] = tool,
-    setGlobalTooltipStatus: (state, status) => state.globalTooltipStatus = status,
-    setGlobalNotificationStatus: (state, status) => state.globalNotificationStatus = status,
+    setGlobalTooltipStatus: (state, status) => state.globalTooltipStatus.value = status,
+    setGlobalNotificationStatus: (state, status) => state.globalNotificationStatus.value = status,
   },
   actions: {
     setNavigationDrawerStatus: ({ getters, commit }, status) => commit('setNavigationDrawerStatus', status),
     setActiveTool({ commit }, tool) { commit('setActiveTool', tool) },
     setGlobalTooltipStatus({ commit }, status) {
-      localStorage.setItem('globalTooltipStatus', status)
       commit('setGlobalTooltipStatus', status)
     },
     setGlobalNotificationStatus({ commit, dispatch }, status) {
-      if(status) 
-        dispatch('getNotifications')
-      else
-        commit('stopNotificationInterval')
-      localStorage.setItem('globalNotificationStatus', status)
+      status ? dispatch('getNotifications') : commit('stopNotificationInterval')
       commit('setGlobalNotificationStatus', status)
     },
   }

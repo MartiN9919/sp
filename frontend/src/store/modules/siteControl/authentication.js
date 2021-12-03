@@ -19,12 +19,14 @@ export default {
     logOutUser ({ commit }, config = {}) {
       axios.get(CONST.API.AUTH.LOGOUT, config).finally(() => router.push({name: 'Login'}))
     },
-    identifyUser ({commit, dispatch}, config = {}) {
+    identifyUser ({getters, commit, dispatch}, config = {}) {
       removeInterceptor()
       return axios.get(CONST.API.AUTH.IDENTIFY, config)
         .then(async response => {
-          await dispatch('initialization')
-          commit('setUserInformation', response.data)
+          if(!getters.userInformation) {
+            commit('setUserInformation', response.data)
+            await dispatch('initialization')
+          }
         })
         .finally(() => addInterceptor())
     }

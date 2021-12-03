@@ -20,6 +20,8 @@
 backend/log/
 backend/env/
 backend/static/
+backend/script/user_scripts
+backend/script/user_triggers
 venv/
 ENV/
 env.bak/

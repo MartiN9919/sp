@@ -1,4 +1,5 @@
 import axios from '@/plugins/axiosSettings'
+import UserSetting from "@/store/addition"
 import {getTriggers} from "@/store/modules/siteControl/mainDependencies"
 import store from'@/store'
 
@@ -15,6 +16,7 @@ function createSearchItem(getters, item) {
 
 export default {
   state: {
+    defaultSearchObject: new UserSetting('defaultSearchObject', 0),
     searchTreeGraph: null,
     searchRelationTreeGraph: null,
     foundObjects: null,
@@ -43,13 +45,18 @@ export default {
     addSearchTreeItem({ getters, commit }, {rootItem, newItem}) {
       commit('addSearchTreeItem', {rootItem: rootItem, newItem: new SearchTreeItem(createSearchItem(getters, newItem))})
     },
-    setRootSearchTreeItem({ getters, commit }, {id = null, actual = false}) {
-      id = id || parseInt(localStorage.getItem('searchDefaultIdGraph')) || getters.baseObjects[0].id
+    setRootSearchTreeItem({ state, getters, commit }, {id = null, actual = false}) {
+      const additionalId = function () {
+        if(!state.defaultSearchObject.value)
+          state.defaultSearchObject.value = getters.baseObjects[0].id
+        return state.defaultSearchObject.value
+      }
+      id = id || additionalId()
       if(getters.searchTreeGraph && id === getters.searchTreeGraph.object.id)
         commit('changeActualRootSearchTreeItem', actual)
       else {
         commit('setRootSearchTreeItem', new SearchTreeRootItem({object: getters.baseObject(id), actual: actual}))
-        localStorage.setItem('searchDefaultIdGraph', id)
+        state.defaultSearchObject.value = id
       }
     },
     setRootSearchRelationTreeItem({ getters, commit }, item) {
