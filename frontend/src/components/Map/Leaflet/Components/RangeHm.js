@@ -65,11 +65,13 @@ export default {
         let sel_min = lst[0];
         let sel_max = lst[1];
         if ( (sel_min != this.hm.sel_min) || (sel_max != this.hm.sel_max) ) {
-          this.hm.sel_max = sel_max;
+          sel_min -= sel_min % this.hm.sel_step;  // округлить до шага
+          sel_max -= sel_max % this.hm.sel_step;
           this.hm.sel_min = sel_min;
-          this.MAP_ACT_REFRESH();   // элементы на карте: обновить
+          this.hm.sel_max = sel_max;
+          this.MAP_ACT_REFRESH();                 // элементы на карте: обновить
         }
-        this.hm_stat_refresh();     // статистика: обновить
+        this.hm_stat_refresh();                   // статистика: обновить
       },
       get: function()    { return [this.hm.sel_min, this.hm.sel_max]; },
     },
@@ -126,7 +128,7 @@ export default {
     // MENU: Установить выделенный период
     hm_menu_sel(menu_item) { this.hm_prop_sel = this.lib_menu_sel(menu_item, this.hm); },
     // MENU: Установить шаг изменения выделенного периода
-    hm_menu_step(menu_item) { this.hm_prop_sel = this.lib_menu_step(menu_item, this.hm); this.hm.sel_step = menu_item.ts; },
+    hm_menu_step(menu_item) { this.hm.sel_step = menu_item.ts; this.hm_prop_sel = this.lib_menu_step(menu_item, this.hm); }, // сначала шаг
 
 
     // MOUSE: обработчик блокировать события мыши
