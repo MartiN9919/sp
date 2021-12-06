@@ -4,7 +4,7 @@ import UserSetting from "@/store/addition"
 
 export default {
   state: {
-    tiles: [],                        // источники плиток https://leaflet-extras.github.io/leaflet-providers/preview/
+    tiles:      [],                                    // источники плиток https://leaflet-extras.github.io/leaflet-providers/preview/
 
     range:      new UserSetting('MAP_RANGE',   true),  // фильтр отображаемых данных по дате/времени
     tile:       new UserSetting('MAP_TILE',    0),     // (int) индекс активного источника плиток tiles[tile]
@@ -83,21 +83,20 @@ export default {
 
 
   actions: {
-    MAP_ACT_RANGE:      ({commit}, param={}) => commit('MAP_MUT_RANGE',         param.on),
-    MAP_ACT_TILE:       ({commit}, param={}) => commit('MAP_MUT_TILE',          param.ind),
-
     MAP_ACT_TILES:      ({commit}, param={}) => {
       axios.get('objects/tiles', param)
         .then(r => commit('MAP_MUT_TILES', r.data))
     },
+    MAP_ACT_TILE:       ({commit}, param={}) => commit('MAP_MUT_TILE',            param.ind),
 
-    MAP_ACT_CLUSTER:    ({commit}, param={}) => commit('MAP_MUT_CLUSTER',       param.on),
-    MAP_ACT_HINT:       ({commit}, param={}) => commit('MAP_MUT_HINT',          param.on),
-    MAP_ACT_LEGEND:     ({commit}, param={}) => commit('MAP_MUT_LEGEND',        param.on),
-    MAP_ACT_SCALE:      ({commit}, param={}) => commit('MAP_MUT_SCALE',         param.on),
-    MAP_ACT_MEASURE:    ({commit}, param={}) => commit('MAP_MUT_MEASURE',       param.on),
-    MAP_ACT_LOGO:       ({commit}, param={}) => commit('MAP_MUT_LOGO',          param.on),
-    MAP_ACT_NOTIFY:     ({commit}, param={}) => commit('MAP_MUT_NOTIFY',        param.on),
+    MAP_ACT_RANGE:      ({commit}, param={}) => commit('MAP_MUT_RANGE',           param.on),
+    MAP_ACT_CLUSTER:    ({commit}, param={}) => commit('MAP_MUT_CLUSTER',         param.on),
+    MAP_ACT_HINT:       ({commit}, param={}) => commit('MAP_MUT_HINT',            param.on),
+    MAP_ACT_LEGEND:     ({commit}, param={}) => commit('MAP_MUT_LEGEND',          param.on),
+    MAP_ACT_SCALE:      ({commit}, param={}) => commit('MAP_MUT_SCALE',           param.on),
+    MAP_ACT_MEASURE:    ({commit}, param={}) => commit('MAP_MUT_MEASURE',         param.on),
+    MAP_ACT_LOGO:       ({commit}, param={}) => commit('MAP_MUT_LOGO',            param.on),
+    MAP_ACT_NOTIFY:     ({commit}, param={}) => commit('MAP_MUT_NOTIFY',          param.on),
 
     MAP_ACT_ITEM_ADD:   ({commit}, param={}) =>   commit('SCRIPT_MUT_ITEM_ADD',   param),
     MAP_ACT_ITEM_COLOR: ({commit}, param={}) =>   commit('SCRIPT_MUT_ITEM_COLOR', param),
