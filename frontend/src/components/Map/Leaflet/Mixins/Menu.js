@@ -50,11 +50,9 @@ export default {
 
       // обновить menu_struct
       this.menu_struct = JSON.parse(JSON.stringify(this.menu_struct_base)); // основа - глубокая копия
+      this.menu_struct.splice(0, 0, this.menu_set_add());                   // добавить menu.set (оформление)
       this.menu_struct.splice(0, 0, this.menu_map_add());                   // добавить menu.map (подложка)
-      this.menu_struct.splice(1, 0, this.menu_set_add());                   // добавить menu.set (оформление)
-      //this.menu_struct[0]['menu'][0]['radio'] = this.MAP_GET_TILES  ;     // добавить выбор тайлов
       this.menu_struct.splice(0, 0, this.menu_pos_add());                   // добавить menu.pos (фрагмент)
-      //this.menu_struct = [...this.menu_pos_add(), ...this.menu_struct];   // добавить menu.pos (фрагмент)
 
       if (mode=='editor') {
         this.menu_struct[2]['menu'].splice(0, 4);                           // удалить некоторые настройки оформления
