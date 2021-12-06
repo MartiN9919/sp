@@ -93,8 +93,6 @@ export default {
         if (e.originalEvent.shiftKey) { this.menu_pos_save(key_ind) }
         else                          { this.menu_pos_load(key_ind) }
       }
-
-      // console.log(e.originalEvent.ctrlKey, e.originalEvent.code)
     },
 
 

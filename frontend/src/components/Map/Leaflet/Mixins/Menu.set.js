@@ -149,18 +149,8 @@ export default {
           case 'KeyV': { this.prop_scale   = 1; return; } // Shift+М
           case 'KeyH': { this.prop_measure = 1; return; } // Shift+Р
           case 'KeyC': { this.prop_logo    = 1; return; } // Shift+С
-
-          // Подложка
-
-          // Тесты
-          case 'BracketLeft':  { this.test_item_add_1(); return; }
-          case 'BracketRight': { this.test_item_add_2(); return; }
-          case 'Quote':        { this.test_item_add_3(); return; }
-          case 'Backslash':    { this.test_item_del();   return; }
         }
       }
-
-      // console.log(e.originalEvent.ctrlKey, e.originalEvent.code)
     },
   },
 
