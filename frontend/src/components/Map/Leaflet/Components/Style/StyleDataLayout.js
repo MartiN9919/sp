@@ -51,7 +51,10 @@ export const DECOR = {
     { offset: 5,  repeat: 30, symbol_type: 'dash', symbol_options: { pixelSize: 0,  pathOptions: { color: '#0a0', }, }, },
   ],
 
-
+  //пограничная полоса
+  'line_border_path': [
+    { offset: 12, repeat: 25, symbol_type: 'dash', symbol_options: { pixelSize: 10, pathOptions: { color: '#0a0', weight: 2, }, }, },
+  ],
 
   // стрелки с окантовкой
   'line-test_arrow_stroke': {
