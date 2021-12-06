@@ -18,6 +18,11 @@ export default {
       'MAP_ACT_TILE',
     ]),
 
+    // инициализация, вызывается из родителя
+    mounted_menu_map() {
+      //
+    },
+
     // добавить в контекстное меню
     menu_map_add() {
       let val = {

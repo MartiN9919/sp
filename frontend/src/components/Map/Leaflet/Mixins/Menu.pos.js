@@ -16,9 +16,7 @@ export default {
   data: () => ({ menu_pos_state: [], }),
 
   methods: {
-    // ВАЖНО
-    // вызывать из родительского mounted или method.onMapReady
-    // должна быть установлена переменная this.map
+    // инициализация, вызывается из родителя
     mounted_menu_pos() {
       // инициализация пользовательских настроек
       for(let ind=0; ind<10; ind++) {

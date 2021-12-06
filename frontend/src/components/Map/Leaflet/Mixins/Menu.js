@@ -23,7 +23,7 @@ export default {
     // должна быть установлена переменная this.map
     mounted_menu() {
       this.mounted_menu_set();
-    //this.mounted_menu_map();
+      this.mounted_menu_map();
       this.mounted_menu_pos();
       this.mounted_menu_test();
     },

@@ -97,9 +97,7 @@ export default {
       'MAP_ACT_EDIT',
     ]),
 
-    // ВАЖНО
-    // вызывать из родительского mounted или method.onMapReady
-    // должна быть установлена переменная this.map
+    // инициализация, вызывается из родителя
     mounted_menu_test() {
       this.map.addEventListener('keydown', this.menu_test_key_down);
     },

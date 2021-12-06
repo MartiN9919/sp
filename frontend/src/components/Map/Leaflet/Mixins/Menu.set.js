@@ -124,9 +124,7 @@ export default {
       'MAP_ACT_LOGO',
     ]),
 
-    // ВАЖНО
-    // вызывать из родительского mounted или method.onMapReady
-    // должна быть установлена переменная this.map
+    // инициализация, вызывается из родителя
     mounted_menu_set() {
       this.map.addEventListener('keydown', this.menu_set_key_down);
     },
