@@ -1,19 +1,6 @@
 // COMMON
 function dig2(val){ return ("0"+val).slice(-2); }
 
-// COOKIES
-export function cook_set(name, value, max_age=3600*24*30*12*30) {   // 30 лет
-  document.cookie = encodeURIComponent(name)+"="+encodeURIComponent(value)+"; path=/; max-age="+max_age;
-}
-export function cook_get_str(name, valueEmpty) {
-  let matches = document.cookie.match(new RegExp("(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"));
-  return matches ? decodeURIComponent(matches[1]) : valueEmpty;
-}
-export function cook_get_int (name, valueEmpty) { return parseInt(cook_get_str(name, valueEmpty))  }
-export function cook_get_bool(name, valueEmpty) { return (cook_get_str(name, String(valueEmpty)) === 'true') }
-
-
-
 // DATE-TIME
 // текущее смещение времени относительно нулевого меридиана
 export var myUTC = new Date().getTimezoneOffset()*60*1000;
@@ -98,3 +85,16 @@ export function hash_simple(str, seed = 0) {
 //   }
 //   return hash;
 // }
+
+
+
+// // COOKIES
+// export function cook_set(name, value, max_age=3600*24*30*12*30) {   // 30 лет
+//   document.cookie = encodeURIComponent(name)+"="+encodeURIComponent(value)+"; path=/; max-age="+max_age;
+// }
+// export function cook_get_str(name, valueEmpty) {
+//   let matches = document.cookie.match(new RegExp("(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"));
+//   return matches ? decodeURIComponent(matches[1]) : valueEmpty;
+// }
+// export function cook_get_int (name, valueEmpty) { return parseInt(cook_get_str(name, valueEmpty))  }
+// export function cook_get_bool(name, valueEmpty) { return (cook_get_str(name, String(valueEmpty)) === 'true') }
