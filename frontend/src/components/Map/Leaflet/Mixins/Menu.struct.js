@@ -2,18 +2,7 @@ export default {
   data() {
     return {
       menu_struct_base: [
-        {
-          icon:     'mdi-map-outline',
-          title:    'Подложка',
-          subtitle: 'Фон карты',
-          menu:     [
-            {
-              model: 'prop_tile',
-              // radio: see mounted
-            },
-          ],
-        },
-
+        // Menu.map
         // Menu.set
 
         { divider: true },

@@ -10,11 +10,12 @@ import {
 
 import contextMenuNested from '@/components/WebsiteShell/UIMainComponents/contextMenuNested';
 import MixMenuStruct     from '@/components/Map/Leaflet/Mixins/Menu.struct';
+import MixMenuMap        from '@/components/Map/Leaflet/Mixins/Menu.map';
 import MixMenuSet        from '@/components/Map/Leaflet/Mixins/Menu.set';
 import MixMenuPos        from '@/components/Map/Leaflet/Mixins/Menu.pos';
 
 export default {
-  mixins: [ MixMenuStruct, MixMenuSet, MixMenuPos, ],
+  mixins: [ MixMenuStruct, MixMenuMap, MixMenuSet, MixMenuPos, ],
   components: { contextMenuNested, },
 
   data: () => ({
@@ -22,24 +23,12 @@ export default {
   }),
 
   computed: {
-    ...mapGetters([
-      'MAP_GET_TILES',
-      'MAP_GET_TILE',
-    ]),
-
     form: vm => vm,
-
-    prop_tile: {
-      set: function(val) { this.MAP_ACT_TILE({ind: val}); },
-      get: function()    { return this.MAP_GET_TILE; },
-    },
   },
 
 
   methods: {
     ...mapActions([
-      'MAP_ACT_TILE',
-
       'MAP_ACT_ITEM_ADD',
       'MAP_ACT_ITEM_DEL',
       'MAP_ACT_ITEM_COLOR',
@@ -61,8 +50,9 @@ export default {
 
       // обновить menu_struct
       this.menu_struct = JSON.parse(JSON.stringify(this.menu_struct_base)); // основа - глубокая копия
+      this.menu_struct.splice(0, 0, this.menu_map_add());                   // добавить menu.map (подложка)
       this.menu_struct.splice(1, 0, this.menu_set_add);                     // добавить menu.set (оформление)
-      this.menu_struct[0]['menu'][0]['radio'] = this.MAP_GET_TILES  ;       // добавить выбор тайлов
+      //this.menu_struct[0]['menu'][0]['radio'] = this.MAP_GET_TILES  ;       // добавить выбор тайлов
       this.menu_struct.splice(0, 0, this.menu_pos_add());                   // добавить menu.pos (фрагмент)
       //this.menu_struct = [...this.menu_pos_add(), ...this.menu_struct];     // добавить menu.pos (фрагмент)
 
