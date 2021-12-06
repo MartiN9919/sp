@@ -10,7 +10,7 @@
       ref="map"
       style="height: 100%; z-index: 0;"
       :options="mapOptions"
-      :crs="MAP_GET_TILES[MAP_GET_TILE].crs"
+      :crs="MAP_GET_TILE_VAL.crs"
       @ready="on_map_ready"
       @resize="on_map_resize"
       @zoomend="on_map_zoom"
@@ -21,9 +21,9 @@
 
       <!-- ПОДЛОЖКА -->
       <l-tile-layer
-        :url="MAP_GET_TILES[MAP_GET_TILE].url"
-        :attribution="MAP_GET_TILES[MAP_GET_TILE].attr"
-        :tms="MAP_GET_TILES[MAP_GET_TILE].tms"
+        :url="MAP_GET_TILE_VAL.url"
+        :attribution="MAP_GET_TILE_VAL.attr"
+        :tms="MAP_GET_TILE_VAL.tms"
       />
 
 
@@ -212,8 +212,7 @@ export default {
   computed: {
     ...mapGetters([
       'MAP_GET_KEY',
-      'MAP_GET_TILES',
-      'MAP_GET_TILE',
+      'MAP_GET_TILE_VAL',
       'MAP_GET_SCALE',
       'MAP_GET_MEASURE',
       'MAP_GET_CLUSTER',

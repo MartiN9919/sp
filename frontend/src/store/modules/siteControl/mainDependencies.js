@@ -32,7 +32,7 @@ export default {
     async initialization({getters, dispatch}) {
       await Promise.all([
         getters.globalNotificationStatus ? dispatch('getNotifications') : null,
-        dispatch('MAP_ACT_TILES'),
+        dispatch('MAP_ACT_INI'),
         dispatch('getBaseObjects'),
         dispatch('getBaseLists'),
         dispatch('getBaseTriggers'),
