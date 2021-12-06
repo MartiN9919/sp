@@ -33,12 +33,13 @@ export default {
     idTriggerSettings: null,
   }),
   computed: {
-    ...mapGetters(['globalDisplaySettings', 'baseClassifiers', 'objectTriggers', 'objectClassifiersSettings']),
+    ...mapGetters(['globalDisplaySettings', 'baseClassifiers', 'objectTriggers', 'classifiersSettings']),
     getClassifiers: function () {
       let classifiers = []
-      let activeClassifiers = this.objectClassifiersSettings(this.idObjectSettings)
       for (let baseClassifier of this.baseClassifiers(this.idObjectSettings))
-        classifiers.push(Object.assign({status: activeClassifiers.includes(baseClassifier.id)}, baseClassifier))
+        classifiers.push(Object.assign({
+          status: !this.classifiersSettings.includes(baseClassifier.id)
+        }, baseClassifier))
       return classifiers
     },
     getTriggers: function() { return this.objectTriggers(this.idTriggerSettings) },
@@ -49,7 +50,7 @@ export default {
       this.setTriggerState(event)
     },
     setClassifier(classifierId) {
-      this.setClassifiersSettings({objectId: this.idObjectSettings, classifierId: classifierId})
+      this.setClassifiersSettings(classifierId)
     }
   },
 }
