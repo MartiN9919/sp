@@ -13,10 +13,10 @@ import {
 
 import contextMenuNested from '@/components/WebsiteShell/UIMainComponents/contextMenuNested';
 import MixMenuStruct     from '@/components/Map/Leaflet/Mixins/Menu.struct';
-import MixMenuKey        from '@/components/Map/Leaflet/Mixins/Menu.key';
+import MixMenuPos        from '@/components/Map/Leaflet/Mixins/Menu.pos';
 
 export default {
-  mixins: [ MixMenuStruct, MixMenuKey, ],
+  mixins: [ MixMenuStruct, MixMenuPos, ],
   components: { contextMenuNested, },
 
   data: () => ({

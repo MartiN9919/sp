@@ -17,7 +17,7 @@ export default class UserSetting {
   }
 
   set value(newValue) {
-    localStorage.setItem(this.genVarNameForLocalstorage(), newValue)
+    localStorage.setItem(this.genVarNameForLocalstorage(), JSON.stringify(newValue))
     this._value = newValue
   }
 
