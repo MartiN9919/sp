@@ -6,16 +6,16 @@ import {
   MAP_TEST_ITEM_3,
   MAP_TEST_EDIT_1,
   MAP_TEST_EDIT_2,
-} from '@/components/Map/Leaflet/Mixins/Menu.test';
+} from '@/components/Map/Leaflet/Mixins/Menu.test.data';
 
 import contextMenuNested from '@/components/WebsiteShell/UIMainComponents/contextMenuNested';
-import MixMenuStruct     from '@/components/Map/Leaflet/Mixins/Menu.struct';
+import MixMenuTest       from '@/components/Map/Leaflet/Mixins/Menu.test';
 import MixMenuMap        from '@/components/Map/Leaflet/Mixins/Menu.map';
 import MixMenuSet        from '@/components/Map/Leaflet/Mixins/Menu.set';
 import MixMenuPos        from '@/components/Map/Leaflet/Mixins/Menu.pos';
 
 export default {
-  mixins: [ MixMenuStruct, MixMenuMap, MixMenuSet, MixMenuPos, ],
+  mixins: [ MixMenuTest, MixMenuMap, MixMenuSet, MixMenuPos, ],
   components: { contextMenuNested, },
 
   data: () => ({

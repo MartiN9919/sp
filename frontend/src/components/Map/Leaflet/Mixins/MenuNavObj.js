@@ -9,10 +9,10 @@ import {
   MAP_TEST_ITEM_3,
   MAP_TEST_EDIT_1,
   MAP_TEST_EDIT_2,
-} from '@/components/Map/Leaflet/Mixins/Menu.test';
+} from '@/components/Map/Leaflet/Mixins/Menu.test.data';
 
 import contextMenuNested from '@/components/WebsiteShell/UIMainComponents/contextMenuNested';
-import MixMenuStruct from '@/components/Map/Leaflet/Mixins/Menu.struct';
+import MixMenuTest from '@/components/Map/Leaflet/Mixins/Menu.test';
 import { str_cut, str_copy_deep, } from '@/components/Map/Leaflet/Lib/Lib';
 import { fc_exist, } from '@/components/Map/Leaflet/Lib/LibFc';
 import axios from '@/plugins/axiosSettings';
@@ -25,7 +25,7 @@ const
   MENU_IND_DEL    = 4;
 
 export default {
-  mixins: [ MixMenuStruct, ],
+  mixins: [ MixMenuTest, ],
   components: { contextMenuNested, },
 
   data: () => ({
