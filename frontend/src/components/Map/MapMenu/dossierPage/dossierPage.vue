@@ -75,7 +75,7 @@
       </div>
       <control-menu :buttons="controlButtons" @change="editObject" @addToGraph="addToGraph" class="control"></control-menu>
     </div>
-    <div v-else class="text-h5 text-uppercase text-center grey--text pt-6">Выбирете объект</div>
+    <div v-else class="text-h5 text-uppercase text-center grey--text pt-6">Объект не выбран</div>
   </div>
 </template>
 
