@@ -1,4 +1,46 @@
 export default {
+  beforeDestroy: function() {
+    if (this.map) {
+      this.map.removeEventListener('keydown', this.menu_struct_key_down);
+    };
+  },
+
+  methods: {
+    // ВАЖНО
+    // вызывать из родительского mounted или method.onMapReady
+    // должна быть установлена переменная this.map
+    mounted_menu_struct() {
+      this.map.addEventListener('keydown', this.menu_struct_key_down);
+    },
+
+    // событие: нажатие клавиши
+    menu_struct_key_down(e) {
+      if (e.originalEvent.shiftKey) {
+        switch(e.originalEvent.code) {
+          // Оформление
+          case 'KeyA': { this.prop_range   = 1; return; } // Shift+Ф
+          case 'KeyU': { this.prop_cluster = 1; return; } // Shift+Г
+          case 'KeyB': { this.prop_info    = 1; return; } // Shift+И
+        //case 'KeyK': { this.prop_legend  = 1; return; } // Shift+Л
+        //case 'KeyP': { this.prop_notify  = 1; return; } // Shift+З
+          case 'KeyV': { this.prop_scale   = 1; return; } // Shift+М
+          case 'KeyH': { this.prop_measure = 1; return; } // Shift+Р
+          case 'KeyC': { this.prop_logo    = 1; return; } // Shift+С
+
+          // Подложка
+
+          // Тесты
+          case 'BracketLeft':  { this.test_item_add_1(); return; }
+          case 'BracketRight': { this.test_item_add_2(); return; }
+          case 'Quote':        { this.test_item_add_3(); return; }
+          case 'Backslash':    { this.test_item_del();   return; }
+        }
+      }
+
+      // console.log(e.originalEvent.ctrlKey, e.originalEvent.code)
+    },
+  },
+
   data() {
     return {
       menu_struct_base: [

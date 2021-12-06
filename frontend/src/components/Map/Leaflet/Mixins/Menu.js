@@ -101,7 +101,8 @@ export default {
     // вызывать из родительского mounted или method.onMapReady
     // должна быть установлена переменная this.map
     mounted_menu() {
-      this.mounted_menu_key();
+      this.mounted_menu_struct();
+      this.mounted_menu_pos();
     },
 
     // Показать первый уровень меню, вызывается из родителя
