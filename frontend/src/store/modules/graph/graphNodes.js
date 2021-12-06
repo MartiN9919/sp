@@ -41,20 +41,12 @@ class GlobalSettings {
       state: new UserSetting('showGlobalDateRelation', true)
     }
   }
-
-  getValue(identifier) {
-    return this[identifier].state.value
-  }
-
-  changeValue(identifier, value) {
-    this[identifier].state.value = value
-  }
 }
 
 export default {
   state: {
     screen: null,
-    classifiersSettings: getClassifiersSettings(),
+    classifiersSettings: new UserSetting('classifiersSettings', []),
     globalDisplaySettings: new GlobalSettings(),
     graph: new Graph(),
     graphObjects: {},
@@ -62,10 +54,10 @@ export default {
   getters: {
     graphObjects: state => state.graph.nodes,
     graphRelations: state => state.graph.edges,
-    objectClassifiersSettings: state => objectId => state.classifiersSettings[objectId] || [],
+    classifiersSettings: state => state.classifiersSettings.value,
     globalDisplaySettings: state => state.globalDisplaySettings,
     globalDisplaySettingValue: state => identifier => {
-      return state.globalDisplaySettings.getValue(identifier)
+      return state.globalDisplaySettings[identifier].state.value
     },
   },
   mutations: {
@@ -73,16 +65,8 @@ export default {
     deleteObjectFromGraph: (state, object) => state.graph.removeNode(object),
     updateObjectFromGraph: (state, {object, fields}) => state.graph.updateNode(object, fields),
     updateRelationFromGraph: (state, {relation, fields}) => state.graph.updateEdge(relation, fields),
-    changeGlobalSettingState: (state, {id, value}) => state.globalDisplaySettings.changeValue(id, value),
-    setClassifiersSettings: (state, {objectId, classifierId}) => {
-      if(state.classifiersSettings.hasOwnProperty(objectId)) {
-        let classifierIndex = state.classifiersSettings[objectId].findIndex(id => id === classifierId)
-        if (classifierIndex !== -1) {
-          state.classifiersSettings[objectId].splice(classifierIndex, 1)
-        } else state.classifiersSettings[objectId].push(classifierId)
-      } else Vue.set(state.classifiersSettings, objectId, [classifierId])
-      localStorage.setItem('objectClassifiersSettings', JSON.stringify(state.classifiersSettings))
-    },
+    changeGlobalSettingState: (state, {id, value}) => state.globalDisplaySettings[id].state.value = value,
+    setClassifiersSettings: (state, classifierId) => state.classifiersSettings.push(classifierId),
     addObjectToGraph: (state, {editableObject, position, size}) => {
       state.graph.createNode({
         id: editableObject.getGeneratedId(),
@@ -98,7 +82,7 @@ export default {
     setScreen({ commit }, screen) { commit('setScreen', screen) },
     reorderGraph({ state }) { state.graph.reorderGraph(state.screen.getStartPosition().x, state.screen.getStartPosition().y) },
     changeGlobalSettingState({ commit }, payload) { commit('changeGlobalSettingState', payload) },
-    setClassifiersSettings({ commit }, payload) { commit('setClassifiersSettings', payload) },
+    setClassifiersSettings({ getters, commit }, id) { commit('setClassifiersSettings', id) },
     addRelationToGraph({getters, commit, dispatch}, {object, relations, noMove}) {
       let object1 = getters.graphObjects.find(r => r.object.object.id === object.o1 && r.object.recId === object.r1)
       let object2 = getters.graphObjects.find(r => r.object.object.id === object.o2 && r.object.recId === object.r2)
@@ -147,13 +131,6 @@ export default {
           .catch(e => { return Promise.reject(e) })
     }
   }
-}
-
-function getClassifiersSettings() {
-  let settings = localStorage.getItem('objectClassifiersSettings')
-  if(settings) return JSON.parse(settings)
-  localStorage.setItem('objectClassifiersSettings', JSON.stringify({}))
-  return {}
 }
 
 class GraphObject extends DataBaseObject {

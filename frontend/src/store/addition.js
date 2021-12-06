@@ -17,8 +17,14 @@ export default class UserSetting {
   }
 
   set value(newValue) {
-    localStorage.setItem(this.genVarNameForLocalstorage(), newValue)
     this._value = newValue
+    localStorage.setItem(this.genVarNameForLocalstorage(), JSON.stringify(this._value))
+  }
+
+  push(newValue) {
+    let findValueIndex = this._value.findIndex(v => v === newValue)
+    findValueIndex === -1 ? this._value.push(newValue) : this._value.splice(findValueIndex, 1)
+    localStorage.setItem(this.genVarNameForLocalstorage(), JSON.stringify(this._value))
   }
 
   genVarNameForLocalstorage() {
