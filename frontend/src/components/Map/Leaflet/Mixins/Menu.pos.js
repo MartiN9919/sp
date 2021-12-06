@@ -36,48 +36,46 @@ export default {
     },
 
 
-    // добавляется в контекстное меню
-    menu_items_key() {
-      let val = [
-        {
-          icon:     'mdi-border-none-variant',
-          title:    'Фрагмент',
-          subtitle: 'Позиция и масштаб карты',
-          menu:     [
-            {
-              icon:  'mdi-upload',
-              title: 'Загрузить',
-              menu:  [],
-            },
-            {
-              icon:  'mdi-download',
-              title: 'Сохранить',
-              menu:  [],
-            },
-          ],
-        },
-      ];
+    // добавить в контекстное меню
+    menu_pos_add() {
+      let val = {
+        icon:     'mdi-border-none-variant',
+        title:    'Фрагмент',
+        subtitle: 'Позиция и масштаб карты',
+        menu:     [
+          {
+            icon:  'mdi-upload',
+            title: 'Загрузить',
+            menu:  [],
+          },
+          {
+            icon:  'mdi-download',
+            title: 'Сохранить',
+            menu:  [],
+          },
+        ],
+      };
 
       for(let ind=0; ind<10; ind++) {
-        val[0].menu[0].menu.push({
+        val.menu[0].menu.push({
           title:    this.menu_pos_state[ind].value.title,
           subtitle: '['+ind+']',
           slot:     ind,
           action:   this.action_menu_pos_load,
         });
-        val[0].menu[1].menu.push({
+        val.menu[1].menu.push({
           title:    this.menu_pos_state[ind].value.title,
           subtitle: '[Shift+'+ind+']',
           slot:     ind,
           action:   this.action_menu_pos_save,
         });
         if (ind==1) {
-          val[0].menu[0].menu.push({ divider: true });
-          val[0].menu[1].menu.push({ divider: true });
+          val.menu[0].menu.push({ divider: true });
+          val.menu[1].menu.push({ divider: true });
         }
       }
-      val[0].menu[0].menu.push(val[0].menu[0].menu.shift());
-      val[0].menu[1].menu.push(val[0].menu[1].menu.shift());
+      val.menu[0].menu.push(val.menu[0].menu.shift());
+      val.menu[1].menu.push(val.menu[1].menu.shift());
       return val;
     },
 

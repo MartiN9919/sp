@@ -1,7 +1,4 @@
-import {
-  mapGetters,
-  mapActions,
-} from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 
 import {
   MAP_TEST_ITEM_1,
@@ -13,10 +10,11 @@ import {
 
 import contextMenuNested from '@/components/WebsiteShell/UIMainComponents/contextMenuNested';
 import MixMenuStruct     from '@/components/Map/Leaflet/Mixins/Menu.struct';
+import MixMenuSet        from '@/components/Map/Leaflet/Mixins/Menu.set';
 import MixMenuPos        from '@/components/Map/Leaflet/Mixins/Menu.pos';
 
 export default {
-  mixins: [ MixMenuStruct, MixMenuPos, ],
+  mixins: [ MixMenuStruct, MixMenuSet, MixMenuPos, ],
   components: { contextMenuNested, },
 
   data: () => ({
@@ -25,16 +23,8 @@ export default {
 
   computed: {
     ...mapGetters([
-      'MAP_GET_RANGE',
       'MAP_GET_TILES',
       'MAP_GET_TILE',
-      'MAP_GET_CLUSTER',
-      'MAP_GET_HINT',
-      'MAP_GET_LEGEND',
-      'MAP_GET_NOTIFY',
-      'MAP_GET_SCALE',
-      'MAP_GET_MEASURE',
-      'MAP_GET_LOGO',
     ]),
 
     form: vm => vm,
@@ -43,53 +33,12 @@ export default {
       set: function(val) { this.MAP_ACT_TILE({ind: val}); },
       get: function()    { return this.MAP_GET_TILE; },
     },
-    prop_range: {
-      set: function(val) { this.MAP_ACT_RANGE({on: !this.MAP_GET_RANGE}); },
-      get: function()    { return this.MAP_GET_RANGE; },
-    },
-    prop_cluster: {
-      set: function(val) { this.MAP_ACT_CLUSTER({on: !this.MAP_GET_CLUSTER}); },
-      get: function()    { return this.MAP_GET_CLUSTER; },
-    },
-    prop_info: {
-      set: function(val) { this.MAP_ACT_HINT({on: !this.MAP_GET_HINT}); },
-      get: function()    { return this.MAP_GET_HINT; },
-    },
-    prop_legend: {
-      set: function(val) { this.MAP_ACT_LEGEND({on: !this.MAP_GET_LEGEND}); },
-      get: function()    { return this.MAP_GET_LEGEND; },
-    },
-    prop_notify: {
-      set: function(val) { this.MAP_ACT_NOTIFY({on: !this.MAP_GET_NOTIFY}); },
-      get: function()    { return this.MAP_GET_NOTIFY; },
-    },
-    prop_scale: {
-      set: function(val) { this.MAP_ACT_SCALE({on: !this.MAP_GET_SCALE}); },
-      get: function()    { return this.MAP_GET_SCALE; },
-    },
-    prop_measure: {
-      set: function(val) { this.MAP_ACT_MEASURE({on: !this.MAP_GET_MEASURE}); },
-      get: function()    { return this.MAP_GET_MEASURE; },
-    },
-    prop_logo: {
-      set: function(val) { this.MAP_ACT_LOGO({on: !this.MAP_GET_LOGO}); },
-      get: function()    { return this.MAP_GET_LOGO; },
-    },
-
   },
 
 
   methods: {
     ...mapActions([
-      'MAP_ACT_RANGE',
       'MAP_ACT_TILE',
-      'MAP_ACT_CLUSTER',
-      'MAP_ACT_HINT',
-      'MAP_ACT_LEGEND',
-      'MAP_ACT_NOTIFY',
-      'MAP_ACT_SCALE',
-      'MAP_ACT_MEASURE',
-      'MAP_ACT_LOGO',
 
       'MAP_ACT_ITEM_ADD',
       'MAP_ACT_ITEM_DEL',
@@ -101,7 +50,7 @@ export default {
     // вызывать из родительского mounted или method.onMapReady
     // должна быть установлена переменная this.map
     mounted_menu() {
-      this.mounted_menu_struct();
+      this.mounted_menu_set();
       this.mounted_menu_pos();
     },
 
@@ -112,8 +61,10 @@ export default {
 
       // обновить menu_struct
       this.menu_struct = JSON.parse(JSON.stringify(this.menu_struct_base)); // основа - глубокая копия
+      this.menu_struct.splice(1, 0, this.menu_set_add);                     // добавить menu.set (оформление)
       this.menu_struct[0]['menu'][0]['radio'] = this.MAP_GET_TILES  ;       // добавить выбор тайлов
-      this.menu_struct = [...this.menu_items_key(), ...this.menu_struct];   // добавить работу с фрагментами
+      this.menu_struct.splice(0, 0, this.menu_pos_add());                   // добавить menu.pos (фрагмент)
+      //this.menu_struct = [...this.menu_pos_add(), ...this.menu_struct];     // добавить menu.pos (фрагмент)
 
       if (mode=='editor') {
         this.menu_struct[2]['menu'].splice(0, 4);                           // удалить некоторые настройки оформления
