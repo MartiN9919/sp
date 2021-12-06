@@ -3,6 +3,7 @@ import json
 from core.projectSettings.decorators import login_check, request_log, request_wrap, request_get, write_permission
 from data_base_driver.constants.const_dat import DAT_OWNER
 from data_base_driver.constants.const_key import SYS_KEY_CONSTANT
+from data_base_driver.constants.const_map_tiles import MAP_TILES
 from data_base_driver.record.get_record import get_object_record_by_id_http
 from data_base_driver.input_output.io_geo import get_geometry_tree, feature_collection_by_geometry
 from data_base_driver.osm.osm_lib import osm_search, osm_fc
@@ -300,6 +301,14 @@ def aj_groups(request):
     @return: список групп пользователей
     """
     return DAT_OWNER.DUMP.get_groups_list()
+
+
+@login_check
+@request_log
+@request_wrap
+@request_get
+def aj_map_tiles(request):
+    return MAP_TILES.TILES
 
 
 @login_check

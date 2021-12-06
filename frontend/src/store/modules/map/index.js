@@ -1,12 +1,10 @@
-
-import { MAP_ITEM }  from '@/components/Map/Leaflet/Lib/Const';
-import { hash_simple } from '@/plugins/sys';
-import { MAP_DATA_MENU_TILES } from '@/store/modules/map/index_menu';
+import { hash_simple } from '@/plugins/sys'
+import axios from "@/plugins/axiosSettings"
 import UserSetting from "@/store/addition"
 
 export default {
   state: {
-    tiles: MAP_DATA_MENU_TILES,                        // источники плиток https://leaflet-extras.github.io/leaflet-providers/preview/
+    tiles: [],                        // источники плиток https://leaflet-extras.github.io/leaflet-providers/preview/
 
     range:      new UserSetting('MAP_RANGE',   true),  // фильтр отображаемых данных по дате/времени
     tile:       new UserSetting('MAP_TILE',    0),     // (int) индекс активного источника плиток tiles[tile]
@@ -69,6 +67,13 @@ export default {
     MAP_MUT_LOGO:       (state, on)   => state.logo.value     = on,
     MAP_MUT_NOTIFY:     (state, on)   => state.notify.value   = on,
 
+    MAP_MUT_TILES:      (state, til)  => {
+      state.tiles = Array.from(til, t => {
+        if (t.hasOwnProperty('crs')) Object.assign(t, {crs: L.CRS.EPSG3395})
+        return t
+      })
+    },
+
   //MAP_MUT_CENTER_X:   (state, val)  => state.center_x = val,
   //MAP_MUT_CENTER_Y:   (state, val)  => state.center_y = val,
     MAP_MUT_ZOOM:       (state, val)  => state.zoom     = val,
@@ -80,6 +85,12 @@ export default {
   actions: {
     MAP_ACT_RANGE:      ({commit}, param={}) => commit('MAP_MUT_RANGE',         param.on),
     MAP_ACT_TILE:       ({commit}, param={}) => commit('MAP_MUT_TILE',          param.ind),
+
+    MAP_ACT_TILES:      ({commit}, param={}) => {
+      axios.get('objects/tiles', param)
+        .then(r => commit('MAP_MUT_TILES', r.data))
+    },
+
     MAP_ACT_CLUSTER:    ({commit}, param={}) => commit('MAP_MUT_CLUSTER',       param.on),
     MAP_ACT_HINT:       ({commit}, param={}) => commit('MAP_MUT_HINT',          param.on),
     MAP_ACT_LEGEND:     ({commit}, param={}) => commit('MAP_MUT_LEGEND',        param.on),

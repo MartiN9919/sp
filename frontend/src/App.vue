@@ -29,7 +29,7 @@ export default {
 </script>
 
 <style>
-  @import "~@/assets/css/reset.css";
+  /*@import "~@/assets/css/reset.css";*/
   @import "~@/assets/css/normalize_original.css";
   @import "~@/assets/css/normalize_addition.css";
   @import "~@/main.css";

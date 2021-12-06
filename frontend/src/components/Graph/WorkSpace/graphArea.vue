@@ -97,7 +97,7 @@ export default {
   }),
   mixins: [bodyContextMenu, dragMixin],
   computed: {
-    ...mapGetters(['graphObjects', 'graphRelations', 'globalDisplaySettingValue', 'objectClassifiersSettings']),
+    ...mapGetters(['graphObjects', 'graphRelations', 'globalDisplaySettingValue', 'classifiersSettings']),
     allowRelations() { return Array.from(this.$store.state.graph.rootInstances.relations, r => {return r.id}) },
   },
   methods: {
@@ -138,8 +138,9 @@ export default {
       this.graphObjects.splice(this.graphObjects.findIndex(o => o === object), 1)
     },
     getObjectClassifiers(object) {
-      let enabledClassifiers = this.objectClassifiersSettings(object.object.object.id)
-      return object.object.params.filter(p => enabledClassifiers.includes(p.baseParam.id) && p.values.length !== 0)
+      return object.object.params.filter(
+          p => !this.classifiersSettings.includes(p.baseParam.id) && p.values.length !== 0
+      )
     },
     getTitlePosition(object) {
       return {x: object.x + object.width / 2 - object.size / 2, y: object.y + object.height}
