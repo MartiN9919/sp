@@ -1,67 +1,65 @@
 import { mapGetters, mapActions } from 'vuex';
 
-export default {
-  data: () => ({
-    menu_set_add: {
-      icon:     'mdi-eye',
-      title:    'Оформление',
-      subtitle: 'Отображаемые элементы карты',
-      menu:     [
-        {
-          icon:     'mdi-calendar-range',
-          title:    'Фильтр объектов по дате-времени',
-          subtitle: '[Shift+Ф]',
-          model:    'prop_range',
-          color:    'blue',
-        },
-        {
-          icon:     'mdi-google-circles-group',
-          title:    'Группировка близлежащих маркеров',
-          subtitle: '[Shift+Г]',
-          model:    'prop_cluster',
-        },
-        {
-          icon:     'mdi-message',
-          title:    'Информация об объектах',
-          subtitle: '[Shift+И]',
-          model:    'prop_info',
-        },
-        // работоспособен, но не требует регулирования ввиду незначительного функционала
-        // {
-        //   icon:     'mdi-map-legend',
-        //   title:    'Легенда',
-        //   subtitle: '[Shift+Л]',
-        //   model:    'prop_legend',
-        // },
-        // работоспособен, но не требует регулирования ввиду незначительного функционала
-        // {
-        //   icon:     'mdi-message-outline',
-        //   title:    'Заметки',
-        //   subtitle: '[Shift+З]',
-        //   model:    'prop_notify',
-        // },
-        {
-          icon:     'mdi-ruler',
-          title:    'Масштаб',
-          subtitle: '[Shift+М]',
-          model:    'prop_scale',
-        },
-        {
-          icon:     'mdi-arrow-expand-right',
-          title:    'Рулетка',
-          subtitle: '[Shift+Р]',
-          model:    'prop_measure',
-        },
-        {
-          icon:     'mdi-copyright',
-          title:    'Логотип',
-          subtitle: '[Shift+С]',
-          model:    'prop_logo',
-        },
-      ],
+const menu = {
+  icon:     'mdi-eye',
+  title:    'Оформление',
+  subtitle: 'Отображаемые элементы карты',
+  menu:     [
+    {
+      icon:     'mdi-calendar-range',
+      title:    'Фильтр объектов по дате-времени',
+      subtitle: '[Shift+Ф]',
+      model:    'prop_range',
+      color:    'blue',
     },
-  }),
+    {
+      icon:     'mdi-google-circles-group',
+      title:    'Группировка близлежащих маркеров',
+      subtitle: '[Shift+Г]',
+      model:    'prop_cluster',
+    },
+    {
+      icon:     'mdi-message',
+      title:    'Информация об объектах',
+      subtitle: '[Shift+И]',
+      model:    'prop_info',
+    },
+    // работоспособен, но не требует регулирования ввиду незначительного функционала
+    // {
+    //   icon:     'mdi-map-legend',
+    //   title:    'Легенда',
+    //   subtitle: '[Shift+Л]',
+    //   model:    'prop_legend',
+    // },
+    // работоспособен, но не требует регулирования ввиду незначительного функционала
+    // {
+    //   icon:     'mdi-message-outline',
+    //   title:    'Заметки',
+    //   subtitle: '[Shift+З]',
+    //   model:    'prop_notify',
+    // },
+    {
+      icon:     'mdi-ruler',
+      title:    'Масштаб',
+      subtitle: '[Shift+М]',
+      model:    'prop_scale',
+    },
+    {
+      icon:     'mdi-arrow-expand-right',
+      title:    'Рулетка',
+      subtitle: '[Shift+Р]',
+      model:    'prop_measure',
+    },
+    {
+      icon:     'mdi-copyright',
+      title:    'Логотип',
+      subtitle: '[Shift+С]',
+      model:    'prop_logo',
+    },
+  ],
+};
 
+export default {
   beforeDestroy: function() {
     if (this.map) {
       this.map.removeEventListener('keydown', this.menu_set_key_down);
@@ -131,6 +129,11 @@ export default {
     // должна быть установлена переменная this.map
     mounted_menu_set() {
       this.map.addEventListener('keydown', this.menu_set_key_down);
+    },
+
+    // добавить в контекстное меню
+    menu_set_add() {
+      return JSON.parse(JSON.stringify(menu));
     },
 
     // событие: нажатие клавиши
