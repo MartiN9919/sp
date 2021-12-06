@@ -67,12 +67,7 @@ export default {
     MAP_MUT_LOGO:       (state, on)   => state.logo.value     = on,
     MAP_MUT_NOTIFY:     (state, on)   => state.notify.value   = on,
 
-    MAP_MUT_TILES:      (state, til)  => {
-      state.tiles = Array.from(til, t => {
-        if (t.hasOwnProperty('crs')) Object.assign(t, {crs: L.CRS.EPSG3395})
-        return t
-      })
-    },
+    MAP_MUT_TILES:      (state, til)  => state.tiles = til,
 
   //MAP_MUT_CENTER_X:   (state, val)  => state.center_x = val,
   //MAP_MUT_CENTER_Y:   (state, val)  => state.center_y = val,
