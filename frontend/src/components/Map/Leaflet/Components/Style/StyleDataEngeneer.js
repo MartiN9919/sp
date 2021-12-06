@@ -2,12 +2,12 @@ export const ICON = {
   'engineer_border_sign': {
     anchor_dx: 100,
     anchor_dy: 50.,
-    zoom:      1.,   // .5;
+    zoom:      .7,   // .5;
     svg: `
       <svg width={width} height={height} viewBox="0 0 200 125">
-        <circle style="fill:#fff;stroke:#000;stroke-width:4" cx="100" cy="50" r="23"/>
-        <circle style="fill:#000" cx="100" cy="50" r="8"/>
-        <text style="font-style:normal;font-size:40px;font-family:sans-serif;text-anchor:middle" x="100" y="120">{text}</text>
+        <circle style="fill:#fff;stroke:#555;stroke-width:4" cx="100" cy="50" r="23"/>
+        <circle style="fill:#555" cx="100" cy="50" r="8"/>
+        <text style="font-style:normal;font-size:35px;font-family:sans-serif;text-anchor:middle" x="100" y="120">{text}</text>
       </svg>
     `,
   },
@@ -16,13 +16,13 @@ export const ICON = {
   'engineer_video': {
     anchor_dx: 100,
     anchor_dy: 20.,
-    zoom:      .8,  // .5
+    zoom:      .7,  // .5
     svg: `
       <svg width={width} height={height} viewBox="0 0 200 95">
-        <rect style="fill:#fff;stroke:#000;stroke-width:2" width="70" height="40" x="60" y="1"/>
-        <rect style="fill:#000;stroke-width:2" width="70"  height="13" x="60" y="27"/>
-        <path style="fill:#000;stroke:#000;stroke-width:2" d="M135,20 155,1 155,40 Z"/>
-        <text style="font-style:normal;font-size:37px;font-family:sans-serif;text-anchor:middle" x="100" y="90">{text}</text>
+        <rect style="fill:#fff;stroke:#555;stroke-width:2" width="70" height="40" x="60" y="1"/>
+        <rect style="fill:#555;stroke-width:2" width="70"  height="13" x="60" y="27"/>
+        <path style="fill:#555;stroke:#555;stroke-width:2" d="M135,20 155,1 155,40 Z"/>
+        <text style="font-style:normal;font-size:35px;font-family:sans-serif;text-anchor:middle" x="100" y="90">{text}</text>
       </svg>
     `,
   },
@@ -48,8 +48,8 @@ export const ICON = {
     zoom:      .8,
     svg: `
       <svg width={width} height={height} viewBox="0 0 300 130">
-        <path style="fill:#fff;stroke:#000;stroke-width:4" d="M120.53,91.11 h60 l-30,-75.00 z"/>
-        <path style="fill:#fff;stroke:#000;stroke-width:4" d="M129.53,11.11 h40 l6,-10.00 -2,3 h-48 l-2,-3 z"/>
+        <path style="fill:#fff;stroke:#555;stroke-width:4" d="M120.53,91.11 h60 l-30,-75.00 z"/>
+        <path style="fill:#fff;stroke:#555;stroke-width:4" d="M129.53,11.11 h40 l6,-10.00 -2,3 h-48 l-2,-3 z"/>
         <text style="font-style:normal;font-size:25px;font-family:sans-serif;text-anchor:middle" x="150" y="125">{text}</text>
       </svg>
     `,

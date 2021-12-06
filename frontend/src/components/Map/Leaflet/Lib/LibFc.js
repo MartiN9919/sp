@@ -12,13 +12,17 @@ export function set_feature_hint(layer, fc_properties, only_parent=false) {
   let date = fc_properties[MAP_ITEM.FC.FEATURES.PROPERTIES.DATE] ?? '';
   let hint = fc_properties[MAP_ITEM.FC.FEATURES.PROPERTIES.HINT] ?? '';
   let val  =
-    ((text != '') ? ('<span style="font-weight:bold;background:#eee;width:100%;display:inline-block;">'+str_cut(text, 100)+'</span><br>') : '')+
+    ((text != '') ? ('<span style="font-weight:bold;background:#eee;width:100%;display:inline-block;">'+str_cut(text, 300)+'</span><br>') : '')+
     ((date != '') ? (date+'<br>') : '')+
-    str_cut(hint, 100).replace(/\n/, '<br>');
+    str_cut(hint, 300).replace(/\n/, '<br>');
   if (val == '') return;
 
   function set_hint(layer_item) {
-    layer_item.bindTooltip('<div style="white-space:pre-line;word-wrap:break-word;min-width:6em;max-width:15em">' + val + '</div>', {permanent: false, sticky: true, });
+    // сначала окно растет по ширине, потом по высоте
+    let len = Math.max(text.length, date.length, hint.length);
+    let stl = (len > 50) ? 'white-space: pre-line;width: 20em;' : 'white-space: nowrap;';
+    layer_item.bindTooltip('<div style="white-space:pre-line;word-wrap:break-word;'+stl+'">'+val+'</div>', {permanent: false, sticky: true, });
+  // layer_item.bindTooltip('<div style="white-space:pre-line;word-wrap:break-word;min-width:6em;max-width:15em">'+val+'</div>', {permanent: false, sticky: true, });
   }
   if ((only_parent==false) && (layer.hasOwnProperty('_layers'))) {
     for(let tempLayer in layer._layers) { set_hint(layer._layers[tempLayer]); }
