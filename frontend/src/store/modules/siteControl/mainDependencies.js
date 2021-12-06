@@ -2,10 +2,10 @@ import axios from '@/plugins/axiosSettings'
 
 export default {
   state: {
-    objects: [],
-    classifiers: [],
-    relations: [],
-    baseLists: [],
+    objects: null,
+    classifiers: null,
+    relations: null,
+    baseLists: null,
     triggers: [],
   },
   getters: {
@@ -21,9 +21,9 @@ export default {
     objectTriggers: state => objectId => state.triggers.filter(trigger => trigger.objectId === objectId),
   },
   mutations: {
-    setBaseObjects: (state, objects) => state.objects.push(...objects),
-    addBaseClassifiers: (state, classifiers) => state.classifiers.push(...classifiers),
-    setBaseRelations: (state, relations) => state.relations.push(...relations),
+    setBaseObjects: (state, objects) => state.objects = objects,
+    addBaseClassifiers: (state, classifiers) => state.classifiers = classifiers,
+    setBaseRelations: (state, relations) => state.relations = relations,
     setBaseLists: (state, lists) => state.baseLists = lists,
     addTrigger: (state, trigger) => state.triggers.push(trigger),
     setTriggerState: (state, {triggerId, value}) => state.triggers.find(t => t.id === triggerId).setState(value),
@@ -32,6 +32,7 @@ export default {
     async initialization({getters, dispatch}) {
       await Promise.all([
         getters.globalNotificationStatus ? dispatch('getNotifications') : null,
+        dispatch('MAP_ACT_TILES'),
         dispatch('getBaseObjects'),
         dispatch('getBaseLists'),
         dispatch('getBaseTriggers'),
@@ -41,31 +42,24 @@ export default {
     },
     async getBaseObjects({commit, dispatch}, config = {}) {
       await axios.get('objects/list_type/', config)
-        .then(r => { commit('setBaseObjects', r.data.map(o => new BaseObject(o))) })
-        .catch(e => { return Promise.reject(e) })
-      return Promise.resolve()
+        .then(r => commit('setBaseObjects', r.data.map(o => new BaseObject(o))))
     },
     async getBaseClassifiers({getters, commit}, config = {}) {
       await axios.get('objects/list_classifier/', config)
-        .then(r => { commit('addBaseClassifiers', r.data.map(c => new BaseClassifier(c))) })
-        .catch(e => { return Promise.reject(e) })
-      return Promise.resolve()
+        .then(r => commit('addBaseClassifiers', r.data.map(c => new BaseClassifier(c))))
     },
     async getBaseRelations({commit}, config = {}) {
       await axios.get('objects/relations/', config)
-        .then(r => { commit('setBaseRelations', r.data.map(l => new BaseRelation(l))) })
-        .catch(e => { return Promise.reject(e) })
-      return Promise.resolve()
+        .then(r => commit('setBaseRelations', r.data.map(l => new BaseRelation(l))))
     },
     async getBaseLists({commit}, config = {}) {
       await axios.get('objects/lists/', config)
-        .then(r => { commit('setBaseLists', r.data) })
-        .catch(e => { return Promise.reject(e) })
-      return Promise.resolve()
+        .then(r => commit('setBaseLists', r.data))
     },
     async getBaseTriggers({getters, commit}, config = {}) {
       await axios.get('script/trigger_list/', config)
         .then(r => {
+          console.log(r.data)
           Object.entries(r.data).forEach(([k, v]) => { v.map(t => commit('addTrigger', new Trigger(k, t))) })
           let triggers = new Map(Object.entries(localStorage).filter(i => i[0].startsWith('trigger')))
           for (let [n, v] of triggers) {
@@ -74,8 +68,6 @@ export default {
             localStorage.removeItem(n)
           }
         })
-        .catch(e => { return Promise.reject(e) })
-      return Promise.resolve()
     },
     setTriggerState({ commit }, payload) { commit('setTriggerState', payload) },
   }
