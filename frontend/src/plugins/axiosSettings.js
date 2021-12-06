@@ -3,8 +3,7 @@ import store from '../store/index'
 import router from "@/router"
 import CONST from '@/plugins/const'
 
-export const WS_SERVER_IP = 'ws://' + CONST.URL.SERVER_IP
-export const HTTP_SERVER_IP = 'http://' + CONST.URL.SERVER_IP
+export const HTTP_SERVER_IP = CONST.URL.SERVER_IP
 
 const http = axios.create({
   withCredentials: true,

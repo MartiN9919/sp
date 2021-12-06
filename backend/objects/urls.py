@@ -19,4 +19,5 @@ urlpatterns = [
     url(r'^geometry_tree', views.aj_geometry_tree),
     url(r'^geometry', views.aj_geometry),
     url(r'^groups', views.aj_groups),
+    url(r'^tiles', views.aj_map_tiles),
 ]
