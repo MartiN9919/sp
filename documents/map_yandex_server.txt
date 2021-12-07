@@ -1,0 +1,28 @@
+sudo apt update
+mkdir /maps
+mkdir /maps/yandex;
+chmod 0777 /maps
+- проверить место на диске командой df -h, если нет то настроить по файлу server_disk_setting
+sudo apt install nfs-kernel-server
+sudo systemctl enable nfs-kernel-server
+sudo systemctl start nfs-kernel-server
+sudo ufw allow nfs
+sudo nano /etc/exports
+добавить в конец файла строку /maps 200.200.200.237(rw)
+cntr-S cntr-X
+sudo exportfs -a
+sudo apt install nginx
+sudo systemctl enable nginx
+sudo nano /etc/nginx/sites-available/yandex.map
+
+server {
+        listen 80;
+        location / {
+                root /maps/yandex/;
+        }
+}
+
+cntr-S cntr-X
+cd /etc/nginx/sites-enabled/
+sudo ln -s /etc/nginx/sites-available/yandex.map
+sudo systemctl restart nginx
