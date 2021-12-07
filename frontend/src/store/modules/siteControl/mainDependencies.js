@@ -14,7 +14,7 @@ export default {
     baseClassifiers: state => id => state.classifiers.filter(c => c.objectId === id),
     baseClassifier: state => id => state.classifiers.find(c => c.id === id),
     baseRelation: state => id => state.relations.find(r => r.id === id),
-    baseRelations: state => ids => state.relations.filter(r => [r.f_id, r.s_id].every(i => Object.values(ids).includes(i))),
+    baseRelations: state => ids => state.relations.filter(r => (r.f_id === ids.f_id && r.s_id === ids.s_id) || (r.f_id === ids.s_id && r.s_id === ids.f_id)),
     baseLists: state => state.baseLists,
     baseList: state => id => state.baseLists[id],
     triggers: state => state.triggers,
