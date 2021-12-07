@@ -4,18 +4,18 @@ export default {
   computed: {
     ...mapGetters([
       'MAP_GET_TILES',
-      'MAP_GET_TILE',
+      'MAP_GET_TILE_IND',
     ]),
 
     prop_tile: {
-      set: function(val) { this.MAP_ACT_TILE({ind: val}); },
-      get: function()    { return this.MAP_GET_TILE; },
+      set: function(val) { this.MAP_ACT_TILE_IND({ind: val}); },
+      get: function()    { return this.MAP_GET_TILE_IND; },
     },
   },
 
   methods: {
     ...mapActions([
-      'MAP_ACT_TILE',
+      'MAP_ACT_TILE_IND',
     ]),
 
     // инициализация, вызывается из родителя
