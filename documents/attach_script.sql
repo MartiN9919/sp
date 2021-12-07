@@ -1,0 +1,13 @@
+ATTACH INDEX obj_free_row_pl TO RTINDEX obj_free_row;
+ATTACH INDEX obj_file_row_pl TO RTINDEX obj_file_row;
+ATTACH INDEX obj_doc_row_pl TO RTINDEX obj_doc_row;
+ATTACH INDEX obj_point_row_pl TO RTINDEX obj_point_row;
+ATTACH INDEX obj_geometry_row_pl TO RTINDEX obj_geometry_row;
+ATTACH INDEX obj_person_p_row_pl TO RTINDEX obj_person_p_row;
+ATTACH INDEX obj_person_l_row_pl TO RTINDEX obj_person_l_row;
+ATTACH INDEX obj_case_row_pl TO RTINDEX obj_case_row;
+ATTACH INDEX obj_transport_row_pl TO RTINDEX obj_transport_row;
+ATTACH INDEX obj_telefon_row_pl TO RTINDEX obj_telefon_row;
+ATTACH INDEX rel_pl TO RTINDEX rel;
+ATTACH INDEX obj_geometry_col_pl TO RTINDEX obj_geometry_col;
+ATTACH INDEX obj_point_col_pl TO RTINDEX obj_point_col_pl;
