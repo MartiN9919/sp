@@ -43,6 +43,7 @@ export default {
     MAP_GET_TILE_IND:   (state) =>  state.tile_ind.value,
     MAP_GET_TILE_VAL:   function(state) {
       let tile = (state.tile_ind.value<state.tiles.length)?state.tiles[state.tile_ind.value]:state.tiles[0];
+      tile = JSON.parse(JSON.stringify(tile));
       switch (tile.crs) {
         case 'EPSG3395':   tile.crs = L.CRS.EPSG3395;   break;
         case 'EPSG3857':   tile.crs = L.CRS.EPSG3857;   break;

@@ -1,0 +1,71 @@
+{
+	"secret_key": "8yumthetynjeymnmytm*w7trhrh5hg&rc8g5%nytmme",
+	"allowed_hosts": 
+	[
+		"*"
+	],
+	"data_base":
+	{
+		"HOST": "xxx.xxx.xxx.xxx",
+		"PORT": "3306",
+		"NAME": "vec_data",
+		"USER": "user",
+		"PASSWORD": "***",
+		"CHARSET": "utf8"
+	},
+	"osm":
+	{
+		"HOST": "xxx.xxx.xxx.xxx",
+    		"PORT": "5432",
+    		"NAME": "gis",
+    		"USER": "user",
+    		"PASSWORD": "***",
+    		"CHARSET": "utf8"
+	},
+	"manticore":
+	{
+		"SEARCH_URL": "http://xxx.xxx.xxx.xxx:pppp/search",
+		"OSM_SEARCH_URL": "http://xxx.xxx.xxx.xxx:pppp/search",
+		"INSERT_URL": "http://xxx.xxx.xxx.xxx:pppp/insert",
+		"UPDATE_URL": "http://xxx.xxx.xxx.xxx:pppp/update"
+	},
+	"tiles":
+	[
+		{
+			"id": 1,
+            		"title": "OSM",
+           		"subtitle": "Схема (Интернет)",
+           		"url": "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+           		"attr": "",
+            		"tms": false,
+            		"color": "red"
+		},
+		{
+			"id": 2,
+            		"title": "OSM",
+           		"subtitle": "Схема (Локальная сеть)",
+           		"url": "http://xxx.xxx.xxx.xxx/osm/{z}/{x}/{y}.png",
+           		"attr": "",
+            		"tms": false
+            	},
+		{
+			"id": 3,
+            		"title": "Yandex",
+           		"subtitle": "Спутник (Интернет)",
+           		"url": "https://core-sat.maps.yandex.net/tiles?l=sat&v=3.786.0&x={x}&y={y}&z={z}&scale=2&lang=ru_UA",
+           		"attr": "",
+            		"tms": false,
+            		"crs": "EPSG3395",
+            		"color": "red"
+		},
+		{
+			"id": 4,
+            		"title": "Yandex",
+           		"subtitle": "Спутник (Локальная сеть)",
+           		"url": "http://xxx.xxx.xxx.xxx/{z}/{x}/{y}.jpg",
+           		"attr": "",
+            		"tms": false,
+            		"crs": "EPSG3395"
+            	}
+	]
+}

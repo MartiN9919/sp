@@ -1,0 +1,67 @@
+sudo apt update
+- проверить место на диске командой df -h, если нет то настроить по файлу server_disk_setting
+sudo apt install postgresql postgresql-contrib postgis postgresql-postgis acl git
+sudo -u postgres -i
+createuser osm
+createdb -E UTF8 -O osm gis
+psql -c "CREATE EXTENSION postgis;" -d gis
+psql -c "CREATE EXTENSION hstore;" -d gis
+psql -c "ALTER TABLE spatial_ref_sys OWNER TO osm;" -d gis
+exit
+sudo adduser --system osm
+cd /home/osm/
+sudo setfacl -R -m u:dev:rwx /home/osm/
+screen 
+wget -c http://planet.openstreetmap.org/pbf/planet-latest.osm.pbf
+cntrl-A + d
+// начинается загрузка карты мира, может занять несколько дней, для проверки состояния загрузки команда screen -r
+sudo nano /etc/postgresql/12/main/postgresql.conf // если папка не найдена, зайти руками в /etc/postgresql и посмотреть номер который там лежит
+shared_buffers = 15GB // найти такую строчку и записать
+work_mem = 1GB //раскоментировать и поменять значение
+maintenance_work_mem = 8GB //раскоментировать и поменять значение
+cntrl-S + cntrl-X
+sudo systemctl restart postgresql
+sudo nano /etc/sysctl.conf
+vm.nr_hugepages = 7950 // добавить в конец файла
+cntrl-S + cntrl-X
+sudo sysctl -p
+sudo systemctl restart postgresql
+sudo apt install osm2pgsql
+sudo setfacl -R -m u:postgres:rwx /home/osm/
+screen //все дальнейшие операции выполняются в экране, можно разрывать соединение
+sudo -u postgres -i
+osm2pgsql --slim -d gis --drop --flat-nodes nodes.cache --hstore --multi-geometry --number-processes 10 --tag-transform-script /home/osm/openstreetmap-carto/openstreetmap-carto.lua --style /home/osm/openstreetmap-carto/openstreetmap-carto.style -C 32000 /home/osm/planet-latest.osm.pbf // долгая операция
+cntrl-A + d // для выхода из экрана
+sudo -u postgres -i // если вышли из базы данных
+psql -c "GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO osm;" -d gis
+exit
+sudo apt install software-properties-common
+sudo add-apt-repository ppa:osmadmins/ppa
+sudo apt install libapache2-mod-tile renderd // в ходе установки нажать enter
+sudo apt install curl unzip gdal-bin mapnik-utils libmapnik-dev python3-pip
+sudo apt-get install -y nodejs
+sudo apt-get install npm
+sudo npm install -g carto
+sudo -H pip3 install psycopg2
+sudo -u postgres -i
+cd /home/osm/openstreetmap-carto/
+scripts/get-external-data.py
+carto project.mml > style.xml
+psql -c "GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO osm;" -d gis
+exit
+sudo apt install ttf-dejavu
+sudo apt install fonts-noto-cjk fonts-noto-hinted fonts-noto-unhinted ttf-unifont
+sudo nano /etc/renderd.conf
+num_threads=10 // заменить в данной строке
+XML=/home/osm/openstreetmap-carto/style.xml // заменить в данной строке
+HOST=localhost // заменить в данной строке
+plugins_dir=/usr/lib/mapnik/3.0/input/ // заменить в данной строке
+font_dir=/usr/share/fonts/truetype // заменить в данной строке
+font_dir_recurse=true // заменить в данной строке
+cntrl-S + cntrl-X
+sudo nano /etc/init.d/renderd
+RUNASUSER=osm // заменить в данной строке
+cntrl-S + cntrl-X
+sudo systemctl restart apache2
+
+
