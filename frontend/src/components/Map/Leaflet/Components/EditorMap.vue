@@ -339,7 +339,7 @@ export default {
           this.map.fitBounds(layer.getBounds(), { padding: [30, 30], });
         }
         else {
-          this.map.setView(layer._latlng)
+          if (layer._latlng!=undefined) this.map.setView(layer._latlng)
         }
       });
     },
