@@ -31,7 +31,7 @@ class MAP_TILES:
             'url': 'https://core-sat.maps.yandex.net/tiles?l=sat&v=3.786.0&x={x}&y={y}&z={z}&scale=2&lang=ru_UA',
             'attr': '',
             'tms': False,
-            'crs': 'L.CRS.EPSG3395',
+            'crs': 'EPSG3395',
             'color': 'red',
         },
         {
@@ -41,7 +41,7 @@ class MAP_TILES:
             'url': 'http://200.200.200.232/{z}/{x}/{y}.jpg',
             'attr': '',
             'tms': False,
-            'crs': 'L.CRS.EPSG3395',
+            'crs': 'EPSG3395',
         },
         {
             'id': 5,

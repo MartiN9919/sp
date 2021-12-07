@@ -1,9 +1,9 @@
 <template>
-  <v-card>
+  <v-card style="height: 100%;">
     <v-combobox
       ref="inp"
       v-model="search_value"
-      style="margin: 15px;"
+      style="padding: 15px;"
       :color="$CONST.APP.COLOR_OBJ"
       :items="search_items"
       :loading="search_wait"
@@ -20,6 +20,7 @@
 
     <Treeview
       class="tree"
+      style="height: calc( 100% - 70px ); overflow-y: auto;"
       :items="found_items"
       :itemSel.number.sync="found_item_sel"
       iconDef="mdi-web"
@@ -131,5 +132,5 @@ export default {
 </script>
 
 <style scoped lang="scss">
-  div.tree::v-deep { overflow-y: auto !important; height: calc( 100% - 120px ); }
+
 </style>
