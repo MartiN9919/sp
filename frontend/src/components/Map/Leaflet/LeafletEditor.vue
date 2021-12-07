@@ -1,7 +1,6 @@
 <template>
   <EditorSplit
     style="height: 100%; width: 100%;"
-    :localStorageKeyPostfix="LOCAL_STORAGE_KEY_POSTFIX"
   >
 
     <template v-slot:firstPane>
