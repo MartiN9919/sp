@@ -57,9 +57,6 @@
  *    @onNavNew=""
  *    @onNavAdd=""
  *  />
- *
- *  update_fc(fc) { },
- *  @update_fc  - событие при изменении на карте fc
  */
 
 import router from '@/router';
@@ -74,9 +71,6 @@ export default {
   name: 'editor-nav-obj',
   components: { Treeview, SelectorInput, },
 
-  props: {
-    fc: Object,
-  },
   emits: [
     'onNavNew',
     'onNavAdd',

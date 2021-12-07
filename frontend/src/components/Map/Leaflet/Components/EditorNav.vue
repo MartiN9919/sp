@@ -14,7 +14,7 @@
       </v-tab>
       <v-tab href="#tab-osm">
         <v-icon left>mdi-web</v-icon>
-        Поиск
+        Мир
       </v-tab>
 
 
@@ -55,7 +55,7 @@ export default {
   inheritAttrs: false,
 
   data: () => ({
-    tab: new UserSetting('EditorNav_idTab', null),
+    tab: new UserSetting('EditorNav.tab', null),
   }),
 
   methods: {
