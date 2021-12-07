@@ -2,7 +2,7 @@
   <v-card height="100%">
     <v-tabs
       ref="tabs"
-      v-model="tab"
+      v-model="tab.value"
       :color="$CONST.APP.COLOR_OBJ"
       background-color="transparent"
       grow
@@ -41,6 +41,7 @@
 <script>
 
 import router       from '@/router';
+import UserSetting  from "@/store/addition"
 import editorNavOsm from '@/components/Map/Leaflet/Components/EditorNavOsm';
 import EditorNavObj from '@/components/Map/Leaflet/Components/EditorNavObj';
 import MixResize    from '@/components/Map/Leaflet/Mixins/Resize';
@@ -52,27 +53,10 @@ export default {
   mixins: [ MixResize, ],
 
   inheritAttrs: false,
-  props: {
-    localStorageKeyPostfix: { type: String, default() { return '' } },
-  },
 
   data: () => ({
-    tab: null,
+    tab: new UserSetting('EditorNav_idTab', null),
   }),
-
-  watch: {
-    tab: function(val) {
-      localStorage[this.key_tab] = val
-    },
-  },
-
-  computed: {
-    key_tab() { return router.currentRoute.name + '_editor_nav_tab_sel_' + this.localStorageKeyPostfix },
-  },
-
-  mounted() {
-    this.tab = localStorage[this.key_tab]
-  },
 
   methods: {
     on_resize () {                   // fire from MixResize

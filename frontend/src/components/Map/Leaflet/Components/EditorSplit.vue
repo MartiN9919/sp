@@ -30,7 +30,7 @@ export default {
   name: 'EditorSplit',
   components: { ResSplitPane, },
   data: () => ({
-    pos : new UserSetting('EditorSplit_pos', 40),
+    pos : new UserSetting('EditorSplit.pos', 40),
   }),
   mounted () {
     this.$refs.EditorSplit.$children[1].$el.classList.add('split-shadow-effect')

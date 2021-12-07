@@ -5,7 +5,6 @@
 
     <template v-slot:firstPane>
       <EditorNav
-        :localStorageKeyPostfix="LOCAL_STORAGE_KEY_POSTFIX"
         :fc="fc_child"
         @onNavNew="on_nav_new"
         @onNavAdd="on_nav_add"
