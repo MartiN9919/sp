@@ -38,7 +38,7 @@
     <v-divider class="mx-4"></v-divider>
 
     <div style="height: calc(100% - 70px);"
-      @contextmenu="on_menu_show($event)"
+      @contextmenu=""
     >
 
       <Treeview
@@ -47,123 +47,10 @@
         :itemSelId.number.sync="item_sel_id"
         @onNavNew="on_nav_new"
         @onNavAdd="on_nav_add"
-        @onMenuShow="on_menu_show"
+        @onMenuShow=""
       />
-
-      <contextMenuNested
-        ref="menu_obj"
-        :form="form"
-        :items="menu_struct"
-      />
-
-      <v-dialog
-        v-model="menu_dialog_param_show"
-        max-width="400px"
-        style="z-index: 10000002"
-        @keydown.enter="on_menu_dialog_param_ok"
-        @keydown.esc="menu_dialog_param_show = false"
-        transition="dialog-bottom-transition"
-        persistent
-      >
-        <v-card>
-          <v-card-title>{{menu_dialog_param_title}}</v-card-title>
-          <v-divider></v-divider>
-          <v-card-text>
-            <v-text-field
-              ref="input_name"
-              v-model="menu_dialog_param_name"
-              label="Название*"
-              required
-              autofocus
-            />
-            <!--
-            <selector-input
-              ref="dd"
-              v-model="menu_dialog_param_icon"
-              label="Иконка"
-              placeholder="Иконка"
-              :items="menu_dialog_param_icons"
-              @update:search-input="menu_dialog_param_icon = $event"
-            >
-              <template v-slot:append-outer>
-                <div style="min-width: 24px;">
-                  <v-icon size="24">{{ menu_dialog_param_icon }}</v-icon>
-                </div>
-              </template>
-            </selector-input>
-            -->
-
-            <!--
-            <v-combobox
-              ref="dd"
-              v-model="menu_dialog_param_icon"
-              label="Иконка"
-              :items="menu_dialog_param_icons"
-              @update:search-input="menu_dialog_param_icon = $event"
-            >
-              <template v-slot:item="{ parent, item, on, attrs }">
-                <v-list-item v-on="on" v-bind="attrs" dense>
-                  <v-list-item-content>
-                    <v-list-item-title v-text="item"/>
-                  </v-list-item-content>
-                  <v-list-item-icon>
-                    <v-icon size="20">{{ item }}</v-icon>
-                  </v-list-item-icon>
-                </v-list-item>
-              </template>
-
-              <template v-slot:append-outer>
-                <div style="min-width: 24px;">
-                  <v-icon size="24">{{ menu_dialog_param_icon }}</v-icon>
-                </div>
-              </template>
-            </v-combobox>
-            -->
-          </v-card-text>
-          <v-divider></v-divider>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn :color="$CONST.APP.COLOR_OBJ" text @click="menu_dialog_param_show = false">Отмена</v-btn>
-            <v-btn :color="$CONST.APP.COLOR_OBJ" text @click="on_menu_dialog_param_ok" :disabled="is_disabled_menu_dialog_param_ok()">Ок</v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
-
-      <v-dialog
-        v-model="menu_dialog_agree_show"
-        max-width="600px"
-        style="z-index: 10000003"
-        @keydown.enter=""
-        @keydown.esc="menu_dialog_agree_show = false"
-        transition="dialog-bottom-transition"
-        persistent
-      >
-        <v-card>
-          <v-card-title>Отключить объект</v-card-title>
-          <v-divider></v-divider>
-          <v-card-text>
-
-            <v-checkbox
-              ref="input_agree"
-              v-model="menu_dialog_agree_val"
-              :label="menu_dialog_agree_title"
-              color="warning"
-              value="true"
-              hide-details
-            ></v-checkbox>
-
-          </v-card-text>
-          <v-divider></v-divider>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn :color="$CONST.APP.COLOR_OBJ" text @click="menu_dialog_agree_show = false">Отмена</v-btn>
-            <v-btn :color="$CONST.APP.COLOR_OBJ" text @click="on_menu_dialog_agree_ok" :disabled="!menu_dialog_agree_val">Ок</v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
 
     </div>
-
   </v-card>
 </template>
 
@@ -184,14 +71,12 @@ import router from '@/router';
 import axios from '@/plugins/axiosSettings';
 import Treeview from '@/components/Map/Leaflet/Components/Treeview';
 import SelectorInput from "@/components/WebsiteShell/InputForms/selectorInput"
-import MixMenuNavObj from '@/components/Map/Leaflet/Mixins/MenuNavObj';
 import { fc_normalize, } from '@/components/Map/Leaflet/Lib/LibFc';
 
 
 export default {
   name: 'editor-nav-obj',
   components: { Treeview, SelectorInput, },
-  mixins: [ MixMenuNavObj, ],
 
   props: {
     localStorageKeyPostfix: { type: String, default() { return '' } },
