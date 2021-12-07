@@ -3,7 +3,7 @@
   <v-card>
     <v-text-field
       ref="inp"
-      style="margin: 15px;"
+      style="padding: 15px;"
       :color="$CONST.APP.COLOR_OBJ"
       label="Искать"
       @input="on_search"
@@ -37,20 +37,16 @@
 
     <v-divider class="mx-4"></v-divider>
 
-    <div style="height: calc(100% - 70px);"
-      @contextmenu=""
-    >
+    <Treeview
+      class="tree"
+      style="height: calc(100% - 70px);"
+      :items="items"
+      :itemSelId.number.sync="item_sel_id"
+      @onNavNew="on_nav_new"
+      @onNavAdd="on_nav_add"
+      @onMenuShow=""
+    />
 
-      <Treeview
-        class="tree"
-        :items="items"
-        :itemSelId.number.sync="item_sel_id"
-        @onNavNew="on_nav_new"
-        @onNavAdd="on_nav_add"
-        @onMenuShow=""
-      />
-
-    </div>
   </v-card>
 </template>
 
