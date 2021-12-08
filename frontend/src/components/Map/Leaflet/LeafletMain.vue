@@ -140,7 +140,7 @@ import MixResize        from '@/components/Map/Leaflet/Mixins/Resize';
 import MixColor         from '@/components/Map/Leaflet/Mixins/Color';
 import MixControl       from '@/components/Map/Leaflet/Mixins/Control';
 import MixMeasure       from '@/components/Map/Leaflet/Mixins/Measure';
-import MixMenu          from '@/components/Map/Leaflet/Mixins/Menu';
+import MixMenu          from '@/components/Map/Leaflet/Mixins/Menu/Menu';
 
 
 // устранение бага с путями

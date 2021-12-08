@@ -87,7 +87,7 @@ import ControlNotify from '@/components/Map/Leaflet/Components/Control/ControlNo
 import MixResize     from '@/components/Map/Leaflet/Mixins/Resize';
 import MixControl    from '@/components/Map/Leaflet/Mixins/Control';
 import MixMeasure    from '@/components/Map/Leaflet/Mixins/Measure';
-import MixMenu       from '@/components/Map/Leaflet/Mixins/Menu';
+import MixMenu       from '@/components/Map/Leaflet/Mixins/Menu/Menu';
 
 import { fc_merge }  from '@/components/Map/Leaflet/Lib/LibFc';
 
