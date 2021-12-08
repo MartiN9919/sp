@@ -42,8 +42,10 @@
       style="height: calc(100% - 70px);"
       :items="items"
       :itemSelId.number.sync="item_sel_id.value"
+      :fcPreview="fcPreview"
       @onNavNew="on_nav_new"
       @onNavAdd="on_nav_add"
+      @onNavPreview="on_nav_preview"
       @onMenuShow=""
     />
 
@@ -86,6 +88,8 @@ export default {
     btn_color:         undefined,
     btn_prev_disabled: true,
     btn_next_disabled: true,
+
+    fcPreview:         undefined,    // передается в EditorTree.EditorPreview
   }),
 
   created: function() { this.refresh_items(); },
@@ -100,15 +104,25 @@ export default {
         .catch(error => { return Promise.reject(error) });
     },
 
-    on_nav_new(id, name) { this.on_nav(id, name, 'onNavNew') },
-    on_nav_add(id, name) { this.on_nav(id, name, 'onNavAdd') },
-    on_nav(id, name, emit_name) {
-      axios.get(this.$CONST.API.OBJ.GEOMETRY, { params: {rec_id: id,} })
-        .then(response => {
-          this.$emit(emit_name, id, name, fc_normalize(response.data));
-          return Promise.resolve(response)
-        })
-        .catch(error => { return Promise.reject(error) });
+    on_nav_new    (id, name) { let self=this; this.on_nav(id, function(data){ self.$emit('onNavNew', id, name, data); }) },
+    on_nav_add    (id, name) { let self=this; this.on_nav(id, function(data){ self.$emit('onNavAdd', id, name, data); }) },
+    on_nav_preview(id)       {
+      let self=this;
+      this.on_nav(id, function(data){
+        console.log('NavObj', id, data);
+        self.fcPreview = data;
+      }) },
+    on_nav(id, fun) {
+      if (id==undefined) {
+        fun();
+      } else {
+        axios.get(this.$CONST.API.OBJ.GEOMETRY, { params: {rec_id: id,} })
+          .then(response => {
+            fun(fc_normalize(response.data));
+            return Promise.resolve(response)
+          })
+          .catch(error => { return Promise.reject(error) });
+      }
     },
 
 

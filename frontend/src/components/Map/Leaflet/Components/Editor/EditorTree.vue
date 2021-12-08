@@ -23,7 +23,7 @@
       </v-icon>
     </template>
     <template v-slot:label="{ item, open }">
-      <v-tooltip left>
+      <v-tooltip left close-delay="100">
         <template v-slot:activator="{ on, attrs }">
           <v-hover v-slot="{ hover }">
             <v-list-item
@@ -52,13 +52,20 @@
             </v-list-item>
           </v-hover>
         </template>
-        <EditorPreview/>
+        <EditorPreview
+          :id="item.id"
+          :fcPreview="fcPreview"
+
+          @onNavPreview="$emit('onNavPreview', $event)"
+        />
       </v-tooltip>
     </template>
   </v-treeview>
 </template>
 <script>
-// :active="items_active"
+// v-bind="$attrs"
+// v-on="$listeners"
+//        :fcPreview="fcPreview"
 
 import EditorPreview from '@/components/Map/Leaflet/Components/Editor/EditorPreview';
 
@@ -71,10 +78,12 @@ export default {
     iconDef:   { type: String,  default: () => 'mdi-vector-polygon', }, // иконка по умолчанию
     isIcon:    { type: Boolean, default: () => true, },                 // наличие иконок
     isFlat:    { type: Boolean, default: () => false, },                // наличие отступов слева (как список)
+    fcPreview: { type: Object,  default: () => undefined, },
   },
   emits: [
     'onNavNew',
     'onNavAdd',
+    'onNavPreview',
     'onMenuShow',
     'update:itemSelId',
   ],
