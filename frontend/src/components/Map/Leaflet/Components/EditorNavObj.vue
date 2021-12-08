@@ -1,6 +1,6 @@
 <template>
 
-  <v-card>
+  <v-card height="100%">
     <v-text-field
       ref="inp"
       style="padding: 15px;"
