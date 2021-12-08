@@ -1,0 +1,17 @@
+- проверить место на диске командой df -h, если нет то настроить по файлу server_disk_setting
+sudo apt update
+sudo mkdir /devstorage
+sudo chmod 0777 /devstorage
+sudo mkdir /reports
+sudo chmod 0777 /reports
+sudo apt install nfs-kernel-server
+sudo systemctl enable nfs-kernel-server
+sudo systemctl start nfs-kernel-server
+sudo ufw allow nfs
+sudo nano /etc/exports
+/devstorage *(rw,sync,no_root_squash,insecure) // добавть строку в файл
+/reports *(rw,sync,no_root_squash,insecure) // добавть строку в файл
+cntrl-S + cntrl-X
+sudo exportfs -a
+
+
