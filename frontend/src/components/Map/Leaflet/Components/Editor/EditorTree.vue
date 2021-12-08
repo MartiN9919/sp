@@ -54,18 +54,13 @@
         </template>
         <EditorPreview
           :id="item.id"
-          :fcPreview="fcPreview"
-
-          @onNavPreview="$emit('onNavPreview', $event)"
+          :funGetFC="funGetFC"
         />
       </v-tooltip>
     </template>
   </v-treeview>
 </template>
 <script>
-// v-bind="$attrs"
-// v-on="$listeners"
-//        :fcPreview="fcPreview"
 
 import EditorPreview from '@/components/Map/Leaflet/Components/Editor/EditorPreview';
 
@@ -73,17 +68,16 @@ export default {
   name: 'EditorNavTree',
   components: { EditorPreview },
   props: {
-    items:     { type: Array,   default: () => [], },
-    itemSelId: { type: Number,  default: () => 0, },
-    iconDef:   { type: String,  default: () => 'mdi-vector-polygon', }, // иконка по умолчанию
-    isIcon:    { type: Boolean, default: () => true, },                 // наличие иконок
-    isFlat:    { type: Boolean, default: () => false, },                // наличие отступов слева (как список)
-    fcPreview: { type: Object,  default: () => undefined, },
+    items:     { type: Array,    default: () => [], },
+    itemSelId: { type: Number,   default: () => 0, },
+    iconDef:   { type: String,   default: () => 'mdi-vector-polygon', }, // иконка по умолчанию
+    isIcon:    { type: Boolean,  default: () => true, },                 // наличие иконок
+    isFlat:    { type: Boolean,  default: () => false, },                // наличие отступов слева (как список)
+    funGetFC:  { type: Function, default: () => undefined, },
   },
   emits: [
     'onNavNew',
     'onNavAdd',
-    'onNavPreview',
     'onMenuShow',
     'update:itemSelId',
   ],
