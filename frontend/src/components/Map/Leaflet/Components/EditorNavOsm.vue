@@ -18,7 +18,7 @@
 
     <v-divider class="mx-4"></v-divider>
 
-    <Treeview
+    <EditorNavTree
       class="tree"
       style="height: calc( 100% - 70px ); overflow-y: auto;"
       :items="found_items"
@@ -38,12 +38,12 @@
 import router from '@/router';
 import UserSetting from "@/store/addition"
 import axios from '@/plugins/axiosSettings';
-import Treeview from '@/components/Map/Leaflet/Components/Treeview';
+import EditorNavTree from '@/components/Map/Leaflet/Components/EditorNavTree';
 import { fc_normalize, } from '@/components/Map/Leaflet/Lib/LibFc';
 
 export default {
   name: 'editor-nav-osm',
-  components: { Treeview, },
+  components: { EditorNavTree, },
 
   emits: [
     'onNavNew',

@@ -23,38 +23,48 @@
       </v-icon>
     </template>
     <template v-slot:label="{ item, open }">
-      <v-hover v-slot="{ hover }">
-        <v-list-item
-          :id="'id_'+_uid+'_'+item.id"
-          :style="{'color': get_color(item)}"
-          class="v-treeview-node__label"
-          @contextmenu="$emit('onMenuShow', $event, item)"
-        >
-          <v-list-item-content>
-            <v-list-item-title v-text="item.name" :style="{'color': get_color(item)}"/>
-            <v-list-item-subtitle v-text="item.address" :style="{'color': get_color(item)}"/>
-          </v-list-item-content>
-          <v-list-item-action
-            v-if="hover && !item.children"
-            class="btns"
-          >
-            <v-btn class="btn" small icon>
-              <v-icon @click="on_add(item)">mdi-plus-circle-outline</v-icon>
-            </v-btn>
-            <v-btn class="btn" small icon>
-              <v-icon @click="on_new(item)">mdi-chevron-right</v-icon>
-            </v-btn>
-          </v-list-item-action>
-        </v-list-item>
-      </v-hover>
+      <v-tooltip left>
+        <template v-slot:activator="{ on, attrs }">
+          <v-hover v-slot="{ hover }">
+            <v-list-item
+              :id="'id_'+_uid+'_'+item.id"
+              :style="{'color': get_color(item)}"
+              class="v-treeview-node__label"
+              @contextmenu="$emit('onMenuShow', $event, item)"
+              v-bind="attrs"
+              v-on="on"
+            >
+              <v-list-item-content>
+                <v-list-item-title v-text="item.name" :style="{'color': get_color(item)}"/>
+                <v-list-item-subtitle v-text="item.address" :style="{'color': get_color(item)}"/>
+              </v-list-item-content>
+              <v-list-item-action
+                v-if="hover && !item.children"
+                class="btns"
+              >
+                <v-btn class="btn" small icon>
+                  <v-icon @click="on_add(item)">mdi-plus-circle-outline</v-icon>
+                </v-btn>
+                <v-btn class="btn" small icon>
+                  <v-icon @click="on_new(item)">mdi-chevron-right</v-icon>
+                </v-btn>
+              </v-list-item-action>
+            </v-list-item>
+          </v-hover>
+        </template>
+        <EditorNavPreview/>
+      </v-tooltip>
     </template>
   </v-treeview>
 </template>
-
 <script>
 // :active="items_active"
+
+import EditorNavPreview from '@/components/Map/Leaflet/Components/EditorNavPreview';
+
 export default {
-  name: 'Treeview',
+  name: 'EditorNavTree',
+  components: { EditorNavPreview },
   props: {
     items:     { type: Array,   default: () => [], },
     itemSelId: { type: Number,  default: () => 0, },
