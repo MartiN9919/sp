@@ -1,10 +1,7 @@
 <template>
-  <div>
-    <span>Tooltip3 {{ id }} </span>
+  <div v-if="is_show()">
     <LeafletViewer
-      v-if="(fc!=undefined)"
-      class="dd"
-      style="width: 20vh; height: 20vh;"
+      style="width: 10vh; height: 10vh;"
       :fc_parent_prop="fc"
       :dop_controls="false"
     />
@@ -26,10 +23,17 @@
 
     mounted: function() {
       let self = this;
-      this.funGetFC(this.id, function(data){
-        console.log(data)
-        self.fc = data;
-      });
+      this.funGetFC(this.id, function(data){ self.fc = data; });
+    },
+
+    methods: {
+      is_show() {
+        if (this == undefined) return false;
+        if (this.fc == undefined) return false;
+        let s = JSON.stringify(this.fc);
+        if (s == undefined) return false;
+        return (s.length<1000)
+      },
     },
 
   }

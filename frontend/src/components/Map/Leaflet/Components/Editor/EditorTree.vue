@@ -6,7 +6,6 @@
     :open="items_active"
     @update:active="item_sel_id = $event"
     hoverable
-    activatable
     transition
     dense
     open-on-click
@@ -23,7 +22,7 @@
       </v-icon>
     </template>
     <template v-slot:label="{ item, open }">
-      <v-tooltip left close-delay="100">
+      <v-tooltip right>
         <template v-slot:activator="{ on, attrs }">
           <v-hover v-slot="{ hover }">
             <v-list-item
@@ -61,6 +60,7 @@
   </v-treeview>
 </template>
 <script>
+// v-treeview    activatable показывать выделение
 
 import EditorPreview from '@/components/Map/Leaflet/Components/Editor/EditorPreview';
 
