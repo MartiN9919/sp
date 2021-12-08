@@ -1,10 +1,21 @@
 <template>
-  <span>Tooltip3 {{ id }} {{ fc }} </span>
+  <div>
+    <span>Tooltip3 {{ id }} </span>
+    <LeafletViewer
+      v-if="(fc!=undefined)"
+      class="dd"
+      style="width: 20vh; height: 20vh;"
+      :fc_parent_prop="fc"
+      :dop_controls="false"
+    />
+  </div>
 </template>
 
 <script>
+  import LeafletViewer from "@/components/Map/Leaflet/LeafletViewer"
   export default {
     name: 'EditorPreview',
+    components: { LeafletViewer },
     props: {
       id:        { type: Number,   default: () => undefined, },
       funGetFC:  { type: Function, default: () => undefined, },
@@ -13,29 +24,14 @@
       fc: undefined,
     }),
 
-    mounted: async function() {
+    mounted: function() {
       let self = this;
-      this.funGetFC(this.id, function(data){ self.fc = data; });
+      this.funGetFC(this.id, function(data){
+        console.log(data)
+        self.fc = data;
+      });
     },
 
-      // this.funGetFC(this.id, function(data){ console.log(2222, data); });
-      //   .then(function(data){
-      //     console.log('Preview_b', data)
-      // });
-
-    // async on_nav_preview(id)       {
-    //   console.log(1111, id)
-    //   let self = this;
-    //   let ret  = undefined;
-    //   await this.on_nav(id, function(data){ console.log(2222, data); ret = data; })
-    //   return ret;
-    // },
-
-    // watch: {
-    //   funGetFC: function(val){
-    //     console.log('Preview_b', val)
-    //   }
-    // },
   }
 </script>
 
