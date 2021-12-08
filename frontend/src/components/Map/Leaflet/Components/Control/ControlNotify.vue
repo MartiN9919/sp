@@ -24,7 +24,7 @@ import { LControl, } from "vue2-leaflet";
 
 
 export default {
-  name: 'Notify',
+  name: 'ControlNotify',
   components: {
     LControl,
   },

@@ -52,7 +52,7 @@ import 'leaflet';
 import { LMap, LTileLayer, LControlScale, } from 'vue2-leaflet';
 import LControlPolylineMeasure from 'vue2-leaflet-polyline-measure';
 
-import EditorMap    from '@/components/Map/Leaflet/Components/EditorMap';
+import EditorMap    from '@/components/Map/Leaflet/Components/Editor/EditorMap';
 import MixResize    from '@/components/Map/Leaflet/Mixins/Resize';
 import MixMeasure   from '@/components/Map/Leaflet/Mixins/Measure';
 

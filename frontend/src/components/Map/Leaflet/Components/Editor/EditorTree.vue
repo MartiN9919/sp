@@ -52,7 +52,7 @@
             </v-list-item>
           </v-hover>
         </template>
-        <EditorNavPreview/>
+        <EditorPreview/>
       </v-tooltip>
     </template>
   </v-treeview>
@@ -60,11 +60,11 @@
 <script>
 // :active="items_active"
 
-import EditorNavPreview from '@/components/Map/Leaflet/Components/EditorNavPreview';
+import EditorPreview from '@/components/Map/Leaflet/Components/Editor/EditorPreview';
 
 export default {
   name: 'EditorNavTree',
-  components: { EditorNavPreview },
+  components: { EditorPreview },
   props: {
     items:     { type: Array,   default: () => [], },
     itemSelId: { type: Number,  default: () => 0, },

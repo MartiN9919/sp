@@ -42,8 +42,8 @@
 
 import router       from '@/router';
 import UserSetting  from "@/store/addition"
-import editorNavOsm from '@/components/Map/Leaflet/Components/EditorNavOsm';
-import EditorNavObj from '@/components/Map/Leaflet/Components/EditorNavObj';
+import editorNavOsm from '@/components/Map/Leaflet/Components/Editor/EditorNavOsm';
+import EditorNavObj from '@/components/Map/Leaflet/Components/Editor/EditorNavObj';
 import MixResize    from '@/components/Map/Leaflet/Mixins/Resize';
 
 export default {

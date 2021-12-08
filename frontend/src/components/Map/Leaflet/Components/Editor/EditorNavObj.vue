@@ -37,7 +37,7 @@
 
     <v-divider class="mx-4"></v-divider>
 
-    <EditorNavTree
+    <EditorTree
       class="tree"
       style="height: calc(100% - 70px);"
       :items="items"
@@ -62,14 +62,14 @@
 import router from '@/router';
 import UserSetting from "@/store/addition"
 import axios from '@/plugins/axiosSettings';
-import EditorNavTree from '@/components/Map/Leaflet/Components/EditorNavTree';
+import EditorTree from '@/components/Map/Leaflet/Components/Editor/EditorTree';
 import SelectorInput from "@/components/WebsiteShell/InputForms/selectorInput"
 import { fc_normalize, } from '@/components/Map/Leaflet/Lib/LibFc';
 
 
 export default {
   name: 'editor-nav-obj',
-  components: { EditorNavTree, SelectorInput, },
+  components: { EditorTree, SelectorInput, },
 
   emits: [
     'onNavNew',
