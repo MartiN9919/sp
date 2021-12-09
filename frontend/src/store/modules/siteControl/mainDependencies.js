@@ -1,4 +1,5 @@
 import axios from '@/plugins/axiosSettings'
+import UserSetting from "@/store/addition";
 
 export default {
   state: {
@@ -59,14 +60,7 @@ export default {
     async getBaseTriggers({getters, commit}, config = {}) {
       await axios.get('script/trigger_list/', config)
         .then(r => {
-          console.log(r.data)
           Object.entries(r.data).forEach(([k, v]) => { v.map(t => commit('addTrigger', new Trigger(k, t))) })
-          let triggers = new Map(Object.entries(localStorage).filter(i => i[0].startsWith('trigger')))
-          for (let [n, v] of triggers) {
-            if (getters.triggers.find(t => t.getTriggerName() === n)?.setValues(JSON.parse(v)))
-              continue
-            localStorage.removeItem(n)
-          }
         })
     },
     setTriggerState({ commit }, payload) { commit('setTriggerState', payload) },
@@ -130,6 +124,8 @@ class Trigger {
       variable.value = null
       this.variables.push(variable)
     }
+    this.ls = new UserSetting(this.getTriggerName())
+    this.ls.value && this.setValues(this.ls.value)
   }
 
   setState(state) {
@@ -138,8 +134,8 @@ class Trigger {
     if (this.state) {
       for (let v of this.variables)
         variable[v.name] = v.value
-      localStorage.setItem(this.getTriggerName(), JSON.stringify(variable))
-    } else localStorage.removeItem(this.getTriggerName())
+      this.ls.value = variable
+    } else this.ls.removeFromLocalstorage()
   }
 
   setValues(variables) {
