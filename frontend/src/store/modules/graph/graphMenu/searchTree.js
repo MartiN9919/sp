@@ -1,6 +1,5 @@
 import axios from '@/plugins/axiosSettings'
 import UserSetting from "@/store/addition"
-import {getTriggers} from "@/store/modules/siteControl/mainDependencies"
 import store from'@/store'
 
 function createSearchItem(getters, item) {
@@ -67,10 +66,10 @@ export default {
         actual: true
       }))
     },
-    findObjectsOnServer({ commit, state }, config={}) {
-      config.headers = {'set-cookie': JSON.stringify(getTriggers(state.searchTreeGraph.object.id))}
-      return axios.post('objects/search', state.searchTreeGraph.getTree(), config)
-        .then(response => { commit('setFoundObjects', response.data) })
+    findObjectsOnServer({ getters, commit }, config={}) {
+      config.headers = {'set-cookie': getters.cookieTriggers(getters.searchTreeGraph.object.id)}
+      return axios.post('objects/search', getters.searchTreeGraph.getTree(), config)
+        .then(response => commit('setFoundObjects', response.data))
         .catch(error => {  })
     },
     findRelationsOnServer({ dispatch, state }, config={}) {

@@ -20,6 +20,17 @@ export default {
     baseList: state => id => state.baseLists[id],
     triggers: state => state.triggers,
     objectTriggers: state => objectId => state.triggers.filter(trigger => trigger.objectId === objectId),
+    cookieTriggers: state => id =>
+      JSON.stringify(state.triggers
+        .filter(trigger => trigger.objectId === id && trigger.state)
+        .map(trigger => Object.assign({
+          id: trigger.id,
+          variables: trigger.variables.reduce(function(result, item) {
+            result[item.name] = item.value
+            return result;
+          }, {})
+        }))
+      )
   },
   mutations: {
     setBaseObjects: (state, objects) => state.objects = objects,
