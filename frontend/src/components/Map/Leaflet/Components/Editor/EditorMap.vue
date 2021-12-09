@@ -132,7 +132,7 @@ export default {
     fc_prop:      { type: Object,  default: () => undefined, },
     modeSelected: { type: String,  default: () => undefined, }, // включенный по умолчанию режим: 'polygon', 'line', 'marker', 'cut'
     modeEnabled:  { type: Object,  default: () => ({ marker: true, line: true, polygon: true, }), }, // доступные для создания элементы
-    modeEdit:     { type: Boolean, default: () => true, } // доступность редактирования, иначе только просмотр
+    modeEdit:     { type: Boolean, default: () => true,      }, // доступность редактирования, иначе только просмотр
   },
   emits: [
     'fc_change',                          // изменение fc пользователем
@@ -399,7 +399,7 @@ export default {
         this.mode_ok_set();
         this.mode_enabled_set();
         if (first) { this.mode_selected_set(); }
-        this.show_if = true;
+        this.show_if = this.modeEdit;
       }
     },
 

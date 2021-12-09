@@ -68,6 +68,7 @@ export default {
   name: 'EditorNavTree',
   components: { EditorPreview },
   props: {
+    //...EditorPreview.options.props,
     items:     { type: Array,    default: () => [], },
     itemSelId: { type: Number,   default: () => 0, },
     iconDef:   { type: String,   default: () => 'mdi-vector-polygon', }, // иконка по умолчанию

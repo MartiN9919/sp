@@ -1,7 +1,7 @@
 <template>
   <div v-if="is_show()">
     <LeafletViewer
-      style="width: 10vh; height: 10vh;"
+      style="width: 60vh; height: 60vh;"
       :fc_parent_prop="fc"
       :dop_controls="false"
     />
