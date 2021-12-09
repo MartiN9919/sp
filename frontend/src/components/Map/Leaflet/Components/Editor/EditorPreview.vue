@@ -1,7 +1,9 @@
 <template>
-  <div v-if="is_show()">
+  <div>
+    <span v-if="!is_show()">{{ name }}</span>
     <LeafletViewer
-      style="width: 60vh; height: 60vh;"
+      v-if="is_show()"
+      style="width: 20vh; height: 20vh;"
       :fc_parent_prop="fc"
       :dop_controls="false"
     />
@@ -15,6 +17,7 @@
     components: { LeafletViewer },
     props: {
       id:        { type: Number,   default: () => undefined, },
+      name:      { type: String,   default: () => undefined, },
       funGetFC:  { type: Function, default: () => undefined, },
     },
     data: () => ({
@@ -23,13 +26,15 @@
 
     mounted: function() {
       let self = this;
-      this.funGetFC(this.id, function(data){ self.fc = data; });
+      this.funGetFC(this.id, function(data){ self.fc = data; console.log(data); });
     },
 
     methods: {
       is_show() {
-        if (this == undefined) return false;
-        if (this.fc == undefined) return false;
+        if (
+          (this?.fc?.features == undefined) ||
+          (this.fc.features.length == 0)
+        ) return false;
         let s = JSON.stringify(this.fc);
         if (s == undefined) return false;
         return (s.length<1000)

@@ -53,6 +53,7 @@
         </template>
         <EditorPreview
           :id="item.id"
+          :name="item.name"
           :funGetFC="funGetFC"
         />
       </v-tooltip>
