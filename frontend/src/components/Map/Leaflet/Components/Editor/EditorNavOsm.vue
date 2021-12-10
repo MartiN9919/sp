@@ -26,6 +26,7 @@
       iconDef="mdi-web"
       :isIcon="true"
       :isFlat="true"
+      :funGetFC="on_nav"
       @onNavNew="on_nav_new"
       @onNavAdd="on_nav_add"
     />
@@ -107,19 +108,32 @@ export default {
         .catch(error => { return Promise.reject(error) });
     },
 
-    on_nav_new(id, name) { this.emit_fc(id, name, 'onNavNew') },
-    on_nav_add(id, name) { this.emit_fc(id, name, 'onNavAdd') },
-    emit_fc(id, name, emit_name) {
+    on_nav_new(id, name) { let self=this; this.on_nav(id, function(data){ self.$emit('onNavNew', id, name, data); }) },
+    on_nav_add(id, name) { let self=this; this.on_nav(id, function(data){ self.$emit('onNavAdd', id, name, data); }) },
+    on_nav    (id, fun)  {
       this.search_wait = true;
-
       axios.get(this.$CONST.API.OBJ.OSM_FC, { params: {id: id,} })
         .then(response => {
-          this.$emit(emit_name, id, name, fc_normalize(response.data));
           this.search_wait = false;
+          fun(fc_normalize(response.data));
           return Promise.resolve(response)
         })
         .catch(error => { return Promise.reject(error) });
     },
+
+    // on_nav_new(id, name) { this.emit_fc(id, name, 'onNavNew') },
+    // on_nav_add(id, name) { this.emit_fc(id, name, 'onNavAdd') },
+    // emit_fc(id, name, emit_name) {
+    //   this.search_wait = true;
+
+    //   axios.get(this.$CONST.API.OBJ.OSM_FC, { params: {id: id,} })
+    //     .then(response => {
+    //       this.$emit(emit_name, id, name, fc_normalize(response.data));
+    //       this.search_wait = false;
+    //       return Promise.resolve(response)
+    //     })
+    //     .catch(error => { return Promise.reject(error) });
+    // },
 
   },
 }

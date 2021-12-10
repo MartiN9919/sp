@@ -94,7 +94,7 @@ export default {
       let fc   = JSON.parse(JSON.stringify(this.fc));
       let layer = L.geoJson(fc);
       setTimeout(function(){  // this.$nextTick не успевает
-        self.map.fitBounds(layer.getBounds(), { padding: [20, 20], });
+        self.map.fitBounds(layer.getBounds(), { padding: [30, 30], });
       }, 100);
     },
 

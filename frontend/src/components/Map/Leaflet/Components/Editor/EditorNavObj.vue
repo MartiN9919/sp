@@ -101,16 +101,9 @@ export default {
         .catch(error => { return Promise.reject(error) });
     },
 
-    on_nav_new    (id, name) { let self=this; this.on_nav(id, function(data){ self.$emit('onNavNew', id, name, data); }) },
-    on_nav_add    (id, name) { let self=this; this.on_nav(id, function(data){ self.$emit('onNavAdd', id, name, data); }) },
-    // async on_nav_preview(id)       {
-    //   console.log(1111, id)
-    //   let self = this;
-    //   let ret  = undefined;
-    //   await this.on_nav(id, function(data){ console.log(2222, data); ret = data; })
-    //   return ret;
-    // },
-    on_nav(id, fun) {
+    on_nav_new(id, name) { let self=this; this.on_nav(id, function(data){ self.$emit('onNavNew', id, name, data); }) },
+    on_nav_add(id, name) { let self=this; this.on_nav(id, function(data){ self.$emit('onNavAdd', id, name, data); }) },
+    on_nav    (id, fun)  {
       axios.get(this.$CONST.API.OBJ.GEOMETRY, { params: {rec_id: id,} })
         .then(response => {
           fun(fc_normalize(response.data));
