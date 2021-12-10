@@ -103,7 +103,7 @@ export default {
     },
 
     on_map_dblclick(e) {
-      this.addNotification({content: e.latlng, timeout: 5, });
+      this.addNotification({content: e.latlng});
     },
 
     data_normalize(fc) {
@@ -112,10 +112,10 @@ export default {
 
     geojson_options() {
       return {
-        // для каждого маркера / фигуры
-        onEachFeature: function(feature, layer) {
-          layer.setStyle({'className': '', });
-        }.bind(this),
+        // // для каждого маркера / фигуры
+        // onEachFeature: function(feature, layer) {
+        //   layer.setStyle({'className': '', });
+        // }.bind(this),
 
 
         // стиль маркеров

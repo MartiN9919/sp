@@ -412,9 +412,9 @@ export default {
     },
 
     on_map_dblclick(e) {
-      this.addNotification({content: e.latlng, timeout: 5, });
-      this.setNavigationDrawerStatus();
-      this.setActiveTool('dossierPage');
+      this.addNotification({content: e.latlng, });
+      // this.setNavigationDrawerStatus();
+      // this.setActiveTool('dossierPage');
     },
 
     on_edit_ok(e, dat) {
