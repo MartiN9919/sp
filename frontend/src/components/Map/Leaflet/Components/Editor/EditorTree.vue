@@ -22,7 +22,7 @@
       </v-icon>
     </template>
     <template v-slot:label="{ item, open }">
-      <v-tooltip right open-delay="200" close-delay="300">
+      <v-tooltip right open-delay="200" close-delay="300" transition="scroll-x-transition">
         <template v-slot:activator="{ on, attrs }">
           <v-hover v-slot="{ hover }">
             <v-list-item
