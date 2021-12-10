@@ -120,21 +120,6 @@ export default {
         })
         .catch(error => { return Promise.reject(error) });
     },
-
-    // on_nav_new(id, name) { this.emit_fc(id, name, 'onNavNew') },
-    // on_nav_add(id, name) { this.emit_fc(id, name, 'onNavAdd') },
-    // emit_fc(id, name, emit_name) {
-    //   this.search_wait = true;
-
-    //   axios.get(this.$CONST.API.OBJ.OSM_FC, { params: {id: id,} })
-    //     .then(response => {
-    //       this.$emit(emit_name, id, name, fc_normalize(response.data));
-    //       this.search_wait = false;
-    //       return Promise.resolve(response)
-    //     })
-    //     .catch(error => { return Promise.reject(error) });
-    // },
-
   },
 }
 
