@@ -21,8 +21,8 @@
         {{ get_icon(item, open) }}
       </v-icon>
     </template>
-    <template v-slot:label="{ item, open }">
-      <v-tooltip right>
+    <template v-slot:label="{ item, open }" style="padding: 5px;">
+      <v-tooltip right open-delay="200" close-delay="300">
         <template v-slot:activator="{ on, attrs }">
           <v-hover v-slot="{ hover }">
             <v-list-item
@@ -61,7 +61,8 @@
   </v-treeview>
 </template>
 <script>
-// v-treeview    activatable показывать выделение
+// v-treeview activatable показывать выделение
+// <v-tooltip right open-delay="200" close-delay="300"> позиционирование карты по fc производится ТОЛЬКО на видимом окне
 
 import EditorPreview from '@/components/Map/Leaflet/Components/Editor/EditorPreview';
 

@@ -27,7 +27,7 @@
       />
 
 
-      <!-- ФИГУРЫ ИЗ state.map -->
+      <!-- ФИГУРЫ -->
       <l-layer-group
         v-for="(map_item, map_ind) in SCRIPT_GET"
         :key="MAP_GET_KEY(map_ind)"
@@ -46,7 +46,6 @@
           :fc="data_normalize(map_ind, map_item)"
           :color="SCRIPT_GET_ITEM_COLOR(map_ind)"
         />
-
       </l-layer-group>
 
       <!-- РЕДАКТОР -->
@@ -282,6 +281,7 @@ export default {
       // отфильтровать с допустимыми датами
       fc = this.$refs.range.filter(fc);
 
+      console.log(6, fc);
       return fc;
     },
 

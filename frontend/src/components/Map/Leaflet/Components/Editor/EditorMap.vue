@@ -138,6 +138,7 @@ export default {
     'fc_change',                          // изменение fc пользователем
     'resetSelect',                        // для сброса выбора в nav
     'ok',                                 // нажатие кнопки ок
+    'setFocus',
   ],
 
   components: { LControl, },
