@@ -21,7 +21,7 @@
         {{ get_icon(item, open) }}
       </v-icon>
     </template>
-    <template v-slot:label="{ item, open }" style="padding: 5px;">
+    <template v-slot:label="{ item, open }">
       <v-tooltip right open-delay="200" close-delay="300">
         <template v-slot:activator="{ on, attrs }">
           <v-hover v-slot="{ hover }">

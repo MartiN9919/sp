@@ -34,8 +34,6 @@
 
         if (data?.features?.length == 0)           { self.title = str_copy_deep(self.name); return; }
         if (JSON.stringify(data)?.length > 100000) { self.title = 'Большой объект';         return; }
-
-//        if (s == undefined)      { self.title = ((self.title == undefined) || (self.title.trim() == '')) ? '?' : str_copy_deep(self.name); }
       });
     },
 
