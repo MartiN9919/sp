@@ -160,9 +160,9 @@ export function get_feature_class(feature) {
 // invert  - поменять местами x и y
 export function get_feature_coordinates(feature, invert=false) {
   let ret = {
-    [MAP_CONST.TYPE_GEOMETRY.POINT]: [],
-    [MAP_CONST.TYPE_GEOMETRY.LINE]: [],
-    [MAP_CONST.TYPE_GEOMETRY.POLYGON]: [],
+    [MAP_CONST.GEOMETRY.TYPE.POINT]: [],
+    [MAP_CONST.GEOMETRY.TYPE.LINE]: [],
+    [MAP_CONST.GEOMETRY.TYPE.POLYGON]: [],
   }
 
   //=========================================================
@@ -174,13 +174,13 @@ export function get_feature_coordinates(feature, invert=false) {
 
     if (invert) {
       switch (item_type) {
-        case MAP_CONST.TYPE_GEOMETRY.POINT:                                             // для точек [x,y]
+        case MAP_CONST.GEOMETRY.TYPE.POINT:                                             // для точек [x,y]
           item_coordinates = [item_coordinates[1], item_coordinates[0]];
           break;
-        case MAP_CONST.TYPE_GEOMETRY.LINE:                                              // для линий [[x,y],...]
+        case MAP_CONST.GEOMETRY.TYPE.LINE:                                              // для линий [[x,y],...]
           item_coordinates = item_coordinates.map((val) => { return [val[1], val[0]] });
           break;
-        case MAP_CONST.TYPE_GEOMETRY.POLYGON:                                           // для полигонов [[[x,y],...],...]
+        case MAP_CONST.GEOMETRY.TYPE.POLYGON:                                           // для полигонов [[[x,y],...],...]
           if (invert) {
             for(let i=0; i<item_coordinates.length;i++) {
               item_coordinates[i] = item_coordinates[i].map((val) => { return [val[1], val[0]] });
@@ -199,7 +199,7 @@ export function get_feature_coordinates(feature, invert=false) {
   let geometry_type = geometry[MAP_ITEM.FC.FEATURES.GEOMETRY.TYPE];
 
   // GeometryCollection: вложенные геометрии
-  if (geometry_type == MAP_CONST.TYPE_GEOMETRY.GC) {
+  if (geometry_type == MAP_CONST.GEOMETRY.TYPE.GC) {
     for(let i=0; i<geometry[MAP_ITEM.FC.FEATURES.GEOMETRY.GEOMETRIES].length; i++) {
       parse_item(geometry[MAP_ITEM.FC.FEATURES.GEOMETRY.GEOMETRIES][i]);
     }

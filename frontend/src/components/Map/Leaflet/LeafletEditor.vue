@@ -80,6 +80,7 @@ import 'leaflet';
 import { LMap, LTileLayer, LControlScale, } from 'vue2-leaflet';
 import LControlPolylineMeasure from 'vue2-leaflet-polyline-measure';
 
+import { MAP_CONST } from '@/components/Map/Leaflet/Lib/Const';
 import EditorSplit   from '@/components/Map/Leaflet/Components/Editor/EditorSplit';
 import EditorNav     from '@/components/Map/Leaflet/Components/Editor/EditorNav';
 import EditorMap     from '@/components/Map/Leaflet/Components/Editor/EditorMap';
@@ -118,17 +119,13 @@ export default {
   },
 
   mounted() {
-    // установить слушатель map.on_resize
-    this.resize_add(this.$refs.map.$el, this.on_map_resize);
+    this.resize_add(this.$refs.map.$el, this.on_map_resize);                        // установить слушатель map.on_resize
   },
 
   watch: {
     fc_child: function(val) {
       this.fc_parent = val;
-
-      // доступность редактирования
-      this.modeEdit = (JSON.stringify(val)?.length <= 100000);
-      console.log(this.modeEdit)
+      this.modeEdit = (JSON.stringify(val)?.length < MAP_CONST.GEOMETRY.BIG);       // доступность редактирования
     },
   },
 
@@ -162,7 +159,7 @@ export default {
     },
 
     on_map_dblclick(e) {
-      // this.addNotification({content: e.latlng, timeout: 5, });
+      this.addNotification({content: e.latlng, });
     },
 
     // сбросить выделение (obj, osm): из child.map в свойство child.nav

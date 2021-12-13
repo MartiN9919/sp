@@ -11,8 +11,9 @@
 </template>
 
 <script>
-  import LeafletViewer from "@/components/Map/Leaflet/LeafletViewer"
-  import { str_copy_deep } from "@/components/Map/Leaflet/Lib/Lib"
+  import { MAP_CONST }     from '@/components/Map/Leaflet/Lib/Const'
+  import { str_copy_deep } from '@/components/Map/Leaflet/Lib/Lib'
+  import LeafletViewer     from '@/components/Map/Leaflet/LeafletViewer'
   export default {
     name: 'EditorPreview',
     components: { LeafletViewer },
@@ -32,8 +33,8 @@
         self.fc    = data;
         self.title = undefined;
 
-        if (data?.features?.length == 0)           { self.title = str_copy_deep(self.name); return; }
-        if (JSON.stringify(data)?.length > 100000) { self.title = 'Большой объект';         return; }
+        if (data?.features?.length == 0)                            { self.title = str_copy_deep(self.name); return; }
+        if (JSON.stringify(data)?.length >= MAP_CONST.GEOMETRY.BIG) { self.title = 'Большой объект';         return; }
       });
     },
 
