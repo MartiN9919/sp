@@ -26,14 +26,23 @@ export default class CONST {
       static IDENTIFY = 'auth/authorization/'
     };
     static OBJ = class {
-      static GEOMETRY_TREE = 'objects/geometry_tree/';
-      static GEOMETRY      = 'objects/geometry/';
-      static OSM_SEARCH    = 'objects/osm_search/';
-      static OSM_FC        = 'objects/osm_fc/';
+      static GEOMETRY_SEARCH = 'objects/geometry_search/';
+      static GEOMETRY_FC     = 'objects/geometry_fc/';
+      static OSM_SEARCH      = 'objects/osm_search/';
+      static OSM_FC          = 'objects/osm_fc/';
     };
     static SCRIPT = class {
       static MAP           = 'script/execute_map/';
     };
+  };
+
+
+  /**/
+  static ICON = class {
+    static OBJ = class {
+      static GEOMETRY = 'mdi-vector-polygon';
+    };
+    static WEB = 'mdi-web';
   };
 
 

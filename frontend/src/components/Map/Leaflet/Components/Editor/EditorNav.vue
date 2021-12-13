@@ -9,11 +9,11 @@
     >
       <v-tabs-slider :color="$CONST.APP.COLOR_OBJ"/>
       <v-tab href="#tab-obj">
-        <v-icon left>mdi-vector-polygon</v-icon>
+        <v-icon left>{{$CONST.ICON.OBJ.GEOMETRY}}</v-icon>
         Объекты
       </v-tab>
       <v-tab href="#tab-osm">
-        <v-icon left>mdi-web</v-icon>
+        <v-icon left>{{$CONST.ICON.WEB}}</v-icon>
         Мир
       </v-tab>
 

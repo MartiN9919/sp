@@ -148,21 +148,29 @@ def build_tree_from_list(geometry_list):
         build_tree_rec(item, temp_geometry_list)
     return root
 
-
-def get_geometry_tree(group_id):
+from   pprint                          import pprint
+def get_geometry_search(group_id, text):
     """
-    Функция для получения дерева геометрий
+    Функция для получения дерева геометрий, отфильтрованного по text
     @param group_id: идентификатор группы пользователя
     @return: дерево геометрий
     """
     data = json.dumps({
         'index': 'obj_geometry_col',
-        'limit': 10000
+        'query': {
+            'query_string': '@name '+text,
+        },
+        'limit': 1000,
     })
     response = requests.post(FullTextSearch.SEARCH_URL, data=data)
-    geometries = [{'id': item['_source']['rec_id'], 'name': item['_source']['name'], 'icon': item['_source']['icon'],
-                   'parent_id': item['_source']['parent_id'], 'sec': item['_source']['sec']}
-                  for item in json.loads(response.text)['hits']['hits']]
+    geometries = [{
+        'id':        item['_source']['rec_id'],
+        'name':      item['_source']['name'],
+        #'icon':      item['_source']['icon'],
+        'parent_id': item['_source']['parent_id'],
+        'sec':       item['_source']['sec'],
+    }
+        for item in json.loads(response.text)['hits']['hits']]
     geometries.sort(key=lambda x: x['id'])
     temp_result = []
     for geometry in geometries:
@@ -172,8 +180,8 @@ def get_geometry_tree(group_id):
         else:
             if (len(geometry['name']) > 0 and temp_item[0]['sec'] < geometry['sec']) or len(temp_item[0]['name']) == 0:
                 temp_item[0]['name'] = geometry['name']
-            if (len(geometry['icon']) > 0 and temp_item[0]['sec'] < geometry['sec']) or len(temp_item[0]['icon']) == 0:
-                temp_item[0]['icon'] = geometry['icon']
+            # if (len(geometry['icon']) > 0 and temp_item[0]['sec'] < geometry['sec']) or len(temp_item[0]['icon']) == 0:
+            #     temp_item[0]['icon'] = geometry['icon']
             if (geometry['parent_id'] > 0 and temp_item[0]['sec'] < geometry['sec']) or temp_item[0]['parent_id'] == 0:
                 temp_item[0]['parent_id'] = geometry['parent_id']
             if temp_item[0]['sec'] < geometry['sec']:
@@ -236,30 +244,30 @@ def get_geometry_by_id(id):
             return folder
 
 
-
-###########################################
-# POINT_FC, СВЯЗАННЫЕ ПО keys_rel
-###########################################
-# IN
-#     obj_name        гео-объект                          'point' или 'geometry' или id
-#     group_id        id группы пользователя
-#     keys_rel        name or id: ('ngg_tmc', 1)
-#     keys_obj        ('address',)
-#
-# OUT
-#     FeatureCollection (id, properties = { 'address':, }, geometry)
-def io_get_geometry_tree_layer2(group_id, parent_id, write=True, ):
-    """
-    Функция для получения одного уровня дерева геометрий по идентификатору родителя
-    @param group_id: идентификатор группы пользователя
-    @param parent_id: идентификатор родителя
-    @param write: флаг записи
-    @return: список кортежей с информацией о отдельных геометриях
-    """
-    return tuple(IO(group_id=group_id).get_geometry_tree(
-        parent_id=parent_id,
-        write=write,
-    ))
+# ОТКЛЮЧЕНО ЗА НЕНАДОБНОСТЬЮ
+# ###########################################
+# # POINT_FC, СВЯЗАННЫЕ ПО keys_rel
+# ###########################################
+# # IN
+# #     obj_name        гео-объект                          'point' или 'geometry' или id
+# #     group_id        id группы пользователя
+# #     keys_rel        name or id: ('ngg_tmc', 1)
+# #     keys_obj        ('address',)
+# #
+# # OUT
+# #     FeatureCollection (id, properties = { 'address':, }, geometry)
+# def io_get_geometry_tree_layer2(group_id, parent_id, write=True, ):
+#     """
+#     Функция для получения одного уровня дерева геометрий по идентификатору родителя
+#     @param group_id: идентификатор группы пользователя
+#     @param parent_id: идентификатор родителя
+#     @param write: флаг записи
+#     @return: список кортежей с информацией о отдельных геометриях
+#     """
+#     return tuple(IO(group_id=group_id).get_geometry_tree(
+#         parent_id=parent_id,
+#         write=write,
+#     ))
 
 
 def rel_to_geo_fc(obj, group_id, keys_rel, keys_obj, where_dop=[]):
