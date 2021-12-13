@@ -406,14 +406,16 @@ export default {
 
     // разрешить редактирование каждой редактируемой фигуры
     editor_on() {
-      // this.map.pm.getGeomanLayers(true).eachLayer(function(layer) {
-      //   if (this.layer_editor_is(layer)) {
-      //     layer.pm.enable({
-      //       allowSelfIntersection: false,     // запретить самопересечения линий
-      //       limitMarkersToCount:   5,         // количество редактируемых точек на линии
-      //     });
-      //   }
-      // }.bind(this));
+      if (this.modeEdit) {
+        this.map.pm.getGeomanLayers(true).eachLayer(function(layer) {
+          if (this.layer_editor_is(layer)) {
+            layer.pm.enable({
+              allowSelfIntersection: false,     // запретить самопересечения линий
+              limitMarkersToCount:   5,         // количество редактируемых точек на линии
+            });
+          }
+        }.bind(this));
+      }
     },
 
 

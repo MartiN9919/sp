@@ -62,7 +62,6 @@ export default {
   mixins: [ MixMeasure, MixResize, ],
 
   data: () => ({
-    LOCAL_STORAGE_KEY_POSTFIX: 'geometry',
     map_options: {
       zoomControl: false,
       zoomSnap: 0.5,

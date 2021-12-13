@@ -33,6 +33,7 @@
           v-model="fc_child"
           :modeEnabled="modeEnabled"
           :modeSelected="modeSelected"
+          :modeEdit="modeEdit"
           @resetSelect="on_map_reset_select"
           @setFocus="on_map_set_focus"
         />
@@ -104,7 +105,7 @@ export default {
   mixins: [ MixMeasure, MixMenu, MixResize, MixControl, ],
 
   data: () => ({
-    LOCAL_STORAGE_KEY_POSTFIX: 'geometry',
+    modeEdit: true,           // доступность редактирования, иначе только просмотр
     fc_child: undefined,
     map_options: {
       zoomControl: false,
@@ -122,7 +123,13 @@ export default {
   },
 
   watch: {
-    fc_child: function(val) { this.fc_parent = val; },
+    fc_child: function(val) {
+      this.fc_parent = val;
+
+      // доступность редактирования
+      this.modeEdit = (JSON.stringify(val)?.length <= 100000);
+      console.log(this.modeEdit)
+    },
   },
 
   computed: {
