@@ -71,7 +71,11 @@ export default {
 </script>
 
 <style scoped lang="scss">
-  /* fix bug: кнопка влево не нужна*/
+  /* fix bug: build height */
+  div::v-deep .v-tabs { height: 100%; }
+  div::v-deep .v-sheet { height: 100%; }
+
+  /* fix bug: кнопка влево не нужна */
   div::v-deep .v-slide-group__prev { display: none !important; }
   div::v-deep .v-tabs-items { height: calc(100% - 48px); }
   div::v-deep .v-window-item  { height: 100%; }

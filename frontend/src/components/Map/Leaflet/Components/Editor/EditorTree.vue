@@ -1,7 +1,7 @@
 <template>
   <v-treeview
     ref="tree_view"
-    :class="{ flat: isFlat }"
+    :class="{ dd: true, flat: isFlat }"
     :items="items"
     :open="items_active"
     @update:active="item_sel_id = $event"
