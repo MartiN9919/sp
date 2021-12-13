@@ -52,7 +52,7 @@ const props = {
 
 
 export default {
-  name: 'Legend',
+  name: 'ControlLegend',
 
   props,
 
