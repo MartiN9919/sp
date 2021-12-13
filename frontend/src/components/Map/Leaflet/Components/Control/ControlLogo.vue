@@ -21,7 +21,7 @@ import {
 } from "vue2-leaflet";
 
 export default {
-  name: 'Logo',
+  name: 'ControlLogo',
 
   components: {
     LControl,

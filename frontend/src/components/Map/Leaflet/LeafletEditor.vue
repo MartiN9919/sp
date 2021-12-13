@@ -1,13 +1,10 @@
 <template>
   <EditorSplit
     style="height: 100%; width: 100%;"
-    :localStorageKeyPostfix="LOCAL_STORAGE_KEY_POSTFIX"
   >
 
     <template v-slot:firstPane>
       <EditorNav
-        :localStorageKeyPostfix="LOCAL_STORAGE_KEY_POSTFIX"
-        :fc="fc_child"
         @onNavNew="on_nav_new"
         @onNavAdd="on_nav_add"
       />
@@ -55,10 +52,10 @@
         />
 
         <!-- ЛОГОТИП -->
-        <Logo/>
+        <ControlLogo/>
 
         <!-- ЗАМЕТКИ -->
-        <Notify ref="notify"/>
+        <ControlNotify ref="notify"/>
 
       </l-map>
 
@@ -82,17 +79,17 @@ import 'leaflet';
 import { LMap, LTileLayer, LControlScale, } from 'vue2-leaflet';
 import LControlPolylineMeasure from 'vue2-leaflet-polyline-measure';
 
-import EditorSplit  from '@/components/Map/Leaflet/Components/EditorSplit';
-import EditorNav    from '@/components/Map/Leaflet/Components/EditorNav';
-import EditorMap    from '@/components/Map/Leaflet/Components/EditorMap';
-import Logo         from '@/components/Map/Leaflet/Components/Logo';
-import Notify       from '@/components/Map/Leaflet/Components/Notify';
-import MixResize    from '@/components/Map/Leaflet/Mixins/Resize';
-import MixControl   from '@/components/Map/Leaflet/Mixins/Control';
-import MixMeasure   from '@/components/Map/Leaflet/Mixins/Measure';
-import MixMenu      from '@/components/Map/Leaflet/Mixins/Menu';
+import EditorSplit   from '@/components/Map/Leaflet/Components/Editor/EditorSplit';
+import EditorNav     from '@/components/Map/Leaflet/Components/Editor/EditorNav';
+import EditorMap     from '@/components/Map/Leaflet/Components/Editor/EditorMap';
+import ControlLogo   from '@/components/Map/Leaflet/Components/Control/ControlLogo';
+import ControlNotify from '@/components/Map/Leaflet/Components/Control/ControlNotify';
+import MixResize     from '@/components/Map/Leaflet/Mixins/Resize';
+import MixControl    from '@/components/Map/Leaflet/Mixins/Control';
+import MixMeasure    from '@/components/Map/Leaflet/Mixins/Measure';
+import MixMenu       from '@/components/Map/Leaflet/Mixins/Menu/Menu';
 
-import { fc_merge } from '@/components/Map/Leaflet/Lib/LibFc';
+import { fc_merge }  from '@/components/Map/Leaflet/Lib/LibFc';
 
 export default {
   name: 'LeafletEditor',
@@ -103,7 +100,7 @@ export default {
     modeSelected: String,     // включенный по умолчанию режим, например: 'Polygon'
   },
 
-  components: { LMap, LTileLayer, LControlScale, Logo, LControlPolylineMeasure, EditorMap, EditorNav, EditorSplit, Notify, },
+  components: { LMap, LTileLayer, LControlScale, ControlLogo, LControlPolylineMeasure, EditorMap, EditorNav, EditorSplit, ControlNotify, },
   mixins: [ MixMeasure, MixMenu, MixResize, MixControl, ],
 
   data: () => ({
@@ -193,4 +190,5 @@ export default {
 <style scoped lang="scss">
   @import "~leaflet/dist/leaflet.css";
   @import "~@/components/Map/Leaflet/Lib/Lib.css";
+  @import "~@/components/Map/Leaflet/Mixins/Control.css";
 </style>

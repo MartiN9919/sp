@@ -37,11 +37,12 @@
 
     <v-divider class="mx-4"></v-divider>
 
-    <Treeview
+    <EditorTree
       class="tree"
       style="height: calc(100% - 70px);"
       :items="items"
-      :itemSelId.number.sync="item_sel_id"
+      :itemSelId.number.sync="item_sel_id.value"
+      :funGetFC="on_nav"
       @onNavNew="on_nav_new"
       @onNavAdd="on_nav_add"
       @onMenuShow=""
@@ -54,30 +55,23 @@
 /*
  * КОМПОНЕНТ: ДЕРЕВО ГЕОМЕТРИЙ
  *  <EditorNavObj
- *    localStorageKeyPostfix="key_name"
  *    @onNavNew=""
  *    @onNavAdd=""
  *  />
- *
- *  update_fc(fc) { },
- *  @update_fc  - событие при изменении на карте fc
  */
 
 import router from '@/router';
+import UserSetting from "@/store/addition"
 import axios from '@/plugins/axiosSettings';
-import Treeview from '@/components/Map/Leaflet/Components/Treeview';
+import EditorTree from '@/components/Map/Leaflet/Components/Editor/EditorTree';
 import SelectorInput from "@/components/WebsiteShell/InputForms/selectorInput"
 import { fc_normalize, } from '@/components/Map/Leaflet/Lib/LibFc';
 
 
 export default {
   name: 'editor-nav-obj',
-  components: { Treeview, SelectorInput, },
+  components: { EditorTree, SelectorInput, },
 
-  props: {
-    localStorageKeyPostfix: { type: String, default() { return '' } },
-    fc: Object,
-  },
   emits: [
     'onNavNew',
     'onNavAdd',
@@ -85,7 +79,7 @@ export default {
 
   data: () => ({
     items:             [],
-    item_sel_id:       0,
+    item_sel_id:       new UserSetting('EditorNavObj.item_sel_id', 0),
     items_search_list: [],
     items_search_id:   undefined,
 
@@ -95,16 +89,6 @@ export default {
     btn_next_disabled: true,
   }),
 
-  computed: {
-    key_sel() { return router.currentRoute.name + '_editor_nav_obj_sel_' + this.localStorageKeyPostfix },
-  },
-
-  watch: {
-    item_sel_id: function(id) {
-      localStorage[this.key_sel] = id;
-    },
-  },
-
   created: function() { this.refresh_items(); },
 
   methods: {
@@ -112,18 +96,17 @@ export default {
       axios.get(this.$CONST.API.OBJ.GEOMETRY_TREE)
         .then(response => {
           this.items = response.data;
-          if (localStorage[this.key_sel]) { this.item_sel_id = parseInt(localStorage[this.key_sel]); }
           return Promise.resolve(response)
         })
         .catch(error => { return Promise.reject(error) });
     },
 
-    on_nav_new(id, name) { this.on_nav(id, name, 'onNavNew') },
-    on_nav_add(id, name) { this.on_nav(id, name, 'onNavAdd') },
-    on_nav(id, name, emit_name) {
+    on_nav_new(id, name) { let self=this; this.on_nav(id, function(data){ self.$emit('onNavNew', id, name, data); }) },
+    on_nav_add(id, name) { let self=this; this.on_nav(id, function(data){ self.$emit('onNavAdd', id, name, data); }) },
+    on_nav    (id, fun)  {
       axios.get(this.$CONST.API.OBJ.GEOMETRY, { params: {rec_id: id,} })
         .then(response => {
-          this.$emit(emit_name, id, name, fc_normalize(response.data));
+          fun(fc_normalize(response.data));
           return Promise.resolve(response)
         })
         .catch(error => { return Promise.reject(error) });
@@ -159,7 +142,7 @@ export default {
       }
       this.items_search_id = val;
       if ((this.items_search_id >= 0) && (this.items_search_id < this.items_search_list.length)) {
-        this.item_sel_id = this.items_search_list[this.items_search_id].id;
+        this.item_sel_id.value = this.items_search_list[this.items_search_id].id;
       }
     },
 

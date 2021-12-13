@@ -74,7 +74,7 @@ export default {
       if (notification?.status === undefined) notification.status = 'information'
       const notify = new Notification(notification)
       commit('appendNotification', notify)
-      notification?.timeout && setTimeout(() => commit('removeNotification', notify), notification?.timeout*1000)
+      notification?.timeout && setTimeout(() => commit('removeNotification', notify), notification.timeout*1000)
 
     }
   }

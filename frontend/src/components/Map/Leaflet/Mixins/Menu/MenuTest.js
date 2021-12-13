@@ -5,7 +5,7 @@ import {
   MAP_TEST_ITEM_3,
   MAP_TEST_EDIT_1,
   MAP_TEST_EDIT_2,
-} from '@/components/Map/Leaflet/Mixins/Menu.test.data';
+} from '@/components/Map/Leaflet/Mixins/Menu/MenuTestData';
 
 const menu = {
   icon:     'mdi-wrench',

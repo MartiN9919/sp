@@ -1,8 +1,8 @@
 import contextMenuNested from '@/components/WebsiteShell/UIMainComponents/contextMenuNested';
-import MixMenuTest       from '@/components/Map/Leaflet/Mixins/Menu.test';
-import MixMenuMap        from '@/components/Map/Leaflet/Mixins/Menu.map';
-import MixMenuSet        from '@/components/Map/Leaflet/Mixins/Menu.set';
-import MixMenuPos        from '@/components/Map/Leaflet/Mixins/Menu.pos';
+import MixMenuTest       from '@/components/Map/Leaflet/Mixins/Menu/MenuTest';
+import MixMenuMap        from '@/components/Map/Leaflet/Mixins/Menu/MenuMap';
+import MixMenuSet        from '@/components/Map/Leaflet/Mixins/Menu/MenuSet';
+import MixMenuPos        from '@/components/Map/Leaflet/Mixins/Menu/MenuPos';
 
 export default {
   mixins: [ MixMenuTest, MixMenuMap, MixMenuSet, MixMenuPos, ],

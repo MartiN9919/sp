@@ -1,7 +1,7 @@
 <template>
   <v-card flat v-if="!editableRelation">
     <v-card-subtitle class="text-center text-no-wrap">
-      Выбирете объекты для связи
+      Выбирете на графе объекты для создания связи
     </v-card-subtitle>
   </v-card>
   <div v-else class="h-100">

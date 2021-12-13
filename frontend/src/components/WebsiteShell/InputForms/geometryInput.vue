@@ -61,7 +61,7 @@ export default {
   props: {
     inputString:  Object,
     modeEnabled:  { type: Object, default: () => ({ marker: true , line: true, polygon: true, }) }, // доступные элементы
-    modeSelected: { type: String, default: () => undefined},                        // режим ввода по умолчанию
+    modeSelected: { type: String, default: () => undefined},                                        // режим ввода по умолчанию
   },
   data: () => ({
     dialog: false,
