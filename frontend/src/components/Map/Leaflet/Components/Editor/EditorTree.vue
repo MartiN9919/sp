@@ -73,9 +73,9 @@ export default {
     //...EditorPreview.options.props,
     items:     { type: Array,    default: () => [], },
     itemSelId: { type: Number,   default: () => 0, },
-    iconDef:   { type: String,   default: () => 'mdi-vector-polygon', }, // иконка по умолчанию
-    isIcon:    { type: Boolean,  default: () => true, },                 // наличие иконок
-    isFlat:    { type: Boolean,  default: () => false, },                // наличие отступов слева (как список)
+    iconDef:   { type: String,   default: () => $CONST.ICON.OBJ.GEOMETRY, }, // иконка по умолчанию
+    isIcon:    { type: Boolean,  default: () => true, },                     // наличие иконок
+    isFlat:    { type: Boolean,  default: () => false, },                    // наличие отступов слева (как список)
     funGetFC:  { type: Function, default: () => undefined, },
   },
   emits: [
