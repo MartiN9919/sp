@@ -103,9 +103,9 @@ def aj_object(request):
     if request.method == 'GET':
         try:
             return get_object_record_by_id_http(object_id=int(request.GET['object_id']),
-                                                                      rec_id=int(request.GET['record_id']),
-                                                                      group_id=group_id,
-                                                                      triggers=triggers)
+                                                rec_id=int(request.GET['record_id']),
+                                                group_id=group_id,
+                                                triggers=triggers)
         except Exception as e:
             raise e
     if request.method == 'POST':
@@ -116,9 +116,9 @@ def aj_object(request):
                 return result['objects']
             elif result.get('object'):
                 return get_object_record_by_id_http(object_id=data.get('object_id'),
-                                                                                     rec_id=result.get('object'),
-                                                                                     group_id=group_id,
-                                                                                     triggers=triggers)
+                                                    rec_id=result.get('object'),
+                                                    group_id=group_id,
+                                                    triggers=triggers)
             else:
                 raise Exception(497, 'ошибка добавления')
         except Exception as e:
@@ -172,7 +172,7 @@ def aj_objects_relation(request):
     """
     group_id = DAT_OWNER.DUMP.get_group(user_id=request.user.id)
     return get_objects_relation(group_id, int(request.GET['object_id_1']), int(request.GET['rec_id_1']),
-                                         int(request.GET['object_id_2']), int(request.GET['rec_id_2']), 3)
+                                int(request.GET['object_id_2']), int(request.GET['rec_id_2']), 3)
 
 
 @login_check
@@ -276,13 +276,13 @@ def aj_geometry_fc(request):
         try:
             data = json.loads(request.body)
             result = add_geometry(
-                user = request.user,
-                group_id = group_id,
-                rec_id = data.get('rec_id', 0),
-                location = data.get('location'),
-                name = data.get('name'),
-                parent_id = data.get('parent_id'),
-                icon = data.get('icon'),
+                user=request.user,
+                group_id=group_id,
+                rec_id=data.get('rec_id', 0),
+                location=data.get('location'),
+                name=data.get('name'),
+                parent_id=data.get('parent_id'),
+                icon=data.get('icon'),
             )
             return result
         except Exception as e:

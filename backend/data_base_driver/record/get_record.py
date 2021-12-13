@@ -122,7 +122,7 @@ def get_value_by_key(key, value):
         if int(value) == 0:
             return 'корень'
         else:
-            return get_geometry_by_id(int(value))['name']
+            return get_item_list_value(int(value))
     elif key in SYS_KEY_CONSTANT.GEOMETRY_TRANSFER_LIST:
         temp_value = str(get_item_list_value(value))
         return temp_value[:temp_value.index('(') - 1]
