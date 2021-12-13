@@ -115,47 +115,48 @@ class IO():
             # logging.getLogger(settings.PROJECT_LOG_MAIN).error(str(e))
             raise e
 
-    # ЧИТАТЬ ДЕРЕВО ГЕОМЕТРИЙ С УЧЕТОМ РАЗРЕШЕНИЙ
-    # parent_id = 0 - верхний уровень
-    # ret = [ {id: , name: , icon: }, ... ]
-    def get_geometry_tree(self, parent_id, write=True):
-        try:
-            obj_id = DAT_SYS_OBJ.DUMP.to_id(val=DAT_SYS_OBJ.NAME_GEOMETRY)
-            key_id_parent = DAT_SYS_KEY.DUMP.to_id(obj_id=obj_id, val=DAT_SYS_KEY.NAME_GEOMETRY_PARENT_ID)
-            key_id_name = DAT_SYS_KEY.DUMP.to_id(obj_id=obj_id, val=DAT_SYS_KEY.NAME_GEOMETRY_NAME)
-            key_id_icon = DAT_SYS_KEY.DUMP.to_id(obj_id=obj_id, val=DAT_SYS_KEY.NAME_GEOMETRY_ICON)
+    # ОТКЛЮЧЕНО ЗА НЕНАБНОСТЬЮ
+    # # ЧИТАТЬ ДЕРЕВО ГЕОМЕТРИЙ С УЧЕТОМ РАЗРЕШЕНИЙ
+    # # parent_id = 0 - верхний уровень
+    # # ret = [ {id: , name: , icon: }, ... ]
+    # def get_geometry_tree(self, parent_id, write=True):
+    #     try:
+    #         obj_id = DAT_SYS_OBJ.DUMP.to_id(val=DAT_SYS_OBJ.NAME_GEOMETRY)
+    #         key_id_parent = DAT_SYS_KEY.DUMP.to_id(obj_id=obj_id, val=DAT_SYS_KEY.NAME_GEOMETRY_PARENT_ID)
+    #         key_id_name = DAT_SYS_KEY.DUMP.to_id(obj_id=obj_id, val=DAT_SYS_KEY.NAME_GEOMETRY_NAME)
+    #         key_id_icon = DAT_SYS_KEY.DUMP.to_id(obj_id=obj_id, val=DAT_SYS_KEY.NAME_GEOMETRY_ICON)
 
-            keys = (key_id_parent, key_id_name, key_id_icon,)
-            keys_pars = IO_PARS_KEYS(obj=obj_id, keys=keys)
+    #         keys = (key_id_parent, key_id_name, key_id_icon,)
+    #         keys_pars = IO_PARS_KEYS(obj=obj_id, keys=keys)
 
-            # выборка всех записей без проверки ограничений доступа
-            # tmp = [{id: ..., parent_id: ..., name_id: ...}, ... ]
-            tmp = {}
-            for item in self.io_org[self.ORG_SQL].get_obj(keys_pars=keys_pars, ids=[]):
-                # item = (31, 30302, 0), (31, 30303, 'Тест 2'), ...
-                # только разрешенные записи
-                if self.is_admin or permit(
-                        write=write,
-                        io_org_item=self.io_org[self.ORG_SQL],
-                        obj_id=obj_id,
-                        rec_id=item[0],
-                        group_id=self.group_id,
-                ):
-                    val = tmp.get(item[0], {})
-                    val[item[1]] = item[2]
-                    tmp[item[0]] = val
+    #         # выборка всех записей без проверки ограничений доступа
+    #         # tmp = [{id: ..., parent_id: ..., name_id: ...}, ... ]
+    #         tmp = {}
+    #         for item in self.io_org[self.ORG_SQL].get_obj(keys_pars=keys_pars, ids=[]):
+    #             # item = (31, 30302, 0), (31, 30303, 'Тест 2'), ...
+    #             # только разрешенные записи
+    #             if self.is_admin or permit(
+    #                     write=write,
+    #                     io_org_item=self.io_org[self.ORG_SQL],
+    #                     obj_id=obj_id,
+    #                     rec_id=item[0],
+    #                     group_id=self.group_id,
+    #             ):
+    #                 val = tmp.get(item[0], {})
+    #                 val[item[1]] = item[2]
+    #                 tmp[item[0]] = val
 
-            # только с заданным родителем
-            ret = []
-            for tmp_item in tmp:
-                if tmp[tmp_item][key_id_parent] == parent_id:
-                    ret.append({
-                        'id': tmp_item,
-                        'name': tmp[tmp_item][key_id_name],
-                        'icon': tmp[tmp_item][key_id_icon],
-                    })
-            return ret
+    #         # только с заданным родителем
+    #         ret = []
+    #         for tmp_item in tmp:
+    #             if tmp[tmp_item][key_id_parent] == parent_id:
+    #                 ret.append({
+    #                     'id': tmp_item,
+    #                     'name': tmp[tmp_item][key_id_name],
+    #                     'icon': tmp[tmp_item][key_id_icon],
+    #                 })
+    #         return ret
 
-        except Exception as e:
-            # logging.getLogger(settings.PROJECT_LOG_MAIN).error(str(e))
-            raise e
+    #     except Exception as e:
+    #         # logging.getLogger(settings.PROJECT_LOG_MAIN).error(str(e))
+    #         raise e

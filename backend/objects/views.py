@@ -5,7 +5,7 @@ from data_base_driver.constants.const_dat import DAT_OWNER
 from data_base_driver.constants.const_key import SYS_KEY_CONSTANT
 from data_base_driver.constants.const_map_tiles import MAP_TILES
 from data_base_driver.record.get_record import get_object_record_by_id_http
-from data_base_driver.input_output.io_geo import get_geometry_tree, feature_collection_by_geometry
+from data_base_driver.input_output.io_geo import get_geometry_search, feature_collection_by_geometry
 from data_base_driver.osm.osm_lib import osm_search, osm_fc
 from data_base_driver.record.search import search
 from data_base_driver.record.add_record import add_data, add_geometry
@@ -243,21 +243,22 @@ def aj_search_objects(request):
 @request_log
 @request_wrap
 @request_get
-def aj_geometry_tree(request):
+def aj_geometry_search(request):
     """
-    Функция API для получения дерева геометрий
-    @param request: запрос, поддерживаемый тип - GET, дополнительная нашрузка не требуется
+    Функция API для получения дерева геометрий, отфильтрованного по text
+    @param request: запрос, поддерживаемый тип - GET
+    @param request: text - поисковая строка
     @return:  json дерево в формате: [{id,name,icon,child:[{},{},...,{}]},{},...,{}]
     """
     group_id = DAT_OWNER.DUMP.get_group(user_id=request.user.id)
-    return get_geometry_tree(group_id=group_id)
+    return get_geometry_search(group_id=group_id, text=request.GET.get('text', ''))
 
 
 @login_check
 @request_log
 @request_wrap
 @write_permission
-def aj_geometry(request):
+def aj_geometry_fc(request):
     """
     Функция API для получения геометрии по ее идентификатору
     @param request: GET запрос содержащий идентификатор геометрии по ключу rec_id
