@@ -2,4 +2,5 @@
 /static
 /log
 /var
+/md
 /core/settings.py

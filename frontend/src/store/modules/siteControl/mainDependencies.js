@@ -59,7 +59,6 @@ export default {
     async getBaseTriggers({getters, commit}, config = {}) {
       await axios.get('script/trigger_list/', config)
         .then(r => {
-          console.log(r.data)
           Object.entries(r.data).forEach(([k, v]) => { v.map(t => commit('addTrigger', new Trigger(k, t))) })
           let triggers = new Map(Object.entries(localStorage).filter(i => i[0].startsWith('trigger')))
           for (let [n, v] of triggers) {

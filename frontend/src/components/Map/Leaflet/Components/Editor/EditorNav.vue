@@ -5,7 +5,7 @@
       v-model="tab.value"
       :color="$CONST.APP.COLOR_OBJ"
       background-color="transparent"
-      grow
+      grow style="height: 100%"
     >
       <v-tabs-slider :color="$CONST.APP.COLOR_OBJ"/>
       <v-tab href="#tab-obj">
