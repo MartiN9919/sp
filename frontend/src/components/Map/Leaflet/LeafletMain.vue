@@ -27,7 +27,7 @@
       />
 
 
-      <!-- ФИГУРЫ ИЗ state.map -->
+      <!-- ФИГУРЫ -->
       <l-layer-group
         v-for="(map_item, map_ind) in SCRIPT_GET"
         :key="MAP_GET_KEY(map_ind)"
@@ -46,7 +46,6 @@
           :fc="data_normalize(map_ind, map_item)"
           :color="SCRIPT_GET_ITEM_COLOR(map_ind)"
         />
-
       </l-layer-group>
 
       <!-- РЕДАКТОР -->
@@ -70,13 +69,13 @@
       />
 
       <!-- ВРЕМЕННОЙ ФИЛЬТР -->
-      <Range ref="range"/>
+      <ControlRange ref="range"/>
 
       <!-- ЛЕГЕНДА -->
-      <Legend :options="legend_options()"/>
+      <ControlLegend :options="legend_options()"/>
 
       <!-- ЛОГОТИП -->
-      <Logo/>
+      <ControlLogo/>
 
     </l-map>
 
@@ -132,15 +131,15 @@ import StyleSvg         from '@/components/Map/Leaflet/Components/Style/StyleSvg
 import { correct_classes_name } from '@/components/Map/Leaflet/Components/Style/StyleData';
 import StyleDecor       from '@/components/Map/Leaflet/Components/Style/StyleDecor';
 
-import EditorMap        from '@/components/Map/Leaflet/Components/EditorMap';
-import Range            from '@/components/Map/Leaflet/Components/Range';
-import Legend           from '@/components/Map/Leaflet/Components/Legend';
-import Logo             from '@/components/Map/Leaflet/Components/Logo';
+import EditorMap        from '@/components/Map/Leaflet/Components/Editor/EditorMap';
+import ControlRange     from '@/components/Map/Leaflet/Components/Control/ControlRange';
+import ControlLegend    from '@/components/Map/Leaflet/Components/Control/ControlLegend';
+import ControlLogo      from '@/components/Map/Leaflet/Components/Control/ControlLogo';
 import MixResize        from '@/components/Map/Leaflet/Mixins/Resize';
 import MixColor         from '@/components/Map/Leaflet/Mixins/Color';
 import MixControl       from '@/components/Map/Leaflet/Mixins/Control';
 import MixMeasure       from '@/components/Map/Leaflet/Mixins/Measure';
-import MixMenu          from '@/components/Map/Leaflet/Mixins/Menu';
+import MixMenu          from '@/components/Map/Leaflet/Mixins/Menu/Menu';
 
 
 // устранение бага с путями
@@ -179,9 +178,9 @@ export default {
     LControlPolylineMeasure,
 
     EditorMap,
-    Range,
-    Legend,
-    Logo,
+    ControlRange,
+    ControlLegend,
+    ControlLogo,
   },
 
 
@@ -282,6 +281,7 @@ export default {
       // отфильтровать с допустимыми датами
       fc = this.$refs.range.filter(fc);
 
+      console.log(6, fc);
       return fc;
     },
 
@@ -412,9 +412,9 @@ export default {
     },
 
     on_map_dblclick(e) {
-      this.addNotification({content: e.latlng, timeout: 5, });
-      this.setNavigationDrawerStatus();
-      this.setActiveTool('dossierPage');
+      this.addNotification({content: e.latlng, });
+      // this.setNavigationDrawerStatus();
+      // this.setActiveTool('dossierPage');
     },
 
     on_edit_ok(e, dat) {

@@ -7,7 +7,7 @@ from data_base_driver.constants.const_fulltextsearch import FullTextSearch
 from data_base_driver.constants.const_key import SYS_KEY_CONSTANT
 from data_base_driver.input_output.input_output import io_get_obj, io_get_rel
 from data_base_driver.input_output.input_output_mysql import io_get_obj_mysql_tuple, io_get_rel_mysql_generator
-from data_base_driver.input_output.io_class import IO
+from data_base_driver.sys_key.get_list import get_item_list_value
 from data_base_driver.sys_key.get_object_info import rel_rec_to_el, el_to_rec_id
 from data_base_driver.additional_functions import get_date_time_from_sec
 from data_base_driver.sys_key.get_key_dump import get_key_by_id
@@ -120,22 +120,6 @@ def relations_to_geometry_id(group_id, geometry_type, object_type, rec_id, keys_
     return geo_ids
 
 
-def build_tree_rec(geometry, geometry_list):
-    """
-    Рекурсивная функция построения дерева геометрий
-    @param geometry: геометрия на данном шаге
-    @param geometry_list: список возможных наследников
-    """
-    child_items = [item for item in geometry_list if item['parent_id'] == geometry['id']]
-    if len(child_items) > 0:
-        if not geometry.get('children'):
-            geometry['children'] = []
-        geometry['children'] += child_items
-    temp_geometry_list = [item for item in geometry_list if item not in child_items]
-    for child in child_items:
-        build_tree_rec(child, temp_geometry_list)
-
-
 def build_tree_from_list(geometry_list):
     """
     Функция точка входа для построения дерева геометрий
@@ -144,122 +128,84 @@ def build_tree_from_list(geometry_list):
     """
     root = [item for item in geometry_list if item['parent_id'] == 0]
     temp_geometry_list = [item for item in geometry_list if item not in root]
-    for item in root:
-        build_tree_rec(item, temp_geometry_list)
+    temp_folders = {}
+    for item in temp_geometry_list:
+        if not temp_folders.get(item['parent_id']):
+            temp_folders[item['parent_id']] = []
+        temp_folders[item['parent_id']].append(item)
+    for folder in temp_folders:
+        root.append({'name': get_item_list_value(int(folder)), 'children': temp_folders[folder]})
     return root
 
 
-def get_geometry_tree(group_id):
+def get_geometry_search(group_id, text):
     """
-    Функция для получения дерева геометрий
+    Функция для получения дерева геометрий, отфильтрованного по text
     @param group_id: идентификатор группы пользователя
     @return: дерево геометрий
     """
     data = json.dumps({
         'index': 'obj_geometry_col',
-        'limit': 10000
+        'query': {
+            'query_string': '@name ' + text,
+        },
+        'limit': 1000,
     })
     response = requests.post(FullTextSearch.SEARCH_URL, data=data)
-    geometries = [{'id': item['_source']['rec_id'], 'name': item['_source']['name'], 'icon': item['_source']['icon'],
-                   'parent_id': item['_source']['parent_id'], 'sec': item['_source']['sec']}
-                  for item in json.loads(response.text)['hits']['hits']]
-    geometries.sort(key=lambda x: x['id'])
-    temp_result = []
+    geometries = [{
+        'id':        item['_source']['rec_id'],
+        'name':      item['_source']['name'],
+        'parent_id': item['_source']['parent_id'],
+        'sec':       item['_source']['sec'],
+    } for item in json.loads(response.text)['hits']['hits']]
+    temp_result, temp_id = [], []
     for geometry in geometries:
-        temp_item = [item for item in temp_result if item['id'] == geometry['id']]
-        if len(temp_item) == 0:
-            temp_result.append(geometry)
-        else:
-            if (len(geometry['name']) > 0 and temp_item[0]['sec'] < geometry['sec']) or len(temp_item[0]['name']) == 0:
-                temp_item[0]['name'] = geometry['name']
-            if (len(geometry['icon']) > 0 and temp_item[0]['sec'] < geometry['sec']) or len(temp_item[0]['icon']) == 0:
-                temp_item[0]['icon'] = geometry['icon']
-            if (geometry['parent_id'] > 0 and temp_item[0]['sec'] < geometry['sec']) or temp_item[0]['parent_id'] == 0:
-                temp_item[0]['parent_id'] = geometry['parent_id']
-            if temp_item[0]['sec'] < geometry['sec']:
-                temp_item[0]['sec'] = geometry['sec']
+        if geometry['id'] in temp_id:
+            continue
+        temp_id.append(geometry['id'])
+        data = json.dumps({
+            'index': 'obj_geometry_col',
+            'query': {
+                'equals': {'rec_id': int(geometry['id'])}
+            }
+        })
+        temp_geometry = {'id': geometry['id'], 'name': geometry['name'], 'parent_id': 0}
+        geometry_information = json.loads(requests.post(FullTextSearch.SEARCH_URL, data=data).text)['hits']['hits']
+        geometry_information.sort(key=lambda x: x['_source']['sec'])
+        for temp in geometry_information:
+            if temp['_source']['parent_id'] != 0:
+                temp_geometry['parent_id'] = temp['_source']['parent_id']
+            if len(temp['_source']['name']) != 0:
+                temp_geometry['name'] = temp['_source']['name']
+        temp_result.append(temp_geometry)
     return build_tree_from_list(temp_result)
 
 
-def get_geometry_folders(group_id):
-    data = json.dumps({
-        'index': 'obj_geometry_col',
-        'limit': 10000
-    })
-    response = requests.post(FullTextSearch.SEARCH_URL, data=data)
-    geometries = [{'id': item['_source']['rec_id'], 'name': item['_source']['name'], 'sec': item['_source']['sec'],
-                   'parent_id': item['_source']['parent_id'], 'location': item['_source']['location']}
-                  for item in json.loads(response.text)['hits']['hits']]
-    geometries.sort(key=lambda x: x['id'])
-    temp = {}
-    for geometry in geometries:
-        if not temp.get(geometry['id']):
-            temp[geometry['id']] = {'location': geometry['location'], 'sec': geometry['sec'], 'name': geometry['name']}
-        else:
-            if geometry['location'] and geometry['sec'] > temp[geometry['id']]['sec'] < geometry['sec']:
-                temp[geometry['id']]['location'] = geometry['location']
-    result = [{'id': 0, 'value': 'Корень'}]
-    for key in temp:
-        if not temp[key]['location']:
-            result.append({'id': key, 'value': temp[key]['name']})
-    return result
 
-
-def get_geometry_id_by_name(name):
-    data = json.dumps({
-        'index': 'obj_geometry_col',
-        'limit': 10000
-    })
-    response = requests.post(FullTextSearch.SEARCH_URL, data=data)
-    geometries = [{'id': item['_source']['rec_id'], 'name': item['_source']['name'],
-                   'parent_id': item['_source']['parent_id']}
-                  for item in json.loads(response.text)['hits']['hits']]
-    geometries.sort(key=lambda x: x['id'])
-    for folder in geometries:
-        if folder['name'] == name:
-            return folder['id']
-    return 0
-
-
-def get_geometry_by_id(id):
-    data = json.dumps({
-        'index': 'obj_geometry_col',
-        'limit': 10000
-    })
-    response = requests.post(FullTextSearch.SEARCH_URL, data=data)
-    geometries = [{'id': item['_source']['rec_id'], 'name': item['_source']['name'],
-                   'parent_id': item['_source']['parent_id']}
-                  for item in json.loads(response.text)['hits']['hits']]
-    geometries.sort(key=lambda x: x['id'])
-    for folder in geometries:
-        if folder['id'] == id:
-            return folder
-
-
-
-###########################################
-# POINT_FC, СВЯЗАННЫЕ ПО keys_rel
-###########################################
-# IN
-#     obj_name        гео-объект                          'point' или 'geometry' или id
-#     group_id        id группы пользователя
-#     keys_rel        name or id: ('ngg_tmc', 1)
-#     keys_obj        ('address',)
-#
-# OUT
-#     FeatureCollection (id, properties = { 'address':, }, geometry)
-def io_get_geometry_tree_layer2(group_id, parent_id, write=True, ):
-    """
-    Функция для получения одного уровня дерева геометрий по идентификатору родителя
-    @param group_id: идентификатор группы пользователя
-    @param parent_id: идентификатор родителя
-    @param write: флаг записи
-    @return: список кортежей с информацией о отдельных геометриях
-    """
-    return tuple(IO(group_id=group_id).get_geometry_tree(
-        parent_id=parent_id,
-        write=write,
-    ))
+# ОТКЛЮЧЕНО ЗА НЕНАДОБНОСТЬЮ
+# ###########################################
+# # POINT_FC, СВЯЗАННЫЕ ПО keys_rel
+# ###########################################
+# # IN
+# #     obj_name        гео-объект                          'point' или 'geometry' или id
+# #     group_id        id группы пользователя
+# #     keys_rel        name or id: ('ngg_tmc', 1)
+# #     keys_obj        ('address',)
+# #
+# # OUT
+# #     FeatureCollection (id, properties = { 'address':, }, geometry)
+# def io_get_geometry_tree_layer2(group_id, parent_id, write=True, ):
+#     """
+#     Функция для получения одного уровня дерева геометрий по идентификатору родителя
+#     @param group_id: идентификатор группы пользователя
+#     @param parent_id: идентификатор родителя
+#     @param write: флаг записи
+#     @return: список кортежей с информацией о отдельных геометриях
+#     """
+#     return tuple(IO(group_id=group_id).get_geometry_tree(
+#         parent_id=parent_id,
+#         write=write,
+#     ))
 
 
 def rel_to_geo_fc(obj, group_id, keys_rel, keys_obj, where_dop=[]):

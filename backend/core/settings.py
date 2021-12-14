@@ -5,6 +5,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = '^7t+b0=(7#x)$7hqca+=9h1q+n40bwf*70gnxh$h#r($p!b=2e'
 
+from django.middleware.csrf import rotate_token
+
+
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
@@ -16,6 +19,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_admin_logs',
 
     'django_monaco_editor',
     'authentication',
@@ -45,7 +49,6 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            str(BASE_DIR.joinpath('templates')),
             BASE_DIR.__str__() + '/static/src/vue/dist/'
         ],
         'APP_DIRS': True,
@@ -90,7 +93,7 @@ LANGUAGE_CODE = 'ru-ru'
 TIME_ZONE = 'Europe/Minsk'
 USE_I18N = True
 USE_L10N = True
-USE_TZ = True
+USE_TZ = False
 
 STATIC_URL = '/static/'
 STATIC_ROOT = 'var/static_root'
@@ -100,3 +103,4 @@ STATICFILES_DIRS = [
 MEDIA_ROOT = '/devstorage/saphir_data'
 DOCUMENT_ROOT = '/devstorage/saphir_documents/'
 TEMPLATE_ROOT = '/devstorage/saphir_documents/template/'
+

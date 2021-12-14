@@ -2,7 +2,7 @@
   <div>
     <v-card flat v-if="!searchRelationTreeGraph">
       <v-card-subtitle class="text-center text-no-wrap">
-        Выбирете объект для поиска связей
+        Выбирете на графе объект для поиска связей
       </v-card-subtitle>
     </v-card>
     <v-treeview

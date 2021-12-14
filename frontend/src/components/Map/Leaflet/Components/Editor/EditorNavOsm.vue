@@ -5,7 +5,7 @@
       v-model="search_value"
       style="padding: 15px;"
       :color="$CONST.APP.COLOR_OBJ"
-      :items="search_items"
+      :items="search_items_proxy"
       :loading="search_wait"
       label="Искать"
       @input="on_search"
@@ -18,14 +18,15 @@
 
     <v-divider class="mx-4"></v-divider>
 
-    <Treeview
+    <EditorTree
       class="tree"
       style="height: calc( 100% - 70px ); overflow-y: auto;"
       :items="found_items"
-      :itemSel.number.sync="found_item_sel"
-      iconDef="mdi-web"
+      :itemSel.number.sync="found_sel"
+      :iconDef="$CONST.ICON.WEB"
       :isIcon="true"
       :isFlat="true"
+      :funGetFC="on_nav"
       @onNavNew="on_nav_new"
       @onNavAdd="on_nav_add"
     />
@@ -36,17 +37,15 @@
 <script>
 
 import router from '@/router';
+import UserSetting from "@/store/addition"
 import axios from '@/plugins/axiosSettings';
-import Treeview from '@/components/Map/Leaflet/Components/Treeview';
+import EditorTree from '@/components/Map/Leaflet/Components/Editor/EditorTree';
 import { fc_normalize, } from '@/components/Map/Leaflet/Lib/LibFc';
 
 export default {
   name: 'editor-nav-osm',
-  components: { Treeview, },
+  components: { EditorTree, },
 
-  props: {
-    localStorageKeyPostfix: { type: String, default() { return '' } },
-  },
   emits: [
     'onNavNew',
     'onNavAdd',
@@ -54,23 +53,17 @@ export default {
 
   data: () => ({
     search_value: undefined,
-    search_items: [],
+    search_items: new UserSetting('EditorNavOsm.search_items', []),
     search_wait:  false,
-    search_timer: undefined,
     found_items:  undefined,
-    found_item_sel: 0,
+    found_sel:    0,
   }),
 
-  created: function() {
+  // created: function() {
   //   // watch fix bug
-  //   this.$watch('found_item_sel', function(id) {
+  //   this.$watch('found_sel', function(id) {
   //     console.log(id)
   //   });
-    this.search_items = JSON.parse(localStorage.getItem(this.key_sel) || "[]")
-  },
-
-  // beforeDestroy () {
-  //   this.timer_abort();
   // },
 
   // watch: {
@@ -78,33 +71,41 @@ export default {
   // },
 
   computed: {
-    key_sel() { return router.currentRoute.name + '_editor_nav_osm_items_' + this.localStorageKeyPostfix },
+    search_items_proxy: { // fix bug
+      set: function(val) { this.search_items.value = val; },
+      get: function()    { return this.search_items.value; },
+    },
   },
 
   methods: {
-    // on_tab()      { this.timer_abort(); this.timer_input = setTimeout(this.setFocus, 1000); },
-    // timer_abort() { if (this.timer_input) { clearTimeout(this.timer_input); this.timer_input = undefined; } },
     // setFocus()    { this.$refs.inp.$el.focus(); },
 
     on_search() {
+      let self = this;
       this.$refs.inp.isMenuActive = false;
       let name = this.search_value;
       if (name) { name = name.trim().toLowerCase() }
+      if ((name == '') || (name == null)) {
+        this.found_sel   =  0;
+        this.found_items = undefined;
+        return;
+      }
 
+      this.search_wait = true;
       axios.get(this.$CONST.API.OBJ.OSM_SEARCH, { params: { text: name, } })
         .then(response => {
-          this.found_items = response.data;
+          this.search_wait = false;
+          self.found_items = response.data;
 
           // корректировать историю выбора
           if (
             (response.data.length > 0) &&
-            (name) &&
-            (name!='') &&
-            (!this.search_items.find((item) => (item==name)))
+            (!self.search_items.value.find((item) => (item==name)))
           ) {
-            this.search_items.unshift(name);
-            this.search_items.splice(256);
-            localStorage.setItem(this.key_sel, JSON.stringify(this.search_items).toLowerCase());
+            let arr = self.search_items.value; // нельзя: self.search_items.value.unshift(name);
+            arr.unshift(name);
+            arr.splice(256);
+            self.search_items.value = arr;
           }
 
           return Promise.resolve(response)
@@ -112,20 +113,18 @@ export default {
         .catch(error => { return Promise.reject(error) });
     },
 
-    on_nav_new(id, name) { this.emit_fc(id, name, 'onNavNew') },
-    on_nav_add(id, name) { this.emit_fc(id, name, 'onNavAdd') },
-    emit_fc(id, name, emit_name) {
+    on_nav_new(id, name) { let self=this; this.on_nav(id, function(data){ self.$emit('onNavNew', id, name, data); }) },
+    on_nav_add(id, name) { let self=this; this.on_nav(id, function(data){ self.$emit('onNavAdd', id, name, data); }) },
+    on_nav    (id, fun)  {
       this.search_wait = true;
-
       axios.get(this.$CONST.API.OBJ.OSM_FC, { params: {id: id,} })
         .then(response => {
-          this.$emit(emit_name, id, name, fc_normalize(response.data));
           this.search_wait = false;
+          fun(fc_normalize(response.data));
           return Promise.resolve(response)
         })
         .catch(error => { return Promise.reject(error) });
     },
-
   },
 }
 

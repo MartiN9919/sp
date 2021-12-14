@@ -60,8 +60,8 @@
                       <LeafletViewer
                         v-if="dialog"
                         style="height: 70vh;"
-                        :fc_parent_prop="JSON.parse(item.value)"
-                        :dop_controls="true"
+                        :fc="JSON.parse(item.value)"
+                        :controls="true"
                       />
                       <v-divider></v-divider>
                       <v-card-actions>

@@ -4,11 +4,13 @@
     v-show="visible"
     position="topcenterhorizontal"
     class="leaflet-bar leaflet-control control_notify select-off"
+    style="width: 100%;"
   >
     <v-card
       v-for="(message_item, message_ind) in messages"
       :key="message_ind"
       class="item"
+      style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
     >
       {{ message_item }}
     </v-card>
@@ -24,7 +26,7 @@ import { LControl, } from "vue2-leaflet";
 
 
 export default {
-  name: 'Notify',
+  name: 'ControlNotify',
   components: {
     LControl,
   },
