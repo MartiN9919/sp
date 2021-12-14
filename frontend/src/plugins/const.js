@@ -37,7 +37,6 @@ export default class CONST {
   };
 
 
-  /**/
   static ICON = class {
     static OBJ = class {
       static GEOMETRY = 'mdi-vector-polygon';
