@@ -1,6 +1,5 @@
 from data_base_driver.constants.const_dat import DAT_SYS_LIST_DOP, DAT_SYS_LIST_TOP, DAT_OWNER
 from data_base_driver.connect.connect_mysql import db_sql
-from data_base_driver.input_output.io_geo import get_geometry_folders
 
 
 def get_groups_list():
@@ -13,15 +12,14 @@ def get_list_by_top_id(id):
     @param id: идентификационный номер из таблицы sys_list_top
     @return: список словаре в формате [{'id':id1,'value':value1},{},...,{}]
     """
-    if id == 48:
-        return get_geometry_folders(1)
     if id == 53:
         return get_groups_list()
     sql = 'SELECT ' + DAT_SYS_LIST_DOP.ID + ', ' \
           + DAT_SYS_LIST_DOP.VAL + ' FROM ' \
           + DAT_SYS_LIST_DOP.TABLE + ' WHERE ' \
           + DAT_SYS_LIST_DOP.KEY_ID + ' = ' + str(id)
-    return [{'id': item[0], 'value': item[1]} for item in db_sql(sql)]
+    return [{'id': item[0], 'value': item[1]} for item in db_sql(sql)] + [{'id': 0, 'value': 'Корень'}] if id == 48 \
+        else []
 
 
 def get_list_by_name(name):

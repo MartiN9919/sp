@@ -181,6 +181,8 @@ export default {
           parameters.request.fc = response.data;
           commit('SCRIPT_MUT_ITEM_ADD', parameters.request);
           commit('changeSelectedTreeViewItem', {});
+          if(!response.data.features.length)
+            dispatch('addNotification', {content: 'По вашему запросу ничего не найдено', timeout: 3})
         })
         .catch(() => {})
     },
@@ -196,8 +198,6 @@ export default {
       commit('SCRIPT_MUT_SEL_CLEAR');
       commit('SCRIPT_MAP_SEL_MARK');
     },
-
-
 
     getTemplatesList ({ commit, dispatch }, config = {}) {
       return axios.get('script/templates/', config)

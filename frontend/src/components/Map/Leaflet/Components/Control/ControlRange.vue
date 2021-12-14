@@ -150,12 +150,12 @@ import { LControl }      from 'vue2-leaflet';
 import { MAP_ITEM }      from '@/components/Map/Leaflet/Lib/Const';
 import { datesql_to_ts, datesql_is_time } from '@/plugins/sys';
 import contextMenuNested from '@/components/WebsiteShell/UIMainComponents/contextMenuNested';
-import MixLib            from '@/components/Map/Leaflet/Components/RangeLib';
-import MixDt             from '@/components/Map/Leaflet/Components/RangeDt';
-import MixHm             from '@/components/Map/Leaflet/Components/RangeHm';
+import MixLib            from '@/components/Map/Leaflet/Components/Control/ControlRangeLib';
+import MixDt             from '@/components/Map/Leaflet/Components/Control/ControlRangeDt';
+import MixHm             from '@/components/Map/Leaflet/Components/Control/ControlRangeHm';
 
 export default {
-  name: 'Range',
+  name: 'ControlRange',
   mixins: [ MixLib, MixDt, MixHm, ],
   components: { LControl, contextMenuNested, },
   data: () => ({

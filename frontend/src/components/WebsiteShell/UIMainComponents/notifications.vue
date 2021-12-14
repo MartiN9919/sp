@@ -10,7 +10,7 @@
         <template v-slot:prepend>
           <div class="d-flex flex-column pr-2">
             <v-icon>{{notificationType(notification).icon}}</v-icon>
-            <div v-if="!notificationType(notification)" class="text-subtitle-2">{{notification.status}}</div>
+            <div v-if="typeof notification.status === 'number'" class="text-subtitle-2">{{notification.status}}</div>
           </div>
         </template>
         <div class="type">{{notificationType(notification).text}}</div>
