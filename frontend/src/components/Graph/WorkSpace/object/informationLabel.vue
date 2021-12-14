@@ -1,20 +1,10 @@
 <template>
   <v-card hover width="fit-content">
-    <table class="table" :style="{padding: `${sizeNode / 180}px`}">
-      <tr
-        v-if="param.values.length"
-        v-for="param in params" :key="param.id"
-        :style="{fontSize: `${sizeNode/40}px`}"
-      >
-        <td class="information-column">
-          {{param.baseParam.title}}
-        </td>
-        <td v-if="param.values[0].value" :style="{maxWidth: `${sizeNode / 2}px`}">
-          {{param.values[0].value}}
-        </td>
-        <td v-if="showDate" class="information-column">
-          {{param.values[0].date}}
-        </td>
+    <table class="table" :style="tableStyle">
+      <tr v-for="param in params" :key="param.id" :style="rowStyle">
+        <td class="information-column">{{param.baseParam.title}}</td>
+        <td :style="valueColStyle">{{param.values[0].value}}</td>
+        <td v-if="showDate" class="information-column">{{param.values[0].date}}</td>
       </tr>
     </table>
   </v-card>
@@ -22,19 +12,25 @@
 
 
 <script>
-import CustomTooltip from "@/components/WebsiteShell/CustomComponents/customTooltip"
 
 export default {
   name: "tooltip",
-  components: {CustomTooltip},
   props: {
     params: Array,
     sizeNode: Number,
-    showDate: {
-      type: Boolean,
-      default: false,
-    }
+    showDate: Boolean,
   },
+  computed: {
+    tableStyle: function () {
+      return {padding: `${this.sizeNode / 180}px`}
+    },
+    rowStyle: function () {
+      return {fontSize: `${this.sizeNode / 40}px`}
+    },
+    valueColStyle: function () {
+      return {maxWidth: `${this.sizeNode / 2}px`}
+    }
+  }
 }
 </script>
 

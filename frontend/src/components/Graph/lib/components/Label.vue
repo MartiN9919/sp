@@ -89,6 +89,9 @@ export default {
       return `M ${this.pos.x} ${this.pos.y} L ${this.node.x + this.node.width / 2} ${this.node.y + this.node.height / 2}`
     }
   },
+  updated() {
+    this.$refs.node.fitContent()
+  },
   watch: {
     element: {deep: true, handler: 'checkTypeElement'},
     pos: {deep: true, handler: 'updatePos'},
