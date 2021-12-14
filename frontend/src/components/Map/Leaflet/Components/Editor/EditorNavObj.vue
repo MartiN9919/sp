@@ -26,7 +26,7 @@
       :itemSel.number.sync="found_sel"
       :iconDef="$CONST.ICON.OBJ.GEOMETRY"
       :isIcon="true"
-      :isFlat="true"
+      :isFlat="false"
       :funGetFC="on_nav"
       @onNavNew="on_nav_new"
       @onNavAdd="on_nav_add"
