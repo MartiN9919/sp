@@ -5,7 +5,7 @@
       :y="minY - padding.top - margin"
       :width="width + (padding.left + padding.right) + margin * 2"
       :height="height + (padding.top + padding.bottom) + margin * 2"
-      @mousedown="onMousedown"
+      @mousedown.stop="onMousedown"
   >
     <div class="content" ref="content" :style="contentMargin">
       <slot>
@@ -75,6 +75,8 @@ export default {
   height: 100%;
   position: absolute;
   display: inline-block;
-  background-color: rgba(0, 0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.05);
+  border-radius: 40px;
+  border: 3px solid rgba(0, 0, 0, 0.1);
 }
 </style>
