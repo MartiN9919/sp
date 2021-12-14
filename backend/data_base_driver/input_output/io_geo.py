@@ -158,35 +158,28 @@ def get_geometry_search(group_id, text):
         'parent_id': item['_source']['parent_id'],
         'sec':       item['_source']['sec'],
     } for item in json.loads(response.text)['hits']['hits']]
-    geometries.sort(key=lambda x: x['id'])
-    temp_result = []
+    temp_result, temp_id = [], []
     for geometry in geometries:
-        temp_item = [item for item in temp_result if item['id'] == geometry['id']]
-        if len(temp_item) == 0:
-            temp_result.append(geometry)
-        else:
-            if (len(geometry['name']) > 0 and temp_item[0]['sec'] < geometry['sec']) or len(temp_item[0]['name']) == 0:
-                temp_item[0]['name'] = geometry['name']
-            if (geometry['parent_id'] > 0 and temp_item[0]['sec'] < geometry['sec']) or temp_item[0]['parent_id'] == 0:
-                temp_item[0]['parent_id'] = geometry['parent_id']
-            if temp_item[0]['sec'] < geometry['sec']:
-                temp_item[0]['sec'] = geometry['sec']
+        if geometry['id'] in temp_id:
+            continue
+        temp_id.append(geometry['id'])
+        data = json.dumps({
+            'index': 'obj_geometry_col',
+            'query': {
+                'equals': {'rec_id': int(geometry['id'])}
+            }
+        })
+        temp_geometry = {'id': geometry['id'], 'name': geometry['name'], 'parent_id': 0}
+        geometry_information = json.loads(requests.post(FullTextSearch.SEARCH_URL, data=data).text)['hits']['hits']
+        geometry_information.sort(key=lambda x: x['_source']['sec'])
+        for temp in geometry_information:
+            if temp['_source']['parent_id'] != 0:
+                temp_geometry['parent_id'] = temp['_source']['parent_id']
+            if len(temp['_source']['name']) != 0:
+                temp_geometry['name'] = temp['_source']['name']
+        temp_result.append(temp_geometry)
     return build_tree_from_list(temp_result)
 
-
-def get_geometry_by_id(id):
-    data = json.dumps({
-        'index': 'obj_geometry_col',
-        'limit': 10000
-    })
-    response = requests.post(FullTextSearch.SEARCH_URL, data=data)
-    geometries = [{'id': item['_source']['rec_id'], 'name': item['_source']['name'],
-                   'parent_id': item['_source']['parent_id']}
-                  for item in json.loads(response.text)['hits']['hits']]
-    geometries.sort(key=lambda x: x['id'])
-    for folder in geometries:
-        if folder['id'] == id:
-            return folder
 
 
 # ОТКЛЮЧЕНО ЗА НЕНАДОБНОСТЬЮ
