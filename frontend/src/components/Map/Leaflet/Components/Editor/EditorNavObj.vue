@@ -43,59 +43,6 @@
  *    @onNavAdd=""
  *  />
  */
-
-
-/*
-    <v-text-field
-      ref="inp"
-      style="padding: 15px;"
-      :color="$CONST.APP.COLOR_OBJ"
-      label="Искать"
-      @input="on_search"
-      @focus="on_focus(true)"
-      @blur="on_focus(false)"
-      dense
-      outlined
-      hide-details
-      clearable
-      autofocus
-    >
-      <template v-slot:append>
-        <v-btn
-          v-show="btn_show"
-          :disabled="btn_prev_disabled"
-          @click="on_click_btn_prev"
-          icon
-        >
-          <v-icon size="24" :color="btn_color">mdi-arrow-left-bold</v-icon>
-        </v-btn>
-        <v-btn
-          v-show="btn_show"
-          :disabled="btn_next_disabled"
-          @click="on_click_btn_next"
-          icon
-        >
-          <v-icon size="24" :color="btn_color">mdi-arrow-right-bold</v-icon>
-        </v-btn>
-    </template>
-    </v-text-field>
-
-    <v-divider class="mx-4"></v-divider>
-
-    <EditorTree
-      class="tree"
-      style="height: calc(100% - 70px);"
-      :items="items"
-      :itemSelId.number.sync="item_sel_id.value"
-      :funGetFC="on_nav"
-      @onNavNew="on_nav_new"
-      @onNavAdd="on_nav_add"
-      @onMenuShow=""
-    />
-*/
-
-
-
 import router from '@/router';
 import UserSetting from "@/store/addition"
 import axios from '@/plugins/axiosSettings';

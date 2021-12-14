@@ -8,6 +8,7 @@
     hoverable
     transition
     dense
+    open-all
     open-on-click
     active-class=""
     color=""
@@ -38,15 +39,17 @@
                 <v-list-item-subtitle v-text="item.address" :style="{'color': get_color(item)}"/>
               </v-list-item-content>
               <v-list-item-action
-                v-if="hover && !item.children"
+                v-if="true || hover && !item.children"
                 class="btns"
               >
                 <v-btn class="btn" small icon>
                   <v-icon @click="on_add(item)">mdi-plus-circle-outline</v-icon>
                 </v-btn>
+                <!--
                 <v-btn class="btn" small icon>
                   <v-icon @click="on_new(item)">mdi-chevron-right</v-icon>
                 </v-btn>
+                -->
               </v-list-item-action>
             </v-list-item>
           </v-hover>
@@ -72,82 +75,64 @@ export default {
   props: {
     //...EditorPreview.options.props,
     items:     { type: Array,    default: () => [], },
-    itemSelId: { type: Number,   default: () => 0, },
     iconDef:   { type: String,   default: () => $CONST.ICON.OBJ.GEOMETRY, }, // иконка по умолчанию
     isIcon:    { type: Boolean,  default: () => true, },                     // наличие иконок
     isFlat:    { type: Boolean,  default: () => false, },                    // наличие отступов слева (как список)
     funGetFC:  { type: Function, default: () => undefined, },
   },
   emits: [
-    'onNavNew',
-    'onNavAdd',
-    'onMenuShow',
-    'update:itemSelId',
+    'onNavNew',                 // event: установить геометрию
+    'onNavAdd',                 // event: добавить геометрию
+    'onMenuShow',               // event: контекстное меню, не обязательно
   ],
 
   data: () => ({
+    item_sel_id: 0,             // выделенный элемент
     items_path: {},             // список id родительских узлов: {1: [1, 2, ...], ...}
     items_active: [],
   }),
 
   watch: {
-    items: function(items)   { this.ini_items(); },
-    item_sel_id: function(item_id) {
-      // развернуть tree
-      if (this.items_path[item_id]) { this.items_active = this.items_path[item_id]; }
-      setTimeout(function() {
-        if (!this.find_item_id(item_id, this.items)) return;
-        this.$vuetify.goTo(
-          '#id_'+this._uid+'_'+item_id,
-          { duration: 100, offset: 100, easing: 'easeInOutCubic', container: this.$refs.tree_view, }
-        )
-      }.bind(this), 100);
-    },
-  },
+    // items: function(items)   {
+    //   if (!this.items) return;
+    //   this._loop_items_(this.items, [], function(item, path_id) {
+    //     this.items_path[item.id] = path_id;
+    //   }.bind(this));
+    // },
 
-  computed: {
-    item_sel_id: {
-      get()   {
-        return this.itemSelId;
-      },
-      set(item_id) {
-        // click на выделенном item ==> item_id=[]
-        if (item_id instanceof Object) {
-          if (item_id.length>0) { item_id = item_id[0]; }
-          else                  { item_id = this.item_sel_id; }
-        }
-        this.$emit('update:itemSelId', item_id);  // вызывает watch.item_sel_id
-      },
-    },
+    // item_sel_id: function(item_id) {
+    //   // развернуть tree
+    //   if (this.items_path[item_id]) { this.items_active = this.items_path[item_id]; }
+    //   setTimeout(function() {
+    //     if (!this.find_item_id(item_id, this.items)) return;
+    //     this.$vuetify.goTo(
+    //       '#id_'+this._uid+'_'+item_id,
+    //       { duration: 100, offset: 100, easing: 'easeInOutCubic', container: this.$refs.tree_view, }
+    //     )
+    //   }.bind(this), 100);
+    // },
   },
 
   methods: {
-    ini_items() {
-      if (!this.items) return;
-      this._loop_items_(this.items, [], function(item, path_id) {
-        this.items_path[item.id] = path_id;
-      }.bind(this));
-    },
+    // // вызывать fun(item) для всех item, в т.ч. вложенных
+    // _loop_items_(items, path_id, fun) {
+    //   for (let item of items) {
+    //     const path_id_new = [...path_id, ...[item.id]]
+    //     fun(item, path_id_new)
+    //     if (item.children) this._loop_items_(item.children, path_id_new, fun)
+    //   }
+    // },
 
-    // вызывать fun(item) для всех item, в т.ч. вложенных
-    _loop_items_(items, path_id, fun) {
-      for (let item of items) {
-        const path_id_new = [...path_id, ...[item.id]]
-        fun(item, path_id_new)
-        if (item.children) this._loop_items_(item.children, path_id_new, fun)
-      }
-    },
-
-    // найти узел с id в items
-    find_item_id(id, items) {
-      let ret = undefined;
-      for (const item of items) {
-        if (item.id == id) { ret = item; break; }
-        if (item.children) { ret = this.find_item_id(id, item.children); }
-        if (ret)           { break; }
-      }
-      return ret;
-    },
+    // // найти узел с id в items
+    // find_item_id(id, items) {
+    //   let ret = undefined;
+    //   for (const item of items) {
+    //     if (item.id == id) { ret = item; break; }
+    //     if (item.children) { ret = this.find_item_id(id, item.children); }
+    //     if (ret)           { break; }
+    //   }
+    //   return ret;
+    // },
 
     on_new(item) {
       this.$emit('onNavNew', item.id, item.name);
@@ -180,7 +165,7 @@ export default {
 
 <style scoped lang="scss">
   div::v-deep .btns { margin: 0 !important; display: block; }
-  div::v-deep .btn { display: inline-block; top: 50%; transform: translate(0, -50%); }
+  div::v-deep .btn { display: inline-block; } /* для нескольких кнопок: top: 50%; transform: translate(0, -50%); */
 
   div::v-deep .v-list-item { min-height: 24px; padding: 0 2px; }
 
