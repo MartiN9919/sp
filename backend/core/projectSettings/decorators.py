@@ -151,26 +151,21 @@ def request_log(function):
     """
 
     def _inner(request, *args, **kwargs):
-        try:
-            logger.info(
-                str(request.user) + '.' +
-                str(request.user.id) + '|' +
-                request.META.get('REMOTE_ADDR') + ':' +
-                str(request.META.get('REMOTE_PORT')) + '|' +
-                request.method + ':' +
-                request.path + '|' +
-                str(request.body.decode("utf-8"))
-            )
-        except:
-            logger.info(
-                str(request.user) + '.' +
-                str(request.user.id) + '|' +
-                request.META.get('REMOTE_ADDR') + ':' +
-                str(request.META.get('REMOTE_PORT'))+ '|' +
-                request.method + ':' +
-                request.path + '|' +
-                request.POST['data']
-            )
+        body_string = str(request.body.decode("utf-8"))
+        if len(body_string) != 0 and json.loads(request.body).get('password'):
+            body = json.loads(request.body)
+            body['password'] = '***'
+            body_string = str(body)
+
+        logger.info(
+            str(request.user) + '.' +
+            str(request.user.id) + '|' +
+            request.META.get('REMOTE_ADDR') + ':' +
+            str(request.META.get('REMOTE_PORT')) + '|' +
+            request.method + ':' +
+            request.path + '|' +
+            body_string
+        )
         return function(request, *args, **kwargs)
 
     return _inner
