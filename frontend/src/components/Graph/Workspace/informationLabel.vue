@@ -1,10 +1,10 @@
 <template>
-  <v-card hover width="fit-content">
-    <table class="table" :style="tableStyle">
+  <v-card hover :max-width="sizeNode" :min-width="sizeNode">
+    <table class="table">
       <tr v-for="param in params" :key="param.id" :style="rowStyle">
         <td class="information-column">{{param.baseParam.title}}</td>
-        <td :style="valueColStyle">{{param.values[0].value}}</td>
-        <td v-if="showDate" class="information-column">{{param.values[0].date}}</td>
+        <td v-if="param.values[0].value" class="content-column text-center" :class="!showDate && 'text-end'">{{param.values[0].value}}</td>
+        <td v-if="showDate" class="column-date text-end">{{param.values[0].date}}</td>
       </tr>
     </table>
   </v-card>
@@ -21,22 +21,16 @@ export default {
     showDate: Boolean,
   },
   computed: {
-    tableStyle: function () {
-      return {padding: `${this.sizeNode / 180}px`}
-    },
     rowStyle: function () {
       return {fontSize: `${this.sizeNode / 40}px`}
     },
-    valueColStyle: function () {
-      return {maxWidth: `${this.sizeNode / 2}px`}
-    }
   }
 }
 </script>
 
 <style scoped>
 .table {
-  width: max-content;
+  width: 100%;
   border-collapse: collapse;
   background-color: #f2f2f2;
 }
@@ -54,6 +48,12 @@ thead tr {
   position: initial;
 }
 .information-column {
+  width: auto;
+}
+.column-date {
   white-space: nowrap;
+}
+.content-column {
+  width: 100%;
 }
 </style>

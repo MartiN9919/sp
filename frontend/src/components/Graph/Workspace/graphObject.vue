@@ -6,21 +6,25 @@
     @wheel.stop="scrollObject"
     @click.stop=""
   >
-    <v-label v-if="showLabel" :element="object">
+    <v-label v-show="showLabel" :element="object">
       <information-label :size-node="object.size" :params="getClassifiers" :show-date="showDate"/>
     </v-label>
 
     <node ref="node" :data="object">
       <body-object :object="object" :class="objectClass"/>
     </node>
+
+    <foreignObject v-if="showTitle" v-bind="titleStyle">
+      <div class="name-text" :style="titleTextStyle">{{object.object.title}}</div>
+    </foreignObject>
   </g>
 </template>
 
 <script>
 import Node from '@/components/Graph/lib/components/Node'
 import VLabel from '@/components/Graph/lib/components/Label'
-import BodyObject from "@/components/Graph/Workspace/GraphObject/bodyObject"
-import InformationLabel from "@/components/Graph/WorkSpace/object/informationLabel"
+import BodyObject from "@/components/Graph/Workspace/bodyObject"
+import InformationLabel from "@/components/Graph/Workspace/informationLabel"
 import {mapGetters} from "vuex";
 
 export default {
@@ -32,10 +36,10 @@ export default {
   },
   computed: {
     ...mapGetters(['globalDisplaySettingValue', 'classifiersSettings']),
-    objectClass: function () {
+    objectClass() {
       return this.choosing ? 'choosing-object' : 'body-object'
     },
-    showLabel: function () {
+    showLabel() {
       let globalState = this.globalDisplaySettingValue('showGlobalTooltipObject')
       let classifiersLength = this.getClassifiers.length
       let localState = this.object.object.showTooltip
@@ -49,6 +53,22 @@ export default {
         p => !this.classifiersSettings.includes(p.baseParam.id) && p.values.length
       )
     },
+    showTitle() {
+      return this.globalDisplaySettingValue('showGlobalTitle') && this.object.object.showTitle
+    },
+    titleStyle() {
+      return {
+        x: this.object.x + this.object.width / 2 - this.object.size / 2,
+        y: this.object.y + this.object.height,
+        width: `${this.object.size}px`,
+        overflow: "visible",
+        class: "pt-8",
+        height: 1
+      }
+    },
+    titleTextStyle() {
+      return {fontSize: `${this.object.size/40}px`}
+    }
   },
   methods: {
     scrollObject(event) {
@@ -87,5 +107,11 @@ export default {
 .body-object:hover {
   box-shadow: 0 7px 8px -4px rgb(0 0 0 / 20%), 0 12px 17px 2px rgb(0 0 0 / 14%), 0 5px 22px 4px rgb(0 0 0 / 12%);
 }
-
+.name-text {
+  color: #444444;
+  position: relative;
+  background-color: white;
+  width: fit-content;
+  margin: auto;
+}
 </style>

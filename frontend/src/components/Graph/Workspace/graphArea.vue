@@ -1,5 +1,5 @@
 <template>
-  <div class="h-100" @click="clearSelectors">
+  <div class="h-100 disable-optimize" @click="clearSelectors" @click.right.prevent="menuShow" >
     <screen id="screen" ref="screen">
       <graph-relation
         v-for="relation in graphRelations"
@@ -23,19 +23,23 @@
         @click.native.stop=""
       />
     </screen>
+    <context-menu-nested ref="contextMenu" :form="this" :items="contextMenu" :color="$CONST.APP.COLOR_OBJ"/>
   </div>
 </template>
 
 <script>
 import Screen from '@/components/Graph/lib/components/Screen'
 import Group from '@/components/Graph/lib/components/Group'
-import GraphObject from "@/components/Graph/Workspace/GraphObject/graphObject"
-import GraphRelation from "@/components/Graph/Workspace/GraphRelation/graphRelation"
+import GraphObject from "@/components/Graph/Workspace/graphObject"
+import GraphRelation from "@/components/Graph/Workspace/graphRelation"
+const ContextMenuNested = () => import("@/components/WebsiteShell/UIMainComponents/contextMenuNested")
+import bodyContextMenu from "@/components/Graph/WorkSpace/bodyContextMenu"
 import {mapActions, mapGetters} from "vuex"
 
 export default {
   name: "graphArea",
-  components: {GraphRelation, GraphObject, Screen, Group},
+  mixins: [bodyContextMenu],
+  components: {GraphRelation, GraphObject, Screen, Group, ContextMenuNested},
   data: () => ({
     choosingObjects: [],
     relatedObjects: [],
@@ -66,6 +70,10 @@ export default {
       this.graphObjects.splice(this.graphObjects.findIndex(o => o === object), 1)
       this.graphObjects.push(object)
     },
+    menuShow(event, object=null) {
+      this.objectWithActivatedMenu = object
+      this.$refs.contextMenu.show_root(event.x, event.y)
+    },
   },
   mounted() {
     this.setScreen(this.$refs.screen)
@@ -74,5 +82,7 @@ export default {
 </script>
 
 <style scoped>
-
+.disable-optimize {
+  will-change: transform;
+}
 </style>

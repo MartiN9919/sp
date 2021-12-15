@@ -1,6 +1,6 @@
 <template>
   <v-avatar :size="bodySize">
-    <v-img v-if="getPhoto" :src="getPhoto"></v-img>
+    <v-img v-if="getPhoto" :src="getPhoto"/>
     <v-icon v-else :size="bodySize">{{object.object.object.icon}}</v-icon>
   </v-avatar>
 </template>
@@ -25,4 +25,7 @@ export default {
 </script>
 
 <style scoped>
+.v-icon {
+  transition: none;
+}
 </style>
