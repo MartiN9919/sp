@@ -18,8 +18,8 @@ def get_list_by_top_id(id):
           + DAT_SYS_LIST_DOP.VAL + ' FROM ' \
           + DAT_SYS_LIST_DOP.TABLE + ' WHERE ' \
           + DAT_SYS_LIST_DOP.KEY_ID + ' = ' + str(id)
-    return [{'id': item[0], 'value': item[1]} for item in db_sql(sql)] + [{'id': 0, 'value': 'Корень'}] if id == 48 \
-        else []
+    return [{'id': item[0], 'value': item[1]} for item in db_sql(sql)] + ([{'id': 0, 'value': 'Корень'}] if id == 48 \
+        else [])
 
 
 def get_list_by_name(name):
