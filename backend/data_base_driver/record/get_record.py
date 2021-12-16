@@ -184,7 +184,7 @@ def get_keys_by_object():
         temp.pop('list_id')
         result.append(temp)
     result.sort(key=lambda x: x['id'])
-    result.sort(key=lambda x:x['obj_id'])
+    result.sort(key=lambda x: x['obj_id'])
     return result
 
 
