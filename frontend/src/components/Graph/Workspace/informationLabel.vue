@@ -2,7 +2,7 @@
   <v-card hover :max-width="sizeNode" :min-width="sizeNode">
     <table class="table">
       <tr v-for="param in params" :key="param.id" :style="rowStyle">
-        <td class="information-column">{{param.baseParam.title}}</td>
+        <td class="information-column" :class="(!param.values[0].value && !showDate) && 'text-center'">{{param.baseParam.title}}</td>
         <td v-if="param.values[0].value" class="content-column text-center" :class="!showDate && 'text-end'">{{param.values[0].value}}</td>
         <td v-if="showDate" class="column-date text-end">{{param.values[0].date}}</td>
       </tr>
@@ -30,7 +30,7 @@ export default {
 
 <style scoped>
 .table {
-  width: 100%;
+  width: auto;
   border-collapse: collapse;
   background-color: #f2f2f2;
 }
@@ -54,6 +54,10 @@ thead tr {
   white-space: nowrap;
 }
 .content-column {
-  width: 100%;
+  width: auto;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
 }
 </style>
