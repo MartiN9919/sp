@@ -6,6 +6,7 @@ import requests
 from data_base_driver.additional_functions import date_time_to_sec, push_dict
 from data_base_driver.constants.const_dat import DAT_SYS_KEY, DAT_OWNER
 from data_base_driver.constants.const_fulltextsearch import FullTextSearch
+from data_base_driver.constants.const_key import SYS_KEY_CONSTANT
 
 
 def check_object_permission(group_id, object_type, rec_id, write=False):
@@ -122,17 +123,8 @@ def check_relation_permission(relation, group_id):
         if not check_object_permission(group_id, relation['_source']['obj_id_2'], relation['_source']['rec_id_2'],
                                        False):
             return False
-    data = json.dumps({
-        'index': 'rel',
-        'query': {
-            'query_string': '@key_id 1 @rec_id_1 ' + str(relation['_id'])
-        },
-        'limit': 100
-    })
-    response = requests.post(FullTextSearch.SEARCH_URL, data=data)
-    special_relations = json.loads(response.text)['hits']['hits']
-    for special_relation in special_relations:
-        if not check_object_permission(group_id, int(special_relation['_source']['obj_id_2']),
-                                       int(special_relation['_source']['rec_id_2']), False):
+    if len(relation['_source']['document_id']) > 0:
+        if not check_object_permission(group_id, SYS_KEY_CONSTANT.DOC_ID,
+                                       int(relation['_source']['document_id']), False):
             return False
     return True

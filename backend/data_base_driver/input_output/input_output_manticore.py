@@ -204,20 +204,18 @@ def io_get_rel_manticore_dict(group_id, keys, obj_rel_1, obj_rel_2, val, time_in
     })
     response_1 = json.loads(requests.post(FullTextSearch.SEARCH_URL, data=data_1).text)['hits']['hits']
     response_2 = json.loads(requests.post(FullTextSearch.SEARCH_URL, data=data_2).text)['hits']['hits']
-    full_result = [{'id': int(item['_id']),
-                    'sec': item['_source']['sec'],
-                    'key_id': item['_source']['key_id'],
-                    'obj_id_1': item['_source']['obj_id_1'],
-                    'rec_id_1': item['_source']['rec_id_1'],
-                    'obj_id_2': item['_source']['obj_id_2'],
-                    'rec_id_2': item['_source']['rec_id_2'],
-                    'val': item['_source']['val'],
-                    } for item in response_1 + response_2 if check_relation_permission(item, group_id)]
-    for relation in full_result:
-        if len(relation['val']) == 0:
-            relation['val'] = 0
-        else:
-            relation['val'] = int(relation['val'])
+    full_result = [
+        {
+            'id': int(item['_id']),
+            'sec': item['_source']['sec'],
+            'key_id': item['_source']['key_id'],
+            'obj_id_1': item['_source']['obj_id_1'],
+            'rec_id_1': item['_source']['rec_id_1'],
+            'obj_id_2': item['_source']['obj_id_2'],
+            'rec_id_2': item['_source']['rec_id_2'],
+            'val': (int(item['_source']['val']) if len(item['_source']['val']) > 0 else 0),
+            'document_id': (int(item['_source']['document_id']) if len(item['_source']['document_id']) > 0 else 0)
+        } for item in response_1 + response_2 if check_relation_permission(item, group_id)]
     unique_result = []
     for item in full_result:
         if len([x for x in unique_result if item[DAT_REL.SEC] == x[DAT_REL.SEC] and
@@ -226,7 +224,8 @@ def io_get_rel_manticore_dict(group_id, keys, obj_rel_1, obj_rel_2, val, time_in
                                             item[DAT_REL.REC_ID_1] == x[DAT_REL.REC_ID_1] and
                                             item[DAT_REL.OBJ_ID_2] == x[DAT_REL.OBJ_ID_2] and
                                             item[DAT_REL.REC_ID_2] == x[DAT_REL.REC_ID_2] and
-                                            item[DAT_REL.VAL] == x[DAT_REL.VAL]]) == 0:
+                                            item[DAT_REL.VAL] == x[DAT_REL.VAL] and
+                                            item[DAT_REL.DOCUMENT_ID] == x[DAT_REL.DOCUMENT_ID]]) == 0:
             unique_result.append(item)
     if is_unique:
         return unique_result

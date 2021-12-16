@@ -370,6 +370,7 @@ class DAT_REL:
     OBJ_ID_2 = 'obj_id_2'
     REC_ID_2 = 'rec_id_2'
     VAL = 'val'
+    DOCUMENT_ID = 'document_id'
     LIST = (KEY_ID, DAT, OBJ_ID_1, REC_ID_1, OBJ_ID_2, REC_ID_2,)
 
 

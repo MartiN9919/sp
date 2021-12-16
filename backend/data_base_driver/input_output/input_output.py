@@ -139,7 +139,7 @@ def io_get_rel_tuple(group_id, keys, obj_rel_1, obj_rel_2, val, time_interval, i
     @param val: список с возможными идентификаторами значений закрепленных списков
     @param time_interval: словарь хранящий промежуток времени в секундах: {second_start, second_end}
     @param is_unique: флаг проверки результирующего списка на уникальность входящих элементов
-    @return: список словарей в формате [(key_id,sec,obj_id_1,rec_id_1,obj_id_2,rec_id_2,val),(),...,()]
+    @return: список словарей в формате [(key_id,sec,obj_id_1,rec_id_1,obj_id_2,rec_id_2,val,id,document_id),(),...,()]
     """
     temp_result = io_get_rel(group_id, keys, obj_rel_1, obj_rel_2, val, time_interval, is_unique)
     return [(int(item['key_id']),
@@ -149,7 +149,8 @@ def io_get_rel_tuple(group_id, keys, obj_rel_1, obj_rel_2, val, time_interval, i
              int(item['obj_id_2']),
              int(item['rec_id_2']),
              item['val'],
-             item['id']
+             item['id'],
+             item['document_id']
              ) for item in temp_result]
 
 

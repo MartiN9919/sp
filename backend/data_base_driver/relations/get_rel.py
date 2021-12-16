@@ -11,21 +11,6 @@ from data_base_driver.sys_key.get_list import get_list_by_top_id, get_item_list_
 from data_base_driver.sys_key.get_object_dump import get_object_by_name
 
 
-def get_system_relation(group_id, rel_rec_id):
-    """
-    Функция для получения системной связи (связь-документ)
-    @param group_id: идентификатор группы пользователя
-    @param rel_rec_id: идентификатор связи
-    @return: словарь в формате {object_id, rec_id, title} содержащий информацию о документе
-    """
-    system_relations = io_get_rel(group_id, [1], [1, int(rel_rec_id)], [20], [], {}, True)
-    if len(system_relations) > 0:
-        doc = get_object_record_by_id_http(20, system_relations[0]['rec_id_2'], group_id, [])
-        return {'object_id': doc['object_id'], 'rec_id': int(doc['rec_id']), 'title': doc['title']}
-    else:
-        return None
-
-
 def get_rel_by_object(group_id, object, id, parents):
     """
     вспомогательная функция получения связей с определенной записью таблицы событий-связей,
@@ -39,16 +24,16 @@ def get_rel_by_object(group_id, object, id, parents):
         object = get_object_by_name(object)['id']
     rels = io_get_rel_tuple(group_id, [], [int(object), id], [], [], {}, True)
     first_data = [
-        {'object_id': rel[2], 'rel_type': rel[0], 'val': rel[6], 'rec_id': rel[3], 'sec': rel[1], 'id': rel[7]}
+        {'object_id': rel[2], 'rel_type': rel[0], 'val': rel[6], 'rec_id': rel[3], 'sec': rel[1], 'id': rel[7], 'doc': rel[8]}
         for rel in rels if (rel[4] == object and rel[5] == id) and len(
             [temp for temp in parents if int(temp[0]) == rel[2] and temp[1] == rel[3]]) == 0]
     second_data = [
-        {'object_id': rel[4], 'rel_type': rel[0], 'val': rel[6], 'rec_id': rel[5], 'sec': rel[1], 'id': rel[7]}
+        {'object_id': rel[4], 'rel_type': rel[0], 'val': rel[6], 'rec_id': rel[5], 'sec': rel[1], 'id': rel[7], 'doc': rel[8]}
         for rel in rels if (rel[2] == object and rel[3] == id) and len(
             [temp for temp in parents if int(temp[0]) == rel[4] and temp[1] == rel[5]]) == 0]
     relations = []
     for relation in first_data + second_data:
-        doc = get_system_relation(group_id, relation['id'])
+        doc = get_object_record_by_id_http(20, relation['doc'], group_id, []) if relation['doc'] != 0 else None
         old_relation = [item for item in relations if relation['object_id'] == item['object_id'] and
                         relation['rec_id'] == item['rec_id']]
         if len(old_relation) > 0:

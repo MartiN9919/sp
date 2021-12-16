@@ -247,7 +247,6 @@ def db_sql(sql, wait=False, read=True, database=VEC_DATA, connection=-1):
         try:
             ret = run(connection, db_opened, db_reconnect)
             isOk = True
-            # logger.debug("OK "+sql[:130])
         except Exception as e:
             ret = []
             isOk = not wait

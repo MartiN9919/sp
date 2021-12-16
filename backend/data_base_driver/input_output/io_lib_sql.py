@@ -90,7 +90,6 @@ class IO_LIB_SQL():
     rec_insert_one = lambda self, table, equ: self.__sql_exec__(
         sql="INSERT IGNORE INTO " + table + " SET " + ', '.join(equ), read=False)
 
-
     def insert_one_rec(self, table, equ):
         sql = "INSERT IGNORE INTO " + table + " SET " + ', '.join(equ)
         if len(equ) == 4:
@@ -101,15 +100,17 @@ class IO_LIB_SQL():
                                 equ[2].split('=')[1].replace('\'', '')
                                 )
         else:
-            add_relation_http(int(equ[7].split('=')[1]),
+            if not add_relation_http(int(equ[8].split('=')[1]),
                               equ[5].split('=')[1].replace('\'', ''),
                               int(equ[0].split('=')[1]),
                               int(equ[1].split('=')[1]),
                               int(equ[2].split('=')[1]),
                               int(equ[3].split('=')[1]),
                               int(equ[4].split('=')[1]),
-                              equ[6].split('=')[1].replace('\'', '')
-                              )
+                              equ[6].split('=')[1].replace('\'', ''),
+                              equ[7].split('=')[1].replace('\'', '')
+                              ):
+                raise Exception(479, 'Ошибка работы manticore')
         self.__sql_exec__(sql=sql, read=False)
 
     ###########################################
