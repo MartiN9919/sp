@@ -159,7 +159,7 @@ export default {
     },
 
     on_map_dblclick(e) {
-      this.addNotification({content: e.latlng, });
+      // this.addNotification({content: e.latlng, });
     },
 
     // сбросить выделение (obj, osm): из child.map в свойство child.nav
