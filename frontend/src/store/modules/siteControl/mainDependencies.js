@@ -1,4 +1,5 @@
 import axios from '@/plugins/axiosSettings'
+import CONST from '@/plugins/const'
 
 export default {
   state: {
@@ -41,23 +42,23 @@ export default {
       ])
     },
     async getBaseObjects({commit, dispatch}, config = {}) {
-      await axios.get('objects/list_type/', config)
+      await axios.get(CONST.API.OBJ.GET_LIST_OBJ, config)
         .then(r => commit('setBaseObjects', r.data.map(o => new BaseObject(o))))
     },
     async getBaseClassifiers({getters, commit}, config = {}) {
-      await axios.get('objects/list_classifier/', config)
+      await axios.get(CONST.API.OBJ.GET_LIST_KEY_OBJ, config)
         .then(r => commit('addBaseClassifiers', r.data.map(c => new BaseClassifier(c))))
     },
     async getBaseRelations({commit}, config = {}) {
-      await axios.get('objects/relations/', config)
+      await axios.get(CONST.API.OBJ.GET_LIST_KEY_REL, config)
         .then(r => commit('setBaseRelations', r.data.map(l => new BaseRelation(l))))
     },
     async getBaseLists({commit}, config = {}) {
-      await axios.get('objects/lists/', config)
+      await axios.get(CONST.API.OBJ.GET_LISTS, config)
         .then(r => commit('setBaseLists', r.data))
     },
     async getBaseTriggers({getters, commit}, config = {}) {
-      await axios.get('script/trigger_list/', config)
+      await axios.get(CONST.API.SCRIPT.GET_LIST_TRIGGER, config)
         .then(r => {
           Object.entries(r.data).forEach(([k, v]) => { v.map(t => commit('addTrigger', new Trigger(k, t))) })
           let triggers = new Map(Object.entries(localStorage).filter(i => i[0].startsWith('trigger')))

@@ -1,6 +1,7 @@
-import { hash_simple } from '@/plugins/sys'
+import CONST from '@/plugins/const'
 import axios from "@/plugins/axiosSettings"
 import UserSetting from "@/store/addition"
+import { hash_simple } from '@/plugins/sys'
 
 export default {
   state: {
@@ -91,7 +92,7 @@ export default {
 
 
   actions: {
-    MAP_ACT_INI:        ({commit}, param={}) => { axios.get('objects/tiles', param).then(r => commit('MAP_MUT_TILES', r.data)); },
+    MAP_ACT_INI:        ({commit}, param={}) => { axios.get(CONST.API.OBJ.GET_TILES, param).then(r => commit('MAP_MUT_TILES', r.data)); },
     MAP_ACT_TILE_IND:   ({commit}, param={}) => commit('MAP_MUT_TILE_IND',        param.ind),
 
     MAP_ACT_RANGE:      ({commit}, param={}) => commit('MAP_MUT_RANGE',           param.on),

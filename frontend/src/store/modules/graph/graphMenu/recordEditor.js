@@ -1,3 +1,4 @@
+import CONST from '@/plugins/const'
 import axios from '@/plugins/axiosSettings'
 import {getTriggers} from "@/store/modules/siteControl/mainDependencies"
 import store from "@/store"
@@ -114,7 +115,7 @@ export default {
           {doc_rec_id: relation.document ? relation.document.object.recId : null},
           relation.relation.getRequestStructure()
       )
-      return await axios.post('objects/relation', request, {})
+      return await axios.post(CONST.API.OBJ.SET_RELATION, request, {})
         .then(r => {
           let object = {o1: r.data.object_id_1, r1: r.data.rec_id_1, o2: r.data.object_id_2, r2: r.data.rec_id_2}
           dispatch('addRelationToGraph', {object: object, relations: r.data.params, noMove: true})
