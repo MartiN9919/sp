@@ -5,13 +5,22 @@ import time, os, gc
 from   daemonIni              import DAEMON_INI
 from   fun.funSys             import logger, logError, logging
 from   fun.funText            import textToJSON
-from   fun.funBD              import BDReadLines, varGet
+#from   fun.funBD              import BDReadLines, varGet
 #from   fun.funSphinx          import SphinxReadLines, sphinxValidate
 from   fun.funSocket          import SocketServer
 
-from   fun.ml.mlTFIDF         import TFIDF
-from   mlServerTextConst      import SERVER_TEXT
-from   mlModels               import VAR, BOT_TFIDF, _W2V_, _W2C_, _D2V_, _TFIDF_, _Tokenizer_, _TokenizerPhrases_
+#from   fun.ml.mlTFIDF         import TFIDF
+from   mlServerTextConst      import CONNECT, SERVER_TEXT
+from   mlModels               import (
+    VAR,
+    # BOT_TFIDF,
+    _W2V_,
+    _W2C_,
+    #_D2V_,
+    #_TFIDF_,
+    _Tokenizer_,
+    _TokenizerPhrases_,
+)
 
 
 class MLServerText():
@@ -27,7 +36,7 @@ class MLServerText():
         try:
             self.var_owner    = 'mlServerText'
             VAR.PATH_LIB      = pathLib
-            connect           = textToJSON(varGet(self.var_owner, DAEMON_INI.WORKER, 'connect'))  # JSON-структура: читать
+            #connect           = textToJSON(varGet(self.var_owner, DAEMON_INI.WORKER, 'connect'))  # JSON-структура: читать
 
             # self.tk         = _Tokenizer_()
             self.tk           = _TokenizerPhrases_()
@@ -35,12 +44,13 @@ class MLServerText():
             # self.reph       = Rephraser(tokenizer=self.tk, w2v=self.w2v, rnd=0.5, simWord=0.7, simMorph=0.7)
             self.w2c          = _W2C_  (w2v=self.w2v)
             # self.d2v        = _D2V_  (w2c=self.w2c)                           # (w2v=self.w2v)
-            self.bot          = BOT_TFIDF(w2c=self.w2c)                         # (w2v=self.w2v)
+            # self.bot        = BOT_TFIDF(w2c=self.w2c)                         # (w2v=self.w2v)
 
             # блокирующий процесс
-            print('Ok', connect)
-            logger.info('connect: '+str(connect))
-            self.mlServerText = SocketServer(funHandler=self.handler, host=connect.get('host', ''), port=connect.get('post', 5000))
+            print('Ok')
+            #logger.info('connect: '+str(connect))
+            #self.mlServerText = SocketServer(funHandler=self.handler, host=connect.get('host', ''), port=connect.get('post', 5000))
+            self.mlServerText = SocketServer(funHandler=self.handler, host=CONNECT.HOST, port=CONNECT.PORT)
 
 
             ##########################################################
@@ -89,6 +99,7 @@ class MLServerText():
 
 
     def handler(self, data):
+        print(data)
         key     = data.get(SERVER_TEXT.KEY_TYPE,  None)
         param   = data.get(SERVER_TEXT.KEY_PARAM, {})
         data    = data.get(SERVER_TEXT.KEY_DATA,  None)
@@ -118,25 +129,25 @@ class MLServerText():
             # KEY_PARAM.PARAM_SQL_TYPE (KEY_PARAM.PARAM_SQL_TYPE_2) - тип SQL-запроса
             # RET - [[id_data_1, sim], ...]
             ###################################################################
-            elif key == SERVER_TEXT.TYPE_TFIDF_SIM:
-                sqlType    = param.get(SERVER_TEXT.PARAM_SQL_TYPE, SERVER_TEXT.PARAM_SQL_TYPE_AUTO)
-                data       = self.sqlToGenerator(data=data, sqlType=sqlType)
+            # elif key == SERVER_TEXT.TYPE_TFIDF_SIM:
+            #     sqlType    = param.get(SERVER_TEXT.PARAM_SQL_TYPE, SERVER_TEXT.PARAM_SQL_TYPE_AUTO)
+            #     data       = self.sqlToGenerator(data=data, sqlType=sqlType)
 
-                sqlType_2  = param.get(SERVER_TEXT.PARAM_SQL_TYPE_2, SERVER_TEXT.PARAM_SQL_TYPE_AUTO)
-                data_2     = param.get(SERVER_TEXT.PARAM_DATA_2,     None)
-                data_2     = self.sqlToGenerator(data=data_2, sqlType=sqlType_2)
-                data_2     = list(map((lambda item: item if isinstance(item, str) else item[1]), data_2))                   # убрать id
+            #     sqlType_2  = param.get(SERVER_TEXT.PARAM_SQL_TYPE_2, SERVER_TEXT.PARAM_SQL_TYPE_AUTO)
+            #     data_2     = param.get(SERVER_TEXT.PARAM_DATA_2,     None)
+            #     data_2     = self.sqlToGenerator(data=data_2, sqlType=sqlType_2)
+            #     data_2     = list(map((lambda item: item if isinstance(item, str) else item[1]), data_2))                   # убрать id
 
-                isCorrect  = param.get(SERVER_TEXT.PARAM_CORRECT, False)
+            #     isCorrect  = param.get(SERVER_TEXT.PARAM_CORRECT, False)
 
-                tfidf_temp = TFIDF(dataSrc=data, tokenizer=self.tk, wordsReplace=self.wordsReplace, showInfo=False)
-                retData    = []
-                for item in data_2:
-                    val = tfidf_temp.simDoc(doc=item, isCorrect=isCorrect)
-                    retData.append([val[0], val[1]])
-                retFlag    = True
-                tfidf_temp = None
-                gc.collect()
+            #     tfidf_temp = TFIDF(dataSrc=data, tokenizer=self.tk, wordsReplace=self.wordsReplace, showInfo=False)
+            #     retData    = []
+            #     for item in data_2:
+            #         val = tfidf_temp.simDoc(doc=item, isCorrect=isCorrect)
+            #         retData.append([val[0], val[1]])
+            #     retFlag    = True
+            #     tfidf_temp = None
+            #     gc.collect()
 
 
 

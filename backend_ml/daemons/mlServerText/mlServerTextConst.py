@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 
+class CONNECT:
+    HOST                   = ''
+    PORT                   = 5000
 
 class SERVER_TEXT:
     KEY_TYPE               = 'type'
