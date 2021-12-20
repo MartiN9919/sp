@@ -1,3 +1,4 @@
+import CONST from '@/plugins/const'
 import axios from '@/plugins/axiosSettings'
 
 import { MAP_CONST, MAP_ITEM } from '@/components/Map/Leaflet/Lib/Const';
@@ -175,7 +176,7 @@ export default {
     createNewTemplate: ({ commit }) => commit('createNewTemplate'),
 
     executeMapScript ({ commit, dispatch }, parameters = {}) {
-      return axios.post(this._vm.$CONST.API.SCRIPT.MAP, parameters.request, parameters.config)
+      return axios.post(CONST.API.SCRIPT.EXEC_MAP, parameters.request, parameters.config)
         .then(response => {
           commit('removeAnalytics', parameters.request);
           parameters.request.fc = response.data;
@@ -200,22 +201,22 @@ export default {
     },
 
     getTemplatesList ({ commit, dispatch }, config = {}) {
-      return axios.get('script/templates/', config)
+      return axios.get(CONST.API.SCRIPT.GET_LIST_TEMPLATE, config)
         .then(response => { { commit('loadTemplatesList', response.data) } })
         .catch(() => {})
     },
     saveSelectedTemplate ({ state, commit }, parameters = {}) {
-      return axios.post('script/template/', parameters.selectedTemplate, parameters.config)
+      return axios.post(CONST.API.SCRIPT.GET_TEMPLATE, parameters.selectedTemplate, parameters.config)
         .then(response => { commit('saveSelectedTemplate', response.data) })
         .catch(() => {})
     },
     putSelectedTemplate ({ state, commit }, parameters = {}) {
-      return axios.put('script/template/', parameters.selectedTemplate, parameters.config)
+      return axios.put(CONST.API.SCRIPT.GET_TEMPLATE, parameters.selectedTemplate, parameters.config)
         .then(response => { commit('changeTemplateTitle') })
         .catch(() => {})
     },
     getSelectedTemplate ({ state, commit, dispatch }, config = {}) {
-      return axios.get('script/template/', config)
+      return axios.get(CONST.API.SCRIPT.GET_TEMPLATE, config)
         .then(response => {
           const activeAnalysts = response.data.activeAnalysts
           const passiveAnalysts = response.data.passiveAnalysts
@@ -227,7 +228,7 @@ export default {
         .catch(() => {})
     },
     deleteSelectedTemplate ({ commit, dispatch }, config = {}) {
-      return axios.delete('script/template/', config)
+      return axios.delete(CONST.API.SCRIPT.GET_TEMPLATE, config)
         .then(response => {
           commit('deleteSelectedTemplate', config.params.template_id)
           commit('changeSelectedTreeViewItem', {})

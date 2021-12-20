@@ -1,3 +1,4 @@
+import CONST from '@/plugins/const'
 import axios from '@/plugins/axiosSettings'
 
 export default {
@@ -43,7 +44,7 @@ export default {
     },
     getReportsSlice ({state, getters, dispatch}, config = {}) {
       config.params = getters.sliceParams
-      return axios.get('reports/list/', config)
+      return axios.get(CONST.API.REPORT.GET_LIST, config)
         .then(response => dispatch('setReportTableData', response.data))
         .catch(() => {})
     },
@@ -54,14 +55,14 @@ export default {
     checkingReportStatuses ({getters, commit, dispatch}, config={}) {
       const interval = setInterval(() => {
         config.params = Object.assign(getters.sliceParams, {list: getters.inProgressReports})
-        axios.get('reports/check_progress/', config)
+        axios.get(CONST.API.SCRIPT.EXEC_REPORT, config)
           .then(response => dispatch('setReportTableData', response.data))
       }, 1000)
       commit('setCheckingReportStatusesInterval', interval)
     },
     executeReportScript ({state, getters, commit, dispatch}, parameters = {}) {
       Object.assign(parameters.config, {params: getters.sliceParams})
-      return axios.post('script/execute_report/', parameters.request, parameters.config)
+      return axios.post(CONST.API.SCRIPT.EXEC_REPORT, parameters.request, parameters.config)
         .then(response => {
           commit('changeSelectedTreeViewItem', {})
           dispatch('setReportTableData', response.data)
