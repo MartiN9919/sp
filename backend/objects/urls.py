@@ -9,7 +9,7 @@ urlpatterns = [
     url(r'^get_lists', views.aj_lists),
     url(r'^get_tiles', views.aj_map_tiles),
     url(r'^objects_relation', views.aj_objects_relation),
-    url(r'^get_object_relation', views.aj_object_relation),
+    url(r'^object_relation', views.aj_object_relation),
     url(r'^object', views.aj_object),
     url(r'^search_relations', views.aj_search_relations),
     url(r'^search', views.aj_search_objects),
