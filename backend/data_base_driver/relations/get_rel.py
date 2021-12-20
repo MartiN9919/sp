@@ -299,6 +299,31 @@ def get_unique_objects(object_tree, path=None, objects=None) -> list:
     return objects
 
 
+def get_unique_objects_dict(object_tree, path=None, objects=None) -> dict:
+    """
+    Функция для филтрации дерева объектов с занесением всех уникальных объектов в objects
+    @param objects: результирующий словарь
+    @param object_tree: дерево объетов построенное при поиске связей
+    @param path: путь к объекту
+    """
+    if objects is None:
+        objects = {}
+    if path is None:
+        path = []
+    for item in object_tree:
+        if item.get('degenerated') and \
+                (item['degenerated'] >= len(item['rels']) or (item['degenerated'] and len(item['rels']) == 0)):
+            continue
+        if len([temp for temp in objects.values() if temp['object_id'] == item['object_id'] and
+                                            temp['rec_id'] == item['rec_id']]) == 0:
+            objects[str(item['object_id']) + '_' + str(item['rec_id'])] = {'object_id': item['object_id'], 'rec_id': item['rec_id'], 'path': path}
+        if len(item.get('rels', [])) != 0:
+            new_path = path.copy()
+            new_path.append({'object_id': item['object_id'], 'rec_id': item['rec_id']})
+            get_unique_objects_dict(item['rels'], new_path, objects)
+    return objects
+
+
 def get_objects_relation(group_id, object_id_1, rec_id_1, object_id_2, rec_id_2, depth=3):
     """
     Функция для получения связей между двумя объектами
@@ -312,14 +337,13 @@ def get_objects_relation(group_id, object_id_1, rec_id_1, object_id_2, rec_id_2,
     """
     object_relation = get_rel_cascade(group_id, object_id_1, rec_id_1, depth)
     other_object_relation = get_rel_cascade(group_id, object_id_2, rec_id_2, depth)
-    objects_1 = get_unique_objects(other_object_relation['rels'])
-    objects_2 = get_unique_objects(object_relation['rels'])
+    objects_1 = get_unique_objects_dict(other_object_relation['rels'])
+    objects_2 = get_unique_objects_dict(object_relation['rels'])
     temp_result = []
     for object_1 in objects_1:
-        for object_2 in objects_2:
-            if object_1['object_id'] == object_2['object_id'] and object_1['rec_id'] == object_2['rec_id']:
-                temp_result += object_1['path'] + object_2['path'] + [{'object_id': object_1['object_id'],
-                                                                       'rec_id': object_1['rec_id']}]
+        if objects_2.get(object_1):
+            temp_result += objects_1[object_1]['path'] + objects_2[object_1]['path'] + [{'object_id': objects_1[object_1]['object_id'],
+                                                                   'rec_id': objects_1[object_1]['rec_id']}]
     result = [dict(s) for s in set(frozenset(d.items()) for d in temp_result)]
     return result
 
@@ -344,7 +368,7 @@ def search_relations(group_id, request):
         ]}
     """
     if len(request.get('rels')) == 0:
-        result  = get_unique_objects(get_rel_cascade(group_id, request.get('object_id'), request.get('rec_id'), 1)['rels'])
+        result = get_unique_objects(get_rel_cascade(group_id, request.get('object_id'), request.get('rec_id'), 1)['rels'])
         return [item for item in result if item['object_id'] != 1]
     else:
         parent = {'object_id': request.get('object_id'), 'rec_id': request.get('rec_id')}
