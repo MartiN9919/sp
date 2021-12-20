@@ -1,5 +1,5 @@
 <template>
-  <v-card hover :max-width="sizeNode" :min-width="sizeNode">
+  <v-card hover :max-width="sizeNode">
     <table class="table">
       <tr v-for="param in params" :key="param.id" :style="rowStyle">
         <td class="information-column" :class="(!param.values[0].value && !showDate) && 'text-center'">{{param.baseParam.title}}</td>
@@ -29,10 +29,11 @@ export default {
 </script>
 
 <style scoped>
-.table {
-  width: auto;
-  border-collapse: collapse;
+table {
+  width: max-content;
+  max-width: 100%;
   background-color: #f2f2f2;
+  border-collapse: collapse;
 }
 td {
   padding: 2px 8px;
@@ -44,17 +45,11 @@ thead tr {
   background-color: #555555;
   color: white;
 }
-.v-item-group {
-  position: initial;
-}
-.information-column {
-  width: auto;
-}
 .column-date {
   white-space: nowrap;
 }
 .content-column {
-  width: auto;
+  width: 100%;
   overflow: hidden;
   display: -webkit-box;
   -webkit-line-clamp: 3;
