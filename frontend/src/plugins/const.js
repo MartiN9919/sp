@@ -19,20 +19,35 @@ export default class CONST {
 
 
   static API = class {
-    static BASE_PREFIX = 'api';
+    static BASE_PREFIX           = 'api';
     static AUTH = class {
-      static LOGIN = 'auth/authentication/login/'
-      static LOGOUT = 'auth/authentication/logout/'
-      static IDENTIFY = 'auth/authorization/'
+      static LOGIN               = 'auth/authentication/login/'
+      static LOGOUT              = 'auth/authentication/logout/'
+      static IDENTIFY            = 'auth/authorization/'
     };
     static OBJ = class {
-      static GEOMETRY_SEARCH = 'objects/geometry_search/';
-      static GEOMETRY_FC     = 'objects/geometry_fc/';
-      static OSM_SEARCH      = 'objects/osm_search/';
-      static OSM_FC          = 'objects/osm_fc/';
+      static GET_LIST_OBJ        = 'objects/get_list_obj/';         // список объектов
+      static GET_LIST_KEY_OBJ    = 'objects/get_list_key_obj/';     // список ключей-свойств объектов (классификатор)
+      static GET_LIST_KEY_REL    = 'objects/get_list_key_rel/';     // список ключей-свойств связей объектов (классификатор)
+      static GET_LISTS           = 'objects/get_lists/';            // списки возможных значений
+      static GET_TILES           = 'objects/get_tiles/';            // списки источников тайлов
+      static SET_RELATION        = 'objects/set_relation/';
+      static GEOMETRY_SEARCH     = 'objects/geometry_search/';
+      static GEOMETRY_FC         = 'objects/geometry_fc/';
+      static OSM_SEARCH          = 'objects/osm_search/';
+      static OSM_FC              = 'objects/osm_fc/';
     };
     static SCRIPT = class {
-      static MAP           = 'script/execute_map/';
+      static GET_LIST_SCRIPT     = 'script/get_list_script/';
+      static GET_LIST_TRIGGER    = 'script/get_list_trigger/';
+      static GET_LIST_TEMPLATE   = 'script/get_list_template/';
+      static GET_TEMPLATE        = 'script/get_template/';
+      static EXEC_MAP            = 'script/exec_map/';
+      static EXEC_REPORT         = 'script/exec_report/';
+    };
+    static REPORT = class {
+      static GET_LIST            = 'reports/get_list/';
+      static CHECK_PROGRESS      = 'reports/check_progress/';
     };
   };
 
