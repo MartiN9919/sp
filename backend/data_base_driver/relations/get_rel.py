@@ -22,17 +22,23 @@ def get_rel_by_object(group_id, object, id, parents):
     """
     if not (isinstance(object, int)) and not (object.isdigit()):
         object = get_object_by_name(object)['id']
-    rels = io_get_rel_tuple(group_id, [], [int(object), id], [], [], {}, True)
-    first_data = [
-        {'object_id': rel[2], 'rel_type': rel[0], 'val': rel[6], 'rec_id': rel[3], 'sec': rel[1], 'id': rel[7], 'doc': rel[8]}
-        for rel in rels if (rel[4] == object and rel[5] == id) and len(
-            [temp for temp in parents if int(temp[0]) == rel[2] and temp[1] == rel[3]]) == 0]
-    second_data = [
-        {'object_id': rel[4], 'rel_type': rel[0], 'val': rel[6], 'rec_id': rel[5], 'sec': rel[1], 'id': rel[7], 'doc': rel[8]}
-        for rel in rels if (rel[2] == object and rel[3] == id) and len(
-            [temp for temp in parents if int(temp[0]) == rel[4] and temp[1] == rel[5]]) == 0]
+    rels = io_get_rel(group_id, [], [int(object), id], [], [], {}, True)
+    temp_relations = []
+    for rel in rels:
+        s1, s2 = ('1', '2') if rel['obj_id_2'] == object and rel['rec_id_2'] == id else ('2', '1')
+        if len([temp for temp in parents if
+                int(temp[0]) == rel['obj_id_' + s2] and temp[1] == rel['rec_id_' + s2]]) == 0:
+            temp_relations.append({
+                'rel_type': rel['key_id'],
+                'val': rel['val'],
+                'sec': rel['sec'],
+                'id': rel['id'],
+                'doc': rel['document_id'],
+                'object_id': rel['obj_id_' + s1],
+                'rec_id': rel['rec_id_' + s1]
+            })
     relations = []
-    for relation in first_data + second_data:
+    for relation in temp_relations:
         doc = get_object_record_by_id_http(20, relation['doc'], group_id, []) if relation['doc'] != 0 else None
         old_relation = [item for item in relations if relation['object_id'] == item['object_id'] and
                         relation['rec_id'] == item['rec_id']]

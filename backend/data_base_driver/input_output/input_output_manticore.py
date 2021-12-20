@@ -208,11 +208,11 @@ def io_get_rel_manticore_dict(group_id, keys, obj_rel_1, obj_rel_2, val, time_in
         {
             'id': int(item['_id']),
             'sec': item['_source']['sec'],
-            'key_id': item['_source']['key_id'],
-            'obj_id_1': item['_source']['obj_id_1'],
-            'rec_id_1': item['_source']['rec_id_1'],
-            'obj_id_2': item['_source']['obj_id_2'],
-            'rec_id_2': item['_source']['rec_id_2'],
+            'key_id': int(item['_source']['key_id']),
+            'obj_id_1': int(item['_source']['obj_id_1']),
+            'rec_id_1': int(item['_source']['rec_id_1']),
+            'obj_id_2': int(item['_source']['obj_id_2']),
+            'rec_id_2': int(item['_source']['rec_id_2']),
             'val': (int(item['_source']['val']) if len(item['_source']['val']) > 0 else 0),
             'document_id': (int(item['_source']['document_id']) if len(item['_source']['document_id']) > 0 else 0)
         } for item in response_1 + response_2 if check_relation_permission(item, group_id)]
