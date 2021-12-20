@@ -99,7 +99,6 @@ class MLServerText():
 
 
     def handler(self, data):
-        print(data)
         key     = data.get(SERVER_TEXT.KEY_TYPE,  None)
         param   = data.get(SERVER_TEXT.KEY_PARAM, {})
         data    = data.get(SERVER_TEXT.KEY_DATA,  None)
