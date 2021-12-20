@@ -128,3 +128,26 @@ def check_relation_permission(relation, group_id):
                                        int(relation['_source']['document_id']), False):
             return False
     return True
+
+
+def check_relation_permission_mysql(relation, group_id):
+    """
+    Функция для проверки доступа пользователя к связи
+    @param relation: проверяемая связь в формате {_id, _source:{key_id, obj_id_1, ..., val}}
+    @param group_id: идентификатор группы пользователя
+    @return: True если доступ есть, в противном случае False
+    """
+    if int(relation[3]) in DAT_SYS_KEY.DUMP.owners.keys():
+        if not check_object_permission(group_id, relation[3], relation[4],
+                                        False):
+            return False
+    if int(relation[5]) in DAT_SYS_KEY.DUMP.owners.keys():
+        if not check_object_permission(group_id, relation[5], relation[6],
+                                       False):
+            return False
+    if relation[8] and relation[8] != 0:
+        if not check_object_permission(group_id, SYS_KEY_CONSTANT.DOC_ID,
+                                       int(relation[8]), False):
+            return False
+    return True
+
