@@ -1,5 +1,7 @@
 import datetime
 import threading
+from multiprocessing import Process, Manager
+
 
 from data_base_driver.additional_functions import get_date_time_from_sec
 from data_base_driver.record.find_object import find_reliable_http
@@ -324,6 +326,19 @@ def get_unique_objects_dict(object_tree, path=None, objects=None) -> dict:
     return objects
 
 
+def get_objects_process(group_id, object_id, rec_id, depth, value):
+    """
+    Функция для работы в отдельном процессе для поиска уникальных связанных объектов и путей к ним
+    @param group_id: идентификатор группы пользователя
+    @param object_id: идентификатор типа объекта
+    @param rec_id: идентификатор объекта
+    @param depth: глубина поиска
+    @param value: словарь для сохранения результата
+    """
+    object_relation = get_rel_cascade(group_id, object_id, rec_id, depth)
+    value[str(object_id) + '_' + str(rec_id)] = get_unique_objects_dict(object_relation['rels'])
+
+
 def get_objects_relation(group_id, object_id_1, rec_id_1, object_id_2, rec_id_2, depth=3):
     """
     Функция для получения связей между двумя объектами
@@ -335,10 +350,15 @@ def get_objects_relation(group_id, object_id_1, rec_id_1, object_id_2, rec_id_2,
     @param depth: глубина поиска саязей
     @return: список связей в формате [{key_id, val, sec},...,{}]
     """
-    object_relation = get_rel_cascade(group_id, object_id_1, rec_id_1, depth)
-    other_object_relation = get_rel_cascade(group_id, object_id_2, rec_id_2, depth)
-    objects_1 = get_unique_objects_dict(other_object_relation['rels'])
-    objects_2 = get_unique_objects_dict(object_relation['rels'])
+    value = Manager().dict()
+    process_1 = Process(target=get_objects_process, args=(group_id, object_id_1, rec_id_1, depth, value))
+    process_2 = Process(target=get_objects_process, args=(group_id, object_id_2, rec_id_2, depth, value))
+    process_1.start()
+    process_2.start()
+    process_1.join()
+    process_2.join()
+    objects_1 = value[str(object_id_1) + '_' + str(rec_id_1)]
+    objects_2 = value[str(object_id_2) + '_' + str(rec_id_2)]
     temp_result = []
     for object_1 in objects_1:
         if objects_2.get(object_1):
