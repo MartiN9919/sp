@@ -77,3 +77,10 @@ def get_dossier_for_object(group_id, object_id, rec_id, title):
     template.save(DOCUMENT_ROOT + title + '.docx')
     return DOCUMENT_ROOT + title + '.docx'
 
+
+def get_docx_document_text(path):
+    result = ''
+    document = Document(path)
+    for paragraph in document.paragraphs:
+        result += paragraph.text + '\n'
+    return result

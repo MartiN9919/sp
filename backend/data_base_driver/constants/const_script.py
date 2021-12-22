@@ -32,7 +32,11 @@ feature_collection_by_geometry, get_geometries\n"\
     "from data_base_driver.geometry.geometry_analytics import feature_collection_to_manticore_polygon, get_points_inside_polygon, get_line_buffer_polygon, get_distance_between_point_math\n"\
     "from data_base_driver.additional_functions import str_to_sec, get_second_range, get_date_time_from_sec, get_document_date_format\n"\
     "from document_driver.word_driver import get_document_from_template, get_dossier_for_object\n"\
-    "from shapely.geometry import Polygon, Point, LineString, MultiPoint\n\n"
+    "from shapely.geometry import Polygon, Point, LineString, MultiPoint\n"\
+    "from docx import Document\n"\
+    "from docx.shared import RGBColor\n"\
+    "from synonyms_manager.get_synonyms import get_synonyms\n"\
+    "from core.deploy_settings import MEDIA_ROOT, DOCUMENT_ROOT\n\n"
 
 
 
@@ -101,6 +105,10 @@ ENABLED_FUNCTIONS = [
     'get_polygon_from_lines',
     'loads',
     'get_distance_between_point_math',
+    'Document',
+    'get_synonyms',
+    'RGBColor',
+    'save'
 ]
 
 PATH_TO_REPORTS_DIR = '/reports/'

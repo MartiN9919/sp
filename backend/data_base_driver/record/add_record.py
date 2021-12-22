@@ -18,6 +18,7 @@ from data_base_driver.relations.add_rel import add_rel_by_other_object
 from data_base_driver.sys_key.get_key_dump import get_key_by_id
 from data_base_driver.sys_key.get_list import get_item_list_value
 from data_base_driver.sys_key.get_object_info import get_object_new_rec_id
+from document_driver.document_reader import get_document_text
 
 
 def add_record(group_id, object_id, object_info):
@@ -44,6 +45,15 @@ def additional_processing(user, object, data):
     @param object: объект для добавления
     @param data: данные для добавления
     """
+    if object.get('object_id') == SYS_KEY_CONSTANT.FILE_ID:
+        if len([item for item in data if item[0] == SYS_KEY_CONSTANT.FILE_CLASSIFIER_ID]):
+            rec_id = get_object_new_rec_id(object['object_id']) if object['rec_id'] == 0 else object['rec_id']
+            path = MEDIA_ROOT + '/files/' + str(object['object_id']) + '/' + str(rec_id) + '/' +\
+            [item for item in data if item[0] == SYS_KEY_CONSTANT.FILE_CLASSIFIER_ID][0][1]
+            text = get_document_text(path)
+            if text:
+                data.append([SYS_KEY_CONSTANT.FILE_TEXT_CLASSIFIER_ID, text,
+                         datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")])
     if object.get('object_id') == SYS_KEY_CONSTANT.TELEFON_ID:
         country = get_country_by_number(
             [param for param in object['params'] if param['id'] == SYS_KEY_CONSTANT.PHONE_NUMBER_CLASSIFIER_ID][0][
@@ -88,7 +98,7 @@ def parse_value(param, object, files):
             key['id'] not in SYS_KEY_CONSTANT.GEOMETRY_TRANSFER_LIST and key.get('list_id') != None:
         value = str(get_item_list_value(value))
     if key.get('type') == DAT_SYS_KEY.TYPE_FILE_PHOTO or key.get('type') == DAT_SYS_KEY.TYPE_FILE_ANY:
-        rec_id = get_object_new_rec_id(object['object_id']) if object['rec_id'] == 0 else object['rec_id'] # Может приводить к багу
+        rec_id = get_object_new_rec_id(object['object_id']) if object['rec_id'] == 0 else object['rec_id']
         path = 'files/' + str(object['object_id']) + '/' + str(rec_id) + '/'
         if not os.path.exists(MEDIA_ROOT + '/' + path):
             os.makedirs(MEDIA_ROOT + '/' + path, exist_ok=True)

@@ -55,7 +55,7 @@ export default {
     checkingReportStatuses ({getters, commit, dispatch}, config={}) {
       const interval = setInterval(() => {
         config.params = Object.assign(getters.sliceParams, {list: getters.inProgressReports})
-        axios.get(CONST.API.SCRIPT.EXEC_REPORT, config)
+        axios.get(CONST.API.REPORT.CHECK_PROGRESS, config)
           .then(response => dispatch('setReportTableData', response.data))
       }, 1000)
       commit('setCheckingReportStatusesInterval', interval)

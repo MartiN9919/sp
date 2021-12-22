@@ -48,7 +48,7 @@ def parse_where_dop(where_dop_row):
     @return: None если в запросе нет @key_id, если есть, то key_id в числовом формате
     """
     if where_dop_row.find('@key_id') != -1:
-        classifier_id = int(where_dop_row[where_dop_row.find('@key_id')+8:])
+        classifier_id = int(where_dop_row[where_dop_row.find('@key_id')+8:].split(' ')[0])
         return classifier_id
     else:
         return None
