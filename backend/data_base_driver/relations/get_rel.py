@@ -148,10 +148,10 @@ def get_related_objects(group_id, object_id, rec_id, keys, values, time_interval
     for relation in relations:
         if int(relation['obj_id_1']) == object_id and int(relation['rec_id_1']) == rec_id:
             result.append({'object_id': int(relation['obj_id_2']), 'rec_id': int(relation['rec_id_2']),
-                           'key_id': int(relation['key_id'])})
+                           'key_id': int(relation['key_id']), 'val': relation['val']})
         else:
             result.append({'object_id': int(relation['obj_id_1']), 'rec_id': int(relation['rec_id_1']),
-                           'key_id': int(relation['key_id'])})
+                           'key_id': int(relation['key_id']), 'val': relation['val']})
     result = [dict(s) for s in set(frozenset(d.items()) for d in result)]
     return result
 
