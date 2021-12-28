@@ -19,7 +19,7 @@ IMPORTS = \
     "from data_base_driver.sys_key.get_key_dump import get_key_by_id\n"\
     "from data_base_driver.sys_key.get_list import get_item_list_value\n"\
     "from document_driver.exel_driver import get_xlsx_document_from_template\n"\
-    "from data_base_driver.record.get_record import get_object_record_by_id_http\n"\
+    "from data_base_driver.record.get_record import get_object_record_by_id_http, get_record_title\n"\
     "from data_base_driver.record.get_record import get_object_param_by_key\n" \
     "from data_base_driver.input_output.input_output import io_set, io_get_obj_mysql_tuple, io_get_rel_mysql_tuple, io_get_rel, io_get_obj\n" \
     "from data_base_driver.record.search import search\n" \
@@ -108,7 +108,10 @@ ENABLED_FUNCTIONS = [
     'Document',
     'get_synonyms',
     'RGBColor',
-    'save'
+    'save',
+    'get_person_info',
+    'get_record_title',
+
 ]
 
 PATH_TO_REPORTS_DIR = '/reports/'

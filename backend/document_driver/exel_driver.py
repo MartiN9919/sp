@@ -25,6 +25,12 @@ def insert_list(works_sheet, mode, start_cell, data):
             works_sheet.cell(row, col + index - 1).value = value
 
 
+def as_text(value):
+    if value is None:
+        return ""
+    return str(value)
+
+
 def get_xlsx_document_from_template(template_path, name, data):
     """
     Функция для формирования exel документа из шаблона
@@ -44,6 +50,9 @@ def get_xlsx_document_from_template(template_path, name, data):
                     row.value = data[row.value][0]
                 else:
                     insert_list(works_sheet, mode, row, data[re.sub("<[^<]+>", "", row.value)])
+    for column_cells in works_sheet.columns:
+        length = max(len(as_text(cell.value)) for cell in column_cells) + 1
+        works_sheet.column_dimensions[column_cells[0].column_letter].width = length
     work_book.save(DOCUMENT_ROOT + name + '.xlsx')
     return DOCUMENT_ROOT + name + '.xlsx'
 

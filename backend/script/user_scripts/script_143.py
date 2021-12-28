@@ -36,7 +36,7 @@ def script_143(request, group_id, file_id, user_id, title, lock):
 		word = request.get('word',{}).get('value',[])
 		file_name = get_object_param_by_key(group_id, document['objectId'], document['recId'], 50183)
 		file = Document(MEDIA_ROOT + '/files/' + str(document['objectId']) + '/' + str(document['recId']) + '/' + file_name)
-		synonyms = get_synonyms(word)
+		synonyms = get_synonyms(word) + [word]
 		for paragraph in file.paragraphs:
 			for run in paragraph.runs:
 				for item in synonyms:

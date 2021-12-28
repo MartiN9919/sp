@@ -34,15 +34,11 @@ def recursion_search(request, group_id):
                 result['rec_ids'] = temp_set
             else:
                 result['rec_ids'].intersection_update(temp_set)
-            if rel.get(FullTextSearch.REQUEST, '') == '':
-                result['old_result'].append({'object_id': rel.get(FullTextSearch.OBJECT_ID, None),
-                                             'rec_ids': []})
-            else:
-                result['old_result'].append({'object_id': rel.get(FullTextSearch.OBJECT_ID, None),
-                                             'rec_ids': find_reliable_http(
-                                                 rel.get(FullTextSearch.OBJECT_ID, None),
-                                                 rel.get(FullTextSearch.REQUEST, ''),
-                                                 rel.get(FullTextSearch.ACTUAL, False))})
+            result['old_result'].append({'object_id': rel.get(FullTextSearch.OBJECT_ID, None),
+                                         'rec_ids': find_reliable_http(
+                                             rel.get(FullTextSearch.OBJECT_ID, None),
+                                             rel.get(FullTextSearch.REQUEST, ''),
+                                             rel.get(FullTextSearch.ACTUAL, False))})
         else:
             if request.get(FullTextSearch.REQUEST, ''):
                 if len(request.get(FullTextSearch.REQUEST, '')) == 0:
@@ -76,7 +72,10 @@ def recursion_search(request, group_id):
                         temp_result = set([int(item['rec_id']) for item in temp_set])
                     else:
                         temp_result = temp_result.union([int(item['rec_id']) for item in temp_set])
-            result['rec_ids'] = temp_result
+            if not result.get('rec_ids'):
+                result['rec_ids'] = temp_result
+            else:
+                result['rec_ids'].intersection_update(temp_result)
     for temp in result['pre_old_result']:
         if temp['object_id'] == result['object_id']:
             result['rec_ids'] = result['rec_ids'].difference(temp['rec_ids'])
