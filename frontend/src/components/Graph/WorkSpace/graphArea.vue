@@ -1,5 +1,5 @@
 <template>
-  <div @click.right.prevent.stop="menuShow($event)" @mousedown="clearSelectors" class="h-100">
+  <div @click.right.prevent.stop="menuShow($event)" @mousedown="clearSelectors" class="h-100 disable-optimize">
     <screen ref="screen">
       <group v-if="relatedObjects.length" :nodes="relatedObjects"></group>
       <g
@@ -206,4 +206,8 @@ export default {
 </script>
 
 <style scoped>
+
+.disable-optimize {
+  will-change: transform;
+}
 </style>

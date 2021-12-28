@@ -33,7 +33,7 @@ import Group from '@/components/Graph/lib/components/Group'
 import GraphObject from "@/components/Graph/Workspace/graphObject"
 import GraphRelation from "@/components/Graph/Workspace/graphRelation"
 const ContextMenuNested = () => import("@/components/WebsiteShell/UIMainComponents/contextMenuNested")
-import bodyContextMenu from "@/components/Graph/WorkSpace/bodyContextMenu"
+import bodyContextMenu from "@/components/Graph/Workspace/bodyContextMenu"
 import {mapActions, mapGetters} from "vuex"
 
 export default {
