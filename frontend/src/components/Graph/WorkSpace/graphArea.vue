@@ -81,7 +81,7 @@ import Group from "@/components/Graph/lib/components/Group"
 import VLabel from '@/components/Graph/lib/components/Label'
 import BodyObject from "@/components/Graph/WorkSpace/object/bodyObject"
 import NameObject from "@/components/Graph/WorkSpace/object/nameObject"
-import InformationLabel from "@/components/Graph/WorkSpace/object/informationLabel"
+import InformationLabel from "@/components/Graph/Workspace/informationLabel"
 const GraphSearch = () => import("@/components/Graph/GraphMenu/graphSearch")
 const ContextMenuNested = () => import("@/components/WebsiteShell/UIMainComponents/contextMenuNested")
 import bodyContextMenu from "@/components/Graph/WorkSpace/bodyContextMenu"

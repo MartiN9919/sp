@@ -1,6 +1,5 @@
 import CONST from '@/plugins/const'
 import axios from '@/plugins/axiosSettings'
-import {getTriggers} from "@/store/modules/siteControl/mainDependencies"
 import store from "@/store"
 import _ from 'lodash'
 
@@ -65,8 +64,8 @@ export default {
     deleteNewParamEditableObject({commit}, playLoad) {
       commit('deleteNewParamEditableObject', playLoad)
     },
-    async getObjectFromServer({commit, dispatch}, config = {}) {
-      config.headers = {'set-cookie': JSON.stringify(getTriggers(config.params.object_id))}
+    async getObjectFromServer({getters, commit, dispatch}, config = {}) {
+      config.headers = {'set-cookie': getters.cookieTriggers(config.params.object_id)}
       return await axios.get('objects/object/', config)
         .then(r => { return Promise.resolve(r.data) })
         .catch(e => { return Promise.reject(e) })
@@ -93,7 +92,7 @@ export default {
         getters.editableObjects[positionObject].getRequestStructure(),
         {headers: {
           'Content-Type': 'multipart/form-data',
-          'set-cookie': JSON.stringify(getTriggers(getters.editableObjects[positionObject].object.id))
+          'set-cookie': getters.cookieTriggers(getters.editableObjects[positionObject].object.id)
         }}
       )
         .then(r => {

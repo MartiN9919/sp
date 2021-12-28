@@ -1,5 +1,7 @@
 import axios from '@/plugins/axiosSettings'
+import UserSetting from "@/store/addition";
 import CONST from '@/plugins/const'
+
 
 export default {
   state: {
@@ -20,6 +22,17 @@ export default {
     baseList: state => id => state.baseLists[id],
     triggers: state => state.triggers,
     objectTriggers: state => objectId => state.triggers.filter(trigger => trigger.objectId === objectId),
+    cookieTriggers: state => id =>
+      JSON.stringify(state.triggers
+        .filter(trigger => trigger.objectId === id && trigger.state)
+        .map(trigger => Object.assign({
+          id: trigger.id,
+          variables: trigger.variables.reduce(function(result, item) {
+            result[item.name] = item.value
+            return result;
+          }, {})
+        }))
+      )
   },
   mutations: {
     setBaseObjects: (state, objects) => state.objects = objects,
@@ -61,12 +74,6 @@ export default {
       await axios.get(CONST.API.SCRIPT.GET_LIST_TRIGGER, config)
         .then(r => {
           Object.entries(r.data).forEach(([k, v]) => { v.map(t => commit('addTrigger', new Trigger(k, t))) })
-          let triggers = new Map(Object.entries(localStorage).filter(i => i[0].startsWith('trigger')))
-          for (let [n, v] of triggers) {
-            if (getters.triggers.find(t => t.getTriggerName() === n)?.setValues(JSON.parse(v)))
-              continue
-            localStorage.removeItem(n)
-          }
         })
     },
     setTriggerState({ commit }, payload) { commit('setTriggerState', payload) },
@@ -130,6 +137,8 @@ class Trigger {
       variable.value = null
       this.variables.push(variable)
     }
+    this.ls = new UserSetting(this.getTriggerName())
+    this.ls.value && this.setValues(this.ls.value)
   }
 
   setState(state) {
@@ -138,8 +147,8 @@ class Trigger {
     if (this.state) {
       for (let v of this.variables)
         variable[v.name] = v.value
-      localStorage.setItem(this.getTriggerName(), JSON.stringify(variable))
-    } else localStorage.removeItem(this.getTriggerName())
+      this.ls.value = variable
+    } else this.ls.removeFromLocalstorage()
   }
 
   setValues(variables) {

@@ -8,7 +8,7 @@ class GlobalSettings {
   constructor() {
     this.showGlobalTitle = {
       title: 'Подписи объектов',
-      subTitle: 'Подпись под объектомами на графе',
+      subTitle: 'Подпись под объектами на графе',
       state: new UserSetting('showGlobalTitle', true)
     }
     this.showGlobalTooltipObject = {
@@ -27,7 +27,7 @@ class GlobalSettings {
       state: new UserSetting('showGlobalDateObject', true)
     }
     this.showGlobalTooltipRelation = {
-      title: 'Заголовоки связей',
+      title: 'Заголовки связей',
       subTitle: 'Отображение заголовка над связями',
       state: new UserSetting('showGlobalTooltipRelation', true)
     }
@@ -66,7 +66,7 @@ export default {
     updateObjectFromGraph: (state, {object, fields}) => state.graph.updateNode(object, fields),
     updateRelationFromGraph: (state, {relation, fields}) => state.graph.updateEdge(relation, fields),
     changeGlobalSettingState: (state, {id, value}) => state.globalDisplaySettings[id].state.value = value,
-    setClassifiersSettings: (state, classifierId) => state.classifiersSettings.push(classifierId),
+    setClassifiersSettings: (state, classifierId) => state.classifiersSettings.switch(classifierId),
     addObjectToGraph: (state, {editableObject, position, size}) => {
       state.graph.createNode({
         id: editableObject.getGeneratedId(),

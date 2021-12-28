@@ -31,7 +31,7 @@ export default {
   mounted () {
     this.checkTypeElement()
     this.offset = {
-      x: -this.node.width / 2,
+      x: 0,
       y: -((this.element.hasOwnProperty('from') ? 40 : this.element.size / 3) + this.node.height)
     }
     this.oldNodeSize = {width: this.node.width, height: this.node.height}
@@ -51,9 +51,8 @@ export default {
       this.pos = el.getPointAtLength(length)
     },
     updatePos(){
-      if(this.oldNodeSize.height - this.node.height !== 0)
-        this.updateOffsetBySize()
-      this.node.x = this.pos.x + this.offset.x
+      this.updateOffsetBySize()
+      this.node.x = this.pos.x + this.offset.x - this.element.size/2
       this.node.y = this.pos.y + this.offset.y
     },
     updateOffset(x=0, y=0){
@@ -64,20 +63,17 @@ export default {
           this.offset.x += (x || 0)
           this.offset.y += (y || 0)
         }
-      this.node.x = this.pos.x + this.offset.x
-      this.node.y = this.pos.y + this.offset.y
+      this.updatePos()
     },
     updateOffsetBySize(){
-      if(this.oldNodeSize.height - this.node.height !== 0){
-        this.offset.x += (this.oldNodeSize.width - this.node.width)/2
-        if(this.oldNodeSize.height - this.node.height > 0 && !this.element.hasOwnProperty('type')){
+      if(this.oldNodeSize.width - this.element.size !== 0){
+        if(this.oldNodeSize.width - this.element.size > 0 && !this.element.hasOwnProperty('type')){
           this.offset.y /= 1.5
         }
-        if(this.oldNodeSize.height - this.node.height < 0 && !this.element.hasOwnProperty('type')){
+        if(this.oldNodeSize.width - this.element.size < 0 && !this.element.hasOwnProperty('type')){
           this.offset.y *= 1.5
         }
-        this.oldNodeSize.height = this.node.height
-        this.oldNodeSize.width = this.node.width
+        this.oldNodeSize.width = this.element.size
       }
     },
     onDrag (d) {
@@ -88,6 +84,9 @@ export default {
     getLineCoordinates() {
       return `M ${this.pos.x} ${this.pos.y} L ${this.node.x + this.node.width / 2} ${this.node.y + this.node.height / 2}`
     }
+  },
+  updated() {
+    this.$refs.node.fitContent()
   },
   watch: {
     element: {deep: true, handler: 'checkTypeElement'},
@@ -104,3 +103,4 @@ export default {
 
 }
 </style>
+
