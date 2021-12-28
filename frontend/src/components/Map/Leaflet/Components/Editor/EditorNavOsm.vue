@@ -22,7 +22,6 @@
       class="tree"
       style="height: calc( 100% - 70px ); overflow-y: auto;"
       :items="found_items"
-      :itemSel.number.sync="found_sel"
       :iconDef="$CONST.ICON.WEB"
       :isIcon="true"
       :isFlat="true"
@@ -33,6 +32,7 @@
 
   </v-card>
 </template>
+
 
 <script>
 
@@ -56,19 +56,7 @@ export default {
     search_items: new UserSetting('EditorNavOsm.search_items', []),
     search_wait:  false,
     found_items:  undefined,
-    found_sel:    0,
   }),
-
-  // created: function() {
-  //   // watch fix bug
-  //   this.$watch('found_sel', function(id) {
-  //     console.log(id)
-  //   });
-  // },
-
-  // watch: {
-  //   tab(val) { if (val == 'tab-osm') this.on_tab(); },
-  // },
 
   computed: {
     search_items_proxy: { // fix bug
@@ -86,7 +74,6 @@ export default {
       let name = this.search_value;
       if (name) { name = name.trim().toLowerCase() }
       if ((name == '') || (name == null)) {
-        this.found_sel   =  0;
         this.found_items = undefined;
         return;
       }

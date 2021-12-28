@@ -32,12 +32,9 @@ def add_rel(group_id, object_1_id, rec_1_id, object_2_id, rec_2_id, params, doc_
         if key['rel_obj_1_id'] != object_1_id or key['rel_obj_2_id'] != object_2_id:
             raise (2, 'Не верный тип связи')
         data = [['key_id', key_id], [object_1_id, rec_1_id], [object_2_id, rec_2_id],
-                [DAT_REL.DAT, date_time_str], [DAT_REL.VAL, param.get('value', '')]]
+                [DAT_REL.DAT, date_time_str], [DAT_REL.VAL, param.get('value', '')], [DAT_REL.DOCUMENT_ID, doc_rec_id]]
         result = io_set(group_id=group_id, obj=1, data=data)
         if result[0]:
-            if doc_rec_id:
-                io_set(group_id=group_id, obj=1, data=[['key_id', 1], [1, int(result[1])], [20, doc_rec_id],
-                                                       [DAT_REL.DAT, date_time_str], [DAT_REL.VAL, 0]])
             temp_result_list.append(io_get_rel(group_id, [], [], [], [], {}, False, result[1])[0])
     result_list = []
     for temp in temp_result_list:

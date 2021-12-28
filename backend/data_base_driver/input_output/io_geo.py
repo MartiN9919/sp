@@ -127,6 +127,8 @@ def build_tree_from_list(geometry_list):
     @return: дерево геометрий
     """
     root = [item for item in geometry_list if item['parent_id'] == 0]
+    for temp in root:
+        temp.pop('parent_id')
     temp_geometry_list = [item for item in geometry_list if item not in root]
     temp_folders = {}
     for item in temp_geometry_list:
@@ -134,6 +136,8 @@ def build_tree_from_list(geometry_list):
             temp_folders[item['parent_id']] = []
         temp_folders[item['parent_id']].append(item)
     for folder in temp_folders:
+        for item in temp_folders[folder]:
+            item.pop('parent_id')
         root.append({'name': get_item_list_value(int(folder)), 'children': temp_folders[folder]})
     return root
 

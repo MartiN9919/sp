@@ -62,7 +62,6 @@ export default {
   mixins: [ MixMeasure, MixResize, ],
 
   data: () => ({
-    LOCAL_STORAGE_KEY_POSTFIX: 'geometry',
     map_options: {
       zoomControl: false,
       zoomSnap: 0.5,
@@ -103,7 +102,7 @@ export default {
     },
 
     on_map_dblclick(e) {
-      this.addNotification({content: e.latlng});
+      // this.addNotification({content: e.latlng});
     },
 
     data_normalize(fc) {
@@ -149,4 +148,5 @@ export default {
 <style scoped lang="scss">
   @import "~leaflet/dist/leaflet.css";
   @import "~@/components/Map/Leaflet/Lib/Lib.css";
+  @import "~@/components/Map/Leaflet/Mixins/Control.css";
 </style>
