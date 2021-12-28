@@ -2,7 +2,6 @@ import datetime
 import threading
 from multiprocessing import Process, Manager
 
-
 from data_base_driver.additional_functions import get_date_time_from_sec
 from data_base_driver.record.find_object import find_reliable_http
 from data_base_driver.record.get_record import get_object_record_by_id_http
@@ -206,9 +205,8 @@ def remove_path(parent, child):
     @param child: наследник на данной итерации рекурсии
     """
     if not child.get('degenerated'):
-        child['degenerated'] = 1
-    else:
-        child['degenerated'] += 1
+        child['degenerated'] = 0
+    child['degenerated'] += 1
     if parent and parent.get('parent'):
         remove_path(parent['parent'], parent)
 
@@ -266,12 +264,15 @@ def search_relations_recursive(group_id, request, parent, root): # НЕОБХО�
             if len(rec_ids) == 0:
                 remove_path(parent.get('parent'), parent)
             for rec_id in rec_ids:
+                if len([item for item in temp_list if item['rec_id'] == int(rec_id['rec_id'])]) > 0:
+                    continue
                 temp = {'object_id': relation.get('object_id'), 'rec_id': int(rec_id['rec_id']), 'rels': [],
                         'parent': parent}
                 parent['rels'].append(temp)
                 temp_list.append(temp)
         if len(relation.get('rels', [])) > 0:
             for temp_parent in temp_list:
+                temp_parent['rels_size'] = len(relation.get('rels', []))
                 search_relations_recursive(group_id, relation, temp_parent, root)
     return parent
 
@@ -289,7 +290,7 @@ def get_unique_objects(object_tree, path=None, objects=None) -> list:
         path = []
     for item in object_tree:
         if item.get('degenerated') and \
-                (item['degenerated'] >= len(item['rels']) or (item['degenerated'] and len(item['rels']) == 0)):
+                item['degenerated'] >= item['rels_size'] and item['degenerated'] >= len(item['rels']):
             continue
         if len([temp for temp in objects if temp['object_id'] == item['object_id'] and
                                             temp['rec_id'] == item['rec_id']]) == 0:
@@ -314,7 +315,7 @@ def get_unique_objects_dict(object_tree, path=None, objects=None) -> dict:
         path = []
     for item in object_tree:
         if item.get('degenerated') and \
-                (item['degenerated'] >= len(item['rels']) or (item['degenerated'] and len(item['rels']) == 0)):
+                (item['degenerated'] >= len(item['rels'])):
             continue
         if len([temp for temp in objects.values() if temp['object_id'] == item['object_id'] and
                                             temp['rec_id'] == item['rec_id']]) == 0:
@@ -410,10 +411,10 @@ def get_relations_list():
     for item in get_relation_keys():
         list_id = None
         if item.get('list_id'):
-            type = {'title': 'list', 'value': item.get('list_id')}
+            relation_type = {'title': 'list', 'value': item.get('list_id')}
             list_id = item.get('list_id')
         else:
-            type = {'title': 'unknow', 'value': None}
-        result.append({'id': item['id'], 'title': item['title'], 'hint': item['hint'], 'list': list_id, 'type': type,
-                       'object_id_1': item['rel_obj_1_id'], 'object_id_2': item['rel_obj_2_id']})
+            relation_type = {'title': 'unknow', 'value': None}
+        result.append({'id': item['id'], 'title': item['title'], 'hint': item['hint'], 'list': list_id,
+                       'type': relation_type, 'object_id_1': item['rel_obj_1_id'], 'object_id_2': item['rel_obj_2_id']})
     return result
