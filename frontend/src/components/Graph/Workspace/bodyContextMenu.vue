@@ -176,7 +176,7 @@ export default {
       this.setActiveTool('createRelationPage')
     },
     findRelations(){
-      this.getRelationsBtwObjects(this.choosingObjects)
+      this.getRelationsBtwObjects(this.graphObjects.filter(o => this.choosingObjects.includes(o.id)))
     },
     saveGraphInFile() {
       let a = document.createElement("a");
