@@ -206,6 +206,13 @@ class IO_PARS_DATA(dict):
                     vals[DAT_REL.VAL] = '\'' + str(data_val1) + '\''
                 continue
 
+            if data_key == DAT_REL.DOCUMENT_ID:
+                if not data_val1 or data_val1 == 0:
+                    vals[DAT_REL.DOCUMENT_ID] = '\'\''
+                else:
+                    vals[DAT_REL.DOCUMENT_ID] = '\'' + str(data_val1) + '\''
+                continue
+
             # ['obj_1',5,100], ['obj_2','file']
             elif data_key in (self.FIELD_OBJ_1, self.FIELD_OBJ_2):
                 obj_id = DAT_SYS_OBJ.DUMP.to_id(val=data_val1)

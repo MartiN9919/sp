@@ -20,7 +20,7 @@ def get_date_from_days_sec(days, sec):
     @return: строка содержащую дату и время в формате Y-m-d H:M:S
     """
     if days == 0 and sec == 0:
-        return 'unknow'
+        return '0001-01-01 12:00:00'
     elif sec == 0:
         h, m, s = 0, 0, 0
     else:
