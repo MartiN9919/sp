@@ -24,9 +24,9 @@
 <script>
 import Node from '@/components/Graph/lib/components/Node'
 import VLabel from '@/components/Graph/lib/components/Label'
-import BodyObject from "@/components/Graph/Workspace/Modules/bodyObject"
-import InformationLabel from "@/components/Graph/Workspace/Modules/informationLabel"
-import scrollMixin from "@/components/Graph/Workspace/Modules/scrollMixin"
+import BodyObject from "@/components/Graph/WorkSpace/Modules/bodyObject"
+import InformationLabel from "@/components/Graph/WorkSpace/Modules/informationLabel"
+import scrollMixin from "@/components/Graph/WorkSpace/Modules/scrollMixin"
 import {mapGetters} from "vuex"
 
 export default {
