@@ -4,35 +4,25 @@ import {mapActions} from "vuex"
 export default {
   name: "bodyContextMenu",
   data: () => ({
-    objectWithActivatedMenu: null,
+    objectCtxMenu: null,
   }),
   computed: {
     changeTitle: {
-      get: function () {
-        return this.objectWithActivatedMenu.object.showTitle
-      },
-      set: function () {
-        this.objectWithActivatedMenu.object.showTitle = !this.objectWithActivatedMenu.object.showTitle
-      }
+      get: function () { return this.objectCtxMenu.object.showTitle },
+      set: function () { this.objectCtxMenu.object.showTitle = !this.objectCtxMenu.object.showTitle }
     },
     changeTooltip: {
-      get: function () {
-        return this.objectWithActivatedMenu.object.showTooltip
-      },
-      set: function () {
-        this.objectWithActivatedMenu.object.showTooltip = !this.objectWithActivatedMenu.object.showTooltip
-      }
+      get: function () { return this.objectCtxMenu.object.showTooltip },
+      set: function () { this.objectCtxMenu.object.showTooltip = !this.objectCtxMenu.object.showTooltip }
     },
     changeTriggers: {
-      get: function () {
-        return this.objectWithActivatedMenu.object.showTriggers
-      },
+      get: function () { return this.objectCtxMenu.object.showTriggers },
       set: function () {
-        this.objectWithActivatedMenu.object.showTriggers = !this.objectWithActivatedMenu.object.showTriggers
+        this.objectCtxMenu.object.showTriggers = !this.objectCtxMenu.object.showTriggers
       }
     },
     contextMenu: function () {
-      if(this.objectWithActivatedMenu && this.objectWithActivatedMenu.hasOwnProperty('object')){
+      if(this.objectCtxMenu && this.objectCtxMenu.hasOwnProperty('object')){
         return [
           {
             icon: 'mdi-vector-link',
@@ -82,7 +72,7 @@ export default {
           }
         ]
       }
-      if (this.objectWithActivatedMenu && this.objectWithActivatedMenu.hasOwnProperty('relation')){
+      if (this.objectCtxMenu && this.objectCtxMenu.hasOwnProperty('relation')){
         return [
           {
             icon: 'mdi-check',
@@ -133,29 +123,29 @@ export default {
     ...mapActions(['reorderGraph', 'setEditableRelation', 'setNavigationDrawerStatus', 'setToolStatus', 'setActiveTool',
     'setEditableObject', 'deleteObjectFromGraph', 'setRootSearchRelationTreeItem', 'getRelationsBtwObjects', 'addObjectToGraph']),
     menuShow(event, object=null) {
-      this.objectWithActivatedMenu = object
+      this.objectCtxMenu = object
       this.$refs.contextMenu.show_root(event.x, event.y)
     },
     setSearchRelation(event) {
-      this.setRootSearchRelationTreeItem(this.objectWithActivatedMenu)
+      this.setRootSearchRelationTreeItem(this.objectCtxMenu)
       this.setNavigationDrawerStatus(true)
       this.setActiveTool('searchRelationPage')
     },
     setChangeObject(event) {
       this.setEditableObject({
-        objectId: this.objectWithActivatedMenu.object.object.id,
-        recId: this.objectWithActivatedMenu.object.recId
+        objectId: this.objectCtxMenu.object.object.id,
+        recId: this.objectCtxMenu.object.recId
       })
     },
     deleteObject(event) {
-      let removeIndex = this.choosingObjects.findIndex((o) => o.id === this.objectWithActivatedMenu.id)
+      let removeIndex = this.choosingObjects.findIndex((o) => o.id === this.objectCtxMenu.id)
       if(removeIndex !== -1) {
         for(let choosingObject of this.choosingObjects)
           this.deleteObjectFromGraph(choosingObject)
         this.choosingObjects = []
       }
       else
-        this.deleteObjectFromGraph(this.objectWithActivatedMenu)
+        this.deleteObjectFromGraph(this.objectCtxMenu)
     },
     checkRelationCreateStatus(){
       return this.choosingObjects.length === 3
@@ -169,7 +159,7 @@ export default {
       this.setEditableRelation({
         relations: this.choosingObjects.length > 0 ? this.choosingObjects.length === 2 ? this.choosingObjects :
           this.choosingObjects.filter(o => o.object.object.id !== 20) :
-          [this.objectWithActivatedMenu.relation.o1, this.objectWithActivatedMenu.relation.o2],
+          [this.objectCtxMenu.relation.o1, this.objectCtxMenu.relation.o2],
         document: this.choosingObjects.length === 3 ? this.choosingObjects.find(o => o.object.object.id === 20) : null
       })
       this.setNavigationDrawerStatus(true)
