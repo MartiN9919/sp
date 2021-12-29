@@ -1,5 +1,5 @@
 <template>
-  <g>
+  <g @wheel.stop="scrollObject(relation, $event)">
     <edge ref="edge" :data="relation" :nodes="objects"/>
     <v-label v-show="showLabel" :edge-coordinates="coordinatesEdge" :element="relation">
       <information-label :size-node="relation.size" :params="getClassifiers" :show-date="showDate"/>
@@ -10,11 +10,13 @@
 <script>
 import Edge from "@/components/Graph/lib/components/Edge"
 import VLabel from '@/components/Graph/lib/components/Label'
-import InformationLabel from "@/components/Graph/Workspace/informationLabel"
+import InformationLabel from "@/components/Graph/Workspace/Modules/informationLabel"
+import scrollMixin from "@/components/Graph/Workspace/Modules/scrollMixin"
 import {mapGetters} from "vuex"
 
 export default {
   name: "graphRelation",
+  mixins: [scrollMixin],
   components: {Edge, VLabel, InformationLabel},
   props: {
     relation: Object,
@@ -38,7 +40,7 @@ export default {
           p => p.values.length
       )
     },
-  }
+  },
 }
 </script>
 

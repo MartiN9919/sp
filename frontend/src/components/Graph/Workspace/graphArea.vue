@@ -1,5 +1,5 @@
 <template>
-  <div class="h-100 disable-optimize" @click="clearSelectors" @click.right.prevent="menuShow" >
+  <div class="h-100 disable-optimize" @click="clearSelectors" @click.right.prevent="menuShow">
     <screen id="screen" ref="screen">
       <graph-relation
         v-for="relation in graphRelations"
@@ -16,6 +16,7 @@
         @setChoosingObject="setChoosingObject"
         @setRelatedObjects="setRelatedObjects"
         @selectObject="selectObject"
+        @ctxMenu="menuShow(...$event)"
       />
       <group
         v-if="relatedObjects.length"
@@ -32,8 +33,8 @@ import Screen from '@/components/Graph/lib/components/Screen'
 import Group from '@/components/Graph/lib/components/Group'
 import GraphObject from "@/components/Graph/Workspace/graphObject"
 import GraphRelation from "@/components/Graph/Workspace/graphRelation"
+import bodyContextMenu from "@/components/Graph/Workspace/Modules/bodyContextMenu"
 const ContextMenuNested = () => import("@/components/WebsiteShell/UIMainComponents/contextMenuNested")
-import bodyContextMenu from "@/components/Graph/Workspace/bodyContextMenu"
 import {mapActions, mapGetters} from "vuex"
 
 export default {
@@ -71,7 +72,7 @@ export default {
       this.graphObjects.push(object)
     },
     menuShow(event, object=null) {
-      this.objectWithActivatedMenu = object
+      this.objectCtxMenu = object
       this.$refs.contextMenu.show_root(event.x, event.y)
     },
   },

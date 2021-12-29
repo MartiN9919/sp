@@ -3,7 +3,8 @@
     @mousedown.capture="$emit('selectObject', object)"
     @mouseup.ctrl="$emit('setChoosingObject', object.id)"
     @mouseup.alt="$emit('setRelatedObjects', object)"
-    @wheel.stop="scrollObject"
+    @click.right.prevent.stop="$emit('ctxMenu', [$event, object])"
+    @wheel.stop="scrollObject(object, $event)"
     @click.stop=""
   >
     <v-label v-show="showLabel" :element="object">
@@ -23,12 +24,14 @@
 <script>
 import Node from '@/components/Graph/lib/components/Node'
 import VLabel from '@/components/Graph/lib/components/Label'
-import BodyObject from "@/components/Graph/Workspace/bodyObject"
-import InformationLabel from "@/components/Graph/Workspace/informationLabel"
-import {mapGetters} from "vuex";
+import BodyObject from "@/components/Graph/Workspace/Modules/bodyObject"
+import InformationLabel from "@/components/Graph/Workspace/Modules/informationLabel"
+import scrollMixin from "@/components/Graph/Workspace/Modules/scrollMixin"
+import {mapGetters} from "vuex"
 
 export default {
   name: "graphObject",
+  mixins: [scrollMixin],
   components: {Node, VLabel, BodyObject, InformationLabel},
   props: {
     object: Object,
@@ -68,24 +71,6 @@ export default {
     },
     titleTextStyle() {
       return {fontSize: `${this.object.size/40}px`}
-    }
-  },
-  methods: {
-    scrollObject(event) {
-      const minSize = 300
-      const maxSize = 1500
-      const coefficient = 1.5
-      if(event.deltaY < 0 && this.object.size * coefficient < maxSize)
-        this.changeObjectForScrolling(coefficient)
-      else if (event.deltaY > 0 && this.object.size / coefficient > minSize)
-        this.changeObjectForScrolling(1/ coefficient)
-    },
-    changeObjectForScrolling(coefficient) {
-      const bodySize = this.object.size / 3
-      const offset = (bodySize - bodySize * coefficient) / 2
-      this.object.x += offset
-      this.object.y += offset
-      this.object.size *= coefficient
     }
   },
 }
