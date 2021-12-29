@@ -24,8 +24,9 @@ export default {
       pos: { x: 0, y: 0 },
       node: { id: uuid() ,x: 250, y: 0, width: 100, height: 100},
       offset: {x: 0, y: 0},
-      oldNodeSize: {width: 0, height: 0},
+      oldElementSize: {width: 0, height: 0},
       perc: 50,
+      elementType: 'node'
     }
   },
   mounted () {
@@ -34,47 +35,58 @@ export default {
       x: 0,
       y: -((this.element.hasOwnProperty('from') ? 40 : this.element.size / 3) + this.node.height)
     }
-    this.oldNodeSize = {width: this.node.width, height: this.node.height}
+    this.oldElementSize = {width: this.element.size/3, height: this.element.size/3}
+    this.getPosition(1)
   },
   methods: {
     checkTypeElement() {
       if(this.element.hasOwnProperty('type'))
-        this.$nextTick(this.getPositionForEdge)
-      else this.$nextTick(this.getPositionForNode)
+        this.elementType = 'edge'
+      else this.elementType = 'node'
     },
-    getPositionForNode () {
-      this.pos = {x: this.element.x + this.element.size / 6, y: this.element.y + this.element.size / 6}
-    },
-    getPositionForEdge () {
-      const el = document.getElementById(this.element.id)
-      const length = el.getTotalLength() * (this.perc/100)
-      this.pos = el.getPointAtLength(length)
+    getPosition() {
+      if(this.elementType === 'edge') {
+        const el = document.getElementById(this.element.id)
+        const length = el.getTotalLength() * (this.perc/100)
+        this.pos = el.getPointAtLength(length)
+      }
+      else {
+        this.pos = {x: this.element.x + this.element.size / 6, y: this.element.y + this.element.size / 6}
+      }
+      this.updatePos()
     },
     updatePos(){
-      this.updateOffsetBySize()
-      this.node.x = this.pos.x + this.offset.x - this.element.size/2
+      this.node.x = this.pos.x + this.offset.x - this.node.width/2
       this.node.y = this.pos.y + this.offset.y
     },
     updateOffset(x=0, y=0){
       let offsetX = this.offset.x + (x || 0) + (this.node.width/2)
       let offsetY = this.offset.y + (y || 0) + (this.node.height/2)
       let totalOffset = Math.sqrt(Math.pow(offsetX,2) + Math.pow(offsetY,2))
-      if(totalOffset < this.node.width*2){
+      if(totalOffset < this.node.width*2) {
           this.offset.x += (x || 0)
           this.offset.y += (y || 0)
-        }
+      }
       this.updatePos()
     },
     updateOffsetBySize(){
-      if(this.oldNodeSize.width - this.element.size !== 0){
-        if(this.oldNodeSize.width - this.element.size > 0 && !this.element.hasOwnProperty('type')){
-          this.offset.y /= 1.5
-        }
-        if(this.oldNodeSize.width - this.element.size < 0 && !this.element.hasOwnProperty('type')){
-          this.offset.y *= 1.5
-        }
-        this.oldNodeSize.width = this.element.size
+      if(this.elementType === 'node')
+        this.updateOffsetBySizeNode()
+      else this.updateOffsetBySizeEdge()
+    },
+    updateOffsetBySizeNode(){
+      if(this.oldElementSize.width - this.element.width  > 0){
+        this.offset.y /= 1.5
+        this.updatePos()
       }
+      if(this.oldElementSize.width - this.element.width  < 0){
+        this.offset.y *= 1.5
+        this.updatePos()
+      }
+      this.oldElementSize.width = this.element.width
+    },
+    updateOffsetBySizeEdge(){
+      console.log('edge size update')
     },
     onDrag (d) {
       this.updateOffset(d.x || 0, d.y || 0)
@@ -86,11 +98,15 @@ export default {
     }
   },
   updated() {
-    this.$refs.node.fitContent()
+     this.$refs.node.fitContent()
   },
   watch: {
-    element: {deep: true, handler: 'checkTypeElement'},
-    pos: {deep: true, handler: 'updatePos'},
+    'element.width': {handler: 'updateOffsetBySize'},
+    'element.height': {handler: 'updateOffsetBySize'},
+    'element.pathd': {handler: 'getPosition'},
+    'element.x': {handler: 'getPosition'},
+    'element.y': {handler: 'getPosition'},
+    'node.width': {handler: 'updatePos'},
   },
 }
 </script>
