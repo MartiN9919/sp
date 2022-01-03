@@ -2,7 +2,6 @@ import axios from '@/plugins/axiosSettings'
 import Graph from "@/components/Graph/lib/graph"
 import UserSetting from '@/store/addition'
 import {DataBaseObject, DataBaseRelation} from '@/store/modules/graph/graphMenu/recordEditor'
-import Vue from 'vue'
 
 class GlobalSettings {
   constructor() {
@@ -80,7 +79,9 @@ export default {
   },
   actions: {
     setScreen({ commit }, screen) { commit('setScreen', screen) },
-    reorderGraph({ state }) { state.graph.reorderGraph(state.screen.getStartPosition().x, state.screen.getStartPosition().y) },
+    reorderGraph({ state }) {
+      state.graph.reorderGraph(state.screen.getStartPosition().x, state.screen.getStartPosition().y)
+    },
     changeGlobalSettingState({ commit }, payload) { commit('changeGlobalSettingState', payload) },
     setClassifiersSettings({ getters, commit }, id) { commit('setClassifiersSettings', id) },
     addRelationToGraph({getters, commit, dispatch}, {object, relations, noMove}) {

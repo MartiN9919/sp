@@ -1,6 +1,6 @@
 from django import forms
-#
-from .widgets import MonacoEditorWidget
+
+from django_monaco_editor.widgets import MonacoEditorWidget
 
 
 class MonacoEditorField(forms.CharField):
