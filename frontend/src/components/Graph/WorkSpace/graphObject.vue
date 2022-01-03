@@ -1,7 +1,7 @@
 <template>
   <g
     @mousedown.capture="$emit('selectObject', object)"
-    @mouseup.ctrl="$emit('setChoosingObject', object.id)"
+    @mouseup.ctrl="$emit('setChoosingObject', object)"
     @mouseup.alt="$emit('setRelatedObjects', object)"
     @click.right.prevent.stop="$emit('ctxMenu', [$event, object])"
     @wheel.stop="scrollObject(object, $event)"

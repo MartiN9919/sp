@@ -12,7 +12,7 @@
         :key="object.id"
         v-if="object.object.show"
         :object="object"
-        :choosing="choosingObjects.includes(object.id)"
+        :choosing="choosingObjects.includes(object)"
         @setChoosingObject="setChoosingObject"
         @setRelatedObjects="setRelatedObjects"
         @selectObject="selectObject"
@@ -48,10 +48,10 @@ export default {
   computed: mapGetters(['graphObjects', 'graphRelations']),
   methods: {
     ...mapActions(['setScreen']),
-    setChoosingObject(id) {
-      const positionObject = this.choosingObjects.findIndex(objectId => objectId === id)
+    setChoosingObject(node) {
+      const positionObject = this.choosingObjects.findIndex(choosingNode => choosingNode.id === node.id)
       if (positionObject === -1)
-        this.choosingObjects.push(id)
+        this.choosingObjects.push(node)
       else this.choosingObjects.splice(positionObject, 1)
     },
     setRelatedObjects(object) {
