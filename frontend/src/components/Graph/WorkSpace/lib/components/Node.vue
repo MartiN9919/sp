@@ -39,7 +39,7 @@ export default {
     onMousedown (e) {
       e.stopPropagation()
       this.startDrag(e);
-    }
+    },
   },
   updated() {
     this.fitContent()

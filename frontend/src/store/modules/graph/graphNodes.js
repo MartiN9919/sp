@@ -1,5 +1,5 @@
 import axios from '@/plugins/axiosSettings'
-import Graph from "@/components/Graph/lib/graph"
+import Graph from "@/components/Graph/WorkSpace/lib/graph"
 import UserSetting from '@/store/addition'
 import {DataBaseObject, DataBaseRelation} from '@/store/modules/graph/graphMenu/recordEditor'
 import Vue from 'vue'

@@ -29,8 +29,8 @@
 </template>
 
 <script>
-import Screen from '@/components/Graph/lib/components/Screen'
-import Group from '@/components/Graph/lib/components/Group'
+import Screen from '@/components/Graph/WorkSpace/lib/components/Screen'
+import Group from '@/components/Graph/WorkSpace/lib/components/Group'
 import GraphObject from "@/components/Graph/WorkSpace/graphObject"
 import GraphRelation from "@/components/Graph/WorkSpace/graphRelation"
 import bodyContextMenu from "@/components/Graph/WorkSpace/Modules/bodyContextMenu"

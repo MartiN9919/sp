@@ -8,8 +8,8 @@
 </template>
 
 <script>
-import Edge from "@/components/Graph/lib/components/Edge"
-import VLabel from '@/components/Graph/lib/components/Label'
+import Edge from "@/components/Graph/WorkSpace/lib/components/Edge"
+import VLabel from '@/components/Graph/WorkSpace/lib/components/Label'
 import InformationLabel from "@/components/Graph/WorkSpace/Modules/informationLabel"
 import scrollMixin from "@/components/Graph/WorkSpace/Modules/scrollMixin"
 import {mapGetters} from "vuex"
