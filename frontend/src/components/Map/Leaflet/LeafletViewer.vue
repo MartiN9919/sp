@@ -50,6 +50,7 @@ import LControlPolylineMeasure from 'vue2-leaflet-polyline-measure';
 
 import MixResize    from '@/components/Map/Leaflet/Mixins/Resize';
 import MixMeasure   from '@/components/Map/Leaflet/Mixins/Measure';
+import {marker_get}   from '@/components/Map/Leaflet/Components/Style/StyleIcon';
 
 export default {
   name: 'LeafletViewer',
