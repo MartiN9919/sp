@@ -1,5 +1,6 @@
 <script>
 import {mapActions} from "vuex"
+import router from "@/router"
 
 export default {
   name: "bodyContextMenu",
@@ -23,7 +24,7 @@ export default {
     },
     contextMenu: function () {
       if(this.objectCtxMenu && this.objectCtxMenu.hasOwnProperty('object')){
-        return [
+        let array = [
           {
             icon: 'mdi-vector-link',
             title: 'Поиск связей',
@@ -71,6 +72,13 @@ export default {
             ],
           }
         ]
+        this.objectCtxMenu && (this.objectCtxMenu.object.object.id === 25 || this.objectCtxMenu.object.object.id === 30) ? array.push({
+            icon: 'mdi-check',
+            title: 'Вывести геометрию/точку на граф',
+            subtitle: 'Вывести выбранную геометрию/точку на граф',
+            action: 'addGeometryToGraph'
+        }) : null
+        return array
       }
       if (this.objectCtxMenu && this.objectCtxMenu.hasOwnProperty('relation')){
         return [
@@ -121,7 +129,8 @@ export default {
   },
   methods: {
     ...mapActions(['reorderGraph', 'setEditableRelation', 'setNavigationDrawerStatus', 'setToolStatus', 'setActiveTool',
-    'setEditableObject', 'deleteObjectFromGraph', 'setRootSearchRelationTreeItem', 'getRelationsBtwObjects', 'addObjectToGraph']),
+    'setEditableObject', 'deleteObjectFromGraph', 'setRootSearchRelationTreeItem', 'getRelationsBtwObjects',
+      'addObjectToGraph', 'executeMapScript']),
     menuShow(event, object=null) {
       this.objectCtxMenu = object
       this.$refs.contextMenu.show_root(event.x, event.y)
@@ -167,6 +176,17 @@ export default {
     },
     findRelations(){
       this.getRelationsBtwObjects(this.graphObjects.filter(o => this.choosingObjects.includes(o.id)))
+    },
+    addGeometryToGraph(){
+      router.push({name: 'Map'})
+      this.executeMapScript({ request: {id: 1, name: "Вывод геометрии", variables: {
+        geometry_object: {
+          type: {title: "search", value: null}, value: {
+            title: this.objectCtxMenu.object.title,
+            objectId: this.objectCtxMenu.object.object.id,
+            recId: this.objectCtxMenu.object.recId}}}},
+        config: {}
+      })
     },
     saveGraphInFile() {
       let a = document.createElement("a");

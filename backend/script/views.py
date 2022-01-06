@@ -56,7 +56,6 @@ def aj_script_execute_map(request):
     group_id = DAT_OWNER.DUMP.get_group(user_id=request.user.id)
     data = json.loads(request.body)
     method_name = 'script_' + str(data.get('id'))
-    importlib.invalidate_caches()
     result = execute_script_map(method_name, group_id, data.get('variables'))
     return result
 
