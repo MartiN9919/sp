@@ -74,7 +74,7 @@ export default {
       })
     },
     addRelationToGraph: (state, {objects, relation, noMove}) => {
-      state.graph.createEdge(objects[0], objects[1],{relation: relation, size: 600, noMove: noMove})
+      state.graph.createEdge(objects[0], objects[1], {relation: relation, size: 600, noMove: noMove})
     },
   },
   actions: {
@@ -123,13 +123,13 @@ export default {
           rec_id_2: objects[1].object.recId
         }
       return await axios.get('objects/objects_relation/', config)
-          .then(response => {
-              for (let obj of response.data) {
-              dispatch('addObjectToGraph', {recId: obj.rec_id, objectId: obj.object_id})
-            }
-            return Promise.resolve()
-          })
-          .catch(e => { return Promise.reject(e) })
+        .then(response => {
+          for (let obj of response.data) {
+            dispatch('addObjectToGraph', {recId: obj.rec_id, objectId: obj.object_id})
+          }
+          return Promise.resolve()
+        })
+        .catch(e => { return Promise.reject(e) })
     }
   }
 }
@@ -144,6 +144,7 @@ class GraphObject extends DataBaseObject {
     this.showTitle = true
     this.showTooltip = true
     this.showTriggers = true
+    this.showCreateDate = true
     this.show = false
   }
 

@@ -49,7 +49,9 @@ export default {
       return globalState && classifiersLength && localState
     },
     showDate() {
-      return this.globalDisplaySettingValue('showGlobalDateObject')
+      let globalCreateDate = this.globalDisplaySettingValue('showGlobalDateObject')
+      let localCreateDate = this.object.object.showCreateDate
+      return globalCreateDate && localCreateDate
     },
     getClassifiers() {
       return this.object.object.params.filter(

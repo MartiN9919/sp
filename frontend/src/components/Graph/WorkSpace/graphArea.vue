@@ -6,6 +6,7 @@
         :key="relation.id"
         :relation="relation"
         :objects="graphObjects"
+        @ctxMenu="menuShow(...$event)"
       />
       <graph-object
         v-for="object in graphObjects"
