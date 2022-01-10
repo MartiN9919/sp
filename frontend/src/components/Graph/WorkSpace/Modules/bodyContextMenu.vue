@@ -94,10 +94,18 @@ export default {
         this.deleteObjectFromGraph(this.objectCtxMenu)
     },
     createRelation(){
+      let relations = []
+      if(this.objectCtxMenu && this.objectCtxMenu.hasOwnProperty('relation')) {
+         relations = [this.objectCtxMenu.relation.o1, this.objectCtxMenu.relation.o2]
+      }
+      else {
+        if(this.choosingObjects.length === 2)
+          relations = this.choosingObjects
+        else
+          relations = this.choosingObjects.filter(o => o.object.object.id !== 20)
+      }
       this.setEditableRelation({
-        relations: this.choosingObjects.length > 0 ? this.choosingObjects.length === 2 ? this.choosingObjects :
-          this.choosingObjects.filter(o => o.object.object.id !== 20) :
-          [this.objectCtxMenu.relation.o1, this.objectCtxMenu.relation.o2],
+        relations: relations,
         document: this.choosingObjects.length === 3 ? this.choosingObjects.find(o => o.object.object.id === 20) : null
       })
       this.setNavigationDrawerStatus(true)

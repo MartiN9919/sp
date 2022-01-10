@@ -10,6 +10,7 @@
     no-data-text="Не найдено"
     autocomplete="off"
     messages=" "
+    item-value="id"
     color="teal"
     item-color="teal"
     dense
@@ -55,7 +56,7 @@ export default {
     itemText: function () { return this.$attrs['item-text'] || 'value'},
     value: {
       get: function () { return this.items.find(item => item.id === this.inputString) },
-      set: function (value) { this.$emit('changeInputString', value?.id) }
+      set: function (value) { this.$emit('changeInputString', value) }
     }
   },
   mounted() {
