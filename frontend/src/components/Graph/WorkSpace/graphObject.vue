@@ -22,8 +22,8 @@
 </template>
 
 <script>
-import Node from '@/components/Graph/lib/components/Node'
-import VLabel from '@/components/Graph/lib/components/Label'
+import Node from '@/components/Graph/WorkSpace/lib/components/Node'
+import VLabel from '@/components/Graph/WorkSpace/lib/components/Label'
 import BodyObject from "@/components/Graph/WorkSpace/Modules/bodyObject"
 import InformationLabel from "@/components/Graph/WorkSpace/Modules/informationLabel"
 import scrollMixin from "@/components/Graph/WorkSpace/Modules/scrollMixin"
@@ -49,7 +49,9 @@ export default {
       return globalState && classifiersLength && localState
     },
     showDate() {
-      return this.globalDisplaySettingValue('showGlobalDateObject')
+      let globalCreateDate = this.globalDisplaySettingValue('showGlobalDateObject')
+      let localCreateDate = this.object.object.showCreateDate
+      return globalCreateDate && localCreateDate
     },
     getClassifiers() {
       return this.object.object.params.filter(

@@ -1,7 +1,7 @@
 import uuid from 'uuid'
 import util from './util'
 import { flextree } from 'd3-flextree'
-import store from '../../../store/index'
+import store from '../../../../store'
 
 export default class Graph {
   constructor () {

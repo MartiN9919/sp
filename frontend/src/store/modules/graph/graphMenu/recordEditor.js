@@ -160,6 +160,8 @@ export class DataBaseRelation extends BaseDbObject {
     super(getter, baseObject, params)
     this.o1 = o1
     this.o2 = o2
+    this.showTooltip = true
+    this.showCreateDate = true
   }
 
   getRequestStructure() {

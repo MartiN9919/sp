@@ -1,5 +1,5 @@
 <template>
-  <g @wheel.stop="scrollObject(relation, $event)">
+  <g @wheel.stop="scrollObject(relation, $event)" @click.right.prevent.stop="$emit('ctxMenu', [$event, relation])">
     <edge ref="edge" :data="relation" :nodes="objects"/>
     <v-label v-show="showLabel" :edge-coordinates="coordinatesEdge" :element="relation">
       <information-label :size-node="relation.size" :params="getClassifiers" :show-date="showDate"/>
@@ -8,8 +8,8 @@
 </template>
 
 <script>
-import Edge from "@/components/Graph/lib/components/Edge"
-import VLabel from '@/components/Graph/lib/components/Label'
+import Edge from "@/components/Graph/WorkSpace/lib/components/Edge"
+import VLabel from '@/components/Graph/WorkSpace/lib/components/Label'
 import InformationLabel from "@/components/Graph/WorkSpace/Modules/informationLabel"
 import scrollMixin from "@/components/Graph/WorkSpace/Modules/scrollMixin"
 import {mapGetters} from "vuex"
@@ -25,10 +25,15 @@ export default {
   computed: {
     ...mapGetters(['globalDisplaySettingValue', 'classifiersSettings']),
     showLabel() {
-      return this.globalDisplaySettingValue('showGlobalTooltipRelation')
+      let globalState = this.globalDisplaySettingValue('showGlobalTooltipRelation')
+      let classifiersLength = this.getClassifiers.length
+      let localState = this.relation.relation.showTooltip
+      return globalState && classifiersLength && localState
     },
     showDate() {
-      return this.globalDisplaySettingValue('showGlobalDateRelation')
+      let globalCreateDate = this.globalDisplaySettingValue('showGlobalDateRelation')
+      let localCreateDate = this.relation.relation.showCreateDate
+      return globalCreateDate && localCreateDate
     },
     coordinatesEdge(id){
       this.$nextTick(() => {
@@ -36,11 +41,14 @@ export default {
       })
     },
     getClassifiers() {
-      return this.relation.relation.params.filter(
-          p => p.values.length
-      )
+      return this.relation.relation.params.filter(p => p.values.length)
     },
   },
+  methods: {
+    ctxMenu() {
+      console.log(this.relation, this.objects)
+    }
+  }
 }
 </script>
 
