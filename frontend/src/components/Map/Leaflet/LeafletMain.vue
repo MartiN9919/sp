@@ -281,7 +281,6 @@ export default {
       // отфильтровать с допустимыми датами
       fc = this.$refs.range.filter(fc);
 
-      console.log(6, fc);
       return fc;
     },
 
@@ -451,40 +450,23 @@ export default {
 };
 </script>
 
-<style>
-  .leaflet-center {
-    left: 50%;
-    transform: translate(-50%, 0%);
-  }
-
-  /*** рулетка ***/
-  .polyline-measure-tooltip-difference {
-    color: #060;
-    font-style: normal!important;
-  }
-  .polyline-measure-unicode-icon {
-    color: rgba(0, 0, 0, 0.54)!important;
-  }
-  .polyline-measure-controlOnBgColor {
-    color: red!important;
-  }
-</style>
-
 <style scoped lang="scss">
   @import "~leaflet/dist/leaflet.css";
   @import "~leaflet.markercluster/dist/MarkerCluster.css";
   @import "~leaflet.markercluster/dist/MarkerCluster.Default.css";
-
   @import "~@/components/Map/Leaflet/Lib/Lib.css";
   @import "~@/components/Map/Leaflet/Components/Style/StyleIcon.css";
   @import "~@/components/Map/Leaflet/Mixins/Control.css";
 
+  /* выделенный объект */
   div::v-deep .sel { animation: 1s ease 0s infinite normal none running pulse; }
   @keyframes pulse {
     0%   { opacity: 1;  }
     50%  { opacity: .4; }
     100% { opacity: 1;  }
   }
+
+  /* маркеры выше */
   div::v-deep .upper-markers { z-index: 5000 !important; }
   div::v-deep div.upper-markers > svg { position: absolute; }  /* else bug on production */
 </style>

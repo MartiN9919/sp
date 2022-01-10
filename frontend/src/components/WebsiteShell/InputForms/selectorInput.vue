@@ -1,5 +1,5 @@
 <template>
-  <v-combobox
+  <v-autocomplete
     v-model="value"
     v-bind="$attrs"
     :items="items"
@@ -7,6 +7,7 @@
     :class="bodyInputClasses"
     :menu-props="{ offsetY: true, zIndex: 1000001 }"
     class="customCombobox"
+    no-data-text="Не найдено"
     autocomplete="off"
     messages=" "
     color="teal"
@@ -33,7 +34,7 @@
       </v-list-item-icon>
       <v-list-item-title class="selector-item">{{item[itemText || 'value']}}</v-list-item-title>
     </template>
-  </v-combobox>
+  </v-autocomplete>
 </template>
 
 <script>

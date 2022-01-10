@@ -2,13 +2,12 @@ import axios from '@/plugins/axiosSettings'
 import Graph from "@/components/Graph/lib/graph"
 import UserSetting from '@/store/addition'
 import {DataBaseObject, DataBaseRelation} from '@/store/modules/graph/graphMenu/recordEditor'
-import Vue from 'vue'
 
 class GlobalSettings {
   constructor() {
     this.showGlobalTitle = {
       title: 'Подписи объектов',
-      subTitle: 'Подпись под объектомами на графе',
+      subTitle: 'Подпись под объектами на графе',
       state: new UserSetting('showGlobalTitle', true)
     }
     this.showGlobalTooltipObject = {
@@ -27,7 +26,7 @@ class GlobalSettings {
       state: new UserSetting('showGlobalDateObject', true)
     }
     this.showGlobalTooltipRelation = {
-      title: 'Заголовоки связей',
+      title: 'Заголовки связей',
       subTitle: 'Отображение заголовка над связями',
       state: new UserSetting('showGlobalTooltipRelation', true)
     }
@@ -80,7 +79,9 @@ export default {
   },
   actions: {
     setScreen({ commit }, screen) { commit('setScreen', screen) },
-    reorderGraph({ state }) { state.graph.reorderGraph(state.screen.getStartPosition().x, state.screen.getStartPosition().y) },
+    reorderGraph({ state }) {
+      state.graph.reorderGraph(state.screen.getStartPosition().x, state.screen.getStartPosition().y)
+    },
     changeGlobalSettingState({ commit }, payload) { commit('changeGlobalSettingState', payload) },
     setClassifiersSettings({ getters, commit }, id) { commit('setClassifiersSettings', id) },
     addRelationToGraph({getters, commit, dispatch}, {object, relations, noMove}) {

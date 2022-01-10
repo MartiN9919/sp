@@ -1,6 +1,8 @@
 from data_base_driver.additional_functions import intercept_sort_list
+from data_base_driver.constants.const_key import SYS_KEY_CONSTANT
 from data_base_driver.input_output.input_output import io_get_obj
 from data_base_driver.sys_key.get_key_dump import get_key_by_id
+from synonyms_manager.get_synonyms import get_synonyms
 
 
 def find_reliable_http(object_type, request, actual=False, group_id=0):
@@ -15,7 +17,10 @@ def find_reliable_http(object_type, request, actual=False, group_id=0):
     """
     if not request:
         request = ''
-    request = request.split(' ')
+    synonyms_list = []
+    if object_type == SYS_KEY_CONSTANT.FILE_ID:
+        synonyms_list = get_synonyms(request)
+    request = request.split(' ') + synonyms_list
     request = [word.replace('-', '<<') for word in request] # костыль, в последующем поменяить настройки мантикоры, что бы индексировала '-'
     result = []
     for word in request:
@@ -34,7 +39,10 @@ def find_reliable_http(object_type, request, actual=False, group_id=0):
                             remove_list.append(item)
         fetchall = [item[0] for item in fetchall if not item in remove_list]
         result.append(list(dict.fromkeys(fetchall)))
-    return intercept_sort_list(result)
+    if object_type != SYS_KEY_CONSTANT.FILE_ID:
+        return intercept_sort_list(result)
+    else:
+        return [item for sublist in result for item in sublist]
 
 
 def find_unreliable_http(object_type, request, group_id=0):

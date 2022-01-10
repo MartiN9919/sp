@@ -41,6 +41,9 @@ export default {
       this.startDrag(e);
     }
   },
+  updated() {
+    this.fitContent()
+  }
 }
 </script>
 

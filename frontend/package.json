@@ -7,7 +7,7 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
-    "@geoman-io/leaflet-geoman-free": "^2.10.0",
+    "@geoman-io/leaflet-geoman-free": "^2.11.3",
     "axios": "^0.21.1",
     "core-js": "^3.6.5",
     "ejs": "^3.1.6",

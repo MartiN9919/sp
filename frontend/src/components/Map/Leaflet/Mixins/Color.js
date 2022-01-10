@@ -28,7 +28,7 @@ export default {
       if (this.color_valid(color_green)) {
 
         // исключить ненужные геометрии
-        fc_types_del(fc, [MAP_CONST.TYPE_GEOMETRY.LINE, MAP_CONST.TYPE_GEOMETRY.POINT]);
+        fc_types_del(fc, [MAP_CONST.GEOMETRY.TYPE.LINE, MAP_CONST.GEOMETRY.TYPE.POINT]);
 
         // начальный и конечный цвет
         var [color_begin, color_end] = this.color_set(color_green);

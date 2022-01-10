@@ -6,6 +6,7 @@ import requests
 from data_base_driver.additional_functions import date_time_to_sec, push_dict
 from data_base_driver.constants.const_dat import DAT_SYS_KEY, DAT_OWNER
 from data_base_driver.constants.const_fulltextsearch import FullTextSearch
+from data_base_driver.constants.const_key import SYS_KEY_CONSTANT
 
 
 def check_object_permission(group_id, object_type, rec_id, write=False):
@@ -114,21 +115,39 @@ def check_relation_permission(relation, group_id):
     @param group_id: идентификатор группы пользователя
     @return: True если доступ есть, в противном случае False
     """
-    if not (check_object_permission(group_id, relation['_source']['obj_id_1'], relation['_source']['rec_id_1'], False)
-            and check_object_permission(group_id, relation['_source']['obj_id_2'], relation['_source']['rec_id_2'],
-                                        False)):
-        return False
-    data = json.dumps({
-        'index': 'rel',
-        'query': {
-            'query_string': '@key_id 1 @rec_id_1 ' + str(relation['_id'])
-        },
-        'limit': 100
-    })
-    response = requests.post(FullTextSearch.SEARCH_URL, data=data)
-    special_relations = json.loads(response.text)['hits']['hits']
-    for special_relation in special_relations:
-        if not check_object_permission(group_id, int(special_relation['_source']['obj_id_2']),
-                                       int(special_relation['_source']['rec_id_2']), False):
+    if int(relation['_source']['obj_id_1']) in DAT_SYS_KEY.DUMP.owners.keys():
+        if not check_object_permission(group_id, relation['_source']['obj_id_1'], relation['_source']['rec_id_1'],
+                                        False):
+            return False
+    if int(relation['_source']['obj_id_2']) in DAT_SYS_KEY.DUMP.owners.keys():
+        if not check_object_permission(group_id, relation['_source']['obj_id_2'], relation['_source']['rec_id_2'],
+                                       False):
+            return False
+    if len(relation['_source']['document_id']) > 0:
+        if not check_object_permission(group_id, SYS_KEY_CONSTANT.DOC_ID,
+                                       int(relation['_source']['document_id']), False):
             return False
     return True
+
+
+def check_relation_permission_mysql(relation, group_id):
+    """
+    Функция для проверки доступа пользователя к связи
+    @param relation: проверяемая связь в формате {_id, _source:{key_id, obj_id_1, ..., val}}
+    @param group_id: идентификатор группы пользователя
+    @return: True если доступ есть, в противном случае False
+    """
+    if int(relation[3]) in DAT_SYS_KEY.DUMP.owners.keys():
+        if not check_object_permission(group_id, relation[3], relation[4],
+                                        False):
+            return False
+    if int(relation[5]) in DAT_SYS_KEY.DUMP.owners.keys():
+        if not check_object_permission(group_id, relation[5], relation[6],
+                                       False):
+            return False
+    if relation[8] and relation[8] != 0:
+        if not check_object_permission(group_id, SYS_KEY_CONSTANT.DOC_ID,
+                                       int(relation[8]), False):
+            return False
+    return True
+

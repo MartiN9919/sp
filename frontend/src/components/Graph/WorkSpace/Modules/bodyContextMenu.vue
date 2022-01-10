@@ -1,39 +1,30 @@
 <script>
 import {mapActions} from "vuex"
+import router from "@/router"
 
 export default {
   name: "bodyContextMenu",
   data: () => ({
-    objectWithActivatedMenu: null,
+    objectCtxMenu: null,
   }),
   computed: {
     changeTitle: {
-      get: function () {
-        return this.objectWithActivatedMenu.object.showTitle
-      },
-      set: function () {
-        this.objectWithActivatedMenu.object.showTitle = !this.objectWithActivatedMenu.object.showTitle
-      }
+      get: function () { return this.objectCtxMenu.object.showTitle },
+      set: function () { this.objectCtxMenu.object.showTitle = !this.objectCtxMenu.object.showTitle }
     },
     changeTooltip: {
-      get: function () {
-        return this.objectWithActivatedMenu.object.showTooltip
-      },
-      set: function () {
-        this.objectWithActivatedMenu.object.showTooltip = !this.objectWithActivatedMenu.object.showTooltip
-      }
+      get: function () { return this.objectCtxMenu.object.showTooltip },
+      set: function () { this.objectCtxMenu.object.showTooltip = !this.objectCtxMenu.object.showTooltip }
     },
     changeTriggers: {
-      get: function () {
-        return this.objectWithActivatedMenu.object.showTriggers
-      },
+      get: function () { return this.objectCtxMenu.object.showTriggers },
       set: function () {
-        this.objectWithActivatedMenu.object.showTriggers = !this.objectWithActivatedMenu.object.showTriggers
+        this.objectCtxMenu.object.showTriggers = !this.objectCtxMenu.object.showTriggers
       }
     },
     contextMenu: function () {
-      if(this.objectWithActivatedMenu && this.objectWithActivatedMenu.hasOwnProperty('object')){
-        return [
+      if(this.objectCtxMenu && this.objectCtxMenu.hasOwnProperty('object')){
+        let array = [
           {
             icon: 'mdi-vector-link',
             title: 'Поиск связей',
@@ -81,8 +72,15 @@ export default {
             ],
           }
         ]
+        this.objectCtxMenu && (this.objectCtxMenu.object.object.id === 25 || this.objectCtxMenu.object.object.id === 30) ? array.push({
+            icon: 'mdi-check',
+            title: 'Вывести геометрию/точку на граф',
+            subtitle: 'Вывести выбранную геометрию/точку на граф',
+            action: 'addGeometryToGraph'
+        }) : null
+        return array
       }
-      if (this.objectWithActivatedMenu && this.objectWithActivatedMenu.hasOwnProperty('relation')){
+      if (this.objectCtxMenu && this.objectCtxMenu.hasOwnProperty('relation')){
         return [
           {
             icon: 'mdi-check',
@@ -131,31 +129,32 @@ export default {
   },
   methods: {
     ...mapActions(['reorderGraph', 'setEditableRelation', 'setNavigationDrawerStatus', 'setToolStatus', 'setActiveTool',
-    'setEditableObject', 'deleteObjectFromGraph', 'setRootSearchRelationTreeItem', 'getRelationsBtwObjects', 'addObjectToGraph']),
+    'setEditableObject', 'deleteObjectFromGraph', 'setRootSearchRelationTreeItem', 'getRelationsBtwObjects',
+      'addObjectToGraph', 'executeMapScript']),
     menuShow(event, object=null) {
-      this.objectWithActivatedMenu = object
+      this.objectCtxMenu = object
       this.$refs.contextMenu.show_root(event.x, event.y)
     },
     setSearchRelation(event) {
-      this.setRootSearchRelationTreeItem(this.objectWithActivatedMenu)
+      this.setRootSearchRelationTreeItem(this.objectCtxMenu)
       this.setNavigationDrawerStatus(true)
       this.setActiveTool('searchRelationPage')
     },
     setChangeObject(event) {
       this.setEditableObject({
-        objectId: this.objectWithActivatedMenu.object.object.id,
-        recId: this.objectWithActivatedMenu.object.recId
+        objectId: this.objectCtxMenu.object.object.id,
+        recId: this.objectCtxMenu.object.recId
       })
     },
     deleteObject(event) {
-      let removeIndex = this.choosingObjects.findIndex((o) => o.id === this.objectWithActivatedMenu.id)
+      let removeIndex = this.choosingObjects.findIndex((o) => o.id === this.objectCtxMenu.id)
       if(removeIndex !== -1) {
         for(let choosingObject of this.choosingObjects)
           this.deleteObjectFromGraph(choosingObject)
         this.choosingObjects = []
       }
       else
-        this.deleteObjectFromGraph(this.objectWithActivatedMenu)
+        this.deleteObjectFromGraph(this.objectCtxMenu)
     },
     checkRelationCreateStatus(){
       return this.choosingObjects.length === 3
@@ -169,14 +168,25 @@ export default {
       this.setEditableRelation({
         relations: this.choosingObjects.length > 0 ? this.choosingObjects.length === 2 ? this.choosingObjects :
           this.choosingObjects.filter(o => o.object.object.id !== 20) :
-          [this.objectWithActivatedMenu.relation.o1, this.objectWithActivatedMenu.relation.o2],
+          [this.objectCtxMenu.relation.o1, this.objectCtxMenu.relation.o2],
         document: this.choosingObjects.length === 3 ? this.choosingObjects.find(o => o.object.object.id === 20) : null
       })
       this.setNavigationDrawerStatus(true)
       this.setActiveTool('createRelationPage')
     },
     findRelations(){
-      this.getRelationsBtwObjects(this.choosingObjects)
+      this.getRelationsBtwObjects(this.graphObjects.filter(o => this.choosingObjects.includes(o.id)))
+    },
+    addGeometryToGraph(){
+      router.push({name: 'Map'})
+      this.executeMapScript({ request: {id: 1, name: "Вывод геометрии", variables: {
+        geometry_object: {
+          type: {title: "search", value: null}, value: {
+            title: this.objectCtxMenu.object.title,
+            objectId: this.objectCtxMenu.object.object.id,
+            recId: this.objectCtxMenu.object.recId}}}},
+        config: {}
+      })
     },
     saveGraphInFile() {
       let a = document.createElement("a");

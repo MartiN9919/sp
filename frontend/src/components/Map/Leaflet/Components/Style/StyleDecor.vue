@@ -68,8 +68,8 @@ export default {
 
       // L.объекты
       let l_obj = get_feature_coordinates(feature, true);
-      l_obj[MAP_CONST.TYPE_GEOMETRY.LINE   ] = l_obj[MAP_CONST.TYPE_GEOMETRY.LINE   ].map((val) => L.polyline(val));
-      l_obj[MAP_CONST.TYPE_GEOMETRY.POLYGON] = l_obj[MAP_CONST.TYPE_GEOMETRY.POLYGON].map((val) => L.polygon (val));
+      l_obj[MAP_CONST.GEOMETRY.TYPE.LINE   ] = l_obj[MAP_CONST.GEOMETRY.TYPE.LINE   ].map((val) => L.polyline(val));
+      l_obj[MAP_CONST.GEOMETRY.TYPE.POLYGON] = l_obj[MAP_CONST.GEOMETRY.TYPE.POLYGON].map((val) => L.polygon (val));
 
       // patterns на основании classes_str и color
       let patterns = get_style_data_decor({
@@ -91,8 +91,8 @@ export default {
         propsBinder(self, layer_decor, props);
         self.parent_obj.mapObject.addLayer(layer_decor, !self.visible);
       }
-      set_decorator(l_obj[MAP_CONST.TYPE_GEOMETRY.POLYGON]);
-      set_decorator(l_obj[MAP_CONST.TYPE_GEOMETRY.LINE   ]);
+      set_decorator(l_obj[MAP_CONST.GEOMETRY.TYPE.POLYGON]);
+      set_decorator(l_obj[MAP_CONST.GEOMETRY.TYPE.LINE   ]);
     }
   },
 

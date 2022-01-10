@@ -24,7 +24,7 @@ path[d="M0 0"] { display:none }
 
 
 
-/* тень для svg объектов */
+/* SVG: ТЕНЬ ОБЪЕКТОВ */
 .svg-shadow {
   -webkit-filter: drop-shadow( 2px 2px 3px rgba(0, 0, 0, .7));
   filter: drop-shadow( 2px 2px 3px rgba(0, 0, 0, .7));
@@ -33,7 +33,22 @@ path[d="M0 0"] { display:none }
   -webkit-filter: drop-shadow( 2px 2px 3px rgba(255, 0, 0, 1));
   filter: drop-shadow( 2px 2px 3px rgba(255, 0, 0, 1));
 }
-/* поднять svg-объект над другими */
+
+/* SVG: ПОДНЯТЬ SVG-ОБЪЕКТ НАД ДРУГИМ */
 .svg-top {
   z-index: 999999 !important;
+}
+
+
+
+/* РУЛЕТКА */
+.polyline-measure-tooltip-difference {
+  color: #060;
+  font-style: normal!important;
+}
+.polyline-measure-unicode-icon {
+  color: rgba(0, 0, 0, 0.54)!important;
+}
+.polyline-measure-controlOnBgColor {
+  color: red!important;
 }

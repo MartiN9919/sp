@@ -23,11 +23,14 @@ export const MAP_CONST = {
     },
   },
 
-  TYPE_GEOMETRY: {
-    GC:        'GeometryCollection',
-    POINT:     'Point',
-    LINE:      'LineString',
-    POLYGON:   'Polygon',
+  GEOMETRY: {
+    TYPE: {
+      GC:        'GeometryCollection',
+      POINT:     'Point',
+      LINE:      'LineString',
+      POLYGON:   'Polygon',
+    },
+    BIG: 200000,                          // минимальная длина String(fc) для определения геометрии как большой
   },
 
   COLOR: {

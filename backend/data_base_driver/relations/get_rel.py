@@ -1,29 +1,15 @@
 import datetime
 import threading
+from multiprocessing import Process, Manager
 
 from data_base_driver.additional_functions import get_date_time_from_sec
 from data_base_driver.record.find_object import find_reliable_http
 from data_base_driver.record.get_record import get_object_record_by_id_http
 from data_base_driver.relations.find_rel import search_rel_with_key_http
-from data_base_driver.input_output.input_output import io_get_rel_tuple, io_get_rel
+from data_base_driver.input_output.input_output import io_get_rel
 from data_base_driver.sys_key.get_key_dump import get_relation_keys
-from data_base_driver.sys_key.get_list import get_list_by_top_id, get_item_list_value
+from data_base_driver.sys_key.get_list import get_item_list_value
 from data_base_driver.sys_key.get_object_dump import get_object_by_name
-
-
-def get_system_relation(group_id, rel_rec_id):
-    """
-    Функция для получения системной связи (связь-документ)
-    @param group_id: идентификатор группы пользователя
-    @param rel_rec_id: идентификатор связи
-    @return: словарь в формате {object_id, rec_id, title} содержащий информацию о документе
-    """
-    system_relations = io_get_rel(group_id, [1], [1, int(rel_rec_id)], [20], [], {}, True)
-    if len(system_relations) > 0:
-        doc = get_object_record_by_id_http(20, system_relations[0]['rec_id_2'], group_id, [])
-        return {'object_id': doc['object_id'], 'rec_id': int(doc['rec_id']), 'title': doc['title']}
-    else:
-        return None
 
 
 def get_rel_by_object(group_id, object, id, parents):
@@ -37,18 +23,24 @@ def get_rel_by_object(group_id, object, id, parents):
     """
     if not (isinstance(object, int)) and not (object.isdigit()):
         object = get_object_by_name(object)['id']
-    rels = io_get_rel_tuple(group_id, [], [int(object), id], [], [], {}, True)
-    first_data = [
-        {'object_id': rel[2], 'rel_type': rel[0], 'val': rel[6], 'rec_id': rel[3], 'sec': rel[1], 'id': rel[7]}
-        for rel in rels if (rel[4] == object and rel[5] == id) and len(
-            [temp for temp in parents if int(temp[0]) == rel[2] and temp[1] == rel[3]]) == 0]
-    second_data = [
-        {'object_id': rel[4], 'rel_type': rel[0], 'val': rel[6], 'rec_id': rel[5], 'sec': rel[1], 'id': rel[7]}
-        for rel in rels if (rel[2] == object and rel[3] == id) and len(
-            [temp for temp in parents if int(temp[0]) == rel[4] and temp[1] == rel[5]]) == 0]
+    rels = io_get_rel(group_id, [], [int(object), id], [], [], {}, True)
+    temp_relations = []
+    for rel in rels:
+        s1, s2 = ('1', '2') if rel['obj_id_2'] == object and rel['rec_id_2'] == id else ('2', '1')
+        if len([temp for temp in parents if
+                int(temp[0]) == rel['obj_id_' + s2] and temp[1] == rel['rec_id_' + s2]]) == 0:
+            temp_relations.append({
+                'rel_type': rel['key_id'],
+                'val': rel['val'],
+                'sec': rel['sec'],
+                'id': rel['id'],
+                'doc': rel['document_id'],
+                'object_id': rel['obj_id_' + s1],
+                'rec_id': rel['rec_id_' + s1]
+            })
     relations = []
-    for relation in first_data + second_data:
-        doc = get_system_relation(group_id, relation['id'])
+    for relation in temp_relations:
+        doc = get_object_record_by_id_http(20, relation['doc'], group_id, []) if relation['doc'] != 0 else None
         old_relation = [item for item in relations if relation['object_id'] == item['object_id'] and
                         relation['rec_id'] == item['rec_id']]
         if len(old_relation) > 0:
@@ -148,10 +140,10 @@ def get_related_objects(group_id, object_id, rec_id, keys, values, time_interval
     for relation in relations:
         if int(relation['obj_id_1']) == object_id and int(relation['rec_id_1']) == rec_id:
             result.append({'object_id': int(relation['obj_id_2']), 'rec_id': int(relation['rec_id_2']),
-                           'key_id': int(relation['key_id'])})
+                           'key_id': int(relation['key_id']), 'val': relation['val']})
         else:
             result.append({'object_id': int(relation['obj_id_1']), 'rec_id': int(relation['rec_id_1']),
-                           'key_id': int(relation['key_id'])})
+                           'key_id': int(relation['key_id']), 'val': relation['val']})
     result = [dict(s) for s in set(frozenset(d.items()) for d in result)]
     return result
 
@@ -175,45 +167,6 @@ def get_object_relation(group_id, object_id, rec_id, objects, all=False):
                                             item['rec_id'] == temp['rec_id']]) > 0 or all:
             result.append(temp)
     return result
-
-
-def get_relation_path(relation_object, path, path_list, search_object):
-    """
-    Функция для обхода одной из ветвей дерева поиска
-    @param relation_object: объект корень дерева на данной итерации рекурсии
-    @param path: список предков
-    @param path_list: список предков
-    @param search_object: искомый объект
-    """
-    path.append({'object_id': relation_object['object_id'], 'rec_id': relation_object['rec_id']})
-    if relation_object['object_id'] == search_object['object_id'] and relation_object['rec_id'] == search_object[
-        'rec_id']:
-        result_path = path.copy()
-        result_path.pop()
-        path_list.append(result_path)
-    if len(relation_object.get('rels', [])) > 0:
-        for new_relation_object in relation_object['rels']:
-            new_path = path.copy()
-            get_relation_path(new_relation_object, new_path, path_list, search_object)
-
-
-def get_relation_path_list(relation_tree, search_object):
-    """
-    Функция для обхода ветвей дерева поиска связей между объектами
-    @param relation_tree: дерево поиска
-    @param search_object: искомый объект
-    @return: список объектов для постройки результирующих путей
-    """
-    result = []
-    threads = []
-    for relation_object in relation_tree['rels']:
-        thread = threading.Thread(target=get_relation_path, args=(relation_object, [], result, search_object),
-                                  daemon=True)
-        threads.append(thread)
-        thread.start()
-    for item in threads:
-        item.join()
-    return [item for item in result if len(item) > 0]
 
 
 def check_relation(root, object_id, rec_id):
@@ -252,9 +205,8 @@ def remove_path(parent, child):
     @param child: наследник на данной итерации рекурсии
     """
     if not child.get('degenerated'):
-        child['degenerated'] = 1
-    else:
-        child['degenerated'] += 1
+        child['degenerated'] = 0
+    child['degenerated'] += 1
     if parent and parent.get('parent'):
         remove_path(parent['parent'], parent)
 
@@ -312,60 +264,80 @@ def search_relations_recursive(group_id, request, parent, root): # НЕОБХО�
             if len(rec_ids) == 0:
                 remove_path(parent.get('parent'), parent)
             for rec_id in rec_ids:
+                if len([item for item in temp_list if item['rec_id'] == int(rec_id['rec_id'])]) > 0:
+                    continue
                 temp = {'object_id': relation.get('object_id'), 'rec_id': int(rec_id['rec_id']), 'rels': [],
                         'parent': parent}
                 parent['rels'].append(temp)
                 temp_list.append(temp)
         if len(relation.get('rels', [])) > 0:
             for temp_parent in temp_list:
+                temp_parent['rels_size'] = len(relation.get('rels', []))
                 search_relations_recursive(group_id, relation, temp_parent, root)
     return parent
 
 
-def get_unique_objects(objects, object_tree):
+def get_unique_objects(object_tree, path=None, objects=None) -> list:
     """
     Функция для филтрации дерева объектов с занесением всех уникальных объектов в objects
     @param objects: результирующий список
     @param object_tree: дерево объетов построенное при поиске связей
+    @param path: путь к объекту
     """
+    if objects is None:
+        objects = []
+    if path is None:
+        path = []
     for item in object_tree:
         if item.get('degenerated') and \
-                (item['degenerated'] >= len(item['rels']) or (item['degenerated'] and len(item['rels']) == 0)):
+                item['degenerated'] >= item['rels_size'] and item['degenerated'] >= len(item['rels']):
             continue
         if len([temp for temp in objects if temp['object_id'] == item['object_id'] and
                                             temp['rec_id'] == item['rec_id']]) == 0:
-            objects.append({'object_id': item['object_id'], 'rec_id': item['rec_id']})
+            objects.append({'object_id': item['object_id'], 'rec_id': item['rec_id'], 'path': path})
         if len(item.get('rels', [])) != 0:
-            get_unique_objects(objects, item['rels'])
+            new_path = path.copy()
+            new_path.append({'object_id': item['object_id'], 'rec_id': item['rec_id']})
+            get_unique_objects(item['rels'], new_path, objects)
+    return objects
 
 
-def get_path_list(object_tree, object_id, rec_id, other_tree, other_tree_objects, result, temp_result):
+def get_unique_objects_dict(object_tree, path=None, objects=None) -> dict:
     """
-    Функция для получения общих путей двух деревьев
-    @param object_tree: дерево первого объекта
-    @param object_id: идентификатор типа корня дерева второго объекта
-    @param rec_id: идентификатор корня дерева второго объекта
-    @param other_tree: дерево второго объекта
-    @param other_tree_objects: список элементов второго дерева
-    @param result: список для накопления результата
-    @param temp_result: список для накопления элементов пути для данной итерации
+    Функция для филтрации дерева объектов с занесением всех уникальных объектов в objects
+    @param objects: результирующий словарь
+    @param object_tree: дерево объетов построенное при поиске связей
+    @param path: путь к объекту
     """
-    for relation in object_tree:
-        if relation['object_id'] == object_id and relation['rec_id'] == rec_id:
-            result.append(temp_result.copy())
+    if objects is None:
+        objects = {}
+    if path is None:
+        path = []
+    for item in object_tree:
+        if item.get('degenerated') and \
+                (item['degenerated'] >= len(item['rels'])):
             continue
-        if len(relation.get('rels', [])) == 0:
-            if {'object_id': relation['object_id'], 'rec_id': relation['rec_id']} in other_tree_objects:
-                paths = get_relation_path_list(other_tree, {'object_id': relation['object_id'],
-                                                            'rec_id': relation['rec_id']})
-                for path in paths:
-                    new_path = temp_result.copy()
-                    new_path.append({'object_id': relation['object_id'], 'rec_id': relation['rec_id']})
-                    result.append(path + new_path)
-        else:
-            new_path = temp_result.copy()
-            new_path.append({'object_id': relation['object_id'], 'rec_id': relation['rec_id']})
-            get_path_list(relation['rels'], object_id, rec_id, other_tree, other_tree_objects, result, new_path)
+        if len([temp for temp in objects.values() if temp['object_id'] == item['object_id'] and
+                                            temp['rec_id'] == item['rec_id']]) == 0:
+            objects[str(item['object_id']) + '_' + str(item['rec_id'])] = {'object_id': item['object_id'], 'rec_id': item['rec_id'], 'path': path}
+        if len(item.get('rels', [])) != 0:
+            new_path = path.copy()
+            new_path.append({'object_id': item['object_id'], 'rec_id': item['rec_id']})
+            get_unique_objects_dict(item['rels'], new_path, objects)
+    return objects
+
+
+def get_objects_process(group_id, object_id, rec_id, depth, value):
+    """
+    Функция для работы в отдельном процессе для поиска уникальных связанных объектов и путей к ним
+    @param group_id: идентификатор группы пользователя
+    @param object_id: идентификатор типа объекта
+    @param rec_id: идентификатор объекта
+    @param depth: глубина поиска
+    @param value: словарь для сохранения результата
+    """
+    object_relation = get_rel_cascade(group_id, object_id, rec_id, depth)
+    value[str(object_id) + '_' + str(rec_id)] = get_unique_objects_dict(object_relation['rels'])
 
 
 def get_objects_relation(group_id, object_id_1, rec_id_1, object_id_2, rec_id_2, depth=3):
@@ -379,16 +351,21 @@ def get_objects_relation(group_id, object_id_1, rec_id_1, object_id_2, rec_id_2,
     @param depth: глубина поиска саязей
     @return: список связей в формате [{key_id, val, sec},...,{}]
     """
-    object_relation = get_rel_cascade(group_id, object_id_1, rec_id_1, depth)
-    other_object_relation = get_rel_cascade(group_id, object_id_2, rec_id_2, depth)
-    objects = []
-    get_unique_objects(objects, other_object_relation['rels'])
+    value = Manager().dict()
+    process_1 = Process(target=get_objects_process, args=(group_id, object_id_1, rec_id_1, depth, value))
+    process_2 = Process(target=get_objects_process, args=(group_id, object_id_2, rec_id_2, depth, value))
+    process_1.start()
+    process_2.start()
+    process_1.join()
+    process_2.join()
+    objects_1 = value[str(object_id_1) + '_' + str(rec_id_1)]
+    objects_2 = value[str(object_id_2) + '_' + str(rec_id_2)]
     temp_result = []
-    get_path_list(object_relation['rels'], object_id_2, rec_id_2, other_object_relation, objects, temp_result, [])
-    result = []
-    for temp in temp_result:
-        result += temp
-    result = [dict(s) for s in set(frozenset(d.items()) for d in result)]
+    for object_1 in objects_1:
+        if objects_2.get(object_1):
+            temp_result += objects_1[object_1]['path'] + objects_2[object_1]['path'] + [{'object_id': objects_1[object_1]['object_id'],
+                                                                   'rec_id': objects_1[object_1]['rec_id']}]
+    result = [dict(s) for s in set(frozenset(d.items()) for d in temp_result)]
     return result
 
 
@@ -411,17 +388,15 @@ def search_relations(group_id, request):
             {}
         ]}
     """
-    result = []
     if len(request.get('rels')) == 0:
-        get_unique_objects(result,
-                           get_rel_cascade(group_id, request.get('object_id'), request.get('rec_id'), 1)['rels'])
+        result = get_unique_objects(get_rel_cascade(group_id, request.get('object_id'), request.get('rec_id'), 1)['rels'])
         return [item for item in result if item['object_id'] != 1]
     else:
         parent = {'object_id': request.get('object_id'), 'rec_id': request.get('rec_id')}
         parent['rels'] = []
-        result.append({'object_id': request.get('object_id'), 'rec_id': request.get('rec_id')})
         temp = search_relations_recursive(group_id, request, parent, parent)['rels']
-        get_unique_objects(result, temp)
+        result = get_unique_objects(temp)
+        result.append({'object_id': request.get('object_id'), 'rec_id': request.get('rec_id')})
         return [item for item in result if item['object_id'] != 1]
 
 
@@ -436,10 +411,10 @@ def get_relations_list():
     for item in get_relation_keys():
         list_id = None
         if item.get('list_id'):
-            type = {'title': 'list', 'value': item.get('list_id')}
+            relation_type = {'title': 'list', 'value': item.get('list_id')}
             list_id = item.get('list_id')
         else:
-            type = {'title': 'unknow', 'value': None}
-        result.append({'id': item['id'], 'title': item['title'], 'hint': item['hint'], 'list': list_id, 'type': type,
-                       'object_id_1': item['rel_obj_1_id'], 'object_id_2': item['rel_obj_2_id']})
+            relation_type = {'title': 'unknow', 'value': None}
+        result.append({'id': item['id'], 'title': item['title'], 'hint': item['hint'], 'list': list_id,
+                       'type': relation_type, 'object_id_1': item['rel_obj_1_id'], 'object_id_2': item['rel_obj_2_id']})
     return result
