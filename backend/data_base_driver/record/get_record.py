@@ -152,8 +152,7 @@ def get_object_record_by_id_http(object_id, rec_id, group_id=0, triggers=None):
         params.append({'id': int(item[0]), 'values': [{'value': value, 'date': get_date_time_from_sec(item[2])[:-3]}]})
     for item in params:
         item['values'].sort(key=lambda x: x['date'], reverse=True)
-    params.sort(key=lambda x: get_key_by_id(x['id'])['title'], reverse=True)
-    params.sort(key=lambda x: get_key_by_id(x['id'])['need'], reverse=True)
+    params.sort(key=lambda x: x['id'])
     permission = get_permission_params(response, object_id)
     if triggers:
         triggers = check_triggers(triggers, group_id, object_id, rec_id)

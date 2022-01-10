@@ -1,6 +1,6 @@
 from django.db import models
-#
-from .fields import MonacoEditorField
+
+from django_monaco_editor.fields import MonacoEditorField
 
 
 class MonacoEditorModelField(models.TextField):
