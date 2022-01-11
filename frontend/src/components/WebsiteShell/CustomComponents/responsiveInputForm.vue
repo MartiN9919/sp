@@ -75,6 +75,7 @@ export default {
       search: 'searchInput',
       text: 'textInput',
       geometry: 'geometryInput',
+      geometry_point: 'geometryInput',
       checkbox: 'booleanInput',
       date: 'dateInput',
       datetime: 'dateTimeInput',
