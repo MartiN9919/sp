@@ -13,7 +13,6 @@
         <v-list-item-action v-show="hover" class="flex-row ma-0 action-buttons">
           <v-btn icon @click="$emit('select', object)"><v-icon>mdi-plus</v-icon></v-btn>
           <v-btn icon @click="$emit('change', object)"><v-icon>mdi-pencil-outline</v-icon></v-btn>
-          <v-btn icon><v-icon>mdi-close</v-icon></v-btn>
         </v-list-item-action>
       </v-list-item>
     </v-hover>

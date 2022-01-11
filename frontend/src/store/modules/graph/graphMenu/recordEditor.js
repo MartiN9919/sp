@@ -111,18 +111,15 @@ export default {
     async saveEditableRelation({getters, dispatch}) {
       let relation = getters.editableRelation
       let request = Object.assign(
-          {doc_rec_id: relation.document ? relation.document.object.recId : null},
-          relation.relation.getRequestStructure()
+        {doc_rec_id: relation.document ? relation.document.object.recId : null},
+        relation.relation.getRequestStructure()
       )
       return await axios.post(CONST.API.OBJ.SET_RELATION, request, {})
         .then(r => {
           let object = {o1: r.data.object_id_1, r1: r.data.rec_id_1, o2: r.data.object_id_2, r2: r.data.rec_id_2}
           dispatch('addRelationToGraph', {object: object, relations: r.data.params, noMove: true})
-          dispatch('setEditableRelation',
-            {
-              relations: [relation.relation.o1, relation.relation.o2],
-              document: relation.document
-            })
+          const relations = [relation.relation.o1, relation.relation.o2]
+          dispatch('setEditableRelation',{relations, document: relation.document})
           return Promise.resolve(r.data)
         })
         .catch(e => { return Promise.reject(e) })

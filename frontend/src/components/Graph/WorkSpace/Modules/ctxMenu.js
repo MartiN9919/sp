@@ -113,8 +113,15 @@ const SpaceCtxMenuCreateRelation = {
 const SpaceCtxMenuFindRelation = {
   icon: 'mdi-link-variant',
   title: 'Найти связи',
-  subtitle: 'Найти все возможные связи между выбранными объектами',
+  subtitle: 'Найти все связи между выбранными объектами',
   action: 'findRelations'
+}
+
+const SpaceCtxMenuDeleteChoosing = {
+  icon: 'mdi-delete',
+  title: 'Удалить выбранные объекты',
+  subtitle: 'Удалить с графа все выбранные объекты',
+  action: 'deleteObjects'
 }
 
 function getObjectCtxMenu(geometryToGraph) {
@@ -130,7 +137,7 @@ function getObjectCtxMenu(geometryToGraph) {
   return objectCtxMenu
 }
 
-function getSpaceCtxMenu(save, reorder, createRelation, findRelation) {
+function getSpaceCtxMenu(save, reorder, createRelation, findRelation, deleteChoosing) {
   let spaceCtxMenu = [SpaceCtxMenuSpaceBase]
   if(save) {
     spaceCtxMenu.unshift(SpaceCtxMenuSave)
@@ -143,6 +150,9 @@ function getSpaceCtxMenu(save, reorder, createRelation, findRelation) {
   }
   if(findRelation) {
     spaceCtxMenu.unshift(SpaceCtxMenuFindRelation)
+  }
+  if(deleteChoosing) {
+    spaceCtxMenu.push(SpaceCtxMenuDeleteChoosing)
   }
   return spaceCtxMenu
 }

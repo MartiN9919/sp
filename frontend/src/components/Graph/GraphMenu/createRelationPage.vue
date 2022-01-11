@@ -52,7 +52,13 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['addNewParamEditableRelation', 'deleteNewParamEditableRelation', 'saveEditableRelation', 'addObjectToGraph']),
+    ...mapActions([
+      'addNewParamEditableRelation',
+      'deleteNewParamEditableRelation',
+      'saveEditableRelation',
+      'addObjectToGraph',
+      'clearSelectedGraphObjects',
+    ]),
     createNewParam(event) {
       this.addNewParamEditableRelation(event)
     },
@@ -60,7 +66,7 @@ export default {
       this.deleteNewParamEditableRelation({param: event.param, id: event.id})
     },
     createRelation() {
-      this.saveEditableRelation()
+      this.saveEditableRelation().then(() => { this.clearSelectedGraphObjects() })
     }
   }
 }
