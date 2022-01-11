@@ -59,7 +59,8 @@ export default {
           this.graphObjects.length,
           this.graphObjects.length > 1,
           this.relationCreateStatus,
-          this.findRelationsStatus
+          this.findRelationsStatus,
+          this.choosingObjects.length
         )
       }
     }
@@ -67,7 +68,7 @@ export default {
   methods: {
     ...mapActions(['reorderGraph', 'setEditableRelation', 'setNavigationDrawerStatus', 'setToolStatus', 'setActiveTool',
     'setEditableObject', 'deleteObjectFromGraph', 'setRootSearchRelationTreeItem', 'getRelationsBtwObjects',
-      'addObjectToGraph', 'executeMapScript']),
+    'addObjectToGraph', 'executeMapScript']),
     menuShow(event, object=null) {
       this.objectCtxMenu = object
       this.$refs.contextMenu.show_root(event.x, event.y)
@@ -83,15 +84,13 @@ export default {
         recId: this.objectCtxMenu.object.recId
       })
     },
-    deleteObject(event) {
-      let removeIndex = this.choosingObjects.findIndex((o) => o.id === this.objectCtxMenu.id)
-      if(removeIndex !== -1) {
-        for(let choosingObject of this.choosingObjects)
-          this.deleteObjectFromGraph(choosingObject)
-        this.choosingObjects = []
-      }
-      else
-        this.deleteObjectFromGraph(this.objectCtxMenu)
+    deleteObjects() {
+      for(let choosingObject of this.choosingObjects)
+        this.deleteObjectFromGraph(choosingObject)
+      this.choosingObjects = []
+    },
+    deleteObject() {
+      this.deleteObjectFromGraph(this.objectCtxMenu)
     },
     createRelation(){
       let relations = []

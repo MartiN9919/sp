@@ -14,7 +14,7 @@
         v-if="object.object.show"
         :object="object"
         :choosing="choosingObjects.includes(object)"
-        @setChoosingObject="setChoosingObject"
+        @setChoosingObject="choosingObjects = $event"
         @setRelatedObjects="setRelatedObjects"
         @selectObject="selectObject"
         @ctxMenu="menuShow(...$event)"
@@ -25,6 +25,7 @@
         @click.native.stop=""
       />
     </screen>
+    <search-object v-if="graphObjects.length" :objects="graphObjects" @findNode="findNode"/>
     <context-menu-nested ref="contextMenu" :form="this" :items="contextMenu" :color="$CONST.APP.COLOR_OBJ"/>
   </div>
 </template>
@@ -35,25 +36,32 @@ import Group from '@/components/Graph/WorkSpace/lib/components/Group'
 import GraphObject from "@/components/Graph/WorkSpace/graphObject"
 import GraphRelation from "@/components/Graph/WorkSpace/graphRelation"
 import bodyContextMenu from "@/components/Graph/WorkSpace/Modules/bodyContextMenu"
+import SearchObject from "@/components/Graph/WorkSpace/Modules/searchObject"
 const ContextMenuNested = () => import("@/components/WebsiteShell/UIMainComponents/contextMenuNested")
 import {mapActions, mapGetters} from "vuex"
 
 export default {
   name: "graphArea",
   mixins: [bodyContextMenu],
-  components: {GraphRelation, GraphObject, Screen, Group, ContextMenuNested},
+  components: {SearchObject, GraphRelation, GraphObject, Screen, Group, ContextMenuNested},
   data: () => ({
-    choosingObjects: [],
     relatedObjects: [],
   }),
-  computed: mapGetters(['graphObjects', 'graphRelations']),
+  computed: {
+    ...mapGetters(['graphObjects', 'graphRelations', 'selectedGraphObjects']),
+    choosingObjects: {
+      get: function () { return this.selectedGraphObjects },
+      set: function (value) {
+        value.hasOwnProperty('id')
+          ? this.switchSelectedGraphObjects(value)
+          : this.clearSelectedGraphObjects()
+      }
+    }
+  },
   methods: {
-    ...mapActions(['setScreen']),
-    setChoosingObject(node) {
-      const positionObject = this.choosingObjects.findIndex(choosingNode => choosingNode.id === node.id)
-      if (positionObject === -1)
-        this.choosingObjects.push(node)
-      else this.choosingObjects.splice(positionObject, 1)
+    ...mapActions(['setScreen', 'switchSelectedGraphObjects', 'clearSelectedGraphObjects']),
+    findNode(node) {
+      this.$refs.screen.zoomNodes([node], { scale: 1.5 })
     },
     setRelatedObjects(object) {
       this.relatedObjects = [object]

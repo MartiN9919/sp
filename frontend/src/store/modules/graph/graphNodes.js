@@ -49,15 +49,15 @@ export default {
     globalDisplaySettings: new GlobalSettings(),
     graph: new Graph(),
     graphObjects: {},
+    selectedGraphObjects: [],
   },
   getters: {
     graphObjects: state => state.graph.nodes,
     graphRelations: state => state.graph.edges,
     classifiersSettings: state => state.classifiersSettings.value,
     globalDisplaySettings: state => state.globalDisplaySettings,
-    globalDisplaySettingValue: state => identifier => {
-      return state.globalDisplaySettings[identifier].state.value
-    },
+    globalDisplaySettingValue: state => identifier => state.globalDisplaySettings[identifier].state.value,
+    selectedGraphObjects: state => state.selectedGraphObjects
   },
   mutations: {
     setScreen: (state, screen) => state.screen = screen,
@@ -66,6 +66,13 @@ export default {
     updateRelationFromGraph: (state, {relation, fields}) => state.graph.updateEdge(relation, fields),
     changeGlobalSettingState: (state, {id, value}) => state.globalDisplaySettings[id].state.value = value,
     setClassifiersSettings: (state, classifierId) => state.classifiersSettings.switch(classifierId),
+    clearSelectedGraphObjects: (state) => state.selectedGraphObjects = [],
+    switchSelectedGraphObjects: (state, object) => {
+      const positionObject = state.selectedGraphObjects.findIndex(choosingNode => choosingNode.id === object.id)
+      if (positionObject === -1)
+        state.selectedGraphObjects.push(object)
+      else state.selectedGraphObjects.splice(positionObject, 1)
+    },
     addObjectToGraph: (state, {editableObject, position, size}) => {
       state.graph.createNode({
         id: editableObject.getGeneratedId(),
@@ -79,6 +86,8 @@ export default {
   },
   actions: {
     setScreen({ commit }, screen) { commit('setScreen', screen) },
+    switchSelectedGraphObjects({ commit }, object) { commit('switchSelectedGraphObjects', object) },
+    clearSelectedGraphObjects({ commit }) { commit('clearSelectedGraphObjects') },
     reorderGraph({ state }) {
       state.graph.reorderGraph(state.screen.getStartPosition().x, state.screen.getStartPosition().y)
     },

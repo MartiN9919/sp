@@ -80,12 +80,12 @@ export default {
 
 <style scoped>
 .choosing-object {
-  box-shadow: 0 3px 5px -1px rgb(255 0 0 / 20%), 0 6px 10px 0 rgb(255 0 0 / 14%), 0 1px 18px 0 rgb(255 0 0 / 12%);
+  box-shadow: 0 0 50px red;
   transition: box-shadow 0.3s cubic-bezier(.25,.8,.25,1);
 }
 
 .choosing-object:hover {
-  box-shadow: 0 7px 8px -4px rgb(255 0 0 / 20%), 0 12px 17px 2px rgb(255 0 0 / 14%), 0 5px 22px 4px rgb(255 0 0 / 12%);
+  box-shadow: 0 0 80px red;
 }
 .body-object {
   box-shadow: 0 3px 5px -1px rgb(0 0 0 / 20%), 0 6px 10px 0 rgb(0 0 0 / 14%), 0 1px 18px 0 rgb(0 0 0 / 12%);
