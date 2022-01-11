@@ -140,6 +140,7 @@ class DAT_SYS_KEY:
     TYPE_DATA = 'date'
     TYPE_DATATIME = 'datetime'
     TYPE_GEOMETRY = 'geometry'
+    TYPE_GEOMETRY_POINT = 'geometry_point'
     TYPE_PHONE_NUMBER = 'phone_number'
     TYPE_FILE_PHOTO = 'file_photo'
     TYPE_FILE_ANY = 'file_any'
@@ -149,7 +150,6 @@ class DAT_SYS_KEY:
     VISIBLE_ONLY_VALUE = 'only_value'
     VISIBLE_ALL = 'all'
 
-
     TYPE_LIST = (
         (TYPE_INT, "Число"),
         (TYPE_STR, 'Текст'),
@@ -157,7 +157,8 @@ class DAT_SYS_KEY:
         (TYPE_DATA, 'Дата'),
         (TYPE_PHONE_NUMBER, 'Номер телефона'),
         (TYPE_BIT, 'Да/Нет'),
-        (TYPE_GEOMETRY, 'Точка/Путь/Полигон'),
+        (TYPE_GEOMETRY, 'Путь/Полигон'),
+        (TYPE_GEOMETRY_POINT, 'Точка'),
         (TYPE_FILE_PHOTO, 'Файл-фотография'),
         (TYPE_FILE_ANY, 'Файл-любой тип'),
     )
@@ -207,7 +208,8 @@ class DAT_SYS_SCRIPT_VARIABLE:
         (DAT_SYS_KEY.TYPE_DATA, 'Дата'),
         (DAT_SYS_KEY.TYPE_PHONE_NUMBER, 'Номер телефона'),
         (DAT_SYS_KEY.TYPE_BIT, 'Да/Нет'),
-        (DAT_SYS_KEY.TYPE_GEOMETRY, 'Точка/Путь/Полигон'),
+        (DAT_SYS_KEY.TYPE_GEOMETRY, 'Путь/Полигон'),
+        (DAT_SYS_KEY.TYPE_GEOMETRY_POINT, 'Точка'),
         (DAT_SYS_KEY.TYPE_FILE_ANY, 'Файл-любой тип'),
         (DAT_SYS_KEY.TYPE_SEARCH, 'Поиск объекта'),
         (TYPE_LIST, 'Список')
