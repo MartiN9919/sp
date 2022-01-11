@@ -42,7 +42,9 @@ export default {
         return this.activeTool(router.currentRoute.name)
       },
       set: function (item) {
-        this.setActiveTool(item)
+        if(item) {
+          this.setActiveTool(item)
+        }
       }
     }
   },
