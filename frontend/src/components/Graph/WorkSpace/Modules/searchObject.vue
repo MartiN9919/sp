@@ -11,6 +11,7 @@
         item-value="id"
         item-color="teal"
         hide-details
+        autofocus
         attach=""
         dense
         flat

@@ -4,6 +4,7 @@
       <graph-relation
         v-for="relation in graphRelations"
         :key="relation.id"
+        v-if="globalDisplaySettingValue('showRelations')"
         :relation="relation"
         :objects="graphObjects"
         @ctxMenu="menuShow(...$event)"
@@ -48,7 +49,7 @@ export default {
     relatedObjects: [],
   }),
   computed: {
-    ...mapGetters(['graphObjects', 'graphRelations', 'selectedGraphObjects']),
+    ...mapGetters(['graphObjects', 'graphRelations', 'selectedGraphObjects', 'globalDisplaySettingValue']),
     choosingObjects: {
       get: function () { return this.selectedGraphObjects },
       set: function (value) {
