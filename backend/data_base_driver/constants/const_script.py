@@ -24,7 +24,7 @@ IMPORTS = \
     "from data_base_driver.input_output.input_output import io_set, io_get_obj_mysql_tuple, io_get_rel_mysql_tuple, io_get_rel, io_get_obj\n" \
     "from data_base_driver.record.search import search\n" \
     "from data_base_driver.sys_key.get_object_info import obj_list, rel_rec_to_el, el_to_rec_id\n" \
-    "from data_base_driver.input_output.io_geo import rel_to_geo_fc, geo_id_to_fc, relations_to_geometry_id, \
+    "from data_base_driver.input_output.io_geo import relations_to_geometry_id, \
 feature_collection_by_geometry, get_geometries\n"\
     "from data_base_driver.sys_notifications.set_notifications_info import add_notification\n"\
     "from datetime import datetime\n"\
@@ -49,8 +49,6 @@ ENABLED_FUNCTIONS = [
     'key_list',
     'rel_rec_to_el',
     'el_to_rec_id',
-    'rel_to_geo_fc',
-    'geo_id_to_fc',
     'int',
     'set',
     'str',

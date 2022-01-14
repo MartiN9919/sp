@@ -1,9 +1,10 @@
 <template>
   <EditorSplit
     style="height: 100%; width: 100%;"
+    :enabled="modeEnabled.marker !== true"
   >
 
-    <template v-slot:firstPane>
+    <template v-slot:firstPane v-if="modeEnabled.marker !== true">
       <EditorNav
         @onNavNew="on_nav_new"
         @onNavAdd="on_nav_add"
