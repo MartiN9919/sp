@@ -32,7 +32,7 @@
             <v-card-text class="py-1 text-end d-flex flex-column justify-center" style="width: max-content">
               <div v-for="(v, key) in param.values" :key="key">
                 <v-dialog
-                  v-if="getClassifierType(param) === 'geometry'"
+                  v-if="getClassifierType(param) === 'geometry' || getClassifierType(param) === 'geometry_point'"
                   class="dialog"
                   style="z-index:1000002"
                   width="60%"
@@ -44,7 +44,9 @@
                 >
                   <template v-slot:activator="{ on, attrs }">
                     <div v-bind="attrs" v-on="on" class="py-1 teal--text">
-                      <p class="mb-0 text-body-1" style="line-height: 1em; font-style: oblique">Геометрия</p>
+                      <p class="mb-0 text-body-1" style="line-height: 1em; font-style: oblique">
+                        {{ getClassifierType(param) === 'geometry' ? 'Геометрия' : 'Точка' }}
+                      </p>
                       <p class="mb-0" style="line-height: 1em; font-size: 0.8em">{{ v.date }}</p>
                     </div>
                   </template>
@@ -174,7 +176,7 @@ export default {
   z-index: 1000002
 }
 .dossier {
-  max-height: 100%;
+  height: 100%;
   overflow-y: hidden;
 }
 .content {
