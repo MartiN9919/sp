@@ -6,7 +6,6 @@
         v-model="selectedObject"
         @input="select"
         :items="sortedObjects"
-        item-text="object.title"
         no-data-text="На графе нет объектов"
         item-value="id"
         item-color="teal"
@@ -19,7 +18,12 @@
         autocomplete="off"
         append-icon=""
         class="search"
-      ></v-autocomplete>
+      >
+        <template v-slot:item="{ item }">
+          <v-icon left>{{item.object.object.icon}}</v-icon>
+          <v-list-item-title class="selector-item">{{item.object.title}}</v-list-item-title>
+        </template>
+      </v-autocomplete>
     </v-scroll-x-transition>
     <v-btn v-if="!showInputForm" icon @click.stop="activate">
       <v-icon>mdi-magnify</v-icon>
@@ -80,5 +84,9 @@ export default {
 .search >>> input {
   padding: 0;
   cursor: pointer;
+}
+.selector-item {
+  white-space: normal;
+  width: 0;
 }
 </style>
