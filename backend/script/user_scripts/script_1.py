@@ -27,34 +27,9 @@ from core.deploy_settings import MEDIA_ROOT, DOCUMENT_ROOT
 
 
 
-def script_47(request, group_id):
+def script_1(request, group_id):
 	try:
-		date_start = request.get('date_start',{}).get('value',[])
-		date_end = request.get('date_end',{}).get('value',[])
-		list_id = request.get('list_id',{}).get('value',[])
-		date_time_start = date_start + ' 00:00:00'
-		date_time_end = date_end + ' 00:00:00'
-		time_interval = {'second_start': str_to_sec(date_time_start), 'second_end': str_to_sec(date_time_end)}
-		relations = io_get_rel(group_id, [50122], [20], [45], [list_id], {}, True)
-		docs = []
-		for relation in relations:
-		    docs.append(int(relation['rec_id_1']))
-		persons = []
-		for doc in docs:
-		    rels = io_get_rel(group_id, ['role_in_unlegal_working'], ['person_p'], ['doc', doc], [], {}, True)
-		    if len(rels) > 0:
-		        for rel in rels:
-		            persons.append(int(rel['rec_id_2']))
-		persons = list(set(persons))
-		geometries = []
-		for person in persons:
-		    geometries += relations_to_geometry_id(group_id, 30, 35, person, [50147], time_interval)
-		fc_new = feature_collection_by_geometry(group_id, 30, geometries, [30303], {})
-		points = []
-		for person in persons:
-		    points += relations_to_geometry_id(group_id, 25, 35, person, [50127], {})
-		fc_points = feature_collection_by_geometry(group_id, 25, points, [50163], {})
-		fc_new['features'] += fc_points['features']
-		return fc_new
+		geometry_object = request.get('geometry_object',{}).get('value',[])
+		return feature_collection_by_geometry(group_id, geometry_object['objectId'], [geometry_object['recId']], [], {})
 	except Exception as e:
 		raise e

@@ -111,7 +111,7 @@ export default {
       this.setActiveTool('createRelationPage')
     },
     findRelations(){
-      this.getRelationsBtwObjects(this.graphObjects.filter(o => this.choosingObjects.includes(o.id)))
+      this.getRelationsBtwObjects(this.graphObjects.filter(o => this.choosingObjects.includes(o)))
     },
     addGeometryToGraph(){
       this.$router.push({name: 'Map'})

@@ -3,13 +3,13 @@ import threading
 from multiprocessing import Process, Manager
 
 from data_base_driver.additional_functions import get_date_time_from_sec
-from data_base_driver.record.find_object import find_reliable_http
-from data_base_driver.record.get_record import get_object_record_by_id_http
-from data_base_driver.relations.find_rel import search_rel_with_key_http
+from objects.record.find_object import find_reliable_http
+from objects.record.get_record import get_object_record_by_id_http
 from data_base_driver.input_output.input_output import io_get_rel
 from data_base_driver.sys_key.get_key_dump import get_relation_keys
 from data_base_driver.sys_key.get_list import get_item_list_value
 from data_base_driver.sys_key.get_object_dump import get_object_by_name
+from objects.relations.find_rel import search_rel_with_key_http
 
 
 def get_rel_by_object(group_id, object, id, parents):

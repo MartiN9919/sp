@@ -28,9 +28,9 @@ def filter_rel(dict, object1, object2):
 def get_keys_by_rel(object1, object2):
     """
     получения списка ключей по типу объектов которые он связывает
-    :param object1: имя или id первого объекта
-    :param object2: имя или id второго объекта
-    :return: список словарей c информацией о искомых ключах
+    @:param object1: имя или id первого объекта
+    @:param object2: имя или id второго объекта
+    @:return: список словарей c информацией о искомых ключах
     """
     if isinstance(object1, str) and not (object1.isdigit()):
         object1 = get_obj_id(object1)
@@ -68,3 +68,6 @@ def get_key_by_name(name):
     @return: словарь содержащий информацию о ключе классификатора
     """
     return DAT_SYS_KEY.DUMP.get_rec(name=name)
+
+
+
