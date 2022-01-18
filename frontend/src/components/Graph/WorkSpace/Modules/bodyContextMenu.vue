@@ -90,6 +90,7 @@ export default {
       this.choosingObjects = []
     },
     deleteObject() {
+      this.choosingObjects.splice(this.choosingObjects.findIndex((o) => o === this.objectCtxMenu),1)
       this.deleteObjectFromGraph(this.objectCtxMenu)
     },
     createRelation(){
