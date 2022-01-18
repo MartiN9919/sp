@@ -1,6 +1,6 @@
 <template>
   <div class="h-100 disable-optimize" @click.shift="clearSelectors" @click.right.prevent="menuShow">
-    <screen id="screen" ref="screen" @click.ctrl="test()">
+    <screen id="screen" ref="screen">
       <graph-relation
         v-for="relation in graphRelations"
         :key="relation.id"
@@ -61,9 +61,6 @@ export default {
   },
   methods: {
     ...mapActions(['setScreen', 'switchSelectedGraphObjects', 'clearSelectedGraphObjects']),
-    test() {
-      console.log('test')
-    },
     findNode(node) {
       this.$refs.screen.zoomNodes([node], { scale: 1.5 })
     },
