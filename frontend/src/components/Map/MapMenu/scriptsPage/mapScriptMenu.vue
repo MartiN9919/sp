@@ -1,5 +1,5 @@
 <template>
-  <split-panel>
+  <split-panel setting-name="Menu">
     <template v-slot:firstPane>
       <treeView
         :items="treeView"
