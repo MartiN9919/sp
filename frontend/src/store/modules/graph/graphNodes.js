@@ -57,7 +57,8 @@ export default {
     classifiersSettings: state => state.classifiersSettings.value,
     globalDisplaySettings: state => state.globalDisplaySettings,
     globalDisplaySettingValue: state => identifier => state.globalDisplaySettings[identifier].state.value,
-    selectedGraphObjects: state => state.selectedGraphObjects
+    selectedGraphObjects: state => state.selectedGraphObjects,
+    inSelectedGraphObject: state => object => state.selectedGraphObjects.includes(object)
   },
   mutations: {
     setScreen: (state, screen) => state.screen = screen,
@@ -67,11 +68,11 @@ export default {
     changeGlobalSettingState: (state, {id, value}) => state.globalDisplaySettings[id].state.value = value,
     setClassifiersSettings: (state, classifierId) => state.classifiersSettings.switch(classifierId),
     clearSelectedGraphObjects: (state) => state.selectedGraphObjects = [],
-    switchSelectedGraphObjects: (state, object) => {
+    addSelectedGraphObject: (state, object) => state.selectedGraphObjects.push(object),
+    deleteSelectedGraphObject: (state, object) => {
       const positionObject = state.selectedGraphObjects.findIndex(choosingNode => choosingNode.id === object.id)
-      if (positionObject === -1)
-        state.selectedGraphObjects.push(object)
-      else state.selectedGraphObjects.splice(positionObject, 1)
+      if (positionObject !== -1)
+        state.selectedGraphObjects.splice(positionObject, 1)
     },
     addObjectToGraph: (state, {editableObject, position, size}) => {
       state.graph.createNode({
@@ -86,7 +87,11 @@ export default {
   },
   actions: {
     setScreen({ commit }, screen) { commit('setScreen', screen) },
-    switchSelectedGraphObjects({ commit }, object) { commit('switchSelectedGraphObjects', object) },
+    addSelectedGraphObject({ getters, commit }, object) {
+      if(!getters.inSelectedGraphObject(object))
+        commit('addSelectedGraphObject', object)
+    },
+    deleteSelectedGraphObject({ commit }, object) { commit('deleteSelectedGraphObject', object) },
     clearSelectedGraphObjects({ commit }) { commit('clearSelectedGraphObjects') },
     reorderGraph({ state }) {
       state.graph.reorderGraph(state.screen.getStartPosition().x, state.screen.getStartPosition().y)

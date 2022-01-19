@@ -9,12 +9,12 @@ export default {
   }),
   computed: {
     relationCreateStatus: function(){
-      return this.choosingObjects.length === 3
-        && this.choosingObjects.findIndex(o => o.object.object.id === 20) !== -1
-        || this.choosingObjects.length === 2
+      return this.selectedGraphObjects.length === 3
+        && this.selectedGraphObjects.findIndex(o => o.object.object.id === 20) !== -1
+        || this.selectedGraphObjects.length === 2
     },
     findRelationsStatus: function(){
-      return this.choosingObjects.length === 2
+      return this.selectedGraphObjects.length === 2
     },
     relationTooltip: {
       get: function () { return this.objectCtxMenu.relation.showTooltip },
@@ -60,7 +60,7 @@ export default {
           this.graphObjects.length > 1,
           this.relationCreateStatus,
           this.findRelationsStatus,
-          this.choosingObjects.length
+          this.selectedGraphObjects.length
         )
       }
     }
@@ -85,12 +85,12 @@ export default {
       })
     },
     deleteObjects() {
-      for(let choosingObject of this.choosingObjects)
+      for(let choosingObject of this.selectedGraphObjects)
         this.deleteObjectFromGraph(choosingObject)
-      this.choosingObjects = []
+      this.clearSelectedGraphObjects()
     },
     deleteObject() {
-      this.choosingObjects.splice(this.choosingObjects.findIndex((o) => o === this.objectCtxMenu),1)
+      this.deleteSelectedGraphObject(this.objectCtxMenu)
       this.deleteObjectFromGraph(this.objectCtxMenu)
     },
     createRelation(){
@@ -99,20 +99,22 @@ export default {
          relations = [this.objectCtxMenu.relation.o1, this.objectCtxMenu.relation.o2]
       }
       else {
-        if(this.choosingObjects.length === 2)
-          relations = this.choosingObjects
+        if(this.selectedGraphObjects.length === 2)
+          relations = this.selectedGraphObjects
         else
-          relations = this.choosingObjects.filter(o => o.object.object.id !== 20)
+          relations = this.selectedGraphObjects.filter(o => o.object.object.id !== 20)
       }
       this.setEditableRelation({
         relations: relations,
-        document: this.choosingObjects.length === 3 ? this.choosingObjects.find(o => o.object.object.id === 20) : null
+        document: this.selectedGraphObjects.length === 3
+          ? this.selectedGraphObjects.find(o => o.object.object.id === 20)
+          : null
       })
       this.setNavigationDrawerStatus(true)
       this.setActiveTool('createRelationPage')
     },
     findRelations(){
-      this.getRelationsBtwObjects(this.graphObjects.filter(o => this.choosingObjects.includes(o)))
+      this.getRelationsBtwObjects(this.graphObjects.filter(o => this.inSelectedGraphObject(o)))
     },
     addGeometryToGraph(){
       this.$router.push({name: 'Map'})

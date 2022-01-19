@@ -1,9 +1,10 @@
 <template>
-  <svg class="screen" ref="screen">
+  <svg class="screen" ref="screen" @mousedown.ctrl="startDrawFrame" @mousedown.stop="">
     <g id="screen">
       <slot>
       </slot>
     </g>
+    <rect v-show="frame.active" :x="frame.x" :y="frame.y" :width="frame.width" :height="frame.height" style="fill:rgba(0,0,255,0.1);"/>
   </svg>
 </template>
 
@@ -19,6 +20,7 @@ export default {
   data() {
     return {
       panzoom: null,
+      frame: {active: false}
     }
   },
   mounted () {
@@ -45,6 +47,36 @@ export default {
     this.panzoom.panNode = this.panNode
   },
   methods: {
+    startDrawFrame(event){
+      let position = this.getScreenPosition({x: event.offsetX, y: event.offsetY})
+      this.frame = {x0:position.x, y0: position.y, xn: position.x, yn: position.y,
+        x:position.x, y: position.y, width: 0, height: 0, active: true}
+      this.$el.addEventListener('mousemove', this.drawFrame)
+      this.$el.addEventListener('mouseup', this.stopDrawFrame)
+    },
+    stopDrawFrame(){
+      this.$emit('selectNodes', {x: this.frame.x, y: this.frame.y, width: this.frame.width, height: this.frame.height})
+      this.frame = {active: false, height: 0, width: 0}
+      this.$el.removeEventListener('mousemove', this.drawFrame)
+      this.$el.removeEventListener('mouseup', this.stopDrawFrame)
+    },
+    drawFrame(event){
+      if(this.frame.active){
+        const zoom = this.panzoom.getZoom()
+        this.frame.xn += event.movementX / zoom
+        this.frame.yn += event.movementY / zoom
+        if(this.frame.xn > this.frame.x0)
+          this.frame.x = this.frame.x0
+        else
+          this.frame.x = this.frame.xn
+        if(this.frame.yn > this.frame.y0)
+          this.frame.y = this.frame.y0
+        else
+          this.frame.y = this.frame.yn
+        this.frame.width = Math.abs(this.frame.xn - this.frame.x0)
+        this.frame.height = Math.abs(this.frame.yn - this.frame.y0)
+      }
+    },
     zoomTo ({x, y, scale}) {
       this.panzoom.zoom(scale)
       this.panzoom.pan( x,y )
@@ -124,6 +156,14 @@ export default {
       const pan = this.panzoom.getPan()
       position.x = (this.$el.clientWidth / 2 - pan.x) / zoom + Math.random() * 600 - 300
       position.y = (this.$el.clientHeight / 2 - pan.y) / zoom + Math.random() * 600 - 300
+      return position
+    },
+    getScreenPosition(eventPosition) {
+      let position = {x: 0, y: 0}
+      const zoom = this.panzoom.getZoom()
+      const pan = this.panzoom.getPan()
+      position.x = (eventPosition.x - pan.x) / zoom
+      position.y = (eventPosition.y - pan.y) / zoom
       return position
     },
   },

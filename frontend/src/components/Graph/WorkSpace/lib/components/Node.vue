@@ -21,24 +21,46 @@ export default {
   mixins: [dragMixin],
   props: {
     data: {},
+    inSelected: {
+      type: Boolean,
+      default: null
+    },
+    selectedObjects: {
+      type: Array,
+      default: null
+    }
   },
   mounted () {
     this.fitContent()
-    this.$on('drag', ({ x, y }) => {
-      if(this.data.hasOwnProperty('size')){
-        this.data.x += x
-        this.data.y += y
-      }
-    })
   },
   methods: {
     fitContent () {
       this.data.width = this.$refs.content.clientWidth
       this.data.height = this.$refs.content.clientHeight
     },
+    setDrag({x, y}) {
+      this.inSelected
+        ? this.selectedObjects.map(o => this.onDragNode(o,{x, y}))
+        : this.onDragNode(this.data, {x, y})
+    },
+    onDragNode(node, {x, y}) {
+      node.x += x
+      node.y += y
+    },
     onMousedown (e) {
       e.stopPropagation()
       this.startDrag(e);
+    },
+  },
+  watch: {
+    inSelected: {
+      handler: function(val) {
+        if(val !== null) {
+          this.$off('drag')
+          this.$on('drag', e => this.setDrag(e))
+        }
+      },
+      immediate: true,
     },
   },
   updated() {

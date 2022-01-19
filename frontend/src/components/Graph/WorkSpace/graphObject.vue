@@ -11,7 +11,7 @@
       <information-label :size-node="object.size" :params="getClassifiers" :show-date="showDate"/>
     </v-label>
 
-    <node ref="node" :data="object">
+    <node ref="node" :data="object" :in-selected="inSelected" :selected-objects="selectedObjects">
       <body-object :object="object" :class="objectClass"/>
     </node>
 
@@ -35,12 +35,13 @@ export default {
   components: {Node, VLabel, BodyObject, InformationLabel},
   props: {
     object: Object,
-    choosing: Boolean,
+    inSelected: Boolean,
+    selectedObjects: Array
   },
   computed: {
     ...mapGetters(['globalDisplaySettingValue', 'classifiersSettings']),
     objectClass() {
-      return this.choosing ? 'choosing-object' : 'body-object'
+      return this.inSelected ? 'choosing-object' : 'body-object'
     },
     showLabel() {
       let globalState = this.globalDisplaySettingValue('showGlobalTooltipObject')
