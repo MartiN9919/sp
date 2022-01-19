@@ -9,16 +9,16 @@ from django.core.files.base import ContentFile
 from core.settings import MEDIA_ROOT
 from data_base_driver.constants.const_dat import DAT_SYS_KEY
 from data_base_driver.constants.const_key import SYS_KEY_CONSTANT
-from data_base_driver.record.find_object import find_key_value_http
-from data_base_driver.record.get_record import get_object_record_by_id_http, get_keys_by_object
+from objects.record.find_object import find_key_value_http
+from objects.record.get_record import get_object_record_by_id_http, get_keys_by_object
 from data_base_driver.input_output.input_output import io_set
-from data_base_driver.record.validate_record import validate_record, get_country_by_number, remove_special_chars, \
-    validate_geometry_permission
-from data_base_driver.relations.add_rel import add_rel_by_other_object
 from data_base_driver.sys_key.get_key_dump import get_key_by_id
 from data_base_driver.sys_key.get_list import get_item_list_value
 from data_base_driver.sys_key.get_object_info import get_object_new_rec_id
 from document_driver.document_reader import get_document_text
+from objects.record.validate_record import get_country_by_number, remove_special_chars, validate_geometry_permission, \
+    validate_record
+from objects.relations.add_rel import add_rel_by_other_object
 
 
 def add_record(group_id, object_id, object_info):

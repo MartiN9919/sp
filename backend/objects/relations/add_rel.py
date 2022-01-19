@@ -3,8 +3,8 @@ import datetime
 from data_base_driver.additional_functions import get_date_time_from_sec
 from data_base_driver.constants.const_dat import DAT_REL
 from data_base_driver.input_output.input_output import io_set, io_get_rel
-from data_base_driver.relations.get_rel import get_rel_cascade, get_object_relation
 from data_base_driver.sys_key.get_key_dump import get_key_by_id
+from objects.relations.get_rel import get_object_relation, get_rel_cascade
 
 
 def add_rel(group_id, object_1_id, rec_1_id, object_2_id, rec_2_id, params, doc_rec_id=None):

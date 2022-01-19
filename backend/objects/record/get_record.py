@@ -95,10 +95,9 @@ def get_record_title(object_id, rec_id, group_id=0, record=None, length=3, trigg
             'triggers': triggers}
 
 
-def get_record_photo(object_id, params):
+def get_record_photo(params):
     """
     Функция для получения фотографии объекта
-    @param object_id: идентфификатор типа объекта
     @param params: список параметров объекта
     @return: название файла фотографии или None если фото нет
     """
@@ -110,7 +109,7 @@ def get_record_photo(object_id, params):
 
 def get_value_by_key(key, value):
     """
-    Функция функция для преобразования значения в базе данных в значение для пользователя
+    Функция для преобразования значения в базе данных в значение для пользователя
     @param key: идентификатор классификатора
     @param value: значение классификатора
     @return: значение для пользователя
@@ -161,7 +160,7 @@ def get_object_record_by_id_http(object_id, rec_id, group_id=0, triggers=None):
     title = get_record_title(object_id, rec_id, group_id,
                              {'object_id': object_id, 'rec_id': rec_id, 'params': params, 'permission': permission,
                               'triggers': None}, 1)
-    photo = get_record_photo(object_id, params)
+    photo = get_record_photo(params)
     return {'object_id': object_id, 'rec_id': rec_id, 'params': params, 'permission': permission,
             'title': title['title'], 'triggers': triggers, 'photo': photo}
 

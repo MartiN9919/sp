@@ -14,7 +14,7 @@
           <v-icon>{{editableRelation.document.object.object.icon}}</v-icon>{{editableRelation.document.object.title}}
         </div>
       </div>
-      <v-form v-if="editableRelation" ref="form" v-model="valid" class="overflow-y-auto">
+      <v-form v-if="editableRelation" ref="form" v-model="valid" class="overflow-y-auto" onSubmit="return false;">
         <object-record-area
           v-if="editableRelation.relation"
           :params="editableRelation.relation.params"

@@ -1,6 +1,6 @@
 <template>
   <div class="h-100 disable-optimize" @click.shift="clearSelectors" @click.right.prevent="menuShow">
-    <screen id="screen" ref="screen">
+    <screen id="screen" ref="screen" @selectNodes="setChoosingObjects">
       <graph-relation
         v-for="relation in graphRelations"
         :key="relation.id"
@@ -14,17 +14,14 @@
         :key="object.id"
         v-if="object.object.show"
         :object="object"
-        :choosing="choosingObjects.includes(object)"
-        @setChoosingObject="choosingObjects = $event"
+        :in-selected="inSelectedGraphObject(object)"
+        :selected-objects="selectedGraphObjects"
+        @setChoosingObject="setChoosingObject"
         @setRelatedObjects="setRelatedObjects"
         @selectObject="selectObject"
         @ctxMenu="menuShow(...$event)"
       />
-      <group
-        v-if="relatedObjects.length"
-        :nodes="relatedObjects"
-        @click.native.stop=""
-      />
+
     </screen>
     <search-object v-if="graphObjects.length" :objects="graphObjects" @findNode="findNode"/>
     <context-menu-nested ref="contextMenu" :form="this" :items="contextMenu" :color="$CONST.APP.COLOR_OBJ"/>
@@ -33,7 +30,6 @@
 
 <script>
 import Screen from '@/components/Graph/WorkSpace/lib/components/Screen'
-import Group from '@/components/Graph/WorkSpace/lib/components/Group'
 import GraphObject from "@/components/Graph/WorkSpace/graphObject"
 import GraphRelation from "@/components/Graph/WorkSpace/graphRelation"
 import bodyContextMenu from "@/components/Graph/WorkSpace/Modules/bodyContextMenu"
@@ -44,37 +40,58 @@ import {mapActions, mapGetters} from "vuex"
 export default {
   name: "graphArea",
   mixins: [bodyContextMenu],
-  components: {SearchObject, GraphRelation, GraphObject, Screen, Group, ContextMenuNested},
+  components: {SearchObject, GraphRelation, GraphObject, Screen, ContextMenuNested},
   data: () => ({
     relatedObjects: [],
   }),
   computed: {
-    ...mapGetters(['graphObjects', 'graphRelations', 'selectedGraphObjects', 'globalDisplaySettingValue']),
-    choosingObjects: {
-      get: function () { return this.selectedGraphObjects },
-      set: function (value) {
-        value.hasOwnProperty('id')
-          ? this.switchSelectedGraphObjects(value)
-          : this.clearSelectedGraphObjects()
-      }
-    }
+    ...mapGetters([
+      'graphObjects',
+      'graphRelations',
+      'selectedGraphObjects',
+      'inSelectedGraphObject',
+      'globalDisplaySettingValue',
+    ]),
   },
   methods: {
-    ...mapActions(['setScreen', 'switchSelectedGraphObjects', 'clearSelectedGraphObjects']),
+    ...mapActions([
+      'setScreen',
+      'addSelectedGraphObject',
+      'deleteSelectedGraphObject',
+      'clearSelectedGraphObjects'
+    ]),
     findNode(node) {
       this.$refs.screen.zoomNodes([node], { scale: 1.5 })
     },
     setRelatedObjects(object) {
-      this.relatedObjects = [object]
+      this.addSelectedGraphObject(object)
       let relations = this.graphRelations.filter(relation => relation.to === object.id || relation.from === object.id)
       for (let relation of relations) {
-        let relatedObject = this.graphObjects.find(n => (n.id === relation.to || n.id === relation.from) && n.id !== object.id)
-        this.relatedObjects.push(relatedObject)
+        const relatedObject = this.graphObjects.find(n => (n.id === relation.to || n.id === relation.from) && n.id !== object.id)
+        this.addSelectedGraphObject(relatedObject)
         this.selectObject(relatedObject)
       }
     },
+    setChoosingObject(object) {
+      if(this.inSelectedGraphObject(object))
+        this.deleteSelectedGraphObject(object)
+      else
+        this.addSelectedGraphObject(object)
+    },
+    setChoosingObjects(frame) {
+      const xMax = frame.x + frame.width
+      const yMax = frame.y + frame.height
+      for(const object of this.graphObjects){
+        const x = object.x + object.size / 6
+        const y = object.y + object.size / 6
+        if(x > frame.x && x < xMax && y > frame.y && y < yMax){
+          if(!this.inSelectedGraphObject(object))
+            this.addSelectedGraphObject(object)
+        }
+      }
+    },
     clearSelectors() {
-      this.choosingObjects = []
+      this.clearSelectedGraphObjects()
       this.relatedObjects = []
     },
     selectObject(object) {

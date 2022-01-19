@@ -1,8 +1,7 @@
 from data_base_driver.constants.const_fulltextsearch import FullTextSearch
-from data_base_driver.record.find_object import find_reliable_http
-from data_base_driver.record.get_record import get_record_title
-from data_base_driver.relations.find_rel import search_rel_with_key_http
-from data_base_driver.relations.find_rel import find_with_rel_reliable_key
+from objects.record.find_object import find_reliable_http
+from objects.record.get_record import get_record_title
+from objects.relations.find_rel import find_with_rel_reliable_key, search_rel_with_key_http
 
 
 def recursion_search(request, group_id):

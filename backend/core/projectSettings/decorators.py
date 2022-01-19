@@ -132,7 +132,7 @@ def write_permission(f):
 
     def wrap(request, *args, **kwargs):
         if request.method == 'POST' and not request.user.is_write:
-            return JsonResponse({'data': 'ошибка добавления'}, status=454)
+            return JsonResponse({'data': 'у вас нет прав на запись в базу данных'}, status=454)
         return f(request, *args, **kwargs)
 
     wrap.__doc__ = f.__doc__

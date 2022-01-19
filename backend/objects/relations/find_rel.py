@@ -2,7 +2,7 @@ import datetime
 
 from data_base_driver.additional_functions import date_time_to_sec
 from data_base_driver.input_output.input_output import io_get_rel
-from data_base_driver.record.find_object import find_reliable_http
+from objects.record.find_object import find_reliable_http
 
 
 def get_seconds_from_request_data_time(date_time_start, date_time_end):

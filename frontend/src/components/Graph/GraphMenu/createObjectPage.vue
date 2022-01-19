@@ -15,7 +15,7 @@
           </span>
         </v-tab>
         <v-tab-item v-for="(object, key) in editableObjects" :key="key" eager>
-          <v-form :ref="'form' + key" v-model="valid">
+          <v-form :ref="'form' + key" v-model="valid" onSubmit="return false;">
             <object-record-area
               :params="object.params"
               :settings="{objectId: object.object.id, recId: object.recId}"

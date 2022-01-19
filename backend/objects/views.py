@@ -4,17 +4,16 @@ from core.projectSettings.decorators import login_check, request_log, request_wr
 from data_base_driver.constants.const_dat import DAT_OWNER
 from data_base_driver.constants.const_key import SYS_KEY_CONSTANT
 from data_base_driver.constants.const_map_tiles import MAP_TILES
-from data_base_driver.record.get_record import get_object_record_by_id_http
+from objects.record.get_record import get_object_record_by_id_http
 from data_base_driver.input_output.io_geo import get_geometry_search, feature_collection_by_geometry
 from data_base_driver.osm.osm_lib import osm_search, osm_fc
-from data_base_driver.record.search import search
-from data_base_driver.record.add_record import add_data, add_geometry
-from data_base_driver.relations.add_rel import add_rel
-from data_base_driver.relations.get_rel import get_object_relation, get_relations_list, search_relations, \
-    get_objects_relation
-from data_base_driver.record.get_record import get_keys_by_object
+from objects.record.add_record import add_data, add_geometry
+from objects.record.get_record import get_keys_by_object
 from data_base_driver.sys_key.get_list import get_list_by_top_id, get_lists
 from data_base_driver.sys_key.get_object_info import obj_list
+from objects.record.search import search
+from objects.relations.add_rel import add_rel
+from objects.relations.get_rel import get_relations_list, get_objects_relation, get_object_relation, search_relations
 
 
 @login_check
@@ -127,7 +126,7 @@ def aj_object(request):
             elif e.args[0] == 2:
                 raise Exception(453, e.args[1])
             else:
-                raise Exception(498, '')
+                raise Exception(491, 'Проверьте корректность введенных данных')
     else:
         raise Exception(480, 'Некорректный формат запроса')
 

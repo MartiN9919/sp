@@ -15,7 +15,6 @@ def check_triggers(triggers, group_id, object_id, rec_id):
     return result
 
 
-
 def execute_trigger(name, group_id, object_id, rec_id, params):
     importlib.invalidate_caches()
     try:

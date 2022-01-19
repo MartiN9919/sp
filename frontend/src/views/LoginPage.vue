@@ -11,7 +11,7 @@
     <p class="logo">САПФИР</p>
 
     <v-card-text class="ma-auto" style="max-width: 300px;">
-      <v-form ref="form" v-model="valid" lazy-validation>
+      <v-form ref="form" v-model="valid" lazy-validation onSubmit="return false;">
         <v-text-field
           v-model="usernameForm"
           :rules="[validations.nullFormRules]"

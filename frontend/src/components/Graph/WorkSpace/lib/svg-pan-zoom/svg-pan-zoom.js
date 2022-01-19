@@ -439,6 +439,8 @@ SvgPanZoom.prototype.handleDblClick = function(evt) {
  * @param {Event} evt
  */
 SvgPanZoom.prototype.handleMouseDown = function(evt, prevEvt) {
+  if(evt.ctrlKey)
+    return
   if (this.options.preventMouseEventsDefault) {
     if (evt.preventDefault) {
       evt.preventDefault()
@@ -508,6 +510,7 @@ SvgPanZoom.prototype.handleMouseUp = function(evt) {
     // Quit pan mode
     this.state = 'none'
   }
+
 }
 
 /**

@@ -60,12 +60,12 @@ export default {
   model: { prop: 'inputString', event: 'changeInputString', },
   props: {
     inputString:  Object,
-    modeSelected: { type: String, default: () => undefined},                                        // режим ввода по умолчанию
   },
   data: () => ({
     dialog: false,
     copyInputString: null,
     modeEnabled: null, // { marker: true , line: true, polygon: true, }, доступные элементы
+    modeSelected: null,
     icon: ''
   }),
   mounted() {
