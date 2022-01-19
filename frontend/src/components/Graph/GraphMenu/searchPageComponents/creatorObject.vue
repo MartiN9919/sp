@@ -23,7 +23,7 @@
         <template v-slot:activator>
           <v-list-item-title>Дополнительные настройки</v-list-item-title>
         </template>
-        <v-form ref="form" lazy-validation>
+        <v-form ref="form" lazy-validation onSubmit="return false;">
           <v-list-item>
             <boolean-input
               v-model="newObject.actual"

@@ -13,7 +13,7 @@
           </v-list-item-action>
         </v-list-item>
         <v-divider v-if="trigger.variables.length" class="pb-2"></v-divider>
-        <v-form :ref="'form' + trigger.id">
+        <v-form :ref="'form' + trigger.id" onSubmit="return false;">
           <v-list-item v-for="param in trigger.variables" :key="param.name">
             <responsive-input-form
               v-model="param.value"
