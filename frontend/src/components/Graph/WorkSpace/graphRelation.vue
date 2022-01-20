@@ -1,6 +1,6 @@
 <template>
   <g @wheel.stop="scrollObject(relation, $event)" @contextmenu.stop="$emit('ctxMenu', [$event, relation])">
-    <edge ref="edge" :data="relation" :nodes="objects"/>
+    <edge ref="edge" :data="relation" :nodes="objects" :in-hover="inHover"/>
     <v-label v-show="showLabel" :edge-coordinates="coordinatesEdge" :element="relation">
       <information-label :size-node="relation.size" :params="getClassifiers" :show-date="showDate"/>
     </v-label>
@@ -21,6 +21,7 @@ export default {
   props: {
     relation: Object,
     objects: Array,
+    inHover: Boolean
   },
   computed: {
     ...mapGetters(['globalDisplaySettingValue', 'classifiersSettings']),

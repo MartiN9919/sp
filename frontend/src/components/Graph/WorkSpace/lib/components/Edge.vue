@@ -1,5 +1,5 @@
 <template>
-  <path class="edge" :d="path" :id="data.id">
+  <path class="edge" :class="inHover ? 'hover' : 'base'" :d="path" :id="data.id">
   </path>
 </template>
 
@@ -16,7 +16,11 @@ export default {
     },
     nodes: { // graph nodes reference
       type: Array,
-    }
+    },
+    inHover: {
+      type: Boolean,
+      default: false
+    },
   },
 
   mounted () {
@@ -188,8 +192,16 @@ export default {
 <style scoped>
 .edge {
   marker-end: none;
-  stroke: #aaaaaa;
-  stroke-width: 2px;
   fill: none;
+}
+
+.base {
+  stroke-width: 2px;
+  stroke: #aaaaaa;
+}
+
+.hover {
+  stroke-width: 10px;
+  stroke: rgba(0, 0, 255, 0.5);
 }
 </style>

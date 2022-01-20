@@ -5,6 +5,7 @@
         v-for="relation in graphRelations"
         :key="relation.id"
         v-if="globalDisplaySettingValue('showRelations')"
+        :in-hover="relationsObject.includes(relation)"
         :relation="relation"
         :objects="graphObjects"
         @ctxMenu="menuShow(...$event)"
@@ -15,10 +16,12 @@
         v-if="object.object.show"
         :object="object"
         :in-selected="inSelectedGraphObject(object)"
+        :in-hover="relatedObjects.includes(object)"
         :selected-objects="selectedGraphObjects"
         @setChoosingObject="setChoosingObject"
         @setRelatedObjects="setRelatedObjects"
-        @selectObject="selectObject"
+        @hover="hoverObject"
+        @unhover="unHoverObject"
         @ctxMenu="menuShow(...$event)"
       />
     </screen>
@@ -42,6 +45,7 @@ export default {
   components: {SearchObject, GraphRelation, GraphObject, Screen, ContextMenuNested},
   data: () => ({
     relatedObjects: [],
+    relationsObject: []
   }),
   computed: {
     ...mapGetters([
@@ -62,14 +66,17 @@ export default {
     findNode(node) {
       this.$refs.screen.zoomNodes([node], { scale: 1.5 })
     },
-    setRelatedObjects(object) {
-      this.addSelectedGraphObject(object)
-      let relations = this.graphRelations.filter(relation => relation.to === object.id || relation.from === object.id)
-      for (let relation of relations) {
-        const relatedObject = this.graphObjects.find(n => (n.id === relation.to || n.id === relation.from) && n.id !== object.id)
-        this.addSelectedGraphObject(relatedObject)
-        this.selectObject(relatedObject)
-      }
+    getRelatedObjects(object) {
+      this.relatedObjects = [object]
+      this.relationsObject = this.graphRelations.filter(r => [r.to, r.from].includes(object.id))
+      for(const r of this.relationsObject)
+        this.relatedObjects.push(this.graphObjects.find(n => ([r.to, r.from].includes(n.id)) && n.id !== object.id))
+    },
+    setRelatedObjects() {
+      this.relatedObjects.map(o => {
+        this.addSelectedGraphObject(o)
+        this.pickUpObject(o)
+      })
     },
     setChoosingObject(object) {
       if(this.inSelectedGraphObject(object))
@@ -92,12 +99,19 @@ export default {
     clearSelectors(evt) {
       if(!evt.button) {
         this.clearSelectedGraphObjects()
-        this.relatedObjects = []
       }
     },
-    selectObject(object) {
+    pickUpObject(object) {
       this.graphObjects.splice(this.graphObjects.findIndex(o => o === object), 1)
       this.graphObjects.push(object)
+    },
+    hoverObject(object) {
+      this.pickUpObject(object)
+      this.getRelatedObjects(object)
+    },
+    unHoverObject() {
+      this.relatedObjects = []
+      this.relationsObject = []
     },
     menuShow(event, object=null) {
       this.objectCtxMenu = object
