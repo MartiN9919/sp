@@ -1,7 +1,7 @@
 <template>
   <g
-    @mouseup.ctrl="$emit('setChoosingObject', object)"
-    @mouseup.alt="$emit('setRelatedObjects', object)"
+    @click.ctrl="$emit('setChoosingObject', object)"
+    @click.alt="$emit('setRelatedObjects', object)"
     @mouseenter="$emit('hover', object)"
     @mouseleave="$emit('unhover', object)"
     @contextmenu.stop="$emit('ctxMenu', [$event, object])"

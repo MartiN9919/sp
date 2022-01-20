@@ -97,7 +97,7 @@ export default {
       }
     },
     clearSelectors(evt) {
-      if(!evt.button) {
+      if(!evt.button && !this.$refs.contextMenu.$children[0].isActive) {
         this.clearSelectedGraphObjects()
       }
     },
@@ -116,7 +116,7 @@ export default {
     inHoverObject (object) {
       return this.globalDisplaySettingValue('linkHighlighting') && this.relatedObjects.includes(object)
     },
-    inHoverRelation (realtion) {
+    inHoverRelation (relation) {
       return this.globalDisplaySettingValue('linkHighlighting') && this.relationsObject.includes(relation)
     },
     menuShow(event, object=null) {
