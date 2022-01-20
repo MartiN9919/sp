@@ -1,8 +1,9 @@
 <template>
   <g
-    @mousedown.capture="$emit('selectObject', object)"
     @mouseup.ctrl="$emit('setChoosingObject', object)"
     @mouseup.alt="$emit('setRelatedObjects', object)"
+    @mouseenter="$emit('hover', object)"
+    @mouseleave="$emit('unhover', object)"
     @contextmenu.stop="$emit('ctxMenu', [$event, object])"
     @wheel.stop="scrollObject(object, $event)"
   >
@@ -35,12 +36,13 @@ export default {
   props: {
     object: Object,
     inSelected: Boolean,
+    inHover: Boolean,
     selectedObjects: Array
   },
   computed: {
     ...mapGetters(['globalDisplaySettingValue', 'classifiersSettings']),
     objectClass() {
-      return this.inSelected ? 'choosing-object' : 'body-object'
+      return this.inSelected ? 'choosing-object' : this.inHover ? 'hover-object' :'body-object'
     },
     showLabel() {
       let globalState = this.globalDisplaySettingValue('showGlobalTooltipObject')
@@ -79,6 +81,11 @@ export default {
 </script>
 
 <style scoped>
+.hover-object {
+  box-shadow: 0 0 50px blue;
+  transition: box-shadow 0.3s cubic-bezier(.25,.8,.25,1);
+}
+
 .choosing-object {
   box-shadow: 0 0 50px red;
   transition: box-shadow 0.3s cubic-bezier(.25,.8,.25,1);
