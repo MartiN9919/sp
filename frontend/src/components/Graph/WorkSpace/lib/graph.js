@@ -178,11 +178,13 @@ export default class Graph {
               return (edge.to === node.id && edge.from === otherNode.id) ||
                   (edge.from === node.id && edge.to === otherNode.id)
             })) {
-              let springForce = 0.25 * Math.log2(offset / 750)
+              const springForce = 0.25 * Math.log2(offset / 750)
               node.x += dx * springForce
               node.y += dy * springForce
             }
-            let upForce = 10000 / Math.pow(offset, 2)
+            // console.log(node)
+            let upCoefficient = Math.pow(node.width/100 * otherNode.width/100, 1)
+            const upForce = upCoefficient * 10000 / Math.pow(offset, 2)
             node.x -= dx * upForce
             node.y -= dy * upForce
             dx = node.x - x0

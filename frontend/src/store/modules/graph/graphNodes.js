@@ -82,7 +82,7 @@ export default {
       })
     },
     addRelationToGraph: (state, {objects, relation, noMove}) => {
-      state.graph.createEdge(objects[0], objects[1], {relation: relation, size: 600, noMove: noMove})
+      state.graph.createEdge(objects[0], objects[1], {relation: relation, size: 300, noMove: noMove})
     },
   },
   actions: {
@@ -115,7 +115,7 @@ export default {
     updateRelationFromGraph({commit}, {relation, fields}) { commit('updateRelationFromGraph', {relation, fields}) },
     deleteObjectFromGraph({commit}, object) { commit('deleteObjectFromGraph', object) },
     updateObjectFromGraph({commit}, {object, fields}) { commit('updateObjectFromGraph', {object, fields}) },
-    addObjectToGraph({ state, getters, commit, dispatch }, {recId, objectId, size=600, position=state.screen.getStartPosition(), noMove =false}) {
+    addObjectToGraph({ state, getters, commit, dispatch }, {recId, objectId, size=300, position=state.screen.getStartPosition(), noMove =false}) {
       dispatch('getObjectFromServer', {params: {record_id: recId, object_id: objectId}})
         .then(r => {
           let editableObject = new GraphObject(r)
