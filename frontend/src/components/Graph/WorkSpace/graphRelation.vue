@@ -1,5 +1,5 @@
 <template>
-  <g @wheel.stop="scrollObject(relation, $event)" @click.right.prevent.stop="$emit('ctxMenu', [$event, relation])">
+  <g @wheel.stop="scrollObject(relation, $event)" @contextmenu.stop="$emit('ctxMenu', [$event, relation])">
     <edge ref="edge" :data="relation" :nodes="objects"/>
     <v-label v-show="showLabel" :edge-coordinates="coordinatesEdge" :element="relation">
       <information-label :size-node="relation.size" :params="getClassifiers" :show-date="showDate"/>

@@ -96,6 +96,10 @@ export default {
     reorderGraph({ state }) {
       state.graph.reorderGraph(state.screen.getStartPosition().x, state.screen.getStartPosition().y)
     },
+    reorderChoosingObjects({state}) {
+      const center = state.graph.getNodesCenter(state.selectedGraphObjects)
+      state.graph.reorderGraph(center.x, center.y, state.selectedGraphObjects)
+    },
     changeGlobalSettingState({ commit }, payload) { commit('changeGlobalSettingState', payload) },
     setClassifiersSettings({ getters, commit }, id) { commit('setClassifiersSettings', id) },
     addRelationToGraph({getters, commit, dispatch}, {object, relations, noMove}) {

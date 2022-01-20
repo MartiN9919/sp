@@ -213,13 +213,21 @@ export default class Graph {
       }
     }, 0)
   }
-
-  reorderGraph(x, y) {
+  reorderGraph(x, y, nodes=this.nodes) {
     store.commit('changeLoadStatus', true)
     let tempNodes = []
-    for(let node of this.nodes) {
+    for(let node of nodes) {
       tempNodes.push({id: node.id, x: node.x, y: node.y, width: node.width})
     }
     this.reorderStep(0, 200, tempNodes, 10000, x, y)
+  }
+  getNodesCenter(nodes){
+    let x = 0
+    let y = 0
+    for(const node of nodes)  {
+      x += node.x
+      y += node.y
+    }
+    return {x: x / nodes.length, y: y / nodes.length}
   }
 }

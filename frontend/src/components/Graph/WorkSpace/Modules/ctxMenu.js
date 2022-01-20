@@ -103,6 +103,13 @@ const SpaceCtxMenuReorder = {
   action: 'reorderGraph'
 }
 
+const SpaceCtxMenuReorderChoosingObjects = {
+  icon: 'mdi-graphql',
+  title: 'Переупорядочить выбранные объекты',
+  subtitle: 'Переупорядочить выбранные на графе объекты',
+  action: 'reorderChoosingObjects'
+}
+
 const SpaceCtxMenuCreateRelation = {
   icon: 'mdi-link-variant-plus',
   title: 'Создать связь',
@@ -137,7 +144,7 @@ function getObjectCtxMenu(geometryToGraph) {
   return objectCtxMenu
 }
 
-function getSpaceCtxMenu(save, reorder, createRelation, findRelation, deleteChoosing) {
+function getSpaceCtxMenu(save, reorder, createRelation, findRelation, choosingObjects) {
   let spaceCtxMenu = [SpaceCtxMenuSpaceBase]
   if(save) {
     spaceCtxMenu.unshift(SpaceCtxMenuSave)
@@ -145,13 +152,16 @@ function getSpaceCtxMenu(save, reorder, createRelation, findRelation, deleteChoo
   if(reorder) {
     spaceCtxMenu.unshift(SpaceCtxMenuReorder)
   }
+  if(choosingObjects) {
+    spaceCtxMenu.unshift(SpaceCtxMenuReorderChoosingObjects)
+  }
   if(createRelation) {
     spaceCtxMenu.unshift(SpaceCtxMenuCreateRelation)
   }
   if(findRelation) {
     spaceCtxMenu.unshift(SpaceCtxMenuFindRelation)
   }
-  if(deleteChoosing) {
+  if(choosingObjects) {
     spaceCtxMenu.push(SpaceCtxMenuDeleteChoosing)
   }
   return spaceCtxMenu
