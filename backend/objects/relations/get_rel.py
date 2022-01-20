@@ -1,5 +1,4 @@
 import datetime
-import threading
 from multiprocessing import Process, Manager
 
 from data_base_driver.additional_functions import get_date_time_from_sec
@@ -28,7 +27,7 @@ def get_rel_by_object(group_id, object, id, parents):
     for rel in rels:
         s1, s2 = ('1', '2') if rel['obj_id_2'] == object and rel['rec_id_2'] == id else ('2', '1')
         if len([temp for temp in parents if
-                int(temp[0]) == rel['obj_id_' + s2] and temp[1] == rel['rec_id_' + s2]]) == 0:
+                int(temp[0]) == rel['obj_id_' + s1] and temp[1] == rel['rec_id_' + s1]]) == 0:
             temp_relations.append({
                 'rel_type': rel['key_id'],
                 'val': rel['val'],
@@ -68,43 +67,26 @@ def get_rel_by_object(group_id, object, id, parents):
     return {'object_id': object, 'relations': [], 'rec_id': id, 'rels': relations}
 
 
-def thread_function(group_id, parents, rel, depth, start=False):
+def get_rel_rec(group_id, rels, depth, parents):
     """
-    Вспомогательная функция для обработки функции обхода одной из ветвей дерева в отдельном потоке
+    Вспомогательная функция рекурсивного обхода по графу связей, точка входа get_rel_cascade
     @param group_id: идентификатор группы пользователя
-    @param parents: список предков
-    @param rel: связь на данной итерации рекурсии
-    @param depth: остаточная глубина рекурсии
-    @param start: -
-    """
-    new_parents = parents.copy()
-    new_rels = get_rel_by_object(group_id, rel['object_id'], rel['rec_id'], new_parents)
-    new_parents.append([new_rels['object_id'], new_rels['rec_id']])
-    get_rel_rec(group_id, new_rels['rels'], depth - 1, new_parents)
-    if rel.get('rels'):
-        rel['rels'].append(new_rels['rels'])
-    else:
-        rel['rels'] = new_rels['rels']
-
-
-def get_rel_rec(group_id, rels, depth, parents, start=False):
-    """
-    вспомогательная функция рекурсивного обхода по графу связей, точка входа get_rel_cascade
     @param rels: связи уже найденные на данном шаге
     @param depth: глубина рекурсии на данном шаге
     @param parents: связи уже встреченные в графе
-    @return: функция производит до запись в rels по ссылке и не возвращает значения
+    @return: функция производит дозапись в rels по ссылке и не возвращает значения
     """
     if depth == 0 or len(rels) == 0:
         return rels
-    threads = []
     for rel in rels:
-        thread = threading.Thread(target=thread_function, args=(group_id, parents, rel, depth, start),
-                                  daemon=True if start else False)
-        threads.append(thread)
-        thread.start()
-    for item in threads:
-        item.join()
+        new_parents = parents.copy()
+        new_rels = get_rel_by_object(group_id, rel['object_id'], rel['rec_id'], new_parents)
+        new_parents.append([new_rels['object_id'], new_rels['rec_id']])
+        get_rel_rec(group_id, new_rels['rels'], depth - 1, new_parents)
+        if rel.get('rels'):
+            rel['rels'].append(new_rels['rels'])
+        else:
+            rel['rels'] = new_rels['rels']
 
 
 def get_rel_cascade(group_id, object, id, depth):
@@ -118,7 +100,7 @@ def get_rel_cascade(group_id, object, id, depth):
     if depth <= 0:
         return []
     rels = get_rel_by_object(group_id, object, id, parents=[])
-    get_rel_rec(group_id, rels['rels'], depth - 1, parents=[[rels['object_id'], rels['rec_id']]], start=True)
+    get_rel_rec(group_id, rels['rels'], depth - 1, parents=[[rels['object_id'], rels['rec_id']]])
     return rels
 
 
@@ -211,7 +193,7 @@ def remove_path(parent, child):
         remove_path(parent['parent'], parent)
 
 
-def search_relations_recursive(group_id, request, parent, root): # НЕОБХОДИМО ПОЧИНИТЬ БАГ С НЕПРАВИЛЬНОЙ ДЕГРАДАЦИЕЙ
+def search_relations_recursive(group_id, request, parent, root):  # НЕОБХОДИМО ПОЧИНИТЬ БАГ С НЕПРАВИЛЬНОЙ ДЕГРАДАЦИЕЙ
     """
     Функция для рекурсивного построения дерева связей по запросу
     @param group_id: идентификатор группы пользователя
@@ -318,8 +300,9 @@ def get_unique_objects_dict(object_tree, path=None, objects=None) -> dict:
                 (item['degenerated'] >= len(item['rels'])):
             continue
         if len([temp for temp in objects.values() if temp['object_id'] == item['object_id'] and
-                                            temp['rec_id'] == item['rec_id']]) == 0:
-            objects[str(item['object_id']) + '_' + str(item['rec_id'])] = {'object_id': item['object_id'], 'rec_id': item['rec_id'], 'path': path}
+                                                     temp['rec_id'] == item['rec_id']]) == 0:
+            objects[str(item['object_id']) + '_' + str(item['rec_id'])] = {'object_id': item['object_id'],
+                                                                           'rec_id': item['rec_id'], 'path': path}
         if len(item.get('rels', [])) != 0:
             new_path = path.copy()
             new_path.append({'object_id': item['object_id'], 'rec_id': item['rec_id']})
@@ -363,8 +346,16 @@ def get_objects_relation(group_id, object_id_1, rec_id_1, object_id_2, rec_id_2,
     temp_result = []
     for object_1 in objects_1:
         if objects_2.get(object_1):
-            temp_result += objects_1[object_1]['path'] + objects_2[object_1]['path'] + [{'object_id': objects_1[object_1]['object_id'],
-                                                                   'rec_id': objects_1[object_1]['rec_id']}]
+            if len(objects_1[object_1]['path']) > 0 and len(objects_2[object_1]['path']) > 0:
+                if objects_1[object_1]['path'][-1] == objects_2[object_1]['path'][-1]:
+                    continue
+            if len([item for item in objects_1[object_1]['path'] if
+                    item['object_id'] == object_id_2 and item['rec_id'] == rec_id_2]) == 0 and len(
+                    [item for item in objects_2[object_1]['path'] if
+                     item['object_id'] == object_id_1 and item['rec_id'] == rec_id_1]) == 0:
+                temp_result += objects_1[object_1]['path'] + objects_2[object_1]['path'] + \
+                               [{'object_id': objects_1[object_1]['object_id'],
+                                 'rec_id': objects_1[object_1]['rec_id']}]
     result = [dict(s) for s in set(frozenset(d.items()) for d in temp_result)]
     return result
 
@@ -389,7 +380,8 @@ def search_relations(group_id, request):
         ]}
     """
     if len(request.get('rels')) == 0:
-        result = get_unique_objects(get_rel_cascade(group_id, request.get('object_id'), request.get('rec_id'), 1)['rels'])
+        result = get_unique_objects(
+            get_rel_cascade(group_id, request.get('object_id'), request.get('rec_id'), 1)['rels'])
         return [item for item in result if item['object_id'] != 1]
     else:
         parent = {'object_id': request.get('object_id'), 'rec_id': request.get('rec_id')}

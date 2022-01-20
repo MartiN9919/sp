@@ -5,6 +5,11 @@ import {DataBaseObject, DataBaseRelation} from '@/store/modules/graph/graphMenu/
 
 class GlobalSettings {
   constructor() {
+    this.linkHighlighting = {
+      title: 'Подсветка связей',
+      subTitle: 'Подсвечивать объекты и связи при наведении',
+      state: new UserSetting('linkHighlighting', true)
+    }
     this.showGlobalTitle = {
       title: 'Подписи объектов',
       subTitle: 'Подпись под объектами на графе',

@@ -5,7 +5,7 @@
         v-for="relation in graphRelations"
         :key="relation.id"
         v-if="globalDisplaySettingValue('showRelations')"
-        :in-hover="relationsObject.includes(relation)"
+        :in-hover="inHoverRelation(relation)"
         :relation="relation"
         :objects="graphObjects"
         @ctxMenu="menuShow(...$event)"
@@ -16,7 +16,7 @@
         v-if="object.object.show"
         :object="object"
         :in-selected="inSelectedGraphObject(object)"
-        :in-hover="relatedObjects.includes(object)"
+        :in-hover="inHoverObject(object)"
         :selected-objects="selectedGraphObjects"
         @setChoosingObject="setChoosingObject"
         @setRelatedObjects="setRelatedObjects"
@@ -97,7 +97,7 @@ export default {
       }
     },
     clearSelectors(evt) {
-      if(!evt.button) {
+      if(!evt.button && !this.$refs.contextMenu.$children[0].isActive) {
         this.clearSelectedGraphObjects()
       }
     },
@@ -112,6 +112,12 @@ export default {
     unHoverObject() {
       this.relatedObjects = []
       this.relationsObject = []
+    },
+    inHoverObject (object) {
+      return this.globalDisplaySettingValue('linkHighlighting') && this.relatedObjects.includes(object)
+    },
+    inHoverRelation (relation) {
+      return this.globalDisplaySettingValue('linkHighlighting') && this.relationsObject.includes(relation)
     },
     menuShow(event, object=null) {
       this.objectCtxMenu = object
