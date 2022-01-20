@@ -1,5 +1,5 @@
 <template>
-  <svg class="screen" ref="screen" @mousedown.ctrl="startDrawFrame" @mousedown.stop="">
+  <svg class="screen" ref="screen" @mousedown.ctrl="startDrawFrame">
     <g id="screen">
       <slot>
       </slot>

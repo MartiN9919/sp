@@ -178,11 +178,13 @@ export default class Graph {
               return (edge.to === node.id && edge.from === otherNode.id) ||
                   (edge.from === node.id && edge.to === otherNode.id)
             })) {
-              let springForce = 0.25 * Math.log2(offset / 750)
+              const springForce = 0.25 * Math.log2(offset / 750)
               node.x += dx * springForce
               node.y += dy * springForce
             }
-            let upForce = 10000 / Math.pow(offset, 2)
+            // console.log(node)
+            let upCoefficient = Math.pow(node.width/100 * otherNode.width/100, 1)
+            const upForce = upCoefficient * 10000 / Math.pow(offset, 2)
             node.x -= dx * upForce
             node.y -= dy * upForce
             dx = node.x - x0
@@ -213,13 +215,21 @@ export default class Graph {
       }
     }, 0)
   }
-
-  reorderGraph(x, y) {
+  reorderGraph(x, y, nodes=this.nodes) {
     store.commit('changeLoadStatus', true)
     let tempNodes = []
-    for(let node of this.nodes) {
+    for(let node of nodes) {
       tempNodes.push({id: node.id, x: node.x, y: node.y, width: node.width})
     }
     this.reorderStep(0, 200, tempNodes, 10000, x, y)
+  }
+  getNodesCenter(nodes){
+    let x = 0
+    let y = 0
+    for(const node of nodes)  {
+      x += node.x
+      y += node.y
+    }
+    return {x: x / nodes.length, y: y / nodes.length}
   }
 }

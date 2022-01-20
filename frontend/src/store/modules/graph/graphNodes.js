@@ -82,7 +82,7 @@ export default {
       })
     },
     addRelationToGraph: (state, {objects, relation, noMove}) => {
-      state.graph.createEdge(objects[0], objects[1], {relation: relation, size: 600, noMove: noMove})
+      state.graph.createEdge(objects[0], objects[1], {relation: relation, size: 300, noMove: noMove})
     },
   },
   actions: {
@@ -95,6 +95,10 @@ export default {
     clearSelectedGraphObjects({ commit }) { commit('clearSelectedGraphObjects') },
     reorderGraph({ state }) {
       state.graph.reorderGraph(state.screen.getStartPosition().x, state.screen.getStartPosition().y)
+    },
+    reorderChoosingObjects({state}) {
+      const center = state.graph.getNodesCenter(state.selectedGraphObjects)
+      state.graph.reorderGraph(center.x, center.y, state.selectedGraphObjects)
     },
     changeGlobalSettingState({ commit }, payload) { commit('changeGlobalSettingState', payload) },
     setClassifiersSettings({ getters, commit }, id) { commit('setClassifiersSettings', id) },
@@ -111,7 +115,7 @@ export default {
     updateRelationFromGraph({commit}, {relation, fields}) { commit('updateRelationFromGraph', {relation, fields}) },
     deleteObjectFromGraph({commit}, object) { commit('deleteObjectFromGraph', object) },
     updateObjectFromGraph({commit}, {object, fields}) { commit('updateObjectFromGraph', {object, fields}) },
-    addObjectToGraph({ state, getters, commit, dispatch }, {recId, objectId, size=600, position=state.screen.getStartPosition(), noMove =false}) {
+    addObjectToGraph({ state, getters, commit, dispatch }, {recId, objectId, size=300, position=state.screen.getStartPosition(), noMove =false}) {
       dispatch('getObjectFromServer', {params: {record_id: recId, object_id: objectId}})
         .then(r => {
           let editableObject = new GraphObject(r)

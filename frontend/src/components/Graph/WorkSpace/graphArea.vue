@@ -1,6 +1,6 @@
 <template>
-  <div class="h-100 disable-optimize" @click.shift="clearSelectors" @click.right.prevent="menuShow">
-    <screen id="screen" ref="screen" @selectNodes="setChoosingObjects">
+  <div class="h-100 disable-optimize" @mouseup.exact="clearSelectors" @contextmenu="menuShow">
+    <screen id="screen" ref="screen" @selectNodes="setChoosingObjects" oncontextmenu="return false">
       <graph-relation
         v-for="relation in graphRelations"
         :key="relation.id"
@@ -21,7 +21,6 @@
         @selectObject="selectObject"
         @ctxMenu="menuShow(...$event)"
       />
-
     </screen>
     <search-object v-if="graphObjects.length" :objects="graphObjects" @findNode="findNode"/>
     <context-menu-nested ref="contextMenu" :form="this" :items="contextMenu" :color="$CONST.APP.COLOR_OBJ"/>
@@ -90,9 +89,11 @@ export default {
         }
       }
     },
-    clearSelectors() {
-      this.clearSelectedGraphObjects()
-      this.relatedObjects = []
+    clearSelectors(evt) {
+      if(!evt.button) {
+        this.clearSelectedGraphObjects()
+        this.relatedObjects = []
+      }
     },
     selectObject(object) {
       this.graphObjects.splice(this.graphObjects.findIndex(o => o === object), 1)

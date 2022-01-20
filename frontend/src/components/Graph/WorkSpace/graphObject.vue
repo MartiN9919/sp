@@ -3,9 +3,8 @@
     @mousedown.capture="$emit('selectObject', object)"
     @mouseup.ctrl="$emit('setChoosingObject', object)"
     @mouseup.alt="$emit('setRelatedObjects', object)"
-    @click.right.prevent.stop="$emit('ctxMenu', [$event, object])"
+    @contextmenu.stop="$emit('ctxMenu', [$event, object])"
     @wheel.stop="scrollObject(object, $event)"
-    @click.stop=""
   >
     <v-label v-show="showLabel" :element="object">
       <information-label :size-node="object.size" :params="getClassifiers" :show-date="showDate"/>
@@ -16,7 +15,7 @@
     </node>
 
     <foreignObject v-if="showTitle" v-bind="titleStyle">
-      <div class="name-text" :style="titleTextStyle">{{object.object.title}}</div>
+      <div class="name-text" :style="titleTextStyle" oncontextmenu="return false">{{object.object.title}}</div>
     </foreignObject>
   </g>
 </template>

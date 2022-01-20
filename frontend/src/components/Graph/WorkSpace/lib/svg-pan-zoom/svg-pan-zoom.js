@@ -53,6 +53,8 @@ SvgPanZoom.prototype.init = function(svg, options) {
   // Set default state
   this.state = 'none'
 
+  this.moved = false
+
   // Get dimensions
   var boundingClientRectNormalized = SvgUtils.getBoundingClientRectNormalized(svg)
   this.width = boundingClientRectNormalized.width
@@ -489,6 +491,7 @@ SvgPanZoom.prototype.handleMouseMove = function(evt) {
       , viewportCTM = this.firstEventCTM.translate(point.x - this.stateOrigin.x, point.y - this.stateOrigin.y)
 
     this.viewport.setCTM(viewportCTM)
+    this.moved = true
   }
 }
 
@@ -510,7 +513,10 @@ SvgPanZoom.prototype.handleMouseUp = function(evt) {
     // Quit pan mode
     this.state = 'none'
   }
-
+  if(this.moved){
+    evt.stopPropagation()
+    this.moved = false
+  }
 }
 
 /**

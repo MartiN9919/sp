@@ -4,11 +4,11 @@ export default {
   methods: {
     scrollObject(object, event) {
       const minSize = 300
-      const maxSize = 1500
+      const maxSize = 2000
       const coefficient = 1.5
-      if(event.deltaY < 0 && object.size * coefficient < maxSize)
+      if(event.deltaY < 0 && object.size * coefficient <= maxSize)
         this.changeObjectForScrolling(object, coefficient)
-      else if (event.deltaY > 0 && object.size / coefficient > minSize)
+      else if (event.deltaY > 0 && object.size / coefficient >= minSize)
         this.changeObjectForScrolling(object, 1/ coefficient)
     },
     changeObjectForScrolling(object, coefficient) {

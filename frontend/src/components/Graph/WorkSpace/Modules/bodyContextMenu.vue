@@ -60,13 +60,13 @@ export default {
           this.graphObjects.length > 1,
           this.relationCreateStatus,
           this.findRelationsStatus,
-          this.selectedGraphObjects.length
+          this.selectedGraphObjects.length,
         )
       }
     }
   },
   methods: {
-    ...mapActions(['reorderGraph', 'setEditableRelation', 'setNavigationDrawerStatus', 'setToolStatus', 'setActiveTool',
+    ...mapActions(['reorderGraph', 'reorderChoosingObjects', 'setEditableRelation', 'setNavigationDrawerStatus', 'setToolStatus', 'setActiveTool',
     'setEditableObject', 'deleteObjectFromGraph', 'setRootSearchRelationTreeItem', 'getRelationsBtwObjects',
     'addObjectToGraph', 'executeMapScript']),
     menuShow(event, object=null) {

@@ -8,7 +8,7 @@
       overflow="visible"
       @mousedown="onMousedown"
     >
-      <div class="content" ref="content">
+      <div class="content" ref="content" oncontextmenu="return false">
         <slot>{{ data.id }}</slot>
       </div>
   </foreignObject>

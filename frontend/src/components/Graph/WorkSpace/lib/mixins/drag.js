@@ -16,12 +16,13 @@ export default {
         active: false,
         prev: { x: 0, y: 0 },
         threshold: { x: 0, y: 0, crossed: false }
-      }
+      },
+      screen: document.getElementById('screen')
     }
   },
   beforeDestroy () {
-    document.removeEventListener('mousemove', this.applyDrag)
-    document.removeEventListener('mouseup', this.stopDrag)
+    this.screen.removeEventListener('mousemove', this.applyDrag)
+    this.screen.removeEventListener('mouseup', this.stopDrag)
   },
   methods: {
     startDrag (e) {
@@ -36,13 +37,16 @@ export default {
       this.drag.active = true
       this.drag.prev = { x: e.clientX, y: e.clientY }
       this.drag.threshold = {x: 0, y: 0, crossed: false}
-      document.addEventListener('mouseup', this.stopDrag)
-      document.addEventListener('mousemove', this.applyDrag)
+      this.screen.addEventListener('mouseup', this.stopDrag)
+      this.screen.addEventListener('mousemove', this.applyDrag)
+      this.screen.addEventListener('mouseleave', this.stopDrag)
     },
-    stopDrag () {
-     this.drag.active = false
-      document.removeEventListener('mouseup', this.stopDrag)
-      document.removeEventListener('mousemove', this.applyDrag)
+    stopDrag (e) {
+      this.drag.active = false
+      this.screen.removeEventListener('mouseup', this.stopDrag)
+      this.screen.removeEventListener('mousemove', this.applyDrag)
+      this.screen.removeEventListener('mouseleave', this.stopDrag)
+      e.stopPropagation()
     },
     applyDrag (e) {
       let x = (e.clientX - this.drag.prev.x) / this.drag.zoom
