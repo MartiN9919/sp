@@ -68,7 +68,7 @@ export default {
   methods: {
     ...mapActions(['reorderGraph', 'reorderChoosingObjects', 'setEditableRelation', 'setNavigationDrawerStatus', 'setToolStatus', 'setActiveTool',
     'setEditableObject', 'deleteObjectFromGraph', 'setRootSearchRelationTreeItem', 'getRelationsBtwObjects',
-    'addObjectToGraph', 'executeMapScript']),
+    'addObjectToGraph', 'executeMapScript', 'clearGraph']),
     menuShow(event, object=null) {
       this.objectCtxMenu = object
       this.$refs.contextMenu.show_root(event.x, event.y)
@@ -142,7 +142,7 @@ export default {
       a.remove()
     },
     getGraphFromFile() {
-      this.graphObjects.map(obj => this.deleteObjectFromGraph(obj))
+      this.clearGraph()
       const addObjectToGraph = this.addObjectToGraph
       let obj = document.createElement('input')
       obj.style.cssText = 'display:none'

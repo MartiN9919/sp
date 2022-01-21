@@ -160,6 +160,11 @@ export default class Graph {
     return index
   }
 
+  clearGraph(){
+    this.edges = []
+    this.nodes = []
+  }
+
   reorderStep (i, size, tempNodes, lastSpeed=10000, x, y) {
     setTimeout(() => {
       let speed = 0
