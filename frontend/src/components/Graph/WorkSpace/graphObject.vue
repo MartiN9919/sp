@@ -1,5 +1,6 @@
 <template>
   <g
+    @mouseup.exact.stop="dossier = true"
     @click.ctrl="$emit('setChoosingObject', object)"
     @click.alt="$emit('setRelatedObjects', object)"
     @mouseenter="$emit('hover', object)"
@@ -17,6 +18,7 @@
 
     <foreignObject v-if="showTitle" v-bind="titleStyle">
       <div class="name-text" :style="titleTextStyle" oncontextmenu="return false">{{object.object.title}}</div>
+      <dossier v-model="dossier" :params="object.object.params" :object-id="object.object.object.id" :rec-id="object.object.recId"/>
     </foreignObject>
   </g>
 </template>
@@ -28,17 +30,21 @@ import BodyObject from "@/components/Graph/WorkSpace/Modules/bodyObject"
 import InformationLabel from "@/components/Graph/WorkSpace/Modules/informationLabel"
 import scrollMixin from "@/components/Graph/WorkSpace/Modules/scrollMixin"
 import {mapGetters} from "vuex"
+import Dossier from "@/components/WebsiteShell/CustomComponents/Dossier/dossier";
 
 export default {
   name: "graphObject",
   mixins: [scrollMixin],
-  components: {Node, VLabel, BodyObject, InformationLabel},
+  components: {Dossier, Node, VLabel, BodyObject, InformationLabel},
   props: {
     object: Object,
     inSelected: Boolean,
     inHover: Boolean,
     selectedObjects: Array
   },
+  data: () => ({
+    dossier: false
+  }),
   computed: {
     ...mapGetters(['globalDisplaySettingValue', 'classifiersSettings']),
     objectClass() {

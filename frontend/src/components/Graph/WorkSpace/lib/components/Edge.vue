@@ -201,7 +201,7 @@ export default {
 }
 
 .hover {
-  stroke-width: 10px;
-  stroke: rgba(0, 0, 255, 0.5);
+  stroke-width: 5px;
+  stroke: rgba(0, 0, 255, 0.3);
 }
 </style>
