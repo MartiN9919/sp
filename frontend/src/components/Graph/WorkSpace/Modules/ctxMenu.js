@@ -1,63 +1,80 @@
-const ObjectCtxMenuSearchRelation = {
-  icon: 'mdi-link-variant',
-  title: 'Поиск связей',
-  subtitle: 'Поиск связей для данного объекта',
-  action: 'setSearchRelation'
-}
-const ObjectCtxMenuChangeObject = {
-  icon: 'mdi-pencil',
-  title: 'Изменить',
-  subtitle: 'Редактировать данный объект',
-  action: 'setChangeObject'
-}
-const ObjectCtxMenuDelete = {
-  icon: 'mdi-delete',
-  title: 'Удалить',
-  subtitle: 'Удалить объект с графа',
-  action: 'deleteObject'
-}
-const ObjectCtxMenuSettings = {
-  icon: 'mdi-cog-outline',
-  title: 'Настройки',
-  subtitle: 'Индивидуальные настройки объекта',
-  menu: [
-    {
-      title: 'Отображение',
-      menu: [
-        {
-          title: 'Подпись',
-          model: 'objectTitle',
-        },
-        {
-          title: 'Заголовок',
-          model: 'objectTooltip'
-        },
-        {
-          title: 'Дата внесения записи',
-          model: 'objectCreateDate'
-        },
-        {
-          title: 'Триггеры',
-          model: 'objectTriggers'
-        }
-      ]
-    },
-  ],
-}
+import _ from 'lodash'
 
-const ObjectCtxMenuGeometryToMap = {
-  icon: 'mdi-map-plus',
-  title: 'Вывести геометрию/точку на граф',
-  subtitle: 'Вывести выбранную геометрию/точку на граф',
-  action: 'addGeometryToGraph'
-}
+const ObjectCtxMenu = [
+  {
+    icon: 'mdi-folder-edit-outline',
+    title: 'Изменить / Удалить',
+    subtitle: 'Базовые операции над объектом',
+    menu: [
+      {
+        icon: 'mdi-pencil',
+        title: 'Изменить',
+        subtitle: 'Редактировать данный объект',
+        action: 'setChangeObject',
+        disabled: false
+      },
+      {
+        icon: 'mdi-delete',
+        title: 'Удалить',
+        subtitle: 'Удалить объект с графа',
+        action: 'deleteObject',
+        disabled: false
+      }
+    ]
+  },
+  {
+    icon: 'mdi-dots-grid',
+    title: 'Дополнительное',
+    subtitle: 'Дополнительные операции над объектом',
+    menu: [
+      {
+        icon: 'mdi-link-variant',
+        title: 'Поиск связей',
+        subtitle: 'Поиск связей для данного объекта',
+        action: 'setSearchRelation',
+        disabled: false
+      },
+      {
+        icon: 'mdi-map-plus',
+        title: 'Вывести геометрию/точку на граф',
+        subtitle: 'Вывести выбранную геометрию/точку на граф',
+        action: 'addGeometryToGraph',
+        disabled: true
+      },
+    ]
+  },
+  {
+    icon: 'mdi-cog-outline',
+    title: 'Настройки',
+    subtitle: 'Индивидуальные настройки объекта',
+    menu: [
+      {
+        title: 'Подпись',
+        model: 'objectTitle',
+      },
+      {
+        title: 'Заголовок',
+        model: 'objectTooltip'
+      },
+      {
+        title: 'Дата внесения записи',
+        model: 'objectCreateDate'
+      },
+      {
+        title: 'Триггеры',
+        model: 'objectTriggers'
+      }
+    ],
+  }
+]
 
 const RelationCtxMenu = [
   {
     icon: 'mdi-link-variant-plus',
     title: 'Редактировать связь',
     subtitle: 'Добавить/Изменить данную связь',
-    action: 'createRelation'
+    action: 'createRelation',
+    disabled: false
   },
   {
     icon: 'mdi-cog-outline',
@@ -65,105 +82,105 @@ const RelationCtxMenu = [
     subtitle: 'Индивидуальные настройки связи',
     menu: [
       {
-        title: 'Отображение',
-        menu: [
-          {
-            title: 'Заголовок',
-            model: 'relationTooltip'
-          },
-          {
-            title: 'Дата создания связей',
-            model: 'relationCreateDate'
-          },
-        ]
+        title: 'Заголовок',
+        model: 'relationTooltip'
       },
+      {
+        title: 'Дата создания связей',
+        model: 'relationCreateDate'
+      }
     ],
   }
 ]
 
-const SpaceCtxMenuSpaceBase = {
-  icon: 'mdi-download',
-  title: 'Загрузить граф',
-  subtitle: 'Загрузить граф из файла',
-  action: 'getGraphFromFile'
-}
-
-
-const SpaceCtxMenuSave = {
-  icon: 'mdi-upload',
-  title: 'Сохранить граф',
-  subtitle: 'Сохранить граф в файл',
-  action: 'saveGraphInFile'
-}
-
-const SpaceCtxMenuReorder = {
-  icon: 'mdi-graphql',
-  title: 'Переупорядочить граф',
-  subtitle: 'Переупорядочить граф',
-  action: 'reorderGraph'
-}
-
-const SpaceCtxMenuReorderChoosingObjects = {
-  icon: 'mdi-graphql',
-  title: 'Переупорядочить выбранные объекты',
-  subtitle: 'Переупорядочить выбранные на графе объекты',
-  action: 'reorderChoosingObjects'
-}
-
-const SpaceCtxMenuCreateRelation = {
-  icon: 'mdi-link-variant-plus',
-  title: 'Создать связь',
-  subtitle: 'Связать выбранные объекты',
-  action: 'createRelation'
-}
-
-const SpaceCtxMenuFindRelation = {
-  icon: 'mdi-link-variant',
-  title: 'Найти связи',
-  subtitle: 'Найти все связи между выбранными объектами',
-  action: 'findRelations'
-}
-
-const SpaceCtxMenuDeleteChoosing = {
-  icon: 'mdi-delete',
-  title: 'Удалить выбранные объекты',
-  subtitle: 'Удалить с графа все выбранные объекты',
-  action: 'deleteObjects'
-}
+const SpaceCtxMenu = [
+  {
+    icon: 'mdi-link-variant',
+    title: 'Связь',
+    subtitle: 'Работа со связями объекта',
+    menu: [
+      {
+        icon: 'mdi-link-variant-plus',
+        title: 'Создать связь',
+        subtitle: 'Связать выбранные объекты',
+        action: 'createRelation',
+        disabled: true
+      },
+      {
+        icon: 'mdi-account-search-outline',
+        title: 'Найти связи',
+        subtitle: 'Найти все связи между выбранными объектами',
+        action: 'findRelations',
+        disabled: true
+      },
+    ],
+  },
+  {
+    icon: 'mdi-graphql',
+    title: 'Переупорядочивание',
+    subtitle: 'Расстановка объектов на графе',
+    menu: [
+      {
+        icon: 'mdi-graph-outline',
+        title: 'Переупорядочить граф',
+        subtitle: 'Переупорядочить граф',
+        action: 'reorderGraph',
+        disabled: true
+      },
+      {
+        icon: 'mdi-graph',
+        title: 'Переупорядочить выбранные объекты',
+        subtitle: 'Переупорядочить выбранные на графе объекты',
+        action: 'reorderChoosingObjects',
+        disabled: true
+      }
+    ],
+  },
+  {
+    icon: 'mdi-archive-outline',
+    title: 'Сохранить / Загрузить',
+    subtitle: 'Операции над объектами',
+    menu: [
+      {
+        icon: 'mdi-download',
+        title: 'Загрузить граф',
+        subtitle: 'Загрузить граф из файла',
+        action: 'getGraphFromFile',
+        disabled: true
+      },
+      {
+        icon: 'mdi-upload',
+        title: 'Сохранить граф',
+        subtitle: 'Сохранить граф в файл',
+        action: 'saveGraphInFile',
+        disabled: true
+      }
+    ],
+  },
+  {
+    icon: 'mdi-delete',
+    title: 'Удалить выбранные объекты',
+    subtitle: 'Удалить с графа все выбранные объекты',
+    action: 'deleteObjects',
+    disabled: true
+  }
+]
 
 function getObjectCtxMenu(geometryToGraph) {
-  let objectCtxMenu = [
-    ObjectCtxMenuSearchRelation,
-    ObjectCtxMenuChangeObject,
-    ObjectCtxMenuDelete,
-    ObjectCtxMenuSettings
-  ]
-  if(geometryToGraph) {
-    objectCtxMenu.unshift(ObjectCtxMenuGeometryToMap)
-  }
+  let objectCtxMenu = _.cloneDeep(ObjectCtxMenu)
+  objectCtxMenu[1].menu[1].disabled = !geometryToGraph
   return objectCtxMenu
 }
 
 function getSpaceCtxMenu(save, reorder, createRelation, findRelation, choosingObjects) {
-  let spaceCtxMenu = [SpaceCtxMenuSpaceBase]
-  if(save) {
-    spaceCtxMenu.unshift(SpaceCtxMenuSave)
-  }
-  if(reorder) {
-    spaceCtxMenu.unshift(SpaceCtxMenuReorder)
-  }
-  if(choosingObjects) {
-    spaceCtxMenu.unshift(SpaceCtxMenuReorderChoosingObjects)
-  }
-  if(createRelation) {
-    spaceCtxMenu.unshift(SpaceCtxMenuCreateRelation)
-  }
-  if(findRelation) {
-    spaceCtxMenu.unshift(SpaceCtxMenuFindRelation)
-  }
-  if(choosingObjects) {
-    spaceCtxMenu.push(SpaceCtxMenuDeleteChoosing)
-  }
+  let spaceCtxMenu = _.cloneDeep(SpaceCtxMenu)
+  spaceCtxMenu[0].menu[0].disabled = !createRelation
+  spaceCtxMenu[0].menu[1].disabled = !findRelation
+  spaceCtxMenu[1].menu[0].disabled = !reorder
+  spaceCtxMenu[1].menu[1].disabled = !choosingObjects
+  spaceCtxMenu[2].menu[0].disabled = false
+  spaceCtxMenu[2].menu[1].disabled = !save
+  spaceCtxMenu[3].disabled = !choosingObjects
   return spaceCtxMenu
 }
 
