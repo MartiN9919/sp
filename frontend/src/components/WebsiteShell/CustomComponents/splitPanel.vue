@@ -45,7 +45,7 @@ export default {
   }),
   computed: {
     ...mapGetters(['navigationDrawerStatus']),
-    size: function () { return this.navigationDrawerStatus(router.currentRoute.name) ? this.sizeColumn.value : 0 }
+    size: function () { return this.navigationDrawerStatus(router.currentRoute.name) ? this.sizeColumn?.value : 0 }
   },
   mounted() {
     this.sizeColumn = new UserSetting(`size-${router.currentRoute.name}${this.settingName}`, 30)
