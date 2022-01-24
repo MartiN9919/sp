@@ -39,38 +39,9 @@
                   <a :href="getDownloadLink(item.value)">{{item.value}}</a>
                 </td>
                 <td v-else-if="checkTypeParam(param) === 'geometry'">
-                  <v-dialog
-                    style="z-index:1000002"
-                    width="60%"
-                    height="80%"
-                    v-model="dialog"
-                    @keydown.esc="dialog = false"
-                    persistent
-                    transition="dialog-bottom-transition"
-                  >
-                    <template v-slot:activator="{ on, attrs }">
-                      <span v-bind="attrs" v-on="on">
-                        Геометрия
-                      </span>
-                    </template>
-
-                    <v-card>
-                      <v-card-title class="text-h7">УКАЗАТЬ ЗДЕСЬ TITLE</v-card-title>
-                      <v-divider></v-divider>
-                      <LeafletViewer
-                        v-if="dialog"
-                        style="height: 70vh;"
-                        :fc="JSON.parse(item.value)"
-                        :controls="true"
-                      />
-                      <v-divider></v-divider>
-                      <v-card-actions>
-                        <v-spacer></v-spacer>
-                        <v-btn :color="$CONST.APP.COLOR_OBJ" text @click="dialog=false">Ок</v-btn>
-                      </v-card-actions>
-                    </v-card>
-
-                  </v-dialog>
+                  <geometry-param :value="item.value" :title="title">
+                    <span>Геометрия</span>
+                  </geometry-param>
                 </td>
                 <td v-else><span>{{item.value ? item.value : 'Создана'}}</span></td>
                 <td class="text-center" @click="addDocumentToGraph(item.doc)" style="cursor: pointer"><span>{{item.doc ? item.doc.title : ''}}</span></td>
@@ -89,17 +60,21 @@ import RecordTitle from "@/components/Graph/GraphMenu/createPageComponents/objec
 import RecordInput from "@/components/Graph/GraphMenu/createPageComponents/objectRecordComponents/recordInput"
 import DropDownMenu from "@/components/WebsiteShell/CustomComponents/dropDownMenu"
 import MenuDateTime from "@/components/WebsiteShell/CustomComponents/selectDateTime"
+import GeometryParam from "@/components/WebsiteShell/CustomComponents/Dossier/geometryParam"
 import CustomTooltip from "@/components/WebsiteShell/CustomComponents/customTooltip"
-import LeafletViewer from "@/components/Map/Leaflet/LeafletViewer"
 import {getDownloadFileLink} from '@/plugins/axiosSettings'
 import _ from 'lodash'
 
 export default {
   name: "objectRecordArea",
-  components: {CustomTooltip, RecordInput, RecordTitle, MenuDateTime, DropDownMenu, LeafletViewer},
+  components: {CustomTooltip, RecordInput, RecordTitle, MenuDateTime, DropDownMenu, GeometryParam},
   props: {
     settings: Object,
     params: Array,
+    title: {
+      type: String,
+      default: null
+    }
   },
   data: () => ({
     dialog: false,

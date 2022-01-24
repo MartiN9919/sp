@@ -1,6 +1,6 @@
 <template>
   <g
-    @mouseup.exact.stop="dossier = true"
+    @mouseup.exact.stop="showDescription"
     @click.ctrl="$emit('setChoosingObject', object)"
     @click.alt="$emit('setRelatedObjects', object)"
     @mouseenter="$emit('hover', object)"
@@ -17,8 +17,10 @@
     </node>
 
     <foreignObject v-if="showTitle" v-bind="titleStyle">
-      <div class="name-text" :style="titleTextStyle" oncontextmenu="return false">{{object.object.title}}</div>
-      <dossier v-model="dossier" :params="object.object.params" :object-id="object.object.object.id" :rec-id="object.object.recId"/>
+      <div class="name-text" :style="titleTextStyle" oncontextmenu="return false">{{title}}</div>
+    </foreignObject>
+    <foreignObject width="0" height="0">
+      <description v-model="description" :params="params" :object-id="objectId" :rec-id="recId" :title="title"/>
     </foreignObject>
   </g>
 </template>
@@ -28,14 +30,14 @@ import Node from '@/components/Graph/WorkSpace/lib/components/Node'
 import VLabel from '@/components/Graph/WorkSpace/lib/components/Label'
 import BodyObject from "@/components/Graph/WorkSpace/Modules/bodyObject"
 import InformationLabel from "@/components/Graph/WorkSpace/Modules/informationLabel"
+import Description from "@/components/Graph/WorkSpace/Modules/description"
 import scrollMixin from "@/components/Graph/WorkSpace/Modules/scrollMixin"
 import {mapGetters} from "vuex"
-import Dossier from "@/components/WebsiteShell/CustomComponents/Dossier/dossier";
 
 export default {
   name: "graphObject",
   mixins: [scrollMixin],
-  components: {Dossier, Node, VLabel, BodyObject, InformationLabel},
+  components: {Description, Node, VLabel, BodyObject, InformationLabel},
   props: {
     object: Object,
     inSelected: Boolean,
@@ -43,7 +45,7 @@ export default {
     selectedObjects: Array
   },
   data: () => ({
-    dossier: false
+    description: false
   }),
   computed: {
     ...mapGetters(['globalDisplaySettingValue', 'classifiersSettings']),
@@ -62,7 +64,7 @@ export default {
       return globalCreateDate && localCreateDate
     },
     getClassifiers() {
-      return this.object.object.params.filter(
+      return this.params.filter(
         p => !this.classifiersSettings.includes(p.baseParam.id) && p.values.length
       )
     },
@@ -79,10 +81,28 @@ export default {
         height: 1
       }
     },
+    title() {
+      return this.object.object.title
+    },
     titleTextStyle() {
       return {fontSize: `${this.object.size/40}px`}
+    },
+    params() {
+      return this.object.object.params
+    },
+    objectId() {
+      return this.object.object.object.id
+    },
+    recId() {
+      return this.object.object.recId
     }
   },
+  methods: {
+    showDescription(event) {
+      if(!event.button)
+        this.description = true
+    }
+  }
 }
 </script>
 
