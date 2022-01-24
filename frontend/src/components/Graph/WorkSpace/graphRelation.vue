@@ -1,8 +1,10 @@
 <template>
   <g
-      @wheel.stop="scrollObject(relation, $event)"
-      @contextmenu.stop="$emit('ctxMenu', [$event, relation])"
-      @mouseup.exact.stop="showDescription"
+    @wheel.stop="scrollObject(relation, $event)"
+    @contextmenu.stop="$emit('ctxMenu', [$event, relation])"
+    @mouseup.exact.stop="showDescription"
+    @mouseenter="$emit('hover', relation)"
+    @mouseleave="$emit('unhover', relation)"
   >
     <edge ref="edge" :data="relation" :nodes="objects" :in-hover="inHover"/>
     <v-label v-show="showLabel" :edge-coordinates="coordinatesEdge" :element="relation">
