@@ -51,20 +51,26 @@ export default {
       let position = this.getScreenPosition({x: event.offsetX, y: event.offsetY})
       this.frame = {x0:position.x, y0: position.y, xn: position.x, yn: position.y,
         x:position.x, y: position.y, width: 0, height: 0, active: true}
-      this.$el.addEventListener('mousemove', this.drawFrame)
-      this.$el.addEventListener('mouseup', this.stopDrawFrame)
+      document.addEventListener('mousemove', this.drawFrame)
+      document.addEventListener('mouseleave', this.stopDrawFrame)
+      document.addEventListener('mouseup', this.stopDrawFrame)
     },
     stopDrawFrame(){
       this.$emit('selectNodes', {x: this.frame.x, y: this.frame.y, width: this.frame.width, height: this.frame.height})
       this.frame = {active: false, height: 0, width: 0}
-      this.$el.removeEventListener('mousemove', this.drawFrame)
-      this.$el.removeEventListener('mouseup', this.stopDrawFrame)
+      document.removeEventListener('mousemove', this.drawFrame)
+      document.removeEventListener('mouseup', this.stopDrawFrame)
+      document.removeEventListener('mouseleave', this.stopDrawFrame)
     },
     drawFrame(event){
       if(this.frame.active){
         const zoom = this.panzoom.getZoom()
-        this.frame.xn += event.movementX / zoom
-        this.frame.yn += event.movementY / zoom
+        let tempX = this.frame.xn + event.movementX / zoom
+        let tempY = this.frame.yn + event.movementY / zoom
+        if(tempX < this.$refs.screen.clientWidth)
+          this.frame.xn = tempX
+        if(tempY < this.$refs.screen.clientHeight)
+          this.frame.yn = tempY
         if(this.frame.xn > this.frame.x0)
           this.frame.x = this.frame.x0
         else

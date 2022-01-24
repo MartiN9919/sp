@@ -157,13 +157,28 @@ const SpaceCtxMenu = [
       }
     ],
   },
-  {
-    icon: 'mdi-delete',
-    title: 'Удалить выбранные объекты',
-    subtitle: 'Удалить с графа все выбранные объекты',
-    action: 'deleteObjects',
-    disabled: true
-  }
+    {
+    icon: 'mdi-delete-variant',
+    title: 'Удалить',
+    subtitle: 'Удаление объектов с графа',
+    menu: [
+      {
+        icon: 'mdi-delete-outline',
+        title: 'Очистить граф',
+        subtitle: 'Удалить все объекты с графа',
+        action: 'clearGraph',
+        disabled: true
+      },
+      {
+        icon: 'mdi-delete',
+        title: 'Удалить выбранные объекты',
+        subtitle: 'Удалить с графа все выбранные объекты',
+        action: 'deleteObjects',
+        disabled: true
+      }
+    ],
+  },
+
 ]
 
 function getObjectCtxMenu(geometryToGraph) {
@@ -180,7 +195,8 @@ function getSpaceCtxMenu(save, reorder, createRelation, findRelation, choosingOb
   spaceCtxMenu[1].menu[1].disabled = !choosingObjects
   spaceCtxMenu[2].menu[0].disabled = false
   spaceCtxMenu[2].menu[1].disabled = !save
-  spaceCtxMenu[3].disabled = !choosingObjects
+  spaceCtxMenu[3].menu[0].disabled = !save
+  spaceCtxMenu[3].menu[1].disabled = !choosingObjects
   return spaceCtxMenu
 }
 

@@ -73,6 +73,12 @@ export default {
     changeGlobalSettingState: (state, {id, value}) => state.globalDisplaySettings[id].state.value = value,
     setClassifiersSettings: (state, classifierId) => state.classifiersSettings.switch(classifierId),
     clearSelectedGraphObjects: (state) => state.selectedGraphObjects = [],
+    reorderGraph: (state) => state.graph.reorderGraph(state.screen.getStartPosition().x, state.screen.getStartPosition().y),
+    reorderChoosingObjects: (state) => {
+      const center = state.graph.getNodesCenter(state.selectedGraphObjects)
+      state.graph.reorderGraph(center.x, center.y, state.selectedGraphObjects)
+    },
+    clearGraph: (state) => state.graph.clearGraph(),
     addSelectedGraphObject: (state, object) => state.selectedGraphObjects.push(object),
     deleteSelectedGraphObject: (state, object) => {
       const positionObject = state.selectedGraphObjects.findIndex(choosingNode => choosingNode.id === object.id)
@@ -98,12 +104,11 @@ export default {
     },
     deleteSelectedGraphObject({ commit }, object) { commit('deleteSelectedGraphObject', object) },
     clearSelectedGraphObjects({ commit }) { commit('clearSelectedGraphObjects') },
-    reorderGraph({ state }) {
-      state.graph.reorderGraph(state.screen.getStartPosition().x, state.screen.getStartPosition().y)
-    },
-    reorderChoosingObjects({state}) {
-      const center = state.graph.getNodesCenter(state.selectedGraphObjects)
-      state.graph.reorderGraph(center.x, center.y, state.selectedGraphObjects)
+    reorderGraph({ commit }) { commit('reorderGraph') },
+    reorderChoosingObjects({commit}) { commit('reorderChoosingObjects') },
+    clearGraph({commit}) {
+      commit('clearGraph')
+      commit('clearSelectedGraphObjects')
     },
     changeGlobalSettingState({ commit }, payload) { commit('changeGlobalSettingState', payload) },
     setClassifiersSettings({ getters, commit }, id) { commit('setClassifiersSettings', id) },

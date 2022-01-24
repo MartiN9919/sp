@@ -103,8 +103,8 @@ def parse_value(param, object, files):
         if not os.path.exists(MEDIA_ROOT + '/' + path):
             os.makedirs(MEDIA_ROOT + '/' + path, exist_ok=True)
         file = files[value]
-        default_storage.save(path + file.name, ContentFile(file.read()))
-        value = file.name
+        file_path = default_storage.save(path + file.name, ContentFile(file.read()))
+        value = file_path.split('/')[-1]
     return [param['id'], value, param.get('date', datetime.datetime.now().strftime("%Y-%m-%d %H:%M")) + ':00']
 
 
