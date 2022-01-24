@@ -40,7 +40,7 @@
                 </td>
                 <td v-else-if="checkTypeParam(param) === 'geometry'">
                   <geometry-param :value="item.value" :title="title">
-                    <span>Геометрия</span>
+                    <span>{{getGeometryTextValue(param)}}</span>
                   </geometry-param>
                 </td>
                 <td v-else><span>{{item.value ? item.value : 'Создана'}}</span></td>
@@ -103,6 +103,9 @@ export default {
     },
     getDownloadLink(fileName) {
       return getDownloadFileLink(this.settings.objectId, this.settings.recId, fileName)
+    },
+    getGeometryTextValue(param) {
+      return this.checkTypeParam(param) === 'geometry' ? 'Геометрия' : 'Точка'
     },
   },
   mounted() {

@@ -1,9 +1,9 @@
 <template>
   <v-dialog class="dialog" width="60%" style="z-index: 100001">
     <template v-slot:activator="{ on, attrs }">
-      <div v-bind="attrs" v-on="on" class="py-1 teal--text">
+      <span v-bind="attrs" v-on="on" class="teal--text">
         <slot/>
-      </div>
+      </span>
     </template>
     <v-card>
       <v-card-title v-if="title" class="text-h7">{{ title }}</v-card-title>
@@ -14,7 +14,8 @@
 </template>
 
 <script>
-import LeafletViewer from "@/components/Map/Leaflet/LeafletViewer";
+import LeafletViewer from "@/components/Map/Leaflet/LeafletViewer"
+
 export default {
   name: "geometryParam",
   components: {LeafletViewer},
@@ -23,7 +24,7 @@ export default {
     title: {
       type: String,
       default: null
-    }
+    },
   }
 }
 </script>

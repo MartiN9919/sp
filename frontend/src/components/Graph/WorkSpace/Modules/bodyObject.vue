@@ -1,5 +1,5 @@
 <template>
-  <v-avatar :size="bodySize">
+  <v-avatar :size="bodySize" class="cursor-pointer">
     <v-img v-if="getPhoto" :src="getPhoto"/>
     <v-icon v-else :size="bodySize">{{object.object.object.icon}}</v-icon>
   </v-avatar>
