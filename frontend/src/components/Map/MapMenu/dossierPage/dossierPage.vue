@@ -73,7 +73,7 @@ table {
 }
 .dossier {
   height: 100%;
-  overflow-y: hidden;
+  overflow: hidden;
 }
 .content {
   height: 100%;
