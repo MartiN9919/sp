@@ -1,5 +1,5 @@
 <template>
-  <v-dialog class="dialog" width="60%">
+  <v-dialog class="dialog" width="60%" style="z-index: 100001">
     <template v-slot:activator="{ on, attrs }">
       <div v-bind="attrs" v-on="on" class="py-1 teal--text">
         <slot/>
