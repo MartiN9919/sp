@@ -2,16 +2,7 @@
   <div class="dossier">
     <div class="content" v-if="selectedItem">
       <div class="params">
-        <v-card tile class="mb-2">
-          <v-col>
-            <v-row no-gutters v-for="param in photoParams" :key="param.id" v-if="param.values.length">
-              <photo-param :param="param" :rec-id="recId" :object-id="objectId"/>
-            </v-row>
-            <table>
-              <dossier-param v-for="param in simpleParams" :key="param.id" :param="param" :rec-id="recId" :object-id="objectId"/>
-            </table>
-          </v-col>
-        </v-card>
+        <dossier :params="selectedItem.params" :rec-id="recId" :object-id="objectId"/>
       </div>
       <control-menu :buttons="controlButtons" @change="editObject" @addToGraph="addToGraph" class="control"></control-menu>
     </div>
@@ -20,8 +11,7 @@
 </template>
 
 <script>
-import PhotoParam from "@/components/WebsiteShell/CustomComponents/Dossier/photoParam"
-import DossierParam from "@/components/WebsiteShell/CustomComponents/Dossier/dossierParam"
+import Dossier from "@/components/WebsiteShell/CustomComponents/Dossier/dossier"
 import ControlMenu from "@/components/Graph/GraphMenu/createPageComponents/controlMenu"
 import {DataBaseObject} from "@/store/modules/graph/graphMenu/recordEditor"
 import {mapActions, mapGetters} from "vuex"
@@ -29,7 +19,7 @@ import router from "@/router"
 
 export default {
   name: "map-dossier",
-  components: {DossierParam, PhotoParam, ControlMenu},
+  components: {Dossier, ControlMenu},
   data: () => ({
     selectedItem: null,
     controlButtons: [
@@ -45,12 +35,6 @@ export default {
   }),
   computed: {
     ...mapGetters(['SCRIPT_GET_ITEM_SEL']),
-    photoParams: function () {
-      return this.selectedItem.params.filter(p => p.baseParam.type.title === 'file_photo' && p.values.length)
-    },
-    simpleParams: function () {
-      return this.selectedItem.params.filter(p => p.baseParam.type.title !== 'file_photo' && p.values.length)
-    },
     objectId: function () {
       return this.selectedItem.object.id
     },
