@@ -46,7 +46,8 @@ export default {
   components: {SearchObject, GraphRelation, GraphObject, Screen, ContextMenuNested},
   data: () => ({
     relatedObjects: [],
-    relationsObject: []
+    relationsObject: [],
+    hoverEnabled: false
   }),
   computed: {
     ...mapGetters([
@@ -114,8 +115,11 @@ export default {
       this.graphRelations.push(relation)
     },
     hoverObject(object) {
-      this.pickUpObject(object)
-      this.getRelatedObjects(object)
+      this.hoverEnabled = true
+      if(this.relatedObjects[0] !== object) {
+        this.pickUpObject(object)
+        this.getRelatedObjects(object)
+      }
     },
     hoverRelation(relation) {
       this.pickUpRelation(relation)
@@ -124,14 +128,13 @@ export default {
       this.relatedObjects.map(o => this.pickUpObject(o))
     },
     unHover() {
-      this.relatedObjects = []
-      this.relationsObject = []
+      this.hoverEnabled = false
     },
     inHoverObject (object) {
-      return this.globalDisplaySettingValue('linkHighlighting') && this.relatedObjects.includes(object)
+      return this.globalDisplaySettingValue('linkHighlighting') && this.relatedObjects.includes(object) && this.hoverEnabled
     },
     inHoverRelation (relation) {
-      return this.globalDisplaySettingValue('linkHighlighting') && this.relationsObject.includes(relation)
+      return this.globalDisplaySettingValue('linkHighlighting') && this.relationsObject.includes(relation) && this.hoverEnabled
     },
     menuShow(event, object=null) {
       this.objectCtxMenu = object

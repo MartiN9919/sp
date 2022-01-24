@@ -35,10 +35,6 @@ class GlobalSettings {
       subTitle: 'Отображение заголовка над связями',
       state: new UserSetting('showGlobalTooltipRelation', true)
     }
-    this.showRelations = {
-      title: 'Отображение связей',
-      state: new UserSetting('showRelations', true)
-    }
     this.showGlobalDateRelation = {
       title: 'Время записи связи',
       subTitle: 'Управление отображением даты связи',
