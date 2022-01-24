@@ -5,7 +5,14 @@
         <photo-param :param="param" :rec-id="recId" :object-id="objectId"/>
       </v-row>
       <table>
-        <dossier-param v-for="param in simpleParams" :key="param.id" :param="param" :rec-id="recId" :object-id="objectId"/>
+        <dossier-param
+          v-for="param in simpleParams"
+          :key="param.id"
+          :param="param"
+          :rec-id="recId"
+          :object-id="objectId"
+          :title="title"
+        />
       </table>
     </v-col>
   </v-card>
@@ -22,6 +29,10 @@ export default {
     params: Array,
     recId: Number,
     objectId: Number,
+    title: {
+      type: String,
+      default: null
+    }
   },
   computed: {
     photoParams: function () {

@@ -160,7 +160,6 @@ export default {
 class GraphObject extends DataBaseObject {
   constructor(object) {
     super(object)
-    this.title = object.title
     this.triggers = object.triggers
     if(object.hasOwnProperty('photo'))
       this.photo = object.photo

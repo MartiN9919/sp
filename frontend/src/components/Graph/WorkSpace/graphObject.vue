@@ -17,10 +17,10 @@
     </node>
 
     <foreignObject v-if="showTitle" v-bind="titleStyle">
-      <div class="name-text" :style="titleTextStyle" oncontextmenu="return false">{{object.object.title}}</div>
+      <div class="name-text" :style="titleTextStyle" oncontextmenu="return false">{{title}}</div>
     </foreignObject>
     <foreignObject width="0" height="0">
-      <description v-model="description" :params="params" :object-id="objectId" :rec-id="recId"/>
+      <description v-model="description" :params="params" :object-id="objectId" :rec-id="recId" :title="title"/>
     </foreignObject>
   </g>
 </template>
@@ -80,6 +80,9 @@ export default {
         class: "pt-8",
         height: 1
       }
+    },
+    title() {
+      return this.object.object.title
     },
     titleTextStyle() {
       return {fontSize: `${this.object.size/40}px`}

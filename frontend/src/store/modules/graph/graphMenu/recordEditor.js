@@ -180,10 +180,11 @@ export class DataBaseRelation extends BaseDbObject {
 
 
 export class DataBaseObject extends BaseDbObject {
-  constructor({object_id, rec_id = 0, params = [], recIdOld = null}) {
+  constructor({object_id, rec_id = 0, params = [], recIdOld = null, title=''}) {
     super(store.getters.baseClassifier, store.getters.baseClassifiers(object_id), params, recIdOld)
     this.object = store.getters.baseObject(object_id)
     this.recId = rec_id
+    this.title = title
   }
 
   getRequestStructure() {

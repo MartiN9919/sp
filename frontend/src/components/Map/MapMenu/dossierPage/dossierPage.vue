@@ -2,7 +2,7 @@
   <div class="dossier">
     <div class="content" v-if="selectedItem">
       <div class="params">
-        <dossier :params="selectedItem.params" :rec-id="recId" :object-id="objectId"/>
+        <dossier :params="selectedItem.params" :rec-id="recId" :object-id="objectId" :title="selectedItem.title"/>
       </div>
       <control-menu :buttons="controlButtons" @change="editObject" @addToGraph="addToGraph" class="control"></control-menu>
     </div>

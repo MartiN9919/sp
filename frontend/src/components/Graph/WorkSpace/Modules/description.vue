@@ -1,6 +1,6 @@
 <template>
   <v-dialog v-model="dossier" width="40%" style="z-index: 100000" overlay-opacity="0" content-class="overflow-hidden">
-    <dossier :params="params" :rec-id="recId" :object-id="objectId"/>
+    <dossier :params="params" :rec-id="recId" :object-id="objectId" :title="title"/>
   </v-dialog>
 </template>
 
@@ -23,6 +23,10 @@ export default {
     objectId: {
       type: Number,
       default: 0
+    },
+    title: {
+      type: String,
+      default: null
     },
   },
   model: {

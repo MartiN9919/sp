@@ -2,7 +2,7 @@
   <tr>
     <td class="text-h6">{{param.baseParam.title}}</td>
     <td class="text-end">
-      <geometry-param v-if="isGeometry" :value="getValue">
+      <geometry-param v-if="isGeometry" :value="getValue" :title="title">
         <div class="text-wrap tile--text">
           {{ getGeometryTextValue }}
         </div>
@@ -29,6 +29,10 @@ export default {
     param: Object,
     recId: Number,
     objectId: Number,
+    title: {
+      type: String,
+      default: null
+    }
   },
   computed: {
     getValue: function () {

@@ -39,7 +39,7 @@
                   <a :href="getDownloadLink(item.value)">{{item.value}}</a>
                 </td>
                 <td v-else-if="checkTypeParam(param) === 'geometry'">
-                  <geometry-param :value="item.value">
+                  <geometry-param :value="item.value" :title="title">
                     <span>Геометрия</span>
                   </geometry-param>
                 </td>
@@ -71,6 +71,10 @@ export default {
   props: {
     settings: Object,
     params: Array,
+    title: {
+      type: String,
+      default: null
+    }
   },
   data: () => ({
     dialog: false,
