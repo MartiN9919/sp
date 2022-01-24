@@ -65,12 +65,10 @@ export default {
     drawFrame(event){
       if(this.frame.active){
         const zoom = this.panzoom.getZoom()
-        let tempX = this.frame.xn + event.movementX / zoom
-        let tempY = this.frame.yn + event.movementY / zoom
-        if(tempX < this.$refs.screen.clientWidth)
-          this.frame.xn = tempX
-        if(tempY < this.$refs.screen.clientHeight)
-          this.frame.yn = tempY
+        if(event.offsetX < this.$refs.screen.clientWidth)
+          this.frame.xn += event.movementX / zoom
+        if(event.offsetY < this.$refs.screen.clientHeight)
+          this.frame.yn += event.movementY / zoom
         if(this.frame.xn > this.frame.x0)
           this.frame.x = this.frame.x0
         else
