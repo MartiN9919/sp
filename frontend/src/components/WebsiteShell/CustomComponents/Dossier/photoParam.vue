@@ -1,6 +1,6 @@
 <template>
   <v-hover v-slot="{ hover }">
-    <v-carousel hide-delimiters show-arrows-on-hover :show-arrows="param.values.length !== 1" height="200">
+    <v-carousel hide-delimiters show-arrows-on-hover :show-arrows="param.values.length !== 1" height="200" class="cursor-pointer">
       <v-expand-transition>
         <div v-show="hover && param.values.length !== 1" class="delimiters">
           <v-dialog width="min-content">

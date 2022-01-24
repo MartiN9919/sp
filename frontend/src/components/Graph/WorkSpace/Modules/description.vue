@@ -1,6 +1,8 @@
 <template>
-  <v-dialog v-model="dossier" width="40%" style="z-index: 100000" overlay-opacity="0" content-class="overflow-hidden">
-    <dossier :params="params" :rec-id="recId" :object-id="objectId" :title="title"/>
+  <v-dialog v-model="dossier" width="50%" class="description-dialog" overlay-opacity="0">
+    <v-card tile>
+      <dossier :params="params" :rec-id="recId" :object-id="objectId" :title="title"/>
+    </v-card>
   </v-dialog>
 </template>
 
@@ -43,5 +45,10 @@ export default {
 </script>
 
 <style scoped>
-
+.description-dialog {
+  z-index: 100000;
+}
+>>> .v-dialog {
+  max-height: 60% !important;
+}
 </style>
