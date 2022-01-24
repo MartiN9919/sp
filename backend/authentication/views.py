@@ -27,7 +27,7 @@ def login_user(request):
             auth.login(request, user)
             return JsonResponse({}, status=200)
         else:
-            return JsonResponse({}, status=400)
+            return JsonResponse({'status': 'Неправильный логин или пароль'}, status=400)
     else:
         return JsonResponse({}, status=405)
 
