@@ -1,13 +1,14 @@
 <template>
-  <div class="h-100 disable-optimize" @mouseup.exact="clearSelectors" @contextmenu="menuShow">
+  <div class="h-100 disable-optimize select-off" @mouseup.exact="clearSelectors" @contextmenu="menuShow">
     <screen id="screen" ref="screen" @selectNodes="setChoosingObjects" oncontextmenu="return false">
       <graph-relation
         v-for="relation in graphRelations"
         :key="relation.id"
-        v-if="globalDisplaySettingValue('showRelations')"
         :in-hover="inHoverRelation(relation)"
         :relation="relation"
         :objects="graphObjects"
+        @hover="hoverRelation"
+        @unhover="unHover"
         @ctxMenu="menuShow(...$event)"
       />
       <graph-object
@@ -21,7 +22,7 @@
         @setChoosingObject="setChoosingObject"
         @setRelatedObjects="setRelatedObjects"
         @hover="hoverObject"
-        @unhover="unHoverObject"
+        @unhover="unHover"
         @ctxMenu="menuShow(...$event)"
       />
     </screen>
@@ -69,8 +70,11 @@ export default {
     getRelatedObjects(object) {
       this.relatedObjects = [object]
       this.relationsObject = this.graphRelations.filter(r => [r.to, r.from].includes(object.id))
-      for(const r of this.relationsObject)
-        this.relatedObjects.push(this.graphObjects.find(n => ([r.to, r.from].includes(n.id)) && n.id !== object.id))
+      for(const r of this.relationsObject) {
+        const relatedObject = this.graphObjects.find(n => ([r.to, r.from].includes(n.id)) && n.id !== object.id)
+        this.relatedObjects.push(relatedObject)
+        this.pickUpObject(relatedObject)
+      }
     },
     setRelatedObjects() {
       this.relatedObjects.map(o => {
@@ -105,11 +109,21 @@ export default {
       this.graphObjects.splice(this.graphObjects.findIndex(o => o === object), 1)
       this.graphObjects.push(object)
     },
+    pickUpRelation(relation) {
+      this.graphRelations.splice(this.graphRelations.findIndex(r => r === relation), 1)
+      this.graphRelations.push(relation)
+    },
     hoverObject(object) {
       this.pickUpObject(object)
       this.getRelatedObjects(object)
     },
-    unHoverObject() {
+    hoverRelation(relation) {
+      this.pickUpRelation(relation)
+      this.relationsObject = [relation]
+      this.relatedObjects = Array.from(this.graphObjects.filter(o => [relation.from, relation.to].includes(o.id)))
+      this.relatedObjects.map(o => this.pickUpObject(o))
+    },
+    unHover() {
       this.relatedObjects = []
       this.relationsObject = []
     },
