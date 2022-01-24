@@ -1,6 +1,8 @@
 <template>
   <v-dialog v-model="dossier" width="50%" class="description-dialog" overlay-opacity="0">
-    <dossier :params="params" :rec-id="recId" :object-id="objectId" :title="title"/>
+    <v-card tile>
+      <dossier :params="params" :rec-id="recId" :object-id="objectId" :title="title"/>
+    </v-card>
   </v-dialog>
 </template>
 

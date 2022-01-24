@@ -1,21 +1,19 @@
 <template>
-  <v-card tile class="overflow-auto" flat>
-    <v-col>
-      <v-row no-gutters v-for="param in photoParams" :key="param.id" v-if="param.values.length">
-        <photo-param :param="param" :rec-id="recId" :object-id="objectId"/>
-      </v-row>
-      <table>
-        <dossier-param
-          v-for="param in simpleParams"
-          :key="param.id"
-          :param="param"
-          :rec-id="recId"
-          :object-id="objectId"
-          :title="title"
-        />
-      </table>
-    </v-col>
-  </v-card>
+  <v-col class="pa-0 overflow-auto">
+    <v-row no-gutters v-for="param in photoParams" :key="param.id" v-if="param.values.length">
+      <photo-param :param="param" :rec-id="recId" :object-id="objectId"/>
+    </v-row>
+    <table>
+      <dossier-param
+        v-for="param in simpleParams"
+        :key="param.id"
+        :param="param"
+        :rec-id="recId"
+        :object-id="objectId"
+        :title="title"
+      />
+    </table>
+  </v-col>
 </template>
 
 <script>

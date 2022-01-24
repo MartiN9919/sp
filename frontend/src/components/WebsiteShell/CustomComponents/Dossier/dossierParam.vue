@@ -56,7 +56,7 @@ export default {
 td {
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   border-top: 1px solid rgba(0, 0, 0, 0.1);
-  padding: 6px 0;
+  padding: 6px 8px;
 }
 .old-values {
   font-size: 12px;
