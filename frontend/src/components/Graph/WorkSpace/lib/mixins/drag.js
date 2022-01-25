@@ -3,6 +3,7 @@
  * @drag event emmited
  */
 import drag from "vnodes/src/mixins/drag";
+let moved = false
 
 export default {
   props: {
@@ -20,7 +21,6 @@ export default {
         threshold: { x: 0, y: 0, crossed: false }
       },
       screen: document.getElementById('screen'),
-      moved: false
     }
   },
   beforeDestroy () {
@@ -28,6 +28,9 @@ export default {
     this.screen.removeEventListener('mouseup', this.stopDrag)
   },
   methods: {
+    isMoved() {
+      return moved
+    },
     startDrag (e) {
       let parent = this.$parent
       while (parent) {
@@ -45,8 +48,8 @@ export default {
       this.screen.addEventListener('mouseleave', this.stopDrag)
     },
     stopDrag (e) {
-      if(this.moved) {
-        this.moved = false
+      if(moved) {
+        moved = false
         e.stopPropagation()
       }
       this.drag.active = false
@@ -59,7 +62,7 @@ export default {
       let x = (e.clientX - this.drag.prev.x) / this.drag.zoom
       let y = (e.clientY - this.drag.prev.y) / this.drag.zoom
       this.drag.prev = {x: e.clientX, y: e.clientY}
-      this.moved = true
+      moved = true
       if (!this.drag.threshold.crossed) {
         if (Math.abs(this.drag.threshold.x) < this.dragThreshold && Math.abs(this.drag.threshold.y) < this.dragThreshold) {
           this.drag.threshold.x += x
@@ -71,7 +74,6 @@ export default {
           y += this.drag.threshold.y
         }
       }
-
       this.$emit('drag', { x, y })
     },
   }
