@@ -4,12 +4,13 @@
       <graph-relation
         v-for="relation in graphRelations"
         :key="relation.id"
-        :in-hover="inHoverRelation(relation)"
+        :in-hover="inHover(relation)"
         :relation="relation"
         :objects="graphObjects"
-        @hover="hoverRelation"
+        @hover="hover"
         @unhover="unHover"
         @ctxMenu="menuShow(...$event)"
+        @setChoosingRelated="setChoosingRelated"
       />
       <graph-object
         v-for="object in graphObjects"
@@ -17,11 +18,11 @@
         v-if="object.object.show"
         :object="object"
         :in-selected="inSelectedGraphObject(object)"
-        :in-hover="inHoverObject(object)"
+        :in-hover="inHover(object)"
         :selected-objects="selectedGraphObjects"
         @setChoosingObject="setChoosingObject"
-        @setRelatedObjects="setRelatedObjects"
-        @hover="hoverObject"
+        @setChoosingRelated="setChoosingRelated"
+        @hover="hover"
         @unhover="unHover"
         @ctxMenu="menuShow(...$event)"
       />
@@ -47,7 +48,6 @@ export default {
   data: () => ({
     relatedObjects: [],
     relationsObject: [],
-    hoverEnabled: false
   }),
   computed: {
     ...mapGetters([
@@ -65,23 +65,14 @@ export default {
       'deleteSelectedGraphObject',
       'clearSelectedGraphObjects'
     ]),
+    isObject(element) {
+      return element.hasOwnProperty('object')
+    },
     findNode(node) {
       this.$refs.screen.zoomNodes([node], { scale: 1.5 })
     },
-    getRelatedObjects(object) {
-      this.relatedObjects = [object]
-      this.relationsObject = this.graphRelations.filter(r => [r.to, r.from].includes(object.id))
-      for(const r of this.relationsObject) {
-        const relatedObject = this.graphObjects.find(n => ([r.to, r.from].includes(n.id)) && n.id !== object.id)
-        this.relatedObjects.push(relatedObject)
-        this.pickUpObject(relatedObject)
-      }
-    },
-    setRelatedObjects() {
-      this.relatedObjects.map(o => {
-        this.addSelectedGraphObject(o)
-        this.pickUpObject(o)
-      })
+    setChoosingRelated() {
+      this.relatedObjects.map(o => this.addSelectedGraphObject(o))
     },
     setChoosingObject(object) {
       if(this.inSelectedGraphObject(object))
@@ -101,40 +92,43 @@ export default {
         }
       }
     },
+    pickUp(element) {
+      let ar = this.isObject(element) ? this.graphObjects : this.graphRelations
+      ar.splice(ar.findIndex(r => r === element), 1)
+      ar.push(element)
+    },
+    getRelatedForObject(object) {
+      this.relatedObjects = [object]
+      this.relationsObject = this.graphRelations.filter(r => [r.to, r.from].includes(object.id))
+      for(const r of this.relationsObject) {
+        const relatedObject = this.graphObjects.find(n => ([r.to, r.from].includes(n.id)) && n.id !== object.id)
+        this.relatedObjects.push(relatedObject)
+        this.pickUp(relatedObject)
+      }
+    },
+    getRelatedForRelation(relation) {
+      this.relationsObject = [relation]
+      this.relatedObjects = Array.from(this.graphObjects.filter(o => [relation.from, relation.to].includes(o.id)))
+      this.relatedObjects.map(o => this.pickUp(o))
+    },
+    hover(element) {
+      this.pickUp(element)
+      this.isObject(element) ? this.getRelatedForObject(element) : this.getRelatedForRelation(element)
+    },
+    unHover() {
+      this.relatedObjects = []
+      this.relationsObject = []
+    },
+    inHover(element) {
+      return this.globalDisplaySettingValue('linkHighlighting')
+        && this.isObject(element)
+        ? this.relatedObjects.includes(element)
+        : this.relationsObject.includes(element)
+    },
     clearSelectors(evt) {
       if(!evt.button && !this.$refs.contextMenu.$children[0].isActive) {
         this.clearSelectedGraphObjects()
       }
-    },
-    pickUpObject(object) {
-      this.graphObjects.splice(this.graphObjects.findIndex(o => o === object), 1)
-      this.graphObjects.push(object)
-    },
-    pickUpRelation(relation) {
-      this.graphRelations.splice(this.graphRelations.findIndex(r => r === relation), 1)
-      this.graphRelations.push(relation)
-    },
-    hoverObject(object) {
-      this.hoverEnabled = true
-      if(this.relatedObjects[0] !== object) {
-        this.pickUpObject(object)
-        this.getRelatedObjects(object)
-      }
-    },
-    hoverRelation(relation) {
-      this.pickUpRelation(relation)
-      this.relationsObject = [relation]
-      this.relatedObjects = Array.from(this.graphObjects.filter(o => [relation.from, relation.to].includes(o.id)))
-      this.relatedObjects.map(o => this.pickUpObject(o))
-    },
-    unHover() {
-      this.hoverEnabled = false
-    },
-    inHoverObject (object) {
-      return this.globalDisplaySettingValue('linkHighlighting') && this.relatedObjects.includes(object) && this.hoverEnabled
-    },
-    inHoverRelation (relation) {
-      return this.globalDisplaySettingValue('linkHighlighting') && this.relationsObject.includes(relation) && this.hoverEnabled
     },
     menuShow(event, object=null) {
       this.objectCtxMenu = object

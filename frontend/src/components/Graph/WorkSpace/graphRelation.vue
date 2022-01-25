@@ -3,11 +3,12 @@
     @wheel.stop="scrollObject(relation, $event)"
     @contextmenu.stop="$emit('ctxMenu', [$event, relation])"
     @mouseup.exact.stop="showDescription"
-    @mouseenter="$emit('hover', relation)"
-    @mouseleave="$emit('unhover', relation)"
+    @mouseenter="emitHoverEvent('hover')"
+    @mouseleave="emitHoverEvent('unhover')"
+    @click.alt="$emit('setChoosingRelated', relation)"
   >
     <edge ref="edge" :data="relation" :nodes="objects" :in-hover="inHover"/>
-    <v-label v-show="showLabel" :edge-coordinates="coordinatesEdge" :element="relation">
+    <v-label ref="label" v-show="showLabel" :edge-coordinates="coordinatesEdge" :element="relation">
       <information-label :size-node="relation.size" :params="getClassifiers" :show-date="showDate"/>
     </v-label>
     <foreignObject width="0" height="0">
@@ -62,6 +63,9 @@ export default {
     },
   },
   methods: {
+    emitHoverEvent(event) {
+      !this.$refs.label.$refs.node.isMoved() && this.$emit(event, this.relation)
+    },
     showDescription(event) {
       if(!event.button)
         this.description = true

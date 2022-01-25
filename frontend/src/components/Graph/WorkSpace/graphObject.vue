@@ -2,9 +2,9 @@
   <g
     @mouseup.exact.stop="showDescription"
     @click.ctrl="$emit('setChoosingObject', object)"
-    @click.alt="$emit('setRelatedObjects', object)"
-    @mouseenter="$emit('hover', object)"
-    @mouseleave="$emit('unhover', object)"
+    @click.alt="$emit('setChoosingRelated', object)"
+    @mouseenter="emitHoverEvent('hover')"
+    @mouseleave="emitHoverEvent('unhover')"
     @contextmenu.stop="$emit('ctxMenu', [$event, object])"
     @wheel.stop="scrollObject(object, $event)"
   >
@@ -98,6 +98,7 @@ export default {
     }
   },
   methods: {
+    emitHoverEvent(event) { !this.$refs.node.isMoved() && this.$emit(event, this.object) },
     showDescription(event) {
       if(!event.button)
         this.description = true
