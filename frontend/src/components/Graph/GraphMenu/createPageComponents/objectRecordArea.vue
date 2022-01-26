@@ -89,7 +89,7 @@ export default {
       return value
     },
     addDocumentToGraph(doc) {
-      this.$emit('addDocumentToGraph', {objectId: doc.object_id, recId: doc.rec_id})
+      this.$emit('addDocumentToGraph', {payload: doc})
     },
     checkTypeParam(param) {
       if(param.baseParam.hasOwnProperty('type'))

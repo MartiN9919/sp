@@ -1,5 +1,5 @@
 <template>
-  <path class="edge" :class="inHover ? 'hover' : 'base'" :d="path" :id="data.id">
+  <path class="edge" :class="relationClass" :d="path" :id="data.id">
   </path>
 </template>
 
@@ -17,10 +17,8 @@ export default {
     nodes: { // graph nodes reference
       type: Array,
     },
-    inHover: {
-      type: Boolean,
-      default: false
-    },
+    inHover: Boolean,
+    inAdded: Boolean,
   },
 
   mounted () {
@@ -49,6 +47,14 @@ export default {
       : vm.data.to,
     fromAnchor: vm => vm.parseAnchor(vm.data.fromAnchor, vm.fromNode),
     toAnchor: vm => vm.parseAnchor(vm.data.toAnchor, vm.toNode),
+
+    relationClass() {
+      if(this.inHover) {
+        return 'hover-relation'
+      } else if(this.inAdded) {
+        return 'added-relation'
+      } else return 'base-relation'
+    },
 
     pos () {
       let x1 = this.fromNode.x + (this.fromAnchor.x || 0)
@@ -195,13 +201,18 @@ export default {
   fill: none;
 }
 
-.base {
+.base-relation {
   stroke-width: 2px;
   stroke: #aaaaaa;
 }
 
-.hover {
+.hover-relation {
   stroke-width: 5px;
   stroke: rgba(0, 0, 255, 0.3);
+}
+
+.added-relation {
+  stroke-width: 5px;
+  stroke: rgba(0, 255, 0, 0.3);
 }
 </style>

@@ -4,7 +4,7 @@
       <div class="params">
         <dossier :params="selectedItem.params" :rec-id="recId" :object-id="objectId" :title="selectedItem.title"/>
       </div>
-      <control-menu :buttons="controlButtons" @change="editObject" @addToGraph="addToGraph" class="control"></control-menu>
+      <control-menu :buttons="controlButtons" @change="editObject" @addToGraph="toGraph" class="control"></control-menu>
     </div>
     <div v-else class="text-h5 text-uppercase text-center grey--text pt-6">Объект не выбран</div>
   </div>
@@ -40,15 +40,18 @@ export default {
     },
     recId: function () {
       return this.selectedItem.recId
+    },
+    payload: function () {
+      return {object_id: this.objectId, rec_id: this.recId}
     }
   },
   methods: {
-    ...mapActions(['getObjectFromServer', 'setEditableObject', 'addObjectToGraph']),
+    ...mapActions(['getObjectFromServer', 'setEditableObject', 'addToGraph']),
     editObject() {
       router.push({name: 'Graph'}).then(() => this.setEditableObject({objectId: this.objectId, recId: this.recId}))
     },
-    addToGraph() {
-      router.push({name: 'Graph'}).then(() => this.addObjectToGraph({objectId: this.objectId, recId: this.recId}))
+    toGraph() {
+      router.push({name: 'Graph'}).then(() => this.addToGraph({payload: this.payload}))
     },
   },
   watch: {
@@ -56,7 +59,7 @@ export default {
       handler: function (v) {
         let value = JSON.parse(v)
         if (value.length)
-          this.getObjectFromServer({params: {record_id: value[0].rec_id, object_id: value[0].obj_id}})
+          this.getObjectFromServer({rec_id: value[0].rec_id, object_id: value[0].obj_id})
             .then(r => this.selectedItem = new DataBaseObject(r))
         else this.selectedItem = null
       },

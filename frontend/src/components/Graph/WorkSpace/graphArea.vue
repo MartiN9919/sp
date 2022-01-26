@@ -4,6 +4,7 @@
       <graph-relation
         v-for="relation in graphRelations"
         :key="relation.id"
+        :in-added="inLastAddedRelations(relation.id)"
         :in-hover="inHover(relation)"
         :relation="relation"
         :objects="graphObjects"
@@ -15,8 +16,8 @@
       <graph-object
         v-for="object in graphObjects"
         :key="object.id"
-        v-if="object.object.show"
         :object="object"
+        :in-added="inLastAddedObjects(object.id)"
         :in-selected="inSelectedGraphObject(object)"
         :in-hover="inHover(object)"
         :selected-objects="selectedGraphObjects"
@@ -55,6 +56,8 @@ export default {
       'graphRelations',
       'selectedGraphObjects',
       'inSelectedGraphObject',
+      'inLastAddedObjects',
+      'inLastAddedRelations',
       'globalDisplaySettingValue',
     ]),
   },
@@ -112,8 +115,8 @@ export default {
       this.relatedObjects.map(o => this.pickUp(o))
     },
     hover(element) {
-      this.pickUp(element)
       this.isObject(element) ? this.getRelatedForObject(element) : this.getRelatedForRelation(element)
+      this.pickUp(element)
     },
     unHover() {
       this.relatedObjects = []

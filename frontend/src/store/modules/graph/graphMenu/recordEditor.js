@@ -27,8 +27,9 @@ export default {
     setEditableRelation({getters, commit}, {relations, document}) {
       let edge = getters.graphRelations.find(
         e => [e.relation.o1.id, e.relation.o2.id].every(r => Array.from(relations, o => o.id).includes(r)))
+      console.log(edge)
       commit('setEditableRelation', {
-        relation: _.cloneDeep(edge?.relation) || new DataBaseRelation(...relations),
+        relation: _.cloneDeep(edge.relation) || new DataBaseRelation(...relations),
         document: document
       })
     },
@@ -42,7 +43,7 @@ export default {
       if(!recId)
         commit('setEditableObjects', new DataBaseObject({object_id: objectId}))
       else
-        dispatch('getObjectFromServer', {params: {record_id: recId, object_id: objectId}})
+        dispatch('getObjectFromServer', {rec_id: recId, object_id: objectId})
           .then(r => {
             commit('setEditableObjects', new DataBaseObject(r))
             dispatch('setNavigationDrawerStatus', true)
@@ -64,31 +65,21 @@ export default {
     deleteNewParamEditableObject({commit}, playLoad) {
       commit('deleteNewParamEditableObject', playLoad)
     },
-    async getObjectFromServer({getters, commit, dispatch}, config = {}) {
-      config.headers = {'set-cookie': getters.cookieTriggers(config.params.object_id)}
-      return await axios.get('objects/object/', config)
+    async getObjectFromServer({getters, commit, dispatch}, {rec_id, object_id, config = {}}) {
+      config.headers = {'set-cookie': getters.cookieTriggers(object_id)}
+      return await axios.get('objects/object/', Object.assign(config, {params: {rec_id, object_id}}))
         .then(r => { return Promise.resolve(r.data) })
         .catch(e => { return Promise.reject(e) })
     },
-    async getRelationFromServer({getters, commit, dispatch}, params, config={}) {
+    async getRelationFromServer({getters, commit, dispatch}, {rec_id, object_id, objects, config = {}}) {
+      const params = Object.assign({rec_id, object_id, objects})
       return await axios.post('objects/object_relation/', params, config)
-        .then(r => {
-          if(r.data.length === 0){
-            let findNode = getters.graphObjects.find(o => o.id === params.object_id.toString() + '-' + params.rec_id.toString())
-            findNode.object.show = true
-            dispatch('updateObjectFromGraph', {object: findNode, fields: {object: findNode.object}})
-          }
-          for(let relation of r.data) {
-            let object = {o1: params.object_id, r1: params.rec_id, o2: relation.object_id, r2: relation.rec_id}
-            dispatch('addRelationToGraph', {object: object, relations: relation.relations, noMove: params.noMove})
-          }
-          return Promise.resolve(r.data)
-        })
-        .catch(e => { return Promise.reject(e) })
+        .then(r => Promise.resolve(r.data))
+        .catch(e => Promise.reject(e))
 
     },
     async saveEditableObject({getters, dispatch}, positionObject) {
-      return await axios.post('objects/object',
+      return await axios.post('objects/object/',
         getters.editableObjects[positionObject].getRequestStructure(),
         {headers: {
           'Content-Type': 'multipart/form-data',
@@ -102,7 +93,7 @@ export default {
           }
           else {
             dispatch('setEditableObject', {objectId: response.object_id, recId: response.rec_id})
-            dispatch('addObjectToGraph', {objectId: response.object_id, recId: response.rec_id})
+            dispatch('addToGraph', {payload: response})
           }
           return Promise.resolve(r.data)
         })
@@ -157,8 +148,6 @@ export class DataBaseRelation extends BaseDbObject {
     super(getter, baseObject, params)
     this.o1 = o1
     this.o2 = o2
-    this.showTooltip = true
-    this.showCreateDate = true
   }
 
   getRequestStructure() {

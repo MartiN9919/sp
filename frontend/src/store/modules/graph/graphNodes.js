@@ -51,6 +51,8 @@ export default {
     graph: new Graph(),
     graphObjects: {},
     selectedGraphObjects: [],
+    lastAddedObjects: [],
+    lastAddedRelations: []
   },
   getters: {
     graphObjects: state => state.graph.nodes,
@@ -59,7 +61,11 @@ export default {
     globalDisplaySettings: state => state.globalDisplaySettings,
     globalDisplaySettingValue: state => identifier => state.globalDisplaySettings[identifier].state.value,
     selectedGraphObjects: state => state.selectedGraphObjects,
-    inSelectedGraphObject: state => object => state.selectedGraphObjects.includes(object)
+    inSelectedGraphObject: state => object => state.selectedGraphObjects.includes(object),
+    lastAddedObjects: state => state.lastAddedObjects,
+    inLastAddedObjects: state => id => state.lastAddedObjects.includes(id),
+    lastAddedRelations: state => state.lastAddedRelations,
+    inLastAddedRelations: state => id => state.lastAddedRelations.includes(id)
   },
   mutations: {
     setScreen: (state, screen) => state.screen = screen,
@@ -89,10 +95,14 @@ export default {
       })
     },
     addRelationToGraph: (state, {objects, relation, noMove}) => {
-      state.graph.createEdge(objects[0], objects[1], {relation: relation, size: 300, noMove: noMove})
+      state.graph.createEdge(objects[0], objects[1], {id: relation.getGeneratedId(), relation: relation, size: 300, noMove: noMove})
     },
+    setLastAddedObjects: (state, objects) => state.lastAddedObjects = objects,
+    setLastAddedRelations: (state, relations) => state.lastAddedRelations = relations
   },
   actions: {
+    setLastAddedObjects({ commit }, objects) { commit('setLastAddedObjects', objects) },
+    setLastAddedRelations({ commit }, relations) { commit('setLastAddedRelations', relations) },
     setScreen({ commit }, screen) { commit('setScreen', screen) },
     addSelectedGraphObject({ getters, commit }, object) {
       if(!getters.inSelectedGraphObject(object))
@@ -108,34 +118,65 @@ export default {
     },
     changeGlobalSettingState({ commit }, payload) { commit('changeGlobalSettingState', payload) },
     setClassifiersSettings({ getters, commit }, id) { commit('setClassifiersSettings', id) },
-    addRelationToGraph({getters, commit, dispatch}, {object, relations, noMove}) {
-      let object1 = getters.graphObjects.find(r => r.object.object.id === object.o1 && r.object.recId === object.r1)
-      let object2 = getters.graphObjects.find(r => r.object.object.id === object.o2 && r.object.recId === object.r2)
-      let relation = new DataBaseRelation(object1, object2, relations)
-      let findRelation = getters.graphRelations.find(r => [r.from, r.to].every(v => [object1.id, object2.id].includes(v)))
-      if(findRelation)
-        dispatch('updateRelationFromGraph', {relation: findRelation, fields: {relation: relation}})
-      else
-        commit('addRelationToGraph', {objects: [object1, object2], relation: relation, noMove: noMove})
-    },
     updateRelationFromGraph({commit}, {relation, fields}) { commit('updateRelationFromGraph', {relation, fields}) },
     deleteObjectFromGraph({commit}, object) { commit('deleteObjectFromGraph', object) },
     updateObjectFromGraph({commit}, {object, fields}) { commit('updateObjectFromGraph', {object, fields}) },
-    addObjectToGraph({ state, getters, commit, dispatch }, {recId, objectId, size=300, position=state.screen.getStartPosition(), noMove =false}) {
-      dispatch('getObjectFromServer', {params: {record_id: recId, object_id: objectId}})
-        .then(r => {
-          let editableObject = new GraphObject(r)
-          let findNode = getters.graphObjects.find(o => o.id === editableObject.getGeneratedId())
-          let relatedObjects = Array.from(getters.graphObjects, o =>
-            Object.assign({object_id: o.object.object.id, rec_id: o.object.recId})
-          )
-          if(findNode)
-            dispatch('updateObjectFromGraph', {object: findNode, fields: {object: Object.assign(editableObject, {show: true})}})
-          else {
-            commit('addObjectToGraph', {editableObject, position, size})
-            dispatch('getRelationFromServer', {object_id: objectId, rec_id: recId, objects: relatedObjects, noMove: noMove})
+    async addToGraph({getters, dispatch}, {payload, noMove=false}) {
+      let lastAddedObjects = []
+      let lastAddedRelations = []
+      for(const object of Array.isArray(payload) ? payload : [payload]) {
+        const objects = getters.graphObjects.map(o => Object.assign({object_id: o.object.object.id, rec_id: o.object.recId}))
+        const payloadObject = {object_id: object.object_id, rec_id: object.rec_id}
+        await Promise.all([
+          dispatch('getObjectFromServer', payloadObject),
+          dispatch('getRelationFromServer', Object.assign(payloadObject, {objects: objects}))
+        ])
+          .then(async r => {
+            await dispatch('addObjectToGraph', Object.assign({object: r[0]}, object))
+              .then(value => {
+                if(value.type === 'addObjectToGraph') {
+                  lastAddedObjects.push(value.object.getGeneratedId())
+                }
+              })
+          for(let relation of r[1]) {
+            let object = {o1: r[0].object_id, r1: r[0].rec_id, o2: relation.object_id, r2: relation.rec_id}
+            dispatch('addRelationToGraph', {object: object, relations: relation.relations, noMove: noMove})
+              .then(value => {
+                if(value.type === 'addRelationToGraph') {
+                  lastAddedRelations.push(value.relation.getGeneratedId())
+                }
+              })
           }
         })
+      }
+      dispatch('setLastAddedObjects', lastAddedObjects)
+      dispatch('setLastAddedRelations', lastAddedRelations)
+    },
+    addObjectToGraph({state, getters, commit, dispatch}, {object, size=300, position=state.screen.getStartPosition()}) {
+      let editableObject = new GraphObject(object)
+      let findNode = getters.graphObjects.find(o => o.id === editableObject.getGeneratedId())
+      if(findNode) {
+        const fields = {object: Object.assign(editableObject, {show: true})}
+        dispatch('updateObjectFromGraph', {object: findNode, fields})
+        return Promise.resolve({type: 'updateObjectFromGraph', object: findNode})
+      } else {
+        commit('addObjectToGraph', {editableObject, position, size})
+        return Promise.resolve({type: 'addObjectToGraph', object: editableObject})
+      }
+    },
+    addRelationToGraph({getters, commit, dispatch}, {object, relations, noMove}) {
+      let object1 = getters.graphObjects.find(r => r.object.object.id === object.o1 && r.object.recId === object.r1)
+      let object2 = getters.graphObjects.find(r => r.object.object.id === object.o2 && r.object.recId === object.r2)
+      let relation = new GraphRelation(object1, object2, relations)
+      let findRelation = getters.graphRelations.find(r => [r.from, r.to].every(v => [object1.id, object2.id].includes(v)))
+      if(findRelation) {
+        dispatch('updateRelationFromGraph', {relation: findRelation, fields: {relation: relation}})
+        return Promise.resolve({type: 'updateRelationFromGraph', relation: findRelation})
+      }
+      else {
+        commit('addRelationToGraph', {objects: [object1, object2], relation: relation, noMove: noMove})
+        return Promise.resolve({type: 'addRelationToGraph', relation: relation})
+      }
     },
     async getRelationsBtwObjects({getters, dispatch}, objects) {
       let config = {}
@@ -148,13 +189,23 @@ export default {
         }
       return await axios.get('objects/objects_relation/', config)
         .then(response => {
-          for (let obj of response.data) {
-            dispatch('addObjectToGraph', {recId: obj.rec_id, objectId: obj.object_id})
-          }
+          dispatch('addToGraph', {payload: response.data})
           return Promise.resolve()
         })
         .catch(e => { return Promise.reject(e) })
     }
+  }
+}
+
+class GraphRelation extends DataBaseRelation {
+  constructor(o1, o2, params=[]) {
+    super(o1, o2, params)
+    this.showTooltip = true
+    this.showCreateDate = true
+  }
+
+  getGeneratedId() {
+    return `${this.o1.id}@${this.o2.id}`
   }
 }
 

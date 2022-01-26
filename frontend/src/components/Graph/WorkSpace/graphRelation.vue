@@ -7,7 +7,7 @@
     @mouseleave="emitHoverEvent('unhover')"
     @click.alt="$emit('setChoosingRelated', relation)"
   >
-    <edge ref="edge" :data="relation" :nodes="objects" :in-hover="inHover"/>
+    <edge ref="edge" :data="relation" :nodes="objects" :in-hover="inHover" :in-added="inAdded"/>
     <v-label ref="label" v-show="showLabel" :edge-coordinates="coordinatesEdge" :element="relation">
       <information-label :size-node="relation.size" :params="getClassifiers" :show-date="showDate"/>
     </v-label>
@@ -32,6 +32,7 @@ export default {
   props: {
     relation: Object,
     objects: Array,
+    inAdded: Boolean,
     inHover: Boolean
   },
   data: () => ({

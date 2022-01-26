@@ -68,7 +68,7 @@ export default {
   methods: {
     ...mapActions(['reorderGraph', 'reorderChoosingObjects', 'setEditableRelation', 'setNavigationDrawerStatus', 'setToolStatus', 'setActiveTool',
     'setEditableObject', 'deleteObjectFromGraph', 'setRootSearchRelationTreeItem', 'getRelationsBtwObjects',
-    'addObjectToGraph', 'executeMapScript', 'clearGraph']),
+    'addToGraph', 'executeMapScript', 'clearGraph']),
     menuShow(event, object=null) {
       this.objectCtxMenu = object
       this.$refs.contextMenu.show_root(event.x, event.y)
@@ -130,11 +130,13 @@ export default {
     saveGraphInFile() {
       let a = document.createElement("a");
       let file = new Blob([JSON.stringify(Array.from(this.graphObjects, node => {return {
-        x: node.x,
-        y: node.y,
+        position: {
+          x: node.x,
+          y: node.y,
+        },
         size: node.size,
-        objectId: node.object.object.id,
-        recId: node.object.recId
+        object_id: node.object.object.id,
+        rec_id: node.object.recId
       }}))], {type: 'text/plain'});
       a.href = URL.createObjectURL(file);
       a.download = new Date().getTime().toString() + '.json'
@@ -143,7 +145,7 @@ export default {
     },
     getGraphFromFile() {
       this.clearGraph()
-      const addObjectToGraph = this.addObjectToGraph
+      const addObjectToGraph = this.addToGraph
       let obj = document.createElement('input')
       obj.style.cssText = 'display:none'
       obj.type = 'file'
@@ -152,12 +154,7 @@ export default {
       let input  = document.getElementById("app").appendChild(obj)
       input.click()
       const parseText = function (text) {
-        JSON.parse(text).map(obj => addObjectToGraph(
-          Object.assign(
-            {recId: obj.recId, objectId: obj.objectId, position: {x: obj.x, y: obj.y}, size: obj.size},
-            {'noMove': true}
-          )
-        ))
+        addObjectToGraph({payload: JSON.parse(text), noMove: true})
       }
       input.addEventListener('change', function() {
         input.files[0].text()
