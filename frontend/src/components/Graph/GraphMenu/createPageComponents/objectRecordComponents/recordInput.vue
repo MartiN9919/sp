@@ -16,7 +16,7 @@
             </div>
           </template>
           <template v-slot:body="{ closeMenu, status }">
-            <select-date-time v-if="status" v-model="param.date" :close-menu="closeMenu"></select-date-time>
+            <select-date-time v-if="status" v-model="param.date" :close-menu="closeMenu"/>
           </template>
         </drop-down-menu>
       </template>
@@ -27,7 +27,7 @@
 <script>
 import ResponsiveInputForm from "@/components/WebsiteShell/CustomComponents/responsiveInputForm"
 import DropDownMenu from "@/components/WebsiteShell/CustomComponents/dropDownMenu"
-import SelectDateTime from "@/components/WebsiteShell/CustomComponents/selectDateTime"
+import SelectDateTime from "@/components/WebsiteShell/CustomComponents/DateTimePickers/selectDateTime"
 
 export default {
   name: "recordInput",

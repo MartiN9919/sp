@@ -1,34 +1,39 @@
 <template>
-  <div class="date-input-form">
-    <drop-down-menu min-width="auto" close-on-click :close-on-content-click="false">
-      <template v-slot:activator="{ on }">
-        <div v-on="on">
-          <body-input-form
-            v-model="value"
-            v-bind="$attrs"
-            :class="bodyInputClasses"
-            icon="mdi-calendar"
-            :placeholder="$attrs.placeholder || 'Выберете необходимую дату'"
-            @deletable="$emit('deletable')"
-            readonly
-          >
-            <template v-slot:message>
-              <slot name="message"></slot>
-            </template>
-          </body-input-form>
-        </div>
-      </template>
-      <template v-slot:body="{ closeMenu,  status }">
-        <select-date v-if="status" v-model="value" :close-menu="closeMenu"></select-date>
-      </template>
-    </drop-down-menu>
-  </div>
+  <drop-down-menu
+    max-width="300"
+    nudge-left="300"
+    offset-x
+    offset-y
+    :close-on-click="false"
+    :close-on-content-click="false"
+  >
+    <template v-slot:activator="{ openMenu, closeMenu }">
+      <body-input-form
+        v-model="value"
+        v-bind="$attrs"
+        :on="{focus: openMenu, blur: closeMenu}"
+        :class="bodyInputClasses"
+        :rules="rulesDate"
+        :icon="dateIcon"
+        :placeholder="placeholder"
+        v-mask="dateMask"
+        @deletable="$emit('deletable')"
+      >
+        <template v-slot:message>
+          <slot name="message"/>
+        </template>
+      </body-input-form>
+    </template>
+    <template v-slot:body>
+      <select-date v-model="value" @isValid="dateValid" onmousedown="return false"/>
+    </template>
+  </drop-down-menu>
 </template>
 
 <script>
 import BodyInputForm from "@/components/WebsiteShell/CustomComponents/bodyInputForm"
 import DropDownMenu from "@/components/WebsiteShell/CustomComponents/dropDownMenu"
-import SelectDate from "@/components/WebsiteShell/CustomComponents/selectDate"
+import SelectDate from "@/components/WebsiteShell/CustomComponents/DateTimePickers/selectDate"
 
 export default {
   name: "dateInput",
@@ -37,23 +42,41 @@ export default {
   props: {
     inputString: String,
   },
+  data: () => ({
+    date: '',
+    isDateValid: false,
+    dateIcon: 'mdi-calendar',
+    dateMask: [/[0-3]/, /\d/, '.', /[0-1]/, /\d/, '.', /[1-2]/, /\d/, /\d/, /\d/],
+  }),
   computed: {
     bodyInputClasses: function () { return this.$attrs.hasOwnProperty('label') ? '' : 'pt-0' },
+    placeholder: function () { return this.$attrs.placeholder || 'Выберете необходимую дату' },
+    rulesDate : function () {
+      if (this.value) {
+        let dateRule = [() => this.isDateValid || 'Введите корректную дату']
+        return this.$attrs.hasOwnProperty('rules') ? dateRule.concat(this.$attrs.rules) : dateRule
+      }
+      else return this.$attrs.rules
+    },
     value: {
-      get: function () { return this.inputString },
-      set: function (value) { this.$emit('changeInputString', value) },
+      get: function () {
+        this.$emit('changeInputString', this.isDateValid ? this.date : '')
+        return this.date
+      },
+      set: function (value) {
+        this.date = value
+      },
     },
   },
+  methods: {
+    dateValid(value) {
+      this.isDateValid = value
+    },
+  }
 }
 </script>
 
 <style scoped>
-.date-input-form >>> input {
-  cursor: pointer;
-}
-.date-input-form >>> .v-input__slot {
-  cursor: pointer;
-}
 .date-input-form {
   width: 100%;
 }
