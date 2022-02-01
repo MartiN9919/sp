@@ -31,18 +31,18 @@
             ></boolean-input>
           </v-list-item>
           <v-list-item>
-            <date-time-input
+            <date-input
               v-model="newObject.relDateTimeStart"
               clearable
               label="начала"
-            ></date-time-input>
+            ></date-input>
           </v-list-item>
           <v-list-item>
-            <date-time-input
+            <date-input
               v-model="newObject.relDateTimeEnd"
               clearable
               label="конца"
-            ></date-time-input>
+            ></date-input>
           </v-list-item>
         </v-form>
       </v-list-group>
@@ -61,12 +61,12 @@
 <script>
 import SelectorInput from "@/components/WebsiteShell/InputForms/selectorInput"
 import BooleanInput from "@/components/WebsiteShell/InputForms/booleanInput"
-import dateTimeInput from "@/components/WebsiteShell/InputForms/dateTimeInput"
+import dateInput from "@/components/WebsiteShell/InputForms/dateInput"
 import {mapGetters} from "vuex"
 
 export default {
   name: "creatorObject",
-  components: {SelectorInput, BooleanInput, dateTimeInput},
+  components: {SelectorInput, BooleanInput, dateInput},
   props: {
     objectId: Number,
     changeObject: {

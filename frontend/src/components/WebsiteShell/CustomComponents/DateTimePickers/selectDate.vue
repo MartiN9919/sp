@@ -1,10 +1,10 @@
 <template>
   <v-date-picker
     v-model="value"
-    @click:date="action()"
     show-adjacent-months
     first-day-of-week="1"
     full-width
+    no-title
     color="teal"
     locale="ru"
   />
@@ -15,10 +15,6 @@ export default {
   name: "selectDate",
   props: {
     inputString: String,
-    action: {
-      type: Function,
-      default: () => {},
-    },
   },
   model: {prop: 'inputString', event: 'changeInputString'},
   computed: {

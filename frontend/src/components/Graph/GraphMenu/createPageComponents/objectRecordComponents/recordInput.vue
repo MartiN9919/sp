@@ -1,27 +1,32 @@
 <template>
-  <v-col>
-    <responsive-input-form
-      v-model="param.value"
-      :inputType="type"
-      :listRules="['notEmpty']"
-      deletable
-      class="pt-1"
-      @deletable="$emit('deletable')"
-    >
-      <template v-slot:message>
-        <drop-down-menu min-width="auto" left offset-y close-on-click :close-on-content-click="false">
-          <template v-slot:activator="{ on }">
-            <div v-on="on" class="v-messages text-no-wrap selector-date-time">
-              {{param.date}}
-            </div>
-          </template>
-          <template v-slot:body="{ closeMenu, status }">
-            <select-date-time v-if="status" v-model="param.date" :close-menu="closeMenu"/>
-          </template>
-        </drop-down-menu>
-      </template>
-    </responsive-input-form>
-  </v-col>
+  <responsive-input-form
+    v-model="param.value"
+    :inputType="type"
+    :listRules="['notEmpty']"
+    deletable
+    class="pt-1"
+    @deletable="$emit('deletable')"
+  >
+    <template v-slot:message>
+      <drop-down-menu
+        max-width="300"
+        min-width="300"
+        nudge-left="300"
+        offset-x
+        offset-y
+        :close-on-content-click="false"
+      >
+        <template v-slot:activator="{ on }">
+          <div v-on="on" class="v-messages text-no-wrap selector-date-time">
+            {{param.date}}
+          </div>
+        </template>
+        <template v-slot:body>
+          <select-date-time v-model="param.date"/>
+        </template>
+      </drop-down-menu>
+    </template>
+  </responsive-input-form>
 </template>
 
 <script>

@@ -4,7 +4,7 @@
       <v-window-item key="date" value="date">
         <select-date v-model="date" @isValid="isDateValid"/>
       </v-window-item>
-      <v-window-item key="time" value="time">
+      <v-window-item key="time" value="time" eager>
         <select-time v-model="time" @isValid="isTimeValid"/>
       </v-window-item>
     </v-window>
@@ -13,7 +13,7 @@
         <span>Дата</span>
         <v-icon>mdi-calendar</v-icon>
       </v-btn>
-      <v-btn width="100%" value="time" :disabled="!isValidDate">
+      <v-btn width="100%" value="time">
         <span>Время</span>
         <v-icon>mdi-clock-outline</v-icon>
       </v-btn>
@@ -30,10 +30,6 @@ export default {
   components: {SelectTime, SelectDate},
   props: {
     inputString: String,
-    action: {
-      type: Function,
-      default: () => {},
-    },
   },
   model: {prop: 'inputString', event: 'changeInputString'},
   data: () => ({
@@ -78,6 +74,14 @@ export default {
     },
     isTimeValid(value) {
       this.isValidTime = value
+    }
+  },
+  watch: {
+    isValidDate: function (value) {
+      if(!value)
+        this.bottomNavigation = 'date'
+      else
+        this.bottomNavigation = 'time'
     }
   }
 }

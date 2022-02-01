@@ -1,6 +1,7 @@
 <template>
   <drop-down-menu
     max-width="300"
+    min-width="300"
     nudge-left="300"
     offset-x
     offset-y
@@ -12,11 +13,11 @@
         v-model="value"
         v-bind="$attrs"
         :on="{focus: openMenu, blur: closeMenu}"
-        :class="bodyInputClasses"
-        :rules="rulesDate"
-        :icon="dateIcon"
+        :class="classes"
+        :rules="rules"
+        :icon="formProps.icon"
         :placeholder="placeholder"
-        v-mask="dateMask"
+        v-facade="formProps.facade"
         @deletable="$emit('deletable')"
       >
         <template v-slot:message>
@@ -25,7 +26,12 @@
       </body-input-form>
     </template>
     <template v-slot:body>
-      <select-date v-model="value" @isValid="dateValid" onmousedown="return false"/>
+      <component
+        :is="formProps.component"
+        v-model="value"
+        @isValid="validate"
+        onmousedown="return false"
+      />
     </template>
   </drop-down-menu>
 </template>
@@ -33,51 +39,80 @@
 <script>
 import BodyInputForm from "@/components/WebsiteShell/CustomComponents/bodyInputForm"
 import DropDownMenu from "@/components/WebsiteShell/CustomComponents/dropDownMenu"
-import SelectDate from "@/components/WebsiteShell/CustomComponents/DateTimePickers/selectDate"
+const SelectDate = () => import("@/components/WebsiteShell/CustomComponents/DateTimePickers/selectDate")
+const SelectDateTime = () => import("@/components/WebsiteShell/CustomComponents/DateTimePickers/selectDateTime")
+import { facade } from 'vue-input-facade'
+
+const dateProps = {
+  component: 'SelectDate',
+  icon: 'mdi-calendar',
+  basePlaceholder: 'Выберете необходимую дату',
+  errorMessage: 'Введите корректную дату',
+  facade: '##.##.####',
+}
+
+const dateTimeProps = {
+  component: 'SelectDateTime',
+  icon: 'mdi-calendar-clock',
+  basePlaceholder: 'Выберете необходимую дату и время',
+  errorMessage: 'Введите все значения',
+  facade: '##.##.#### ##:##',
+}
 
 export default {
   name: "dateInput",
-  components: {BodyInputForm, DropDownMenu, SelectDate},
+  directives: { facade },
+  components: {BodyInputForm, DropDownMenu, SelectDate, SelectDateTime},
   model: { prop: 'inputString', event: 'changeInputString'},
   props: {
     inputString: String,
   },
   data: () => ({
-    date: '',
-    isDateValid: false,
-    dateIcon: 'mdi-calendar',
-    dateMask: [/[0-3]/, /\d/, '.', /[0-1]/, /\d/, '.', /[1-2]/, /\d/, /\d/, /\d/],
+    string: '',
+    isValid: false,
+    formProps: null,
   }),
   computed: {
-    bodyInputClasses: function () { return this.$attrs.hasOwnProperty('label') ? '' : 'pt-0' },
-    placeholder: function () { return this.$attrs.placeholder || 'Выберете необходимую дату' },
-    rulesDate : function () {
+    classes: function () { return this.$attrs.hasOwnProperty('label') ? '' : 'pt-0' },
+    placeholder: function () { return this.$attrs.placeholder || this.formProps.basePlaceholder },
+    rules : function () {
       if (this.value) {
-        let dateRule = [() => this.isDateValid || 'Введите корректную дату']
-        return this.$attrs.hasOwnProperty('rules') ? dateRule.concat(this.$attrs.rules) : dateRule
+        let rule = [() => this.isValid || this.formProps.errorMessage]
+        return this.$attrs.hasOwnProperty('rules') ? rule.concat(this.$attrs.rules) : rule
       }
       else return this.$attrs.rules
     },
     value: {
       get: function () {
-        this.$emit('changeInputString', this.isDateValid ? this.date : '')
-        return this.date
+        this.$emit('changeInputString', this.isValid ? this.string : '')
+        return this.string
       },
       set: function (value) {
-        this.date = value
+        this.string = value
       },
     },
   },
   methods: {
-    dateValid(value) {
-      this.isDateValid = value
+    validate(value) {
+      this.isValid = value
     },
+  },
+  created() {
+    switch (this.$attrs['type-value']) {
+      case 'date':
+        this.formProps = dateProps
+        break
+      case 'datetime':
+        this.formProps = dateTimeProps
+        break
+      default:
+        this.formProps = dateTimeProps
+        break
+    }
   }
 }
 </script>
 
 <style scoped>
-.date-input-form {
-  width: 100%;
-}
+
 </style>
