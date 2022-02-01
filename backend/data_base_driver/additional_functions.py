@@ -89,8 +89,8 @@ def date_server_to_client(date_str):
     return '.'.join(list(reversed(date_str.split('-')))) if date_str else None
 
 
-def date_time_server_to_client(date_time_str):
-    return date_server_to_client(date_time_str.split(' ')[0]) + ' ' + date_time_str.split(' ')[1] if date_time_str else None
+def date_time_server_to_client(date_time_str, sep=' '):
+    return date_server_to_client(date_time_str.split(' ')[0]) + sep + date_time_str.split(' ')[1] if date_time_str else None
 
 
 def intercept_sort_list(elements):

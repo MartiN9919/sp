@@ -4,7 +4,8 @@ import json
 import threading
 
 from core.settings import DOCUMENT_ROOT
-from data_base_driver.additional_functions import date_client_to_server, date_time_client_to_server
+from data_base_driver.additional_functions import date_client_to_server, date_time_client_to_server, \
+    date_time_server_to_client
 from data_base_driver.script.get_script_info import get_script_title
 from data_base_driver.script.script_execute import execute_script_map
 from data_base_driver.script.script_list import get_script_tree
@@ -75,8 +76,8 @@ def aj_script_execute_report(request):
     """
     data = json.loads(request.body)
     method_name = 'script_' + str(data.get('id'))
-    title = get_script_title(data.get('id')) + '-' + datetime.datetime.now().replace(microsecond=0,
-                                                                                     tzinfo=None).isoformat(sep='-')
+    title = get_script_title(data.get('id')) + '-' + date_time_server_to_client(datetime.datetime.now().replace(microsecond=0,
+                                                                                     tzinfo=None).isoformat(sep=' '), sep='-')
     group_id = DAT_OWNER.DUMP.get_group(user_id=request.user.id)
     try:
         my_module = importlib.import_module('script.user_scripts.' + method_name)
