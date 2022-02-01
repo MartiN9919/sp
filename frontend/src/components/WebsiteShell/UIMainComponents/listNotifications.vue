@@ -85,7 +85,7 @@
 
 <script>
 import DropDownMenu from "@/components/WebsiteShell/CustomComponents/dropDownMenu"
-import SelectDate from "@/components/WebsiteShell/CustomComponents/selectDate"
+import SelectDate from "@/components/WebsiteShell/CustomComponents/DateTimePickers/selectDate"
 import axios from "@/plugins/axiosSettings"
 import {mapGetters} from "vuex"
 
