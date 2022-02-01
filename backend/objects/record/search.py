@@ -1,3 +1,4 @@
+from data_base_driver.additional_functions import date_time_client_to_server
 from data_base_driver.constants.const_fulltextsearch import FullTextSearch
 from objects.record.find_object import find_reliable_http
 from objects.record.get_record import get_record_title
@@ -23,9 +24,9 @@ def recursion_search(request, group_id):
                                                       rel.get(FullTextSearch.REQUEST, ''),
                                                       rel.get(FullTextSearch.REL, {}).get(FullTextSearch.RELATION_ID),
                                                       rel.get(FullTextSearch.REL, {}).get(FullTextSearch.REL_VALUE, 0),
-                                                      rel.get(FullTextSearch.REL, {}).get(
-                                                          FullTextSearch.DATE_TIME_START),
-                                                      rel.get(FullTextSearch.REL, {}).get(FullTextSearch.DATE_TIME_END),
+                                                      date_time_client_to_server(rel.get(FullTextSearch.REL, {}).get(
+                                                          FullTextSearch.DATE_TIME_START)),
+                                                      date_time_client_to_server(rel.get(FullTextSearch.REL, {}).get(FullTextSearch.DATE_TIME_END)),
                                                       request.get(FullTextSearch.ACTUAL, False),
                                                       rel.get(FullTextSearch.ACTUAL, False),
                                                       group_id))
@@ -61,10 +62,10 @@ def recursion_search(request, group_id):
                                                         temp.get(FullTextSearch.OBJECT_ID), rec_id,
                                                         rel.get(FullTextSearch.REL, {}).
                                                         get(FullTextSearch.REL_VALUE, 0),
-                                                        rel.get(FullTextSearch.REL, {}).
-                                                        get(FullTextSearch.DATE_TIME_START),
-                                                        rel.get(FullTextSearch.REL, {}).
-                                                        get(FullTextSearch.DATE_TIME_END),
+                                                        date_time_client_to_server(rel.get(FullTextSearch.REL, {}).
+                                                        get(FullTextSearch.DATE_TIME_START)),
+                                                        date_time_client_to_server(rel.get(FullTextSearch.REL, {}).
+                                                        get(FullTextSearch.DATE_TIME_END)),
                                                         group_id,
                                                         )
                     if len(temp_result) == 0:

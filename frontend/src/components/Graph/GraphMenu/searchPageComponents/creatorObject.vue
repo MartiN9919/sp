@@ -150,14 +150,14 @@ export default {
       this.$emit('cancel')
     },
   },
-  mounted() {
+  created() {
     if(this.changeObject) {
       this.selectedObjectId =  this.changeObject.object.id
       this.selectedRelationId = this.changeObject.rel?.id | 0
       this.selectedRelationItemId = this.changeObject.relValue
       this.newObject.actual = this.changeObject.actual
       this.newObject.relDateTimeStart = this.changeObject.relDateTimeStart
-      this.newObject.relDateTimeEnd = this.changeObject.relDateTimeStart
+      this.newObject.relDateTimeEnd = this.changeObject.relDateTimeEnd
     }
     else {
       this.selectedObjectId =  this.filteredObjects[0].id

@@ -3,8 +3,10 @@
     max-width="300"
     min-width="300"
     nudge-left="300"
+    eager
     offset-x
     offset-y
+    z-index="10000002"
     :close-on-click="false"
     :close-on-content-click="false"
   >
@@ -73,7 +75,7 @@ export default {
     formProps: null,
   }),
   computed: {
-    classes: function () { return this.$attrs.hasOwnProperty('label') ? '' : 'pt-0' },
+    classes: function () { return this.$attrs.hasOwnProperty('label') ? '' : 'pt-1' },
     placeholder: function () { return this.$attrs.placeholder || this.formProps.basePlaceholder },
     rules : function () {
       if (this.value) {
@@ -98,6 +100,7 @@ export default {
     },
   },
   created() {
+    this.value = this.inputString
     switch (this.$attrs['type-value']) {
       case 'date':
         this.formProps = dateProps

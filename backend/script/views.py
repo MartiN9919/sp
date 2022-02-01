@@ -4,6 +4,7 @@ import json
 import threading
 
 from core.settings import DOCUMENT_ROOT
+from data_base_driver.additional_functions import date_client_to_server, date_time_client_to_server
 from data_base_driver.script.get_script_info import get_script_title
 from data_base_driver.script.script_execute import execute_script_map
 from data_base_driver.script.script_list import get_script_tree
@@ -14,6 +15,7 @@ from data_base_driver.sys_reports.set_file_info import add_file
 from data_base_driver.sys_templates.get_template_info import get_templates_list, get_template
 from data_base_driver.sys_templates.set_templates_info import add_template, remove_template, update_template
 from data_base_driver.trigger.trigger_list import get_triggers_list
+from script.additional_functions import parse_variables
 
 
 @login_check
@@ -56,7 +58,8 @@ def aj_script_execute_map(request):
     group_id = DAT_OWNER.DUMP.get_group(user_id=request.user.id)
     data = json.loads(request.body)
     method_name = 'script_' + str(data.get('id'))
-    result = execute_script_map(method_name, group_id, data.get('variables'))
+
+    result = execute_script_map(method_name, group_id, parse_variables(data.get('variables')))
     return result
 
 
@@ -87,7 +90,7 @@ def aj_script_execute_report(request):
         lock = threading.Lock()
         with lock:
             thread = threading.Thread(target=script_function,
-                                      args=(data.get('variables'), group_id, file_id, request.user.id, title, lock))
+                                      args=(parse_variables(data.get('variables')), group_id, file_id, request.user.id, title, lock))
             thread.start()
             return get_reports(
                 request.user.id,
@@ -119,7 +122,6 @@ def aj_template(request):
     @param request: GET, POST, PUT или DELETE запрос на изменение шаблона
     @return: статус выполнения либо код ошибки
     """
-
     if request.method == 'GET':
         try:
             return get_template(request.GET['template_id'], request.user.id)
@@ -131,7 +133,6 @@ def aj_template(request):
         id = add_template(group_id, data.get('title', 'Неизвестное имя'), data.get('activeAnalysts', ''),
                           data.get('passiveAnalysts', ''))
         return id
-
     elif request.method == 'PUT':
         data = json.loads(request.body)
         try:
