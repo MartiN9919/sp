@@ -38,7 +38,7 @@
                 <td v-if="checkTypeParam(param) === 'file_any'">
                   <a :href="getDownloadLink(item.value)">{{item.value}}</a>
                 </td>
-                <td v-else-if="checkTypeParam(param) === 'geometry'">
+                <td v-else-if="checkTypeParam(param) === 'geometry' || checkTypeParam(param) === 'geometry_point'">
                   <geometry-param :value="item.value" :title="title">
                     <span>{{getGeometryTextValue(param)}}</span>
                   </geometry-param>
