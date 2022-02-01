@@ -82,7 +82,7 @@ export default {
   }),
   methods: {
     getParam(param, value) {
-      if(this.checkTypeParam(param) === 'geometry' && param.values.length > 0){
+      if((this.checkTypeParam(param) === 'geometry' || this.checkTypeParam(param) === 'geometry_point') && param.values.length > 0){
         let copyGeometry = _.cloneDeep(param.values[0])
         value.value = JSON.parse(copyGeometry.value)
       }
