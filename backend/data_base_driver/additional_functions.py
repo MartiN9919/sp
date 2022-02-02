@@ -12,11 +12,12 @@ def get_document_date_format(date):
     return '.'.join(reversed(date.split('-')))
 
 
-def get_date_from_days_sec(days, sec):
+def get_date_from_days_sec(days, sec, client=False):
     """
     Функция для получения даты и времени в строковом формате из дней с рождества христова и секунд с начала дня
     @param days: количество дней с прошедших с рождества христова
     @param sec: количество секунд прошедших с начала дня
+    @param client: клиентский формат даты, если True то d/m/Y
     @return: строка содержащую дату и время в формате Y-m-d H:M:S
     """
     if days == 0 and sec == 0:
@@ -27,18 +28,24 @@ def get_date_from_days_sec(days, sec):
         h = sec // 3600
         m = (sec % 3600) // 60
         s = sec - h * 3600 - m * 60
-    return datetime.datetime.fromordinal(days - 365).replace(hour=h, minute=m, second=s).strftime("%Y-%m-%d %H:%M:%S")
+    if client:
+        return datetime.datetime.fromordinal(days - 365).replace(hour=h, minute=m, second=s).strftime(
+            "%d-%m-%Y %H:%M:%S")
+    else:
+        return datetime.datetime.fromordinal(days - 365).replace(hour=h, minute=m, second=s).strftime(
+            "%Y-%m-%d %H:%M:%S")
 
 
-def get_date_time_from_sec(sec):
+def get_date_time_from_sec(sec, client=False):
     """
     Функция для получения даты и времени в строковом формате из секунд с рождества христова
     @param sec: количество секунд прошедших с рождества христова
+    @param client: клиентский формат даты, если True то d/m/Y
     @return: строка содержащую дату и время в формате Y-m-d H:M:S
     """
     days = sec // 86400
     sec = sec % 86400
-    return get_date_from_days_sec(days, sec)
+    return get_date_from_days_sec(days, sec, client)
 
 
 def get_sorted_list(items):
@@ -68,6 +75,22 @@ def date_time_to_sec(date_time):
 
 def str_to_sec(date_time_str):
     return date_time_to_sec(datetime.datetime.strptime(date_time_str, "%Y-%m-%d %H:%M:%S"))
+
+
+def date_client_to_server(date_str):
+    return '-'.join(list(reversed(date_str.split('.')))) if date_str else None
+
+
+def date_time_client_to_server(date_time_str):
+    return date_client_to_server(date_time_str.split(' ')[0]) + ' ' + date_time_str.split(' ')[1] if date_time_str else None
+
+
+def date_server_to_client(date_str):
+    return '.'.join(list(reversed(date_str.split('-')))) if date_str else None
+
+
+def date_time_server_to_client(date_time_str, sep=' '):
+    return date_server_to_client(date_time_str.split(' ')[0]) + sep + date_time_str.split(' ')[1] if date_time_str else None
 
 
 def intercept_sort_list(elements):

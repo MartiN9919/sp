@@ -1,60 +1,126 @@
 <template>
-  <div class="date-input-form">
-    <drop-down-menu min-width="auto" close-on-click :close-on-content-click="false">
-      <template v-slot:activator="{ on }">
-        <div v-on="on">
-          <body-input-form
-            v-model="value"
-            v-bind="$attrs"
-            :class="bodyInputClasses"
-            icon="mdi-calendar"
-            :placeholder="$attrs.placeholder || 'Выберете необходимую дату'"
-            @deletable="$emit('deletable')"
-            readonly
-          >
-            <template v-slot:message>
-              <slot name="message"></slot>
-            </template>
-          </body-input-form>
-        </div>
-      </template>
-      <template v-slot:body="{ closeMenu,  status }">
-        <select-date v-if="status" v-model="value" :close-menu="closeMenu"></select-date>
-      </template>
-    </drop-down-menu>
-  </div>
+  <drop-down-menu
+    max-width="300"
+    min-width="300"
+    nudge-left="300"
+    eager
+    offset-x
+    offset-y
+    z-index="10000002"
+    :close-on-click="false"
+    :close-on-content-click="false"
+  >
+    <template v-slot:activator="{ openMenu, closeMenu }">
+      <body-input-form
+        v-model="value"
+        v-bind="$attrs"
+        :on="{focus: openMenu, blur: closeMenu}"
+        :class="classes"
+        :rules="rules"
+        :icon="formProps.icon"
+        :placeholder="placeholder"
+        v-facade="formProps.facade"
+        @deletable="$emit('deletable')"
+      >
+        <template v-slot:message>
+          <slot name="message"/>
+        </template>
+      </body-input-form>
+    </template>
+    <template v-slot:body>
+      <component
+        v-show="dropdown"
+        :is="formProps.component"
+        v-model="value"
+        @isValid="validate"
+        onmousedown="return false"
+      />
+    </template>
+  </drop-down-menu>
 </template>
 
 <script>
 import BodyInputForm from "@/components/WebsiteShell/CustomComponents/bodyInputForm"
 import DropDownMenu from "@/components/WebsiteShell/CustomComponents/dropDownMenu"
-import SelectDate from "@/components/WebsiteShell/CustomComponents/selectDate"
+const SelectDate = () => import("@/components/WebsiteShell/CustomComponents/DateTimePickers/selectDate")
+const SelectDateTime = () => import("@/components/WebsiteShell/CustomComponents/DateTimePickers/selectDateTime")
+import { facade } from 'vue-input-facade'
+
+const dateProps = {
+  component: 'SelectDate',
+  icon: 'mdi-calendar',
+  basePlaceholder: 'Выберете необходимую дату',
+  errorMessage: 'Введите корректную дату',
+  facade: '##.##.####',
+}
+
+const dateTimeProps = {
+  component: 'SelectDateTime',
+  icon: 'mdi-calendar-clock',
+  basePlaceholder: 'Выберете необходимую дату и время',
+  errorMessage: 'Введите все значения',
+  facade: '##.##.#### ##:##',
+}
 
 export default {
   name: "dateInput",
-  components: {BodyInputForm, DropDownMenu, SelectDate},
+  directives: { facade },
+  components: {BodyInputForm, DropDownMenu, SelectDate, SelectDateTime},
   model: { prop: 'inputString', event: 'changeInputString'},
   props: {
     inputString: String,
+    dropdown: {
+      type: Boolean,
+      default: true
+    }
   },
+  data: () => ({
+    string: '',
+    isValid: true,
+    formProps: null,
+  }),
   computed: {
-    bodyInputClasses: function () { return this.$attrs.hasOwnProperty('label') ? '' : 'pt-0' },
+    classes: function () { return this.$attrs.hasOwnProperty('label') ? '' : 'pt-1' },
+    placeholder: function () { return this.$attrs.placeholder || this.formProps.basePlaceholder },
+    rules : function () {
+      if (this.value) {
+        let rule = [() => this.isValid || this.formProps.errorMessage]
+        return this.$attrs.hasOwnProperty('rules') ? rule.concat(this.$attrs.rules) : rule
+      }
+      else return this.$attrs.rules
+    },
     value: {
-      get: function () { return this.inputString },
-      set: function (value) { this.$emit('changeInputString', value) },
+      get: function () {
+        this.$emit('changeInputString', this.isValid ? this.string : '')
+        return this.string
+      },
+      set: function (value) {
+        this.string = value
+      },
     },
   },
+  methods: {
+    validate(value) {
+      this.isValid = value
+    },
+  },
+  created() {
+    this.value = this.inputString
+    switch (this.$attrs['type-value']) {
+      case 'date':
+        this.formProps = dateProps
+        break
+      case 'datetime':
+        this.formProps = dateTimeProps
+        break
+      default:
+        this.formProps = dateTimeProps
+        break
+    }
+  }
 }
 </script>
 
 <style scoped>
-.date-input-form >>> input {
-  cursor: pointer;
-}
-.date-input-form >>> .v-input__slot {
-  cursor: pointer;
-}
-.date-input-form {
-  width: 100%;
-}
+
 </style>

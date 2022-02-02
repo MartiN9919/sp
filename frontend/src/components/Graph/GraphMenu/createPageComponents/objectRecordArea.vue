@@ -38,7 +38,7 @@
                 <td v-if="checkTypeParam(param) === 'file_any'">
                   <a :href="getDownloadLink(item.value)">{{item.value}}</a>
                 </td>
-                <td v-else-if="checkTypeParam(param) === 'geometry'">
+                <td v-else-if="checkTypeParam(param) === 'geometry' || checkTypeParam(param) === 'geometry_point'">
                   <geometry-param :value="item.value" :title="title">
                     <span>{{getGeometryTextValue(param)}}</span>
                   </geometry-param>
@@ -59,7 +59,7 @@
 import RecordTitle from "@/components/Graph/GraphMenu/createPageComponents/objectRecordComponents/recordTitle"
 import RecordInput from "@/components/Graph/GraphMenu/createPageComponents/objectRecordComponents/recordInput"
 import DropDownMenu from "@/components/WebsiteShell/CustomComponents/dropDownMenu"
-import MenuDateTime from "@/components/WebsiteShell/CustomComponents/selectDateTime"
+import MenuDateTime from "@/components/WebsiteShell/CustomComponents/DateTimePickers/selectDateTime"
 import GeometryParam from "@/components/WebsiteShell/CustomComponents/Dossier/geometryParam"
 import CustomTooltip from "@/components/WebsiteShell/CustomComponents/customTooltip"
 import {getDownloadFileLink} from '@/plugins/axiosSettings'
@@ -82,7 +82,7 @@ export default {
   }),
   methods: {
     getParam(param, value) {
-      if(this.checkTypeParam(param) === 'geometry' && param.values.length > 0){
+      if((this.checkTypeParam(param) === 'geometry' || this.checkTypeParam(param) === 'geometry_point') && param.values.length > 0){
         let copyGeometry = _.cloneDeep(param.values[0])
         value.value = JSON.parse(copyGeometry.value)
       }
