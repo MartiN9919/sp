@@ -31,18 +31,20 @@
             ></boolean-input>
           </v-list-item>
           <v-list-item>
-            <date-time-input
+            <date-input
               v-model="newObject.relDateTimeStart"
+              :dropdown="false"
               clearable
               label="начала"
-            ></date-time-input>
+            ></date-input>
           </v-list-item>
           <v-list-item>
-            <date-time-input
+            <date-input
               v-model="newObject.relDateTimeEnd"
+              :dropdown="false"
               clearable
               label="конца"
-            ></date-time-input>
+            ></date-input>
           </v-list-item>
         </v-form>
       </v-list-group>
@@ -61,12 +63,12 @@
 <script>
 import SelectorInput from "@/components/WebsiteShell/InputForms/selectorInput"
 import BooleanInput from "@/components/WebsiteShell/InputForms/booleanInput"
-import dateTimeInput from "@/components/WebsiteShell/InputForms/dateTimeInput"
+import dateInput from "@/components/WebsiteShell/InputForms/dateInput"
 import {mapGetters} from "vuex"
 
 export default {
   name: "creatorObject",
-  components: {SelectorInput, BooleanInput, dateTimeInput},
+  components: {SelectorInput, BooleanInput, dateInput},
   props: {
     objectId: Number,
     changeObject: {
@@ -150,14 +152,14 @@ export default {
       this.$emit('cancel')
     },
   },
-  mounted() {
+  created() {
     if(this.changeObject) {
       this.selectedObjectId =  this.changeObject.object.id
       this.selectedRelationId = this.changeObject.rel?.id | 0
       this.selectedRelationItemId = this.changeObject.relValue
       this.newObject.actual = this.changeObject.actual
       this.newObject.relDateTimeStart = this.changeObject.relDateTimeStart
-      this.newObject.relDateTimeEnd = this.changeObject.relDateTimeStart
+      this.newObject.relDateTimeEnd = this.changeObject.relDateTimeEnd
     }
     else {
       this.selectedObjectId =  this.filteredObjects[0].id

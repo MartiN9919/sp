@@ -240,7 +240,7 @@ class ValueParam {
   getDateTime() {
     let dateTime = new Date()
     let time = dateTime.toLocaleTimeString('ru-RU').split(':')
-    let date = dateTime.toLocaleDateString('ru-RU').split('.')
-    return date[2] + '-' + date[1] + '-' + date[0] + ' ' + time[0] + ':' + time[1]
+    let date = dateTime.toLocaleDateString('ru-RU')
+    return date + ' ' + time[0] + ':' + time[1]
   }
 }

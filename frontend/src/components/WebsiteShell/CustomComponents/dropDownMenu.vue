@@ -7,9 +7,9 @@
     transition="slide-x-reverse-transition"
   >
     <template v-slot:activator="{ on, attrs }">
-      <slot name="activator" :on="on"></slot>
+      <slot name="activator" :on="on" :openMenu="openMenu" :closeMenu="closeMenu" :attrs="attrs"/>
     </template>
-    <slot name="body" :closeMenu="closeMenu" :status="status"></slot>
+    <slot name="body" :openMenu="openMenu" :closeMenu="closeMenu" :status="status"/>
   </v-menu>
 </template>
 
@@ -20,11 +20,15 @@ export default {
   name: "dropDownMenu",
   inheritAttrs: false,
   data: () => ({
-    closeMenu: null,
     status: false,
   }),
-  mounted() {
-    this.closeMenu = this.$refs.menu.save
+  methods: {
+    openMenu() {
+      this.status = true
+    },
+    closeMenu() {
+      this.status = false
+    }
   },
   watch: {
     menuModal: function (value) {

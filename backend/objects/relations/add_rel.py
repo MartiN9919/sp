@@ -1,6 +1,6 @@
 import datetime
 
-from data_base_driver.additional_functions import get_date_time_from_sec
+from data_base_driver.additional_functions import get_date_time_from_sec, date_time_client_to_server
 from data_base_driver.constants.const_dat import DAT_REL
 from data_base_driver.input_output.input_output import io_set, io_get_rel
 from data_base_driver.sys_key.get_key_dump import get_key_by_id
@@ -24,7 +24,8 @@ def add_rel(group_id, object_1_id, rec_1_id, object_2_id, rec_2_id, params, doc_
         object_1_id, rec_1_id = object_2_id, rec_2_id
         object_2_id, rec_2_id = temp_object, temp_rec
     for param in params:
-        date_time_str = param.get('date', datetime.datetime.now().strftime("%Y-%m-%d %H:%M")) + ':00'
+        date_time_str = date_time_client_to_server(
+            param.get('date', datetime.datetime.now().strftime("%Y-%m-%d %H:%M")) + ':00')
         key_id = param.get('id')
         key = get_key_by_id(key_id)
         if key['obj_id'] != 1:
@@ -52,7 +53,6 @@ def add_rel(group_id, object_1_id, rec_1_id, object_2_id, rec_2_id, params, doc_
         'params': get_object_relation(group_id, object_1_id, rec_1_id, [{'object_id': object_2_id, 'rec_id': rec_2_id}])
         [0]['relations']
     }
-
 
 
 def add_rel_by_other_object(group_id, object_id, rec_id, other_object_id, other_rec_id):

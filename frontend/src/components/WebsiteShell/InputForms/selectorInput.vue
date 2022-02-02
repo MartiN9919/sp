@@ -61,7 +61,7 @@ export default {
   },
   mounted() {
     if(this.userInformation.group_id.list_id === this.$attrs['type-load'])
-      this.value = {id: this.userInformation.group_id.id}
+      this.value = this.userInformation.group_id.id
   }
 }
 </script>

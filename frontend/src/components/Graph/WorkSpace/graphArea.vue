@@ -112,8 +112,8 @@ export default {
       this.relatedObjects.map(o => this.pickUp(o))
     },
     hover(element) {
-      this.pickUp(element)
       this.isObject(element) ? this.getRelatedForObject(element) : this.getRelatedForRelation(element)
+      this.pickUp(element)
     },
     unHover() {
       this.relatedObjects = []

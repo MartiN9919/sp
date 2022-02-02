@@ -79,7 +79,7 @@ class IO_PARS_DATA(dict):
         if type in [DAT_SYS_KEY.TYPE_STR, DAT_SYS_KEY.TYPE_DATA, DAT_SYS_KEY.TYPE_PHONE_NUMBER,
                     DAT_SYS_KEY.TYPE_FILE_PHOTO, DAT_SYS_KEY.TYPE_FILE_ANY]:
             ret = "'" + str(val) + "'"
-        elif type == DAT_SYS_KEY.TYPE_GEOMETRY:
+        elif type == DAT_SYS_KEY.TYPE_GEOMETRY or type == DAT_SYS_KEY.TYPE_GEOMETRY_POINT:
             ret = "ST_GeomFromGeoJson('" + val + "')"
         else:
             ret = str(val)

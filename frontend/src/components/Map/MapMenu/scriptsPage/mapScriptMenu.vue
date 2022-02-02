@@ -36,7 +36,7 @@
 
         <v-scroll-y-transition mode="out-in">
           <v-form ref="form" v-if="'id' in selectedItem" class="px-2" onSubmit="return false;">
-            <custom-tooltip v-for="v in selectedItem.variables" :key="v.id" :body-text="v.hint" bottom>
+            <custom-tooltip v-for="(v, key) in selectedItem.variables" :key="selectedItem.id + key" :body-text="v.hint" bottom>
               <template v-slot:activator="{ on }">
                 <div v-on="on" class="pt-2">
                   <responsive-input-form

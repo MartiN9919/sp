@@ -7,6 +7,7 @@ from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 
 from core.settings import MEDIA_ROOT
+from data_base_driver.additional_functions import date_time_client_to_server, date_client_to_server
 from data_base_driver.constants.const_dat import DAT_SYS_KEY
 from data_base_driver.constants.const_key import SYS_KEY_CONSTANT
 from objects.record.find_object import find_key_value_http
@@ -97,6 +98,10 @@ def parse_value(param, object, files):
     if key.get('list_id') != 0 and key['id'] not in SYS_KEY_CONSTANT.NOT_VALUE_TRANSFER_LIST and \
             key['id'] not in SYS_KEY_CONSTANT.GEOMETRY_TRANSFER_LIST and key.get('list_id') != None:
         value = str(get_item_list_value(value))
+    if key.get('type') == DAT_SYS_KEY.TYPE_DATA:
+        value = date_client_to_server(value)
+    if key.get('type') == DAT_SYS_KEY.TYPE_DATATIME:
+        value = date_time_client_to_server(value)
     if key.get('type') == DAT_SYS_KEY.TYPE_FILE_PHOTO or key.get('type') == DAT_SYS_KEY.TYPE_FILE_ANY:
         rec_id = get_object_new_rec_id(object['object_id']) if object['rec_id'] == 0 else object['rec_id']
         path = 'files/' + str(object['object_id']) + '/' + str(rec_id) + '/'
@@ -105,7 +110,8 @@ def parse_value(param, object, files):
         file = files[value]
         file_path = default_storage.save(path + file.name, ContentFile(file.read()))
         value = file_path.split('/')[-1]
-    return [param['id'], value, param.get('date', datetime.datetime.now().strftime("%Y-%m-%d %H:%M")) + ':00']
+    return [param['id'], value,
+            date_time_client_to_server(param.get('date', datetime.datetime.now().strftime("%Y-%m-%d %H:%M")) + ':00')]
 
 
 # блокиратор потока для контроля что в один момент времени создается один объект

@@ -1,5 +1,6 @@
 import json
 
+from data_base_driver.additional_functions import date_time_server_to_client
 from data_base_driver.connect.connect_mysql import db_sql
 from data_base_driver.constants.const_dat import DAT_SYS_FILES, DAT_OWNER
 
@@ -18,7 +19,7 @@ def get_list_files(user_id, length, offset):
         {
             'id': file[0],
             'name': file[1],
-            'date': file[2].replace(microsecond=0, tzinfo=None).isoformat(sep=' '),
+            'date': date_time_server_to_client(file[2].replace(microsecond=0, tzinfo=None).isoformat(sep=' ')),
             'status': file[3], 'params': json.loads(file[4])
         } for file in db_sql(sql)
     ]
