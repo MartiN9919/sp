@@ -56,7 +56,6 @@ export default {
       this.screen.removeEventListener('mouseup', this.stopDrag)
       this.screen.removeEventListener('mousemove', this.applyDrag)
       this.screen.removeEventListener('mouseleave', this.stopDrag)
-
     },
     applyDrag (e) {
       let x = (e.clientX - this.drag.prev.x) / this.drag.zoom

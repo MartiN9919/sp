@@ -1,7 +1,8 @@
 import datetime
 from multiprocessing import Process, Manager
 
-from data_base_driver.additional_functions import get_date_time_from_sec
+from data_base_driver.additional_functions import get_date_time_from_sec, date_time_client_to_server, \
+    date_time_server_to_client
 from objects.record.find_object import find_reliable_http
 from objects.record.get_record import get_object_record_by_id_http
 from data_base_driver.input_output.input_output import io_get_rel
@@ -64,6 +65,8 @@ def get_rel_by_object(group_id, object, id, parents):
     for relation in relations:
         for sub_relation in relation['relations']:
             sub_relation['values'].sort(key=lambda x: x['date'], reverse=True)
+            for value in sub_relation['values']:
+                value['date'] = date_time_server_to_client(value['date'])
     return {'object_id': object, 'relations': [], 'rec_id': id, 'rels': relations}
 
 
@@ -221,8 +224,8 @@ def search_relations_recursive(group_id, request, parent, root):  # НЕОБХО
                                                        relation.get('object_id'),
                                                        rec_id,
                                                        relation.get('rel').get('value'),
-                                                       relation.get('rel').get('date_time_start'),
-                                                       relation.get('rel').get('date_time_end'),
+                                                       date_time_client_to_server(relation.get('rel').get('date_time_start')),
+                                                       date_time_client_to_server(relation.get('rel').get('date_time_end')),
                                                        group_id,
                                                        )
                 if len(temp_result) > 0:
@@ -239,8 +242,8 @@ def search_relations_recursive(group_id, request, parent, root):  # НЕОБХО
                                                parent.get('object_id'),
                                                parent.get('rec_id'),
                                                relation.get('rel').get('value'),
-                                               relation.get('rel').get('date_time_start'),
-                                               relation.get('rel').get('date_time_end'),
+                                               date_time_client_to_server(relation.get('rel').get('date_time_start')),
+                                               date_time_client_to_server(relation.get('rel').get('date_time_end')),
                                                group_id,
                                                )
             if len(rec_ids) == 0:

@@ -6,6 +6,7 @@
     autocomplete="off"
     messages=" "
     :color="$CONST.APP.COLOR_OBJ"
+    v-on="on"
   >
     <template v-slot:message="{}">
       <slot name="message"></slot>
@@ -28,7 +29,7 @@
 export default {
   name: "bodyInputForm",
   inheritAttrs: false,
-  props: ['inputString'],
+  props: ['inputString', 'on'],
   model: {
     prop: 'inputString',
     event: 'changeInputString'

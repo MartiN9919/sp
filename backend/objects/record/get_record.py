@@ -1,4 +1,5 @@
-from data_base_driver.additional_functions import get_date_time_from_sec
+from data_base_driver.additional_functions import get_date_time_from_sec, date_server_to_client, \
+    date_time_server_to_client
 from data_base_driver.constants.const_dat import DAT_SYS_KEY, DAT_OWNER
 from data_base_driver.constants.const_key import SYS_KEY_CONSTANT
 from data_base_driver.input_output.input_output import io_get_obj
@@ -116,6 +117,10 @@ def get_value_by_key(key, value):
     """
     if get_key_by_id(key)['type'] == 'checkbox':
         value = 'Да' if value == '1' else 'Нет'
+    if get_key_by_id(key)['type'] == 'date':
+        value = date_server_to_client(value)
+    if get_key_by_id(key)['type'] == 'datetime':
+        value = date_time_server_to_client(value)
     if key == SYS_KEY_CONSTANT.PARENT_ID_CLASSIFIER_ID:
         if int(value) == 0:
             return 'корень'
@@ -151,6 +156,8 @@ def get_object_record_by_id_http(object_id, rec_id, group_id=0, triggers=None):
         params.append({'id': int(item[0]), 'values': [{'value': value, 'date': get_date_time_from_sec(item[2])[:-3]}]})
     for item in params:
         item['values'].sort(key=lambda x: x['date'], reverse=True)
+        for value in item['values']:
+            value['date'] = date_time_server_to_client(value['date'])
     params.sort(key=lambda x: x['id'])
     permission = get_permission_params(response, object_id)
     if triggers:
