@@ -6,6 +6,7 @@
     color="teal"
     format="24hr"
     ref="time"
+    v-intersect="onIntersect"
   >
     <template v-slot:default>
       <v-btn text color="teal" @click="clickHour" class="type-btn hour-btn">Час.</v-btn>
@@ -64,6 +65,9 @@ export default {
       this.selecting = 2
       this.$nextTick(() => this.$refs.time.selecting = 2)
     },
+    onIntersect() {
+      this.clickHour()
+    }
   }
 }
 </script>

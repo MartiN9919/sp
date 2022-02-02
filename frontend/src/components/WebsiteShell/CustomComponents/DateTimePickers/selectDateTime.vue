@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-intersect="onIntersect">
     <v-window v-model="bottomNavigation">
       <v-window-item key="date" value="date">
         <select-date v-model="date" @isValid="isDateValid"/>
@@ -71,17 +71,13 @@ export default {
   methods: {
     isDateValid(value) {
       this.isValidDate = value
+      this.bottomNavigation = value ? 'time' : 'date'
     },
     isTimeValid(value) {
       this.isValidTime = value
-    }
-  },
-  watch: {
-    isValidDate: function (value) {
-      if(!value)
-        this.bottomNavigation = 'date'
-      else
-        this.bottomNavigation = 'time'
+    },
+    onIntersect() {
+      this.bottomNavigation = 'date'
     }
   }
 }
