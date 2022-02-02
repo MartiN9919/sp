@@ -41,4 +41,7 @@ export default {
 </script>
 
 <style scoped>
+.unknown-form {
+  width: 100%;
+}
 </style>
