@@ -13,7 +13,7 @@
         <span>Дата</span>
         <v-icon>mdi-calendar</v-icon>
       </v-btn>
-      <v-btn width="100%" value="time">
+      <v-btn :disabled="!isValidDate" width="100%" value="time">
         <span>Время</span>
         <v-icon>mdi-clock-outline</v-icon>
       </v-btn>

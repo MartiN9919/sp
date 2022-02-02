@@ -29,6 +29,7 @@
     </template>
     <template v-slot:body>
       <component
+        v-show="dropdown"
         :is="formProps.component"
         v-model="value"
         @isValid="validate"
@@ -68,10 +69,14 @@ export default {
   model: { prop: 'inputString', event: 'changeInputString'},
   props: {
     inputString: String,
+    dropdown: {
+      type: Boolean,
+      default: true
+    }
   },
   data: () => ({
     string: '',
-    isValid: false,
+    isValid: true,
     formProps: null,
   }),
   computed: {

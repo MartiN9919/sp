@@ -33,6 +33,7 @@
           <v-list-item>
             <date-input
               v-model="newObject.relDateTimeStart"
+              :dropdown="false"
               clearable
               label="начала"
             ></date-input>
@@ -40,6 +41,7 @@
           <v-list-item>
             <date-input
               v-model="newObject.relDateTimeEnd"
+              :dropdown="false"
               clearable
               label="конца"
             ></date-input>

@@ -9,7 +9,7 @@
   >
     <template v-slot:default>
       <v-btn text color="teal" @click="clickHour" class="type-btn hour-btn">Час.</v-btn>
-      <v-btn text color="teal" @click="clickMinute" class="type-btn minute-btn">Мин.</v-btn>
+      <v-btn :disabled="!isValidHour" text color="teal" @click="clickMinute" class="type-btn minute-btn">Мин.</v-btn>
     </template>
   </v-time-picker>
 </template>
@@ -21,15 +21,20 @@ export default {
     inputString: String,
   },
   model: {prop: 'inputString', event: 'changeInputString'},
+  data: () => ({
+    isValidHour: false,
+    isValidMinute: false
+  }),
   computed: {
     value: {
       get: function () {
-        const isValid = this.validateTime(this.inputString)
-        this.$emit('isValid', isValid)
-        if(this.inputString.length < 3)
-          this.clickHour()
-        else this.clickMinute()
-        return isValid ? this.inputString : ''
+        this.isValidHour = this.validateHour(this.inputString)
+        this.isValidMinute = this.validateMinute(this.inputString)
+        this.$emit('isValid', this.isValidHour && this.isValidMinute)
+        if(this.isValidHour)
+          this.clickMinute()
+        else this.clickHour()
+        return this.isValidMinute ? this.inputString : this.inputString + '00'
       },
       set: function (value) {
         this.$emit('changeInputString', value)
@@ -37,9 +42,19 @@ export default {
     },
   },
   methods: {
-    validateTime(time) {
-      const timeArray = time.split(':').map(v => parseInt(v))
-      return time.length === 5 && timeArray[0] < 24 && timeArray[1] < 60
+    validateHour(time) {
+      let timeArray = time.split(':')
+      if(timeArray.length < 1 || timeArray[0].length < 2)
+        return false
+      let hour = parseInt(timeArray[0])
+      return hour < 24;
+    },
+    validateMinute(time) {
+      let timeArray = time.split(':')
+      if(timeArray.length < 2 || timeArray[1].length < 2)
+        return false
+      let minute = parseInt(timeArray[1])
+      return timeArray[1] < 60;
     },
     clickHour() {
       this.selecting = 1
