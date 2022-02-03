@@ -43,7 +43,9 @@ export default {
         ])
           .then(async r => {
             await dispatch('addToGraph', {object: Object.assign(r[0], {props: props}), relations: r[1]})
-              .then(result => console.log('result', result))
+              .then(result => {
+
+              })
               .catch(error => console.log('error', error))
           })
       }

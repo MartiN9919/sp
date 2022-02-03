@@ -28,12 +28,12 @@ export default {
     if (typeof this.data.pathd === 'undefined') {
       this.$set(this.data, 'pathd', '')
     }
-    if(!this.data.noMove){
-      let angle = 3.14 * (Math.random() * 360) / 180
-      let length = this.toNode.size
-      this.fromNode.x = this.toNode.x + (Math.cos(angle) * length)
-      this.fromNode.y = this.toNode.y + (Math.sin(angle) * length)
-    }
+    // if(!this.data.noMove){
+    //   let angle = 3.14 * (Math.random() * 360) / 180
+    //   let length = this.toNode.size
+    //   this.fromNode.x = this.toNode.x + (Math.cos(angle) * length)
+    //   this.fromNode.y = this.toNode.y + (Math.sin(angle) * length)
+    // }
     this.fromNode.object.show = true
     this.updateObjectFromGraph({object: this.fromNode, fields: {object: this.fromNode.object}})
   },

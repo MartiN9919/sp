@@ -187,7 +187,6 @@ export default class Graph {
               node.x += dx * springForce
               node.y += dy * springForce
             }
-            // console.log(node)
             let upCoefficient = Math.pow(node.width/100 * otherNode.width/100, 1)
             const upForce = upCoefficient * 10000 / Math.pow(offset, 2)
             node.x -= dx * upForce
@@ -227,6 +226,29 @@ export default class Graph {
       tempNodes.push({id: node.id, x: node.x, y: node.y, width: node.width})
     }
     this.reorderStep(0, 200, tempNodes, 10000, x, y)
+  }
+  getNewNodePosition(startPosition, newEdges) {
+    console.log('start')
+    const edges = newEdges.map(relation => relation.object_id + '-' + relation.rec_id)
+    for(let i=0; i < 10; i++){
+      for(const node of this.nodes) {
+        const dx = startPosition.x - node.x
+        const dy = startPosition.y - node.y
+        let offset = Math.sqrt(dx * dx + dy * dy);
+        if (edges.find(edge => edge === node.id)) {
+          const springForce = 0.25 * Math.log2(offset / 750)
+          startPosition.x += dx * springForce
+          startPosition.y += dy * springForce
+        }
+        console.log('offset',offset)
+        const upForce = 10000 / Math.pow(offset, 2)
+        console.log('force',upForce)
+        startPosition.x -= dx * upForce
+        startPosition.y -= dy * upForce
+      }
+    }
+    console.log('end')
+    return startPosition
   }
   getNodesCenter(nodes){
     let x = 0
