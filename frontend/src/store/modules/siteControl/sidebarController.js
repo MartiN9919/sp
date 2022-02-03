@@ -24,6 +24,7 @@ export default {
         { name: 'searchRelationPage', icon: 'mdi-vector-link', description: 'Поиск по связям' },
         { name: 'createObjectPage', icon: 'mdi-text-box-plus-outline', description: 'Создание объекта' },
         { name: 'createRelationPage', icon: 'mdi-link-variant-plus', description: 'Создание связи' },
+        { name: 'timeLinePage', icon: 'mdi-timeline-clock-outline', description: 'История работы с графом' },
         { name: 'settingsPage', icon: 'mdi-cog-outline', description: 'Общие настройки графа' },
       ]
     },

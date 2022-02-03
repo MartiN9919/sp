@@ -68,7 +68,7 @@ export default {
   methods: {
     ...mapActions(['reorderGraph', 'reorderChoosingObjects', 'setEditableRelation', 'setNavigationDrawerStatus', 'setToolStatus', 'setActiveTool',
     'setEditableObject', 'deleteObjectFromGraph', 'setRootSearchRelationTreeItem', 'getRelationsBtwObjects',
-    'addToGraph', 'executeMapScript', 'clearGraph']),
+    'addToGraphFromServer', 'executeMapScript', 'clearGraph']),
     menuShow(event, object=null) {
       this.objectCtxMenu = object
       this.$refs.contextMenu.show_root(event.x, event.y)
@@ -130,11 +130,11 @@ export default {
     saveGraphInFile() {
       let a = document.createElement("a");
       let file = new Blob([JSON.stringify(Array.from(this.graphObjects, node => {return {
-        position: {
+        props: {
           x: node.x,
           y: node.y,
+          size: node.size
         },
-        size: node.size,
         object_id: node.object.object.id,
         rec_id: node.object.recId
       }}))], {type: 'text/plain'});
@@ -145,7 +145,7 @@ export default {
     },
     getGraphFromFile() {
       this.clearGraph()
-      const addObjectToGraph = this.addToGraph
+      const addObjectToGraph = this.addToGraphFromServer
       let obj = document.createElement('input')
       obj.style.cssText = 'display:none'
       obj.type = 'file'

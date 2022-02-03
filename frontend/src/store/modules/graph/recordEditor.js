@@ -93,7 +93,7 @@ export default {
           }
           else {
             dispatch('setEditableObject', {objectId: response.object_id, recId: response.rec_id})
-            dispatch('addToGraph', {payload: response})
+            dispatch('addToGraphFromServer', {payload: response})
           }
           return Promise.resolve(r.data)
         })

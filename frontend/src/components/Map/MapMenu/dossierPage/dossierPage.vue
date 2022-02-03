@@ -13,7 +13,7 @@
 <script>
 import Dossier from "@/components/WebsiteShell/CustomComponents/Dossier/dossier"
 import ControlMenu from "@/components/Graph/GraphMenu/createPageComponents/controlMenu"
-import {DataBaseObject} from "@/store/modules/graph/graphMenu/recordEditor"
+import {DataBaseObject} from "@/store/modules/graph/recordEditor"
 import {mapActions, mapGetters} from "vuex"
 import router from "@/router"
 
@@ -46,12 +46,12 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['getObjectFromServer', 'setEditableObject', 'addToGraph']),
+    ...mapActions(['getObjectFromServer', 'setEditableObject', 'addToGraphFromServer']),
     editObject() {
       router.push({name: 'Graph'}).then(() => this.setEditableObject({objectId: this.objectId, recId: this.recId}))
     },
     toGraph() {
-      router.push({name: 'Graph'}).then(() => this.addToGraph({payload: this.payload}))
+      router.push({name: 'Graph'}).then(() => this.addToGraphFromServer({payload: this.payload}))
     },
   },
   watch: {

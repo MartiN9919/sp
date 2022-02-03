@@ -1,6 +1,6 @@
 import axios from '@/plugins/axiosSettings'
 import UserSetting from "@/store/addition"
-import store from'@/store'
+import store from '@/store'
 
 function createSearchItem(getters, item) {
   return {
@@ -74,7 +74,7 @@ export default {
     },
     findRelationsOnServer({ dispatch, state }, config={}) {
       return axios.post('objects/search_relations', state.searchRelationTreeGraph.getTree(), config)
-        .then(response => dispatch('addToGraph', {payload: response.data}))
+        .then(response => dispatch('addToGraphFromServer', {payload: response.data}))
         .catch(error => {  })
     },
     simpleFindObject({state}, {objectId, searchRequest}) {
