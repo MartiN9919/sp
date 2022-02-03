@@ -75,7 +75,7 @@ def find_key_value_http(object_id, key_id, value, group_id=0):
         value = str(value)
     response = io_get_obj(group_id, object_id, [], [], 500, '@key_id ' + str(key_id) + ' @val ' + value, {})
     remove_list = []
-    for item in response:
+    for index, item in enumerate(response):
         temp_word = '@key_id ' + str(key_id)
         temp = io_get_obj(group_id, object_id, [], [item['rec_id']], 500, temp_word, {})
         for temp_item in temp:
@@ -83,8 +83,8 @@ def find_key_value_http(object_id, key_id, value, group_id=0):
                 continue
             else:
                 if item['sec'] < temp_item['sec'] and item['val'] != temp_item['val']:
-                    remove_list.append(int(item['rec_id']))
-    return [int(item['rec_id']) for item in response if not int(item['rec_id']) in remove_list]
+                    remove_list.append(index)
+    return [int(item['rec_id']) for index, item in enumerate(response) if not index in remove_list]
 
 
 def find_duplicate_objects(group_id, object_id, rec_id, params):
