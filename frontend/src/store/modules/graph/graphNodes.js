@@ -1,141 +1,52 @@
 import axios from '@/plugins/axiosSettings'
-import Graph from "@/components/Graph/WorkSpace/lib/graph"
-import UserSetting from '@/store/addition'
-import {DataBaseObject, DataBaseRelation} from '@/store/modules/graph/graphMenu/recordEditor'
-
-class GlobalSettings {
-  constructor() {
-    this.linkHighlighting = {
-      title: 'Подсветка связей',
-      subTitle: 'Подсвечивать объекты и связи при наведении',
-      state: new UserSetting('linkHighlighting', true)
-    }
-    this.showGlobalTitle = {
-      title: 'Подписи объектов',
-      subTitle: 'Подпись под объектами на графе',
-      state: new UserSetting('showGlobalTitle', true)
-    }
-    this.showGlobalTooltipObject = {
-      title: 'Заголовки объектов',
-      subTitle: 'Отображение заголовка над объектами',
-      state: new UserSetting('showGlobalTooltipObject', true)
-    }
-    this.showGlobalTriggers = {
-      title: 'Уведомления о триггерах',
-      subTitle: 'Управление отображением значка уведомления о срабатывании триггеров',
-      state: new UserSetting('showGlobalTriggers', true)
-    }
-    this.showGlobalDateObject = {
-      title: 'Время записи объекта',
-      subTitle: 'Управление отображением даты классификатора',
-      state: new UserSetting('showGlobalDateObject', true)
-    }
-    this.showGlobalTooltipRelation = {
-      title: 'Заголовки связей',
-      subTitle: 'Отображение заголовка над связями',
-      state: new UserSetting('showGlobalTooltipRelation', true)
-    }
-    this.showGlobalDateRelation = {
-      title: 'Время записи связи',
-      subTitle: 'Управление отображением даты связи',
-      state: new UserSetting('showGlobalDateRelation', true)
-    }
-  }
-}
 
 export default {
   state: {
-    screen: null,
-    classifiersSettings: new UserSetting('classifiersSettings', []),
-    globalDisplaySettings: new GlobalSettings(),
-    graph: new Graph(),
-    graphObjects: {},
     selectedGraphObjects: [],
+    lastAddedObjects: [],
+    lastAddedRelations: []
   },
   getters: {
-    graphObjects: state => state.graph.nodes,
-    graphRelations: state => state.graph.edges,
-    classifiersSettings: state => state.classifiersSettings.value,
-    globalDisplaySettings: state => state.globalDisplaySettings,
-    globalDisplaySettingValue: state => identifier => state.globalDisplaySettings[identifier].state.value,
     selectedGraphObjects: state => state.selectedGraphObjects,
-    inSelectedGraphObject: state => object => state.selectedGraphObjects.includes(object)
+    inSelectedGraphObject: state => object => state.selectedGraphObjects.includes(object),
+    lastAddedObjects: state => state.lastAddedObjects,
+    inLastAddedObjects: state => id => state.lastAddedObjects.includes(id),
+    lastAddedRelations: state => state.lastAddedRelations,
+    inLastAddedRelations: state => id => state.lastAddedRelations.includes(id)
   },
   mutations: {
-    setScreen: (state, screen) => state.screen = screen,
-    deleteObjectFromGraph: (state, object) => state.graph.removeNode(object),
-    updateObjectFromGraph: (state, {object, fields}) => state.graph.updateNode(object, fields),
-    updateRelationFromGraph: (state, {relation, fields}) => state.graph.updateEdge(relation, fields),
-    changeGlobalSettingState: (state, {id, value}) => state.globalDisplaySettings[id].state.value = value,
-    setClassifiersSettings: (state, classifierId) => state.classifiersSettings.switch(classifierId),
     clearSelectedGraphObjects: (state) => state.selectedGraphObjects = [],
-    reorderGraph: (state) => state.graph.reorderGraph(state.screen.getStartPosition().x, state.screen.getStartPosition().y),
-    reorderChoosingObjects: (state) => {
-      const center = state.graph.getNodesCenter(state.selectedGraphObjects)
-      state.graph.reorderGraph(center.x, center.y, state.selectedGraphObjects)
-    },
-    clearGraph: (state) => state.graph.clearGraph(),
     addSelectedGraphObject: (state, object) => state.selectedGraphObjects.push(object),
     deleteSelectedGraphObject: (state, object) => {
       const positionObject = state.selectedGraphObjects.findIndex(choosingNode => choosingNode.id === object.id)
       if (positionObject !== -1)
         state.selectedGraphObjects.splice(positionObject, 1)
     },
-    addObjectToGraph: (state, {editableObject, position, size}) => {
-      state.graph.createNode({
-        id: editableObject.getGeneratedId(),
-        object: editableObject,
-        size: size, x: position.x, y: position.y
-      })
-    },
-    addRelationToGraph: (state, {objects, relation, noMove}) => {
-      state.graph.createEdge(objects[0], objects[1], {relation: relation, size: 300, noMove: noMove})
-    },
+    setLastAddedObjects: (state, objects) => state.lastAddedObjects = objects,
+    setLastAddedRelations: (state, relations) => state.lastAddedRelations = relations
   },
   actions: {
-    setScreen({ commit }, screen) { commit('setScreen', screen) },
+    setLastAddedObjects({ commit }, objects) { commit('setLastAddedObjects', objects) },
+    setLastAddedRelations({ commit }, relations) { commit('setLastAddedRelations', relations) },
     addSelectedGraphObject({ getters, commit }, object) {
       if(!getters.inSelectedGraphObject(object))
         commit('addSelectedGraphObject', object)
     },
     deleteSelectedGraphObject({ commit }, object) { commit('deleteSelectedGraphObject', object) },
     clearSelectedGraphObjects({ commit }) { commit('clearSelectedGraphObjects') },
-    reorderGraph({ commit }) { commit('reorderGraph') },
-    reorderChoosingObjects({commit}) { commit('reorderChoosingObjects') },
-    clearGraph({commit}) {
-      commit('clearGraph')
-      commit('clearSelectedGraphObjects')
-    },
-    changeGlobalSettingState({ commit }, payload) { commit('changeGlobalSettingState', payload) },
-    setClassifiersSettings({ getters, commit }, id) { commit('setClassifiersSettings', id) },
-    addRelationToGraph({getters, commit, dispatch}, {object, relations, noMove}) {
-      let object1 = getters.graphObjects.find(r => r.object.object.id === object.o1 && r.object.recId === object.r1)
-      let object2 = getters.graphObjects.find(r => r.object.object.id === object.o2 && r.object.recId === object.r2)
-      let relation = new DataBaseRelation(object1, object2, relations)
-      let findRelation = getters.graphRelations.find(r => [r.from, r.to].every(v => [object1.id, object2.id].includes(v)))
-      if(findRelation)
-        dispatch('updateRelationFromGraph', {relation: findRelation, fields: {relation: relation}})
-      else
-        commit('addRelationToGraph', {objects: [object1, object2], relation: relation, noMove: noMove})
-    },
-    updateRelationFromGraph({commit}, {relation, fields}) { commit('updateRelationFromGraph', {relation, fields}) },
-    deleteObjectFromGraph({commit}, object) { commit('deleteObjectFromGraph', object) },
-    updateObjectFromGraph({commit}, {object, fields}) { commit('updateObjectFromGraph', {object, fields}) },
-    addObjectToGraph({ state, getters, commit, dispatch }, {recId, objectId, size=300, position=state.screen.getStartPosition(), noMove =false}) {
-      dispatch('getObjectFromServer', {params: {record_id: recId, object_id: objectId}})
-        .then(r => {
-          let editableObject = new GraphObject(r)
-          let findNode = getters.graphObjects.find(o => o.id === editableObject.getGeneratedId())
-          let relatedObjects = Array.from(getters.graphObjects, o =>
-            Object.assign({object_id: o.object.object.id, rec_id: o.object.recId})
-          )
-          if(findNode)
-            dispatch('updateObjectFromGraph', {object: findNode, fields: {object: Object.assign(editableObject, {show: true})}})
-          else {
-            commit('addObjectToGraph', {editableObject, position, size})
-            dispatch('getRelationFromServer', {object_id: objectId, rec_id: recId, objects: relatedObjects, noMove: noMove})
-          }
-        })
+    async addToGraphFromServer({getters, dispatch}, {payload}) {
+      for(const { object_id, rec_id, props=null } of Array.isArray(payload) ? payload : [payload]) {
+        const objects = getters.graphObjects.map(o => Object.assign({object_id: o.object.object.id, rec_id: o.object.recId}))
+        await Promise.all([
+          dispatch('getObjectFromServer', {object_id, rec_id}),
+          dispatch('getRelationFromServer', Object.assign({object_id, rec_id}, {objects: objects}))
+        ])
+          .then(async r => {
+            await dispatch('addToGraph', {object: Object.assign(r[0], {props: props}), relations: r[1]})
+              .then(result => console.log('result', result))
+              .catch(error => console.log('error', error))
+          })
+      }
     },
     async getRelationsBtwObjects({getters, dispatch}, objects) {
       let config = {}
@@ -148,31 +59,10 @@ export default {
         }
       return await axios.get('objects/objects_relation/', config)
         .then(response => {
-          for (let obj of response.data) {
-            dispatch('addObjectToGraph', {recId: obj.rec_id, objectId: obj.object_id})
-          }
+          dispatch('addToGraphFromServer', {payload: response.data})
           return Promise.resolve()
         })
         .catch(e => { return Promise.reject(e) })
     }
   }
 }
-
-class GraphObject extends DataBaseObject {
-  constructor(object) {
-    super(object)
-    this.triggers = object.triggers
-    if(object.hasOwnProperty('photo'))
-      this.photo = object.photo
-    this.showTitle = true
-    this.showTooltip = true
-    this.showTriggers = true
-    this.showCreateDate = true
-    this.show = false
-  }
-
-  getGeneratedId() {
-    return `${this.object.id}-${this.recId}`
-  }
-}
-

@@ -102,7 +102,7 @@ def aj_object(request):
     if request.method == 'GET':
         try:
             return get_object_record_by_id_http(object_id=int(request.GET['object_id']),
-                                                rec_id=int(request.GET['record_id']),
+                                                rec_id=int(request.GET['rec_id']),
                                                 group_id=group_id,
                                                 triggers=triggers)
         except Exception as e:

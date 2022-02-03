@@ -40,6 +40,7 @@ export default {
   components: {Description, Node, VLabel, BodyObject, InformationLabel},
   props: {
     object: Object,
+    inAdded: Boolean,
     inSelected: Boolean,
     inHover: Boolean,
     selectedObjects: Array
@@ -50,7 +51,13 @@ export default {
   computed: {
     ...mapGetters(['globalDisplaySettingValue', 'classifiersSettings']),
     objectClass() {
-      return this.inSelected ? 'choosing-object' : this.inHover ? 'hover-object' :'body-object'
+      if(this.inSelected) {
+        return 'choosing-object'
+      } else if(this.inHover) {
+        return 'hover-object'
+      } else if(this.inAdded) {
+        return 'added-object'
+      } else return 'body-object'
     },
     showLabel() {
       let globalState = this.globalDisplaySettingValue('showGlobalTooltipObject')
@@ -110,6 +117,11 @@ export default {
 <style scoped>
 .hover-object {
   box-shadow: 0 0 50px blue;
+  transition: box-shadow 0.3s cubic-bezier(.25,.8,.25,1);
+}
+
+.added-object {
+  box-shadow: 0 0 50px limegreen;
   transition: box-shadow 0.3s cubic-bezier(.25,.8,.25,1);
 }
 
