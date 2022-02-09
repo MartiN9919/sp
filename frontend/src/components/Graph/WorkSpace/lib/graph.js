@@ -175,24 +175,9 @@ export default class Graph {
             // distance(offset) between two nodes
             let x0 = node.x
             let y0 = node.y
-            let dx = otherNode.x - node.x;
-            let dy = otherNode.y - node.y;
-            let offset = Math.sqrt(dx * dx + dy * dy);
-            // if nodes is linked
-            if (this.edges.find(edge => {
-              return (edge.to === node.id && edge.from === otherNode.id) ||
-                  (edge.from === node.id && edge.to === otherNode.id)
-            })) {
-              const springForce = 0.25 * Math.log2(offset / 750)
-              node.x += dx * springForce
-              node.y += dy * springForce
-            }
-            let upCoefficient = Math.pow(node.width/100 * otherNode.width/100, 1)
-            const upForce = upCoefficient * 10000 / Math.pow(offset, 2)
-            node.x -= dx * upForce
-            node.y -= dy * upForce
-            dx = node.x - x0
-            dy = node.y - y0
+            this.forceMoveNode(node, otherNode, [])
+            let dx = node.x - x0
+            let dy = node.y - y0
             speed += Math.sqrt(dx * dx + dy * dy) / 100
             speedNums++
           }
@@ -227,28 +212,44 @@ export default class Graph {
     }
     this.reorderStep(0, 200, tempNodes, 10000, x, y)
   }
-  getNewNodePosition(startPosition, newEdges) {
-    console.log('start')
+  getNewNodePosition(newEdges) {
     const edges = newEdges.map(relation => relation.object_id + '-' + relation.rec_id)
-    for(let i=0; i < 10; i++){
-      for(const node of this.nodes) {
-        const dx = startPosition.x - node.x
-        const dy = startPosition.y - node.y
-        let offset = Math.sqrt(dx * dx + dy * dy);
-        if (edges.find(edge => edge === node.id)) {
-          const springForce = 0.25 * Math.log2(offset / 750)
-          startPosition.x += dx * springForce
-          startPosition.y += dy * springForce
-        }
-        console.log('offset',offset)
-        const upForce = 10000 / Math.pow(offset, 2)
-        console.log('force',upForce)
-        startPosition.x -= dx * upForce
-        startPosition.y -= dy * upForce
-      }
+    let startPosition = this.getNodesCenter(this.nodes.filter(n => edges.find(e => e === n.id)))
+    startPosition.id = ''
+    startPosition.width = 100
+    let startSpeed = 0
+    for(let i=0; i < 30; i++) {
+      const temp = {x: startPosition.x, y: startPosition.y}
+      for(const node of this.nodes)
+        this.forceMoveNode(startPosition, node, edges)
+      const speed = Math.sqrt(Math.pow(Math.abs(temp.x - startPosition.x),2) + Math.pow(temp.y - startPosition.y,2))
+      if(startSpeed === 0)
+        startSpeed = speed
+      else
+        if(speed / startSpeed < 0.05)
+          break
     }
-    console.log('end')
     return startPosition
+  }
+  forceMoveNode(node, otherNode, edges) {
+    let dx = otherNode.x - node.x
+    let dy = otherNode.y - node.y
+    dx === 0 ? dx = Math.random() * 20 - 10 : dx
+    dy === 0 ? dy = Math.random() * 20 - 10 : dy
+    let offset = Math.sqrt(dx * dx + dy * dy);
+    if (edges.find(edge => edge === node.id)
+        || this.edges.find(edge => {
+              return (edge.to === node.id && edge.from === otherNode.id) ||
+                  (edge.from === node.id && edge.to === otherNode.id)
+            })) {
+      const springForce = 0.25 * Math.log2(offset / 750)
+      node.x += dx * springForce
+      node.y += dy * springForce
+    }
+    const upCoefficient = Math.pow(node.width/100 * otherNode.width/100, 1)
+    const upForce = upCoefficient * 10000 / Math.pow(offset, 2)
+    node.x -= dx * upForce
+    node.y -= dy * upForce
   }
   getNodesCenter(nodes){
     let x = 0
