@@ -36,11 +36,11 @@ export default {
     else this.elementType = 'node'
     this.offset = {
       x: 0,
-      y: -((this.element.hasOwnProperty('from') ? 40 : this.element.size / 3) + this.node.height)
+      y: -((this.element.hasOwnProperty('from') ? 40 : this.element.width) + this.node.height)
     }
-    this.oldElementSize = {width: this.element.size/3, height: this.element.size/3}
+    this.oldElementSize = {width: this.element.width, height: this.element.height}
     this.oldNodeSize = {width: this.node.width, height: this.node.height}
-    this.getPosition(1)
+    this.getPosition()
   },
   methods: {
     getPosition() {
@@ -50,7 +50,7 @@ export default {
         this.pos = el.getPointAtLength(length)
       }
       else {
-        this.pos = {x: this.element.x + this.element.size / 6, y: this.element.y + this.element.size / 6}
+        this.pos = {x: this.element.x + this.element.width / 2, y: this.element.y + this.element.height / 2}
       }
       this.updatePos()
     },

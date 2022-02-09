@@ -14,7 +14,7 @@ export default {
     object: Object,
   },
   computed: {
-    bodySize: function () { return `${this.object.size / 3}px` },
+    bodySize: function () { return `${this.object.width}px` },
     getPhoto: function () {
       if(this.object.object.photo)
         return getFileLink(this.object.object.object.id, this.object.object.recId, this.object.object.photo)
