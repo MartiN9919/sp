@@ -10,8 +10,8 @@ from core.settings import MEDIA_ROOT
 from data_base_driver.additional_functions import date_time_client_to_server, date_client_to_server
 from data_base_driver.constants.const_dat import DAT_SYS_KEY
 from data_base_driver.constants.const_key import SYS_KEY_CONSTANT
-from objects.record.find_object import find_key_value_http
-from objects.record.get_record import get_object_record_by_id_http, get_keys_by_object
+from objects.record.find_object import find_duplicate_objects
+from objects.record.get_record import get_object_record_by_id_http
 from data_base_driver.input_output.input_output import io_set
 from data_base_driver.sys_key.get_key_dump import get_key_by_id
 from data_base_driver.sys_key.get_list import get_item_list_value
@@ -123,7 +123,7 @@ def add_data(user, group_id, object, files=None):
     Функция для добавления(слияния) информации в базу данных
     @param user: объект пользователя
     @param group_id: идентификационный номер группы пользователя
-    @param object: вносимая информация в формате {object_id, rec_id, params:[{id,val,date},...,{}]}
+    @param object: вносимая информация в формате {object_id, rec_id, params:[{id,value,date},...,{}]}
     @return: идентификатор нового/измененного объекта в базе данных
     """
     with lock:
@@ -133,19 +133,10 @@ def add_data(user, group_id, object, files=None):
             raise e
         additional_processing(user, object, data)
         if not object.get('force', False):  # проверка на дублирование
-            temp_set = None
-            nums_needed = 0
-            for item in data:
-                if get_key_by_id(int(item[0])).get('need', 0) == 1:
-                    nums_needed += 1
-                    if type(temp_set) == set:
-                        temp_set.intersection_update(set(find_key_value_http(object.get('object_id'), item[0], item[1])))
-                    else:
-                        temp_set = set(find_key_value_http(object.get('object_id'), item[0], item[1], group_id))
-            if temp_set and nums_needed == len(
-                    list(filter(lambda x: x['obj_id'] == object.get('object_id') and x['need'], get_keys_by_object()))):
+            duplicates = find_duplicate_objects(group_id, object.get('object_id'), object.get('rec_id'), data)
+            if len(duplicates) > 0:
                 return {'objects': [get_object_record_by_id_http(object.get('object_id'), item, group_id)
-                                    for item in temp_set]}
+                                    for item in duplicates]}
         if object.get('rec_id_old', 0) != 0:  # действия при слиянии объектов
             old_object = get_object_record_by_id_http(object.get('object_id'), object.get('rec_id_old'), group_id)
             for param in old_object['params']:

@@ -50,9 +50,12 @@ export default {
       commit('updateObjectFromGraph', {object, fields})
     },
     async addToGraph({getters, dispatch}, {object, relations}) {
-      if(object.props === null) {
-        const startPosition = getters.screen.getStartPosition() // ToDo: Установка стартовой позиции относительно связей
-
+      let startPosition = {}
+      if(!object.props) {
+        if(relations.length > 0)
+          startPosition = getters.graph.getNewNodePosition(getters.screen.getStartPosition(), relations)
+        else
+          startPosition = getters.screen.getStartPosition() // ToDo: Установка стартовой позиции относительно связей
         object.props = Object.assign({size: 300}, startPosition)
       }
       const addedObject = await dispatch('addObjectToGraph', object)

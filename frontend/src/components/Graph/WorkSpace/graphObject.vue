@@ -9,7 +9,7 @@
     @wheel.stop="scrollObject(object, $event)"
   >
     <v-label v-show="showLabel" :element="object">
-      <information-label :size-node="object.size" :params="getClassifiers" :show-date="showDate"/>
+      <information-label :max-width="labelWidth" :params="getClassifiers" :show-date="showDate"/>
     </v-label>
 
     <node ref="node" :data="object" :in-selected="inSelected" :selected-objects="selectedObjects">
@@ -78,11 +78,14 @@ export default {
     showTitle() {
       return this.globalDisplaySettingValue('showGlobalTitle') && this.object.object.showTitle
     },
+    labelWidth() {
+      return this.object.width * 3
+    },
     titleStyle() {
       return {
-        x: this.object.x + this.object.width / 2 - this.object.size / 2,
+        x: this.object.x - this.object.width,
         y: this.object.y + this.object.height,
-        width: `${this.object.size}px`,
+        width: `${this.labelWidth}px`,
         overflow: "visible",
         class: "pt-8",
         height: 1
@@ -92,7 +95,7 @@ export default {
       return this.object.object.title
     },
     titleTextStyle() {
-      return {fontSize: `${this.object.size/40}px`}
+      return {fontSize: `${this.labelWidth / 40}px`}
     },
     params() {
       return this.object.object.params
