@@ -33,12 +33,21 @@ def as_text(value):
 
 
 def reorder_work_sheet(work_sheet):
+    """
+    Функция для установки ширины столбцов по максимальной ширине содержимого
+    @param work_sheet: страница на которой необходимо установить ширину
+    """
     for column_cells in work_sheet.columns:
         length = max(len(as_text(cell.value)) for cell in column_cells) + 1
         work_sheet.column_dimensions[column_cells[0].column_letter].width = length
 
 
 def merge_column_by_same_value(index, work_sheet):
+    """
+    Функция для объединения ячеек с одинаковым содержимым в заданном столбце
+    @param index: индекс столбца
+    @param work_sheet: страница документа на которой требуется объекдинение
+    """
     temp = list(work_sheet.rows)[1][index]
     start_value = temp.value
     start_cell = temp.coordinate

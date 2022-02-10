@@ -9,6 +9,10 @@ from objects.relations.get_rel import get_relations_list
 
 
 def make_objects_sheet(sheet):
+    """
+    Функция для формирования листа объектов
+    @param sheet: пустой лист
+    """
     objects = obj_list()
     sheet.append(['id', 'title_single', 'title'])
     for row in [[item['id'], item['title_single'], item['title']] for item in objects]:
@@ -17,7 +21,11 @@ def make_objects_sheet(sheet):
 
 
 def make_prop_sheet(sheet):
-    classifiers = sorted(get_keys_by_object(), key=lambda x: x['obj_id'])
+    """
+    Функция для формирования листа классификаторов
+    @param sheet: пустой лист
+    """
+    classifiers = [item for item in sorted(get_keys_by_object(), key=lambda x: x['obj_id']) if not item['blocked_in_blank']]
     sheet.append(['obj_id', 'id', 'title', 'hint', 'type', 'list_id'])
     for row in [[item['obj_id'], item['id'], item['title'], item['hint'], item['type']['title'], item['type']['value']]
                 for item in classifiers]:
@@ -27,9 +35,13 @@ def make_prop_sheet(sheet):
 
 
 def make_relation_sheet(sheet):
+    """
+    Функция для формирования листа связей
+    @param sheet: пустой лист
+    """
     objects = obj_list()
     objects.append({'id': 1})  # костыль, так как в списке объектов нет связи
-    relations = get_relations_list()
+    relations = [item for item in get_relations_list() if not item['blocked_in_blank']]
     all_relations = []
     for relation in relations:
         if relation['object_id_1'] != relation['object_id_2']:
@@ -59,6 +71,10 @@ def make_relation_sheet(sheet):
 
 
 def make_list_sheet(sheet):
+    """
+    Функция для формирования листа списков
+    @param sheet: пустой лист
+    """
     lists = get_lists()
     sheet.append(['id', 'name', 'title', 'val_id', 'value'])
     for list_id in lists:
@@ -78,6 +94,11 @@ def make_list_sheet(sheet):
 
 
 def get_exel_document(name):
+    """
+    Функция для формирования файла классификаторов
+    @param name: имя выходного файла
+    @return: путь к выходному файлу
+    """
     work_book = Workbook()
     obj_sheet = work_book.create_sheet('obj')
     make_objects_sheet(obj_sheet)
@@ -88,5 +109,5 @@ def get_exel_document(name):
     list_sheet = work_book.create_sheet('lst')
     make_list_sheet(list_sheet)
     work_book.remove(work_book['Sheet'])
-    work_book.save(DOCUMENT_ROOT + name + '.xlsx')
-    return DOCUMENT_ROOT + name + '.xlsx'
+    work_book.save(DOCUMENT_ROOT + name + '.xlsm')
+    return DOCUMENT_ROOT + name + '.xlsm'
