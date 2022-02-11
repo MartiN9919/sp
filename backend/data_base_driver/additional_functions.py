@@ -211,3 +211,25 @@ def io_get_rel_wrap(function):
     wrap.__doc__ = function.__doc__
     wrap.__name__ = function.__name__
     return wrap
+
+
+def parse_type(key_type, list_id=None, object_id=None):
+    if list_id:
+        return {'title': 'list', 'value': list_id}
+    elif key_type == 'search':
+        return {'title': 'search', 'value': object_id}
+    elif key_type == 'text_eng':
+        return {'title': 'text', 'value': 'eng'}
+    elif key_type == 'date':
+        return {'title': 'date', 'value': 'date'}
+    elif key_type == 'datetime':
+        return {'title': 'date', 'value': 'time'}
+    elif key_type == 'geometry':
+        return {'title': 'geometry', 'value': 'polygon'}
+    elif key_type == 'geometry_point':
+        return {'title': 'geometry', 'value': 'point'}
+    elif key_type == 'file_any':
+        return {'title': 'file', 'value': 'any'}
+    elif key_type == 'file_photo':
+        return {'title': 'file', 'value': 'photo'}
+    return {'title': key_type, 'value': None}

@@ -4,7 +4,7 @@ from core.settings import DOCUMENT_ROOT
 from data_base_driver.sys_key.get_list import get_lists
 from data_base_driver.sys_key.get_object_info import obj_list
 from document_driver.exel_driver import reorder_work_sheet, merge_column_by_same_value
-from objects.record.get_record import get_keys_by_object
+from objects.record.get_record import get_keys_blank
 from objects.relations.get_rel import get_relations_list
 
 
@@ -25,9 +25,9 @@ def make_prop_sheet(sheet):
     Функция для формирования листа классификаторов
     @param sheet: пустой лист
     """
-    classifiers = [item for item in sorted(get_keys_by_object(), key=lambda x: x['obj_id']) if not item['blocked_in_blank']]
+    classifiers = [item for item in sorted(get_keys_blank(), key=lambda x: x['obj_id']) if not item['blocked_in_blank']]
     sheet.append(['obj_id', 'id', 'title', 'hint', 'type', 'list_id'])
-    for row in [[item['obj_id'], item['id'], item['title'], item['hint'], item['type']['title'], item['type']['value']]
+    for row in [[item['obj_id'], item['id'], item['title'], item['hint'], item['type'], item['list_id']]
                 for item in classifiers]:
         sheet.append(row)
     merge_column_by_same_value(0, sheet)

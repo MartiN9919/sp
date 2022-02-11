@@ -2,7 +2,7 @@ from data_base_driver.additional_functions import intercept_sort_list
 from data_base_driver.constants.const_key import SYS_KEY_CONSTANT
 from data_base_driver.input_output.input_output import io_get_obj
 from data_base_driver.sys_key.get_key_dump import get_key_by_id
-from objects.record.get_record import get_object_record_by_id_http, get_keys_by_object
+from objects.record.get_record import get_object_record_by_id_http, get_keys
 from synonyms_manager.get_synonyms import get_synonyms
 
 
@@ -96,7 +96,7 @@ def find_duplicate_objects(group_id, object_id, rec_id, params):
     @param params: вносимые/изменяемые параметры
     @return: список идентификаторов объектов с похожими значениями
     """
-    nums = len(list(filter(lambda x: x['obj_id'] == object_id and x['need'], get_keys_by_object())))
+    nums = len(list(filter(lambda x: x['obj_id'] == object_id and x['need'], get_keys())))
     old_object = get_object_record_by_id_http(object_id, rec_id, group_id) if rec_id else {}
     needed_old_params = [param for param in old_object.get('params', []) if
                          get_key_by_id(param['id']).get('need', 0) == 1]

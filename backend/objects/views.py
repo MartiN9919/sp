@@ -8,7 +8,7 @@ from objects.record.get_record import get_object_record_by_id_http
 from data_base_driver.input_output.io_geo import get_geometry_search, feature_collection_by_geometry
 from data_base_driver.osm.osm_lib import osm_search, osm_fc
 from objects.record.add_record import add_data, add_geometry
-from objects.record.get_record import get_keys_by_object
+from objects.record.get_record import get_keys
 from data_base_driver.sys_key.get_list import get_list_by_top_id, get_lists
 from data_base_driver.sys_key.get_object_info import obj_list
 from objects.record.search import search
@@ -67,7 +67,7 @@ def aj_list_classifier(request):
     @return: json содержащих информации по ключу data в формате:
     [{id,obj_id,col,need,type,list_id:{name,val:[]},name,title,hint,descript}, ...,{}]
     """
-    return get_keys_by_object()
+    return get_keys()
 
 
 @login_check
