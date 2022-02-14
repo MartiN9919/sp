@@ -214,16 +214,25 @@ def io_get_rel_wrap(function):
 
 
 def parse_type(key_type, list_id=None, object_id=None):
+    """
+    Функция для преобразования формата типа
+    @param key_type: название типа в базе данных
+    @param list_id: идентификатор списка если есть
+    @param object_id: идентификатор типа искомого объекта если есть
+    @return: тип в формате {title, value}
+    """
     if list_id:
         return {'title': 'list', 'value': list_id}
     elif key_type == 'search':
         return {'title': 'search', 'value': object_id}
     elif key_type == 'text_eng':
         return {'title': 'text', 'value': 'eng'}
+    elif key_type == 'text_ru':
+        return {'title': 'text', 'value': 'ru'}
     elif key_type == 'date':
         return {'title': 'date', 'value': 'date'}
     elif key_type == 'datetime':
-        return {'title': 'date', 'value': 'time'}
+        return {'title': 'date', 'value': 'datetime'}
     elif key_type == 'geometry':
         return {'title': 'geometry', 'value': 'polygon'}
     elif key_type == 'geometry_point':

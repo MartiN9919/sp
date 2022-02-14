@@ -1,5 +1,5 @@
 from data_base_driver.additional_functions import get_date_time_from_sec, date_server_to_client, \
-    date_time_server_to_client
+    date_time_server_to_client, parse_type
 from data_base_driver.constants.const_dat import DAT_SYS_KEY, DAT_OWNER
 from data_base_driver.constants.const_key import SYS_KEY_CONSTANT
 from data_base_driver.input_output.input_output import io_get_obj
@@ -183,8 +183,7 @@ def get_keys():
         temp = dict(key)
         temp.pop('rel_obj_1_id')
         temp.pop('rel_obj_2_id')
-        temp['type'] = {'title': 'list' if temp.get('list_id') else temp['type'],
-                        'value': temp['list_id'] if temp.get('list_id') else None}
+        temp['type'] = parse_type(temp['type'], temp['list_id'])
         temp.pop('list_id')
         result.append(temp)
     result.sort(key=lambda x: x['id'])

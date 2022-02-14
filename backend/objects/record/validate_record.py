@@ -1,3 +1,5 @@
+import re
+
 from data_base_driver.constants.const_dat import DAT_SYS_PHONE_NUMBER_FORMAT
 from data_base_driver.sys_key.get_key_dump import get_key_by_id
 
@@ -52,6 +54,8 @@ def validate_record(record):
     key = get_key_by_id(record['id'])
     if key['type'] == 'phone_number' and not validate_phone_number(record['value']):
         raise Exception(1, 'Некорректный формат номера телефона')
+    elif key['type'] == 'text_eng' and not validate_latin(record['value']):
+        raise Exception(2, 'В строке встречены не латинские символы и не цифры')
     return True
 
 
@@ -67,5 +71,11 @@ def validate_geometry_permission(user):
         return True
 
 
-
+def validate_latin(text):
+    """
+    Функция для проверки того что в тексте только латиница и цифры
+    @param text:
+    @return:
+    """
+    return True if re.match(r'^[A-Za-z0-9]+$', text) else False
 
