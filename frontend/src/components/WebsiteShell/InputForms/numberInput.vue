@@ -7,7 +7,7 @@
       :class="bodyInputClasses"
       :clearable="false"
       icon="mdi-numeric"
-      @keypress.native="isNumber"
+      type="number"
       @deletable="$emit('deletable')"
     >
       <template v-slot:message>
@@ -50,5 +50,10 @@ export default {
 <style scoped>
 .number-input-form {
   width: 100%;
+}
+>>> input::-webkit-outer-spin-button,
+>>> input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 </style>
