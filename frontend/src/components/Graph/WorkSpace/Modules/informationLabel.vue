@@ -1,5 +1,5 @@
 <template>
-  <v-card hover :max-width="sizeNode">
+  <v-card hover :max-width="size">
     <table class="table">
       <tr v-for="param in params" :key="param.id" :style="rowStyle">
         <td class="information-column" :class="(!param.values[0].value && !showDate) && 'text-center'">{{param.baseParam.title}}</td>
@@ -16,13 +16,13 @@
 export default {
   name: "tooltip",
   props: {
+    size: Number,
     params: Array,
-    sizeNode: Number,
     showDate: Boolean,
   },
   computed: {
     rowStyle: function () {
-      return {fontSize: `${this.sizeNode / 40}px`}
+      return {fontSize: `${this.size / 40}px`}
     },
   }
 }

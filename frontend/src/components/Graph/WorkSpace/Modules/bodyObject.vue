@@ -1,7 +1,7 @@
 <template>
   <v-avatar :size="bodySize" class="cursor-pointer">
     <v-img v-if="getPhoto" :src="getPhoto"/>
-    <v-icon v-else :size="bodySize">{{object.object.object.icon}}</v-icon>
+    <v-icon v-else :size="bodySize">{{node.entity.base.icon}}</v-icon>
   </v-avatar>
 </template>
 
@@ -11,13 +11,13 @@ import {getFileLink} from "@/plugins/axiosSettings"
 export default {
   name: "bodyObject",
   props: {
-    object: Object,
+    node: Object,
   },
   computed: {
-    bodySize: function () { return `${this.object.size / 3}px` },
+    bodySize: function () { return `${this.node.size / 3}px` },
     getPhoto: function () {
-      if(this.object.object.photo)
-        return getFileLink(this.object.object.object.id, this.object.object.recId, this.object.object.photo)
+      if(this.node.entity.photo)
+        return getFileLink(this.node.ids.object_id, this.node.ids.rec_id, this.node.entity.photo)
       else return null
     },
   },

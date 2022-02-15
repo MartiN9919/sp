@@ -20,7 +20,7 @@
           :params="editableRelation.relation.params"
           @createNewParam="createNewParam"
           @deleteNewParam="deleteNewParam"
-          @addDocumentToGraph="addToGraphFromServer"
+          @addDocumentToGraph="addToGraph"
         ></object-record-area>
       </v-form>
     </div>
@@ -56,7 +56,7 @@ export default {
       'addNewParamEditableRelation',
       'deleteNewParamEditableRelation',
       'saveEditableRelation',
-      'addToGraphFromServer',
+      'addToGraph',
       'clearSelectedGraphObjects',
     ]),
     createNewParam(event) {

@@ -1,23 +1,22 @@
 <template>
   <g
     @mouseup.exact.stop="showDescription"
-    @click.ctrl="$emit('setChoosingObject', object)"
-    @click.alt="$emit('setChoosingRelated', object)"
+    @click.ctrl="selectObject"
+    @wheel.stop="scrollObject(node, $event)"
     @mouseenter="emitHoverEvent('hover')"
     @mouseleave="emitHoverEvent('unhover')"
-    @contextmenu.stop="$emit('ctxMenu', [$event, object])"
-    @wheel.stop="scrollObject(object, $event)"
+    @click.alt="$emit('setChoosingRelated')"
   >
-    <v-label v-show="showLabel" :element="object">
-      <information-label :size-node="object.size" :params="getClassifiers" :show-date="showDate"/>
+    <v-label v-show="showLabel" :element="node">
+      <information-label :size="node.size" :params="getClassifiers" :show-date="showDate"/>
     </v-label>
 
-    <node ref="node" :data="object" :in-selected="inSelected" :selected-objects="selectedObjects">
-      <body-object :object="object" :class="objectClass"/>
+    <node ref="node" :data="node" :in-selected="node.state.selected" :selected-objects="selectedObjects">
+      <body-object :node="node" :class="objectClass"/>
     </node>
 
     <foreignObject v-if="showTitle" v-bind="titleStyle">
-      <div class="name-text" :style="titleTextStyle" oncontextmenu="return false">{{title}}</div>
+      <div class="name-text" :style="titleTextStyle">{{title}}</div>
     </foreignObject>
     <foreignObject width="0" height="0">
       <description v-model="description" :params="params" :object-id="objectId" :rec-id="recId" :title="title"/>
@@ -39,9 +38,7 @@ export default {
   mixins: [scrollMixin],
   components: {Description, Node, VLabel, BodyObject, InformationLabel},
   props: {
-    object: Object,
-    inAdded: Boolean,
-    inSelected: Boolean,
+    node: Object,
     inHover: Boolean,
     selectedObjects: Array
   },
@@ -51,23 +48,21 @@ export default {
   computed: {
     ...mapGetters(['globalDisplaySettingValue', 'classifiersSettings']),
     objectClass() {
-      if(this.inSelected) {
+      if(this.node.state.selected) {
         return 'choosing-object'
-      } else if(this.inHover) {
+      } else if(this.node.state.hover && this.globalDisplaySettingValue('linkHighlighting')) {
         return 'hover-object'
-      } else if(this.inAdded) {
-        return 'added-object'
       } else return 'body-object'
     },
     showLabel() {
       let globalState = this.globalDisplaySettingValue('showGlobalTooltipObject')
       let classifiersLength = this.getClassifiers.length
-      let localState = this.object.object.showTooltip
+      let localState = this.node.settings.showTooltip
       return globalState && classifiersLength && localState
     },
     showDate() {
       let globalCreateDate = this.globalDisplaySettingValue('showGlobalDateObject')
-      let localCreateDate = this.object.object.showCreateDate
+      let localCreateDate = this.node.settings.showCreateDate
       return globalCreateDate && localCreateDate
     },
     getClassifiers() {
@@ -76,36 +71,42 @@ export default {
       )
     },
     showTitle() {
-      return this.globalDisplaySettingValue('showGlobalTitle') && this.object.object.showTitle
+      return this.globalDisplaySettingValue('showGlobalTitle') && this.node.settings.showTitle
     },
     titleStyle() {
       return {
-        x: this.object.x + this.object.width / 2 - this.object.size / 2,
-        y: this.object.y + this.object.height,
-        width: `${this.object.size}px`,
+        x: this.node.x - this.node.size / 3,
+        y: this.node.y + this.node.size / 3,
+        width: `${this.node.size}px`,
         overflow: "visible",
         class: "pt-8",
         height: 1
       }
     },
     title() {
-      return this.object.object.title
+      return this.node.entity.title
     },
     titleTextStyle() {
-      return {fontSize: `${this.object.size/40}px`}
+      return {fontSize: `${this.node.size / 40}px`}
     },
     params() {
-      return this.object.object.params
+      return this.node.entity.params
     },
     objectId() {
-      return this.object.object.object.id
+      return this.node.ids.object_id
     },
     recId() {
-      return this.object.object.recId
+      return this.node.ids.rec_id
     }
   },
   methods: {
-    emitHoverEvent(event) { !this.$refs.node.isMoved() && this.$emit(event, this.object) },
+    selectObject() {
+      this.node.state.selected = !this.node.state.selected
+    },
+    emitHoverEvent(event) {
+      if(!this.$refs.node.isMoved())
+        this.$emit(event, this.node)
+    },
     showDescription(event) {
       if(!event.button)
         this.description = true

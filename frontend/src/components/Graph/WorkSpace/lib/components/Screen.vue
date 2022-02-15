@@ -1,10 +1,9 @@
 <template>
   <svg class="screen" ref="screen" @mousedown.ctrl="startDrawFrame">
     <g id="screen">
-      <slot>
-      </slot>
+      <slot/>
     </g>
-    <rect v-show="frame.active" :x="frame.x" :y="frame.y" :width="frame.width" :height="frame.height" style="fill:rgba(0,0,255,0.1);"/>
+    <rect v-show="frame.active" :x="frame.x" :y="frame.y" :width="frame.width" :height="frame.height" class="frame"/>
   </svg>
 </template>
 
@@ -178,5 +177,8 @@ export default {
 .screen {
   width: 100%;
   height: 100%;
+}
+.frame {
+  fill:rgba(0, 0, 255, 0.1);
 }
 </style>
