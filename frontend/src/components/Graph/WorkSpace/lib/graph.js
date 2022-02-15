@@ -168,11 +168,12 @@ export default class Graph {
     this.reorderStep(0, 200, tempNodes, 10000, x, y)
   }
   getNewNodePosition(edges, position) {
-    let startPosition = {id:'', size: 300}
+    let startPosition = {size: 300}
     if(edges.length === 0){
       return Object.assign(startPosition, this.getStartPosition(position))
     }
     startPosition = Object.assign(this.getNodesCenter(this.nodes.filter(n => edges.find(e => e === n.id))), startPosition)
+    startPosition.id = ''
     let startSpeed = 0
     for(let i=0; i < 30; i++) {
       const temp = {x: startPosition.x, y: startPosition.y}
@@ -188,7 +189,7 @@ export default class Graph {
         }
       }
     }
-    return startPosition
+    return {x: startPosition.x, y: startPosition.y, size: startPosition.size}
   }
   forceMoveNode(node, otherNode, edges) {
     let dx = otherNode.x - node.x
@@ -269,10 +270,7 @@ class GraphRelationSettings extends GraphElementSettingsBase{
 }
 
 export class Node {
-  constructor(entity, {x, y, size=300}) {
-    this.x = x
-    this.y = y
-    this.size = size
+  constructor(entity) {
     this.entity = entity
     this.state = new GraphObjectState()
     this.settings = new GraphObjectSettings()

@@ -30,17 +30,19 @@ export default {
     setScreen({ commit }, screen) {
       commit('setScreen', screen)
     },
-    addNodeToGraph({getters, commit}, {node, callTime}) {
+    addNodeToGraph({getters, commit}, {node, props, relations}) {
       if(!getters.graphNode(node.id)) {
-        commit('addNode', node)
+        if(!props) {
+          const edges = relations.map(r => r.o2.getGeneratedId())
+          props = getters.graph.getNewNodePosition(edges, getters.screen.visibleArea())
+        }
+        commit('addNode', Object.assign(node, props))
       }
-      commit('addNodeToTimeLine', {node, callTime})
     },
-    addEdgeToGraph({getters, commit}, {edge, callTime}) {
+    addEdgeToGraph({getters, commit}, edge) {
       if(!getters.graphEdge(edge.id)) {
         commit('addEdge', edge)
       }
-      commit('addEdgeToTimeLine', {edge, callTime})
     },
     clearGraph({commit}) {
       commit('clearGraph')
