@@ -1,5 +1,5 @@
 from data_base_driver.additional_functions import get_date_time_from_sec, date_server_to_client, \
-    date_time_server_to_client
+    date_time_server_to_client, parse_type
 from data_base_driver.constants.const_dat import DAT_SYS_KEY, DAT_OWNER
 from data_base_driver.constants.const_key import SYS_KEY_CONSTANT
 from data_base_driver.input_output.input_output import io_get_obj
@@ -172,10 +172,10 @@ def get_object_record_by_id_http(object_id, rec_id, group_id=0, triggers=None):
             'title': title['title'], 'triggers': triggers, 'photo': photo}
 
 
-def get_keys_by_object():
+def get_keys():
     """
     Получение списка ключей классификатора
-    @return: список словарей c информацией о искомых ключах
+    @return: список словарей с информацией об искомых ключах
     """
     keys = DAT_SYS_KEY.DUMP.get_rec(only_first=False)
     result = []
@@ -183,9 +183,26 @@ def get_keys_by_object():
         temp = dict(key)
         temp.pop('rel_obj_1_id')
         temp.pop('rel_obj_2_id')
-        temp['type'] = {'title': 'list' if temp.get('list_id') else temp['type'],
-                        'value': temp['list_id'] if temp.get('list_id') else None}
+        temp['type'] = parse_type(temp['type'], temp['list_id'])
         temp.pop('list_id')
+        result.append(temp)
+    result.sort(key=lambda x: x['id'])
+    result.sort(key=lambda x: x['obj_id'])
+    return result
+
+
+def get_keys_blank():
+    """
+    Функция для получения классификаторов для бланков
+    @return: список объектов содержащий классификаторы для бланков
+    """
+    keys = DAT_SYS_KEY.DUMP.get_rec(only_first=False)
+    result = []
+    for key in keys:
+        temp = dict(key)
+        temp.pop('rel_obj_1_id')
+        temp.pop('rel_obj_2_id')
+        temp['type'] = 'list' if temp.get('list_id') else temp['type']
         result.append(temp)
     result.sort(key=lambda x: x['id'])
     result.sort(key=lambda x: x['obj_id'])

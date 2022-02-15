@@ -107,6 +107,7 @@ class ModelKeyAdminRel(admin.ModelAdmin):
         ("Основные настройки связи", {'fields': (DAT_SYS_KEY.LIST,), }),
         ("Описания для связи", {'fields': ((DAT_SYS_KEY.HINT,),), }),
         ("Поля для связи между объектами", {'fields': ((DAT_SYS_KEY.REL_OBJ_1, DAT_SYS_KEY.REL_OBJ_2,),), }),
+        (None, {'fields': ((DAT_SYS_KEY.BLOCKED_IN_BLANK),), }),
         ("Дополнительная информация", {'fields': (DAT_SYS_KEY.DESCRIPT,), }),
     )
 
@@ -192,7 +193,7 @@ class ModelKeyAdminObject(admin.ModelAdmin):
                                                                                          DAT_SYS_KEY.PRIORITY, ),)}),
         ("Основные настройки классификатора", {'fields': (DAT_SYS_KEY.OBJ, DAT_SYS_KEY.TYPE_VAL, DAT_SYS_KEY.LIST, ), }),
         ("Описания для классификатора", {'fields': ((DAT_SYS_KEY.HINT,),), }),
-        (None, {'fields': ((DAT_SYS_KEY.NEED, DAT_SYS_KEY.VISIBLE),), }),
+        (None, {'fields': ((DAT_SYS_KEY.NEED, DAT_SYS_KEY.VISIBLE, DAT_SYS_KEY.BLOCKED_IN_BLANK),), }),
         ("Дополнительная информация", {'fields': (DAT_SYS_KEY.DESCRIPT,), }),
     )
 

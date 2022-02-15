@@ -68,7 +68,7 @@ export default {
         case 'checkbox':
           return variable.value ? 'ДА' : 'НЕТ'
         case 'geometry':
-          return variable.value ? 'Геометрия' : ''
+          return variable.value ? variable.type.value === 'polygon' ? 'Геометрия' : 'Точка' : ''
         case 'search':
           return variable.value ? variable.value.title : ''
         default:

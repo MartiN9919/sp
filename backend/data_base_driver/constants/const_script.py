@@ -36,6 +36,7 @@ feature_collection_by_geometry, get_geometries\n"\
     "from docx import Document\n"\
     "from docx.shared import RGBColor\n"\
     "from synonyms_manager.get_synonyms import get_synonyms\n"\
+    "from document_driver.classifier_driver import get_exel_document\n"\
     "from core.deploy_settings import MEDIA_ROOT, DOCUMENT_ROOT\n\n"
 
 
@@ -109,7 +110,7 @@ ENABLED_FUNCTIONS = [
     'save',
     'get_person_info',
     'get_record_title',
-
+    'get_exel_document'
 ]
 
 PATH_TO_REPORTS_DIR = '/reports/'
