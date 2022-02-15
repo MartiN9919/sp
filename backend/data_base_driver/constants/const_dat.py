@@ -133,7 +133,7 @@ class DAT_SYS_KEY:
     PATH = 'path'
     PRIORITY = 'priority'
     VISIBLE = 'visible'
-    BLOCKED_IN_BLANK = 'blocked_in_blank'
+    BLOCKED_IN_BLANK = 'blocked_blank'
 
     TYPE_STR = 'text'
     TYPE_STR_ENG = 'text_eng'
