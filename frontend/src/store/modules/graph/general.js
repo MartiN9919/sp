@@ -10,12 +10,13 @@ export default {
     screen: state => state.screen,
     graph: state => state.graph,
     graphNodes: state => state.graph.nodes,
-    graphNode: state => id => state.graph.nodes.find(o => o.id === id),
+    graphNode: state => id => state.graph.nodes.find(n => n.id === id),
+    hoverNodes: state => state.graph.nodes.filter(n => n.state.hover),
+    selectedNodes: state => state.graph.nodes.filter(n => n.state.selected),
     graphEdges: state => state.graph.edges,
-    graphEdge: state => id => state.graph.edges.find(o => o.id === id),
-    graphObjectByIds: state => ids => state.graph.nodes.find(o => ids.every(id => o.object.ids.includes(id))),
-    graphRelations: state => state.graph.edges,
-    graphObjectsRelation: state => ids => state.graph.edges.find(r => [r.from, r.to].every(v => ids.includes(v)))
+    graphEdge: state => id => state.graph.edges.find(e => e.id === id),
+    hoverEdges: state => state.graph.edges.filter(e => e.state.hover),
+    selectedEdges: state => state.graph.edges.filter(e => e.state.selected)
   },
   mutations: {
     setScreen: (state, screen) => state.screen = screen,
@@ -50,17 +51,13 @@ export default {
     },
     clearGraph({commit}) {
       commit('clearGraph')
-      commit('clearSelectedGraphObjects') // ToDo: Избавиться от массива выбранных объектов.
     },
     reorderGraph({ commit }) {
       commit('reorderGraph')
     },
     reorderChoosingObjects({commit}) {
       commit('reorderChoosingObjects')
-    }, // ToDo: Объединить две функции упорядочивания. Вынести запуск Лодера в экшен.
-    deleteObjectFromGraph({commit}, object) {
-      commit('deleteObjectFromGraph', object)
-    },
+    } // ToDo: Объединить две функции упорядочивания. Вынести запуск Лодера в экшен.
   }
 }
 

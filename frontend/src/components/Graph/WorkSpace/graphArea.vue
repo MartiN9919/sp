@@ -14,7 +14,7 @@
         v-for="node in graphNodes"
         :key="node.id"
         :node="node"
-        :selected-objects="selectedObjects"
+        :selected-objects="selectedNodes"
         @hover="hover"
         @unhover="unHover"
         @setChoosingRelated="setChoosingRelated"
@@ -44,10 +44,7 @@ export default {
     relationsObject: [],
   }),
   computed: {
-    ...mapGetters(['graphNodes', 'graphEdges', 'globalDisplaySettingValue']),
-    selectedObjects: function () {
-      return this.graphNodes.filter(n => n.state.selected)
-    }
+    ...mapGetters(['graphNodes', 'graphEdges', 'selectedNodes', 'hoverNodes', 'hoverEdges', 'globalDisplaySettingValue']),
   },
   methods: {
     ...mapActions([
@@ -69,7 +66,7 @@ export default {
       for(const node of this.graphNodes){
         const x = node.x + node.size / 6
         const y = node.y + node.size / 6
-        if(x > frame.x && x < xMax && y > frame.y && y < yMax){
+        if(x > frame.x && x < xMax && y > frame.y && y < yMax) {
           node.state.selected = true
         }
       }
@@ -99,16 +96,9 @@ export default {
       }
       this.pickUp(element)
     },
-    unHover(element) {
-      if(this.isObject(element)) {
-        const elements = this.getRelatedForObject(element)
-        elements.nodes.forEach(n => n.state.hover = false)
-        elements.edges.forEach(e => e.state.hover = false)
-      } else {
-        const nodes = this.getRelatedForRelation(element)
-        nodes.forEach(n => n.state.hover = false)
-      }
-      element.state.hover = false
+    unHover() {
+      this.hoverNodes.forEach(n => n.state.hover = false)
+      this.hoverEdges.forEach(e => e.state.hover = false)
     },
     clearSelectors(evt) {
       if(!evt.button && !this.$refs.contextMenu.$children[0].isActive) {
