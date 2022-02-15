@@ -2,34 +2,26 @@
   <div class="h-100 disable-optimize select-off" @mouseup.exact="clearSelectors" @contextmenu="menuShow">
     <screen id="screen" ref="screen" @selectNodes="setChoosingObjects" oncontextmenu="return false">
       <graph-relation
-        v-for="relation in graphRelations"
-        :key="relation.id"
-        :in-added="inLastAddedRelations(relation.id)"
-        :in-hover="inHover(relation)"
-        :relation="relation"
-        :objects="graphObjects"
+        v-for="edge in graphEdges"
+        :key="edge.id"
+        :edge="edge"
+        :nodes="graphNodes"
         @hover="hover"
         @unhover="unHover"
-        @ctxMenu="menuShow(...$event)"
         @setChoosingRelated="setChoosingRelated"
       />
       <graph-object
-        v-for="object in graphObjects"
-        :key="object.id"
-        :object="object"
-        :in-added="inLastAddedObjects(object.id)"
-        :in-selected="inSelectedGraphObject(object)"
-        :in-hover="inHover(object)"
-        :selected-objects="selectedGraphObjects"
-        @setChoosingObject="setChoosingObject"
-        @setChoosingRelated="setChoosingRelated"
+        v-for="node in graphNodes"
+        :key="node.id"
+        :node="node"
+        :selected-objects="selectedObjects"
         @hover="hover"
         @unhover="unHover"
-        @ctxMenu="menuShow(...$event)"
+        @setChoosingRelated="setChoosingRelated"
       />
     </screen>
-    <search-object v-if="graphObjects.length" :objects="graphObjects" @findNode="findNode"/>
-    <context-menu-nested ref="contextMenu" :form="this" :items="contextMenu" :color="$CONST.APP.COLOR_OBJ"/>
+    <search-object v-if="graphNodes.length" :objects="graphNodes" @findNode="findNode"/>
+<!--    <context-menu-nested ref="contextMenu" :form="this" :items="contextMenu" :color="$CONST.APP.COLOR_OBJ"/>-->
   </div>
 </template>
 
@@ -40,6 +32,7 @@ import GraphRelation from "@/components/Graph/WorkSpace/graphRelation"
 import bodyContextMenu from "@/components/Graph/WorkSpace/Modules/bodyContextMenu"
 import SearchObject from "@/components/Graph/WorkSpace/Modules/searchObject"
 const ContextMenuNested = () => import("@/components/WebsiteShell/UIMainComponents/contextMenuNested")
+import {Node, Edge} from '@/components/Graph/WorkSpace/lib/graph'
 import {mapActions, mapGetters} from "vuex"
 
 export default {
@@ -51,82 +44,71 @@ export default {
     relationsObject: [],
   }),
   computed: {
-    ...mapGetters([
-      'graphObjects',
-      'graphRelations',
-      'selectedGraphObjects',
-      'inSelectedGraphObject',
-      'inLastAddedObjects',
-      'inLastAddedRelations',
-      'globalDisplaySettingValue',
-    ]),
+    ...mapGetters(['graphNodes', 'graphEdges', 'globalDisplaySettingValue']),
+    selectedObjects: function () {
+      return this.graphNodes.filter(n => n.state.selected)
+    }
   },
   methods: {
     ...mapActions([
       'setScreen',
-      'addSelectedGraphObject',
-      'deleteSelectedGraphObject',
       'clearSelectedGraphObjects'
     ]),
     isObject(element) {
-      return element.hasOwnProperty('object')
+      return element instanceof Node
     },
     findNode(node) {
       this.$refs.screen.zoomNodes([node], { scale: 1.5 })
     },
     setChoosingRelated() {
-      this.relatedObjects.map(o => this.addSelectedGraphObject(o))
-    },
-    setChoosingObject(object) {
-      if(this.inSelectedGraphObject(object))
-        this.deleteSelectedGraphObject(object)
-      else
-        this.addSelectedGraphObject(object)
+      this.graphNodes.filter(n => n.state.hover).map(n => n.state.selected = true)
     },
     setChoosingObjects(frame) {
       const xMax = frame.x + frame.width
       const yMax = frame.y + frame.height
-      for(const object of this.graphObjects){
-        const x = object.x + object.size / 6
-        const y = object.y + object.size / 6
+      for(const node of this.graphNodes){
+        const x = node.x + node.size / 6
+        const y = node.y + node.size / 6
         if(x > frame.x && x < xMax && y > frame.y && y < yMax){
-          if(!this.inSelectedGraphObject(object))
-            this.addSelectedGraphObject(object)
+          node.state.selected = true
         }
       }
     },
     pickUp(element) {
-      let ar = this.isObject(element) ? this.graphObjects : this.graphRelations
+      let ar = this.isObject(element) ? this.graphNodes : this.graphEdges
       ar.splice(ar.findIndex(r => r === element), 1)
       ar.push(element)
+      element.state.hover = true
     },
-    getRelatedForObject(object) {
-      this.relatedObjects = [object]
-      this.relationsObject = this.graphRelations.filter(r => [r.to, r.from].includes(object.id))
-      for(const r of this.relationsObject) {
-        const relatedObject = this.graphObjects.find(n => ([r.to, r.from].includes(n.id)) && n.id !== object.id)
-        this.relatedObjects.push(relatedObject)
-        this.pickUp(relatedObject)
-      }
+    getRelatedForObject(node) {
+      const edges = this.graphEdges.filter(edge => [edge.to, edge.from].includes(node.id))
+      const nodes = edges.map(e => this.graphNodes.find(n => [e.to, e.from].includes(n.id) && n.id !== node.id))
+      return {nodes, edges}
     },
-    getRelatedForRelation(relation) {
-      this.relationsObject = [relation]
-      this.relatedObjects = Array.from(this.graphObjects.filter(o => [relation.from, relation.to].includes(o.id)))
-      this.relatedObjects.map(o => this.pickUp(o))
+    getRelatedForRelation(edge) {
+      return this.graphNodes.filter(n => [edge.to, edge.from].includes(n.id))
     },
     hover(element) {
-      this.isObject(element) ? this.getRelatedForObject(element) : this.getRelatedForRelation(element)
+      if(this.isObject(element)) {
+        const elements = this.getRelatedForObject(element)
+        elements.nodes.forEach(n => this.pickUp(n))
+        elements.edges.forEach(e => this.pickUp(e))
+      } else {
+        const nodes = this.getRelatedForRelation(element)
+        nodes.forEach(n => this.pickUp(n))
+      }
       this.pickUp(element)
     },
-    unHover() {
-      this.relatedObjects = []
-      this.relationsObject = []
-    },
-    inHover(element) {
-      return this.globalDisplaySettingValue('linkHighlighting')
-        && this.isObject(element)
-        ? this.relatedObjects.includes(element)
-        : this.relationsObject.includes(element)
+    unHover(element) {
+      if(this.isObject(element)) {
+        const elements = this.getRelatedForObject(element)
+        elements.nodes.forEach(n => n.state.hover = false)
+        elements.edges.forEach(e => e.state.hover = false)
+      } else {
+        const nodes = this.getRelatedForRelation(element)
+        nodes.forEach(n => n.state.hover = false)
+      }
+      element.state.hover = false
     },
     clearSelectors(evt) {
       if(!evt.button && !this.$refs.contextMenu.$children[0].isActive) {

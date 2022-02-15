@@ -1,12 +1,32 @@
 import axios from '@/plugins/axiosSettings'
+import {Node, Edge} from "@/components/Graph/WorkSpace/lib/graph"
 
 export default {
   state: {
     selectedGraphObjects: [],
     lastAddedObjects: [],
-    lastAddedRelations: []
+    lastAddedRelations: [],
+    timeline: [],
+    callTime: null,
   },
   getters: {
+    timeline: state => callTime => state.timeline.find(t => t.date === callTime),
+    nodes: state => (callTime=null) => {
+      const converter = timeline => Array.from(timeline, t => t.nodes).flat(1)
+      if(callTime) {
+        return converter(state.timeline.filter(t => t.date <= callTime))
+      } else {
+        return converter(state.timeline)
+      }
+    },
+    edges: state => (callTime=null) => {
+      const converter = timeline => Array.from(timeline, t => t.edges).flat(1)
+      if(callTime) {
+        return converter(state.timeline.filter(t => t.date <= callTime))
+      } else {
+        return converter(state.timeline)
+      }
+    },
     selectedGraphObjects: state => state.selectedGraphObjects,
     inSelectedGraphObject: state => object => state.selectedGraphObjects.includes(object),
     lastAddedObjects: state => state.lastAddedObjects,
@@ -15,6 +35,9 @@ export default {
     inLastAddedRelations: state => id => state.lastAddedRelations.includes(id)
   },
   mutations: {
+    createTimeLine: (state, callTime) => state.timeline.push({date: callTime, nodes: [], edges: []}),
+    addNodeToTimeLine: (state, {node, callTime}) => state.timeline.find(t => t.date === callTime).nodes.push(node),
+    addEdgeToTimeLine: (state, {edge, callTime}) => state.timeline.find(t => t.date === callTime).edges.push(edge),
     clearSelectedGraphObjects: (state) => state.selectedGraphObjects = [],
     addSelectedGraphObject: (state, object) => state.selectedGraphObjects.push(object),
     deleteSelectedGraphObject: (state, object) => {
@@ -34,19 +57,30 @@ export default {
     },
     deleteSelectedGraphObject({ commit }, object) { commit('deleteSelectedGraphObject', object) },
     clearSelectedGraphObjects({ commit }) { commit('clearSelectedGraphObjects') },
-    async addToGraphFromServer({getters, dispatch}, {payload}) {
-      for(const { object_id, rec_id, props=null } of Array.isArray(payload) ? payload : [payload]) {
-        const objects = getters.graphObjects.map(o => Object.assign({object_id: o.object.object.id, rec_id: o.object.recId}))
-        await Promise.all([
-          dispatch('getObjectFromServer', {object_id, rec_id}),
-          dispatch('getRelationFromServer', Object.assign({object_id, rec_id}, {objects: objects}))
-        ])
-          .then(async r => {
-            await dispatch('addToGraph', {object: Object.assign(r[0], {props: props}), relations: r[1]})
-              .then(result => {
-
-              })
-              .catch(error => console.log('error', error))
+    createTimeLine({commit}, callTime) { commit('createTimeLine', callTime) },
+    createNode({getters, commit}, {object, props}) {
+      let findNode = getters.nodes().find(n => n.id === object.getGeneratedId())
+      const node = findNode ? Object.assign(findNode, {entity: object}) : new Node(object, props)
+      return Promise.resolve(node)
+    },
+    createEdge({getters, commit}, {relation}) {
+      let findEdge = getters.edges().find(n => n.id === relation.getGeneratedId())
+      const edge = findEdge ? Object.assign(findEdge, {entity: relation}) : new Edge(relation)
+      return Promise.resolve(edge)
+    },
+    async addToGraph({getters, commit, dispatch}, {payload}) {
+      const callTime = new Date()
+      commit('createTimeLine', callTime)
+      for(const {object_id, rec_id, props=getters.screen.getStartPosition()} of Array.isArray(payload) ? payload : [payload]) {
+        dispatch('getObjectFromServer', {object_id, rec_id})
+          .then(object => {
+            dispatch('getRelationFromServer', {from: object, objects: Array.from(getters.nodes(), n => n.entity)})
+              .then(relations => relations.forEach(relation =>
+                dispatch('createEdge', {relation, callTime})
+                  .then(edge => dispatch('addEdgeToGraph', {edge, callTime}))
+              ))
+            dispatch('createNode', {object, props, callTime})
+              .then(node => dispatch('addNodeToGraph', {node, callTime}))
           })
       }
     },
@@ -61,7 +95,7 @@ export default {
         }
       return await axios.get('objects/objects_relation/', config)
         .then(response => {
-          dispatch('addToGraphFromServer', {payload: response.data})
+          dispatch('addToGraph', {payload: response.data})
           return Promise.resolve()
         })
         .catch(e => { return Promise.reject(e) })

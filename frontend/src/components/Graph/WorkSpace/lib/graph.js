@@ -16,15 +16,6 @@ export default class Graph {
     this.updateNode(node, { x: pos.x, y: pos.y })
   }
 
-  // refs
-  // https://gojs.net
-
-  // TODO
-  // dagLoad - set [nodes] and [edges] from dag
-  // dagBuild - builds and saves dag info into nodes
-  // dagBuildEdges - delete all edges and build them from Dag
-  // dagSetParent - change dag parent (string or array[string] => array[string])
-
   graphNodes ({ nodes, edges, type = 'basic', dir = 'right', spacing = 40 } = {}) {
     nodes = nodes || this.nodes
     edges = edges || this.edges
@@ -89,20 +80,8 @@ export default class Graph {
     while (this.nodes.length) { this.nodes.pop() }
   }
 
-  createNode (fields = {}) {
-    if (typeof fields === 'string') {
-      fields = { id: fields } // support a single id string or an object as params
-    }
-    const node = Object.assign({
-      id: uuid(),
-      x: 0,
-      y: 0,
-      width: 50,
-      height: 50,
-    }, fields)
-
+  createNode (node) {
     this.nodes.push(node)
-    return node
   }
 
   updateNode (node, fields = {}) {
@@ -120,32 +99,8 @@ export default class Graph {
     return index
   }
 
-  createEdge (from, to, fields = {}) {
-    if (arguments.length === 1) {
-      // support calling with single argument
-      fields = arguments[0]
-      from = fields.from
-      to = fields.to
-    } else {
-      // support passing node objects instead of ids
-      if (typeof from === 'object') from = from.id
-      if (typeof to === 'object') to = to.id
-    }
-    if (!from) throw new Error('orig required')
-    if (!to) throw new Error('dest required')
-
-    const edge = Object.assign({
-      id: fields.id || `${from}@${to}`,
-      from,
-      to,
-      fromAnchor: { x: '50%', y: '50%' },
-      toAnchor: { x: '50%', y: '50%' },
-      type: 'linear',
-      pathd: '', // reactive path
-    }, fields)
-
+  createEdge (edge) {
     this.edges.push(edge)
-    return edge
   }
 
   updateEdge (edge, fields) {
@@ -259,5 +214,91 @@ export default class Graph {
       y += node.y
     }
     return {x: x / nodes.length, y: y / nodes.length}
+  }
+}
+
+class GraphElementStateBase {
+  constructor() {
+    this.added = false
+    this.hover = false
+  }
+}
+
+class GraphObjectState extends GraphElementStateBase {
+  constructor() {
+    super()
+    this.selected = false
+  }
+}
+
+class GraphRelationState extends GraphElementStateBase {
+  constructor() {
+    super()
+  }
+}
+
+class GraphElementSettingsBase {
+  constructor() {
+    this.showTooltip = true
+    this.showCreateDate = true
+  }
+}
+
+class GraphObjectSettings extends GraphElementSettingsBase{
+  constructor() {
+    super()
+    this.showTitle = true
+    this.showTriggers = true
+  }
+}
+
+class GraphRelationSettings extends GraphElementSettingsBase{
+  constructor() {
+    super()
+  }
+}
+
+export class Node {
+  constructor(entity, {x, y, size=300}) {
+    this.x = x
+    this.y = y
+    this.size = size
+    this.entity = entity
+    this.state = new GraphObjectState()
+    this.settings = new GraphObjectSettings()
+  }
+
+  get id() {
+    return this.entity.getGeneratedId()
+  }
+
+  get ids() {
+    return this.entity.ids
+  }
+}
+
+export class Edge {
+  constructor(entity) {
+    this.size = 300
+    this.pathd = ''
+    this.entity = entity
+    this.state = new GraphRelationState()
+    this.settings = new GraphRelationSettings()
+  }
+
+  get from() {
+    return this.entity.o1.getGeneratedId()
+  }
+
+  get to() {
+    return this.entity.o2.getGeneratedId()
+  }
+
+  get id() {
+    return this.entity.getGeneratedId()
+  }
+
+  get ids() {
+    return this.entity.ids
   }
 }

@@ -45,7 +45,7 @@ export default {
       else
         dispatch('getObjectFromServer', {rec_id: recId, object_id: objectId})
           .then(r => {
-            commit('setEditableObjects', new DataBaseObject(r))
+            commit('setEditableObjects', r)
             dispatch('setNavigationDrawerStatus', true)
             dispatch('setActiveTool', 'createObjectPage')
           })
@@ -68,15 +68,17 @@ export default {
     async getObjectFromServer({getters, commit, dispatch}, {rec_id, object_id, config = {}}) {
       config.headers = {'set-cookie': getters.cookieTriggers(object_id)}
       return await axios.get('objects/object/', Object.assign(config, {params: {rec_id, object_id}}))
-        .then(r => { return Promise.resolve(r.data) })
-        .catch(e => { return Promise.reject(e) })
-    },
-    async getRelationFromServer({getters, commit, dispatch}, {rec_id, object_id, objects, config = {}}) {
-      const params = Object.assign({rec_id, object_id, objects})
-      return await axios.post('objects/object_relation/', params, config)
-        .then(r => Promise.resolve(r.data))
+        .then(r => Promise.resolve(new DataBaseObject(r.data)))
         .catch(e => Promise.reject(e))
-
+    },
+    async getRelationFromServer({getters, commit, dispatch}, {from, objects, config = {}}) {
+      const params = Object.assign(from.ids, {objects: Array.from(objects, n => n.ids)})
+      return await axios.post('objects/object_relation/', params, config)
+        .then(r => Promise.resolve(r.data.map(relation => {
+          const object = objects.find(o => o.ids.object_id === relation.object_id && o.ids.rec_id === relation.rec_id)
+          return new DataBaseRelation(from, object, relation.relations)
+        })))
+        .catch(e => Promise.reject(e))
     },
     async saveEditableObject({getters, dispatch}, positionObject) {
       return await axios.post('objects/object/',
@@ -93,7 +95,7 @@ export default {
           }
           else {
             dispatch('setEditableObject', {objectId: response.object_id, recId: response.rec_id})
-            dispatch('addToGraphFromServer', {payload: response})
+            dispatch('addToGraph', {payload: response})
           }
           return Promise.resolve(r.data)
         })
@@ -119,15 +121,8 @@ export default {
 }
 
 class BaseDbObject {
-  constructor(getter, baseObjects, params, recIdOld=null) {
-    this.params = []
-    if(recIdOld)
-      this.recIdOld = recIdOld
-    for(let param of params)
-      this.params.push(new ParamObject(getter(param.id), param.values))
-    for(let object of baseObjects)
-      if(!this.params.find(c => c.baseParam.id === object.id))
-        this.params.push(new ParamObject(getter(object.id)))
+  constructor(getter, baseObjects, params) {
+    this.params = baseObjects.map(p => new ParamObject(getter(p.id), params.find(n => n.id === p.id)?.values))
   }
 
   addParam(id) {
@@ -144,7 +139,7 @@ class BaseDbObject {
 export class DataBaseRelation extends BaseDbObject {
   constructor(o1, o2, params=[]) {
     let getter = store.getters.baseRelation
-    let baseObject = store.getters.baseRelations({f_id: o1.object.object.id, s_id: o2.object.object.id})
+    let baseObject = store.getters.baseRelations({f_id: o1.base.id, s_id: o2.base.id})
     super(getter, baseObject, params)
     this.o1 = o1
     this.o2 = o2
@@ -158,22 +153,43 @@ export class DataBaseRelation extends BaseDbObject {
         params.push({id: param.baseParam.id, value: value, date: newValue.date})
       }
     return {
-      object_1_id: this.o1.object.object.id,
-      object_2_id: this.o2.object.object.id,
-      rec_1_id: this.o1.object.recId,
-      rec_2_id: this.o2.object.recId,
+      ...this.ids,
       params: params,
     }
+  }
+
+  get ids() {
+    return {
+      object_1_id: this.o1.base.id,
+      rec_1_id: this.o1.recId,
+      object_2_id: this.o2.base.id,
+      rec_2_id: this.o2.recId
+    }
+  }
+
+  getGeneratedId() {
+    return `${this.o1.base.id}-${this.o1.recId}@${this.o2.base.id}-${this.o2.recId}`
   }
 }
 
 
 export class DataBaseObject extends BaseDbObject {
-  constructor({object_id, rec_id = 0, params = [], recIdOld = null, title=''}) {
-    super(store.getters.baseClassifier, store.getters.baseClassifiers(object_id), params, recIdOld)
-    this.object = store.getters.baseObject(object_id)
+  constructor({object_id, rec_id = 0, recIdOld = null, params = [], triggers=[], title='', photo=''}) {
+    super(store.getters.baseClassifier, store.getters.baseClassifiers(object_id), params)
+    this.base = store.getters.baseObject(object_id)
+    this.recIdOld = recIdOld
     this.recId = rec_id
     this.title = title
+    this.photo = photo
+    this.triggers = triggers
+  }
+
+  get ids() {
+    return {object_id: this.base.id, rec_id: this.recId}
+  }
+
+  getGeneratedId() {
+    return `${this.base.id}-${this.recId}`
   }
 
   getRequestStructure() {
@@ -184,18 +200,18 @@ export class DataBaseObject extends BaseDbObject {
         if(param.baseParam.type.title.startsWith('file')){
           params.push({id: param.baseParam.id, value: params.length.toString(), date: newValue.date})
           formData.append(params.length - 1, newValue.value.file)
-        } else params.push({id: param.baseParam.id, value: newValue.value, date: newValue.date})
+        } else {
+          params.push({id: param.baseParam.id, value: newValue.value, date: newValue.date})
+        }
       }
     }
-    let request = {
+    formData.append('data', JSON.stringify({
       rec_id: this.recId,
       object_id: this.object.id,
+      rec_id_old: this.recIdOld,
       force: store.getters.editableObjects.length > 1,
       params: params,
-    }
-    if(this.hasOwnProperty('recIdOld'))
-      request.rec_id_old = this.recIdOld
-    formData.append('data', JSON.stringify(request))
+    }))
     return formData
   }
 
@@ -212,9 +228,7 @@ class ParamObject {
   constructor(baseParam, values=[], newValues=[]) {
     this.baseParam = baseParam
     this.new_values = newValues
-    this.values = []
-    for(let v of values)
-      this.values.push(new ValueParam(v.value, v.date, v.doc))
+    this.values = values.map(v => new ValueParam(v.value, v.date, v.doc))
   }
 }
 
@@ -222,8 +236,7 @@ class ValueParam {
   constructor(value=null, date=this.getDateTime(), doc=null) {
     this.value = value
     this.date = date
-    if(doc)
-      this.doc = doc
+    this.doc = doc
   }
 
   getDateTime() {
