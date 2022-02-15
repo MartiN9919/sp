@@ -397,7 +397,7 @@ def search_relations(group_id, request):
 
 def get_relations_list():
     """
-    Функция для получения списка возможных связей по типу связываемых объектов
+    Функция для получения списка связей
     @param object1: имя или id первого объекта
     @param object2: имя или id второго объекта
     @return: список в формате [{id,title,hint,list},...,{}]
@@ -411,5 +411,6 @@ def get_relations_list():
         else:
             relation_type = {'title': 'unknow', 'value': None}
         result.append({'id': item['id'], 'title': item['title'], 'hint': item['hint'], 'list': list_id,
-                       'type': relation_type, 'object_id_1': item['rel_obj_1_id'], 'object_id_2': item['rel_obj_2_id']})
+                       'type': relation_type, 'object_id_1': item['rel_obj_1_id'], 'object_id_2': item['rel_obj_2_id'],
+                       'blocked_in_blank': item['blocked_in_blank']})
     return result

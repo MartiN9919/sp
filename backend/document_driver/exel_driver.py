@@ -1,6 +1,7 @@
 import re
 
 from openpyxl import load_workbook
+from openpyxl.styles import Alignment
 
 from core.settings import DOCUMENT_ROOT, TEMPLATE_ROOT
 
@@ -31,6 +32,39 @@ def as_text(value):
     return str(value)
 
 
+def reorder_work_sheet(work_sheet):
+    """
+    Функция для установки ширины столбцов по максимальной ширине содержимого
+    @param work_sheet: страница на которой необходимо установить ширину
+    """
+    for column_cells in work_sheet.columns:
+        length = max(len(as_text(cell.value)) for cell in column_cells) + 1
+        work_sheet.column_dimensions[column_cells[0].column_letter].width = length
+
+
+def merge_column_by_same_value(index, work_sheet):
+    """
+    Функция для объединения ячеек с одинаковым содержимым в заданном столбце
+    @param index: индекс столбца
+    @param work_sheet: страница документа на которой требуется объекдинение
+    """
+    temp = list(work_sheet.rows)[1][index]
+    start_value = temp.value
+    start_cell = temp.coordinate
+    prev_cell = temp.coordinate
+    for row in list(work_sheet.rows)[2:]:
+        if row[index].value != start_value:
+            work_sheet.merge_cells(start_cell + ':' + prev_cell)
+            work_sheet[start_cell].alignment = Alignment(vertical='top')
+            start_cell = row[index].coordinate
+            prev_cell = row[index].coordinate
+            start_value = row[index].value
+        else:
+            prev_cell = row[index].coordinate
+    work_sheet.merge_cells(start_cell + ':' + prev_cell)
+    work_sheet[start_cell].alignment = Alignment(vertical='top')
+
+
 def get_xlsx_document_from_template(template_path, name, data):
     """
     Функция для формирования exel документа из шаблона
@@ -50,9 +84,7 @@ def get_xlsx_document_from_template(template_path, name, data):
                     row.value = data[row.value][0]
                 else:
                     insert_list(works_sheet, mode, row, data[re.sub("<[^<]+>", "", row.value)])
-    for column_cells in works_sheet.columns:
-        length = max(len(as_text(cell.value)) for cell in column_cells) + 1
-        works_sheet.column_dimensions[column_cells[0].column_letter].width = length
+    reorder_work_sheet(works_sheet)
     work_book.save(DOCUMENT_ROOT + name + '.xlsx')
     return DOCUMENT_ROOT + name + '.xlsx'
 

@@ -73,14 +73,11 @@ export default {
       search: 'searchInput',
       text: 'textInput',
       geometry: 'geometryInput',
-      geometry_point: 'geometryInput',
       checkbox: 'booleanInput',
       date: 'dateInput',
-      datetime: 'dateInput',
       number: 'numberInput',
       phone_number: 'phoneInput',
-      file_photo: 'fileInput',
-      file_any: 'fileInput',
+      file: 'fileInput',
       default: 'unknownInput'
     }
   }),

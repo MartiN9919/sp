@@ -23,6 +23,7 @@ from shapely.geometry import Polygon, Point, LineString, MultiPoint
 from docx import Document
 from docx.shared import RGBColor
 from synonyms_manager.get_synonyms import get_synonyms
+from document_driver.classifier_driver import get_exel_document
 from core.deploy_settings import MEDIA_ROOT, DOCUMENT_ROOT
 
 
@@ -41,6 +42,7 @@ def script_80(request, group_id):
 		search_test10 = request.get('search_test10',{}).get('value',[])
 		search_test11 = request.get('search_test11',{}).get('value',[])
 		search_test12 = request.get('search_test12',{}).get('value',[])
+		search_test13 = request.get('search_test13',{}).get('value',[])
 		
 	except Exception as e:
 		raise e

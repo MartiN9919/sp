@@ -3,6 +3,7 @@
     <body-input-form
       v-model="value"
       v-bind="$attrs"
+      :rules="rules"
       :placeholder="$attrs.placeholder || 'Введите необходимое значение'"
       :class="bodyInputClasses"
       :clearable="false"
@@ -32,7 +33,14 @@ export default {
     value: {
       get: function () { return this.inputString },
       set: function (value) { this.$emit('changeInputString', value) }
-    }
+    },
+    rules : function () {
+      if (this.value) {
+        let rule = [() => !isNaN(Number(this.value)) || 'Введите корректное число']
+        return this.$attrs.hasOwnProperty('rules') ? rule.concat(this.$attrs.rules) : rule
+      }
+      else return this.$attrs.rules
+    },
   },
   methods: {
     isNumber(event) {
@@ -43,6 +51,7 @@ export default {
       if (!Number(this.value + event.key))
         return event.preventDefault()
     }
+
   }
 }
 </script>
@@ -51,4 +60,5 @@ export default {
 .number-input-form {
   width: 100%;
 }
+
 </style>

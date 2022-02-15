@@ -133,8 +133,10 @@ class DAT_SYS_KEY:
     PATH = 'path'
     PRIORITY = 'priority'
     VISIBLE = 'visible'
+    BLOCKED_IN_BLANK = 'blocked_in_blank'
 
     TYPE_STR = 'text'
+    TYPE_STR_ENG = 'text_eng'
     TYPE_INT = 'number'
     TYPE_BIT = 'checkbox'
     TYPE_DATA = 'date'
@@ -153,6 +155,7 @@ class DAT_SYS_KEY:
     TYPE_LIST = (
         (TYPE_INT, "Число"),
         (TYPE_STR, 'Текст'),
+        (TYPE_STR_ENG, 'Текст (только латиница и цифры)'),
         (TYPE_DATATIME, 'Дата/Время'),
         (TYPE_DATA, 'Дата'),
         (TYPE_PHONE_NUMBER, 'Номер телефона'),
@@ -204,6 +207,7 @@ class DAT_SYS_SCRIPT_VARIABLE:
     TYPE_VARIABLE_LIST = (
         (DAT_SYS_KEY.TYPE_INT, "Число"),
         (DAT_SYS_KEY.TYPE_STR, 'Текст'),
+        (DAT_SYS_KEY.TYPE_STR_ENG, 'Текст(только латиница и цифры)'),
         (DAT_SYS_KEY.TYPE_DATATIME, 'Дата/Время'),
         (DAT_SYS_KEY.TYPE_DATA, 'Дата'),
         (DAT_SYS_KEY.TYPE_PHONE_NUMBER, 'Номер телефона'),

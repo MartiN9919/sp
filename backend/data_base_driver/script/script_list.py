@@ -1,3 +1,4 @@
+from data_base_driver.additional_functions import parse_type
 from data_base_driver.connect import connect_mysql
 from data_base_driver.constants.const_dat import DAT_SYS_SCRIPT, DAT_OWNER
 from data_base_driver.script.get_script_info import get_script_variables
@@ -63,14 +64,8 @@ def script_list(parent_id, group_id, script_type):
             variables_dict = {'name': variable[0],
                               'title': variable[1],
                               'hint': variable[2],
-                              'type': {'title': variable[3]},
+                              'type': parse_type(variable[3], variable[4], variable[5]),
                               'necessary': True if variable[6] == 1 else False}
-            if variable[3] == 'list':
-                variables_dict['type']['value'] = int(variable[4])
-            elif variable[3] == 'search':
-                variables_dict['type']['value'] = int(variable[5]) if variable[5] else None
-            else:
-                variables_dict['type']['value'] = None
             variables_result.append(variables_dict)
         if row[4] is not None:
             if len(connect_mysql.db_sql(get_sql(parent_id=' = ' + str(row[0]), script_type=script_type))) == 0:
