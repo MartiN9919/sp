@@ -67,7 +67,6 @@ export default {
     updateOffsetBySize() {
       if(this.oldElementSize === this.element.size) {
         this.offset.y -= this.node.height - this.oldNodeSize.height
-        this.offset.x = this.node.width - this.oldNodeSize.width
       }
       else {
         if(this.oldElementSize - this.element.size > 0){
@@ -94,6 +93,7 @@ export default {
   },
   watch: {
     'node.height': {handler: 'updateOffsetBySize'},
+    'node.width': {handler: 'updateOffsetBySize'},
     'element.pathd': {handler: 'getPosition'},
     'element.x': {handler: 'getPosition'},
     'element.y': {handler: 'getPosition'},

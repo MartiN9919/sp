@@ -32,7 +32,11 @@ export default {
   },
   actions: {
     createTimeLine({commit}, callTime) { commit('createTimeLine', callTime) },
-    createNode({getters, commit}, {object, props}) {
+    createNode({getters, commit}, {object, props, relations}) {
+      if(!props){
+        const edges = relations.map(r => r.o2.getGeneratedId())
+        props = getters.graph.getNewNodePosition(edges, getters.screen.visibleArea())
+      }
       let findNode = getters.nodes().find(n => n.id === object.getGeneratedId())
       return Promise.resolve(findNode ? Object.assign(findNode, {entity: object}) : new Node(object, props))
     },
@@ -50,8 +54,7 @@ export default {
             const objects = Array.from(getters.nodes(), n => n.entity) // все объекты за историю графа
             dispatch('getRelationFromServer', {from: object, objects: objects}) // получение связей с сервера как entity
               .then(relations => {
-                // ToDo: Определение позиции node
-                dispatch('createNode', {object, props}) // создание Node
+                dispatch('createNode', {object, props, relations}) // создание Node
                   .then(node => dispatch('addNodeToGraph', {node, callTime})) // Помещение Node на граф и в timeline
                 relations.forEach(relation =>
                   dispatch('createEdge', relation) // создание Edge и помещение ее в timeline
