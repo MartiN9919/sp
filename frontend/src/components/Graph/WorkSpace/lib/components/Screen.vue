@@ -3,6 +3,7 @@
     <g id="screen">
       <slot/>
     </g>
+    <rect v-bind="disableFrame" class="disable-frame" @mouseenter.stop="" @mouseleave.stop=""/>
     <rect v-show="frame.active" :x="frame.x" :y="frame.y" :width="frame.width" :height="frame.height" class="frame"/>
   </svg>
 </template>
@@ -21,6 +22,22 @@ export default {
       panzoom: null,
       frame: {active: false}
     }
+  },
+  computed: {
+    disableFrame: function () {
+      if(this.frame.active) {
+        const offset = 100 / this.panzoom.getZoom()
+        return {
+          x: this.frame.x - offset,
+          y: this.frame.y - offset,
+          width: this.frame.width + offset*2,
+          height: this.frame.height + offset*2
+        }
+      }
+      else {
+        return {x:0, y: 0, width: 0, height: 0}
+      }
+    },
   },
   mounted () {
     this.panzoom = SvgPanZoom(this.$refs.screen, Object.assign({
@@ -180,5 +197,9 @@ export default {
 }
 .frame {
   fill:rgba(0, 0, 255, 0.1);
+}
+
+.disable-frame {
+  fill: rgba(0, 0, 0, 0)
 }
 </style>
