@@ -412,5 +412,5 @@ def get_relations_list():
             relation_type = {'title': 'unknow', 'value': None}
         result.append({'id': item['id'], 'title': item['title'], 'hint': item['hint'], 'list': list_id,
                        'type': relation_type, 'object_id_1': item['rel_obj_1_id'], 'object_id_2': item['rel_obj_2_id'],
-                       'blocked_in_blank': item['blocked_in_blank']})
+                       'blocked_blank': item['blocked_blank']})
     return result
