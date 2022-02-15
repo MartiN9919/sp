@@ -3,9 +3,6 @@ import {Node, Edge} from "@/components/Graph/WorkSpace/lib/graph"
 
 export default {
   state: {
-    selectedGraphObjects: [],
-    lastAddedObjects: [],
-    lastAddedRelations: [],
     timeline: [],
     callTime: null,
   },
@@ -27,60 +24,40 @@ export default {
         return converter(state.timeline)
       }
     },
-    selectedGraphObjects: state => state.selectedGraphObjects,
-    inSelectedGraphObject: state => object => state.selectedGraphObjects.includes(object),
-    lastAddedObjects: state => state.lastAddedObjects,
-    inLastAddedObjects: state => id => state.lastAddedObjects.includes(id),
-    lastAddedRelations: state => state.lastAddedRelations,
-    inLastAddedRelations: state => id => state.lastAddedRelations.includes(id)
   },
   mutations: {
     createTimeLine: (state, callTime) => state.timeline.push({date: callTime, nodes: [], edges: []}),
     addNodeToTimeLine: (state, {node, callTime}) => state.timeline.find(t => t.date === callTime).nodes.push(node),
     addEdgeToTimeLine: (state, {edge, callTime}) => state.timeline.find(t => t.date === callTime).edges.push(edge),
-    clearSelectedGraphObjects: (state) => state.selectedGraphObjects = [],
-    addSelectedGraphObject: (state, object) => state.selectedGraphObjects.push(object),
-    deleteSelectedGraphObject: (state, object) => {
-      const positionObject = state.selectedGraphObjects.findIndex(choosingNode => choosingNode.id === object.id)
-      if (positionObject !== -1)
-        state.selectedGraphObjects.splice(positionObject, 1)
-    },
-    setLastAddedObjects: (state, objects) => state.lastAddedObjects = objects,
-    setLastAddedRelations: (state, relations) => state.lastAddedRelations = relations
   },
   actions: {
-    setLastAddedObjects({ commit }, objects) { commit('setLastAddedObjects', objects) },
-    setLastAddedRelations({ commit }, relations) { commit('setLastAddedRelations', relations) },
-    addSelectedGraphObject({ getters, commit }, object) {
-      if(!getters.inSelectedGraphObject(object))
-        commit('addSelectedGraphObject', object)
-    },
-    deleteSelectedGraphObject({ commit }, object) { commit('deleteSelectedGraphObject', object) },
-    clearSelectedGraphObjects({ commit }) { commit('clearSelectedGraphObjects') },
     createTimeLine({commit}, callTime) { commit('createTimeLine', callTime) },
     createNode({getters, commit}, {object, props}) {
       let findNode = getters.nodes().find(n => n.id === object.getGeneratedId())
-      const node = findNode ? Object.assign(findNode, {entity: object}) : new Node(object, props)
-      return Promise.resolve(node)
+      return Promise.resolve(findNode ? Object.assign(findNode, {entity: object}) : new Node(object, props))
     },
-    createEdge({getters, commit}, {relation}) {
-      let findEdge = getters.edges().find(n => n.id === relation.getGeneratedId())
-      const edge = findEdge ? Object.assign(findEdge, {entity: relation}) : new Edge(relation)
-      return Promise.resolve(edge)
+    createEdge({getters, commit}, relation) {
+      let findEdge = getters.edges().find(e => e.id === relation.getGeneratedId())
+      return Promise.resolve(findEdge ? Object.assign(findEdge, {entity: relation}) : new Edge(relation))
     },
     async addToGraph({getters, commit, dispatch}, {payload}) {
-      const callTime = new Date()
-      commit('createTimeLine', callTime)
-      for(const {object_id, rec_id, props=getters.screen.getStartPosition()} of Array.isArray(payload) ? payload : [payload]) {
-        dispatch('getObjectFromServer', {object_id, rec_id})
+      const callTime = new Date() // Время запроса, к которому будут привязаны объекты
+      const requests = Array.isArray(payload) ? payload : [payload] // преобразование запрашиваемых объектов в массив
+      commit('createTimeLine', callTime) // создание записи о запросе
+      for(const {object_id, rec_id, props} of requests) { // props = { x, y, size } || null
+        dispatch('getObjectFromServer', {object_id, rec_id}) // получение объекта с сервера как entity
           .then(object => {
-            dispatch('getRelationFromServer', {from: object, objects: Array.from(getters.nodes(), n => n.entity)})
-              .then(relations => relations.forEach(relation =>
-                dispatch('createEdge', {relation, callTime})
-                  .then(edge => dispatch('addEdgeToGraph', {edge, callTime}))
-              ))
-            dispatch('createNode', {object, props, callTime})
-              .then(node => dispatch('addNodeToGraph', {node, callTime}))
+            const objects = Array.from(getters.nodes(), n => n.entity) // все объекты за историю графа
+            dispatch('getRelationFromServer', {from: object, objects: objects}) // получение связей с сервера как entity
+              .then(relations => {
+                // ToDo: Определение позиции node
+                dispatch('createNode', {object, props}) // создание Node
+                  .then(node => dispatch('addNodeToGraph', {node, callTime})) // Помещение Node на граф и в timeline
+                relations.forEach(relation =>
+                  dispatch('createEdge', relation) // создание Edge и помещение ее в timeline
+                    .then(edge => dispatch('addEdgeToGraph', {edge, callTime})) // Помещение Edge на граф и в timeline
+                )
+              })
           })
       }
     },
