@@ -4,7 +4,6 @@ import {Node, Edge} from "@/components/Graph/WorkSpace/lib/graph"
 export default {
   state: {
     timeline: [],
-    callTime: null,
   },
   getters: {
     timeline: state => callTime => state.timeline.find(t => t.date === callTime),
@@ -44,7 +43,7 @@ export default {
       let findEdge = getters.edges().find(e => e.id === relation.getGeneratedId())
       return Promise.resolve(findEdge ? Object.assign(findEdge, {entity: relation}) : new Edge(relation))
     },
-    async addToGraph({getters, commit, dispatch}, {payload}) {
+    addToGraph({getters, commit, dispatch}, {payload}) {
       const callTime = new Date() // Время запроса, к которому будут привязаны объекты
       const requests = Array.isArray(payload) ? payload : [payload] // преобразование запрашиваемых объектов в массив
       commit('createTimeLine', callTime) // создание записи о запросе
