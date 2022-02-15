@@ -64,7 +64,7 @@ export default {
   },
   methods: {
     startDrawFrame(event){
-      let position = this.getScreenPosition({x: event.offsetX, y: event.offsetY})
+      let position = this.getScreenPosition(event.offsetX, event.offsetY)
       this.frame = {x0:position.x, y0: position.y, xn: position.x, yn: position.y,
         x:position.x, y: position.y, width: 0, height: 0, active: true}
       document.addEventListener('mousemove', this.drawFrame)
@@ -170,22 +170,22 @@ export default {
       const y = this.$el.clientHeight / 2 - (node.y + node.height / 2) * zoom + offsetY
       this.panzoom.pan({ x, y })
     },
-    getStartPosition() {
+    getScreenPosition(x=this.$el.clientWidth, y=this.$el.clientHeight) {
       let position = {x: 0, y: 0}
       const zoom = this.panzoom.getZoom()
       const pan = this.panzoom.getPan()
-      position.x = (this.$el.clientWidth / 2 - pan.x) / zoom + Math.random() * 600 - 300
-      position.y = (this.$el.clientHeight / 2 - pan.y) / zoom + Math.random() * 600 - 300
+      position.x = (x - pan.x) / zoom
+      position.y = (y - pan.y) / zoom
       return position
     },
-    getScreenPosition(eventPosition) {
-      let position = {x: 0, y: 0}
+    visibleArea() {
       const zoom = this.panzoom.getZoom()
-      const pan = this.panzoom.getPan()
-      position.x = (eventPosition.x - pan.x) / zoom
-      position.y = (eventPosition.y - pan.y) / zoom
+      let position = this.getScreenPosition()
+      position.width = this.$el.clientWidth / zoom
+      position.height = this.$el.clientHeight / zoom
       return position
     },
+
   },
 }
 </script>

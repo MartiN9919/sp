@@ -23,14 +23,7 @@ export default {
     addNode: (state, node) => state.graph.createNode(node),
     addEdge: (state, edge) => state.graph.createEdge(edge),
     clearGraph: (state) => state.graph.clearGraph(),
-    reorderGraph: (state) => {
-      const startPosition = state.screen.getStartPosition()
-      state.graph.reorderGraph(startPosition.x, startPosition.y)
-    },
-    reorderChoosingObjects: (state) => {
-      const center = state.graph.getNodesCenter(state.selectedGraphObjects)
-      state.graph.reorderGraph(center.x, center.y, state.selectedGraphObjects)
-    }, // ToDo: Объединить две функции упорядочивания. Вынести запуск Лодера в экшен.
+    reorderGraph: (state, {nodes, position}) => state.graph.reorderGraph(position.x, position.y, nodes),
     deleteObjectFromGraph: (state, object) => state.graph.removeNode(object),
   },
   actions: {
@@ -52,12 +45,16 @@ export default {
     clearGraph({commit}) {
       commit('clearGraph')
     },
-    reorderGraph({ commit }) {
-      commit('reorderGraph')
+    reorderGraph({getters, commit}, nodes=null) {
+      if(nodes) {
+        const position = getters.graph.getNodesCenter(nodes)
+      } else {
+        nodes = getters.graphNodes
+        let position = getters.screen.visibleArea()
+        position = {x: position.x - position.width / 2, y: position.y - position.height / 2}
+      }
+      commit('reorderGraph', {position, nodes})
     },
-    reorderChoosingObjects({commit}) {
-      commit('reorderChoosingObjects')
-    } // ToDo: Объединить две функции упорядочивания. Вынести запуск Лодера в экшен.
   }
 }
 

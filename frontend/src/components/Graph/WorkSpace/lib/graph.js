@@ -159,7 +159,7 @@ export default class Graph {
       }
     }, 0)
   }
-  reorderGraph(x, y, nodes=this.nodes) {
+  reorderGraph(x, y, nodes) {
     store.commit('changeLoadStatus', true)
     let tempNodes = []
     for(let node of nodes) {
@@ -167,22 +167,26 @@ export default class Graph {
     }
     this.reorderStep(0, 200, tempNodes, 10000, x, y)
   }
-  getNewNodePosition(newEdges) {
-    const edges = newEdges.map(relation => relation.object_id + '-' + relation.rec_id)
-    let startPosition = this.getNodesCenter(this.nodes.filter(n => edges.find(e => e === n.id)))
-    startPosition.id = ''
-    startPosition.width = 100
+  getNewNodePosition(edges, position) {
+    let startPosition = {id:'', size: 300}
+    if(edges.length === 0){
+      return Object.assign(startPosition, this.getStartPosition(position))
+    }
+    startPosition = Object.assign(this.getNodesCenter(this.nodes.filter(n => edges.find(e => e === n.id))), startPosition)
     let startSpeed = 0
     for(let i=0; i < 30; i++) {
       const temp = {x: startPosition.x, y: startPosition.y}
       for(const node of this.nodes)
         this.forceMoveNode(startPosition, node, edges)
       const speed = Math.sqrt(Math.pow(Math.abs(temp.x - startPosition.x),2) + Math.pow(temp.y - startPosition.y,2))
-      if(startSpeed === 0)
+      if(startSpeed === 0) {
         startSpeed = speed
-      else
-        if(speed / startSpeed < 0.05)
+      }
+      else {
+        if (speed / startSpeed < 0.05) {
           break
+        }
+      }
     }
     return startPosition
   }
@@ -197,14 +201,20 @@ export default class Graph {
               return (edge.to === node.id && edge.from === otherNode.id) ||
                   (edge.from === node.id && edge.to === otherNode.id)
             })) {
-      const springForce = 0.25 * Math.log2(offset / 750)
+      const springForce = 0.25 * Math.log2(offset / 450)
       node.x += dx * springForce
       node.y += dy * springForce
     }
-    const upCoefficient = Math.pow(node.width/100 * otherNode.width/100, 1)
-    const upForce = upCoefficient * 10000 / Math.pow(offset, 2)
+    const upCoefficient = Math.pow(node.size/300 * otherNode.size/300, 1)
+    const upForce = upCoefficient * 3000 / Math.pow(offset, 2)
     node.x -= dx * upForce
     node.y -= dy * upForce
+  }
+  getStartPosition(position) {
+    return {
+      x: position.x - Math.random() * position.width,
+      y: position.y - Math.random() * position.height,
+    }
   }
   getNodesCenter(nodes){
     let x = 0
