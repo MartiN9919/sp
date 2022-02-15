@@ -3,9 +3,9 @@
     <v-scroll-x-transition>
       <v-autocomplete
         v-if="showInputForm"
-        v-model="selectedObject"
+        v-model="selectedNode"
         @input="select"
-        :items="sortedObjects"
+        :items="sortedNodes"
         no-data-text="На графе нет объектов"
         item-value="id"
         item-color="teal"
@@ -20,8 +20,8 @@
         class="search"
       >
         <template v-slot:item="{ item }">
-          <v-icon left>{{item.object.object.icon}}</v-icon>
-          <v-list-item-title class="selector-item">{{item.object.title}}</v-list-item-title>
+          <v-icon left>{{item.entity.base.icon}}</v-icon>
+          <v-list-item-title class="selector-item">{{item.entity.title}}</v-list-item-title>
         </template>
       </v-autocomplete>
     </v-scroll-x-transition>
@@ -35,17 +35,17 @@
 export default {
   name: "searchObject",
   props: {
-    objects: Array,
+    nodes: Array,
   },
   data: () => ({
-    selectedObject: null,
+    selectedNode: null,
     showInputForm: false
   }),
   computed: {
-    sortedObjects: function () {
-      return this.objects.sort((a, b) => {
-        let fa = a.object.title.toLowerCase()
-        let fb = b.object.title.toLowerCase()
+    sortedNodes: function () {
+      return this.nodes.sort((a, b) => {
+        let fa = a.entity.title.toLowerCase()
+        let fb = b.entity.title.toLowerCase()
         if (fa < fb) {
           return -1;
         }
@@ -65,8 +65,8 @@ export default {
     },
     select(id) {
       if(id) {
-        this.$emit('findNode', this.objects.find(o => o.id === id))
-        this.selectedObject = null
+        this.$emit('findNode', this.nodes.find(o => o.id === id))
+        this.selectedNode = null
         this.deactivate()
       }
     }

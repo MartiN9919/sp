@@ -20,8 +20,8 @@
         @setChoosingRelated="setChoosingRelated"
       />
     </screen>
-    <search-object v-if="graphNodes.length" :objects="graphNodes" @findNode="findNode"/>
-<!--    <context-menu-nested ref="contextMenu" :form="this" :items="contextMenu" :color="$CONST.APP.COLOR_OBJ"/>-->
+    <search-object v-if="graphNodes.length" :nodes="graphNodes" @findNode="findNode"/>
+    <context-menu-nested ref="contextMenu" :form="this" :items="contextMenu" :color="$CONST.APP.COLOR_OBJ"/>
   </div>
 </template>
 
@@ -39,26 +39,19 @@ export default {
   name: "graphArea",
   mixins: [bodyContextMenu],
   components: {SearchObject, GraphRelation, GraphObject, Screen, ContextMenuNested},
-  data: () => ({
-    relatedObjects: [],
-    relationsObject: [],
-  }),
   computed: {
     ...mapGetters(['graphNodes', 'graphEdges', 'selectedNodes', 'hoverNodes', 'hoverEdges', 'globalDisplaySettingValue']),
   },
   methods: {
-    ...mapActions([
-      'setScreen',
-      'clearSelectedGraphObjects'
-    ]),
-    isObject(element) {
+    ...mapActions(['setScreen']),
+    isNode(element) {
       return element instanceof Node
     },
     findNode(node) {
-      this.$refs.screen.zoomNodes([node], { scale: 1.5 })
+      this.$refs.screen.zoomNode(node,2.5)
     },
     setChoosingRelated() {
-      this.graphNodes.filter(n => n.state.hover).map(n => n.state.selected = true)
+      this.hoverNodes.forEach(n => n.state.selected = true)
     },
     setChoosingObjects(frame) {
       const xMax = frame.x + frame.width
@@ -72,12 +65,12 @@ export default {
       }
     },
     pickUp(element) {
-      let ar = this.isObject(element) ? this.graphNodes : this.graphEdges
+      let ar = this.isNode(element) ? this.graphNodes : this.graphEdges
       ar.splice(ar.findIndex(r => r === element), 1)
       ar.push(element)
       element.state.hover = true
     },
-    getRelatedForObject(node) {
+    getRelatedForNode(node) {
       const edges = this.graphEdges.filter(edge => [edge.to, edge.from].includes(node.id))
       const nodes = edges.map(e => this.graphNodes.find(n => [e.to, e.from].includes(n.id) && n.id !== node.id))
       return {nodes, edges}
@@ -86,8 +79,8 @@ export default {
       return this.graphNodes.filter(n => [edge.to, edge.from].includes(n.id))
     },
     hover(element) {
-      if(this.isObject(element)) {
-        const elements = this.getRelatedForObject(element)
+      if(this.isNode(element)) {
+        const elements = this.getRelatedForNode(element)
         elements.nodes.forEach(n => this.pickUp(n))
         elements.edges.forEach(e => this.pickUp(e))
       } else {
@@ -101,9 +94,9 @@ export default {
       this.hoverEdges.forEach(e => e.state.hover = false)
     },
     clearSelectors(evt) {
-      if(!evt.button && !this.$refs.contextMenu.$children[0].isActive) {
-        this.clearSelectedGraphObjects()
-      }
+      // if(!evt.button && !this.$refs.contextMenu.$children[0].isActive) { ToDo: Вернуть
+        this.selectedNodes.forEach(n => n.state.selected = false)
+      // }
     },
     menuShow(event, object=null) {
       this.objectCtxMenu = object

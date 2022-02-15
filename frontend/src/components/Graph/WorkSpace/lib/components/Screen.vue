@@ -122,17 +122,17 @@ export default {
       this.panzoom.zoom(scale)
       this.panzoom.pan({ x, y })
     },
-    zoomNode (node) {
+    zoomNode (node, scale=null) {
       const screen = this.$refs.screen
-      const marginX = screen.clientWidth / 2 - node.width / 2
-      const marginY = screen.clientHeight / 2 - node.height / 2
+      const marginX = screen.clientWidth / 2 - node.size / 6
+      const marginY = screen.clientHeight / 2 - node.size / 6
 
       this.zoomRect({
         left: node.x - marginX,
-        right: node.x + node.width + marginX,
+        right: node.x + node.size / 3 + marginX,
         top: node.y - marginY,
-        bottom: node.y + node.height + marginY
-      })
+        bottom: node.y + node.size / 3 + marginY
+      }, { scale })
     },
     /**
      * centers the view and zoom on a group nodes
