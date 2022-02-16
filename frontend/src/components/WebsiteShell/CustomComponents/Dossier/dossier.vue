@@ -34,10 +34,10 @@ export default {
   },
   computed: {
     photoParams: function () {
-      return this.params.filter(p => p.baseParam.type.title === 'file_photo' && p.values.length)
+      return this.params.filter(p => p.baseParam.type.title === 'file' && p.baseParam.type.value === 'photo' && p.values.length)
     },
     simpleParams: function () {
-      return this.params.filter(p => p.baseParam.type.title !== 'file_photo' && p.values.length)
+      return this.params.filter(p => p.baseParam.type.title !== 'file'&& p.baseParam.type.value !== 'photo' && p.values.length)
     }
   }
 }

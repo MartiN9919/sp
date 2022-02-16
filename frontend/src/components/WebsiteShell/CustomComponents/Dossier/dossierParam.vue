@@ -46,7 +46,7 @@ export default {
       return this.param.values.slice(0, this.showOldValues ? this.paramsLength : 1)
     },
     getParamType: function () {
-      return this.param.baseParam.type.title
+      return this.param.baseParam.type
     },
   },
 }

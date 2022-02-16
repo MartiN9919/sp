@@ -26,17 +26,17 @@ export default {
       type: String,
       default: null
     },
-    type: String,
+    type: Object,
   },
   computed: {
     getValue: function () {
       return this.value.value
     },
     isGeometry: function () {
-      return this.type === 'geometry' || this.type === 'geometry_point'
+      return this.type.title === 'geometry'
     },
     isFile: function () {
-      return this.type === 'file_any'
+      return this.type.title === 'file' && this.type.value === 'any'
     },
     getTextValue: function () {
       return this.getValue.length > 255 ? this.getValue.slice(0, 255) + '...' : this.value.value
@@ -45,7 +45,7 @@ export default {
       return this.value.date
     },
     getGeometryTextValue: function () {
-      return this.type === 'geometry' ? 'Геометрия' : 'Точка'
+      return this.type.value === 'polygon' ? 'Геометрия' : 'Точка'
     },
   }
 }

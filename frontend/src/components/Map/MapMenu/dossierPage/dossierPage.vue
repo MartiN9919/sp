@@ -35,7 +35,7 @@ export default {
   computed: {
     ...mapGetters(['SCRIPT_GET_ITEM_SEL']),
     objectId: function () {
-      return this.selectedItem.object.id
+      return this.selectedItem.base.id
     },
     recId: function () {
       return this.selectedItem.recId
