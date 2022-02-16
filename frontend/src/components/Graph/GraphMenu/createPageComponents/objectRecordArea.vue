@@ -16,7 +16,7 @@
             ></record-input>
           </v-row>
           <table>
-            <tbody class="py-2" v-if="checkTypeParam(param) === 'file_photo'">
+            <tbody class="py-2" v-if="checkTypeParam(param).title === 'file' && checkTypeParam(param).value === 'photo'">
               <custom-tooltip
                 v-for="(item, key) in param.values" :key="key"
                 :body-text="item.value"
@@ -35,10 +35,10 @@
             </tbody>
             <tbody class="py-2" v-else>
               <tr v-for="item in param.values">
-                <td v-if="checkTypeParam(param) === 'file_any'">
+                <td v-if="checkTypeParam(param).title === 'file' && checkTypeParam(param).value === 'any'">
                   <a :href="getDownloadLink(item.value)">{{item.value}}</a>
                 </td>
-                <td v-else-if="checkTypeParam(param) === 'geometry' || checkTypeParam(param) === 'geometry_point'">
+                <td v-else-if="checkTypeParam(param).title === 'geometry'">
                   <geometry-param :value="item.value" :title="title">
                     <span>{{getGeometryTextValue(param)}}</span>
                   </geometry-param>
@@ -82,7 +82,7 @@ export default {
   }),
   methods: {
     getParam(param, value) {
-      if((this.checkTypeParam(param) === 'geometry' || this.checkTypeParam(param) === 'geometry_point') && param.values.length > 0){
+      if(this.checkTypeParam(param).title === 'geometry' && param.values.length > 0){
         let copyGeometry = _.cloneDeep(param.values[0])
         value.value = JSON.parse(copyGeometry.value)
       }
@@ -93,7 +93,7 @@ export default {
     },
     checkTypeParam(param) {
       if(param.baseParam.hasOwnProperty('type'))
-        return param.baseParam.type.title
+        return param.baseParam.type
     },
     createNewParam(id) {
       this.$emit('createNewParam', id)
@@ -105,7 +105,7 @@ export default {
       return getDownloadFileLink(this.settings.objectId, this.settings.recId, fileName)
     },
     getGeometryTextValue(param) {
-      return this.checkTypeParam(param) === 'geometry' ? 'Геометрия' : 'Точка'
+      return this.checkTypeParam(param).value === 'polygon' ? 'Геометрия' : 'Точка'
     },
   },
   mounted() {
