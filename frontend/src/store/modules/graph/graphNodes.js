@@ -47,19 +47,28 @@ export default {
       const callTime = new Date() // Время запроса, к которому будут привязаны объекты
       const requests = Array.isArray(payload) ? payload : [payload] // преобразование запрашиваемых объектов в массив
       commit('createTimeLine', callTime) // создание записи о запросе
-      for(const {object_id, rec_id, props} of requests) { // props = { x, y, size } || undefined
-        dispatch('getObjectFromServer', {object_id, rec_id}).then(object => { // получение объекта с сервера как entity
-          dispatch('createNode', {object, callTime}).then(node => { // создание Node и помещение его в timeline
-            const objects = Array.from(getters.nodes(), n => n.entity) // все объекты за историю графа
-            dispatch('getRelationFromServer', {from: object, objects: objects}).then(relations => { // получение связей с сервера как entity
-              dispatch('addNodeToGraph', {node, props, relations})// Помещение Node на граф
-              relations.forEach(relation => dispatch('createEdge', {relation, callTime}).then(edge =>
-                dispatch('addEdgeToGraph', edge) // Помещение Edge на граф
+      Promise.allSettled(requests.map(({object_id, rec_id, props}) => dispatch('getObjectFromServer', {object_id, rec_id})))
+        .then(respose => {
+          Promise.all(respose.map(async r => await dispatch('createNode', {object: r.value, callTime})))
+            .then(nodes => {
+              Promise.allSettled(nodes.map((n, i) =>
+                dispatch('getRelationFromServer', {from: n.entity,objects: Array.from(getters.graphNodes.concat(nodes.slice(0, i)), n => n.entity)
+                })
               ))
-            })
+                .then(relations => {
+                  nodes.forEach((node, i) => {
+                    dispatch('addNodeToGraph', {
+                      node,
+                      props: requests.find(r => r.object_id === node.ids.object_id && r.rec_id === node.ids.rec_id).props,
+                      relations: relations[i].value
+                    })
+                    relations[i].value.forEach(relation => {
+                      dispatch('createEdge', {relation, callTime}).then(edge => dispatch('addEdgeToGraph', edge))
+                    })
+                  })
+                })
           })
         })
-      }
     },
     async getRelationsBtwObjects({getters, dispatch}, objects) {
       let config = {}

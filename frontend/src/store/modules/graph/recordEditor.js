@@ -27,7 +27,6 @@ export default {
     setEditableRelation({getters, commit}, {relations, document}) {
       let edge = getters.graphRelations.find(
         e => [e.relation.o1.id, e.relation.o2.id].every(r => Array.from(relations, o => o.id).includes(r)))
-      console.log(edge)
       commit('setEditableRelation', {
         relation: _.cloneDeep(edge.relation) || new DataBaseRelation(...relations),
         document: document
