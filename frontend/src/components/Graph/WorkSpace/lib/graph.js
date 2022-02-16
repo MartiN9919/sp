@@ -271,6 +271,9 @@ class GraphRelationSettings extends GraphElementSettingsBase{
 
 export class Node {
   constructor(entity) {
+    this.x = null
+    this.y = null
+    this.size = null
     this.entity = entity
     this.state = new GraphObjectState()
     this.settings = new GraphObjectSettings()

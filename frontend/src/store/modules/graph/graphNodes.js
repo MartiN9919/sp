@@ -10,9 +10,9 @@ export default {
     nodes: state => (callTime=null) => {
       const converter = timeline => Array.from(timeline, t => t.nodes).flat(1)
       if(callTime) {
-        return converter(state.timeline.filter(t => t.date <= callTime))
+        return [...new Set(converter(state.timeline.filter(t => t.date <= callTime)))]
       } else {
-        return converter(state.timeline)
+        return [...new Set(converter(state.timeline))]
       }
     },
     edges: state => (callTime=null) => {
@@ -47,22 +47,18 @@ export default {
       const callTime = new Date() // Время запроса, к которому будут привязаны объекты
       const requests = Array.isArray(payload) ? payload : [payload] // преобразование запрашиваемых объектов в массив
       commit('createTimeLine', callTime) // создание записи о запросе
-      for(const {object_id, rec_id, props} of requests) { // props = { x, y, size } || null
-        dispatch('getObjectFromServer', {object_id, rec_id}) // получение объекта с сервера как entity
-          .then(object => {
-            dispatch('createNode', {object, callTime}) // создание Node
-              .then(node => {
-                const objects = Array.from(getters.nodes(), n => n.entity) // все объекты за историю графа
-                dispatch('getRelationFromServer', {from: object, objects: objects}) // получение связей с сервера как entity
-                  .then(relations => {
-                    dispatch('addNodeToGraph', {node, props, relations})
-                    relations.forEach(relation =>
-                      dispatch('createEdge', {relation, callTime}) // создание Edge и помещение ее в timeline
-                        .then(edge => dispatch('addEdgeToGraph', edge)) // Помещение Edge на граф и в timeline
-                    )
-                  })
-              }) // Помещение Node на граф и в timeline
+      for(const {object_id, rec_id, props} of requests) { // props = { x, y, size } || undefined
+        dispatch('getObjectFromServer', {object_id, rec_id}).then(object => { // получение объекта с сервера как entity
+          dispatch('createNode', {object, callTime}).then(node => { // создание Node и помещение его в timeline
+            const objects = Array.from(getters.nodes(), n => n.entity) // все объекты за историю графа
+            dispatch('getRelationFromServer', {from: object, objects: objects}).then(relations => { // получение связей с сервера как entity
+              dispatch('addNodeToGraph', {node, props, relations})// Помещение Node на граф
+              relations.forEach(relation => dispatch('createEdge', {relation, callTime}).then(edge =>
+                dispatch('addEdgeToGraph', edge) // Помещение Edge на граф
+              ))
+            })
           })
+        })
       }
     },
     async getRelationsBtwObjects({getters, dispatch}, objects) {
