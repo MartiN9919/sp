@@ -36,7 +36,8 @@ export default {
           const edges = relations.map(r => r.o2.getGeneratedId())
           props = getters.graph.getNewNodePosition(edges, getters.screen.visibleArea())
         }
-        commit('addNode', Object.assign(node, props))
+        node = Object.assign(node, props)
+        commit('addNode', node)
       }
     },
     addEdgeToGraph({getters, commit}, edge) {
