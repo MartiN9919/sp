@@ -79,12 +79,12 @@ export default {
   },
   methods: {
     ...mapActions(['setRootSearchTreeItem', 'changeSearchTreeItem', 'addSearchTreeItem',
-    'findObjectsOnServer', 'removeSearchTreeItem', 'setEditableObject', 'addObjectsToGraph']),
+    'findObjectsOnServer', 'removeSearchTreeItem', 'setEditableObject', 'addObjectToGraph']),
     selectObject(object) {
-      this.addObjectsToGraph({payload: object})
+      this.addObjectToGraph(object)
     },
     changeObject(object) {
-      this.setEditableObject({recId: object.rec_id, objectId: object.object_id})
+      this.setEditableObject(object)
     },
     findObject () {
       this.findObjectsOnServer()

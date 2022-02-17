@@ -80,7 +80,7 @@ export default {
     selectedEditableObject: {
       get: function () {
         if(this.editableObjects) return this.editableObjects[0].ids.object_id },
-      set: function (id) { this.setEditableObject({objectId: id}) },
+      set: function (id) { this.setEditableObject({object_id: id}) },
     },
     tabClasses: function () {
       if(this.editableObjects)

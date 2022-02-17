@@ -74,7 +74,7 @@ export default {
     },
     findRelationsOnServer({ dispatch, state }, config={}) {
       return axios.post('objects/search_relations', state.searchRelationTreeGraph.getTree(), config)
-        .then(response => dispatch('addObjectsToGraph', {payload: response.data}))
+        .then(response => dispatch('addObjectsToGraph', response.data))
         .catch(error => {  })
     },
     simpleFindObject({state}, {objectId, searchRequest}) {

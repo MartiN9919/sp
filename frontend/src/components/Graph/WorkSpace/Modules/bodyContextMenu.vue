@@ -1,6 +1,7 @@
 <script>
 import ctxMenu from "@/components/Graph/WorkSpace/Modules/ctxMenu"
 import {mapActions} from "vuex"
+import _ from 'lodash'
 
 export default {
   name: "bodyContextMenu",
@@ -76,10 +77,7 @@ export default {
       this.setActiveTool('searchRelationPage')
     },
     setChangeObject() {
-      this.setEditableObject({
-        objectId: this.objectCtxMenu.ids.object_id,
-        recId: this.objectCtxMenu.ids.rec_id
-      })
+      this.setEditableObject(this.objectCtxMenu.entity)
     },
     deleteObjects() {
       for(let choosingObject of this.selectedNodes)
@@ -91,18 +89,25 @@ export default {
       this.deleteObjectFromGraph(this.objectCtxMenu)
     },
     createRelation(){
-      let relations = []
-      if(this.objectCtxMenu && !this.isNode(this.objectCtxMenu)) {
-         relations = [this.objectCtxMenu.entity.o1, this.objectCtxMenu.entity.o2]
+      let relation = []
+      const edgeBtwNodes = nodes => {
+        return this.graphEdges.find(e => _.isEqual([e.entity.o1, e.entity.o2], nodes.map(n => n.entity)))
+      }
+      if(this.objectCtxMenu) {
+        if(!this.isNode(this.objectCtxMenu)) {
+          relation = this.objectCtxMenu
+        }
       }
       else {
-        if(this.selectedNodes.length === 2)
-          relations = this.selectedNodes.map(n => n.entity)
+        if(this.selectedNodes.length === 2) {
+          console.log(this.graphEdges)
+          relation = edgeBtwNodes(this.selectedNodes)
+        }
         else
-          relations = this.selectedNodes.filter(o => o.ids.object_id !== 20).map(n => n.entity)
+          relation = edgeBtwNodes(this.selectedNodes.filter(o => o.ids.object_id !== 20))
       }
       this.setEditableRelation({
-        relations: relations,
+        relation: relation.entity,
         document: this.selectedNodes.length === 3
           ? this.selectedNodes.find(o => o.ids.object_id === 20).entity
           : null
@@ -146,7 +151,7 @@ export default {
       a.remove()
     },
     getGraphFromFile() {
-      const addObjectToGraph = this.addObjectsToGraph
+      const addObjectsToGraph = this.addObjectsToGraph
       const clearGraph = this.clearGraph
       let obj = document.createElement('input')
       obj.style.cssText = 'display:none'
@@ -156,7 +161,7 @@ export default {
       let input  = document.getElementById("app").appendChild(obj)
       input.click()
       const parseText = function (text) {
-        addObjectToGraph({payload: JSON.parse(text), noMove: true})
+        addObjectsToGraph(JSON.parse(text))
       }
       input.addEventListener('change', function() {
         clearGraph()
