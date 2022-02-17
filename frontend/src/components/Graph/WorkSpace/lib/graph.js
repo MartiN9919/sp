@@ -163,7 +163,7 @@ export default class Graph {
     store.commit('changeLoadStatus', true)
     let tempNodes = []
     for(let node of nodes) {
-      tempNodes.push({id: node.id, x: node.x, y: node.y, width: node.width})
+      tempNodes.push({id: node.id, x: node.x, y: node.y, size: node.size})
     }
     this.reorderStep(0, 200, tempNodes, 10000, x, y)
   }
@@ -208,7 +208,7 @@ export default class Graph {
       node.y += dy * springForce
     }
     const upCoefficient = Math.pow(node.size/300 * otherNode.size/300, 1)
-    const upForce = upCoefficient * 5000 / Math.pow(offset, 2)
+    const upForce = upCoefficient * 7000 / Math.pow(offset, 2)
     node.x -= dx * upForce
     node.y -= dy * upForce
   }
