@@ -62,7 +62,7 @@ export default {
   methods: {
     ...mapActions(['reorderNodes', 'setEditableRelation', 'setNavigationDrawerStatus', 'setToolStatus', 'setActiveTool',
     'setEditableObject', 'deleteObjectFromGraph', 'setRootSearchRelationTreeItem', 'getRelationsBtwObjects',
-    'addToGraph', 'executeMapScript', 'clearGraph']),
+    'addObjectsToGraph', 'executeMapScript', 'clearGraph']),
     menuShow(event, object=null) {
       this.objectCtxMenu = object
       this.$refs.contextMenu.show_root(event.x, event.y)
@@ -71,7 +71,7 @@ export default {
       this.reorderNodes(this.selectedNodes)
     },
     setSearchRelation() {
-      this.setRootSearchRelationTreeItem(this.objectCtxMenu)
+      this.setRootSearchRelationTreeItem(this.objectCtxMenu.entity)
       this.setNavigationDrawerStatus(true)
       this.setActiveTool('searchRelationPage')
     },
@@ -97,14 +97,14 @@ export default {
       }
       else {
         if(this.selectedNodes.length === 2)
-          relations = this.selectedNodes
+          relations = this.selectedNodes.map(n => n.entity)
         else
-          relations = this.selectedNodes.filter(o => o.ids.object_id !== 20)
+          relations = this.selectedNodes.filter(o => o.ids.object_id !== 20).map(n => n.entity)
       }
       this.setEditableRelation({
         relations: relations,
         document: this.selectedNodes.length === 3
-          ? this.selectedNodes.find(o => o.ids.object_id === 20)
+          ? this.selectedNodes.find(o => o.ids.object_id === 20).entity
           : null
       })
       this.setNavigationDrawerStatus(true)
@@ -146,7 +146,7 @@ export default {
       a.remove()
     },
     getGraphFromFile() {
-      const addObjectToGraph = this.addToGraph
+      const addObjectToGraph = this.addObjectsToGraph
       const clearGraph = this.clearGraph
       let obj = document.createElement('input')
       obj.style.cssText = 'display:none'

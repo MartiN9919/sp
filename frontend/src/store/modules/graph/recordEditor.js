@@ -25,10 +25,10 @@ export default {
   },
   actions: {
     setEditableRelation({getters, commit}, {relations, document}) {
-      let edge = getters.graphRelations.find(
-        e => [e.relation.o1.id, e.relation.o2.id].every(r => Array.from(relations, o => o.id).includes(r)))
+      let edge = getters.graphEdges.find(
+        e => [e.from, e.to].every(r => Array.from(relations, o => o.id).includes(r)))
       commit('setEditableRelation', {
-        relation: _.cloneDeep(edge.relation) || new DataBaseRelation(...relations),
+        relation: edge ? _.cloneDeep(edge.entity) : new DataBaseRelation(...relations),
         document: document
       })
     },
@@ -105,25 +105,24 @@ export default {
           }
           else {
             dispatch('setEditableObject', {objectId: response.object_id, recId: response.rec_id})
-            dispatch('addToGraph', {payload: response})
+            dispatch('addObjectsToGraph', {payload: response})
           }
           return Promise.resolve(r.data)
         })
         .catch(e => { return Promise.reject(e) })
     },
     async saveEditableRelation({getters, dispatch}) {
-      let relation = getters.editableRelation
       let request = Object.assign(
-        {doc_rec_id: relation.document ? relation.document.object.recId : null},
-        relation.relation.getRequestStructure()
+        {doc_rec_id: getters.editableRelation.document?.recId || null},
+        getters.editableRelation.relation.getRequestStructure()
       )
       return await axios.post(CONST.API.OBJ.SET_RELATION, request, {})
-        .then(r => {
-          let object = {o1: r.data.object_id_1, r1: r.data.rec_id_1, o2: r.data.object_id_2, r2: r.data.rec_id_2}
-          dispatch('addRelationToGraph', {object: object, relations: r.data.params, noMove: true})
-          const relations = [relation.relation.o1, relation.relation.o2]
-          dispatch('setEditableRelation',{relations, document: relation.document})
-          return Promise.resolve(r.data)
+        .then(() => {
+          const relations = [getters.editableRelation.relation.o1, getters.editableRelation.relation.o2]
+          dispatch('addRelationToGraph', {from: relations[0], to: relations[1]}).then(() => {
+            dispatch('setEditableRelation',{relations, document: getters.editableRelation.document})
+          })
+          return Promise.resolve()
         })
         .catch(e => { return Promise.reject(e) })
     }

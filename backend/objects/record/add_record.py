@@ -137,7 +137,7 @@ def add_data(user, group_id, object, files=None):
             if len(duplicates) > 0:
                 return {'objects': [get_object_record_by_id_http(object.get('object_id'), item, group_id)
                                     for item in duplicates]}
-        if object.get('rec_id_old', 0) != 0:  # действия при слиянии объектов
+        if object.get('rec_id_old') and object.get('rec_id_old', 0) != 0:  # действия при слиянии объектов
             old_object = get_object_record_by_id_http(object.get('object_id'), object.get('rec_id_old'), group_id)
             for param in old_object['params']:
                 for value in param['values']:
