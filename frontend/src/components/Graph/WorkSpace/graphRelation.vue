@@ -1,11 +1,12 @@
 <template>
   <g
     @wheel.stop="scrollObject(edge, $event)"
-    @contextmenu.stop="$emit('ctxMenu', [$event, edge])"
     @mouseup.exact.stop="showDescription"
     @mouseenter="emitHoverEvent('hover')"
     @mouseleave="emitHoverEvent('unhover')"
     @click.alt="$emit('setChoosingRelated')"
+    @contextmenu.stop="$emit('ctxMenu', [$event, edge])"
+    oncontextmenu="return false"
   >
     <edge ref="edge" :edge="edge" :nodes="nodes" :in-hover="inHover"/>
     <v-label ref="label" v-show="showLabel" :element="edge">
