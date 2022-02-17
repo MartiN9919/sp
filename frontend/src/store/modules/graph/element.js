@@ -63,12 +63,12 @@ export default {
         })
       })
     },
-    async addObjectToGraph({getters, dispatch}, {object_id, rec_id}) {
+    addObjectToGraph({getters, dispatch}, {object_id, rec_id}) {
       const callTime = new Date()
       dispatch('createTimeLine', callTime)
-      await dispatch('getObject', {object_id, rec_id}).then(object => {
-        dispatch('createNode', {object, callTime}).then(async node => {
-          await dispatch('getRelations', {from: object, objects: getters.graphNodesEntity}).then(relations => {
+      return dispatch('getObject', {object_id, rec_id}).then(object => {
+        return dispatch('createNode', {object, callTime}).then(node => {
+          return dispatch('getRelations', {from: object, objects: getters.graphNodesEntity}).then(relations => {
             dispatch('addNodeToGraph', {node, relations})
             dispatch('createEdges', {relations, callTime}).then(edges =>
               edges.forEach(edge => dispatch('addEdgeToGraph', edge))
