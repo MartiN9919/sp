@@ -8,13 +8,13 @@ export default {
     objectCtxMenu: null,
   }),
   computed: {
-    relationCreateStatus: function(){
-      return this.selectedNodes.length === 3
-        && this.selectedNodes.findIndex(o => o.ids.object_id === 20) !== -1
-        || this.selectedNodes.length === 2
-    },
     findRelationsStatus: function(){
       return this.selectedNodes.length === 2
+    },
+    relationCreateStatus: function(){
+      return this.selectedNodes.length === 3
+        && this.selectedNodes.find(o => o.ids.object_id === 20)
+        || this.findRelationsStatus
     },
     relationTooltip: {
       get: function () { return this.objectCtxMenu.settings.showTooltip },
@@ -43,13 +43,9 @@ export default {
     contextMenu: function () {
       if(this.objectCtxMenu) {
         if(this.isNode(this.objectCtxMenu)) {
-          return ctxMenu.getObjectCtxMenu(
-            this.objectCtxMenu.ids.object_id === 25 || this.objectCtxMenu.ids.object_id === 30
-          )
+          return ctxMenu.getObjectCtxMenu([20, 30].includes(this.objectCtxMenu.ids.object_id))
         } else {
-          if (!this.isNode(this.objectCtxMenu)) {
-            return ctxMenu.RelationCtxMenu
-          }
+          return ctxMenu.RelationCtxMenu
         }
       }
       else {
@@ -64,12 +60,15 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['reorderGraph', 'setEditableRelation', 'setNavigationDrawerStatus', 'setToolStatus', 'setActiveTool',
+    ...mapActions(['reorderNodes', 'setEditableRelation', 'setNavigationDrawerStatus', 'setToolStatus', 'setActiveTool',
     'setEditableObject', 'deleteObjectFromGraph', 'setRootSearchRelationTreeItem', 'getRelationsBtwObjects',
     'addToGraph', 'executeMapScript', 'clearGraph']),
     menuShow(event, object=null) {
       this.objectCtxMenu = object
       this.$refs.contextMenu.show_root(event.x, event.y)
+    },
+    reorderChoosingNodes() {
+      this.reorderNodes(this.selectedNodes)
     },
     setSearchRelation(event) {
       this.setRootSearchRelationTreeItem(this.objectCtxMenu)

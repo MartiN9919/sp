@@ -20,11 +20,10 @@ export default {
   },
   mutations: {
     setScreen: (state, screen) => state.screen = screen,
-    addNode: (state, node) => state.graph.createNode(node),
-    addEdge: (state, edge) => state.graph.createEdge(edge),
+    addNode: (state, node) => state.graph.nodes.push(node),
+    addEdge: (state, edge) => state.graph.edges.push(edge),
     clearGraph: (state) => state.graph.clearGraph(),
-    reorderGraph: (state, {nodes, position}) => state.graph.reorderGraph(position.x, position.y, nodes),
-    deleteObjectFromGraph: (state, object) => state.graph.removeNode(object),
+    reorderNodes: (state, {nodes, position}) => state.graph.reorderGraph(position.x, position.y, nodes),
   },
   actions: {
     setScreen({ commit }, screen) {
@@ -33,7 +32,7 @@ export default {
     addNodeToGraph({getters, commit}, {node, props, relations}) {
       if(!getters.graphNode(node.id)) {
         if(!props) {
-          const edges = relations.map(r => r.o2.getGeneratedId())
+          const edges = relations.map(r => r.o2.id)
           props = getters.graph.getNewNodePosition(edges, getters.screen.visibleArea())
         }
         node = Object.assign(node, props)
@@ -48,15 +47,16 @@ export default {
     clearGraph({commit}) {
       commit('clearGraph')
     },
-    reorderGraph({getters, commit}, nodes=null) {
-      if(nodes) {
-        const position = getters.graph.getNodesCenter(nodes)
+    reorderNodes({getters, commit}, nodes=null) {
+      let position
+      if(Array.isArray(nodes)) {
+        position = getters.graph.getNodesCenter(nodes)
       } else {
         nodes = getters.graphNodes
-        let position = getters.screen.visibleArea()
+        position = getters.screen.visibleArea()
         position = {x: position.x - position.width / 2, y: position.y - position.height / 2}
       }
-      commit('reorderGraph', {position, nodes})
+      commit('reorderNodes', {position, nodes})
     },
   }
 }

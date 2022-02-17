@@ -24,7 +24,7 @@ export default {
       })
     },
     createNode({getters, commit}, {object, callTime}) {
-      let findNode = getters.nodes.find(n => n.id === object.getGeneratedId())
+      let findNode = getters.nodes.find(n => n.id === object.id)
       if(!findNode) {
         const node = new Node(object)
         commit('addNodeToTimeLine', {node, callTime})
@@ -34,7 +34,7 @@ export default {
       }
     },
     createEdge({getters, commit}, {relation, callTime}) {
-      let findEdge = getters.edges.find(n => n.id === relation.getGeneratedId())
+      let findEdge = getters.edges.find(n => n.id === relation.id)
       if(!findEdge) {
         const edge = new Edge(relation)
         commit('addEdgeToTimeLine', {edge, callTime})
