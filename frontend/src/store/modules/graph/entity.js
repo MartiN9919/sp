@@ -79,8 +79,8 @@ export default {
             dispatch('addEditableObjects', response)
           }
           else {
-            dispatch('addObjectToGraph', response).then(() => {
-              dispatch('setEditableObject', response)
+            dispatch('addObjectToGraph', response).then(node => {
+              dispatch('setEditableObject', node.entity)
             })
           }
           return Promise.resolve(r.data)

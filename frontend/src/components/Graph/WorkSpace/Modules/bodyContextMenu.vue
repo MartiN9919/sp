@@ -100,7 +100,6 @@ export default {
       }
       else {
         if(this.selectedNodes.length === 2) {
-          console.log(this.graphEdges)
           relation = edgeBtwNodes(this.selectedNodes)
         }
         else
