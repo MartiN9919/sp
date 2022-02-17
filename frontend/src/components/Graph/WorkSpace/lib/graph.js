@@ -177,8 +177,9 @@ export default class Graph {
     let startSpeed = 0
     for(let i=0; i < 30; i++) {
       const temp = {x: startPosition.x, y: startPosition.y}
-      for(const node of this.nodes)
+      for(const node of this.nodes) {
         this.forceMoveNode(startPosition, node, edges)
+      }
       const speed = Math.sqrt(Math.pow(Math.abs(temp.x - startPosition.x),2) + Math.pow(temp.y - startPosition.y,2))
       if(startSpeed === 0) {
         startSpeed = speed
@@ -197,17 +198,17 @@ export default class Graph {
     dx === 0 ? dx = Math.random() * 20 - 10 : dx
     dy === 0 ? dy = Math.random() * 20 - 10 : dy
     let offset = Math.sqrt(dx * dx + dy * dy);
-    if (edges.find(edge => edge === node.id)
+    if (edges.find(edge => edge === otherNode.id)
         || this.edges.find(edge => {
               return (edge.to === node.id && edge.from === otherNode.id) ||
                   (edge.from === node.id && edge.to === otherNode.id)
             })) {
-      const springForce = 0.25 * Math.log2(offset / 450)
+      const springForce = 0.25 * Math.log2(offset / 500)
       node.x += dx * springForce
       node.y += dy * springForce
     }
     const upCoefficient = Math.pow(node.size/300 * otherNode.size/300, 1)
-    const upForce = upCoefficient * 3000 / Math.pow(offset, 2)
+    const upForce = upCoefficient * 5000 / Math.pow(offset, 2)
     node.x -= dx * upForce
     node.y -= dy * upForce
   }
