@@ -16,13 +16,13 @@ export default {
     graphEdges: state => state.graph.edges,
     graphEdge: state => id => state.graph.edges.find(e => e.id === id),
     hoverEdges: state => state.graph.edges.filter(e => e.state.hover),
-    selectedEdges: state => state.graph.edges.filter(e => e.state.selected)
   },
   mutations: {
     setScreen: (state, screen) => state.screen = screen,
     addNode: (state, node) => state.graph.nodes.push(node),
     addEdge: (state, edge) => state.graph.edges.push(edge),
     clearGraph: (state) => state.graph.clearGraph(),
+    clearSelectedNodes: (state) => state.graph.nodes.forEach(n => n.state.selected = false),
     reorderNodes: (state, {nodes, position}) => state.graph.reorderGraph(position.x, position.y, nodes),
   },
   actions: {
@@ -46,6 +46,9 @@ export default {
     },
     clearGraph({commit}) {
       commit('clearGraph')
+    },
+    clearSelectedNodes({commit}) {
+      commit('clearSelectedNodes')
     },
     reorderNodes({getters, commit}, nodes=null) {
       let position

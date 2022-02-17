@@ -45,12 +45,12 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['getObjectFromServer', 'setEditableObject', 'addToGraph']),
+    ...mapActions(['getObjectFromServer', 'setEditableObject', 'addObjectsToGraph']),
     editObject() {
       router.push({name: 'Graph'}).then(() => this.setEditableObject({objectId: this.objectId, recId: this.recId}))
     },
     toGraph() {
-      router.push({name: 'Graph'}).then(() => this.addToGraph({payload: this.payload}))
+      router.push({name: 'Graph'}).then(() => this.addObjectsToGraph({payload: this.payload}))
     },
   },
   watch: {

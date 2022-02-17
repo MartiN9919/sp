@@ -49,7 +49,7 @@ export default {
     createEdges({dispatch}, {relations, callTime}) {
       return Promise.all(relations.map(async r => await dispatch('createEdge', {relation: r, callTime})))
     },
-    addToGraph({getters, commit, dispatch}, {payload}) {
+    addObjectsToGraph({getters, dispatch}, {payload}) {
       const callTime = new Date()
       const requestObjects = Array.isArray(payload) ? payload : [payload]
       dispatch('createTimeLine', callTime)
@@ -68,6 +68,15 @@ export default {
         })
       })
     },
+    async addRelationToGraph({dispatch}, {from, to}) {
+      const callTime = new Date()
+      dispatch('createTimeLine', callTime)
+      await dispatch('getRelationFromServer', {from, objects: [to]}).then(relations => {
+        dispatch('createEdges', {relations, callTime}).then(edges =>
+          edges.forEach(edge => dispatch('addEdgeToGraph', edge))
+        )
+      })
+    },
     async getRelationsBtwObjects({getters, dispatch}, objects) {
       let config = {}
       if(objects.length === 2)
@@ -79,7 +88,7 @@ export default {
         }
       return await axios.get('objects/objects_relation/', config)
         .then(response => {
-          dispatch('addToGraph', {payload: response.data})
+          dispatch('addObjectsToGraph', {payload: response.data})
           return Promise.resolve()
         })
         .catch(e => { return Promise.reject(e) })

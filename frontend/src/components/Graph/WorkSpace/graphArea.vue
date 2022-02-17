@@ -45,7 +45,7 @@ export default {
     ...mapGetters(['graphNodes', 'graphEdges', 'selectedNodes', 'hoverNodes', 'hoverEdges', 'globalDisplaySettingValue']),
   },
   methods: {
-    ...mapActions(['setScreen']),
+    ...mapActions(['setScreen', 'clearSelectedNodes']),
     isNode(element) {
       return element instanceof Node
     },
@@ -96,9 +96,9 @@ export default {
       this.hoverEdges.forEach(e => e.state.hover = false)
     },
     clearSelectors(evt) {
-      // if(!evt.button && !this.$refs.contextMenu.$children[0].isActive) { ToDo: Вернуть
-        this.selectedNodes.forEach(n => n.state.selected = false)
-      // }
+      if(!evt.button && !this.$refs.contextMenu.$children[0].isActive) {
+        this.clearSelectedNodes()
+      }
     },
     menuShow(event, element=null) {
       this.objectCtxMenu = element
