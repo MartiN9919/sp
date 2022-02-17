@@ -91,11 +91,14 @@ export default {
     createRelation(){
       let relation = []
       const edgeBtwNodes = nodes => {
-        return this.graphEdges.find(e => _.isEqual([e.entity.o1, e.entity.o2], nodes.map(n => n.entity)))
+        const findEdge = this.graphEdges.find(e => {
+          return _.isEqual([e.entity.o1.id, e.entity.o2.id].sort(), nodes.map(n => n.entity.id).sort())
+        })
+        return findEdge ? findEdge.entity : nodes.map(n => n.entity)
       }
       if(this.objectCtxMenu) {
         if(!this.isNode(this.objectCtxMenu)) {
-          relation = this.objectCtxMenu
+          relation = this.objectCtxMenu.entity
         }
       }
       else {
@@ -106,7 +109,7 @@ export default {
           relation = edgeBtwNodes(this.selectedNodes.filter(o => o.ids.object_id !== 20))
       }
       this.setEditableRelation({
-        relation: relation.entity,
+        relation: relation,
         document: this.selectedNodes.length === 3
           ? this.selectedNodes.find(o => o.ids.object_id === 20).entity
           : null
