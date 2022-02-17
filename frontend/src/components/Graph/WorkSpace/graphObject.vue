@@ -6,6 +6,8 @@
     @mouseenter="emitHoverEvent('hover')"
     @mouseleave="emitHoverEvent('unhover')"
     @click.alt="$emit('setChoosingRelated')"
+    @contextmenu.stop="$emit('ctxMenu', [$event, node])"
+    oncontextmenu="return false"
   >
     <v-label v-show="showLabel" :element="node">
       <information-label :size="node.size" :params="getClassifiers" :show-date="showDate"/>

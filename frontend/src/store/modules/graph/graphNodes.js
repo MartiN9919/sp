@@ -72,10 +72,10 @@ export default {
       let config = {}
       if(objects.length === 2)
         config.params = {
-          object_id_1: objects[0].object.object.id,
-          object_id_2: objects[1].object.object.id,
-          rec_id_1: objects[0].object.recId,
-          rec_id_2: objects[1].object.recId
+          object_id_1: objects[0].ids.object_id,
+          object_id_2: objects[1].ids.object_id,
+          rec_id_1: objects[0].ids.rec_id,
+          rec_id_2: objects[1].ids.rec_id
         }
       return await axios.get('objects/objects_relation/', config)
         .then(response => {

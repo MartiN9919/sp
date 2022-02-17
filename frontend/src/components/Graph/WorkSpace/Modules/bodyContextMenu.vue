@@ -43,7 +43,7 @@ export default {
     contextMenu: function () {
       if(this.objectCtxMenu) {
         if(this.isNode(this.objectCtxMenu)) {
-          return ctxMenu.getObjectCtxMenu([20, 30].includes(this.objectCtxMenu.ids.object_id))
+          return ctxMenu.getObjectCtxMenu([25, 30].includes(this.objectCtxMenu.ids.object_id))
         } else {
           return ctxMenu.RelationCtxMenu
         }
@@ -70,12 +70,12 @@ export default {
     reorderChoosingNodes() {
       this.reorderNodes(this.selectedNodes)
     },
-    setSearchRelation(event) {
+    setSearchRelation() {
       this.setRootSearchRelationTreeItem(this.objectCtxMenu)
       this.setNavigationDrawerStatus(true)
       this.setActiveTool('searchRelationPage')
     },
-    setChangeObject(event) {
+    setChangeObject() {
       this.setEditableObject({
         objectId: this.objectCtxMenu.ids.object_id,
         recId: this.objectCtxMenu.ids.rec_id
@@ -114,15 +114,25 @@ export default {
       this.getRelationsBtwObjects(this.selectedNodes)
     },
     addGeometryToGraph(){
-      this.$router.push({name: 'Map'})
-      this.executeMapScript({ request: {id: 1, name: "Вывод геометрии", variables: {
-        geometry_object: {
-          type: {title: "search", value: null}, value: {
-            title: this.objectCtxMenu.entity.title,
-            objectId: this.objectCtxMenu.ids.object_id,
-            recId: this.objectCtxMenu.ids.rec_id}}}},
-        config: {}
-      })
+      this.$router.push({name: 'Map'}).then(() =>
+        this.executeMapScript({
+          request: {
+            id: 1,
+            name: "Вывод геометрии",
+            variables: {
+              geometry_object: {
+                type: {title: "search", value: null},
+                value: {
+                  title: this.objectCtxMenu.entity.title,
+                  objectId: this.objectCtxMenu.ids.object_id,
+                  recId: this.objectCtxMenu.ids.rec_id
+                }
+              }
+            }
+            },
+          config: {}
+        })
+      )
     },
     saveGraphInFile() {
       let a = document.createElement("a")

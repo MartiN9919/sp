@@ -9,6 +9,7 @@
         @hover="hover"
         @unhover="unHover"
         @setChoosingRelated="setChoosingRelated"
+        @ctxMenu="menuShow(...$event)"
       />
       <graph-object
         v-for="node in graphNodes"
@@ -18,6 +19,7 @@
         @hover="hover"
         @unhover="unHover"
         @setChoosingRelated="setChoosingRelated"
+        @ctxMenu="menuShow(...$event)"
       />
     </screen>
     <search-object v-if="graphNodes.length" :nodes="graphNodes" @findNode="findNode"/>
@@ -98,8 +100,8 @@ export default {
         this.selectedNodes.forEach(n => n.state.selected = false)
       // }
     },
-    menuShow(event, object=null) {
-      this.objectCtxMenu = object
+    menuShow(event, element=null) {
+      this.objectCtxMenu = element
       this.$refs.contextMenu.show_root(event.x, event.y)
     },
   },
