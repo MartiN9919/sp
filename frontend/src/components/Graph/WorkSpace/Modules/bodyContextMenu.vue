@@ -127,11 +127,7 @@ export default {
     saveGraphInFile() {
       let a = document.createElement("a")
       const data = Array.from(this.graphNodes, node => {
-        return {
-          props: {x: node.x, y: node.y, size: node.size},
-          object_id: node.object.object.id,
-          rec_id: node.object.recId
-        }
+        return {...node.ids, props: {x: node.x, y: node.y, size: node.size}}
       })
       let file = new Blob([JSON.stringify(data)], {type: 'text/plain'})
       a.href = URL.createObjectURL(file)
@@ -140,8 +136,8 @@ export default {
       a.remove()
     },
     getGraphFromFile() {
-      this.clearGraph()
       const addObjectToGraph = this.addToGraph
+      const clearGraph = this.clearGraph
       let obj = document.createElement('input')
       obj.style.cssText = 'display:none'
       obj.type = 'file'
@@ -153,6 +149,7 @@ export default {
         addObjectToGraph({payload: JSON.parse(text), noMove: true})
       }
       input.addEventListener('change', function() {
+        clearGraph()
         input.files[0].text()
         .then(text => { parseText(text) })
       })

@@ -95,7 +95,7 @@ export default {
         getters.editableObjects[positionObject].getRequestStructure(),
         {headers: {
           'Content-Type': 'multipart/form-data',
-          'set-cookie': getters.cookieTriggers(getters.editableObjects[positionObject].object.id)
+          'set-cookie': getters.cookieTriggers(getters.editableObjects[positionObject].ids.object_id)
         }}
       )
         .then(r => {
@@ -224,8 +224,8 @@ export class DataBaseObject extends BaseDbObject {
       }
     }
     formData.append('data', JSON.stringify({
-      rec_id: this.recId,
-      object_id: this.object.id,
+      rec_id: this.ids.rec_id,
+      object_id: this.ids.object_id,
       rec_id_old: this.recIdOld,
       force: store.getters.editableObjects.length > 1,
       params: params,
