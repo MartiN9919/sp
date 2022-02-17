@@ -281,7 +281,7 @@ export class Node {
   }
 
   get id() {
-    return this.entity.getGeneratedId()
+    return this.entity.id
   }
 
   get ids() {
@@ -299,15 +299,15 @@ export class Edge {
   }
 
   get from() {
-    return this.entity.o1.getGeneratedId()
+    return this.entity.o1.id
   }
 
   get to() {
-    return this.entity.o2.getGeneratedId()
+    return this.entity.o2.id
   }
 
   get id() {
-    return this.entity.getGeneratedId()
+    return this.entity.id
   }
 
   get ids() {

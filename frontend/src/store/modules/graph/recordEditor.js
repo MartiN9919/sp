@@ -177,20 +177,16 @@ export class DataBaseRelation extends BaseDbObject {
     }
   }
 
-  getGeneratedId() {
-    let id1 = this.o1.getGeneratedId()
-    let id2 = this.o2.getGeneratedId()
-    // id1 = this.o1.base.id > this.o2.base.id ? id2 : this.o1.base.id === this.o2.base.id && this.o1.recId > this.o2.recId ? id2: id1
-    // id2 = this.o1.base.id > this.o2.base.id ? id1 : this.o1.base.id === this.o2.base.id && this.o1.recId > this.o2.recId ? id1: id2
-    if(this.o1.base.id > this.o2.base.id) {
-      [id1, id2] = [id2, id1]
-    }
-    else {
-      if (this.o1.base.id === this.o2.base.id && this.o1.recId > this.o2.recId) {
-        [id1, id2] = [id2, id1]
+  get id() {
+    const ordering = (base, switcher) => {
+      if(this.ids.object_1_id > this.ids.object_2_id) {
+        return switcher
+      } else if(this.ids.object_1_id === this.ids.object_2_id && this.ids.rec_1_id > this.ids.rec_2_id) {
+        return switcher
       }
+      return base
     }
-    return `${id1}@${id2}`
+    return `${ordering(this.o1.id, this.o2.id)}@${ordering(this.o2.id, this.o1.id)}`
   }
 }
 
@@ -210,7 +206,7 @@ export class DataBaseObject extends BaseDbObject {
     return {object_id: this.base.id, rec_id: this.recId}
   }
 
-  getGeneratedId() {
+  get id() {
     return `${this.base.id}-${this.recId}`
   }
 

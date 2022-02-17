@@ -124,14 +124,14 @@ const SpaceCtxMenu = [
         icon: 'mdi-graph-outline',
         title: 'Переупорядочить граф',
         subtitle: 'Переупорядочить граф',
-        action: 'reorderGraph',
+        action: 'reorderNodes',
         disabled: true
       },
       {
         icon: 'mdi-graph',
         title: 'Переупорядочить выбранные объекты',
         subtitle: 'Переупорядочить выбранные на графе объекты',
-        action: 'reorderChoosingObjects',
+        action: 'reorderChoosingNodes',
         disabled: true
       }
     ],
