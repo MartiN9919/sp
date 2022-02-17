@@ -53,8 +53,9 @@ def get_rel_by_object(group_id, object, id, parents):
                 old_relation[0]['relations'].append({'id': relation['rel_type'],
                                                      'values': [{'value': get_item_list_value(int(relation['val'])) if
                                                      relation['val'] != 0 else '',
+                                                                 'doc': doc,
                                                                  'date': get_date_time_from_sec(relation['sec'])[:-3]}],
-                                                     'doc': doc})
+                                                     })
         else:
             relations.append(
                 {'object_id': relation['object_id'], 'rec_id': relation['rec_id'],

@@ -35,7 +35,7 @@ export default {
     getRelationsForObjects({getters, dispatch}, objects) {
       const promiseRelations = objects.map((n, i) => {
         const availableObjects = getters.graphNodesEntity.concat(objects.slice(0, i))
-        return dispatch('getRelationFromServer', {from: n, objects: availableObjects})
+        return dispatch('getRelations', {from: n, objects: availableObjects})
       })
       return Promise.allSettled(promiseRelations)
     },
@@ -107,15 +107,7 @@ export class DataBaseRelation extends BaseDbObject {
   }
 
   get id() {
-    const ordering = (base, switcher) => {
-      if(this.ids.object_1_id > this.ids.object_2_id) {
-        return switcher
-      } else if(this.ids.object_1_id === this.ids.object_2_id && this.ids.rec_1_id > this.ids.rec_2_id) {
-        return switcher
-      }
-      return base
-    }
-    return `${ordering(this.o1.id, this.o2.id)}@${ordering(this.o2.id, this.o1.id)}`
+    return [this.o1.id, this.o2.id].sort().join('@')
   }
 }
 
