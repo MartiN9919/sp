@@ -79,6 +79,17 @@ export default {
         })))
         .catch(e => Promise.reject(e))
     },
+    getObjectsFromServer({dispatch}, objects) {
+      const promises = objects.map(({object_id, rec_id}) => dispatch('getObjectFromServer', {object_id, rec_id}))
+      return Promise.allSettled(promises)
+    },
+    getRelationsFromServer({getters, dispatch}, objects) {
+      const promiseRelations = objects.map((n, i) => {
+        const availableObjects = Array.from(getters.graphNodes, n => n.entity).concat(objects.slice(0, i))
+        return dispatch('getRelationFromServer', {from: n, objects: availableObjects})
+      })
+      return Promise.allSettled(promiseRelations)
+    },
     async saveEditableObject({getters, dispatch}, positionObject) {
       return await axios.post('objects/object/',
         getters.editableObjects[positionObject].getRequestStructure(),
@@ -167,7 +178,19 @@ export class DataBaseRelation extends BaseDbObject {
   }
 
   getGeneratedId() {
-    return `${this.o1.base.id}-${this.o1.recId}@${this.o2.base.id}-${this.o2.recId}`
+    let id1 = this.o1.getGeneratedId()
+    let id2 = this.o2.getGeneratedId()
+    // id1 = this.o1.base.id > this.o2.base.id ? id2 : this.o1.base.id === this.o2.base.id && this.o1.recId > this.o2.recId ? id2: id1
+    // id2 = this.o1.base.id > this.o2.base.id ? id1 : this.o1.base.id === this.o2.base.id && this.o1.recId > this.o2.recId ? id1: id2
+    if(this.o1.base.id > this.o2.base.id) {
+      [id1, id2] = [id2, id1]
+    }
+    else {
+      if (this.o1.base.id === this.o2.base.id && this.o1.recId > this.o2.recId) {
+        [id1, id2] = [id2, id1]
+      }
+    }
+    return `${id1}@${id2}`
   }
 }
 
