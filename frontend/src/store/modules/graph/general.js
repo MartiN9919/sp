@@ -1,66 +1,195 @@
-import Graph from "@/components/Graph/WorkSpace/lib/graph"
-import {DataBaseObject, DataBaseRelation} from "@/store/modules/graph/recordEditor"
+import axios from '@/plugins/axiosSettings'
+import store from "@/store"
+import _ from 'lodash'
 
 export default {
-  state: {
-    screen: null,
-    graph: new Graph()
-  },
-  getters: {
-    screen: state => state.screen,
-    graph: state => state.graph,
-    graphNodes: state => state.graph.nodes,
-    graphNode: state => id => state.graph.nodes.find(n => n.id === id),
-    hoverNodes: state => state.graph.nodes.filter(n => n.state.hover),
-    selectedNodes: state => state.graph.nodes.filter(n => n.state.selected),
-    graphEdges: state => state.graph.edges,
-    graphEdge: state => id => state.graph.edges.find(e => e.id === id),
-    hoverEdges: state => state.graph.edges.filter(e => e.state.hover),
-  },
-  mutations: {
-    setScreen: (state, screen) => state.screen = screen,
-    addNode: (state, node) => state.graph.nodes.push(node),
-    addEdge: (state, edge) => state.graph.edges.push(edge),
-    clearGraph: (state) => state.graph.clearGraph(),
-    clearSelectedNodes: (state) => state.graph.nodes.forEach(n => n.state.selected = false),
-    reorderNodes: (state, {nodes, position}) => state.graph.reorderGraph(position.x, position.y, nodes),
-  },
+  state: {},
+  getters: {},
+  mutations: {},
   actions: {
-    setScreen({ commit }, screen) {
-      commit('setScreen', screen)
+    async getObject({getters}, {rec_id, object_id, config = {}}) {
+      config.headers = {'set-cookie': getters.cookieTriggers(object_id)}
+      return await axios.get('objects/object/', Object.assign(config, {params: {rec_id, object_id}}))
+        .then(r => Promise.resolve(new DataBaseObject(r.data)))
+        .catch(e => Promise.reject(e))
     },
-    addNodeToGraph({getters, commit}, {node, props, relations}) {
-      if(!getters.graphNode(node.id)) {
-        if(!props) {
-          const edges = relations.map(r => r.o2.id)
-          props = getters.graph.getNewNodePosition(edges, getters.screen.visibleArea())
+    async getRelation({getters}, {from, to, config = {}}) {
+      const params = Object.assign(from.ids, {objects: [to.ids]})
+      return await axios.post('objects/object_relation/', params, config)
+        .then(r => Promise.resolve(new DataBaseRelation(from, to, r.data[0].relations)))
+        .catch(e => Promise.reject(e))
+    },
+    async getRelations({getters}, {from, objects, config = {}}) {
+      const params = Object.assign(from.ids, {objects: Array.from(objects, n => n.ids)})
+      return await axios.post('objects/object_relation/', params, config)
+        .then(r => Promise.resolve(r.data.map(relation => {
+          const object = objects.find(o => o.ids.object_id === relation.object_id && o.ids.rec_id === relation.rec_id)
+          return new DataBaseRelation(from, object, relation.relations)
+        })))
+        .catch(e => Promise.reject(e))
+    },
+    getObjects({dispatch}, objects) {
+      const promises = objects.map(({object_id, rec_id}) => dispatch('getObject', {object_id, rec_id}))
+      return Promise.allSettled(promises)
+    },
+    getRelationsForObjects({getters, dispatch}, objects) {
+      const promiseRelations = objects.map((n, i) => {
+        const availableObjects = getters.graphNodesEntity.concat(objects.slice(0, i))
+        return dispatch('getRelationFromServer', {from: n, objects: availableObjects})
+      })
+      return Promise.allSettled(promiseRelations)
+    },
+    async getRelationsBtwObjects({getters, dispatch}, objects) {
+      let config = {}
+      if(objects.length === 2)
+        config.params = {
+          object_id_1: objects[0].ids.object_id,
+          object_id_2: objects[1].ids.object_id,
+          rec_id_1: objects[0].ids.rec_id,
+          rec_id_2: objects[1].ids.rec_id
         }
-        node = Object.assign(node, props)
-        commit('addNode', node)
-      }
-    },
-    addEdgeToGraph({getters, commit}, edge) {
-      if(!getters.graphEdge(edge.id)) {
-        commit('addEdge', edge)
-      }
-    },
-    clearGraph({commit}) {
-      commit('clearGraph')
-    },
-    clearSelectedNodes({commit}) {
-      commit('clearSelectedNodes')
-    },
-    reorderNodes({getters, commit}, nodes=null) {
-      let position
-      if(Array.isArray(nodes)) {
-        position = getters.graph.getNodesCenter(nodes)
-      } else {
-        nodes = getters.graphNodes
-        position = getters.screen.visibleArea()
-        position = {x: position.x - position.width / 2, y: position.y - position.height / 2}
-      }
-      commit('reorderNodes', {position, nodes})
-    },
+      return await axios.get('objects/objects_relation/', config)
+        .then(response => {
+          dispatch('addObjectsToGraph', response.data)
+          return Promise.resolve()
+        })
+        .catch(e => { return Promise.reject(e) })
+    }
   }
 }
 
+
+class BaseDbObject {
+  constructor(getter, baseObjects, params) {
+    this.params = baseObjects.map(p => new ParamObject(getter(p.id), params.find(n => n.id === p.id)?.values))
+  }
+
+  addParam(id) {
+    this.params.find(param => param.baseParam.id === id).new_values.push(new ValueParam())
+  }
+
+  deleteParam(id, param) {
+    let foundParam = this.params.find(param => param.baseParam.id === id)
+    foundParam.new_values.splice(foundParam.new_values.findIndex(par => par === param), 1)
+  }
+}
+
+
+export class DataBaseRelation extends BaseDbObject {
+  constructor(o1, o2, params=[]) {
+    let getter = store.getters.baseRelation
+    let baseObject = store.getters.baseRelations({f_id: o1.base.id, s_id: o2.base.id})
+    super(getter, baseObject, params)
+    this.o1 = o1
+    this.o2 = o2
+  }
+
+  getRequestStructure() {
+    let params = []
+    for(let param of this.params)
+      for (let newValue of param.new_values) {
+        let value = newValue.value
+        params.push({id: param.baseParam.id, value: value, date: newValue.date})
+      }
+    return {
+      ...this.ids,
+      params: params,
+    }
+  }
+
+  get ids() {
+    return {
+      object_1_id: this.o1.base.id,
+      rec_1_id: this.o1.recId,
+      object_2_id: this.o2.base.id,
+      rec_2_id: this.o2.recId
+    }
+  }
+
+  get id() {
+    const ordering = (base, switcher) => {
+      if(this.ids.object_1_id > this.ids.object_2_id) {
+        return switcher
+      } else if(this.ids.object_1_id === this.ids.object_2_id && this.ids.rec_1_id > this.ids.rec_2_id) {
+        return switcher
+      }
+      return base
+    }
+    return `${ordering(this.o1.id, this.o2.id)}@${ordering(this.o2.id, this.o1.id)}`
+  }
+}
+
+
+export class DataBaseObject extends BaseDbObject {
+  constructor({object_id, rec_id = 0, recIdOld = null, params = [], triggers=[], title='', photo=''}) {
+    super(store.getters.baseClassifier, store.getters.baseClassifiers(object_id), params)
+    this.base = store.getters.baseObject(object_id)
+    this.recIdOld = recIdOld
+    this.recId = rec_id
+    this.title = title
+    this.photo = photo
+    this.triggers = triggers
+  }
+
+  get ids() {
+    return {object_id: this.base.id, rec_id: this.recId}
+  }
+
+  get id() {
+    return `${this.base.id}-${this.recId}`
+  }
+
+  getRequestStructure() {
+    let formData = new FormData()
+    let params = []
+    for(let param of this.params) {
+      for (let newValue of param.new_values) {
+        if(param.baseParam.type.title.startsWith('file')){
+          params.push({id: param.baseParam.id, value: params.length.toString(), date: newValue.date})
+          formData.append(params.length - 1, newValue.value.file)
+        } else {
+          params.push({id: param.baseParam.id, value: newValue.value, date: newValue.date})
+        }
+      }
+    }
+    formData.append('data', JSON.stringify({
+      rec_id: this.ids.rec_id,
+      object_id: this.ids.object_id,
+      rec_id_old: this.recIdOld,
+      force: store.getters.editableObjects.length > 1,
+      params: params,
+    }))
+    return formData
+  }
+
+  concatParams(concatObject) {
+    for(let param of concatObject.params) {
+      let findParam = this.params.find(p => p.baseParam.id === param.baseParam.id)
+      findParam.values = findParam.values.concat(_.cloneDeep(param.values))
+      findParam.new_values = findParam.new_values.concat(_.cloneDeep(param.new_values))
+    }
+  }
+}
+
+class ParamObject {
+  constructor(baseParam, values=[], newValues=[]) {
+    this.baseParam = baseParam
+    this.new_values = newValues
+    this.values = values.map(v => new ValueParam(v.value, v.date, v.doc))
+  }
+}
+
+class ValueParam {
+  constructor(value=null, date=this.getDateTime(), doc=null) {
+    this.value = value
+    this.date = date
+    this.doc = doc
+  }
+
+  getDateTime() {
+    let dateTime = new Date()
+    let time = dateTime.toLocaleTimeString('ru-RU').split(':')
+    let date = dateTime.toLocaleDateString('ru-RU')
+    return date + ' ' + time[0] + ':' + time[1]
+  }
+}

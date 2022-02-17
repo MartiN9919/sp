@@ -83,7 +83,7 @@ export default {
     ...mapActions(['setRootSearchTreeItem', 'changeSearchTreeItem', 'setActiveTool', 'addSearchTreeItem',
     'findRelationsOnServer', 'removeSearchTreeItem', 'setEditableObject']),
     changeObject(object) {
-      this.setEditableObject({recId: object.rec_id, objectId: object.object_id})
+      this.setEditableObject(object)
     },
     findObject () {
       this.findRelationsOnServer()

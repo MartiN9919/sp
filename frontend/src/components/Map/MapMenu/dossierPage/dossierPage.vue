@@ -45,12 +45,12 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['getObjectFromServer', 'setEditableObject', 'addObjectsToGraph']),
+    ...mapActions(['getObject', 'setEditableObject', 'addObjectToGraph']),
     editObject() {
-      router.push({name: 'Graph'}).then(() => this.setEditableObject({objectId: this.objectId, recId: this.recId}))
+      router.push({name: 'Graph'}).then(() => this.setEditableObject(this.payload))
     },
     toGraph() {
-      router.push({name: 'Graph'}).then(() => this.addObjectsToGraph({payload: this.payload}))
+      router.push({name: 'Graph'}).then(() => this.addObjectToGraph(this.payload))
     },
   },
   watch: {
@@ -58,7 +58,7 @@ export default {
       handler: function (v) {
         let value = JSON.parse(v)
         if (value.length)
-          this.getObjectFromServer({rec_id: value[0].rec_id, object_id: value[0].obj_id})
+          this.getObject({rec_id: value[0].rec_id, object_id: value[0].obj_id})
             .then(r => this.selectedItem = r)
         else this.selectedItem = null
       },

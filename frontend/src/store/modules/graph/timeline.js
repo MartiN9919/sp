@@ -48,50 +48,6 @@ export default {
     },
     createEdges({dispatch}, {relations, callTime}) {
       return Promise.all(relations.map(async r => await dispatch('createEdge', {relation: r, callTime})))
-    },
-    addObjectsToGraph({getters, dispatch}, {payload}) {
-      const callTime = new Date()
-      const requestObjects = Array.isArray(payload) ? payload : [payload]
-      dispatch('createTimeLine', callTime)
-      dispatch('getObjectsFromServer', requestObjects).then(entityNodes => {
-        dispatch('createNodes', {objects: entityNodes.map(n => n.value || []), callTime}).then(nodes => {
-          dispatch('getRelationsFromServer', nodes.map(n => n.entity)).then(entityEdges => {
-            nodes.forEach((node, i) => {
-              const relations = entityEdges[i].value || []
-              const props = requestObjects[i].props
-              dispatch('addNodeToGraph', {node, relations, props})
-              dispatch('createEdges', {relations, callTime}).then(edges =>
-                edges.forEach(edge => dispatch('addEdgeToGraph', edge))
-              )
-            })
-          })
-        })
-      })
-    },
-    async addRelationToGraph({dispatch}, {from, to}) {
-      const callTime = new Date()
-      dispatch('createTimeLine', callTime)
-      await dispatch('getRelationFromServer', {from, objects: [to]}).then(relations => {
-        dispatch('createEdges', {relations, callTime}).then(edges =>
-          edges.forEach(edge => dispatch('addEdgeToGraph', edge))
-        )
-      })
-    },
-    async getRelationsBtwObjects({getters, dispatch}, objects) {
-      let config = {}
-      if(objects.length === 2)
-        config.params = {
-          object_id_1: objects[0].ids.object_id,
-          object_id_2: objects[1].ids.object_id,
-          rec_id_1: objects[0].ids.rec_id,
-          rec_id_2: objects[1].ids.rec_id
-        }
-      return await axios.get('objects/objects_relation/', config)
-        .then(response => {
-          dispatch('addObjectsToGraph', {payload: response.data})
-          return Promise.resolve()
-        })
-        .catch(e => { return Promise.reject(e) })
     }
   }
 }

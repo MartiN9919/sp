@@ -1,8 +1,9 @@
 import UserSetting from "@/store/addition"
-import searchTree from "@/store/modules/graph/searchTree"
-import recordEditor from "@/store/modules/graph/recordEditor"
-import graphNodes from "@/store/modules/graph/graphNodes"
 import general from "@/store/modules/graph/general"
+import entity from "@/store/modules/graph/entity"
+import element from "@/store/modules/graph/element"
+import timeline from "@/store/modules/graph/timeline"
+import searchTree from "@/store/modules/graph/searchTree"
 
 class GlobalSettings {
   constructor() {
@@ -63,9 +64,10 @@ export default {
     setClassifiersSettings({ getters, commit }, id) { commit('setClassifiersSettings', id) }
   },
   modules: {
-    searchTree,
-    recordEditor,
-    graphNodes,
     general,
+    entity,
+    element,
+    timeline,
+    searchTree,
   },
 }
