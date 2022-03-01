@@ -1,3 +1,4 @@
+from data_base_driver.additional_functions import parse_type
 from data_base_driver.constants.const_dat import DAT_SYS_TRIGGER
 from data_base_driver.sys_key.get_list import get_list_by_name
 from data_base_driver.connect.connect_mysql import db_sql
@@ -45,14 +46,8 @@ def get_triggers_list():
             variables_dict = {'name': variable[0],
                               'title': variable[1],
                               'hint': variable[2],
-                              'type': {'title': variable[3]},
+                              'type': parse_type(variable[3], variable[4], variable[5]),
                               'necessary': True if variable[6] == 1 else False}
-            if variable[3] == 'list':
-                variables_dict['type']['value'] = int(variable[4])
-            elif variable[3] == 'search':
-                variables_dict['type']['value'] = int(variable[5]) if variable[5] else None
-            else:
-                variables_dict['type']['value'] = None
             variables_result.append(variables_dict)
         if not result.get(temp[1]):
             result[temp[1]] = []
