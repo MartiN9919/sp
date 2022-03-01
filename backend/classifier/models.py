@@ -263,7 +263,7 @@ class ModelKey(models.Model):
         help_text='Как будет отображаться данный классификатор в заоголовках',
         default='all'
     )
-    blocked_in_blank = models.BooleanField(
+    blocked_blank = models.BooleanField(
         default=False,
         verbose_name='Не использовать в бланках',
         help_text='Данное поле не включается в файл классификаторов',
