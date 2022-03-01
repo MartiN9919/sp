@@ -1,5 +1,5 @@
 <template>
-  <v-combobox
+  <v-autocomplete
     v-model="value"
     v-bind="$attrs"
     :items="items"
@@ -7,8 +7,10 @@
     :class="bodyInputClasses"
     :menu-props="{ offsetY: true, zIndex: 1000001 }"
     class="customCombobox"
+    no-data-text="Не найдено"
     autocomplete="off"
     messages=" "
+    item-value="id"
     color="teal"
     item-color="teal"
     dense
@@ -33,7 +35,7 @@
       </v-list-item-icon>
       <v-list-item-title class="selector-item">{{item[itemText || 'value']}}</v-list-item-title>
     </template>
-  </v-combobox>
+  </v-autocomplete>
 </template>
 
 <script>
@@ -54,12 +56,12 @@ export default {
     itemText: function () { return this.$attrs['item-text'] || 'value'},
     value: {
       get: function () { return this.items.find(item => item.id === this.inputString) },
-      set: function (value) { this.$emit('changeInputString', value?.id) }
+      set: function (value) { this.$emit('changeInputString', value) }
     }
   },
   mounted() {
     if(this.userInformation.group_id.list_id === this.$attrs['type-load'])
-      this.value = {id: this.userInformation.group_id.id}
+      this.value = this.userInformation.group_id.id
   }
 }
 </script>

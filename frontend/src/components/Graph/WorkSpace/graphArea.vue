@@ -1,202 +1,108 @@
 <template>
-  <div @click.right.prevent.stop="menuShow($event)" @mousedown="clearSelectors" class="h-100">
-    <screen ref="screen">
-      <group v-if="relatedObjects.length" :nodes="relatedObjects"></group>
-      <g
-        v-show="globalDisplaySettingValue('showRelations')"
-        v-for="relation in graphRelations" :key="relation.id"
-        @wheel.stop="scrollRelation(relation, $event)"
-        @click.right.prevent.stop="menuShow($event, relation)"
-      >
-        <v-label
-          :ref="`label-${relation.id}`"
-          v-show="getTooltipStateRelation(relation)"
-          :edge-coordinates="getCoordinatesEdge(relation.id)"
-          :element="relation"
-        >
-          <information-label
-            :size-node="relation.size"
-            :params="relation.relation.params"
-            :show-date="globalDisplaySettingValue('showGlobalDateRelation')"
-          ></information-label>
-        </v-label>
-        <edge
-          :ref="`edge-${relation.id}`"
-          :data="relation"
-          :nodes="graphObjects"
-        ></edge>
-      </g>
-      <g
-        :ref="`object-${object.id}`"
-        v-for="object in graphObjects" :key="object.id"
-        v-if="object.object.show"
-        @wheel.stop="scroll(object, $event)"
-        @click.ctrl.stop="addChoosingObject(object)"
-        @click.alt.stop="getRelatedObjects(object, $event)"
-        @click.right.prevent.stop="menuShow($event, object)"
-        @click.stop="selectObject(object)"
-      >
-        <v-label
-            :ref="`label-${object.id}`"
-            v-show="getTooltipStateObject(object)"
-            :element="object"
-        >
-          <information-label
-              :size-node="object.size"
-              :params="getObjectClassifiers(object)"
-              :show-date="globalDisplaySettingValue('showGlobalDateObject')"
-          ></information-label>
-        </v-label>
-        <node :ref="`node-${object.id}`" :data="object">
-          <body-object
-            :node="object"
-            :selector="typeSelectorNode(object)"
-            :show-triggers="getTriggersStateObject(object)"
-          ></body-object>
-        </node>
-        <name-object
-          v-show="getTitleStateObject(object)"
-          :position="getTitlePosition(object)"
-          :title="object.object.title"
-          :size-node="object.size"
-        ></name-object>
-      </g>
+  <div class="h-100 disable-optimize select-off" @mouseup.exact="clearSelectors" @contextmenu="menuShow">
+    <screen id="screen" ref="screen" @selectNodes="setChoosingObjects" oncontextmenu="return false">
+      <graph-relation
+        v-for="edge in graphEdges"
+        :key="edge.id"
+        :edge="edge"
+        :nodes="graphNodes"
+        @hover="hover"
+        @unhover="unHover"
+        @setChoosingRelated="setChoosingRelated"
+        @ctxMenu="menuShow(...$event)"
+      />
+      <graph-object
+        v-for="node in graphNodes"
+        :key="node.id"
+        :node="node"
+        :selected-objects="selectedNodes"
+        @hover="hover"
+        @unhover="unHover"
+        @setChoosingRelated="setChoosingRelated"
+        @ctxMenu="menuShow(...$event)"
+      />
     </screen>
-    <graph-search v-if="graphObjects.length" :objects="graphObjects" @findNode="findNode"></graph-search>
-    <context-menu-nested
-      ref="contextMenu"
-      :form="this"
-      :items="contextMenu"
-      :color="$CONST.APP.COLOR_OBJ"
-    ></context-menu-nested>
+    <search-object v-if="graphNodes.length" :nodes="graphNodes" @findNode="findNode"/>
+    <context-menu-nested ref="contextMenu" :form="this" :items="contextMenu" :color="$CONST.APP.COLOR_OBJ"/>
   </div>
 </template>
 
 <script>
-import dragMixin from '@/components/Graph/lib/mixins/drag'
-import Screen from '@/components/Graph/lib/components/Screen'
-import Node from '@/components/Graph/lib/components/Node'
-import Edge from "@/components/Graph/lib/components/Edge"
-import Group from "@/components/Graph/lib/components/Group"
-import VLabel from '@/components/Graph/lib/components/Label'
-import BodyObject from "@/components/Graph/WorkSpace/object/bodyObject"
-import NameObject from "@/components/Graph/WorkSpace/object/nameObject"
-import InformationLabel from "@/components/Graph/WorkSpace/object/informationLabel"
-const GraphSearch = () => import("@/components/Graph/GraphMenu/graphSearch")
+import Screen from '@/components/Graph/WorkSpace/lib/components/Screen'
+import GraphObject from "@/components/Graph/WorkSpace/graphObject"
+import GraphRelation from "@/components/Graph/WorkSpace/graphRelation"
+import bodyContextMenu from "@/components/Graph/WorkSpace/Modules/bodyContextMenu"
+import SearchObject from "@/components/Graph/WorkSpace/Modules/searchObject"
 const ContextMenuNested = () => import("@/components/WebsiteShell/UIMainComponents/contextMenuNested")
-import bodyContextMenu from "@/components/Graph/WorkSpace/bodyContextMenu"
+import {Node, Edge} from '@/components/Graph/WorkSpace/lib/graph'
 import {mapActions, mapGetters} from "vuex"
-
 
 export default {
   name: "graphArea",
-  components: {GraphSearch, ContextMenuNested, Screen, Node, Edge, VLabel, Group, BodyObject, NameObject, InformationLabel},
-  data: () => ({
-    choosingObjects: [],
-    relatedObjects: []
-  }),
-  mixins: [bodyContextMenu, dragMixin],
+  mixins: [bodyContextMenu],
+  components: {SearchObject, GraphRelation, GraphObject, Screen, ContextMenuNested},
   computed: {
-    ...mapGetters(['graphObjects', 'graphRelations', 'globalDisplaySettingValue', 'classifiersSettings']),
-    allowRelations() { return Array.from(this.$store.state.graph.rootInstances.relations, r => {return r.id}) },
+    ...mapGetters(['graphNodes', 'graphEdges', 'selectedNodes', 'hoverNodes', 'hoverEdges', 'globalDisplaySettingValue']),
   },
   methods: {
-    ...mapActions(['setScreen']),
-    typeSelectorNode(node) {
-      if(this.choosingObjects.includes(node))
-        return 'choosing'
-      if(this.relatedObjects.includes(node))
-        return 'related'
-    },
-    clearSelectors() {
-      // this.choosingObjects = []
-      this.relatedObjects = []
-    },
-    getRelatedObjects(node, e) {
-      this.relatedObjects = []
-      if (!this.relatedObjects.length) {
-        let relations = this.graphRelations.filter(relation => relation.to === node.id || relation.from === node.id)
-        for (let relation of relations) {
-          this.relatedObjects.push(this.graphObjects.find(n => (n.id === relation.to || n.id === relation.from) && n.id !== node.id))
-        }
-        this.relatedObjects.push(node)
-      }
+    ...mapActions(['setScreen', 'clearSelectedNodes']),
+    isNode(element) {
+      return element instanceof Node
     },
     findNode(node) {
-      this.$refs.screen.panNode(node, { offsetX: 0, offsetY: 0 })
+      this.$refs.screen.zoomNode(node,2.5)
     },
-    addChoosingObject(choosingObject){
-      let findIndex = this.choosingObjects.findIndex(object => object === choosingObject)
-      if(findIndex === -1){
-        this.choosingObjects.push(choosingObject)
-      } else{
-        this.choosingObjects.splice(findIndex,1)
+    setChoosingRelated() {
+      this.hoverNodes.forEach(n => n.state.selected = true)
+    },
+    setChoosingObjects(frame) {
+      const xMax = frame.x + frame.width
+      const yMax = frame.y + frame.height
+      for(const node of this.graphNodes){
+        const x = node.x + node.size / 6
+        const y = node.y + node.size / 6
+        if(x > frame.x && x < xMax && y > frame.y && y < yMax) {
+          node.state.selected = true
+        }
       }
     },
-    selectObject(object) {
-      this.graphObjects.push(object)
-      this.graphObjects.splice(this.graphObjects.findIndex(o => o === object), 1)
+    pickUp(element) {
+      let ar = this.isNode(element) ? this.graphNodes : this.graphEdges
+      ar.splice(ar.findIndex(r => r === element), 1)
+      ar.push(element)
+      element.state.hover = true
     },
-    getObjectClassifiers(object) {
-      return object.object.params.filter(
-          p => !this.classifiersSettings.includes(p.baseParam.id) && p.values.length !== 0
-      )
+    getRelatedForNode(node) {
+      const edges = this.graphEdges.filter(edge => [edge.to, edge.from].includes(node.id))
+      const nodes = edges.map(e => this.graphNodes.find(n => [e.to, e.from].includes(n.id) && n.id !== node.id))
+      return {nodes, edges}
     },
-    getTitlePosition(object) {
-      return {x: object.x + object.width / 2 - object.size / 2, y: object.y + object.height}
+    getRelatedForRelation(edge) {
+      return this.graphNodes.filter(n => [edge.to, edge.from].includes(n.id))
     },
-    getTitleStateObject(object) {
-      return this.globalDisplaySettingValue('showGlobalTitle') && object.object.showTitle
-    },
-    getTooltipStateObject(object) {
-      let globalState = this.globalDisplaySettingValue('showGlobalTooltipObject')
-      let classifiersLength = this.getObjectClassifiers(object).length
-      let localState = object.object.showTooltip
-      return globalState && classifiersLength && localState
-    },
-    getTooltipStateRelation(relation) {
-      return this.globalDisplaySettingValue('showGlobalTooltipRelation')
-    },
-    getTriggersStateObject(object) {
-      return this.globalDisplaySettingValue('showGlobalTriggers') && object.object.showTriggers
-    },
-    scrollRelation(relation, event) {
-      if(event.deltaY > 0 && relation.size / 1.5 > 300){
-        relation.size /= 1.5
+    hover(element) {
+      if(this.isNode(element)) {
+        const elements = this.getRelatedForNode(element)
+        elements.nodes.forEach(n => this.pickUp(n))
+        elements.edges.forEach(e => this.pickUp(e))
+      } else {
+        const nodes = this.getRelatedForRelation(element)
+        nodes.forEach(n => this.pickUp(n))
       }
-      if (event.deltaY < 0 && relation.size * 1.5 < 1500){
-        relation.size *= 1.5
+      this.pickUp(element)
+    },
+    unHover() {
+      this.hoverNodes.forEach(n => n.state.hover = false)
+      this.hoverEdges.forEach(e => e.state.hover = false)
+    },
+    clearSelectors(evt) {
+      if(!evt.button && !this.$refs.contextMenu.$children[0].isActive) {
+        this.clearSelectedNodes()
       }
-      this.$nextTick(() => {
-        this.updateLabel(relation.id)
-      })
     },
-    scroll(node, event) {
-      if(event.deltaY > 0 && node.size / 1.5 > 300){
-        node.x += (((node.size/3) - (node.size/3)/1.5))/2
-        node.y += (((node.size/3) - (node.size/3)/1.5))/2
-        node.size /= 1.5
-      }
-      if (event.deltaY < 0 && node.size * 1.5 < 1500){
-        node.x -= (((node.size/3)*1.5 - (node.size/3)))/2
-        node.y -= (((node.size/3)*1.5 - (node.size/3)))/2
-        node.size *= 1.5
-      }
-      this.$nextTick(() => {
-        this.updateLabel(node.id)
-        this.updateNode(node.id)
-      })
-    },
-    getCoordinatesEdge(id){
-      this.$nextTick(() => {
-        return this.$refs.hasOwnProperty(`edge-${id}`) ? this.$refs[`edge-${id}`][0].pos : null
-      })
-    },
-    updateLabel(id) {
-      this.$refs[`label-${id}`][0].$refs.node.fitContent()
-    },
-    updateNode(id) {
-      this.$refs[`node-${id}`][0].fitContent()
+    menuShow(event, element=null) {
+      this.objectCtxMenu = element
+      this.$refs.contextMenu.show_root(event.x, event.y)
     },
   },
   mounted() {
@@ -206,4 +112,7 @@ export default {
 </script>
 
 <style scoped>
+.disable-optimize {
+  will-change: transform;
+}
 </style>

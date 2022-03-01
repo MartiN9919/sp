@@ -133,13 +133,16 @@ class DAT_SYS_KEY:
     PATH = 'path'
     PRIORITY = 'priority'
     VISIBLE = 'visible'
+    BLOCKED_IN_BLANK = 'blocked_blank'
 
     TYPE_STR = 'text'
+    TYPE_STR_ENG = 'text_eng'
     TYPE_INT = 'number'
     TYPE_BIT = 'checkbox'
     TYPE_DATA = 'date'
     TYPE_DATATIME = 'datetime'
     TYPE_GEOMETRY = 'geometry'
+    TYPE_GEOMETRY_POINT = 'geometry_point'
     TYPE_PHONE_NUMBER = 'phone_number'
     TYPE_FILE_PHOTO = 'file_photo'
     TYPE_FILE_ANY = 'file_any'
@@ -149,15 +152,16 @@ class DAT_SYS_KEY:
     VISIBLE_ONLY_VALUE = 'only_value'
     VISIBLE_ALL = 'all'
 
-
     TYPE_LIST = (
         (TYPE_INT, "Число"),
         (TYPE_STR, 'Текст'),
+        (TYPE_STR_ENG, 'Текст (только латиница и цифры)'),
         (TYPE_DATATIME, 'Дата/Время'),
         (TYPE_DATA, 'Дата'),
         (TYPE_PHONE_NUMBER, 'Номер телефона'),
         (TYPE_BIT, 'Да/Нет'),
-        (TYPE_GEOMETRY, 'Точка/Путь/Полигон'),
+        (TYPE_GEOMETRY, 'Путь/Полигон'),
+        (TYPE_GEOMETRY_POINT, 'Точка'),
         (TYPE_FILE_PHOTO, 'Файл-фотография'),
         (TYPE_FILE_ANY, 'Файл-любой тип'),
     )
@@ -203,11 +207,13 @@ class DAT_SYS_SCRIPT_VARIABLE:
     TYPE_VARIABLE_LIST = (
         (DAT_SYS_KEY.TYPE_INT, "Число"),
         (DAT_SYS_KEY.TYPE_STR, 'Текст'),
+        (DAT_SYS_KEY.TYPE_STR_ENG, 'Текст(только латиница и цифры)'),
         (DAT_SYS_KEY.TYPE_DATATIME, 'Дата/Время'),
         (DAT_SYS_KEY.TYPE_DATA, 'Дата'),
         (DAT_SYS_KEY.TYPE_PHONE_NUMBER, 'Номер телефона'),
         (DAT_SYS_KEY.TYPE_BIT, 'Да/Нет'),
-        (DAT_SYS_KEY.TYPE_GEOMETRY, 'Точка/Путь/Полигон'),
+        (DAT_SYS_KEY.TYPE_GEOMETRY, 'Путь/Полигон'),
+        (DAT_SYS_KEY.TYPE_GEOMETRY_POINT, 'Точка'),
         (DAT_SYS_KEY.TYPE_FILE_ANY, 'Файл-любой тип'),
         (DAT_SYS_KEY.TYPE_SEARCH, 'Поиск объекта'),
         (TYPE_LIST, 'Список')
@@ -370,6 +376,7 @@ class DAT_REL:
     OBJ_ID_2 = 'obj_id_2'
     REC_ID_2 = 'rec_id_2'
     VAL = 'val'
+    DOCUMENT_ID = 'document_id'
     LIST = (KEY_ID, DAT, OBJ_ID_1, REC_ID_1, OBJ_ID_2, REC_ID_2,)
 
 

@@ -5,20 +5,21 @@
         v-model="selectedEditableObject"
         :items="baseObjects"
         class="selector-object v-list--dense"
-      ></selector-object>
+      />
       <v-tabs id="tabs" v-model="activeTab" :color="sliderColor" grow show-arrows center-active :class="tabClasses">
         <v-tab v-for="(item, key) in editableObjects" :key="key">
-          <v-icon :color="tabColor(key)">{{ item.object.id.icon }}</v-icon>
+          <v-icon :color="tabColor(key)">{{ item.base.icon }}</v-icon>
           <span :style="{color: tabColor(key)}">
-            {{key === 0 ? 'Исходныйобъект' : 'Схожий объект'}}
+            {{key === 0 ? 'Исходный объект' : 'Схожий объект'}}
             {{key + 1}}
           </span>
         </v-tab>
         <v-tab-item v-for="(object, key) in editableObjects" :key="key" eager>
-          <v-form :ref="'form' + key" v-model="valid">
+          <v-form :ref="'form' + key" v-model="valid" onSubmit="return false;">
             <object-record-area
               :params="object.params"
-              :settings="{objectId: object.object.id, recId: object.recId}"
+              :title="object.title"
+              :settings="{objectId: object.ids.object_id, recId: object.ids.rec_id}"
               @createNewParam="createNewParam"
               @deleteNewParam="deleteNewParam"
             ></object-record-area>
@@ -78,8 +79,8 @@ export default {
     },
     selectedEditableObject: {
       get: function () {
-        if(this.editableObjects) return this.editableObjects[0].object.id },
-      set: function (id) { this.setEditableObject({objectId: id}) },
+        if(this.editableObjects) return this.editableObjects[0].ids.object_id },
+      set: function (id) { this.setEditableObject({object_id: id}) },
     },
     tabClasses: function () {
       if(this.editableObjects)

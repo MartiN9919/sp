@@ -1,5 +1,5 @@
 <template>
-  <ResSplitPane
+  <ResSplitPane v-if="enabled"
     ref="EditorSplit"
     split-to="columns"
     units="percents"
@@ -19,6 +19,9 @@
       <slot name="secondPane"></slot>
     </v-col>
   </ResSplitPane>
+  <div v-else>
+    <slot name="secondPane"></slot>
+  </div>
 </template>
 
 <script>
@@ -29,11 +32,15 @@ import ResSplitPane  from 'vue-resize-split-pane'
 export default {
   name: 'EditorSplit',
   components: { ResSplitPane, },
+  props: {
+    enabled: true
+  },
   data: () => ({
     pos : new UserSetting('EditorSplit.pos', 40),
   }),
   mounted () {
-    this.$refs.EditorSplit.$children[1].$el.classList.add('split-shadow-effect')
+    if(this.enabled)
+      this.$refs.EditorSplit.$children[1].$el.classList.add('split-shadow-effect')
   },
 }
 

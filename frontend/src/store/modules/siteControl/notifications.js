@@ -52,7 +52,7 @@ export default {
     appendErrorAlert: ({ commit }, error = {}) => {
       const alert = new Notification({content: error.data.status, status: error.status})
       commit('appendNotification', alert)
-      setTimeout(() => commit('removeNotification', alert), 5000)
+      setTimeout(() => commit('removeNotification', alert), 10000)
     },
     getNotifications: ({ getters, commit }, config={}) => {
       const getNotifications = function () {

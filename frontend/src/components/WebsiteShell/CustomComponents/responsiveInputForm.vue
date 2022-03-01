@@ -18,7 +18,6 @@
 import geometryInput from "@/components/WebsiteShell/InputForms/geometryInput"
 import booleanInput from "@/components/WebsiteShell/InputForms/booleanInput"
 import dateInput from "@/components/WebsiteShell/InputForms/dateInput"
-import dateTimeInput from "@/components/WebsiteShell/InputForms/dateTimeInput"
 import numberInput from "@/components/WebsiteShell/InputForms/numberInput"
 import textInput from "@/components/WebsiteShell/InputForms/textInput"
 import selectorInput from "@/components/WebsiteShell/InputForms/selectorInput"
@@ -36,7 +35,6 @@ export default {
     geometryInput,
     booleanInput,
     dateInput,
-    dateTimeInput,
     numberInput,
     textInput,
     selectorInput,
@@ -77,11 +75,9 @@ export default {
       geometry: 'geometryInput',
       checkbox: 'booleanInput',
       date: 'dateInput',
-      datetime: 'dateTimeInput',
       number: 'numberInput',
       phone_number: 'phoneInput',
-      file_photo: 'fileInput',
-      file_any: 'fileInput',
+      file: 'fileInput',
       default: 'unknownInput'
     }
   }),

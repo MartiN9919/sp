@@ -15,10 +15,10 @@
           <body-input-form
             v-bind="$attrs"
             :input-string="show_text()"
-            @changeInputString="value = $event"
+            @changeInputString="$emit('changeInputString', $event)"
             @deletable="$emit('deletable')"
             :class="bodyInputClasses"
-            icon="mdi-map-marker-outline"
+            :icon="icon"
             :placeholder="$attrs.placeholder || 'Выберете объект на карте'"
             readonly
           >
@@ -60,15 +60,21 @@ export default {
   model: { prop: 'inputString', event: 'changeInputString', },
   props: {
     inputString:  Object,
-    modeEnabled:  { type: Object, default: () => ({ marker: true , line: true, polygon: true, }) }, // доступные элементы
-    modeSelected: { type: String, default: () => undefined},                                        // режим ввода по умолчанию
   },
   data: () => ({
     dialog: false,
     copyInputString: null,
+    modeEnabled: null, // { marker: true , line: true, polygon: true, }, доступные элементы
+    modeSelected: null,
+    icon: ''
   }),
+  mounted() {
+    this.icon = this.isPoint ? 'mdi-map-marker-outline' : 'mdi-map-outline'
+    this.modeEnabled = this.isPoint ? {marker: true} : {line: true, polygon: true}
+  },
   computed: {
     bodyInputClasses: function () { return this.$attrs.hasOwnProperty('label') ? '' : 'pt-0' },
+    isPoint: function () { return this.$attrs['type-load'] === 'point' },
     featureCollection: {
       get: function () {
         if(this.inputString){
@@ -85,14 +91,16 @@ export default {
   methods: {
     click_ok() {
       this.$emit('changeInputString', this.copyInputString)
+      this.copyInputString = null
       this.dialog = false;
     },
     click_cancel() {
+      this.copyInputString = null
       this.dialog = false;
     },
     show_text() {
       if (!this.featureCollection || this.featureCollection.features.length === 0) return ''
-      return '[объект]'
+      return this.isPoint ? 'Точка' : 'Геометрия'
     },
   },
 }

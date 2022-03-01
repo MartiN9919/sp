@@ -124,7 +124,7 @@ def update_col_record_http(index_title, id, params):
         return True
 
 
-def add_relation_http(rec_id, date_time, key_id, obj_id_1, rec_id_1, obj_id_2, rec_id_2, val):
+def add_relation_http(rec_id, date_time, key_id, obj_id_1, rec_id_1, obj_id_2, rec_id_2, val, document_id):
     """
     Функция для добавления связи
     @param rec_id: идентификатор записи о связи
@@ -135,6 +135,7 @@ def add_relation_http(rec_id, date_time, key_id, obj_id_1, rec_id_1, obj_id_2, r
     @param obj_id_2: идентификатор типа второго объекта
     @param rec_id_2: идентификатор записи второго объекта
     @param val: значение связи, если нет то пустая строка
+    @param document_id: идентификатор документа основания связи
     @return: True в случае успешного добавления, False в случае ошибки
     """
     if TEST_MODE:
@@ -153,10 +154,11 @@ def add_relation_http(rec_id, date_time, key_id, obj_id_1, rec_id_1, obj_id_2, r
                 "rec_id_1": str(rec_id_1),
                 "obj_id_2": str(obj_id_2),
                 "rec_id_2": str(rec_id_2),
-                "val": str(val)
+                "val": str(val),
+                "document_id": str(document_id)
             }})
     response = requests.post(FullTextSearch.INSERT_URL, data=data)
-    if response.status_code != 201:
+    if response.status_code not in [200, 201]:
         return False
     else:
         return True

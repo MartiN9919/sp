@@ -7,9 +7,9 @@
     >
       <v-list-item-content>
         <v-list-item-title>{{ setting.title }}</v-list-item-title>
-        <v-list-item-subtitle v-if="setting.subTitle">{{ setting.subTitle }}</v-list-item-subtitle>
+        <v-list-item-subtitle v-if="setting.subTitle" class="description">{{ setting.subTitle }}</v-list-item-subtitle>
       </v-list-item-content>
-      <v-list-item-action>
+      <v-list-item-action class="my-auto ml-2">
         <v-switch disabled v-model="setting.state.value" color="teal"></v-switch>
       </v-list-item-action>
     </v-list-item>
@@ -34,5 +34,7 @@ export default {
 </script>
 
 <style scoped>
-
+.description {
+  white-space: normal;
+}
 </style>

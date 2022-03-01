@@ -79,7 +79,7 @@ class IO_PARS_DATA(dict):
         if type in [DAT_SYS_KEY.TYPE_STR, DAT_SYS_KEY.TYPE_DATA, DAT_SYS_KEY.TYPE_PHONE_NUMBER,
                     DAT_SYS_KEY.TYPE_FILE_PHOTO, DAT_SYS_KEY.TYPE_FILE_ANY]:
             ret = "'" + str(val) + "'"
-        elif type == DAT_SYS_KEY.TYPE_GEOMETRY:
+        elif type == DAT_SYS_KEY.TYPE_GEOMETRY or type == DAT_SYS_KEY.TYPE_GEOMETRY_POINT:
             ret = "ST_GeomFromGeoJson('" + val + "')"
         else:
             ret = str(val)
@@ -152,7 +152,10 @@ class IO_PARS_DATA(dict):
             # COL
             if key_rec[DAT_SYS_KEY.COL]:
                 if add.get(self.ADD_SYS_KEY, False): self.col_key.append(key_rec)
-                self.col_dic.append({key_name: val, DAT_OBJ_COL.DAT: '\'' + data_item[DATA_DAT] + '\''})
+                self.col_dic.append({key_name: val,
+                                     DAT_OBJ_COL.DAT: '\'' + data_item[DATA_DAT] + '\'' if len(
+                        data_item) > 2 else '\'' + datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + '\''
+                                     })
             # ROW
             else:
                 if add.get(self.ADD_SYS_KEY, False): self.row_key.append(key_rec)
@@ -201,6 +204,13 @@ class IO_PARS_DATA(dict):
                     vals[DAT_REL.VAL] = '\'\''
                 else:
                     vals[DAT_REL.VAL] = '\'' + str(data_val1) + '\''
+                continue
+
+            if data_key == DAT_REL.DOCUMENT_ID:
+                if not data_val1 or data_val1 == 0:
+                    vals[DAT_REL.DOCUMENT_ID] = '\'\''
+                else:
+                    vals[DAT_REL.DOCUMENT_ID] = '\'' + str(data_val1) + '\''
                 continue
 
             # ['obj_1',5,100], ['obj_2','file']

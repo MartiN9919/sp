@@ -34,16 +34,21 @@ export default {
     shadowEffect: {
       type: Boolean,
       default: false,
-    }
+    },
+    settingName: {
+      type: String,
+      default: ''
+    },
   },
   data: () => ({
-    sizeColumn: new UserSetting(`size-${router.currentRoute.name}`, 30),
+    sizeColumn: null,
   }),
   computed: {
     ...mapGetters(['navigationDrawerStatus']),
-    size: function () { return this.navigationDrawerStatus(router.currentRoute.name) ? this.sizeColumn.value : 0 }
+    size: function () { return this.navigationDrawerStatus(router.currentRoute.name) ? this.sizeColumn?.value : 0 }
   },
   mounted() {
+    this.sizeColumn = new UserSetting(`size-${router.currentRoute.name}${this.settingName}`, 30)
     if (this.shadowEffect)
       this.$refs.ResSplitPane.$children[0].$el.className += ' split-shadow-effect'
   },

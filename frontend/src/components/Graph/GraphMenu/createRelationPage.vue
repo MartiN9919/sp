@@ -7,14 +7,14 @@
   <div v-else class="h-100">
     <div class="work-place">
       <div class="header text-center text-no-wrap py-1">
-        <div v-for="(relation, key) in [editableRelation.relation.o1, editableRelation.relation.o2]" :key="key">
-          <v-icon>{{relation.object.object.icon}}</v-icon>{{relation.object.title}}
+        <div v-for="(object, key) in [editableRelation.relation.o1, editableRelation.relation.o2]" :key="key">
+          <v-icon>{{object.base.icon}}</v-icon>{{object.title}}
         </div>
         <div v-if="editableRelation.document">
-          <v-icon>{{editableRelation.document.object.object.icon}}</v-icon>{{editableRelation.document.object.title}}
+          <v-icon>{{editableRelation.document.base.icon}}</v-icon>{{editableRelation.document.title}}
         </div>
       </div>
-      <v-form v-if="editableRelation" ref="form" v-model="valid" class="overflow-y-auto">
+      <v-form v-if="editableRelation" ref="form" v-model="valid" class="overflow-y-auto" onSubmit="return false;">
         <object-record-area
           v-if="editableRelation.relation"
           :params="editableRelation.relation.params"
@@ -52,7 +52,13 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['addNewParamEditableRelation', 'deleteNewParamEditableRelation', 'saveEditableRelation', 'addObjectToGraph']),
+    ...mapActions([
+      'addNewParamEditableRelation',
+      'deleteNewParamEditableRelation',
+      'saveEditableRelation',
+      'addObjectToGraph',
+      'clearSelectedNodes',
+    ]),
     createNewParam(event) {
       this.addNewParamEditableRelation(event)
     },
@@ -60,7 +66,7 @@ export default {
       this.deleteNewParamEditableRelation({param: event.param, id: event.id})
     },
     createRelation() {
-      this.saveEditableRelation()
+      this.saveEditableRelation().then(() => { this.clearSelectedNodes() })
     }
   }
 }

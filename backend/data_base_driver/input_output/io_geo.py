@@ -36,7 +36,8 @@ def feature_collection_by_geometry(group_id, object_type, rec_id, keys, time_int
     for record in records:
         if not objects.get(record[DAT_OBJ_ROW.ID]):
             objects[record[DAT_OBJ_ROW.ID]] = {}
-        if get_key_by_id(record[DAT_OBJ_ROW.KEY_ID])[DAT_SYS_KEY.TYPE_VAL] == 'geometry':
+        if get_key_by_id(record[DAT_OBJ_ROW.KEY_ID])[DAT_SYS_KEY.TYPE_VAL] == 'geometry' or \
+                get_key_by_id(record[DAT_OBJ_ROW.KEY_ID])[DAT_SYS_KEY.TYPE_VAL] == 'geometry_point':
             if not objects[record[DAT_OBJ_ROW.ID]].get('geometry'):
                 objects[record[DAT_OBJ_ROW.ID]]['geometry'] = []
             objects[record[DAT_OBJ_ROW.ID]]['geometry'].append({DAT_OBJ_ROW.KEY_ID: record[DAT_OBJ_ROW.KEY_ID],
@@ -47,8 +48,8 @@ def feature_collection_by_geometry(group_id, object_type, rec_id, keys, time_int
             if not objects[record[DAT_OBJ_ROW.ID]].get('text'):
                 objects[record[DAT_OBJ_ROW.ID]]['text'] = []
             objects[record[DAT_OBJ_ROW.ID]]['text'].append({DAT_OBJ_ROW.KEY_ID: record[DAT_OBJ_ROW.KEY_ID],
-                                                              DAT_OBJ_ROW.VAL: record[DAT_OBJ_ROW.VAL],
-                                                              DAT_OBJ_ROW.SEC: record[DAT_OBJ_ROW.SEC]})
+                                                            DAT_OBJ_ROW.VAL: record[DAT_OBJ_ROW.VAL],
+                                                            DAT_OBJ_ROW.SEC: record[DAT_OBJ_ROW.SEC]})
             objects[record[DAT_OBJ_ROW.ID]]['text'].sort(key=lambda x: x[DAT_OBJ_ROW.SEC], reverse=True)
         elif int(record[DAT_OBJ_ROW.KEY_ID]) in SYS_KEY_CONSTANT.GEOMETRY_TYPES:
             temp_value = str(get_item_list_value(record[DAT_OBJ_ROW.VAL]))
@@ -56,8 +57,8 @@ def feature_collection_by_geometry(group_id, object_type, rec_id, keys, time_int
             if not objects[record[DAT_OBJ_ROW.ID]].get('type'):
                 objects[record[DAT_OBJ_ROW.ID]]['type'] = []
             objects[record[DAT_OBJ_ROW.ID]]['type'].append({DAT_OBJ_ROW.KEY_ID: record[DAT_OBJ_ROW.KEY_ID],
-                                                              DAT_OBJ_ROW.VAL: value,
-                                                              DAT_OBJ_ROW.SEC: record[DAT_OBJ_ROW.SEC]})
+                                                            DAT_OBJ_ROW.VAL: value,
+                                                            DAT_OBJ_ROW.SEC: record[DAT_OBJ_ROW.SEC]})
             objects[record[DAT_OBJ_ROW.ID]]['type'].sort(key=lambda x: x[DAT_OBJ_ROW.SEC], reverse=True)
         else:
             if not objects[record[DAT_OBJ_ROW.ID]].get('params'):
@@ -66,12 +67,12 @@ def feature_collection_by_geometry(group_id, object_type, rec_id, keys, time_int
                           item['key_id'] == record[DAT_OBJ_ROW.KEY_ID]]
             if len(old_params) > 0:
                 old_params[0] = {DAT_OBJ_ROW.KEY_ID: record[DAT_OBJ_ROW.KEY_ID],
-                                                              DAT_OBJ_ROW.VAL: record[DAT_OBJ_ROW.VAL],
-                                                              DAT_OBJ_ROW.SEC: record[DAT_OBJ_ROW.SEC]}
+                                 DAT_OBJ_ROW.VAL: record[DAT_OBJ_ROW.VAL],
+                                 DAT_OBJ_ROW.SEC: record[DAT_OBJ_ROW.SEC]}
             else:
                 objects[record[DAT_OBJ_ROW.ID]]['params'].append({DAT_OBJ_ROW.KEY_ID: record[DAT_OBJ_ROW.KEY_ID],
-                                                              DAT_OBJ_ROW.VAL: record[DAT_OBJ_ROW.VAL],
-                                                              DAT_OBJ_ROW.SEC: record[DAT_OBJ_ROW.SEC]})
+                                                                  DAT_OBJ_ROW.VAL: record[DAT_OBJ_ROW.VAL],
+                                                                  DAT_OBJ_ROW.SEC: record[DAT_OBJ_ROW.SEC]})
     temp = []
     for object in objects:
         if objects[object].get('geometry'):
@@ -127,6 +128,8 @@ def build_tree_from_list(geometry_list):
     @return: дерево геометрий
     """
     root = [item for item in geometry_list if item['parent_id'] == 0]
+    for temp in root:
+        temp.pop('parent_id')
     temp_geometry_list = [item for item in geometry_list if item not in root]
     temp_folders = {}
     for item in temp_geometry_list:
@@ -134,6 +137,8 @@ def build_tree_from_list(geometry_list):
             temp_folders[item['parent_id']] = []
         temp_folders[item['parent_id']].append(item)
     for folder in temp_folders:
+        for item in temp_folders[folder]:
+            item.pop('parent_id')
         root.append({'name': get_item_list_value(int(folder)), 'children': temp_folders[folder]})
     return root
 
@@ -153,10 +158,10 @@ def get_geometry_search(group_id, text):
     })
     response = requests.post(FullTextSearch.SEARCH_URL, data=data)
     geometries = [{
-        'id':        item['_source']['rec_id'],
-        'name':      item['_source']['name'],
+        'id': item['_source']['rec_id'],
+        'name': item['_source']['name'],
         'parent_id': item['_source']['parent_id'],
-        'sec':       item['_source']['sec'],
+        'sec': item['_source']['sec'],
     } for item in json.loads(response.text)['hits']['hits']]
     temp_result, temp_id = [], []
     for geometry in geometries:
@@ -179,7 +184,6 @@ def get_geometry_search(group_id, text):
                 temp_geometry['name'] = temp['_source']['name']
         temp_result.append(temp_geometry)
     return build_tree_from_list(temp_result)
-
 
 
 # ОТКЛЮЧЕНО ЗА НЕНАДОБНОСТЬЮ
@@ -276,9 +280,9 @@ def geo_id_to_fc(obj, group_id, geo_ids, keys):
     for rec in recs:
         id = rec[REC_ID]
         # d_item: прочитать
-        #d_item = d.get(id, {FC_REC_ID: str(id), FC_PROPERTIES: {}, })
+        # d_item = d.get(id, {FC_REC_ID: str(id), FC_PROPERTIES: {}, })
         d_item = d.get(id, {FC_REC_ID: id, FC_PROPERTIES: {}, })
-        d_item[FC_OBJ_ID]=obj_id
+        d_item[FC_OBJ_ID] = obj_id
 
         # запомнить ключ в d_item
         if rec[1] == 'location':

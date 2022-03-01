@@ -132,7 +132,7 @@ def write_permission(f):
 
     def wrap(request, *args, **kwargs):
         if request.method == 'POST' and not request.user.is_write:
-            return JsonResponse({'data': 'ошибка добавления'}, status=454)
+            return JsonResponse({'status': 'у вас нет прав на запись в базу данных'}, status=454)
         return f(request, *args, **kwargs)
 
     wrap.__doc__ = f.__doc__
@@ -152,6 +152,12 @@ def request_log(function):
 
     def _inner(request, *args, **kwargs):
         try:
+            body_string = str(request.body.decode("utf-8"))
+            if len(body_string) != 0 and json.loads(request.body).get('password'):
+                body = json.loads(request.body)
+                body['password'] = '***'
+                body_string = str(body)
+
             logger.info(
                 str(request.user) + '.' +
                 str(request.user.id) + '|' +
@@ -159,14 +165,14 @@ def request_log(function):
                 str(request.META.get('REMOTE_PORT')) + '|' +
                 request.method + ':' +
                 request.path + '|' +
-                str(request.body.decode("utf-8"))
+                body_string
             )
         except:
             logger.info(
                 str(request.user) + '.' +
                 str(request.user.id) + '|' +
                 request.META.get('REMOTE_ADDR') + ':' +
-                str(request.META.get('REMOTE_PORT'))+ '|' +
+                str(request.META.get('REMOTE_PORT')) + '|' +
                 request.method + ':' +
                 request.path + '|' +
                 request.POST['data']

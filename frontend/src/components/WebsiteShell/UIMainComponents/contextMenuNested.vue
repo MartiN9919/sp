@@ -7,6 +7,7 @@
     class="select-off"
     style="z-index: 50000;"
     min-width="0"
+    max-width="min-content"
     :value="open"
     :absolute="_root_"
     :close-on-content-click="false"

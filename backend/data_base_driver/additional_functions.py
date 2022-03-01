@@ -12,33 +12,40 @@ def get_document_date_format(date):
     return '.'.join(reversed(date.split('-')))
 
 
-def get_date_from_days_sec(days, sec):
+def get_date_from_days_sec(days, sec, client=False):
     """
     Функция для получения даты и времени в строковом формате из дней с рождества христова и секунд с начала дня
     @param days: количество дней с прошедших с рождества христова
     @param sec: количество секунд прошедших с начала дня
+    @param client: клиентский формат даты, если True то d/m/Y
     @return: строка содержащую дату и время в формате Y-m-d H:M:S
     """
     if days == 0 and sec == 0:
-        return 'unknow'
+        return '0001-01-01 12:00:00'
     elif sec == 0:
         h, m, s = 0, 0, 0
     else:
         h = sec // 3600
         m = (sec % 3600) // 60
         s = sec - h * 3600 - m * 60
-    return datetime.datetime.fromordinal(days - 365).replace(hour=h, minute=m, second=s).strftime("%Y-%m-%d %H:%M:%S")
+    if client:
+        return datetime.datetime.fromordinal(days - 365).replace(hour=h, minute=m, second=s).strftime(
+            "%d-%m-%Y %H:%M:%S")
+    else:
+        return datetime.datetime.fromordinal(days - 365).replace(hour=h, minute=m, second=s).strftime(
+            "%Y-%m-%d %H:%M:%S")
 
 
-def get_date_time_from_sec(sec):
+def get_date_time_from_sec(sec, client=False):
     """
     Функция для получения даты и времени в строковом формате из секунд с рождества христова
     @param sec: количество секунд прошедших с рождества христова
+    @param client: клиентский формат даты, если True то d/m/Y
     @return: строка содержащую дату и время в формате Y-m-d H:M:S
     """
     days = sec // 86400
     sec = sec % 86400
-    return get_date_from_days_sec(days, sec)
+    return get_date_from_days_sec(days, sec, client)
 
 
 def get_sorted_list(items):
@@ -68,6 +75,22 @@ def date_time_to_sec(date_time):
 
 def str_to_sec(date_time_str):
     return date_time_to_sec(datetime.datetime.strptime(date_time_str, "%Y-%m-%d %H:%M:%S"))
+
+
+def date_client_to_server(date_str):
+    return '-'.join(list(reversed(date_str.split('.')))) if date_str else None
+
+
+def date_time_client_to_server(date_time_str):
+    return date_client_to_server(date_time_str.split(' ')[0]) + ' ' + date_time_str.split(' ')[1] if date_time_str else None
+
+
+def date_server_to_client(date_str):
+    return '.'.join(list(reversed(date_str.split('-')))) if date_str else None
+
+
+def date_time_server_to_client(date_time_str, sep=' '):
+    return date_server_to_client(date_time_str.split(' ')[0]) + sep + date_time_str.split(' ')[1] if date_time_str else None
 
 
 def intercept_sort_list(elements):
@@ -188,3 +211,34 @@ def io_get_rel_wrap(function):
     wrap.__doc__ = function.__doc__
     wrap.__name__ = function.__name__
     return wrap
+
+
+def parse_type(key_type, list_id=None, object_id=None):
+    """
+    Функция для преобразования формата типа
+    @param key_type: название типа в базе данных
+    @param list_id: идентификатор списка если есть
+    @param object_id: идентификатор типа искомого объекта если есть
+    @return: тип в формате {title, value}
+    """
+    if list_id:
+        return {'title': 'list', 'value': list_id}
+    elif key_type == 'search':
+        return {'title': 'search', 'value': object_id}
+    elif key_type == 'text_eng':
+        return {'title': 'text', 'value': 'eng'}
+    elif key_type == 'text_ru':
+        return {'title': 'text', 'value': 'ru'}
+    elif key_type == 'date':
+        return {'title': 'date', 'value': 'date'}
+    elif key_type == 'datetime':
+        return {'title': 'date', 'value': 'datetime'}
+    elif key_type == 'geometry':
+        return {'title': 'geometry', 'value': 'polygon'}
+    elif key_type == 'geometry_point':
+        return {'title': 'geometry', 'value': 'point'}
+    elif key_type == 'file_any':
+        return {'title': 'file', 'value': 'any'}
+    elif key_type == 'file_photo':
+        return {'title': 'file', 'value': 'photo'}
+    return {'title': key_type, 'value': None}

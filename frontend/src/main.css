@@ -16,6 +16,10 @@
   cursor: default;
 }
 
+.cursor-pointer {
+  cursor: pointer;
+}
+
 /* тень сплиттера */
 .split-shadow-effect {
   box-shadow: rgb(119 119 119) 6px 0 12px 0 !important;
