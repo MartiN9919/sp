@@ -297,7 +297,7 @@ def aj_geometry_fc(request):
 def aj_groups(request):
     """
     Функция для получения списка групп пользователей
-    @param request: GET зарпос без параметров
+    @param request: GET запрос без параметров
     @return: список групп пользователей
     """
     return DAT_OWNER.DUMP.get_groups_list()

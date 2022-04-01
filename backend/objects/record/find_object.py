@@ -20,7 +20,10 @@ def find_reliable_http(object_type, request, actual=False, group_id=0):
         request = ''
     synonyms_list = []
     if object_type == SYS_KEY_CONSTANT.FILE_ID:
-        synonyms_list = get_synonyms(request)
+        try:
+            synonyms_list = get_synonyms(request)
+        except TypeError:
+            synonyms_list = []
     request = request.split(' ') + synonyms_list
     request = [word.replace('-', '<<') for word in
                request]  # костыль, в последующем поменяить настройки мантикоры, что бы индексировала '-'

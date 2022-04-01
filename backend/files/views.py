@@ -55,6 +55,11 @@ def aj_download_condense_image(request):
 @request_log
 @request_get
 def aj_download_report(request):
+    """
+    Функция для загрузки пользовательского отчета
+    @param request: http запрос
+    @return: файл отчета
+    """
     file_id = request.path.split('download_report')[1]
     if not check_file_permission(int(file_id[1:]), request.user.id):
         return JsonResponse({}, status=403)
