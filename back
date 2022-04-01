@@ -1,5 +1,5 @@
 #!/bin/bash
-# chmod ugo+x back.sh
+# chmod ugo+x back
 
 cd backend
 source env/bin/activate
