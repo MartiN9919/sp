@@ -1,0 +1,7 @@
+#!/bin/bash
+# chmod ugo+x fdoc
+
+#rm -r -f backend/static/src
+#cp backend/templates/index_dev.html backend/templates/index.html
+cd frontend_doc
+npm run serve

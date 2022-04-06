@@ -1,5 +1,5 @@
 #!/bin/bash
-# chmod ugo+x stat
+# chmod ugo+x sfront
 
 #rm -r -f backend/static/src
 cd frontend
