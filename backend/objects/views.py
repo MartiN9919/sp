@@ -348,6 +348,7 @@ def aj_osm_fc(request):
 def aj_load_from_form(request):
     group_id = DAT_OWNER.DUMP.get_group(user_id=request.user.id)
     files = request.FILES
-    return add_data_from_form(request.user, group_id, files.popitem()[1][0])
+    meta = json.loads(request.POST['data'])
+    return add_data_from_form(request.user, group_id, files.popitem()[1][0], meta)
 
 
