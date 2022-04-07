@@ -91,6 +91,7 @@ export default class Graph {
   }
 
   removeNode (node) {
+    node.state.selected = false
     this.edges.filter(edge => edge.from === node.id || edge.to === node.id).map(edge => this.removeEdge(edge))
     const index = this.nodes.indexOf(node)
     if (index > -1) {
@@ -179,6 +180,7 @@ export default class Graph {
       const temp = {x: startPosition.x, y: startPosition.y}
       for(const node of this.nodes) {
         this.forceMoveNode(startPosition, node, edges)
+        console.log(startPosition);
       }
       const speed = Math.sqrt(Math.pow(Math.abs(temp.x - startPosition.x),2) + Math.pow(temp.y - startPosition.y,2))
       if(startSpeed === 0) {

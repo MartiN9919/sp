@@ -1,18 +1,18 @@
 <template>
   <div class="h-100 disable-optimize select-off" @mouseup.exact="clearSelectors" @contextmenu="menuShow">
     <screen id="screen" ref="screen" @selectNodes="setChoosingObjects" oncontextmenu="return false">
-      <graph-relation
-        v-for="edge in graphEdges"
+      <graph-edge
+        v-for="edge in edges"
         :key="edge.id"
         :edge="edge"
-        :nodes="graphNodes"
+        :nodes="nodes"
         @hover="hover"
         @unhover="unHover"
         @setChoosingRelated="setChoosingRelated"
         @ctxMenu="menuShow(...$event)"
       />
-      <graph-object
-        v-for="node in graphNodes"
+      <graph-node
+        v-for="node in nodes"
         :key="node.id"
         :node="node"
         :selected-objects="selectedNodes"
@@ -29,9 +29,9 @@
 
 <script>
 import Screen from '@/components/Graph/WorkSpace/lib/components/Screen'
-import GraphObject from "@/components/Graph/WorkSpace/graphObject"
-import GraphRelation from "@/components/Graph/WorkSpace/graphRelation"
-import bodyContextMenu from "@/components/Graph/WorkSpace/Modules/bodyContextMenu"
+import graphNode from "@/components/Graph/WorkSpace/graphNode"
+import graphEdge from "@/components/Graph/WorkSpace/graphEdge"
+import bodyContextMenu from "@/components/Graph/WorkSpace/Modules/CtxMenu/bodyContextMenu"
 import SearchObject from "@/components/Graph/WorkSpace/Modules/searchObject"
 const ContextMenuNested = () => import("@/components/WebsiteShell/UIMainComponents/contextMenuNested")
 import {Node, Edge} from '@/components/Graph/WorkSpace/lib/graph'
@@ -40,9 +40,15 @@ import {mapActions, mapGetters} from "vuex"
 export default {
   name: "graphArea",
   mixins: [bodyContextMenu],
-  components: {SearchObject, GraphRelation, GraphObject, Screen, ContextMenuNested},
+  components: {SearchObject, graphEdge, graphNode, Screen, ContextMenuNested},
   computed: {
-    ...mapGetters(['graphNodes', 'graphEdges', 'selectedNodes', 'hoverNodes', 'hoverEdges', 'globalDisplaySettingValue']),
+    ...mapGetters(['graphNodes', 'graphEdges', 'selectedNodes', 'hoverNodes', 'hoverEdges', 'timelinePoint']),
+    nodes: function () {
+      return this.timelinePoint ? this.timelinePoint.nodes : this.graphNodes
+    },
+    edges: function () {
+      return this.timelinePoint ? this.timelinePoint.edges : this.graphEdges
+    },
   },
   methods: {
     ...mapActions(['setScreen', 'clearSelectedNodes']),

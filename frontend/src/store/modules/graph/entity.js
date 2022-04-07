@@ -48,7 +48,7 @@ export default {
         }
       }
       dispatch('setNavigationDrawerStatus', true)
-      dispatch('setActiveTool', 'createObjectPage')
+      dispatch('setActiveTool', 'CreateObjectPage')
     },
     addEditableObjects({getters, commit}, objects) {
       commit('resetEditableObjects')
@@ -66,8 +66,9 @@ export default {
       commit('deleteNewParamEditableObject', playLoad)
     },
     async saveEditableObject({getters, dispatch}, positionObject) {
+      const editableObject = getters.editableObjects[positionObject]
       return await axios.post('objects/object/',
-        getters.editableObjects[positionObject].getRequestStructure(),
+        editableObject.getRequestStructure(),
         {headers: {
             'Content-Type': 'multipart/form-data',
             'set-cookie': getters.cookieTriggers(getters.editableObjects[positionObject].ids.object_id)
@@ -79,7 +80,13 @@ export default {
             dispatch('addEditableObjects', response)
           }
           else {
-            dispatch('addObjectToGraph', response).then(node => {
+            dispatch('addObjectToGraph', {
+              object: response,
+              action: {
+                name: editableObject.recId ? 'saveEditableObject' : 'saveObject',
+                payload: response.title
+              }
+            }).then(node => {
               dispatch('setEditableObject', node.entity)
             })
           }

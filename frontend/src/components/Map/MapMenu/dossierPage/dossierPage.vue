@@ -12,7 +12,7 @@
 
 <script>
 import Dossier from "@/components/WebsiteShell/CustomComponents/Dossier/dossier"
-import ControlMenu from "@/components/Graph/GraphMenu/createPageComponents/controlMenu"
+import ControlMenu from "@/components/Graph/GraphMenu/Create/Modules/ControlMenu"
 import {mapActions, mapGetters} from "vuex"
 import router from "@/router"
 
@@ -25,10 +25,12 @@ export default {
         {
           title: 'Добавить на граф',
           action: 'addToGraph',
+          disabled: true
         },
         {
           title: 'Изменить',
           action: 'change',
+          disabled: true
         },
       ]
   }),
@@ -41,7 +43,7 @@ export default {
       return this.selectedItem.recId
     },
     payload: function () {
-      return {object_id: this.objectId, rec_id: this.recId}
+      return {object_id: this.objectId, rec_id: this.recId, title: this.selectedItem.title}
     }
   },
   methods: {
@@ -50,7 +52,13 @@ export default {
       router.push({name: 'Graph'}).then(() => this.setEditableObject(this.payload))
     },
     toGraph() {
-      router.push({name: 'Graph'}).then(() => this.addObjectToGraph(this.payload))
+      router.push({name: 'Graph'}).then(() => this.addObjectToGraph({
+        object: this.payload,
+        action: {
+          name: 'addGeometryToGraph',
+          payload: this.payload.title
+        }
+      }))
     },
   },
   watch: {
