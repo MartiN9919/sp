@@ -175,7 +175,7 @@ def request_log(function):
                 str(request.META.get('REMOTE_PORT')) + '|' +
                 request.method + ':' +
                 request.path + '|' +
-                request.POST['data']
+                request.POST.get('data', '')
             )
         return function(request, *args, **kwargs)
 

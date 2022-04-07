@@ -117,4 +117,24 @@ def find_duplicate_objects(group_id, object_id, rec_id, params):
     return list(result)
 
 
+def find_same_objects(group_id, object_id, params):
+    nums = len(list(filter(lambda x: x['obj_id'] == object_id and x['need'], get_keys())))
+    new_params = {}
+    for param in params:
+        if get_key_by_id(param[0]).get('need', 0) == 1:
+            new_params[param[0]] = {'value': param[1], 'date': param[2]}
+    if nums == len(new_params) or len(new_params) == 0:
+        return []
+    else:
+        result = set(
+            find_key_value_http(object_id, list(new_params.keys())[0], list(new_params.values())[0]['value'], group_id))
+        if len(list(new_params.keys())) > 1:
+            for param in list(new_params.keys())[1:]:
+                result.intersection_update(set(find_key_value_http(object_id, param, new_params[param]['value'], group_id)))
+        return list(result)
+
+
+
+
+
 

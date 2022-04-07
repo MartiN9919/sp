@@ -197,8 +197,8 @@ export default class Graph {
   forceMoveNode(node, otherNode, edges) {
     let dx = otherNode.x - node.x
     let dy = otherNode.y - node.y
-    dx === 0 ? dx = Math.random() * 20 - 10 : dx
-    dy === 0 ? dy = Math.random() * 20 - 10 : dy
+    dx < 1 ? dx = Math.random() * 20 - 10 : dx
+    dy < 1 ? dy = Math.random() * 20 - 10 : dy
     let offset = Math.sqrt(dx * dx + dy * dy);
     if (edges.find(edge => edge === otherNode.id)
         || this.edges.find(edge => {

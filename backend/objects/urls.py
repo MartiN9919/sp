@@ -18,4 +18,5 @@ urlpatterns = [
     url(r'^geometry_fc', views.aj_geometry_fc),
     url(r'^osm_search', views.aj_osm_search),
     url(r'^osm_fc', views.aj_osm_fc),
+    url(r'^load', views.aj_load_from_form),
 ]
