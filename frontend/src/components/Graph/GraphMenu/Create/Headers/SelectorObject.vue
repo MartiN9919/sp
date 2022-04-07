@@ -23,6 +23,9 @@
         {{ item.title }}
       </v-list-item-title>
     </template>
+    <template v-slot:prepend-inner>
+      <slot name="prepend-inner"></slot>
+    </template>
   </v-select>
 </template>
 

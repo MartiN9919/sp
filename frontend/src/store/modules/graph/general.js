@@ -70,8 +70,8 @@ class BaseDbObject {
     this.params = baseObjects.map(p => new ParamObject(getter(p.id), params.find(n => n.id === p.id)?.values))
   }
 
-  addParam(id) {
-    this.params.find(param => param.baseParam.id === id).new_values.push(new ValueParam())
+  addParam(id, value=null, date=null) {
+    this.params.find(param => param.baseParam.id === id).new_values.push(new ValueParam(value, date))
   }
 
   deleteParam(id, param) {
@@ -137,6 +137,34 @@ export class DataBaseObject extends BaseDbObject {
     return `${this.base.id}-${this.recId}`
   }
 
+  static arrayRequest(objects, file) {
+    let formData = new FormData()
+    formData.append(file.name, file)
+    let request = []
+    objects.forEach(object => {
+      let params = []
+      object.params.forEach(param => {
+        param.new_values.forEach(newValue => {
+          if(param.baseParam.type.title.startsWith('file')){
+            params.push({id: param.baseParam.id, value: object.params.length.toString(), date: newValue.date})
+            formData.append((object.params.length - 1).toString(), newValue.value.file)
+          } else {
+            params.push({id: param.baseParam.id, value: newValue.value, date: newValue.date})
+          }
+        })
+      })
+      request.push({
+        rec_id: object.ids.rec_id,
+        object_id: object.ids.object_id,
+        id_str: object.id_str,
+        name: object.name,
+        params: params,
+      })
+    })
+    formData.append('data', JSON.stringify(request))
+    return formData
+  }
+
   getRequestStructure() {
     let formData = new FormData()
     let params = []
@@ -158,6 +186,14 @@ export class DataBaseObject extends BaseDbObject {
       params: params,
     }))
     return formData
+  }
+
+  addNewValues(params) {
+    params.forEach(param => {
+      param.values.forEach(v => {
+        super.addParam(param.id, v.value, v.date)
+      })
+    })
   }
 
   concatParams(concatObject) {
