@@ -22,6 +22,7 @@ backend/env/
 backend/static/
 backend/script/user_scripts
 backend/script/user_triggers
+backend_ml/env/
 venv/
 ENV/
 env.bak/

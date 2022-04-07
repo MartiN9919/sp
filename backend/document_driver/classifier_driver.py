@@ -25,7 +25,8 @@ def make_prop_sheet(sheet):
     Функция для формирования листа классификаторов
     @param sheet: пустой лист
     """
-    classifiers = [item for item in sorted(get_keys_blank(), key=lambda x: x['obj_id']) if not item['blocked_blank']]
+    classifiers = [item for item in sorted(sorted(get_keys_blank(), key=lambda x: x['title']),
+                                           key=lambda x: x['obj_id']) if not item['blocked_blank']]
     sheet.append(['obj_id', 'id', 'title', 'hint', 'type', 'list_id'])
     for row in [[item['obj_id'], item['id'], item['title'], item['hint'], item['type'], item['list_id']]
                 for item in classifiers]:
@@ -54,7 +55,8 @@ def make_relation_sheet(sheet):
                 'type': relation['type'],
             })
     all_relations += relations
-    all_relations = sorted(sorted(all_relations, key=lambda x: x['object_id_2']), key=lambda x: x['object_id_1'])
+    all_relations = sorted(sorted(sorted(all_relations, key=lambda x: x['title']), key=lambda x: x['object_id_2']),
+                           key=lambda x: x['object_id_1'])
     sheet.append(['object_id_1', 'object_id_2', 'id', 'title', 'hint', 'type', 'list_id'])
     for row in [[item['object_id_1'],
                  item['object_id_2'],
