@@ -224,7 +224,7 @@ def add_data_from_form(user, group_id, form, meta=None):
     for item in entities['obj']:
         if len(item.get('param', [])) == 0:
             continue
-        meta_item = [elem for elem in meta if elem['object_id'] == item['object_id'] and elem['name'] == item['name']]
+        meta_item = [elem for elem in meta if elem['object_id'] == item['id'] and elem['name'] == item['name']]
         if len(meta_item) > 0:
             objects.append({**meta_item[0], 'force': True})
         else:
@@ -242,7 +242,7 @@ def add_data_from_form(user, group_id, form, meta=None):
         duplicates = find_duplicate_objects(group_id, item.get('object_id'), item.get('rec_id'),
                                             [(param['id'], param['value'], param['date']) for param in item['params']])
         if len(duplicates) > 0:
-            final_objects.append(get_object_record_by_id_http(item['object_id'], duplicates[0], group_id))
+            final_objects.append(get_object_record_by_id_http(item['object_id'], duplicates[0], group_id)) # слить параметры основного объекта с добавляемым
             continue
         same_objects = find_same_objects(group_id, item['object_id'], [(param['id'], param['value'], param['date'])
                                                                        for param in item['params']])
