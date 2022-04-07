@@ -4,7 +4,7 @@ export default {
   methods: {
     scrollObject(object, event) {
       const minSize = 300
-      const maxSize = 2000
+      const maxSize = 2100
       const coefficient = 1.5
       if(event.deltaY < 0 && object.size * coefficient <= maxSize)
         this.changeObjectForScrolling(object, coefficient)
@@ -12,8 +12,7 @@ export default {
         this.changeObjectForScrolling(object, 1/ coefficient)
     },
     changeObjectForScrolling(object, coefficient) {
-      const bodySize = object.size / 3
-      const offset = (bodySize - bodySize * coefficient) / 2
+      const offset = (object.size - object.size * coefficient) / 6
       object.x += offset
       object.y += offset
       object.size *= coefficient

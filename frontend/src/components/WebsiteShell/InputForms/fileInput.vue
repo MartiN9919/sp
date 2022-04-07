@@ -41,8 +41,8 @@ export default {
   },
   computed: {
     bodyInputClasses: function () { return this.$attrs.hasOwnProperty('label') ? 'pt-2' : '' },
-    accept: function () { return this.$attrs['type-value'] === 'file_photo' ? 'image/*' : '' },
-    icon: function () { return this.$attrs['type-value'] === 'file_photo' ? 'mdi-file-image-outline' : 'mdi-file-outline' },
+    accept: function () { return this.$attrs['type-load'] === 'photo' ? 'image/*' : '' },
+    icon: function () { return this.$attrs['type-load'] === 'photo' ? 'mdi-file-image-outline' : 'mdi-file-outline' },
     value: {
       get: function () { return this.inputString?.file },
       set: function (value) {

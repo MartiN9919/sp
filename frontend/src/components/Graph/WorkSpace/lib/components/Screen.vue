@@ -1,10 +1,10 @@
 <template>
   <svg class="screen" ref="screen" @mousedown.ctrl="startDrawFrame">
     <g id="screen">
-      <slot>
-      </slot>
+      <slot/>
     </g>
-    <rect v-show="frame.active" :x="frame.x" :y="frame.y" :width="frame.width" :height="frame.height" style="fill:rgba(0,0,255,0.1);"/>
+    <rect v-bind="disableFrame" class="disable-frame" @mouseenter.stop="" @mouseleave.stop=""/>
+    <rect v-show="frame.active" :x="frame.x" :y="frame.y" :width="frame.width" :height="frame.height" class="frame"/>
   </svg>
 </template>
 
@@ -22,6 +22,22 @@ export default {
       panzoom: null,
       frame: {active: false}
     }
+  },
+  computed: {
+    disableFrame: function () {
+      if(this.frame.active) {
+        const offset = 100 / this.panzoom.getZoom()
+        return {
+          x: this.frame.x - offset,
+          y: this.frame.y - offset,
+          width: this.frame.width + offset*2,
+          height: this.frame.height + offset*2
+        }
+      }
+      else {
+        return {x:0, y: 0, width: 0, height: 0}
+      }
+    },
   },
   mounted () {
     this.panzoom = SvgPanZoom(this.$refs.screen, Object.assign({
@@ -48,7 +64,7 @@ export default {
   },
   methods: {
     startDrawFrame(event){
-      let position = this.getScreenPosition({x: event.offsetX, y: event.offsetY})
+      let position = this.getScreenPosition(event.offsetX, event.offsetY)
       this.frame = {x0:position.x, y0: position.y, xn: position.x, yn: position.y,
         x:position.x, y: position.y, width: 0, height: 0, active: true}
       document.addEventListener('mousemove', this.drawFrame)
@@ -106,17 +122,17 @@ export default {
       this.panzoom.zoom(scale)
       this.panzoom.pan({ x, y })
     },
-    zoomNode (node) {
+    zoomNode (node, scale=null) {
       const screen = this.$refs.screen
-      const marginX = screen.clientWidth / 2 - node.width / 2
-      const marginY = screen.clientHeight / 2 - node.height / 2
+      const marginX = screen.clientWidth / 2 - node.size / 6
+      const marginY = screen.clientHeight / 2 - node.size / 6
 
       this.zoomRect({
         left: node.x - marginX,
-        right: node.x + node.width + marginX,
+        right: node.x + node.size / 3 + marginX,
         top: node.y - marginY,
-        bottom: node.y + node.height + marginY
-      })
+        bottom: node.y + node.size / 3 + marginY
+      }, { scale })
     },
     /**
      * centers the view and zoom on a group nodes
@@ -154,22 +170,22 @@ export default {
       const y = this.$el.clientHeight / 2 - (node.y + node.height / 2) * zoom + offsetY
       this.panzoom.pan({ x, y })
     },
-    getStartPosition() {
+    getScreenPosition(x=this.$el.clientWidth, y=this.$el.clientHeight) {
       let position = {x: 0, y: 0}
       const zoom = this.panzoom.getZoom()
       const pan = this.panzoom.getPan()
-      position.x = (this.$el.clientWidth / 2 - pan.x) / zoom + Math.random() * 600 - 300
-      position.y = (this.$el.clientHeight / 2 - pan.y) / zoom + Math.random() * 600 - 300
+      position.x = (x - pan.x) / zoom
+      position.y = (y - pan.y) / zoom
       return position
     },
-    getScreenPosition(eventPosition) {
-      let position = {x: 0, y: 0}
+    visibleArea() {
       const zoom = this.panzoom.getZoom()
-      const pan = this.panzoom.getPan()
-      position.x = (eventPosition.x - pan.x) / zoom
-      position.y = (eventPosition.y - pan.y) / zoom
+      let position = this.getScreenPosition()
+      position.width = this.$el.clientWidth / zoom
+      position.height = this.$el.clientHeight / zoom
       return position
     },
+
   },
 }
 </script>
@@ -178,5 +194,12 @@ export default {
 .screen {
   width: 100%;
   height: 100%;
+}
+.frame {
+  fill:rgba(0, 0, 255, 0.1);
+}
+
+.disable-frame {
+  fill: rgba(0, 0, 0, 0)
 }
 </style>

@@ -2,7 +2,7 @@ from data_base_driver.additional_functions import intercept_sort_list
 from data_base_driver.constants.const_key import SYS_KEY_CONSTANT
 from data_base_driver.input_output.input_output import io_get_obj
 from data_base_driver.sys_key.get_key_dump import get_key_by_id
-from objects.record.get_record import get_object_record_by_id_http, get_keys_by_object
+from objects.record.get_record import get_object_record_by_id_http, get_keys
 from synonyms_manager.get_synonyms import get_synonyms
 
 
@@ -20,7 +20,10 @@ def find_reliable_http(object_type, request, actual=False, group_id=0):
         request = ''
     synonyms_list = []
     if object_type == SYS_KEY_CONSTANT.FILE_ID:
-        synonyms_list = get_synonyms(request)
+        try:
+            synonyms_list = get_synonyms(request)
+        except TypeError:
+            synonyms_list = []
     request = request.split(' ') + synonyms_list
     request = [word.replace('-', '<<') for word in
                request]  # костыль, в последующем поменяить настройки мантикоры, что бы индексировала '-'
@@ -96,7 +99,7 @@ def find_duplicate_objects(group_id, object_id, rec_id, params):
     @param params: вносимые/изменяемые параметры
     @return: список идентификаторов объектов с похожими значениями
     """
-    nums = len(list(filter(lambda x: x['obj_id'] == object_id and x['need'], get_keys_by_object())))
+    nums = len(list(filter(lambda x: x['obj_id'] == object_id and x['need'], get_keys())))
     old_object = get_object_record_by_id_http(object_id, rec_id, group_id) if rec_id else {}
     needed_old_params = [param for param in old_object.get('params', []) if
                          get_key_by_id(param['id']).get('need', 0) == 1]
@@ -112,6 +115,26 @@ def find_duplicate_objects(group_id, object_id, rec_id, params):
     for param in list(new_params.keys())[1:]:
         result.intersection_update(set(find_key_value_http(object_id, param, new_params[param]['value'], group_id)))
     return list(result)
+
+
+def find_same_objects(group_id, object_id, params):
+    nums = len(list(filter(lambda x: x['obj_id'] == object_id and x['need'], get_keys())))
+    new_params = {}
+    for param in params:
+        if get_key_by_id(param[0]).get('need', 0) == 1:
+            new_params[param[0]] = {'value': param[1], 'date': param[2]}
+    if nums == len(new_params) or len(new_params) == 0:
+        return []
+    else:
+        result = set(
+            find_key_value_http(object_id, list(new_params.keys())[0], list(new_params.values())[0]['value'], group_id))
+        if len(list(new_params.keys())) > 1:
+            for param in list(new_params.keys())[1:]:
+                result.intersection_update(set(find_key_value_http(object_id, param, new_params[param]['value'], group_id)))
+        return list(result)
+
+
+
 
 
 

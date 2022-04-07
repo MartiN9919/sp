@@ -77,9 +77,18 @@ export default {
   data: () => ({
     string: '',
     isValid: true,
-    formProps: null,
   }),
   computed: {
+    formProps: function () {
+      switch (this.$attrs['type-load']) {
+        case 'date':
+          return dateProps
+        case 'datetime':
+          return dateTimeProps
+        default:
+          return dateTimeProps
+      }
+    },
     classes: function () { return this.$attrs.hasOwnProperty('label') ? '' : 'pt-1' },
     placeholder: function () { return this.$attrs.placeholder || this.formProps.basePlaceholder },
     rules : function () {
@@ -106,17 +115,6 @@ export default {
   },
   created() {
     this.value = this.inputString
-    switch (this.$attrs['type-value']) {
-      case 'date':
-        this.formProps = dateProps
-        break
-      case 'datetime':
-        this.formProps = dateTimeProps
-        break
-      default:
-        this.formProps = dateTimeProps
-        break
-    }
   }
 }
 </script>

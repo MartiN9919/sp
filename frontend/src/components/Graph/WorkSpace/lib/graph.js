@@ -16,15 +16,6 @@ export default class Graph {
     this.updateNode(node, { x: pos.x, y: pos.y })
   }
 
-  // refs
-  // https://gojs.net
-
-  // TODO
-  // dagLoad - set [nodes] and [edges] from dag
-  // dagBuild - builds and saves dag info into nodes
-  // dagBuildEdges - delete all edges and build them from Dag
-  // dagSetParent - change dag parent (string or array[string] => array[string])
-
   graphNodes ({ nodes, edges, type = 'basic', dir = 'right', spacing = 40 } = {}) {
     nodes = nodes || this.nodes
     edges = edges || this.edges
@@ -89,20 +80,8 @@ export default class Graph {
     while (this.nodes.length) { this.nodes.pop() }
   }
 
-  createNode (fields = {}) {
-    if (typeof fields === 'string') {
-      fields = { id: fields } // support a single id string or an object as params
-    }
-    const node = Object.assign({
-      id: uuid(),
-      x: 0,
-      y: 0,
-      width: 50,
-      height: 50,
-    }, fields)
-
+  createNode (node) {
     this.nodes.push(node)
-    return node
   }
 
   updateNode (node, fields = {}) {
@@ -112,6 +91,7 @@ export default class Graph {
   }
 
   removeNode (node) {
+    node.state.selected = false
     this.edges.filter(edge => edge.from === node.id || edge.to === node.id).map(edge => this.removeEdge(edge))
     const index = this.nodes.indexOf(node)
     if (index > -1) {
@@ -120,32 +100,8 @@ export default class Graph {
     return index
   }
 
-  createEdge (from, to, fields = {}) {
-    if (arguments.length === 1) {
-      // support calling with single argument
-      fields = arguments[0]
-      from = fields.from
-      to = fields.to
-    } else {
-      // support passing node objects instead of ids
-      if (typeof from === 'object') from = from.id
-      if (typeof to === 'object') to = to.id
-    }
-    if (!from) throw new Error('orig required')
-    if (!to) throw new Error('dest required')
-
-    const edge = Object.assign({
-      id: fields.id || `${from}@${to}`,
-      from,
-      to,
-      fromAnchor: { x: '50%', y: '50%' },
-      toAnchor: { x: '50%', y: '50%' },
-      type: 'linear',
-      pathd: '', // reactive path
-    }, fields)
-
+  createEdge (edge) {
     this.edges.push(edge)
-    return edge
   }
 
   updateEdge (edge, fields) {
@@ -175,25 +131,9 @@ export default class Graph {
             // distance(offset) between two nodes
             let x0 = node.x
             let y0 = node.y
-            let dx = otherNode.x - node.x;
-            let dy = otherNode.y - node.y;
-            let offset = Math.sqrt(dx * dx + dy * dy);
-            // if nodes is linked
-            if (this.edges.find(edge => {
-              return (edge.to === node.id && edge.from === otherNode.id) ||
-                  (edge.from === node.id && edge.to === otherNode.id)
-            })) {
-              const springForce = 0.25 * Math.log2(offset / 750)
-              node.x += dx * springForce
-              node.y += dy * springForce
-            }
-            // console.log(node)
-            let upCoefficient = Math.pow(node.width/100 * otherNode.width/100, 1)
-            const upForce = upCoefficient * 10000 / Math.pow(offset, 2)
-            node.x -= dx * upForce
-            node.y -= dy * upForce
-            dx = node.x - x0
-            dy = node.y - y0
+            this.forceMoveNode(node, otherNode, [])
+            let dx = node.x - x0
+            let dy = node.y - y0
             speed += Math.sqrt(dx * dx + dy * dy) / 100
             speedNums++
           }
@@ -220,13 +160,65 @@ export default class Graph {
       }
     }, 0)
   }
-  reorderGraph(x, y, nodes=this.nodes) {
+  reorderGraph(x, y, nodes) {
     store.commit('changeLoadStatus', true)
     let tempNodes = []
     for(let node of nodes) {
-      tempNodes.push({id: node.id, x: node.x, y: node.y, width: node.width})
+      tempNodes.push({id: node.id, x: node.x, y: node.y, size: node.size})
     }
     this.reorderStep(0, 200, tempNodes, 10000, x, y)
+  }
+  getNewNodePosition(edges, position) {
+    let startPosition = {size: 300}
+    if(edges.length === 0){
+      return Object.assign(startPosition, this.getStartPosition(position))
+    }
+    startPosition = Object.assign(this.getNodesCenter(this.nodes.filter(n => edges.find(e => e === n.id))), startPosition)
+    startPosition.id = ''
+    let startSpeed = 0
+    for(let i=0; i < 30; i++) {
+      const temp = {x: startPosition.x, y: startPosition.y}
+      for(const node of this.nodes) {
+        this.forceMoveNode(startPosition, node, edges)
+        console.log(startPosition);
+      }
+      const speed = Math.sqrt(Math.pow(Math.abs(temp.x - startPosition.x),2) + Math.pow(temp.y - startPosition.y,2))
+      if(startSpeed === 0) {
+        startSpeed = speed
+      }
+      else {
+        if (speed / startSpeed < 0.05) {
+          break
+        }
+      }
+    }
+    return {x: startPosition.x, y: startPosition.y, size: startPosition.size}
+  }
+  forceMoveNode(node, otherNode, edges) {
+    let dx = otherNode.x - node.x
+    let dy = otherNode.y - node.y
+    dx < 1 ? dx = Math.random() * 20 - 10 : dx
+    dy < 1 ? dy = Math.random() * 20 - 10 : dy
+    let offset = Math.sqrt(dx * dx + dy * dy);
+    if (edges.find(edge => edge === otherNode.id)
+        || this.edges.find(edge => {
+              return (edge.to === node.id && edge.from === otherNode.id) ||
+                  (edge.from === node.id && edge.to === otherNode.id)
+            })) {
+      const springForce = 0.25 * Math.log2(offset / 500)
+      node.x += dx * springForce
+      node.y += dy * springForce
+    }
+    const upCoefficient = Math.pow(node.size/300 * otherNode.size/300, 1)
+    const upForce = upCoefficient * 7000 / Math.pow(offset, 2)
+    node.x -= dx * upForce
+    node.y -= dy * upForce
+  }
+  getStartPosition(position) {
+    return {
+      x: position.x - Math.random() * position.width,
+      y: position.y - Math.random() * position.height,
+    }
   }
   getNodesCenter(nodes){
     let x = 0
@@ -236,5 +228,91 @@ export default class Graph {
       y += node.y
     }
     return {x: x / nodes.length, y: y / nodes.length}
+  }
+}
+
+class GraphElementStateBase {
+  constructor() {
+    this.added = false
+    this.hover = false
+  }
+}
+
+class GraphObjectState extends GraphElementStateBase {
+  constructor() {
+    super()
+    this.selected = false
+  }
+}
+
+class GraphRelationState extends GraphElementStateBase {
+  constructor() {
+    super()
+  }
+}
+
+class GraphElementSettingsBase {
+  constructor() {
+    this.showTooltip = true
+    this.showCreateDate = true
+  }
+}
+
+class GraphObjectSettings extends GraphElementSettingsBase{
+  constructor() {
+    super()
+    this.showTitle = true
+    this.showTriggers = true
+  }
+}
+
+class GraphRelationSettings extends GraphElementSettingsBase{
+  constructor() {
+    super()
+  }
+}
+
+export class Node {
+  constructor(entity) {
+    this.x = null
+    this.y = null
+    this.size = null
+    this.entity = entity
+    this.state = new GraphObjectState()
+    this.settings = new GraphObjectSettings()
+  }
+
+  get id() {
+    return this.entity.id
+  }
+
+  get ids() {
+    return this.entity.ids
+  }
+}
+
+export class Edge {
+  constructor(entity) {
+    this.size = 300
+    this.pathd = ''
+    this.entity = entity
+    this.state = new GraphRelationState()
+    this.settings = new GraphRelationSettings()
+  }
+
+  get from() {
+    return this.entity.o1.id
+  }
+
+  get to() {
+    return this.entity.o2.id
+  }
+
+  get id() {
+    return this.entity.id
+  }
+
+  get ids() {
+    return this.entity.ids
   }
 }

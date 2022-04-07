@@ -74,7 +74,7 @@ export default {
   },
   computed: {
     bodyInputClasses: function () { return this.$attrs.hasOwnProperty('label') ? '' : 'pt-0' },
-    isPoint: function () { return this.$attrs['type-value'] === 'geometry_point' },
+    isPoint: function () { return this.$attrs['type-load'] === 'point' },
     featureCollection: {
       get: function () {
         if(this.inputString){

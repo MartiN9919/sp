@@ -158,7 +158,7 @@ def add_relation_http(rec_id, date_time, key_id, obj_id_1, rec_id_1, obj_id_2, r
                 "document_id": str(document_id)
             }})
     response = requests.post(FullTextSearch.INSERT_URL, data=data)
-    if response.status_code != 201:
+    if response.status_code not in [200, 201]:
         return False
     else:
         return True

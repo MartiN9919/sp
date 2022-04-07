@@ -18,14 +18,13 @@ def add_rel(group_id, object_1_id, rec_1_id, object_2_id, rec_2_id, params, doc_
     @param params: список словарей содержащих информацию о связях в формате [{id,val,date},...,{}]
     @param doc_rec_id: идентификатор документа описывающего связь, если нет None
     """
-    temp_result_list = []
     if object_1_id > object_2_id:
         temp_object, temp_rec = object_1_id, rec_1_id
         object_1_id, rec_1_id = object_2_id, rec_2_id
         object_2_id, rec_2_id = temp_object, temp_rec
     for param in params:
         date_time_str = date_time_client_to_server(
-            param.get('date', datetime.datetime.now().strftime("%Y-%m-%d %H:%M")) + ':00')
+            param.get('date', datetime.datetime.now().strftime("%d.%m.%Y %H:%M")) + ':00')
         key_id = param.get('id')
         key = get_key_by_id(key_id)
         if key['obj_id'] != 1:
@@ -35,24 +34,9 @@ def add_rel(group_id, object_1_id, rec_1_id, object_2_id, rec_2_id, params, doc_
         data = [['key_id', key_id], [object_1_id, rec_1_id], [object_2_id, rec_2_id],
                 [DAT_REL.DAT, date_time_str], [DAT_REL.VAL, param.get('value', '')], [DAT_REL.DOCUMENT_ID, doc_rec_id]]
         result = io_set(group_id=group_id, obj=1, data=data)
-        if result[0]:
-            temp_result_list.append(io_get_rel(group_id, [], [], [], [], {}, False, result[1])[0])
-    result_list = []
-    for temp in temp_result_list:
-        exist_relation = [item for item in result_list if item['id'] == int(temp['key_id'])]
-        if len(exist_relation) > 0:
-            exist_relation[0]['values'].append({'val': temp['val'], 'date': get_date_time_from_sec(temp['sec'])})
-        else:
-            result_list.append({'id': int(temp['key_id']), 'values': [{'val': temp['val'],
-                                                                       'date': get_date_time_from_sec(temp['sec'])}]})
-    return {
-        'object_id_1': object_1_id,
-        'rec_id_1': rec_1_id,
-        'object_id_2': object_2_id,
-        'rec_id_2': rec_2_id,
-        'params': get_object_relation(group_id, object_1_id, rec_1_id, [{'object_id': object_2_id, 'rec_id': rec_2_id}])
-        [0]['relations']
-    }
+        if not result[0]:
+            raise Exception(1, 'Ошибка добавления связи: ' + result[1])
+    return {}
 
 
 def add_rel_by_other_object(group_id, object_id, rec_id, other_object_id, other_rec_id):

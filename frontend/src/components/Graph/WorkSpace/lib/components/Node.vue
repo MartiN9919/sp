@@ -1,16 +1,15 @@
 <template>
   <foreignObject
-      :id="data.id"
-      :x="data.x"
-      :y="data.y"
-      :width="1"
-      :height="1"
-      overflow="visible"
-      @mousedown="onMousedown"
-    >
-      <div class="content" ref="content" oncontextmenu="return false">
-        <slot>{{ data.id }}</slot>
-      </div>
+    :x="data.x"
+    :y="data.y"
+    :width="1"
+    :height="1"
+    overflow="visible"
+    @mousedown="onMousedown"
+  >
+    <div class="content" ref="content">
+      <slot/>
+    </div>
   </foreignObject>
 </template>
 
@@ -35,8 +34,10 @@ export default {
   },
   methods: {
     fitContent () {
-      this.data.width = this.$refs.content.clientWidth
-      this.data.height = this.$refs.content.clientHeight
+      if(this.data.hasOwnProperty('width') && this.data.hasOwnProperty('height')) {
+        this.data.width = this.$refs.content.clientWidth
+        this.data.height = this.$refs.content.clientHeight
+      }
     },
     setDrag({x, y}) {
       this.inSelected
@@ -49,7 +50,7 @@ export default {
     },
     onMousedown (e) {
       e.stopPropagation()
-      this.startDrag(e);
+      this.startDrag(e)
     },
   },
   watch: {

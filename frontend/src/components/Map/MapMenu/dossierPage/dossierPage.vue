@@ -4,7 +4,7 @@
       <div class="params">
         <dossier :params="selectedItem.params" :rec-id="recId" :object-id="objectId" :title="selectedItem.title"/>
       </div>
-      <control-menu :buttons="controlButtons" @change="editObject" @addToGraph="addToGraph" class="control"></control-menu>
+      <control-menu :buttons="controlButtons" @change="editObject" @addToGraph="toGraph" class="control"></control-menu>
     </div>
     <div v-else class="text-h5 text-uppercase text-center grey--text pt-6">Объект не выбран</div>
   </div>
@@ -12,8 +12,7 @@
 
 <script>
 import Dossier from "@/components/WebsiteShell/CustomComponents/Dossier/dossier"
-import ControlMenu from "@/components/Graph/GraphMenu/createPageComponents/controlMenu"
-import {DataBaseObject} from "@/store/modules/graph/graphMenu/recordEditor"
+import ControlMenu from "@/components/Graph/GraphMenu/Create/Modules/ControlMenu"
 import {mapActions, mapGetters} from "vuex"
 import router from "@/router"
 
@@ -26,29 +25,40 @@ export default {
         {
           title: 'Добавить на граф',
           action: 'addToGraph',
+          disabled: true
         },
         {
           title: 'Изменить',
           action: 'change',
+          disabled: true
         },
       ]
   }),
   computed: {
     ...mapGetters(['SCRIPT_GET_ITEM_SEL']),
     objectId: function () {
-      return this.selectedItem.object.id
+      return this.selectedItem.base.id
     },
     recId: function () {
       return this.selectedItem.recId
+    },
+    payload: function () {
+      return {object_id: this.objectId, rec_id: this.recId, title: this.selectedItem.title}
     }
   },
   methods: {
-    ...mapActions(['getObjectFromServer', 'setEditableObject', 'addObjectToGraph']),
+    ...mapActions(['getObject', 'setEditableObject', 'addObjectToGraph']),
     editObject() {
-      router.push({name: 'Graph'}).then(() => this.setEditableObject({objectId: this.objectId, recId: this.recId}))
+      router.push({name: 'Graph'}).then(() => this.setEditableObject(this.payload))
     },
-    addToGraph() {
-      router.push({name: 'Graph'}).then(() => this.addObjectToGraph({objectId: this.objectId, recId: this.recId}))
+    toGraph() {
+      router.push({name: 'Graph'}).then(() => this.addObjectToGraph({
+        object: this.payload,
+        action: {
+          name: 'addGeometryToGraph',
+          payload: this.payload.title
+        }
+      }))
     },
   },
   watch: {
@@ -56,8 +66,8 @@ export default {
       handler: function (v) {
         let value = JSON.parse(v)
         if (value.length)
-          this.getObjectFromServer({params: {record_id: value[0].rec_id, object_id: value[0].obj_id}})
-            .then(r => this.selectedItem = new DataBaseObject(r))
+          this.getObject({rec_id: value[0].rec_id, object_id: value[0].obj_id})
+            .then(r => this.selectedItem = r)
         else this.selectedItem = null
       },
       immediate: true

@@ -53,8 +53,9 @@ def get_rel_by_object(group_id, object, id, parents):
                 old_relation[0]['relations'].append({'id': relation['rel_type'],
                                                      'values': [{'value': get_item_list_value(int(relation['val'])) if
                                                      relation['val'] != 0 else '',
+                                                                 'doc': doc,
                                                                  'date': get_date_time_from_sec(relation['sec'])[:-3]}],
-                                                     'doc': doc})
+                                                     })
         else:
             relations.append(
                 {'object_id': relation['object_id'], 'rec_id': relation['rec_id'],
@@ -391,13 +392,12 @@ def search_relations(group_id, request):
         parent['rels'] = []
         temp = search_relations_recursive(group_id, request, parent, parent)['rels']
         result = get_unique_objects(temp)
-        result.append({'object_id': request.get('object_id'), 'rec_id': request.get('rec_id')})
         return [item for item in result if item['object_id'] != 1]
 
 
 def get_relations_list():
     """
-    Функция для получения списка возможных связей по типу связываемых объектов
+    Функция для получения списка связей
     @param object1: имя или id первого объекта
     @param object2: имя или id второго объекта
     @return: список в формате [{id,title,hint,list},...,{}]
@@ -411,5 +411,6 @@ def get_relations_list():
         else:
             relation_type = {'title': 'unknow', 'value': None}
         result.append({'id': item['id'], 'title': item['title'], 'hint': item['hint'], 'list': list_id,
-                       'type': relation_type, 'object_id_1': item['rel_obj_1_id'], 'object_id_2': item['rel_obj_2_id']})
+                       'type': relation_type, 'object_id_1': item['rel_obj_1_id'], 'object_id_2': item['rel_obj_2_id'],
+                       'blocked_blank': item['blocked_blank']})
     return result
