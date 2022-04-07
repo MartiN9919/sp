@@ -392,7 +392,6 @@ def search_relations(group_id, request):
         parent['rels'] = []
         temp = search_relations_recursive(group_id, request, parent, parent)['rels']
         result = get_unique_objects(temp)
-        result.append({'object_id': request.get('object_id'), 'rec_id': request.get('rec_id')})
         return [item for item in result if item['object_id'] != 1]
 
 

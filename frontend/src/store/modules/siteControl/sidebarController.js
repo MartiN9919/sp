@@ -20,12 +20,12 @@ export default {
         { name: 'dossierPage', icon: 'mdi-text-box-multiple-outline', description: 'Описание объекта' },
       ],
       Graph: [
-        { name: 'searchPage', icon: 'mdi-cloud-search-outline', description: 'Поиск по объектам' },
-        { name: 'searchRelationPage', icon: 'mdi-vector-link', description: 'Поиск по связям' },
-        { name: 'createObjectPage', icon: 'mdi-text-box-plus-outline', description: 'Создание объекта' },
-        { name: 'createRelationPage', icon: 'mdi-link-variant-plus', description: 'Создание связи' },
-        { name: 'timeLinePage', icon: 'mdi-timeline-clock-outline', description: 'История работы с графом' },
-        { name: 'settingsPage', icon: 'mdi-cog-outline', description: 'Общие настройки графа' },
+        { name: 'SearchObjectPage', icon: 'mdi-cloud-search-outline', description: 'Поиск по объектам' },
+        { name: 'SearchRelationPage', icon: 'mdi-vector-link', description: 'Поиск по связям' },
+        { name: 'CreateObjectPage', icon: 'mdi-text-box-plus-outline', description: 'Создание объекта' },
+        { name: 'CreateRelationPage', icon: 'mdi-link-variant-plus', description: 'Создание связи' },
+        { name: 'TimeLinePage', icon: 'mdi-timeline-clock-outline', description: 'История работы с графом' },
+        { name: 'SettingsPage', icon: 'mdi-cog-outline', description: 'Общие настройки графа' },
       ]
     },
     appbarTabs: [

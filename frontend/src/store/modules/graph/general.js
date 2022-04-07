@@ -50,7 +50,13 @@ export default {
         }
       return await axios.get('objects/objects_relation/', config)
         .then(response => {
-          dispatch('addObjectsToGraph', response.data)
+          dispatch('addObjectsToGraph', {
+            payload: response.data,
+            action: {
+              name: 'getRelationsBtwObjects',
+              payload: `${objects[0].entity.title} и ${objects[1].entity.title}`
+            }
+          })
           return Promise.resolve()
         })
         .catch(e => { return Promise.reject(e) })

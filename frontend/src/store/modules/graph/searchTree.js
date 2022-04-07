@@ -74,7 +74,10 @@ export default {
     },
     findRelationsOnServer({ dispatch, state }, config={}) {
       return axios.post('objects/search_relations', state.searchRelationTreeGraph.getTree(), config)
-        .then(response => dispatch('addObjectsToGraph', response.data))
+        .then(response => dispatch('addObjectsToGraph', {
+          payload: response.data,
+          action: {name: 'findRelationsOnServer', payload: state.searchRelationTreeGraph.title}
+        }))
         .catch(error => {  })
     },
     simpleFindObject({state}, {objectId, searchRequest}) {
@@ -138,7 +141,7 @@ class SearchTreeItem extends SearchTreeRootItem {
   getInformation() {
     let message = ''
     if (this.rel) message += this.rel.title
-    if (this.relValue) message += `('${store.getters.baseList(this.rel.type.value).values.find(i => i.id === this.relValue).value}')`
+    if (this.relValue) message += ` ('${store.getters.baseList(this.rel.type.value).values.find(i => i.id === this.relValue).value}')`
     if (this.relDateTimeStart) message += ` c ${this.relDateTimeStart}`
     if (this.relDateTimeEnd) message += ` по ${this.relDateTimeEnd}`
     return message
