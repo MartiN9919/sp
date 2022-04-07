@@ -1,25 +1,31 @@
 <template>
   <create-page-body :editable="!editableObjects" info="Выберите тип объекта для создания">
     <template v-slot:header>
-      <selector-object v-model="selectedEditableObject" :items="baseObjects" class="selector-object"/>
+      <selector-object v-model="selectedEditableObject" :items="baseObjects" class="selector-object">
+        <template v-slot:prepend-inner>
+          <v-btn @click.stop="getFormFile" icon>
+            <v-icon>mdi-download</v-icon>
+          </v-btn>
+        </template>
+      </selector-object>
     </template>
     <template v-slot:body>
       <v-tabs id="tabs" v-model="activeTab" :color="sliderColor" grow show-arrows center-active :class="tabClasses">
         <v-tab v-for="(item, key) in editableObjects" :key="key">
           <v-icon :color="tabColor(key)">{{ item.base.icon }}</v-icon>
           <span :style="{color: tabColor(key)}">
-            {{key === 0 ? 'Исходный объект' : 'Схожий объект'}}
-            {{key + 1}}
+            {{ key === 0 ? 'Исходный объект' : 'Схожий объект' }}
+            {{ key + 1 }}
           </span>
         </v-tab>
         <v-tab-item v-for="(object, key) in editableObjects" :key="key" eager>
           <v-form :ref="'form' + key" v-model="valid" onSubmit="return false;">
             <record-area
-              :params="object.params"
-              :title="object.title"
-              :settings="{objectId: object.ids.object_id, recId: object.ids.rec_id}"
-              @createNewParam="createNewParam"
-              @deleteNewParam="deleteNewParam"
+                :params="object.params"
+                :title="object.title"
+                :settings="{objectId: object.ids.object_id, recId: object.ids.rec_id}"
+                @createNewParam="createNewParam"
+                @deleteNewParam="deleteNewParam"
             />
           </v-form>
         </v-tab-item>
@@ -37,6 +43,7 @@ import SelectorObject from "@/components/Graph/GraphMenu/Create/Headers/Selector
 import RecordArea from "@/components/Graph/GraphMenu/Create/Record/RecordArea"
 import ControlMenu from "@/components/Graph/GraphMenu/Create/Modules/ControlMenu"
 import {mapActions, mapGetters} from "vuex"
+import {DataBaseObject} from '@/store/modules/graph/general'
 
 export default {
   name: "CreateObjectPage",
@@ -46,52 +53,69 @@ export default {
     activeTab: 0,
   }),
   computed: {
-    ...mapGetters(['baseObjects', 'editableObjects']),
-    sliderColor: function () { return this.activeTab ? '#FF0000' : '#009688' },
+    ...mapGetters(['baseObjects', 'editableObjects', 'turnConflicts']),
+    sliderColor: function () {
+      return this.activeTab ? '#FF0000' : '#009688'
+    },
     controlButtons: function () {
       return [
         {
           title: 'Очистить',
           action: 'recreate',
           disabled: !!(
-            this.editableObjects[this.activeTab]
-            && this.editableObjects[this.activeTab].params.find(
-              param => param.values.length || param.new_values.length
-            )
+              this.editableObjects[this.activeTab]
+              && this.editableObjects[this.activeTab].params.find(
+                  param => param.values.length || param.new_values.length
+              )
           ),
         },
         {
           title: this.editableObjects[this.activeTab]?.recId ? 'Сохранить' : 'Создать',
           action: 'save',
           disabled: !!(
-            this.valid
-            && this.editableObjects[this.activeTab]
-            && 'form'+ this.activeTab in this.$refs
-            && this.$refs['form' + this.activeTab][0].inputs.length
+              this.valid
+              && this.editableObjects[this.activeTab]
+              && 'form' + this.activeTab in this.$refs
+              && this.$refs['form' + this.activeTab][0].inputs.length
           )
         },
       ]
     },
     selectedEditableObject: {
       get: function () {
-        if(this.editableObjects) return this.editableObjects[0].ids.object_id },
-      set: function (id) { this.setEditableObject({object_id: id}) },
+        if (this.editableObjects) return this.editableObjects[0].ids.object_id
+      },
+      set: function (id) {
+        this.setEditableObject({object_id: id})
+      },
     },
     tabClasses: function () {
-      if(this.editableObjects)
-        if(this.editableObjects.length > 1)
+      if (this.editableObjects)
+        if (this.editableObjects.length > 1)
           return 'height-with-tabs'
       return 'height-without-tabs'
     }
   },
   methods: {
-    ...mapActions(['addNewParamEditableObject', 'deleteNewParamEditableObject', 'saveEditableObject', 'setEditableObject']),
+    ...mapActions([
+      'addNewParamEditableObject',
+      'deleteNewParamEditableObject',
+      'saveEditableObject',
+      'setEditableObject',
+      'addEditableObjects',
+      'saveFormFile',
+      'addResolvedConflict'
+    ]),
     tabColor(key) {
       return key ? '#FF0000' : '#009688'
     },
-    saveObject () {
-      if(this.$refs['form' + this.activeTab][0].validate())
-        this.saveEditableObject(this.activeTab)
+    saveObject() {
+      if (this.$refs['form' + this.activeTab][0].validate())
+        if(this.turnConflicts.length) {
+          this.addResolvedConflict(this.activeTab)
+        } else {
+          this.saveEditableObject(this.activeTab)
+        }
     },
     recreateObject() {
       this.selectedEditableObject = this.selectedEditableObject
@@ -106,16 +130,37 @@ export default {
       this.$nextTick(() => {
         this.$el.querySelector('#tabs > .v-item-group').style.display = objects.length <= 1 ? 'none' : 'flex'
       })
-
-    }
+    },
+    getFormFile() {
+      const saveFormFile = this.saveFormFile
+      let obj = document.createElement('input')
+      obj.style.cssText = 'display:none'
+      obj.type = 'file'
+      obj.accept = '.docm'
+      let input = document.getElementById("app").appendChild(obj)
+      input.click()
+      input.addEventListener('change', () => saveFormFile(input.files[0]))
+      obj.remove()
+    },
   },
   watch: {
     editableObjects: function (objects) {
       this.tabStatus(objects)
     },
+    turnConflicts: function (conflicts) {
+      if(conflicts.length) {
+        const conflict = conflicts[0]
+        const db = new DataBaseObject({object_id: conflict.object.object_id})
+        db.addNewValues(conflict.object.params)
+        this.setEditableObject(db)
+        this.addEditableObjects(conflict.objects)
+      } else {
+        this.saveFormFile()
+      }
+    }
   },
   mounted() {
-    if(this.editableObjects)
+    if (this.editableObjects)
       this.tabStatus(this.editableObjects)
   }
 }
@@ -127,31 +172,40 @@ export default {
   overflow-y: auto;
   overflow-x: hidden;
 }
+
 .selector-object {
   height: 44px;
 }
-.height-with-tabs, .height-without-tabs  {
+
+.height-with-tabs, .height-without-tabs {
   max-height: calc(100% - 44px);
 }
+
 .control-menu {
   height: 44px;
   align-items: flex-end;
 }
+
 .height-with-tabs >>> .v-tab, .height-without-tabs >>> .v-tab {
   min-height: 48px;
 }
+
 .height-with-tabs >>> .v-tabs-items, .height-without-tabs >>> .v-tabs-items {
   overflow-y: auto;
 }
+
 .height-with-tabs >>> .v-tabs-items {
- max-height: calc(100% - 44px - 48px);
+  max-height: calc(100% - 44px - 48px);
 }
+
 .height-without-tabs >>> .v-tabs-items {
   max-height: calc(100% - 44px);
 }
-.height-with-tabs >>> .v-slide-group__wrapper, .height-without-tabs  >>> .v-slide-group__wrapper {
+
+.height-with-tabs >>> .v-slide-group__wrapper, .height-without-tabs >>> .v-slide-group__wrapper {
   overflow-y: auto;
 }
+
 .conflict-title {
   color: #FF0000;
   white-space: nowrap;
