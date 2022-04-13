@@ -19,3 +19,7 @@ npm run build
 See [Configuration Reference](https://cli.vuejs.org/config/).
 
 npm install @mdi/font -D
+
+
+удалить vue-resize-split-pane": "^0.1.5
+удалить SelectorInput в EditorNavObj в главном проекте

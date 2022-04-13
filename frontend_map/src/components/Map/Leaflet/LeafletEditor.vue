@@ -127,6 +127,7 @@ export default {
     fc_child: function(val) {
       this.fc_parent = val;
       this.modeEdit = (JSON.stringify(val)?.length < MAP_CONST.GEOMETRY.BIG);       // доступность редактирования
+      //this.modeEdit = true; //(JSON.stringify(val)?.length < MAP_CONST.GEOMETRY.BIG);       // доступность редактирования
     },
   },
 

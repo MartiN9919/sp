@@ -15,7 +15,7 @@ export default {
   components: { LeafletEditor },
   data() {
     return {
-      fc_edit: undefined,
+      fc_edit: "",
     }
   },
 }
