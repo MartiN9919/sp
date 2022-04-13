@@ -7,8 +7,15 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
+    "@geoman-io/leaflet-geoman-free": "^2.11.3",
+    "leaflet-polylinedecorator": "^1.6.0",
+    "proj4leaflet": "^1.0.2",
     "vue": "^2.6.11",
     "vue-router": "^3.2.0",
+    "vue2-leaflet": "^2.7.0",
+    "vue2-leaflet-markercluster": "^3.1.0",
+    "vue2-leaflet-polyline-measure": "^1.2.1",
+    "vuetify": "^2.4.0",
     "vuex": "^3.4.0"
   },
   "devDependencies": {
