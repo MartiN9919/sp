@@ -1,7 +1,9 @@
 <template>
+  <div>1111
   <LeafletEditor
     v-model="fc_edit"
   />
+  </div>
 </template>
 
 <script>
