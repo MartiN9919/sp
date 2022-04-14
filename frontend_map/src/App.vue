@@ -7,10 +7,16 @@
       <router-link to="/about">About</router-link>
     </div>
     <router-view/>
+    <notifications/>  <!--  Уведомления  -->
   </v-app>
 </template>
 
 <script>
+import notifications from "@/components/WebsiteShell/UIMainComponents/notifications"
+export default {
+  name: 'App',
+  components: {notifications},
+}
 </script>
 
 <style lang="scss">

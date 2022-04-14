@@ -43,3 +43,11 @@ npm install @mdi/font -D
     удалить import axios from "@/plugins/axiosSettings"
     удалить MAP_ACT_INI
     задать state.tiles
+
+в store/modules/siteControl/notifications.js:
+    удалить import axios from "@/plugins/axiosSettings"
+    удалить setNotificationInterval
+    удалить stopNotificationInterval
+    удалить getNotifications
+    удалить axis в setReadNotification
+
