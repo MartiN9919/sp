@@ -5,19 +5,19 @@ const menu = {
   title:    'Оформление',
   subtitle: 'Отображаемые элементы карты',
   menu:     [
-    {
-      icon:     'mdi-calendar-range',
-      title:    'Фильтр объектов по дате-времени',
-      subtitle: '[Shift+Ф]',
-      model:    'prop_range',
-      color:    'blue',
-    },
-    {
-      icon:     'mdi-google-circles-group',
-      title:    'Группировка близлежащих маркеров',
-      subtitle: '[Shift+Г]',
-      model:    'prop_cluster',
-    },
+    // {
+    //   icon:     'mdi-calendar-range',
+    //   title:    'Фильтр объектов по дате-времени',
+    //   subtitle: '[Shift+Ф]',
+    //   model:    'prop_range',
+    //   color:    'blue',
+    // },
+    // {
+    //   icon:     'mdi-google-circles-group',
+    //   title:    'Группировка близлежащих маркеров',
+    //   subtitle: '[Shift+Г]',
+    //   model:    'prop_cluster',
+    // },
     {
       icon:     'mdi-message',
       title:    'Информация об объектах',
@@ -139,8 +139,8 @@ export default {
       if (e.originalEvent.shiftKey) {
         switch(e.originalEvent.code) {
           // Оформление
-          case 'KeyA': { this.prop_range   = 1; return; } // Shift+Ф
-          case 'KeyU': { this.prop_cluster = 1; return; } // Shift+Г
+        //case 'KeyA': { this.prop_range   = 1; return; } // Shift+Ф
+        //case 'KeyU': { this.prop_cluster = 1; return; } // Shift+Г
           case 'KeyB': { this.prop_info    = 1; return; } // Shift+И
         //case 'KeyK': { this.prop_legend  = 1; return; } // Shift+Л
         //case 'KeyP': { this.prop_notify  = 1; return; } // Shift+З

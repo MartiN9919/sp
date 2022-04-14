@@ -1,12 +1,9 @@
 <template>
-  <div>1111
   <LeafletEditor
-    style="height: 70vh;"
     v-model="fc_edit"
     :modeEnabled="modeEnabled"
     :modeSelected="modeSelected"
   />
-  </div>
 </template>
 
 <script>
