@@ -26,7 +26,7 @@ npm install @mdi/font -D
 
 в store/addition.js:
     удалить import store from "@/store"
-    изменить genVarNameForLocalstorage return "local_user"
+    изменить genVarNameForLocalstorage return JSON.stringify({identifier: "local_user", key: this._key})
 
 в store/index.js:
     const store = new Vuex.Store({ modules: {map}, ...

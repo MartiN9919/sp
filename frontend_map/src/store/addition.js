@@ -32,7 +32,7 @@ export default class UserSetting {
   }
 
   genVarNameForLocalstorage() {
-    return "local_user"
+    return JSON.stringify({identifier: "local_user", key: this._key})
     // if(store && store.getters.userInformation) {
     //   return JSON.stringify({identifier: store.getters.userInformation.username, key: this._key})
     // }
