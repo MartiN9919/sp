@@ -67,6 +67,10 @@
         :items="menu_struct"
       />
 
+      <DialogMenuPos
+        ref="key_dialog"
+        @ok="menu_pos_save_ok"
+      />
      </template>
 
   </EditorSplit>

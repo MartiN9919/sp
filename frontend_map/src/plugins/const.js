@@ -1,7 +1,5 @@
 export default class CONST {
 
-  /*
-
   static APP = class {
     static COLOR_OBJ         = '#00796B';
     static DISABLE           = '#616161'
@@ -24,6 +22,8 @@ export default class CONST {
     static WEB = 'mdi-web';
   };
 
+
+  /*
 
   static TREE = class {
     static ICON_SIZE         = undefined; // '20';

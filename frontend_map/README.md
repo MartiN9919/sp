@@ -24,6 +24,13 @@ npm install @mdi/font -D
 удалить vue-resize-split-pane": "^0.1.5
 удалить SelectorInput в EditorNavObj в главном проекте
 
+в components/LeafletEditor.vue:
+    добавить
+      <DialogMenuPos
+        ref="key_dialog"
+        @ok="menu_pos_save_ok"
+      />
+
 в store/addition.js:
     удалить import store from "@/store"
     изменить genVarNameForLocalstorage return JSON.stringify({identifier: "local_user", key: this._key})
