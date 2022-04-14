@@ -1,4 +1,4 @@
-import store from "@/store"
+// import store from "@/store"
 
 export default class UserSetting {
   constructor(key, defaultValue=null) {
@@ -32,9 +32,10 @@ export default class UserSetting {
   }
 
   genVarNameForLocalstorage() {
-    if(store && store.getters.userInformation) {
-      return JSON.stringify({identifier: store.getters.userInformation.username, key: this._key})
-    }
-    else return null
+    return "local_user"
+    // if(store && store.getters.userInformation) {
+    //   return JSON.stringify({identifier: store.getters.userInformation.username, key: this._key})
+    // }
+    // else return null
   }
 }

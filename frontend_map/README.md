@@ -23,3 +23,6 @@ npm install @mdi/font -D
 
 удалить vue-resize-split-pane": "^0.1.5
 удалить SelectorInput в EditorNavObj в главном проекте
+в store/addition.js:
+    удалить import store from "@/store"
+    изменить genVarNameForLocalstorage return "local_user"

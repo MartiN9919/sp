@@ -1,7 +1,10 @@
 <template>
   <div>1111
   <LeafletEditor
+    style="height: 70vh;"
     v-model="fc_edit"
+    :modeEnabled="modeEnabled"
+    :modeSelected="modeSelected"
   />
   </div>
 </template>
@@ -17,7 +20,9 @@ export default {
   components: { LeafletEditor },
   data() {
     return {
-      fc_edit: "",
+      fc_edit: { "type": "FeatureCollection", "features": []},
+      modeEnabled: { marker: true , line: true, polygon: true, }, // доступные элементы
+      modeSelected: null,
     }
   },
 }
