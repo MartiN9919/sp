@@ -7,14 +7,14 @@ export default {
   state: {
     tiles:      [],                                    // источники плиток https://leaflet-extras.github.io/leaflet-providers/preview/
     tile_ind:   new UserSetting('MAP_TILE_IND',0),     // (int) индекс активного источника плиток tiles[tile_ind]
-    range:      true, // new UserSetting('MAP_RANGE',   true),  // фильтр отображаемых данных по дате/времени
-    cluster:    false, // new UserSetting('MAP_CLUSTER', false), // (bool) допустима ли кластеризация (группировка) близко расположенных маркеров
-    hint:       true, // new UserSetting('MAP_HINT',    true),  // (bool) показывать ли всплывающие подсказки
-    legend:     true, // new UserSetting('MAP_LEGEND',  true),  // (bool) показывать ли всплывающую легенду
-    scale:      true, // new UserSetting('MAP_SCALE',   true),  // (bool) отображать ли шкалу масштаба
-    measure:    true, // new UserSetting('MAP_MEASURE', true),  // (bool) отображать ли рулетку
-    logo:       true, // new UserSetting('MAP_LOGO',    true),  // (bool) показывать ли логотип
-    notify:     true, // new UserSetting('MAP_NOTIFY',  true),  // (bool) показывать ли заметки
+    range:      new UserSetting('MAP_RANGE',   true),  // фильтр отображаемых данных по дате/времени
+    cluster:    new UserSetting('MAP_CLUSTER', false), // (bool) допустима ли кластеризация (группировка) близко расположенных маркеров
+    hint:       new UserSetting('MAP_HINT',    true),  // (bool) показывать ли всплывающие подсказки
+    legend:     new UserSetting('MAP_LEGEND',  true),  // (bool) показывать ли всплывающую легенду
+    scale:      new UserSetting('MAP_SCALE',   true),  // (bool) отображать ли шкалу масштаба
+    measure:    new UserSetting('MAP_MEASURE', true),  // (bool) отображать ли рулетку
+    logo:       new UserSetting('MAP_LOGO',    true),  // (bool) показывать ли логотип
+    notify:     new UserSetting('MAP_NOTIFY',  true),  // (bool) показывать ли заметки
 
     zoom:       0,                                     // текущее приближение
     edit:       undefined,                             // FeatureCollection РЕДАКТИРУЕМЫХ фигур и маркеров
@@ -93,69 +93,69 @@ export default {
   actions: {
     MAP_ACT_INI:        ({commit}, param={}) => // { axios.get(CONST.API.OBJ.GET_TILES, param).then(r => commit('MAP_MUT_TILES', r.data)); },
       commit('MAP_MUT_TILES', [
-      //   {
-      //       'id': 1,
-      //       'title': 'OSM',
-      //       'subtitle': 'Схема (Интернет)',
-      //       'url': 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-      //       'attr': '',
-      //       'tms': False,
-      //       'color': 'red',
-      //   },
-      //   {
-      //       'id': 2,
-      //       'title': 'OSM',
-      //       'subtitle': 'Схема (Локальная сеть)',
-      //       'url': 'http://200.200.200.231/osm/{z}/{x}/{y}.png',
-      //       'attr': '',
-      //       'tms': False,
-      //   },
-      //   {
-      //       'id': 3,
-      //       'title': 'Yandex',
-      //       'subtitle': 'Интернет',
-      //       'url': 'https://core-sat.maps.yandex.net/tiles?l=sat&v=3.786.0&x={x}&y={y}&z={z}&scale=2&lang=ru_UA',
-      //       'attr': '',
-      //       'tms': False,
-      //       'crs': 'EPSG3395',
-      //       'color': 'red',
-      //   },
-      //   {
-      //       'id': 4,
-      //       'title': 'Yandex',
-      //       'subtitle': 'Спутник (Локальная сеть)',
-      //       'url': 'http://200.200.200.232/{z}/{x}/{y}.jpg',
-      //       'attr': '',
-      //       'tms': False,
-      //       'crs': 'EPSG3395',
-      //   },
-      //   {
-      //       'id': 5,
-      //       'title': 'ESRI',
-      //       'subtitle': 'Спутник (Интернет)',
-      //       'url': 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-      //       'attr': '',
-      //       'tms': False,
-      //       'color': 'red',
-      //   },
-      //   {
-      //       'id': 6,
-      //       'title': 'ОТМ',
-      //       'subtitle': 'Схема (Интернет)',
-      //       'url': 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
-      //       'attr': '',
-      //       'tms': False,
-      //       'color': 'red',
-      //   },
-      //   {
-      //       'id': 7,
-      //       'title': 'Stamen',
-      //       'subtitle': 'Черно-белая (Интернет)',
-      //       'url': 'http://{s}.tile.stamen.com/toner/{z}/{x}/{y}.png',
-      //       'attr': '',
-      //       'tms': False,
-      //       'color': 'red',
-      //   }
+        {
+            'id': 1,
+            'title': 'OSM',
+            'subtitle': 'Схема (Интернет)',
+            'url': 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+            'attr': '',
+            'tms': False,
+            'color': 'red',
+        },
+        {
+            'id': 2,
+            'title': 'OSM',
+            'subtitle': 'Схема (Локальная сеть)',
+            'url': 'http://200.200.200.231/osm/{z}/{x}/{y}.png',
+            'attr': '',
+            'tms': False,
+        },
+        {
+            'id': 3,
+            'title': 'Yandex',
+            'subtitle': 'Интернет',
+            'url': 'https://core-sat.maps.yandex.net/tiles?l=sat&v=3.786.0&x={x}&y={y}&z={z}&scale=2&lang=ru_UA',
+            'attr': '',
+            'tms': False,
+            'crs': 'EPSG3395',
+            'color': 'red',
+        },
+        {
+            'id': 4,
+            'title': 'Yandex',
+            'subtitle': 'Спутник (Локальная сеть)',
+            'url': 'http://200.200.200.232/{z}/{x}/{y}.jpg',
+            'attr': '',
+            'tms': False,
+            'crs': 'EPSG3395',
+        },
+        {
+            'id': 5,
+            'title': 'ESRI',
+            'subtitle': 'Спутник (Интернет)',
+            'url': 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+            'attr': '',
+            'tms': False,
+            'color': 'red',
+        },
+        {
+            'id': 6,
+            'title': 'ОТМ',
+            'subtitle': 'Схема (Интернет)',
+            'url': 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
+            'attr': '',
+            'tms': False,
+            'color': 'red',
+        },
+        {
+            'id': 7,
+            'title': 'Stamen',
+            'subtitle': 'Черно-белая (Интернет)',
+            'url': 'http://{s}.tile.stamen.com/toner/{z}/{x}/{y}.png',
+            'attr': '',
+            'tms': False,
+            'color': 'red',
+        },
       ]
     ),
     MAP_ACT_TILE_IND:   ({commit}, param={}) => commit('MAP_MUT_TILE_IND',        param.ind),
