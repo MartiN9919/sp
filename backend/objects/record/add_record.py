@@ -199,6 +199,10 @@ def convert_params(params):
     return sorted(result, key=lambda x: x['id'])
 
 
+def get_optional_params(params):
+    return [param for param in params if get_key_by_id(param['id'])['need'] == 0]
+
+
 class Form:
     def __init__(self, data, name):
         self.data = data
@@ -242,7 +246,9 @@ def add_data_from_form(user, group_id, form, meta=None):
         duplicates = find_duplicate_objects(group_id, item.get('object_id'), item.get('rec_id'),
                                             [(param['id'], param['value'], param['date']) for param in item['params']])
         if len(duplicates) > 0:
-            final_objects.append(get_object_record_by_id_http(item['object_id'], duplicates[0], group_id)) # слить параметры основного объекта с добавляемым
+            item['rec_id'] = duplicates[0]
+            item['params'] = get_optional_params(item['params'])
+            final_objects.append(item) # слить параметры основного объекта с добавляемым
             continue
         same_objects = find_same_objects(group_id, item['object_id'], [(param['id'], param['value'], param['date'])
                                                                        for param in item['params']])
