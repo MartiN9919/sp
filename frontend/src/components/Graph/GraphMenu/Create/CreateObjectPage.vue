@@ -1,35 +1,26 @@
 <template>
-  <create-page-body :editable="!editableObjects" info="Выберите тип объекта для создания">
+  <create-page-body v-model="activeTab" :editable="editableObjects">
     <template v-slot:header>
       <selector-object v-model="selectedEditableObject" :items="baseObjects" class="selector-object">
         <template v-slot:prepend-inner>
-          <v-btn @click.stop="getFormFile" icon>
+          <v-btn small @click.stop="getFormFile" icon>
             <v-icon>mdi-download</v-icon>
           </v-btn>
         </template>
       </selector-object>
     </template>
     <template v-slot:body>
-      <v-tabs id="tabs" v-model="activeTab" :color="sliderColor" grow show-arrows center-active :class="tabClasses">
-        <v-tab v-for="(item, key) in editableObjects" :key="key">
-          <v-icon :color="tabColor(key)">{{ item.base.icon }}</v-icon>
-          <span :style="{color: tabColor(key)}">
-            {{ key === 0 ? 'Исходный объект' : 'Схожий объект' }}
-            {{ key + 1 }}
-          </span>
-        </v-tab>
-        <v-tab-item v-for="(object, key) in editableObjects" :key="key" eager>
-          <v-form :ref="'form' + key" v-model="valid" onSubmit="return false;">
-            <record-area
-                :params="object.params"
-                :title="object.title"
-                :settings="{objectId: object.ids.object_id, recId: object.ids.rec_id}"
-                @createNewParam="createNewParam"
-                @deleteNewParam="deleteNewParam"
-            />
-          </v-form>
-        </v-tab-item>
-      </v-tabs>
+      <v-tab-item v-for="(object, key) in editableObjects" :key="object.id" eager>
+        <v-form :ref="'form' + key" v-model="valid" onSubmit="return false;">
+          <record-area
+              :params="object.params"
+              :title="object.title"
+              :settings="{objectId: object.ids.object_id, recId: object.ids.rec_id}"
+              @createNewParam="createNewParam"
+              @deleteNewParam="deleteNewParam"
+          />
+        </v-form>
+      </v-tab-item>
     </template>
     <template v-slot:control>
       <control-menu :buttons="controlButtons" @save="saveObject" @recreate="recreateObject" class="control-menu"/>
@@ -49,15 +40,13 @@ export default {
   name: "CreateObjectPage",
   components: {CreatePageBody, ControlMenu, RecordArea, SelectorObject},
   data: () => ({
-    valid: true,
+    valid: false,
     activeTab: 0,
   }),
   computed: {
     ...mapGetters(['baseObjects', 'editableObjects', 'turnConflicts']),
-    sliderColor: function () {
-      return this.activeTab ? '#FF0000' : '#009688'
-    },
     controlButtons: function () {
+      console.log(this.valid)
       return [
         {
           title: 'Очистить',
@@ -76,7 +65,7 @@ export default {
               this.valid
               && this.editableObjects[this.activeTab]
               && 'form' + this.activeTab in this.$refs
-              && this.$refs['form' + this.activeTab][0].inputs.length
+              && this.$refs['form' + this.activeTab][0]?.inputs?.length
           )
         },
       ]
@@ -88,12 +77,6 @@ export default {
       set: function (id) {
         this.setEditableObject({object_id: id})
       },
-    },
-    tabClasses: function () {
-      if (this.editableObjects)
-        if (this.editableObjects.length > 1)
-          return 'height-with-tabs'
-      return 'height-without-tabs'
     }
   },
   methods: {
@@ -106,16 +89,14 @@ export default {
       'saveFormFile',
       'addResolvedConflict'
     ]),
-    tabColor(key) {
-      return key ? '#FF0000' : '#009688'
-    },
     saveObject() {
-      if (this.$refs['form' + this.activeTab][0].validate())
-        if(this.turnConflicts.length) {
+      if (this.$refs['form' + this.activeTab][0].validate()) {
+        if (this.turnConflicts) {
           this.addResolvedConflict(this.activeTab)
         } else {
           this.saveEditableObject(this.activeTab)
         }
+      }
     },
     recreateObject() {
       this.selectedEditableObject = this.selectedEditableObject
@@ -125,11 +106,6 @@ export default {
     },
     deleteNewParam(event) {
       this.deleteNewParamEditableObject({param: event.param, id: event.id, position: this.activeTab})
-    },
-    tabStatus(objects) {
-      this.$nextTick(() => {
-        this.$el.querySelector('#tabs > .v-item-group').style.display = objects.length <= 1 ? 'none' : 'flex'
-      })
     },
     getFormFile() {
       const saveFormFile = this.saveFormFile
@@ -144,24 +120,17 @@ export default {
     },
   },
   watch: {
-    editableObjects: function (objects) {
-      this.tabStatus(objects)
-    },
     turnConflicts: function (conflicts) {
-      if(conflicts.length) {
+      if(conflicts && conflicts.length) {
         const conflict = conflicts[0]
         const db = new DataBaseObject({object_id: conflict.object.object_id})
         db.addNewValues(conflict.object.params)
         this.setEditableObject(db)
         this.addEditableObjects(conflict.objects)
-      } else {
+      } else if(conflicts) {
         this.saveFormFile()
       }
     }
-  },
-  mounted() {
-    if (this.editableObjects)
-      this.tabStatus(this.editableObjects)
   }
 }
 </script>
