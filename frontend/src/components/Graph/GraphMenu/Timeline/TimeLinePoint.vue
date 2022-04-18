@@ -76,7 +76,8 @@ export default {
       deleteSelectedNodes: 'deleteNodes',
       clearGraph: 'deleteNodes',
       getGraphFromFile: 'load',
-      goToTimeline: 'load'
+      goToTimeline: 'load',
+      saveFormFile: 'load'
     }
   }),
   computed: {
