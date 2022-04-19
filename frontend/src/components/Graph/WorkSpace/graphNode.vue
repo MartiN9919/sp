@@ -14,7 +14,7 @@
     </v-label>
 
     <node ref="node" :data="node" :in-selected="node.state.selected" :selected-objects="selectedObjects">
-      <body-object :node="node" :class="objectClass"/>
+      <body-object :node="node" :showTriggers="showTriggers" :class="objectClass"/>
     </node>
 
     <foreignObject v-if="showTitle" v-bind="titleStyle">
@@ -47,7 +47,7 @@ export default {
     description: false
   }),
   computed: {
-    ...mapGetters(['globalDisplaySettingValue', 'classifiersSettings']),
+    ...mapGetters(['globalDisplaySettingValue', 'classifiersSettings', 'show']),
     objectClass() {
       if(this.node.state.selected) {
         return 'choosing-object'
@@ -75,6 +75,9 @@ export default {
     },
     showTitle() {
       return this.globalDisplaySettingValue('showGlobalTitle') && this.node.settings.showTitle
+    },
+    showTriggers() {
+      return this.globalDisplaySettingValue('showGlobalTriggers') && this.node.settings.showTriggers
     },
     titleStyle() {
       return {

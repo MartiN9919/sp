@@ -24,6 +24,16 @@ export default {
         title: 'Обновление объекта'
       }
     },
+    createRelation: {
+      color: 'yellow darken-4',
+      icon: 'mdi-link-plus',
+      title: 'Создание связи между',
+      alternative: {
+        color: 'deep-orange darken-1',
+        icon: 'mdi-link-plus',
+        title: 'Обновление связи между'
+      }
+    },
     findObjects: {
       color: 'orange',
       icon: 'mdi-magnify',
@@ -33,6 +43,11 @@ export default {
       color: 'blue',
       icon: 'mdi-pencil',
       title: 'Создание объекта'
+    },
+    saveFile: {
+      color: 'blue  darken-4',
+      icon: 'mdi-pencil',
+      title: 'Создание объектов из'
     },
     editObject: {
       color: 'blue darken-2',
@@ -77,12 +92,13 @@ export default {
       clearGraph: 'deleteNodes',
       getGraphFromFile: 'load',
       goToTimeline: 'load',
-      saveFormFile: 'load'
+      saveFormFile: 'saveFile',
+      addRelationToGraph: 'createRelation'
     }
   }),
   computed: {
     actionParams: function () {
-      if (this.point.updatedNodes.length) {
+      if (this.point.updatedNodes.length || this.point.updatedEdges.length) {
         return this[this.actions[this.point.action.name]].alternative || this[this.actions[this.point.action.name]]
       } else {
         return this[this.actions[this.point.action.name]]

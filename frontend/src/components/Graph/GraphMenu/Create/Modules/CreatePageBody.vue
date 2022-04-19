@@ -12,7 +12,7 @@
           </span>
         </v-tab>
       </v-tabs>
-      <v-tabs-items v-model="activeTab" :class="tabClasses" >
+      <v-tabs-items v-if="editable" v-model="activeTab" :class="tabClasses" >
         <slot name="body"/>
       </v-tabs-items>
     </div>

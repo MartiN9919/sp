@@ -1,6 +1,7 @@
 import CONST  from '@/plugins/const'
 import axios  from '@/plugins/axiosSettings'
 import router from '@/router'
+import _ from 'lodash'
 
 export default {
   state: {
@@ -26,7 +27,7 @@ export default {
     },
     changeSelectedTreeViewItem: (state, selectedItem) => {
       if (router.currentRoute.name === 'Map') state.selectedTreeViewItemMap = selectedItem
-      if (router.currentRoute.name === 'Report') state.selectedTreeViewItemReport = selectedItem
+      if (router.currentRoute.name === 'Report') state.selectedTreeViewItemReport = _.cloneDeep(selectedItem)
     }
   },
   actions: {

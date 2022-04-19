@@ -15,13 +15,21 @@ export default {
   },
   computed: {
     valueClass: function () {
-      return ['content-column', !this.showDate ? 'text-end' : 'text-center']
+      return [!this.showDate ? 'text-end' : 'text-center']
     },
     title: function () {
       return this.param.baseParam.title
     },
     value: function () {
-      return this.param.values[0].value
+      if(this.param.baseParam.type.title === 'geometry') {
+        if(this.param.baseParam.type.value === 'polygon') {
+          return 'Полигон'
+        } else if (this.param.baseParam.type.value === 'point') {
+          return 'Точка'
+        }
+      } else {
+        return this.param.values[0].value
+      }
     },
     date: function () {
       return this.param.values[0].date
@@ -43,12 +51,5 @@ thead tr {
 }
 .column-date {
   white-space: nowrap;
-}
-.content-column {
-  width: 100%;
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
 }
 </style>
