@@ -18,6 +18,7 @@
         autocomplete="off"
         append-icon=""
         class="search"
+        item-text="entity.title"
       >
         <template v-slot:item="{ item }">
           <v-icon left>{{item.entity.base.icon}}</v-icon>

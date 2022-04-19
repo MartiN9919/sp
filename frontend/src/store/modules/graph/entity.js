@@ -25,6 +25,7 @@ export default {
     setEditableObjects: (state, object) => state.editableObjects = [object],
     resetEditableObjects: (state) => state.editableObjects = [state.editableObjects[0]],
     addEditableObjects: (state, object) => state.editableObjects.push(object),
+    clearEditableObjects: (state, object) => state.editableObjects = null,
     addNewParamEditableObject: (state, {id, position}) => state.editableObjects[position].addParam(id),
     deleteNewParamEditableObject: (state, {id, param, position}) => state.editableObjects[position].deleteParam(id, param),
 
@@ -35,7 +36,8 @@ export default {
       resolvedConflict.id_str = conflict.object.id_str
       resolvedConflict.name = conflict.object.name
       state.resolvedConflicts.push(resolvedConflict)
-    }
+    },
+    clearResolvedConflict: (state) => state.resolvedConflicts = []
   },
   actions: {
     addResolvedConflict({getters, commit}, position) {
@@ -84,7 +86,8 @@ export default {
       commit('deleteNewParamEditableObject', playLoad)
     },
     async saveFormFile({getters, commit, dispatch}, file=null) {
-      const request = DataBaseObject.arrayRequest(getters.resolvedConflicts, file || getters.formFile)
+      const formFile = file || getters.formFile
+      const request = DataBaseObject.arrayRequest(getters.resolvedConflicts, formFile)
       const config = {
         headers: {
           'Content-Type': 'multipart/form-data'
@@ -93,11 +96,20 @@ export default {
       return await axios.post('objects/load/', request, config)
         .then(r => {
           if(r.data.hasOwnProperty('conflicts')) {
-            commit('setFormFile', file)
+            commit('setFormFile', formFile)
             commit('setTurnConflicts', r.data.conflicts)
           } else if(r.data.hasOwnProperty('result')) {
+            commit('clearEditableObjects')
+            dispatch('addObjectsToGraph', {
+              payload: r.data.result,
+              action: {
+                name: 'saveFormFile',
+                payload: formFile.name
+              }
+            })
             commit('setFormFile', null)
             commit('setTurnConflicts', null)
+            commit('clearResolvedConflict')
           }
           return Promise.resolve(r.data)
         })

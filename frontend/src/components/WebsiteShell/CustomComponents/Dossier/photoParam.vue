@@ -3,7 +3,7 @@
     <v-carousel hide-delimiters show-arrows-on-hover :show-arrows="param.values.length !== 1" height="200" class="cursor-pointer">
       <v-expand-transition>
         <div v-show="hover && param.values.length !== 1" class="delimiters">
-          <v-dialog width="min-content">
+          <v-dialog width="min-content" style="z-index: 100001">
             <template v-slot:activator="{ on, attrs }">
               <v-btn text v-on="on" width="100%">
                 Посмотреть все
@@ -15,7 +15,7 @@
         </div>
       </v-expand-transition>
       <div class="picture-classifier">{{ param.baseParam.title }}</div>
-      <v-dialog v-for="(v, key) in param.values" :key="key" width="min-content" class="dialog">
+      <v-dialog v-for="(v, key) in param.values" :key="key" width="min-content">
         <template v-slot:activator="{ on, attrs }">
           <v-carousel-item v-on="on" :src="getFile(v.value)"></v-carousel-item>
         </template>

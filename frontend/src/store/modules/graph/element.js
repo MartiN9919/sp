@@ -84,7 +84,13 @@ export default {
     },
     addRelationToGraph({dispatch}, {from, to}) {
       const callTime = new Date()
-      dispatch('createTimeLine', callTime)
+      dispatch('createTimeLine', {
+        callTime,
+        action: {
+          name: 'addRelationToGraph',
+          payload: `${to.title} и ${from.title}`
+        }
+      })
       return dispatch('getRelation', {from, to}).then(relation => {
         return dispatch('createEdge', {relation, callTime}).then(edge => {
           dispatch('addEdgeToGraph', edge)

@@ -1,5 +1,5 @@
 <template>
-  <create-page-body :editable="!editableRelation" info="Выберите на графе объекты для создания связи">
+  <create-page-body :editable="editableRelation">
     <template v-slot:header>
       <relation-header :objects="editableObjects"/>
       <v-card flat v-if="!editableObjects.length">

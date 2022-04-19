@@ -1,5 +1,5 @@
 <template>
-  <div class="pr-4 h-100 overflow-y-auto overflow-x-hidden" style="margin-left: -16px; min-width: 200px">
+  <div v-if="line.length" class="pr-4 h-100 overflow-y-auto overflow-x-hidden timeline">
     <v-timeline dense align-top>
       <time-line-point
           v-for="(point, key) in line"
@@ -64,5 +64,8 @@ export default {
 </script>
 
 <style scoped>
-
+.timeline {
+  margin-left: -16px;
+  min-width: 200px;
+}
 </style>
