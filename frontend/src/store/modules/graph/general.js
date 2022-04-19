@@ -137,53 +137,46 @@ export class DataBaseObject extends BaseDbObject {
     return `${this.base.id}-${this.recId}`
   }
 
+  static requestParams(formData, params) {
+    const request = []
+    params.forEach(param => {
+      param.new_values.forEach(newValue => {
+        if(param.baseParam.type.title.startsWith('file')){
+          request.push({id: param.baseParam.id, value: params.length.toString(), date: newValue.date})
+          formData.append((params.length - 1).toString(), newValue.value.file)
+        } else {
+          request.push({id: param.baseParam.id, value: newValue.value, date: newValue.date})
+        }
+      })
+    })
+    return request
+  }
+
   static arrayRequest(objects, file) {
     let formData = new FormData()
     formData.append(file.name, file)
-    let request = []
-    objects.forEach(object => {
-      let params = []
-      object.params.forEach(param => {
-        param.new_values.forEach(newValue => {
-          if(param.baseParam.type.title.startsWith('file')){
-            params.push({id: param.baseParam.id, value: object.params.length.toString(), date: newValue.date})
-            formData.append((object.params.length - 1).toString(), newValue.value.file)
-          } else {
-            params.push({id: param.baseParam.id, value: newValue.value, date: newValue.date})
-          }
-        })
+    formData.append('data', JSON.stringify(
+      objects.map(object => {
+        return {
+          rec_id: object.ids.rec_id,
+          object_id: object.ids.object_id,
+          id_str: object.id_str,
+          name: object.name,
+          params: DataBaseObject.requestParams(formData, object.params),
+        }
       })
-      request.push({
-        rec_id: object.ids.rec_id,
-        object_id: object.ids.object_id,
-        id_str: object.id_str,
-        name: object.name,
-        params: params,
-      })
-    })
-    formData.append('data', JSON.stringify(request))
+    ))
     return formData
   }
 
   getRequestStructure() {
     let formData = new FormData()
-    let params = []
-    for(let param of this.params) {
-      for (let newValue of param.new_values) {
-        if(param.baseParam.type.title.startsWith('file')){
-          params.push({id: param.baseParam.id, value: params.length.toString(), date: newValue.date})
-          formData.append(params.length - 1, newValue.value.file)
-        } else {
-          params.push({id: param.baseParam.id, value: newValue.value, date: newValue.date})
-        }
-      }
-    }
     formData.append('data', JSON.stringify({
       rec_id: this.ids.rec_id,
       object_id: this.ids.object_id,
       rec_id_old: this.recIdOld,
       force: store.getters.editableObjects.length > 1,
-      params: params,
+      params: DataBaseObject.requestParams(formData, this.params),
     }))
     return formData
   }
@@ -191,7 +184,7 @@ export class DataBaseObject extends BaseDbObject {
   addNewValues(params) {
     params.forEach(param => {
       param.values.forEach(v => {
-        super.addParam(param.id, v.value, v.date)
+        this.addParam(param.id, v.value, v.date)
       })
     })
   }
@@ -214,9 +207,9 @@ class ParamObject {
 }
 
 class ValueParam {
-  constructor(value=null, date=this.getDateTime(), doc=null) {
+  constructor(value=null, date=null, doc=null) {
     this.value = value
-    this.date = date
+    this.date = date || this.getDateTime()
     this.doc = doc
   }
 
