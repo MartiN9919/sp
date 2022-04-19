@@ -10,7 +10,7 @@
       </selector-object>
     </template>
     <template v-slot:body>
-      <v-tab-item v-for="(object, key) in editableObjects" :key="object.id" eager>
+      <v-tab-item v-for="(object, key) in editableObjects" :key="key" eager>
         <v-form :ref="'form' + key" v-model="valid" onSubmit="return false;">
           <record-area
               :params="object.params"
@@ -46,7 +46,6 @@ export default {
   computed: {
     ...mapGetters(['baseObjects', 'editableObjects', 'turnConflicts']),
     controlButtons: function () {
-      console.log(this.valid)
       return [
         {
           title: 'Очистить',
@@ -96,6 +95,7 @@ export default {
         } else {
           this.saveEditableObject(this.activeTab)
         }
+        this.activeTab = 0
       }
     },
     recreateObject() {
@@ -136,47 +136,12 @@ export default {
 </script>
 
 <style scoped>
-.work-place {
-  height: calc(100% - 44px);
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-
 .selector-object {
   height: 44px;
-}
-
-.height-with-tabs, .height-without-tabs {
-  max-height: calc(100% - 44px);
 }
 
 .control-menu {
   height: 44px;
   align-items: flex-end;
-}
-
-.height-with-tabs >>> .v-tab, .height-without-tabs >>> .v-tab {
-  min-height: 48px;
-}
-
-.height-with-tabs >>> .v-tabs-items, .height-without-tabs >>> .v-tabs-items {
-  overflow-y: auto;
-}
-
-.height-with-tabs >>> .v-tabs-items {
-  max-height: calc(100% - 44px - 48px);
-}
-
-.height-without-tabs >>> .v-tabs-items {
-  max-height: calc(100% - 44px);
-}
-
-.height-with-tabs >>> .v-slide-group__wrapper, .height-without-tabs >>> .v-slide-group__wrapper {
-  overflow-y: auto;
-}
-
-.conflict-title {
-  color: #FF0000;
-  white-space: nowrap;
 }
 </style>

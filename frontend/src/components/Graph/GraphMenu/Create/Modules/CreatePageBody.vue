@@ -2,16 +2,17 @@
   <div class="h-100">
     <div class="work-place">
       <slot name="header"/>
-      <v-tabs v-show="tabsStatus" v-model="activeTab" :color="sliderColor" :class="tabClasses" grow show-arrows center-active>
-        <v-tab v-if="tabsStatus" v-for="(item, key) in editable" :key="key">
-          <v-icon :color="tabColor(key)">{{ item.base.icon }}</v-icon>
+
+      <v-tabs v-show="tabsStatus" v-model="activeTab" :color="sliderColor" grow show-arrows class="pt-1">
+        <v-tab v-for="(item, key) in editable" :key="key">
+          <v-icon v-if="tabsStatus" :color="tabColor(key)">{{ item.base.icon }}</v-icon>
           <span :style="{color: tabColor(key)}">
             {{ key === 0 ? 'Исходный объект' : 'Схожий объект' }}
             {{ key + 1 }}
           </span>
         </v-tab>
       </v-tabs>
-      <v-tabs-items v-model="activeTab">
+      <v-tabs-items v-model="activeTab" :class="tabClasses" >
         <slot name="body"/>
       </v-tabs-items>
     </div>
@@ -30,7 +31,7 @@ export default {
   computed: {
     activeTab: {
       get: function () {
-        return this.tab
+        return this.tab || 0
       },
       set: function (value) {
         this.$emit('changeTab', value)
@@ -62,5 +63,17 @@ export default {
   height: calc(100% - 44px);
   overflow-y: hidden;
   overflow-x: hidden;
+}
+
+.v-window {
+  overflow-y: auto;
+}
+
+.height-with-tabs {
+  max-height: calc(100% - 96px);
+}
+
+.height-without-tabs {
+  max-height: calc(100% - 44px);
 }
 </style>

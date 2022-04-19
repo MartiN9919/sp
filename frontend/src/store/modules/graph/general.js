@@ -70,8 +70,8 @@ class BaseDbObject {
     this.params = baseObjects.map(p => new ParamObject(getter(p.id), params.find(n => n.id === p.id)?.values))
   }
 
-  addParam(id, value=null) {
-    this.params.find(param => param.baseParam.id === id).new_values.push(new ValueParam(value))
+  addParam(id, value=null, date=null) {
+    this.params.find(param => param.baseParam.id === id).new_values.push(new ValueParam(value, date))
   }
 
   deleteParam(id, param) {
@@ -207,9 +207,9 @@ class ParamObject {
 }
 
 class ValueParam {
-  constructor(value=null, date=this.getDateTime(), doc=null) {
+  constructor(value=null, date=null, doc=null) {
     this.value = value
-    this.date = date
+    this.date = date || this.getDateTime()
     this.doc = doc
   }
 
