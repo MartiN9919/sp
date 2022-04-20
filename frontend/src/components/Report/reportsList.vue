@@ -1,5 +1,5 @@
 <template>
-  <v-container class="h-100">
+  <v-container class="h-100 d-flex">
     <v-data-table
       :headers="headers"
       :items="reportsSlice"
@@ -7,7 +7,8 @@
       :footer-props="footer"
       :server-items-length="numsTotalReports"
       no-data-text=""
-      class="elevation-11 ma-1"
+      class="elevation-11"
+      height="100%"
       fixed-header
     >
       <template v-slot:item="{ item }">

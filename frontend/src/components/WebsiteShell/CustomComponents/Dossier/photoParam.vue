@@ -1,6 +1,6 @@
 <template>
   <v-hover v-slot="{ hover }">
-    <v-carousel hide-delimiters show-arrows-on-hover :show-arrows="param.values.length !== 1" height="200" class="cursor-pointer">
+    <v-carousel hide-delimiters show-arrows-on-hover :show-arrows="param.values.length !== 1" height="250" class="cursor-pointer">
       <v-expand-transition>
         <div v-show="hover && param.values.length !== 1" class="delimiters">
           <v-dialog width="min-content" style="z-index: 100001">
@@ -10,14 +10,27 @@
                 <v-icon right>mdi-image-multiple</v-icon>
               </v-btn>
             </template>
-            <v-img v-for="(v, key) in param.values" :key="key" :src="getFile(v.value)"></v-img>
+            <v-card>
+              <v-container>
+                <v-row>
+                  <v-dialog v-for="(v, key) in param.values" :key="key" width="min-content">
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-col class="d-flex child-flex" cols="4">
+                        <v-img v-on="on" :src="getFile(v.value)" class="cursor-pointer"></v-img>
+                      </v-col>
+                    </template>
+                    <v-img :src="getFile(v.value)"></v-img>
+                  </v-dialog>
+                </v-row>
+              </v-container>
+            </v-card>
           </v-dialog>
         </div>
       </v-expand-transition>
       <div class="picture-classifier">{{ param.baseParam.title }}</div>
       <v-dialog v-for="(v, key) in param.values" :key="key" width="min-content">
         <template v-slot:activator="{ on, attrs }">
-          <v-carousel-item v-on="on" :src="getFile(v.value)"></v-carousel-item>
+          <v-carousel-item contain class="grey darken-4" v-on="on" :src="getFile(v.value)"></v-carousel-item>
         </template>
         <v-img :src="getFile(v.value)"></v-img>
       </v-dialog>
