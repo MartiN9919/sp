@@ -57,9 +57,10 @@ def additional_processing(user, object, data):
                 data.append([SYS_KEY_CONSTANT.FILE_TEXT_CLASSIFIER_ID, text,
                              datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")])
     if object.get('object_id') == SYS_KEY_CONSTANT.TELEFON_ID:
-        country = get_country_by_number(
-            [param for param in object['params'] if param['id'] == SYS_KEY_CONSTANT.PHONE_NUMBER_CLASSIFIER_ID][0][
-                'value'])
+        phone_number = [param for param in object['params']
+                        if param['id'] == SYS_KEY_CONSTANT.PHONE_NUMBER_CLASSIFIER_ID][0]['value']
+        phone_number = phone_number if isinstance(phone_number, str) else '+' + str(phone_number)
+        country = get_country_by_number(phone_number)
         fl = 0
         for temp in data:
             if temp[0] == SYS_KEY_CONSTANT.PHONE_NUMBER_CLASSIFIER_ID:
@@ -99,6 +100,8 @@ def parse_value(param, object, files):
     if key.get('list_id') != 0 and key['id'] not in SYS_KEY_CONSTANT.NOT_VALUE_TRANSFER_LIST and \
             key['id'] not in SYS_KEY_CONSTANT.GEOMETRY_TRANSFER_LIST and key.get('list_id') != None:
         value = str(get_item_list_value(value))
+    if key.get('type') == DAT_SYS_KEY.TYPE_PHONE_NUMBER:
+        value = value if isinstance(value, str) else '+' + str(value)
     if key.get('type') == DAT_SYS_KEY.TYPE_DATA:
         value = date_client_to_server(value)
     if key.get('type') == DAT_SYS_KEY.TYPE_DATATIME:
@@ -278,15 +281,16 @@ def add_data_from_form(user, group_id, form, meta=None):
     created_objects = [{'object_id': 15, 'rec_id': file_id}, {'object_id': 20, 'rec_id': document_id}]
     link = {}
     for item in final_objects:
+        item['force'] = True
         temp_result = add_data(user, group_id, item)
-        created_objects.append({'object_id': item['object_id'], 'rec_id': temp_result['object']})
+        created_objects.append({'object_id': item['object_id'], 'rec_id': temp_result['object']}) #написать обработку при конфликтах
         link[f"{item['id_str']}: {item['name']}"] = temp_result['object']
     for relation in relations:
         object_id_1 = relation['obj_id_1']
         object_id_2 = relation['obj_id_2']
         rec_id_1 = link[relation['obj_name_1']]
         rec_id_2 = link[relation['obj_name_2']]
-        params = [{'id': param['id'], 'val': param['val'], 'date': param['dat'] + ' 00:00'} for param in
+        params = [{'id': param['id'], 'val': param.get('val', 0), 'date': param['dat'] + ' 00:00'} for param in
                   relation['param']]
         add_rel(group_id, object_id_1, rec_id_1, object_id_2, rec_id_2, params, document_id)
     return {'result': created_objects}
