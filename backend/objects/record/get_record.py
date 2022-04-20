@@ -186,7 +186,8 @@ def get_keys():
         temp['type'] = parse_type(temp['type'], temp['list_id'])
         temp.pop('list_id')
         result.append(temp)
-    result.sort(key=lambda x: x['id'])
+    result.sort(key=lambda x: x['title'])
+    result.sort(key=lambda x: x['priority'])
     result.sort(key=lambda x: x['obj_id'])
     return result
 

@@ -243,18 +243,12 @@ class ModelKey(models.Model):
         blank=True,
         null=True,
     )
-    path = models.CharField(
-        max_length=255,
-        verbose_name='Путь',
-        help_text='Путь',
-        blank=True,
-        null=True,
-    )
     priority = models.IntegerField(
         verbose_name='Приоритет',
         help_text=' Приоритет при именовании',
-        blank=True,
-        null=True,
+        blank=False,
+        null=False,
+
     )
     visible = models.CharField(
         max_length=20,
