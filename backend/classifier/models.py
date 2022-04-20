@@ -246,9 +246,6 @@ class ModelKey(models.Model):
     priority = models.IntegerField(
         verbose_name='Приоритет',
         help_text=' Приоритет при именовании',
-        blank=False,
-        null=False,
-
     )
     visible = models.CharField(
         max_length=20,
@@ -272,6 +269,8 @@ class ModelKey(models.Model):
         @param args: стандартный параметр
         @param kwargs: стандартный параметр
         """
+        if not self.priority and self.obj_id != 1:
+            return
         if self.obj_id == 1:
             if self.rel_obj_1_id > self.rel_obj_2_id:
                 temp_id = self.rel_obj_1_id
