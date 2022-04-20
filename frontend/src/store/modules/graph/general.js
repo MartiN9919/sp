@@ -143,7 +143,7 @@ export class DataBaseObject extends BaseDbObject {
       param.new_values.forEach(newValue => {
         if(param.baseParam.type.title.startsWith('file')){
           request.push({id: param.baseParam.id, value: params.length.toString(), date: newValue.date})
-          formData.append((params.length - 1).toString(), newValue.value.file)
+          formData.append((params.length).toString(), newValue.value.file)
         } else {
           request.push({id: param.baseParam.id, value: newValue.value, date: newValue.date})
         }
