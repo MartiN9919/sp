@@ -1,5 +1,5 @@
 <template>
-  <object-selector-settings v-model="id">
+  <object-selector-settings v-model="id" class="pb-1">
     <item-trigger-settings v-for="trigger of triggers" :key="trigger.id" :trigger="trigger"/>
   </object-selector-settings>
 </template>

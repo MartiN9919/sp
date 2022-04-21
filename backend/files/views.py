@@ -26,7 +26,7 @@ def aj_download_open_file(request):
     if mode == 'deploy':
         return get_x_accel_response(request.path.split('download')[1], request.path.split('download')[1].split('/')[-1])
     else:
-        file_path = MEDIA_ROOT + '/' + request.path.split('download')[1]
+        file_path = MEDIA_ROOT + '/' + request.path[request.path.find('download') + 9:]
         return FileResponse(open(file_path, 'rb'), as_attachment=True)
 
 

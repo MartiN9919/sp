@@ -20,6 +20,11 @@
       </v-card>
     </v-menu>
   </div>
+  <v-card flat v-else>
+    <v-card-subtitle class="text-center text-no-wrap">
+      Еще не было произведено никаких действий
+    </v-card-subtitle>
+  </v-card>
 </template>
 
 <script>

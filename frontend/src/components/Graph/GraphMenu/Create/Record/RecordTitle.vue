@@ -2,7 +2,7 @@
   <v-hover v-slot="{ hover }">
     <v-expansion-panel-header class="py-0 px-2" :color="colorHeader" expand-icon="">
       <template v-slot:actions="">
-        <v-icon v-if="hover && opened" @click.stop="create" :color="colorIcon">mdi-plus</v-icon>
+        <v-icon v-if="hover && opened" @click.stop="create" :color="colorIcon" tabindex="-1">mdi-plus</v-icon>
       </template>
       <template v-slot:default="">
         <span :class="colorText">{{ title }}</span>

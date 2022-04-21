@@ -80,4 +80,7 @@ export default {
 .customInputFile {
   width: 100%;
 }
+>>> .v-file-input__text {
+  word-break: break-all;
+}
 </style>

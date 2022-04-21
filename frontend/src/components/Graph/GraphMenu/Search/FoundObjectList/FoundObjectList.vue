@@ -6,7 +6,7 @@
       </v-list-item-subtitle>
     </v-list-item>
     <div class="body-table">
-      <found-object-item v-for="object in foundObjects" :key="object.rel_id" :object="object"/>
+      <found-object-item v-for="object in foundObjects" :key="object.rel_id" :object="object" tabindex="0"/>
     </div>
   </v-list>
 </template>

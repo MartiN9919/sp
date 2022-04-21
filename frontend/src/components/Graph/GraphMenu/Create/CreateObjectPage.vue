@@ -3,7 +3,7 @@
     <template v-slot:header>
       <selector-object v-model="selectedEditableObject" :items="baseObjects" class="selector-object">
         <template v-slot:prepend-inner>
-          <v-btn small @click.stop="getFormFile" icon>
+          <v-btn small @click.stop="getFormFile" icon tabindex="-1">
             <v-icon>mdi-download</v-icon>
           </v-btn>
         </template>
@@ -11,7 +11,7 @@
     </template>
     <template v-slot:body>
       <v-tab-item v-for="(object, key) in editableObjects" :key="key" eager>
-        <v-form :ref="'form' + key" v-model="valid" onSubmit="return false;">
+        <v-form :ref="'form' + key" v-model="valid" onSubmit="return false;" autofocus>
           <record-area
               :params="object.params"
               :title="object.title"

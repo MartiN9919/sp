@@ -5,10 +5,16 @@
         :title="param.baseParam.title"
         :opened="openedPanels.includes(key)"
         @create="createNewParam(param.baseParam.id)"
+        @keyup.ctrl.enter.native="createNewParam(param.baseParam.id)"
       />
       <v-expansion-panel-content class="expansion-panel-content-custom">
         <v-card tile flat>
-          <v-row v-for="(value, key) in param.new_values" :key="key" no-gutters class="flex-nowrap">
+          <v-row
+              v-for="(value, key) in param.new_values" :key="key"
+              @keyup.alt.enter="deleteNewParam(param.baseParam.id, value)"
+              no-gutters
+              class="flex-nowrap"
+          >
             <record-input
               :param="getParam(param, value)"
               :type="param.baseParam.type"
