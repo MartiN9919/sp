@@ -57,8 +57,11 @@ def additional_processing(user, object, data):
                 data.append([SYS_KEY_CONSTANT.FILE_TEXT_CLASSIFIER_ID, text,
                              datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")])
     if object.get('object_id') == SYS_KEY_CONSTANT.TELEFON_ID:
-        phone_number = [param for param in object['params']
-                        if param['id'] == SYS_KEY_CONSTANT.PHONE_NUMBER_CLASSIFIER_ID][0]['value']
+        phone_number_list = [param for param in object['params']
+                        if param['id'] == SYS_KEY_CONSTANT.PHONE_NUMBER_CLASSIFIER_ID]
+        if len(phone_number_list) == 0:
+            return
+        phone_number = phone_number_list[0]['value']
         phone_number = phone_number if isinstance(phone_number, str) else '+' + str(phone_number)
         country = get_country_by_number(phone_number)
         fl = 0
