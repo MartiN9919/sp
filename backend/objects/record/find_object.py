@@ -105,7 +105,8 @@ def find_duplicate_objects(group_id, object_id, rec_id, params):
                          get_key_by_id(param['id']).get('need', 0) == 1]
     new_params = {}
     for param in params:
-        new_params[param[0]] = {'value': param[1], 'date': param[2]}
+        if get_key_by_id(param[0])['need']:
+            new_params[param[0]] = {'value': param[1], 'date': param[2]}
     for param in needed_old_params:
         if param['id'] not in new_params:
             new_params[param['id']] = param['values'][0]
