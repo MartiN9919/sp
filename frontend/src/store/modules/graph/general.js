@@ -192,8 +192,7 @@ export class DataBaseObject extends BaseDbObject {
   concatParams(concatObject) {
     for(let param of concatObject.params) {
       let findParam = this.params.find(p => p.baseParam.id === param.baseParam.id)
-      findParam.values = findParam.values.concat(_.cloneDeep(param.values))
-      findParam.new_values = findParam.new_values.concat(_.cloneDeep(param.new_values))
+      findParam.new_values = findParam.new_values.concat(param.values, _.cloneDeep(param.new_values))
     }
   }
 }

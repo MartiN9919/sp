@@ -1,7 +1,13 @@
 <template>
   <table>
     <tbody class="py-2">
-      <custom-tooltip v-for="(item, key) in values" :key="key" :body-text="item.value" :settings="settings" bottom>
+      <custom-tooltip
+          v-for="(item, key) in values"
+          :key="key"
+          :body-text="item.value"
+          :settings="settings"
+          bottom
+      >
         <template v-slot:activator="{ on }">
           <tr v-on="on">
             <info :value="item.value" :title="title" :type-record="typeRecord" :settings="settings"/>
@@ -55,12 +61,5 @@ table >>> span, table >>> a {
   color: #555555;
   font-size: 0.8em;
   text-decoration: none;
-}
-tr {
-  line-height: normal;
-  border-spacing: initial;
-}
-tr:hover >>> a, tr:hover >>> span {
-  color: #009688;
 }
 </style>

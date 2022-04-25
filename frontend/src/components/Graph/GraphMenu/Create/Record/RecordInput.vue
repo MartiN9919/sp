@@ -3,8 +3,10 @@
     v-model="param.value"
     :inputType="type"
     :listRules="['notEmpty']"
+    :readonly="readOnly"
     deletable
     class="pt-1"
+    :class="inputClass"
     @deletable="$emit('deletable')"
   >
     <template v-slot:message>
@@ -33,6 +35,7 @@
 import ResponsiveInputForm from "@/components/WebsiteShell/CustomComponents/responsiveInputForm"
 import DropDownMenu from "@/components/WebsiteShell/CustomComponents/dropDownMenu"
 import SelectDateTime from "@/components/WebsiteShell/CustomComponents/DateTimePickers/selectDateTime"
+import {mapGetters} from "vuex";
 
 export default {
   name: "RecordInput",
@@ -41,6 +44,20 @@ export default {
     param: Object,
     type: Object,
   },
+  computed: {
+    ...mapGetters(['editableObjects']),
+    readOnly: function () {
+      if(this.editableObjects.length > 1) {
+        return !!this.editableObjects[0].params.find(p => p.values.find(v => v === this.param))
+      }
+      else {
+        return false
+      }
+    },
+    inputClass: function () {
+      return this.readOnly ? 'asdasdsa' : ''
+    }
+  }
 }
 </script>
 
@@ -52,5 +69,8 @@ export default {
   color: #004D40;
   margin-left: auto;
   width: fit-content;
+}
+.asdasdsa >>> input {
+  color: teal
 }
 </style>

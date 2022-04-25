@@ -1,6 +1,6 @@
 <template>
   <v-timeline-item :disabled="true" :color="actionParams.color" :icon="actionParams.icon">
-    <v-card @mouseenter="hover" @mouseleave="leave" class="elevation-2" :color="actionParams.color" dark>
+    <v-card hover @mouseenter="hover" @mouseleave="leave" :color="actionParams.color" dark>
       <v-card-title class="text-body-1 text-no-wrap">{{ date }}</v-card-title>
       <v-card-subtitle>{{ actionParams.title }} {{ point.action.payload }}</v-card-subtitle>
     </v-card>
