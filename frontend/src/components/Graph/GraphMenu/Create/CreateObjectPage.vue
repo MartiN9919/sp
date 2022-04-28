@@ -58,13 +58,14 @@ export default {
           ),
         },
         {
-          title: this.editableObjects[this.activeTab]?.recId ? 'Сохранить' : 'Создать',
+          title: this.activeTab > 0 ? 'Объединить' : this.editableObjects[this.activeTab]?.recId ? 'Сохранить' : 'Создать',
           action: 'save',
           disabled: !!(
-              this.valid
+              (this.activeTab > 0 && this.valid) ||
+              (this.valid
               && this.editableObjects[this.activeTab]
               && 'form' + this.activeTab in this.$refs
-              && this.$refs['form' + this.activeTab][0]?.inputs?.length
+              && this.$refs['form' + this.activeTab][0]?.inputs?.length)
           )
         },
       ]
