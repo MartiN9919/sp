@@ -31,7 +31,7 @@ class FullTextSearch:
     DATE_TIME_START = 'date_time_start'
     DATE_TIME_END = 'date_time_end'
 
-    SEARCH_URL = DEPLOY_SETTING['manticore']['SEARCH_URL'] if mode == 'deploy' else 'http://200.200.200.235:9412/search'
+    SEARCH_URL = DEPLOY_SETTING['manticore']['SEARCH_URL'] if mode == 'deploy' else 'http://200.200.200.235:9812/search'
     OSM_SEARCH_URL = DEPLOY_SETTING['manticore']['OSM_SEARCH_URL'] if mode == 'deploy' else 'http://200.200.200.235:9512/search'
-    INSERT_URL = DEPLOY_SETTING['manticore']['INSERT_URL'] if mode == 'deploy' else 'http://200.200.200.235:9412/insert'
-    UPDATE_URL = DEPLOY_SETTING['manticore']['UPDATE_URL'] if mode == 'deploy' else 'http://200.200.200.235:9412/update'
+    INSERT_URL = DEPLOY_SETTING['manticore']['INSERT_URL'] if mode == 'deploy' else 'http://200.200.200.235:9812/insert'
+    UPDATE_URL = DEPLOY_SETTING['manticore']['UPDATE_URL'] if mode == 'deploy' else 'http://200.200.200.235:9812/update'

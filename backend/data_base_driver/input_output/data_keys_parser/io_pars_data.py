@@ -146,7 +146,7 @@ class IO_PARS_DATA(dict):
             key_id = DAT_SYS_KEY.DUMP.to_id(obj_id=self.obj_id, val=data_item[DATA_KEY])
             key_name = DAT_SYS_KEY.DUMP.to_name(obj_id=self.obj_id, val=data_item[DATA_KEY])
             key_rec = DAT_SYS_KEY.DUMP.get_rec(obj_id=self.obj_id, id=key_id)
-            if not key_rec: raise Exception('Unknow key: ' + str(key_id))
+            if not key_rec: raise Exception('Unknown key: ' + str(key_id))
             val = self.val(key_rec[DAT_SYS_KEY.TYPE_VAL], data_item[DATA_VAL])
 
             # COL
@@ -302,6 +302,7 @@ class IO_PARS_DATA(dict):
 
     # проверка на уникальность ключ-значение
     def __valid_uniq__(self, dic, fun):
+        dic = [item for item in dic if item['key_id'] not in ['0', '1']]
         lst = fun(dic=dic, is_null=True)
         tmp = [str(item) for item in lst if item[0:3] != 'dat']
         if len(tmp) != len(set(tmp)): raise Exception('Found of dublicates key: ' + str(tmp))

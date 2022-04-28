@@ -159,6 +159,8 @@ def add_data(user, group_id, object, files=None):
             return {'result': -1}
 
 
+
+
 def add_geometry(user, group_id, rec_id, location, name, parent_id, icon):
     """
     Функция для добавления геометрии

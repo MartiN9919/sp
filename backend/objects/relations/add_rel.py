@@ -27,9 +27,9 @@ def add_rel(group_id, object_1_id, rec_1_id, object_2_id, rec_2_id, params, doc_
             param.get('date', datetime.datetime.now().strftime("%d.%m.%Y %H:%M")) + ':00')
         key_id = param.get('id')
         key = get_key_by_id(key_id)
-        if key['obj_id'] != 1:
+        if key['obj_id'] != 1 and key['obj_id'] != 0:
             raise (1, 'Не связь')
-        if key['rel_obj_1_id'] != object_1_id or key['rel_obj_2_id'] != object_2_id:
+        if (key['rel_obj_1_id'] != object_1_id or key['rel_obj_2_id'] != object_2_id) and key['obj_id'] != 0:
             raise (2, 'Не верный тип связи')
         data = [['key_id', key_id], [object_1_id, rec_1_id], [object_2_id, rec_2_id],
                 [DAT_REL.DAT, date_time_str], [DAT_REL.VAL, param.get('value', '')], [DAT_REL.DOCUMENT_ID, doc_rec_id]]

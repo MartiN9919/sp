@@ -105,12 +105,13 @@ def find_duplicate_objects(group_id, object_id, rec_id, params):
                          get_key_by_id(param['id']).get('need', 0) == 1]
     new_params = {}
     for param in params:
-        if get_key_by_id(param[0])['need']:
+        key = get_key_by_id(param[0]) if param[0] > 1 else {'need': 0}  # костыль для вектора
+        if key['need']:
             new_params[param[0]] = {'value': param[1], 'date': param[2]}
     for param in needed_old_params:
         if param['id'] not in new_params:
             new_params[param['id']] = param['values'][0]
-    if nums > len(new_params) or len([item for item in params if get_key_by_id(item[0]).get('need', 0) == 1]) == 0:
+    if nums > len(new_params) or len([item for item in params if item[0] > 1 and get_key_by_id(item[0]).get('need', 0) == 1]) == 0: # костыль для вектора
         return []
     result = set(find_key_value_http(object_id, list(new_params.keys())[0], list(new_params.values())[0]['value'], group_id))
     for param in list(new_params.keys())[1:]:
