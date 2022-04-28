@@ -1,0 +1,3 @@
+{"tile_list":"http://tile.openstreetmap.org/{z}/{x}/{y}.png
+http://200.200.200.231/osm/{z}/{x}/{y}.png
+","tile_url":"http://tile.openstreetmap.org/{z}/{x}/{y}.png","pos_x":"27,5372","pos_y":"53,6414","pos_z":"8","tile_cash":"True","zoom":"16"}
