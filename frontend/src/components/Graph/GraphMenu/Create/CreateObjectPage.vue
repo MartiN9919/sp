@@ -10,7 +10,7 @@
       </selector-object>
     </template>
     <template v-slot:body>
-      <v-tab-item v-for="(object, key) in editableObjects" :key="key" eager>
+      <v-tab-item v-for="(object, key) in editableObjects" :key="key" eager transition="none">
         <v-form :ref="'form' + key" v-model="valid" onSubmit="return false;" autofocus>
           <record-area
               :params="object.params"
