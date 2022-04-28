@@ -14,7 +14,7 @@
           <v-icon right size="24">mdi-account</v-icon>
         </v-btn>
       </template>
-      <v-card max-width="fit-content">
+      <v-card max-width="min-content">
         <v-list>
           <v-list-item>
             <v-list-item-content>
