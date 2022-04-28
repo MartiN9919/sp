@@ -1,8 +1,8 @@
 <template>
-  <td>
-    <a v-if="isFile" :href="downloadLink">{{ value }}</a>
+  <td class="text-break col-info">
+    <a tabindex="-1" v-if="isFile" :href="downloadLink">{{ value }}</a>
     <geometry-param v-else-if="isGeometry" :value="value" :title="title">
-      <span>{{ geometryTextValue }}</span>
+      {{ geometryTextValue }}
     </geometry-param>
     <span v-else>{{ value ? value : 'Создана' }}</span>
   </td>
@@ -39,5 +39,7 @@ export default {
 </script>
 
 <style scoped>
-
+.col-info {
+  min-width: 12em;
+}
 </style>

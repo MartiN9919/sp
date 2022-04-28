@@ -145,10 +145,6 @@ def add_data(user, group_id, object, files=None):
                 return {'objects': [get_object_record_by_id_http(object.get('object_id'), item, group_id)
                                     for item in duplicates]}
         if object.get('rec_id_old') and object.get('rec_id_old', 0) != 0:  # действия при слиянии объектов
-            old_object = get_object_record_by_id_http(object.get('object_id'), object.get('rec_id_old'), group_id)
-            for param in old_object['params']:
-                for value in param['values']:
-                    data.append([param['id'], value['value'], value['date'] + ':00'])
             add_rel_by_other_object(group_id, object.get('object_id', 0), object.get('rec_id', 0),
                                     object.get('object_id', 0), object.get('rec_id_old', 0))
         if len(data) == 0:  # проверка на пустой запрос

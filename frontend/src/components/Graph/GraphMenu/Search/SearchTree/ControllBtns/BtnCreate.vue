@@ -1,7 +1,7 @@
 <template>
   <drop-down-menu min-width="350" left :close-on-content-click="false">
     <template v-slot:activator="{ on }">
-      <v-icon v-on="on">mdi-plus</v-icon>
+      <v-icon v-on="on" tabindex="-1">mdi-plus</v-icon>
     </template>
     <template v-slot:body="{ status, closeMenu }">
       <form-create v-if="status" :object-id="objectId" @confirm="$emit('create', $event)" @cancel="closeMenu()"/>

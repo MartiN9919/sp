@@ -1,5 +1,5 @@
 <template>
-  <v-icon @click="$emit('remove')">mdi-delete-outline</v-icon>
+  <v-icon @click="$emit('remove')" tabindex="-1">mdi-delete-outline</v-icon>
 </template>
 
 <script>

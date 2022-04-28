@@ -1,7 +1,8 @@
 <template>
   <tr>
-    <td class="information-column">{{title}}</td>
-    <td :class="valueClass">{{value}}</td>
+    <td>{{title}}</td>
+    <td :class="valueClass" class="column-data">{{value}}</td>
+    <td>{{doc}}</td>
     <td v-if="showDate" class="column-date text-end">{{date}}</td>
   </tr>
 </template>
@@ -34,6 +35,9 @@ export default {
     date: function () {
       return this.param.values[0].date
     },
+    doc: function () {
+      return this.param.values[0].doc?.title
+    }
   }
 }
 </script>
@@ -51,5 +55,8 @@ thead tr {
 }
 .column-date {
   white-space: nowrap;
+}
+.column-data {
+  word-break: break-all;
 }
 </style>

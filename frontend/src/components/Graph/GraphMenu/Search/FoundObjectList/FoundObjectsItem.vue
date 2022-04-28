@@ -1,6 +1,10 @@
 <template>
   <v-hover v-slot="{ hover }">
-    <v-list-item class="px-0 py-1 v-list-item--link">
+    <v-list-item
+        @keyup.ctrl.enter="select"
+        @keyup.alt.enter="change"
+        class="px-0 py-1 v-list-item--link"
+    >
       <v-list-item-icon class="mx-1 my-0">
         <trigger-information :active-triggers="object.triggers"/>
       </v-list-item-icon>
@@ -8,10 +12,10 @@
         {{object.title}}
       </v-list-item-subtitle>
       <v-list-item-action v-show="hover" class="flex-row ma-0 action-buttons">
-        <v-btn icon @click="select">
+        <v-btn icon @click="select" tabindex="-1">
           <v-icon>mdi-plus</v-icon>
         </v-btn>
-        <v-btn icon @click="change">
+        <v-btn icon @click="change" tabindex="-1">
           <v-icon>mdi-pencil-outline</v-icon>
         </v-btn>
       </v-list-item-action>

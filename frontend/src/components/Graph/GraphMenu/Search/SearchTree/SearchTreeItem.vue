@@ -12,7 +12,7 @@
     @keyup.enter="$emit('find')"
   >
     <template v-slot:append-outer="">
-      <v-btn v-if="base" @click="$emit('find')" icon>
+      <v-btn v-if="base" @click="$emit('find')" icon tabindex="-1">
         <v-icon size="30">mdi-magnify</v-icon>
       </v-btn>
     </template>
