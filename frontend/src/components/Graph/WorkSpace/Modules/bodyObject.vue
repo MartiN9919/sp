@@ -3,11 +3,9 @@
     <template v-slot:badge>
       <trigger-information :active-triggers="triggers" :size="triggerSize"></trigger-information>
     </template>
-    <v-avatar :size="bodySize" class="cursor-pointer">
-
-        <v-img v-if="getPhoto" :src="getPhoto"/>
-        <v-icon v-else :size="bodySize">{{node.entity.base.icon}}</v-icon>
-
+    <v-avatar :size="bodySize" class="cursor-pointer" oncontextmenu="return false">
+      <v-img v-if="getPhoto" :src="getPhoto"/>
+      <v-icon v-else :size="bodySize">{{node.entity.base.icon}}</v-icon>
     </v-avatar>
     </v-badge>
 </template>

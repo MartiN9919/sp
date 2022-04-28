@@ -6,7 +6,6 @@
     @mouseleave="emitHoverEvent('unhover')"
     @click.alt="$emit('setChoosingRelated')"
     @contextmenu.stop="$emit('ctxMenu', [$event, edge])"
-    oncontextmenu="return false"
   >
     <edge ref="edge" :edge="edge" :nodes="nodes" :in-hover="inHover" :added="added"/>
     <v-label ref="label" v-show="showLabel" :element="edge">
