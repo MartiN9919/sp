@@ -15,7 +15,7 @@ def add_rel(group_id, object_1_id, rec_1_id, object_2_id, rec_2_id, params, doc_
     @param rec_1_id: идентификационный номер первого объекта дял связи
     @param object_2_id: тип второго объекта для связи
     @param rec_2_id: идентификационный номер второго объекта дял связи
-    @param params: список словарей содержащих информацию о связях в формате [{id,val,date},...,{}]
+    @param params: список словарей содержащих информацию о связях в формате [{id,value,date},...,{}]
     @param doc_rec_id: идентификатор документа описывающего связь, если нет None
     """
     if object_1_id > object_2_id:

@@ -7,22 +7,27 @@ from data_bank import Bank, Param, Database, Dictionary, Relation
 
 class ParserBank:
     base_path: Path
-    _bank_path: Path
-    _dictionary_path: Path
-    _bank_folder_path: Path
-    _dictionary_folder_path: Path
-    _encoding: str = 'UTF-8' #windows-1251
-    databases: List[Database] = []
-    dictionaries: List[Dictionary] = []
-    relations: Dict[str, Relation] = {}
-
+    _bank_path: Path # путь к файлу структуры БД
+    _dictionary_path: Path # путь к файлу структуры словарей
+    _bank_folder_path: Path # путь к папке хранящей объекты
+    _dictionary_folder_path: Path # путь к папке хранящей данные
+    _encoding: str = 'UTF-8' #кодировка файлов, хронос по стандарту вывгружает в windows-1251
+    databases: List[Database] = [] # список баз данных (таблиц)
+    dictionaries: List[Dictionary] = [] # список словарей (списков)
+    relations: Dict[str, Relation] = {} # словарб связей в формате {id: Relation}
+    # константы
     LIST_BASE_SEPARATOR = 'Список баз:'
     BASE_PARAMS_SEPARATOR = 'База  :'
     DATABASE_FOLDER = 'DB'
     DICTIONARIES_FOLDER = 'LDB'
     DOCUMENTS_PATH = 'documents'
+    SEPARATOR = '|'
 
     def __init__(self, path: str):
+        """
+        Метод инициализации
+        @param path: путь к папке с банком данных
+        """
         self.base_path = Path(path)
         files = {x.name: x for x in self.base_path.iterdir()}
         if all(map(lambda item: item in files, ['DB struct.txt', 'LDB struct.txt', 'DB', 'LDB'])):
@@ -34,39 +39,70 @@ class ParserBank:
             self._parse_dictionaries()
         else:
             raise Exception
-        self.parse_dictionaries_data()
-        self.parse_database_data()
+        self.parse_dictionaries_data() # запуск парсера словарей
+        self.parse_database_data() # запуск парсера данных
 
-    def get_documents_path(self) -> str:
+    @property
+    def documents_path(self) -> str:
+        """
+        Метод получения пути к файлам
+        @return: строка содержащая путь к папке с файлами
+        """
         return f"{self.base_path}/{self.DOCUMENTS_PATH}"
 
     @staticmethod
     def _parse_bank_list(lines: List[str], databases: List[Bank], datatype=Bank):
+        """
+        Метод для парсинга списка баз данных (таблиц)
+        @param lines: список строк структурного файла
+        @param databases: список накопитель баз данных (таблиц)
+        @param datatype: тип базы (таблицы): словарь или обычная таблица
+        """
         for line in lines:
-            params = line.split('|')
+            params = line.split(ParserBank.SEPARATOR)
             if params[0].isdigit():
                 databases.append(datatype(id=int(params[0]), name=params[1], short_name=params[2]))
 
     def get_database_by_short_name(self, short_name: str) -> Database:
+        """
+        Метод для получения базы данных (таблицы) по ее краткому имени
+        @param short_name: краткое имя в формате строки
+        @return: найденная база данных (таблица)
+        """
         for database in self.databases:
             if database.short_name == short_name:
                 return database
 
     def get_database_by_id(self, bank_id: int) -> Database:
+        """
+        Метод для получения базы данных (таблицы) по ее идентификатору
+        @param bank_id: идентификатор базы данных (таблицы)
+        @return: найденная база данных (таблица)
+        """
         for database in self.databases:
             if database.id == bank_id:
                 return database
 
     def get_dictionary_by_name(self, name: str) -> Dictionary:
+        """
+        Метод для получения словаря (списка) по его имени
+        @param name: имя в формате строки
+        @return: найденный словарь (список)
+        """
         for dictionary in self.dictionaries:
             if dictionary.name == name:
                 return dictionary
 
     @staticmethod
     def _parse_params(lines: List[str]) -> List[Param]:
+        """
+
+        @param lines:
+        @return:
+        """
         result = []
         for line in lines:
-            params = line.split('|')
+            params = line.split(ParserBank.SEPARATOR)
             if params[0].isdigit():
                 link_str = params[6].replace('\n', '')
                 result.append(Param(
@@ -110,14 +146,14 @@ class ParserBank:
                 with open(dict_path, encoding=self._encoding) as main_file, open(dict_sub_path,
                                                                                  encoding=self._encoding) as sub_file:
                     for line, sub_line in zip(main_file, sub_file):
-                        params = line.split('|')
-                        sub_params = sub_line.split('|')
+                        params = line.split(ParserBank.SEPARATOR)
+                        sub_params = sub_line.split(ParserBank.SEPARATOR)
                         if params[0].isdigit():
                             dictionary.data[params[1].replace('\n', '')] = sub_params[1].replace('\n', '')
             else:
                 with open(dict_path, encoding=self._encoding) as main_file:
                     for line in main_file:
-                        params = line.split('|')
+                        params = line.split(ParserBank.SEPARATOR)
                         if params[0].isdigit():
                             dictionary.data[params[1].replace('\n', '')] = params[2].replace('\n', '')
 
@@ -174,7 +210,7 @@ class ParserBank:
         for line in file:
             if len(line.replace('\n', '')) == 0:
                 continue
-            temp = [param.replace('\n', '') for param in line.split('|')]
+            temp = [param.replace('\n', '') for param in line.split(ParserBank.SEPARATOR)]
             if len(temp_params) == len(params_type) and temp[0].isdigit():
                 params = copy.deepcopy(temp_params)
                 self._parse_database_data(params, params_type, bank_id, bank_data)
@@ -210,7 +246,7 @@ class ParserBank:
                 path_params = file_path.name.split('_')
                 sub_data = int(path_params[1].split('.')[0]) if len(path_params) > 1 else 0
                 with open(file_path, encoding=self._encoding) as file:
-                    first_line_params = [param.replace('\n', '') for param in file.readline().split('|')]
+                    first_line_params = [param.replace('\n', '') for param in file.readline().split(ParserBank.SEPARATOR)]
                     if sub_data:
                         params_type = ParserBank._parse_sub_data_params(sub_data, database.params)
                     else:
@@ -218,7 +254,7 @@ class ParserBank:
                     self._parse_database_file(file, database.id, params_type, database.data)
             if database.file_param:
                 for item in database.data:
-                    path = Path(self.get_documents_path())
+                    path = Path(self.documents_path)
                     files = [x.name for x in path.iterdir() if x.name.split('.')[0] == str(item)]
                     for file in files:
                         database.data[item]['values'].append({'value': file, 'type': database.file_param})
