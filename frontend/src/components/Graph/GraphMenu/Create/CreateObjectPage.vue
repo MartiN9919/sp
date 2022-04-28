@@ -13,6 +13,7 @@
       <v-tab-item v-for="(object, key) in editableObjects" :key="key" eager transition="none">
         <v-form :ref="'form' + key" v-model="valid" onSubmit="return false;" autofocus>
           <record-area
+              conflict
               :params="object.params"
               :title="object.title"
               :settings="{objectId: object.ids.object_id, recId: object.ids.rec_id}"

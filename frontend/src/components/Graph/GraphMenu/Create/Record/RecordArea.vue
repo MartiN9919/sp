@@ -19,6 +19,7 @@
           <record-input
               :param="getParam(param, value)"
               :type="param.baseParam.type"
+              :conflict="conflict"
               @deletable="deleteNewParam(param.baseParam.id, value)"
           ></record-input>
         </v-row>
@@ -50,6 +51,10 @@ export default {
     title: {
       type: String,
       default: null
+    },
+    conflict: {
+      type: Boolean,
+      default: false
     }
   },
   data: () => ({

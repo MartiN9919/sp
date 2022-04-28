@@ -43,11 +43,12 @@ export default {
   props: {
     param: Object,
     type: Object,
+    conflict: Boolean
   },
   computed: {
     ...mapGetters(['editableObjects']),
     readOnly: function () {
-      if(this.editableObjects.length > 1) {
+      if(this.conflict && this.editableObjects.length > 1) {
         return !!this.editableObjects[0].params.find(p => p.values.find(v => v === this.param))
       }
       else {
@@ -55,7 +56,7 @@ export default {
       }
     },
     inputClass: function () {
-      return this.readOnly ? 'asdasdsa' : ''
+      return this.readOnly ? 'readOnly' : ''
     }
   }
 }
@@ -70,7 +71,7 @@ export default {
   margin-left: auto;
   width: fit-content;
 }
-.asdasdsa >>> input {
+.readOnly >>> input {
   color: teal
 }
 </style>
