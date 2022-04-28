@@ -96,15 +96,15 @@ class ParserBank:
     @staticmethod
     def _parse_params(lines: List[str]) -> List[Param]:
         """
-
-        @param lines:
-        @return:
+        Метод для парсинга параметров базы данных (таблицы) из структурного файла
+        @param lines: список строк хранящих параметры
+        @return: список параметров
         """
-        result = []
-        for line in lines:
-            params = line.split(ParserBank.SEPARATOR)
-            if params[0].isdigit():
-                link_str = params[6].replace('\n', '')
+        result = [] # пустой список для накопления результата
+        for line in lines: # идем по строкам
+            params = line.split(ParserBank.SEPARATOR) # получением список параметров, разбив строку по разделителю
+            if params[0].isdigit(): # если первый параметр число начинаем обработку
+                link_str = params[6].replace('\n', '') # убираем у последнего параметра \n
                 result.append(Param(
                     id=int(params[0]),
                     name=params[1],
@@ -117,51 +117,72 @@ class ParserBank:
         return result
 
     def _parse_banks(self, path: Path, databases: List[Bank], datatype=Bank):
-        with open(path, encoding=self._encoding) as file:
-            lines = file.readlines()
-            list_base_start = next(i for i, v in enumerate(lines) if v.startswith(self.LIST_BASE_SEPARATOR))
-            list_base_stop = lines.index('\n', list_base_start)
-            ParserBank._parse_bank_list(lines[list_base_start:list_base_stop], databases, datatype)
-            for database in databases:
-                param_base_start = next(i for i, v in enumerate(lines)
+        """
+        Метод для парсинга информации о банках из структурного файла
+        @param path: путь к структурному файлу
+        @param databases: список баз данных (таблиц)
+        @param datatype: тип данных (обычная таблица или словарь)
+        """
+        with open(path, encoding=self._encoding) as file: # открываем файл
+            lines = file.readlines() # считываем список строк
+            list_base_start = next(i for i, v in enumerate(lines) if v.startswith(self.LIST_BASE_SEPARATOR)) # находим первую строку с информацией о базах (таблицах)
+            list_base_stop = lines.index('\n', list_base_start) # находим последнюю строку (пустая пробельная строка)
+            ParserBank._parse_bank_list(lines[list_base_start:list_base_stop], databases, datatype) # парсим список баз (таблиц) в databases
+            for database in databases: # идем по базам (таблицам)
+                param_base_start = next(i for i, v in enumerate(lines) # находим первую строку с параметрами базы (таблицы)
                                         if v == (self.BASE_PARAMS_SEPARATOR + database.name + '\n'))
-                param_base_stop = lines.index('\n', param_base_start)
-                database.params = ParserBank._parse_params(lines[param_base_start:param_base_stop])
-                file_params = [item for item in database.params if item.param_type == 'Ф']
+                param_base_stop = lines.index('\n', param_base_start) # находим последнюю строку с параметрами базы (таблицы)
+                database.params = ParserBank._parse_params(lines[param_base_start:param_base_stop]) # парсим параметры базы (таблицы)
+                file_params = [item for item in database.params if item.param_type == 'Ф'] # проверяем является ли база (таблица) файловой (один из параметров имеет тип "Ф")
                 if len(file_params):
                     database.file_param = file_params[0]
 
     def _parse_database(self):
+        """
+        Метод для вызова парсинга всех баз данных (таблиц)
+        """
         self._parse_banks(self._bank_path, self.databases, Database)
 
     def _parse_dictionaries(self):
+        """
+        Метод для вызова парсинга всех словарей (списков)
+        """
         self._parse_banks(self._dictionary_path, self.dictionaries, Dictionary)
 
     def parse_dictionaries_data(self):
-        for dictionary in self.dictionaries:
-            dict_path = f"{self._dictionary_folder_path}/{dictionary.id}.txt"
-            if 'МН' in dictionary.params[2].status:
-                sub_file_id = dictionary.params[2].id
-                dict_sub_path = f"{self._dictionary_folder_path}/{dictionary.id}_{sub_file_id}.txt"
+        """
+        Метод для считывания информации из всех словарей
+        """
+        for dictionary in self.dictionaries: # идем по списку словарей
+            dict_path = f"{self._dictionary_folder_path}/{dictionary.id}.txt" # получаем путь к основному файлу словаря
+            if 'МН' in dictionary.params[2].status: # если словарь имеет множественный тип хранения
+                sub_file_id = dictionary.params[2].id # получаем идентификатор побочного файла
+                dict_sub_path = f"{self._dictionary_folder_path}/{dictionary.id}_{sub_file_id}.txt" # получаем путь к побочному файлу
                 with open(dict_path, encoding=self._encoding) as main_file, open(dict_sub_path,
-                                                                                 encoding=self._encoding) as sub_file:
-                    for line, sub_line in zip(main_file, sub_file):
-                        params = line.split(ParserBank.SEPARATOR)
-                        sub_params = sub_line.split(ParserBank.SEPARATOR)
-                        if params[0].isdigit():
+                                                                                 encoding=self._encoding) as sub_file: # открываем основной и побочные файлы
+                    for line, sub_line in zip(main_file, sub_file): # построчно считываем открытые файлы
+                        params = line.split(ParserBank.SEPARATOR) # получаем параметры с основного файла
+                        sub_params = sub_line.split(ParserBank.SEPARATOR) # получаем параметры с побочного файла
+                        if params[0].isdigit(): # если первый параметр число (идентификатор) записываем
                             dictionary.data[params[1].replace('\n', '')] = sub_params[1].replace('\n', '')
-            else:
-                with open(dict_path, encoding=self._encoding) as main_file:
-                    for line in main_file:
-                        params = line.split(ParserBank.SEPARATOR)
-                        if params[0].isdigit():
+            else: # если словарь имеет одиночный тип хранения
+                with open(dict_path, encoding=self._encoding) as main_file:  # открываем основной файл
+                    for line in main_file: # построчно считываем открытый файл
+                        params = line.split(ParserBank.SEPARATOR) # получаем параметры с основного файла
+                        if params[0].isdigit(): # если первый параметр число (идентификатор) записываем
                             dictionary.data[params[1].replace('\n', '')] = params[2].replace('\n', '')
 
     @staticmethod
-    def _parse_data_params(params: List[str], bank_params: List[Param]) -> dict:
+    def _parse_data_params(params: List[str], database_params: List[Param]) -> dict:
+        """
+        Метод для получения соответствия порядка параметров с их типом
+        @param params: параметры отдельного файла
+        @param bank_params: параметры базы данных
+        @return: словарь соответствия порядка параметра с их типом
+        """
         result = {}
         for i, param in enumerate(params):
-            bank_param = next(item for item in bank_params if item.name == param)
+            bank_param = next(item for item in database_params if item.name == param)
             result[i] = bank_param
         return result
 
