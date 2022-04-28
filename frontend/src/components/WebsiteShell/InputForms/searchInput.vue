@@ -1,11 +1,14 @@
 <template>
   <div class="search-input-form">
     <drop-down-menu
-      min-width="96%"
-      max-width="96%"
-      max-height="40%"
-      nudge-bottom="5"
-      attach offset-y
+      max-width="300"
+      max-height="300"
+      min-width="300"
+      nudge-left="300"
+      eager
+      offset-x
+      offset-y
+      content-class="menu_content"
       :close-on-content-click="false"
     >
       <template v-slot:activator="{ on }">
@@ -28,7 +31,7 @@
       <template v-slot:body="{ closeMenu,  status }">
         <v-list width="100%">
           <v-list-item style="max-height: 48px">
-            <v-text-field v-model="searchString" dense color="teal" hide-details autocomplete="off">
+            <v-text-field v-model="searchString" @keyup.enter="search" dense color="teal" hide-details autocomplete="off">
               <template v-slot:append>
                 <v-btn icon small @click="search">
                   <v-icon>mdi-magnify</v-icon>
@@ -60,7 +63,7 @@
                 Нет найденных объектов
               </v-list-item-subtitle>
             </v-list-item>
-            <v-list-item v-else v-for="object in findObjects" :key="object.rec_id" @click="value=object; closeMenu()">
+            <v-list-item v-else v-for="object in findObjects" :key="object.rec_id" @click="value=object; closeMenu()" class="my-2">
               <v-list-item-subtitle style="white-space: normal">
                 {{object.title}}
               </v-list-item-subtitle>
@@ -117,10 +120,6 @@ name: "searchInput",
 </script>
 
 <style scoped>
-.search-input-form >>> .v-menu__content {
-  display: flex;
-  overflow: hidden;
-}
 .scroll-content {
   overflow: auto;
   height: calc(100% - 48px);

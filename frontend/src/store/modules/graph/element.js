@@ -23,6 +23,10 @@ export default {
     addNode: (state, node) => state.graph.nodes.push(node),
     addEdge: (state, edge) => state.graph.edges.push(edge),
     clearGraph: (state) => state.graph.clearGraph(),
+    deleteNode: (state, node) => state.graph.removeNode(node),
+    deleteSelectedNodes: (state) => state.graph.nodes
+      .filter(n => n.state.selected)
+      .forEach(n => state.graph.removeNode(n)),
     clearSelectedNodes: (state) => state.graph.nodes.forEach(n => n.state.selected = false),
     reorderNodes: (state, {nodes, position}) => state.graph.reorderGraph(position.x, position.y, nodes),
   },
@@ -45,9 +49,9 @@ export default {
         commit('addEdge', edge)
       }
     },
-    addObjectsToGraph({getters, dispatch}, payload) {
+    addObjectsToGraph({getters, dispatch}, {payload, action}) {
       const callTime = new Date()
-      dispatch('createTimeLine', callTime)
+      dispatch('createTimeLine', {callTime, action})
       dispatch('getObjects', payload).then(entityNodes => {
         dispatch('createNodes', {objects: entityNodes.map(n => n.value || []), callTime}).then(nodes => {
           dispatch('getRelationsForObjects', nodes.map(n => n.entity)).then(entityEdges => {
@@ -63,10 +67,10 @@ export default {
         })
       })
     },
-    addObjectToGraph({getters, dispatch}, {object_id, rec_id}) {
+    addObjectToGraph({getters, dispatch}, {object, action}) {
       const callTime = new Date()
-      dispatch('createTimeLine', callTime)
-      return dispatch('getObject', {object_id, rec_id}).then(object => {
+      dispatch('createTimeLine', {callTime, action})
+      return dispatch('getObject', object).then(object => {
         return dispatch('createNode', {object, callTime}).then(node => {
           return dispatch('getRelations', {from: object, objects: getters.graphNodesEntity}).then(relations => {
             dispatch('addNodeToGraph', {node, relations})
@@ -80,16 +84,19 @@ export default {
     },
     addRelationToGraph({dispatch}, {from, to}) {
       const callTime = new Date()
-      dispatch('createTimeLine', callTime)
+      dispatch('createTimeLine', {
+        callTime,
+        action: {
+          name: 'addRelationToGraph',
+          payload: `${to.title} и ${from.title}`
+        }
+      })
       return dispatch('getRelation', {from, to}).then(relation => {
         return dispatch('createEdge', {relation, callTime}).then(edge => {
           dispatch('addEdgeToGraph', edge)
           return edge
         })
       })
-    },
-    clearGraph({commit}) {
-      commit('clearGraph')
     },
     clearSelectedNodes({commit}) {
       commit('clearSelectedNodes')

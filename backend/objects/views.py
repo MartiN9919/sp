@@ -1,13 +1,14 @@
 import json
 
-from core.projectSettings.decorators import login_check, request_log, request_wrap, request_get, write_permission
+from core.projectSettings.decorators import login_check, request_log, request_wrap, request_get, write_permission, \
+    request_post
 from data_base_driver.constants.const_dat import DAT_OWNER
 from data_base_driver.constants.const_key import SYS_KEY_CONSTANT
 from data_base_driver.constants.const_map_tiles import MAP_TILES
 from objects.record.get_record import get_object_record_by_id_http
 from data_base_driver.input_output.io_geo import get_geometry_search, feature_collection_by_geometry
 from data_base_driver.osm.osm_lib import osm_search, osm_fc
-from objects.record.add_record import add_data, add_geometry
+from objects.record.add_record import add_data, add_geometry, add_data_from_form
 from objects.record.get_record import get_keys
 from data_base_driver.sys_key.get_list import get_list_by_top_id, get_lists
 from data_base_driver.sys_key.get_object_info import obj_list
@@ -297,7 +298,7 @@ def aj_geometry_fc(request):
 def aj_groups(request):
     """
     Функция для получения списка групп пользователей
-    @param request: GET зарпос без параметров
+    @param request: GET запрос без параметров
     @return: список групп пользователей
     """
     return DAT_OWNER.DUMP.get_groups_list()
@@ -338,3 +339,16 @@ def aj_osm_fc(request):
     @return: fc
     """
     return osm_fc(id=request.GET['id'])
+
+
+@login_check
+@request_log
+@request_wrap
+@request_post
+def aj_load_from_form(request):
+    group_id = DAT_OWNER.DUMP.get_group(user_id=request.user.id)
+    files = request.FILES
+    meta = json.loads(request.POST['data'])
+    return add_data_from_form(request.user, group_id, files.popitem()[1][0], meta)
+
+

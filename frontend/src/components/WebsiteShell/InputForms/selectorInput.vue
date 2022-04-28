@@ -45,7 +45,7 @@ export default {
   name: "selectorInput",
   model: { prop: 'inputString', event: 'changeInputString'},
   props: {
-    inputString: Number,
+    inputString: [Number, String],
   },
   computed: {
     ...mapGetters(['baseList', 'userInformation']),
@@ -55,7 +55,13 @@ export default {
     },
     itemText: function () { return this.$attrs['item-text'] || 'value'},
     value: {
-      get: function () { return this.items.find(item => item.id === this.inputString) },
+      get: function () {
+        if (typeof this.inputString === 'string') {
+          return this.items.find(v => v.value === this.inputString).id
+        } else {
+          return this.items.find(item => item.id === this.inputString)
+        }
+      },
       set: function (value) { this.$emit('changeInputString', value) }
     }
   },

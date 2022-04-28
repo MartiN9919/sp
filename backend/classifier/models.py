@@ -243,18 +243,9 @@ class ModelKey(models.Model):
         blank=True,
         null=True,
     )
-    path = models.CharField(
-        max_length=255,
-        verbose_name='Путь',
-        help_text='Путь',
-        blank=True,
-        null=True,
-    )
     priority = models.IntegerField(
         verbose_name='Приоритет',
         help_text=' Приоритет при именовании',
-        blank=True,
-        null=True,
     )
     visible = models.CharField(
         max_length=20,
@@ -278,6 +269,8 @@ class ModelKey(models.Model):
         @param args: стандартный параметр
         @param kwargs: стандартный параметр
         """
+        if not self.priority and self.obj_id != 1:
+            return
         if self.obj_id == 1:
             if self.rel_obj_1_id > self.rel_obj_2_id:
                 temp_id = self.rel_obj_1_id

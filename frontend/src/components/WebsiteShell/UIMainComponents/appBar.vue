@@ -2,14 +2,14 @@
   <v-app-bar v-if="userInformation" app dense flat dark :color="$CONST.APP.COLOR_OBJ">
     <v-app-bar-nav-icon @click="drawer = !drawer"/>
     <v-tabs fixed-tabs hide-slider>
-      <v-tab v-for="tab in appbarTabs" :key="tab.route" :to="tab.route">
+      <v-tab v-for="tab in appbarTabs" :key="tab.route" :to="tab.route" tabindex="-1">
         {{tab.title}}<v-icon right>{{ tab.icon }}</v-icon>
       </v-tab>
     </v-tabs>
     <v-spacer/>
     <v-menu offset-y z-index="100003" :close-on-content-click="false">
       <template v-slot:activator="{ on, attrs }">
-        <v-btn large plain v-bind="attrs" v-on="on">
+        <v-btn large plain v-bind="attrs" v-on="on" tabindex="-1">
           {{ userInformation.first_name }} {{ userInformation.last_name }}
           <v-icon right size="24">mdi-account</v-icon>
         </v-btn>

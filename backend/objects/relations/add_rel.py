@@ -24,7 +24,7 @@ def add_rel(group_id, object_1_id, rec_1_id, object_2_id, rec_2_id, params, doc_
         object_2_id, rec_2_id = temp_object, temp_rec
     for param in params:
         date_time_str = date_time_client_to_server(
-            param.get('date', datetime.datetime.now().strftime("%Y-%m-%d %H:%M")) + ':00')
+            param.get('date', datetime.datetime.now().strftime("%d.%m.%Y %H:%M")) + ':00')
         key_id = param.get('id')
         key = get_key_by_id(key_id)
         if key['obj_id'] != 1:

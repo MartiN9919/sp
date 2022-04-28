@@ -19,7 +19,7 @@
           size="24"
           class="action-icon"
         >mdi-delete</v-icon>
-        <v-icon size="24" v-else>{{$attrs.icon}}</v-icon>
+        <v-icon tabindex="-1" size="24" v-else>{{$attrs.icon}}</v-icon>
       </v-hover>
     </template>
   </v-text-field>

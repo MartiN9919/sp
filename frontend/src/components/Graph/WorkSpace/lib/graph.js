@@ -91,6 +91,7 @@ export default class Graph {
   }
 
   removeNode (node) {
+    node.state.selected = false
     this.edges.filter(edge => edge.from === node.id || edge.to === node.id).map(edge => this.removeEdge(edge))
     const index = this.nodes.indexOf(node)
     if (index > -1) {
@@ -195,8 +196,8 @@ export default class Graph {
   forceMoveNode(node, otherNode, edges) {
     let dx = otherNode.x - node.x
     let dy = otherNode.y - node.y
-    dx === 0 ? dx = Math.random() * 20 - 10 : dx
-    dy === 0 ? dy = Math.random() * 20 - 10 : dy
+    Math.abs(dx) < 1 ? dx = Math.random() * 20 - 10 : dx
+    Math.abs(dy) < 1 ? dy = Math.random() * 20 - 10 : dy
     let offset = Math.sqrt(dx * dx + dy * dy);
     if (edges.find(edge => edge === otherNode.id)
         || this.edges.find(edge => {

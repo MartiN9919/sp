@@ -36,7 +36,7 @@ export default {
     },
   },
   data: () => ({
-    imageTypes: ['jpg', 'jpeg', 'png'],
+    imageTypes: ['jpg', 'jpeg', 'png', 'webp'],
   }),
   computed: {
     ...mapGetters(['globalTooltipStatus']),

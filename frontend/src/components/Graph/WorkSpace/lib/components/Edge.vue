@@ -11,12 +11,15 @@ export default {
     },
     nodes: Array,
     inHover: Boolean,
+    added: Boolean
   },
 
   computed: {
     relationClass() {
       if(this.inHover) {
         return 'hover-relation'
+      } else if(this.added) {
+        return 'added-relation'
       } else return 'base-relation'
     },
 
@@ -63,6 +66,6 @@ export default {
 
 .added-relation {
   stroke-width: 5px;
-  stroke: rgba(0, 255, 0, 0.3);
+  stroke: rgba(128, 0, 128, 0.3);
 }
 </style>

@@ -89,7 +89,6 @@ class ModelKeyAdminRel(admin.ModelAdmin):
     list_display = (
         DAT_SYS_KEY.TITLE,
         DAT_SYS_KEY.ID,
-        DAT_SYS_KEY.PATH,
         DAT_SYS_KEY.REL_OBJ_1,
         DAT_SYS_KEY.REL_OBJ_2,
         DAT_SYS_KEY.COL,
@@ -97,13 +96,13 @@ class ModelKeyAdminRel(admin.ModelAdmin):
         DAT_SYS_KEY.DESCRIPT,
     )
     search_fields = [DAT_SYS_KEY.TITLE, ]
-    ordering = (DAT_SYS_KEY.OBJ, DAT_SYS_KEY.PATH, DAT_SYS_KEY.TITLE,)
+    ordering = (DAT_SYS_KEY.OBJ, DAT_SYS_KEY.TITLE,)
 
     autocomplete_fields = (DAT_SYS_KEY.LIST,)
     readonly_fields = (DAT_SYS_KEY.ID,)
     fieldsets = (
         ("Идентификатор", {'fields': (DAT_SYS_KEY.ID,)}),
-        ("Название связи", {'fields': ((DAT_SYS_KEY.TITLE, DAT_SYS_KEY.NAME,), (DAT_SYS_KEY.PATH,),)}),
+        ("Название связи", {'fields': ((DAT_SYS_KEY.TITLE, DAT_SYS_KEY.NAME,), )}),
         ("Основные настройки связи", {'fields': (DAT_SYS_KEY.LIST,), }),
         ("Описания для связи", {'fields': ((DAT_SYS_KEY.HINT,),), }),
         ("Поля для связи между объектами", {'fields': ((DAT_SYS_KEY.REL_OBJ_1, DAT_SYS_KEY.REL_OBJ_2,),), }),
@@ -174,23 +173,21 @@ class ModelKeyAdminObject(admin.ModelAdmin):
     list_display = (
         DAT_SYS_KEY.TITLE,
         DAT_SYS_KEY.ID,
-        DAT_SYS_KEY.PATH,
         DAT_SYS_KEY.OBJ,
+        DAT_SYS_KEY.PRIORITY,
         DAT_SYS_KEY.TYPE_VAL,
         DAT_SYS_KEY.NEED,
         DAT_SYS_KEY.DESCRIPT,
-        DAT_SYS_KEY.PRIORITY,
     )
     search_fields = [DAT_SYS_KEY.TITLE, ]
 
-    ordering = (DAT_SYS_KEY.OBJ, DAT_SYS_KEY.PATH, DAT_SYS_KEY.TITLE,)
+    ordering = (DAT_SYS_KEY.OBJ, DAT_SYS_KEY.PRIORITY, DAT_SYS_KEY.TITLE,)
 
     autocomplete_fields = (DAT_SYS_KEY.LIST,)
     readonly_fields = (DAT_SYS_KEY.ID,)
     fieldsets = (
         ("Идентификатор", {'fields': (DAT_SYS_KEY.ID,)}),
-        ("Название классификатора", {'fields': ((DAT_SYS_KEY.TITLE, DAT_SYS_KEY.NAME,), (DAT_SYS_KEY.PATH,
-                                                                                         DAT_SYS_KEY.PRIORITY, ),)}),
+        ("Название классификатора", {'fields': ((DAT_SYS_KEY.TITLE, DAT_SYS_KEY.NAME,), (DAT_SYS_KEY.PRIORITY, ),)}),
         ("Основные настройки классификатора", {'fields': (DAT_SYS_KEY.OBJ, DAT_SYS_KEY.TYPE_VAL, DAT_SYS_KEY.LIST, ), }),
         ("Описания для классификатора", {'fields': ((DAT_SYS_KEY.HINT,),), }),
         (None, {'fields': ((DAT_SYS_KEY.NEED, DAT_SYS_KEY.VISIBLE, DAT_SYS_KEY.BLOCKED_IN_BLANK),), }),
