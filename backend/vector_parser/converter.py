@@ -152,11 +152,13 @@ class ConverterParams:
                 value = ' '.join([item[0] for item in sorted(temp_params[temp_param], key=lambda x: x[1])])
                 new_object[key]['params'].append(
                     {'id': temp_param, 'value': value, 'date': database_object_datetime})
+            if len(new_object[key]['params']) == 0: # toDo перенести в парсер
+                continue
             temp_result = add_data_vector(1, new_object[key], path)
             if temp_result.get('object'):
                 new_object[key]['rec_id'] = temp_result['object']
             else:
-                print('some error')
+                print('some error ', key, ' ', new_object[key])
             result['objects'].update(new_object)
         return result
 
@@ -257,6 +259,6 @@ class ConverterBank:
         self.create_deferred_relations(deferred_relations)
 
 
-converter = ConverterBank('/home/pushkin/convert_table.xlsx', '/home/pushkin/testDB with rel')
+converter = ConverterBank('/home/pushkin/convert_table OPOGK.xlsx', '/home/pushkin/ТЕСТовый БД в САПФИР')
 converter.convert()
 

@@ -1,4 +1,5 @@
 import copy
+import datetime
 from pathlib import Path
 from typing import List, Dict, Tuple
 
@@ -11,16 +12,16 @@ class ParserBank:
     _dictionary_path: Path # путь к файлу структуры словарей
     _bank_folder_path: Path # путь к папке хранящей объекты
     _dictionary_folder_path: Path # путь к папке хранящей данные
-    _encoding: str = 'UTF-8' #кодировка файлов, хронос по стандарту вывгружает в windows-1251
+    _encoding: str = 'windows-1251' #кодировка файлов, хронос по стандарту вывгружает в windows-1251
     databases: List[Database] = [] # список баз данных (таблиц)
     dictionaries: List[Dictionary] = [] # список словарей (списков)
     relations: Dict[str, Relation] = {} # словарб связей в формате {id: Relation}
     # константы
     LIST_BASE_SEPARATOR = 'Список баз:'
     BASE_PARAMS_SEPARATOR = 'База  :'
-    DATABASE_FOLDER = 'DB'
-    DICTIONARIES_FOLDER = 'LDB'
-    DOCUMENTS_PATH = 'documents'
+    DATABASE_FOLDER = 'БД'
+    DICTIONARIES_FOLDER = 'СБД'
+    DOCUMENTS_PATH = 'файлы'
     SEPARATOR = '|'
 
     def __init__(self, path: str):
@@ -30,11 +31,11 @@ class ParserBank:
         """
         self.base_path = Path(path)
         files = {x.name: x for x in self.base_path.iterdir()}
-        if all(map(lambda item: item in files, ['DB struct.txt', 'LDB struct.txt', 'DB', 'LDB'])):
-            self._bank_path = files['DB struct.txt']
-            self._bank_folder_path = files['DB']
-            self._dictionary_path = files['LDB struct.txt']
-            self._dictionary_folder_path = files['LDB']
+        if all(map(lambda item: item in files, ['Стурктура БД опогк.txt', 'Структура СБД опогк.txt', 'БД', 'СБД'])):
+            self._bank_path = files['Стурктура БД опогк.txt']
+            self._bank_folder_path = files['БД']
+            self._dictionary_path = files['Структура СБД опогк.txt']
+            self._dictionary_folder_path = files['СБД']
             self._parse_database()
             self._parse_dictionaries()
         else:
@@ -197,11 +198,13 @@ class ParserBank:
     def _parse_database_data(self, params: List[str], params_type: dict, bank_id: int, bank_data: dict):
         object_id = int(params[0])
         if not bank_data.get(object_id, None):
-            bank_data[object_id] = {'date': None, 'time': None, 'values': []}
+            bank_data[object_id] = {'date': datetime.datetime.now().strftime("%d.%m.%Y"),
+                                    'time': datetime.datetime.now().strftime("%H:%M"),
+                                    'values': []}
         for i, param in enumerate(params[1:]):
+            param_type = params_type[i + 1]
             if len(param) == 0:
                 continue
-            param_type = params_type[i + 1]
             if param_type.link:
                 other_object_id = int(param)
                 other_bank = self.get_database_by_short_name(param_type.link[:2])
@@ -216,10 +219,10 @@ class ParserBank:
                     if not param:
                         continue
                 if param_type.status and 'НК' in param_type.status:
-                    if param_type.id == 600:
+                    if param_type.id == 603:
                         bank_data[object_id]['date'] = param
                         continue
-                    elif param_type.id == 601:
+                    elif param_type.id == 604:
                         bank_data[object_id]['time'] = param
                         continue
                     else:
@@ -252,7 +255,7 @@ class ParserBank:
                 self._parse_database_data(params, params_type, bank_id, bank_data)
 
     @staticmethod
-    def _get_older_datetime(date_1: str, time_1: str, date_2:str, time_2: str) -> Tuple[str, str]:
+    def _get_older_datetime(date_1: str, time_1: str, date_2: str, time_2: str) -> Tuple[str, str]:
         temp_date_1 = '.'.join(reversed(date_1.split('.')))
         temp_date_2 = '.'.join(reversed(date_2.split('.')))
         if temp_date_1 > temp_date_2 or (temp_date_1 == temp_date_2 and time_1 > time_2):
@@ -273,9 +276,9 @@ class ParserBank:
                     else:
                         params_type = ParserBank._parse_data_params(first_line_params, database.params)
                     self._parse_database_file(file, database.id, params_type, database.data)
-            if database.file_param:
+            path = Path(self.documents_path)
+            if database.file_param and path.is_dir():
                 for item in database.data:
-                    path = Path(self.documents_path)
                     files = [x.name for x in path.iterdir() if x.name.split('.')[0] == str(item)]
                     for file in files:
                         database.data[item]['values'].append({'value': file, 'type': database.file_param})
