@@ -40,6 +40,6 @@ export default {
 
 <style scoped>
 .col-info {
-  min-width: 12em;
+  min-width: 5em;
 }
 </style>

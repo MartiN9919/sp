@@ -1,6 +1,6 @@
 <template>
-  <td v-if="doc" class="text-center pl-3" @click="addToGraph" style="cursor: pointer">
-    <span>{{ doc.title }}</span>
+  <td class="text-center pl-3" @click="addToGraph" style="cursor: pointer">
+    <span class="teal--text">{{ doc ? doc.title : '' }}</span>
   </td>
 </template>
 

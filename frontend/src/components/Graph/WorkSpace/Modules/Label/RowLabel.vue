@@ -1,8 +1,10 @@
 <template>
   <tr>
-    <td>{{title}}</td>
+    <td>
+      <span>{{title}}</span><br>
+      <span v-if="doc" class="teal--text" style="font-size: 0.8em">{{doc}}</span>
+    </td>
     <td :class="valueClass" class="column-data">{{value}}</td>
-    <td>{{doc}}</td>
     <td v-if="showDate" class="column-date text-end">{{date}}</td>
   </tr>
 </template>

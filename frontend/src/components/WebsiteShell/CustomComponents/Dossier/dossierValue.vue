@@ -7,13 +7,17 @@
       {{ getTextValue }}
     </file-param>
     <div v-else class="text-wrap black--text">{{getTextValue}}</div>
-    <div style="font-size: 10px; font-style: italic">{{getDate}}</div>
+    <div style="font-size: 10px; font-style: italic">
+      <span v-if="document" @click="addDocumentToGraph" class="cursor-pointer teal--text">{{document.title}}</span><br>
+      <span>{{getDate}}</span>
+    </div>
   </div>
 </template>
 
 <script>
 import GeometryParam from "@/components/WebsiteShell/CustomComponents/Dossier/geometryParam"
 import FileParam from "@/components/WebsiteShell/CustomComponents/Dossier/fileParam"
+import {mapActions} from "vuex";
 
 export default {
   name: "dossierValue",
@@ -27,6 +31,7 @@ export default {
       default: null
     },
     type: Object,
+    document: Object
   },
   computed: {
     getValue: function () {
@@ -47,6 +52,18 @@ export default {
     getGeometryTextValue: function () {
       return this.type.value === 'polygon' ? 'Геометрия' : 'Точка'
     },
+  },
+  methods: {
+    ...mapActions(['addObjectToGraph']),
+    addDocumentToGraph() {
+      this.addObjectToGraph({
+        object: this.document,
+        action: {
+          name: 'addDocumentToGraph',
+          payload: this.document.title
+        }
+      })
+    }
   }
 }
 </script>
