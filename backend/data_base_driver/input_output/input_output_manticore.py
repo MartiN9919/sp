@@ -48,7 +48,7 @@ def parse_where_dop(where_dop_row):
     @param where_dop_row: исходная строка запроса
     @return: None если в запросе нет @key_id, если есть, то key_id в числовом формате
     """
-    if where_dop_row.find('@key_id') != -1:
+    if where_dop_row.find('@key_id') != -1 or where_dop_row.find('@val') != -1:
         classifier_id = int(where_dop_row[where_dop_row.find('@key_id')+8:].split(' ')[0])
         return classifier_id
     else:
@@ -66,6 +66,8 @@ def io_get_obj_col_manticore(group_id, object_type, keys, ids, ids_max_block, wh
     @param where_dop: строка вставляемая в match часть запроса manticore
     @return: список словарей в формате [{rec_id,sec,key_id,val},{},...,{}]
     """
+    if where_dop.find('@val') != -1:
+        return []
     col_keys = DAT_SYS_KEY.DUMP.get_rec(obj_id=object_type, col=True, only_first=False)
     if len(keys) == 0:
         result_keys = [{'id': item['id'], 'name': item['name']} for item in col_keys]
