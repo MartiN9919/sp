@@ -1,15 +1,52 @@
+import multiprocessing
 import os
 import shutil
 import threading
 import datetime
 
 from core.deploy_settings import MEDIA_ROOT
+from core.projectSettings.decorators import decor_timeit
 from data_base_driver.additional_functions import date_client_to_server, date_time_client_to_server
 from data_base_driver.constants.const_dat import DAT_SYS_KEY
+from data_base_driver.input_output.input_output import io_get_obj
 from data_base_driver.sys_key.get_key_dump import get_key_by_id
 from data_base_driver.sys_key.get_object_info import get_object_new_rec_id
 from objects.record.add_record import add_record
-from objects.record.find_object import find_duplicate_objects
+from objects.record.get_record import get_keys, get_object_record_by_id_http
+
+@decor_timeit
+def find_key_value_http_vector(result, object_id, key_id, value, group_id=0):
+    if get_key_by_id(key_id)['type'] == 'date' or get_key_by_id(key_id)['type'] == 'date_time':
+        value = str(value).replace('-', '<<')
+    else:
+        value = str(value)
+    response = io_get_obj(group_id, object_id, [], [], 500, '@key_id ' + str(key_id) + ' @val ' + value, {})
+    result[key_id] = [int(item['rec_id']) for index, item in enumerate(response)]
+
+
+@decor_timeit
+def find_duplicate_vector(group_id, object_id, rec_id, params):
+    nums = len(list(filter(lambda x: x['obj_id'] == object_id and x['need'], get_keys())))
+    new_params = {}
+    for param in params:
+        key = get_key_by_id(param[0])
+        if key['need']:
+            new_params[param[0]] = {'value': param[1], 'date': param[2]}
+    if nums > len(new_params) or len([item for item in params if item[0] > 1 and get_key_by_id(item[0]).get('need',0) == 1]) == 0:  # костыль для вектора
+        return []
+    manager = multiprocessing.Manager()
+    return_dict = manager.dict()
+    tasks = []
+    for task in new_params:
+        temp_task = multiprocessing.Process(target=find_key_value_http_vector, args=(return_dict, object_id, task, new_params[task]['value'], group_id))
+        tasks.append(temp_task)
+        temp_task.start()
+    for task in tasks:
+        task.join()
+    result = set(list(return_dict.values())[0])
+    for item in return_dict.values()[1:]:
+        result.intersection_update(set(item))
+    return list(result)
 
 
 def parse_value_vector(param, object, files_path):
@@ -49,7 +86,7 @@ def add_data_vector(group_id, object, files_path):
     """
     with lock:
         data = [parse_value_vector(param, object, files_path) for param in object['params']]
-        duplicates = find_duplicate_objects(group_id, object.get('object_id'), object.get('rec_id'), data)
+        duplicates = find_duplicate_vector(group_id, object.get('object_id'), object.get('rec_id'), data)
         if len(duplicates) > 0:
             object['rec_id'] = duplicates[0]
             data = [item for item in data if get_key_by_id(item[0])['need'] != 1] # не сработает из-за 0 и 1 id?

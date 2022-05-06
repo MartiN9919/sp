@@ -193,7 +193,7 @@ def decor_timeit(method):
         ts = time.time()
         result = method(*args, **kwargs)
         te = time.time()
-        print('%r (%r, %r) %2.2f sec' % (method.__name__, args, kwargs, te - ts))
+        print('%2.2f sec %r (%r, %r)' % (te - ts, method.__name__, args, kwargs))
         return result
 
     return timed
