@@ -4,7 +4,7 @@ import threading, time
 from lib.funConst import ARC, ARC_DYNAMIC, MSG
 from lib.funSys   import Queue, logger, sqlDateTime, tsNow, getMD5
 from lib.funBD    import bdConnect, bdDisconnect, bdSQL
-from lib.funEmo   import emo
+#from lib.funEmo   import emo
 
 
 
@@ -59,7 +59,7 @@ class ArcWriter():
         if not rec[ARC.REPOST          ].isdigit(): rec[ARC.REPOST          ] = '0'
 
         if rec[ARC.CONTENT]  == '': rec[ARC.CONTENT] = MSG.NO_TEXT
-        rec[ARC.EMOTION]     = str(emo(rec[ARC.TITLE_NAME]+' '+rec[ARC.CONTENT]))
+        #rec[ARC.EMOTION]     = str(emo(rec[ARC.TITLE_NAME]+' '+rec[ARC.CONTENT]))
         rec[ARC.DEL]         = '0'
         rec[ARC.REFRESH]     = sqlDateTime(tsNow())
         rec[ARC.CRC]         = getMD5(rec[ARC.HOST]+rec[ARC.GROUP_ID]+rec[ARC.TITLE_ID]+rec[ARC.AUTHOR_ID]+rec[ARC.CONTENT])

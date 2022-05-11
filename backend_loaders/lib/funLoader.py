@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import random
-from   fun.funConst import LOADER_TYPE, LOADER_NOD, LOADER_SYNC, LOADER_URL
-from   fun.funBD    import bdSQL
-from   fun.funSys   import logError, tsNow, sqlDateTime, sqlDateTimeNow
+from   lib.funConst import LOADER_TYPE, LOADER_NOD, LOADER_SYNC, LOADER_URL
+from   lib.funBD    import bdSQL
+from   lib.funSys   import logError, tsNow, sqlDateTime, sqlDateTimeNow
 
 
 
