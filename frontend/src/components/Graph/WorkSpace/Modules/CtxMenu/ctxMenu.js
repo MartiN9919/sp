@@ -36,8 +36,8 @@ const ObjectCtxMenu = [
       },
       {
         icon: 'mdi-map-plus',
-        title: 'Вывести геометрию/точку на граф',
-        subtitle: 'Вывести выбранную геометрию/точку на граф',
+        title: 'Вывести геометрию/точку на карту',
+        subtitle: 'Вывести выбранную геометрию/точку на карту',
         action: 'addGeometryToGraph',
         disabled: true
       },

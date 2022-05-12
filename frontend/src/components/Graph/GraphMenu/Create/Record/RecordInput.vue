@@ -16,6 +16,7 @@
         nudge-left="300"
         offset-x
         offset-y
+        eager
         :close-on-content-click="false"
       >
         <template v-slot:activator="{ on }">
