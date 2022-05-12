@@ -1,6 +1,7 @@
 <template>
   <split-panel setting-name="Menu">
     <template v-slot:firstPane>
+      <v-text-field v-model="search" placeholder="Поиск по скриптам" solo hide-details dense class="px-2 pt-2"/>
       <treeView
         :items="treeView"
         :selected="selectedItem"
@@ -188,7 +189,7 @@ export default {
 
 <style scoped>
 .tree-view {
-  height: 100%;
+  height: calc(100% - 46px);
   overflow-y: auto;
 }
 .chip-analytics {
