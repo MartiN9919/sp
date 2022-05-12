@@ -12,7 +12,7 @@ class ParserBank:
     _dictionary_path: Path # путь к файлу структуры словарей
     _bank_folder_path: Path # путь к папке хранящей объекты
     _dictionary_folder_path: Path # путь к папке хранящей данные
-    _encoding: str = 'windows-1251' #кодировка файлов, хронос по стандарту вывгружает в windows-1251
+    _encoding: str = 'windows-1251' # кодировка файлов, хронос по стандарту вывгружает в windows-1251
     _date_id: int # идентификатор даты записи
     _time_id: int # идентификатор времени записи
     databases: List[Database] = [] # список баз данных (таблиц)
@@ -330,11 +330,3 @@ class ParserBank:
             date_2 = database_object['date']
             time_2 = database_object['time']
             relation.date, relation.time = self._get_older_datetime(date_1, time_1, date_2, time_2) # присваиваем связи более позднюю пару даты/времени
-
-
-
-
-
-
-
-
