@@ -11,15 +11,23 @@ from parser_bank import ParserBank
 
 
 class ConverterRelations:
-    database_id_1: int
-    database_id_2: int
-    object_id_1: int
-    object_id_2: int
-    relations_convert_table: Dict
-    deferred_relations: Dict[str, Dict[str, Dict[str, list]]]
+    database_id_1: int # идентификатор первой базы данных (таблицы)
+    database_id_2: int # идентификатор второй базы данных (таблицы)
+    object_id_1: int # идентификатор первого объекта
+    object_id_2: int # идентификатор второго объекта
+    relations_convert_table: Dict # таблица преобразования связей (не используется)
+    deferred_relations: Dict[str, Dict[str, Dict[str, list]]] # отложенные связи
 
     def __init__(self, database_id_1: int, database_id_2: int, objects_convert_table: dict,
                  relations_convert_table: dict, deferred_relations: dict):
+        """
+        Конструктор с параметрами
+        @param database_id_1: идентификатор первой базы данных (таблицы)
+        @param database_id_2: идентификатор второй базы данных (таблицы)
+        @param objects_convert_table: таблица преобразования объектов (старые идентификаторы в новые)
+        @param relations_convert_table: таблица преобразования связей (не используется)
+        @param deferred_relations: отложенные связи
+        """
         self.database_id_1 = database_id_1
         self.database_id_2 = database_id_2
         self.object_id_1 = objects_convert_table[database_id_1]
@@ -28,6 +36,14 @@ class ConverterRelations:
         self.deferred_relations = deferred_relations
 
     def create_deferred_relation(self, obj_1: str, obj_2: str, convert_table: dict, objects: dict, relation: Relation) -> None:
+        """
+        Метод для создания отложенной связи (преобразования 2-х связей в одну именованную)
+        @param obj_1: идентификатор первого объекта
+        @param obj_2: идентификатор второго объекта
+        @param convert_table: таблица преобразования связей
+        @param objects: таблица соответствия старых-новых объектов
+        @param relation: преобразуемая связь
+        """
         if obj_1 in convert_table:
             obj, database_id, rec_id = obj_1, self.database_id_2, relation.rec_id_2
         else:
@@ -52,6 +68,13 @@ class ConverterRelations:
                 self.deferred_relations[obj][key]['document'] = objects[f"{database_id}_{rec_id}"]['rec_id']
 
     def convert(self, relation: Relation, objects: Dict, convert_table: dict) -> dict:
+        """
+        Метод для конвертирования связи Хроноса в связи Сапфира
+        @param relation: связи Хроноса
+        @param objects: словарь соответствия объектов
+        @param convert_table: таблица формирования отложенных связей
+        @return: словарь с информацией о созданной связи
+        """
         obj_1 = f"{self.database_id_1}_{relation.rec_id_1}"
         obj_2 = f"{self.database_id_2}_{relation.rec_id_2}"
         if obj_1 in convert_table or obj_2 in convert_table:
@@ -86,18 +109,31 @@ class ConverterRelations:
 
 
 class ConverterParams:
-    database_id: int
-    object_id: int
+    database_id: int # идентификатор базы данных (таблицы)
+    object_id: int # идентификатор объекта Сапфир
     params_converter_table: Dict[int, Tuple[
-        int, int]]  # таблица соответствия старого id и нового id  созможным порядком следования (например ФИО)
+        int, int]]  # таблица соответствия старого id и нового id с возможным порядком следования (например ФИО)
 
     def __init__(self, database_id: int, object_id: int, params_convert_dict: dict):
+        """
+        Конструктор с параметрами
+        @param database_id: идентификатор базы данных (таблицы)
+        @param object_id: идентификатор объекта Сапфир
+        @param params_convert_dict: таблица соответствия старого id и нового id с возможным порядком следования (например ФИО)
+        """
         self.database_id = database_id
         self.object_id = object_id
         self.params_converter_table = params_convert_dict
 
     @staticmethod
     def _add_relations(database_id: int, data: dict, converters_object_to_relation: dict, result: dict):
+        """
+        Метод дял добавления отложенной связи
+        @param database_id: идентификатор базы данных (таблицы)
+        @param data: словарь содержащий объекты и их параметры
+        @param converters_object_to_relation: таблица преобразования объектов в связи
+        @param result: словарь для накопления результата
+        """
         for database_object_id in data:
             database_object_params = data[database_object_id]['values']
             key = f"{database_id}_{database_object_id}"
@@ -123,6 +159,13 @@ class ConverterParams:
             result['relations'].update(relation)
 
     def convert(self, database: Database, converters_object_to_relation: dict, path: str) -> Dict:
+        """
+        Метод для преобразования параметров в записи Сапфира
+        @param database: база данных (таблица)
+        @param converters_object_to_relation: таблица преобразования объектов в связи
+        @param path: путь к папке с файлами
+        @return: словарь с информацией о созданных объектах и отложенных связях
+        """
         result: Dict[str, Dict] = {'objects': {}, 'relations': {}}
         if database.id in converters_object_to_relation:
             ConverterParams._add_relations(database.id, database.data, converters_object_to_relation, result)
@@ -170,18 +213,26 @@ class ConverterBank:
     converter_relations_table: Dict[str, int] = {}  # словарь соответствия связей ('о1_о2') -> (key_id)
     converters_params: Dict[int, ConverterParams] = {}  # словарь соответсия параметров объекта (o.id) -> ConverterParams
     converters_relations: Dict[str, ConverterRelations] = {}
-    converters_object_to_relation: Dict[int, List[dict]] = {}
-    object_to_create: Dict = {}
-    relation_to_create: List = []
+    converters_object_to_relation: Dict[int, List[dict]] = {} # таблица преобразования объекта в связь
+    object_to_create: Dict = {} # накопитель результата созданных объектов
+    relation_to_create: List = [] # накопитель результата созданных связей
 
     def __init__(self, convert_setting: dict):
-        if convert_setting.get('init_type', 'exel') == 'exel':
+        """
+        Конструктор с параметром
+        @param convert_setting: словарь содержащий исходные параметры для конвертора и парсера
+        """
+        if convert_setting.get('init_type', 'exel') == 'exel': # если тип таблицы преобразования exel
             self._parse_exel(convert_setting['convert_path'])
-        else:
+        else: # если тип таблицы преобразования не поддерживается
             raise TypeError
         self.bank_parser = ParserBank(convert_setting['parser'])
 
     def _parse_exel(self, path: str):
+        """
+        Метод для парсинга таблицы преобразования формата exel
+        @param path: путь к exel файлу
+        """
         work_book = load_workbook(path)
         objects = work_book['objects']
         params_convert_dict, row0, row1 = {}, 0, 0
@@ -214,6 +265,10 @@ class ConverterBank:
                     })
 
     def create_deferred_relations(self, deferred_relations: dict):
+        """
+        Функция для создания связей Сапфир из отложенных связей
+        @param deferred_relations: словарь отложенных связей
+        """
         for deferred_relation in deferred_relations.values():
             for key in deferred_relation:
                 key_list = key.split('_')
@@ -239,6 +294,9 @@ class ConverterBank:
                         })
 
     def convert(self):
+        """
+        Метод для преобразования данных/связей Хроноса в Сапфир
+        """
         temp_relations: dict = {}
         for database in self.bank_parser.databases:
             converter_params = self.converters_params[database.id]

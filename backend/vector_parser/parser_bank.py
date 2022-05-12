@@ -13,9 +13,12 @@ class ParserBank:
     _bank_folder_path: Path # путь к папке хранящей объекты
     _dictionary_folder_path: Path # путь к папке хранящей данные
     _encoding: str = 'windows-1251' #кодировка файлов, хронос по стандарту вывгружает в windows-1251
+    _date_id: int # идентификатор даты записи
+    _time_id: int # идентификатор времени записи
     databases: List[Database] = [] # список баз данных (таблиц)
     dictionaries: List[Dictionary] = [] # список словарей (списков)
     relations: Dict[str, Relation] = {} # словарб связей в формате {id: Relation}
+
     # константы
     LIST_BASE_SEPARATOR = 'Список баз:'
     BASE_PARAMS_SEPARATOR = 'База  :'
@@ -27,7 +30,7 @@ class ParserBank:
     def __init__(self, parser_setting: dict):
         """
         Метод инициализации
-        @param path: путь к папке с банком данных
+        @param parser_setting: словарь с параметрами {struct_db_name, struct_ldb_name, encoding, separator, date_id, time_id}
         """
         self.base_path = Path(parser_setting['path'])
         files = {x.name: x for x in self.base_path.iterdir()}
@@ -40,6 +43,8 @@ class ParserBank:
             self._dictionary_folder_path = files['СБД']
             self._encoding = parser_setting['encoding']
             self.SEPARATOR = parser_setting['separator']
+            self._date_id = parser_setting['date_id']
+            self._time_id = parser_setting['time_id']
             self._parse_database()
             self._parse_dictionaries()
         else:
@@ -193,73 +198,101 @@ class ParserBank:
 
     @staticmethod
     def _parse_sub_data_params(sub_data: int, bank_params: List[Param]) -> dict:
+        """
+        Метод для получения соответствия порядка параметров с их типами для файлов связей/словарей
+        @param sub_data: идентификатор параметра связи/словаря
+        @param bank_params: список параметров выбранной текущей базы данных (таблице)
+        @return: словарь соответствия порядка параметра с их типом
+        """
         bank_param = next(item for item in bank_params if item.id == sub_data)
         return {
             0: 'object_id',
             1: bank_param
         }
 
-    def _parse_database_data(self, params: List[str], params_type: dict, bank_id: int, bank_data: dict):
-        object_id = int(params[0])
-        if not bank_data.get(object_id, None):
+    def _parse_database_data(self, params: List[str], params_type: dict, database_id: int, bank_data: dict):
+        """
+        Метод для парсинга параметров одного объекта базы данных (таблицы)
+        @param params: список параметров объекта базы данных (таблицы)
+        @param params_type: список типов параметров объекта базы данных (таблицы)
+        @param database_id: идентификатор базы данных (таблицы)
+        @param bank_data: словарь содержащий информацию об объектах данной базы данных (таблице)
+        """
+        object_id = int(params[0]) # получаем идентификатор объекта (всегда первый параметр)
+        if not bank_data.get(object_id, None): # если об объекте еще нет информации создаем
             bank_data[object_id] = {'date': datetime.datetime.now().strftime("%d.%m.%Y"),
                                     'time': datetime.datetime.now().strftime("%H:%M"),
                                     'values': []}
-        for i, param in enumerate(params[1:]):
-            param_type = params_type[i + 1]
-            if len(param) == 0:
+        for i, param in enumerate(params[1:]): # начинаем цикл по параметрам
+            param_type = params_type[i + 1] # получаем тип параметра
+            if len(param) == 0: # если параметр пустой переходим к следующему
                 continue
-            if param_type.link:
-                other_object_id = int(param)
-                other_bank = self.get_database_by_short_name(param_type.link[:2])
-                other_bank_id = other_bank.id
-                relation = Relation(bank_id, object_id, other_bank_id, other_object_id)
-                if not self.relations.get(relation.id):
+            if param_type.link: # если параметр это связь с другим объектом
+                other_object_id = int(param) # получаем идентификатор другого объекта
+                other_bank = self.get_database_by_short_name(param_type.link[:2]) # получаем тип второго объекта
+                other_bank_id = other_bank.id # получаем идентификатор типа второго объекта
+                relation = Relation(database_id, object_id, other_bank_id, other_object_id) # создаем объект связи
+                if not self.relations.get(relation.id): # если связи нет, добавляем
                     self.relations[relation.id] = relation
-            else:
-                if param_type.dictionary:
-                    dictionary = self.get_dictionary_by_name(param_type.dictionary)
-                    param = dictionary.data.get(param)
-                    if not param:
+            else: # если обычный параметр
+                if param_type.dictionary: # если словарь
+                    dictionary = self.get_dictionary_by_name(param_type.dictionary) # получаем значения словаря
+                    param = dictionary.data.get(param) # получаем значение соответствующее идентификатору
+                    if not param: # если такого значения в словаре нет, игнорируем
                         continue
-                if param_type.status and 'НК' in param_type.status:
-                    if param_type.id == 603:
+                if param_type.status and 'НК' in param_type.status: # если параметр системный
+                    if param_type.id == self._date_id: # если параметр это дата записи
                         bank_data[object_id]['date'] = param
                         continue
-                    elif param_type.id == 604:
+                    elif param_type.id == self._time_id: # если параметр это время записи
                         bank_data[object_id]['time'] = param
                         continue
-                    else:
+                    else: # если любой другой системный параметр - игнорируем
                         continue
-                bank_data[object_id]['values'].append({'value': param, 'type': param_type})
+                bank_data[object_id]['values'].append({'value': param, 'type': param_type}) # если обычный параметр добавляем его объекту
 
-    def _parse_database_file(self, file, bank_id: int, params_type: dict, bank_data: dict):
-        temp_params = []
-        for line in file:
-            if len(line.replace('\n', '')) == 0:
+    def _parse_database_file(self, file, database_id: int, params_type: dict, bank_data: dict):
+        """
+        Метод для парсинга файла с параметрами
+        @param file: открытый текстовый файл
+        @param database_id: идентификатор базы данных (таблицы)
+        @param params_type: типы параметров для данной базы данных (таблицы)
+        @param bank_data: словарь с информацией об объектах данной базы данных (таблицы)
+        """
+        temp_params = [] # список для накопления параметров
+        for line in file: # итерируем по строкам файла
+            if len(line.replace('\n', '')) == 0: # если пустая строка переходим на следующую итерацию
                 continue
-            temp = [param.replace('\n', '') for param in line.split(ParserBank.SEPARATOR)]
-            if len(temp_params) == len(params_type) and temp[0].isdigit():
+            temp = [param.replace('\n', '') for param in line.split(ParserBank.SEPARATOR)] # получаем список параметров из строки
+            if len(temp_params) == len(params_type) and temp[0].isdigit(): # если количество параметров в предыдущей итерации равно общему количеству и первый актуальный параметр число (идентификатор)
                 params = copy.deepcopy(temp_params)
-                self._parse_database_data(params, params_type, bank_id, bank_data)
-                temp_params = temp
-                continue
-            elif len(temp_params) == len(params_type):
-                temp_params[-1] += temp[0]
-            elif len(temp_params) > 0 and len(temp) == 1:
-                temp_params[-1] += temp[0]
-            elif len(temp_params) == 0:
-                temp_params += temp
-            elif len(temp_params) < len(params_type):
-                temp_params[-1] += temp[0]
-                temp_params += temp[1:]
-        else:
+                self._parse_database_data(params, params_type, database_id, bank_data) # парсим параметры
+                temp_params = temp # обновляем накопитель
+                continue # переход к следующей итерации
+            elif len(temp_params) == len(params_type):  # если количество параметров в накопителе соответствует общему числу, но первый новый параметр не число
+                temp_params[-1] += temp[0] # прибавляем к последнему параметру в накопителе первый новый параметр
+            elif len(temp_params) > 0 and len(temp) == 1: # если параметров в накопителе недостаточно, и 1 новый параметр
+                temp_params[-1] += temp[0] # прибавляем к последнему параметру в накопителе первый новый параметр
+            elif len(temp_params) == 0: # если накопитель пустой
+                temp_params += temp # прибавляем к накопителю новые параметры
+            elif len(temp_params) < len(params_type): # если параметров в накопителе недостаточно, а новых больше 1
+                temp_params[-1] += temp[0] # прибавляем к последнему параметру в накопителе первый новый параметр
+                temp_params += temp[1:] # остальные дописываем в конец
+        else: # после выполнения цикла заносим то что осталось в накопителе
             if len(temp_params) > 0:
                 params = copy.deepcopy(temp_params)
-                self._parse_database_data(params, params_type, bank_id, bank_data)
+                self._parse_database_data(params, params_type, database_id, bank_data)
 
     @staticmethod
     def _get_older_datetime(date_1: str, time_1: str, date_2: str, time_2: str) -> Tuple[str, str]:
+        """
+        Метод для получения более старой даты времени
+        @param date_1: первая дата
+        @param time_1: первое время
+        @param date_2: вторая дата
+        @param time_2: второе время
+        @return: кортеж строк (дата, время)
+        """
         temp_date_1 = '.'.join(reversed(date_1.split('.')))
         temp_date_2 = '.'.join(reversed(date_2.split('.')))
         if temp_date_1 > temp_date_2 or (temp_date_1 == temp_date_2 and time_1 > time_2):
@@ -268,32 +301,35 @@ class ParserBank:
             return date_2, time_2
 
     def parse_database_data(self):
-        for database in self.databases:
-            files = [x for x in self._bank_folder_path.iterdir() if x.name.split('_')[0].split('.')[0] == str(database.id)]
-            for file_path in files:
+        """
+        Метод для парсинга данных банка
+        """
+        for database in self.databases: # идем циклом по базам данных (таблицам)
+            files = [x for x in self._bank_folder_path.iterdir() if x.name.split('_')[0].split('.')[0] == str(database.id)] # получаем все файлы для данной базы данных (таблицы)
+            for file_path in files: # идем циклом по файлам
                 path_params = file_path.name.split('_')
-                sub_data = int(path_params[1].split('.')[0]) if len(path_params) > 1 else 0
-                with open(file_path, encoding=self._encoding) as file:
-                    first_line_params = [param.replace('\n', '') for param in file.readline().split(ParserBank.SEPARATOR)]
-                    if sub_data:
+                sub_data = int(path_params[1].split('.')[0]) if len(path_params) > 1 else 0 # получаем идентификатор связи/словаря если имеется
+                with open(file_path, encoding=self._encoding) as file: # открываем файл на чтение
+                    first_line_params = [param.replace('\n', '') for param in file.readline().split(ParserBank.SEPARATOR)] # считываем типы параметров
+                    if sub_data: # если связь/словарь
                         params_type = ParserBank._parse_sub_data_params(sub_data, database.params)
-                    else:
+                    else: # если обычный параметр
                         params_type = ParserBank._parse_data_params(first_line_params, database.params)
-                    self._parse_database_file(file, database.id, params_type, database.data)
-            path = Path(self.documents_path)
-            if database.file_param and path.is_dir():
-                for item in database.data:
-                    files = [x.name for x in path.iterdir() if x.name.split('.')[0].split('_')[0] == str(item)]
-                    for file in files:
+                    self._parse_database_file(file, database.id, params_type, database.data) # парсим данные
+            path = Path(self.documents_path) # полуаем путь к файлам
+            if database.file_param and path.is_dir(): # если у данной базы (таблицы) есть файловые параметры
+                for item in database.data: # идем циклом по объектам
+                    files = [x.name for x in path.iterdir() if x.name.split('.')[0].split('_')[0] == str(item)] # находим файлы данного объекта (id_name)
+                    for file in files: # найденные файлы записываем как параметры
                         database.data[item]['values'].append({'value': file, 'type': database.file_param})
-        for relation in self.relations.values():
-            database_object = self.get_database_by_id(relation.object_id_1).data[relation.rec_id_1]
+        for relation in self.relations.values(): # идем циклом по связям
+            database_object = self.get_database_by_id(relation.object_id_1).data[relation.rec_id_1] # получаем певый связанный объект и его дату/время
             date_1 = database_object['date']
             time_1 = database_object['time']
-            database_object = self.get_database_by_id(relation.object_id_2).data[relation.rec_id_2]
+            database_object = self.get_database_by_id(relation.object_id_2).data[relation.rec_id_2] # получаем второй связанный объект и его дату/время
             date_2 = database_object['date']
             time_2 = database_object['time']
-            relation.date, relation.time = self._get_older_datetime(date_1, time_1, date_2, time_2)
+            relation.date, relation.time = self._get_older_datetime(date_1, time_1, date_2, time_2) # присваиваем связи более позднюю пару даты/времени
 
 
 
