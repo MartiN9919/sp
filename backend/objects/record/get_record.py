@@ -27,7 +27,7 @@ def get_title(params, title_len=3):
     if len(title_list) > title_len:
         title = ', '.join(
             str(str(title['title'] + ': ' + title['value']) if title['visible'] == 'all' else title['value']) for title
-            in title_list[:title_len])
+            in title_list[:title_len] if title['visible'] != 'none')
         return title
     if len(title_list) == 0:
         title = ', '.join(str(str(get_key_by_id(param['id'])['title'] + ': ' + param['values'][0]['value']) if
@@ -37,7 +37,7 @@ def get_title(params, title_len=3):
     else:
         title = ', '.join(
             str(str(title['title'] + ': ' + title['value']) if title['visible'] == 'all' else title['value']) for title
-            in title_list)
+            in title_list if title['visible'] != 'none')
     if len(title_list) < title_len:
         sub_title = ', '.join(str(str(get_key_by_id(param['id'])['title'] + ': ' + param['values'][0]['value']) if
                                   get_key_by_id(param['id'])['visible'] == 'all' else param['values'][0]['value']) for

@@ -15,7 +15,7 @@ class IO():
 
     def __init__(self, group_id):
         self.group_id = group_id
-        self.is_admin = group_id == 0
+        self.is_admin = group_id == 1
 
         # органайзеры доступа к хранилищам данных
         self.io_org = {

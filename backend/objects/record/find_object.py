@@ -29,6 +29,7 @@ def find_reliable_http(object_type, request, actual=False, group_id=0):
                request]  # костыль, в последующем поменяить настройки мантикоры, что бы индексировала '-'
     result = []
     for word in request:
+        word = '@val ' + word if len(word) > 0 else word # искать только по значению
         temp_result = io_get_obj(group_id, object_type, [], [], 500, word, {})
         fetchall = [(int(item['rec_id']), int(item['key_id']), int(item['sec'])) for item in temp_result]
         remove_list = []
@@ -77,6 +78,7 @@ def find_key_value_http(object_id, key_id, value, group_id=0):
     else:
         value = str(value)
     response = io_get_obj(group_id, object_id, [], [], 500, '@key_id ' + str(key_id) + ' @val ' + value, {})
+    response = [item for item in response if item['val'].lower() == value.lower()]
     remove_list = []
     for index, item in enumerate(response):
         temp_word = '@key_id ' + str(key_id)

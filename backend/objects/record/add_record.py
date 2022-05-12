@@ -289,7 +289,7 @@ def add_data_from_form(user, group_id, form, meta=None):
         object_id_2 = relation['obj_id_2']
         rec_id_1 = link[relation['obj_name_1']]
         rec_id_2 = link[relation['obj_name_2']]
-        params = [{'id': param['id'], 'val': param.get('val', 0), 'date': param['dat'] + ' 00:00'} for param in
+        params = [{'id': param['id'], 'value': param.get('val', 0), 'date': param['dat'] + ' 00:00'} for param in
                   relation['param']]
         add_rel(group_id, object_id_1, rec_id_1, object_id_2, rec_id_2, params, document_id)
     return {'result': created_objects}
