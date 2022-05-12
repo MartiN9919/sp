@@ -1,6 +1,7 @@
 <template>
   <split-panel setting-name="Menu">
     <template v-slot:firstPane>
+      <v-text-field v-model="search" placeholder="Поиск по скриптам" solo hide-details dense class="px-2 pt-2"/>
       <treeView
         :items="treeView"
         :selected="selectedItem"
@@ -59,7 +60,7 @@ export default {
 
 <style scoped>
   .tree-view {
-    max-height: 95%;
+    height: calc(100% - 46px);
   }
   .column-settings {
     max-height:100%;
