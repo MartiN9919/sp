@@ -123,30 +123,35 @@ export default {
       this.$emit('create')
     },
     validate () {
+      if (!this.$refs.form.rules[0]) {
+        this.errorMessage = 'Заполните имя шаблона'
+        return false
+      } else if (!this.$refs.form.rules[1]) {
+        this.errorMessage = 'Выберете скрипты'
+        return false
+      } else if (this.$refs.form.validate()) {
+        this.errorMessage = ''
+        return true
+      }
+    },
+    put () {
+      if (this.templates.find(t => t.title === this.search && t.id === this.selectedTemplate.id)) {
+        this.errorMessage = 'Имя должно быть уникально'
+        return false
+      } else {
+        if (this.validate()) {
+          this.$emit('put', this.search)
+        }
+      }
+    },
+    save () {
       if (this.templates.find(t => t.title === this.search)) {
         this.errorMessage = 'Имя должно быть уникально'
         return false
       } else {
-        if (!this.$refs.form.rules[0]) {
-          this.errorMessage = 'Заполните имя шаблона'
-          return false
-        } else if (!this.$refs.form.rules[1]) {
-          this.errorMessage = 'Выберете скрипты'
-          return false
-        } else if (this.$refs.form.validate()) {
-          this.errorMessage = ''
-          return true
+        if (this.validate()) {
+          this.$emit('save', this.search)
         }
-      }
-    },
-    put () {
-      if (this.validate()) {
-        this.$emit('put', this.search)
-      }
-    },
-    save () {
-      if (this.validate()) {
-        this.$emit('save', this.search)
       }
     },
     remove () {
