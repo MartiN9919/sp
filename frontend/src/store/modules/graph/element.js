@@ -53,7 +53,8 @@ export default {
       const callTime = new Date()
       dispatch('createTimeLine', {callTime, action})
       dispatch('getObjects', payload).then(entityNodes => {
-        dispatch('createNodes', {objects: entityNodes.map(n => n.value || []), callTime}).then(nodes => {
+        entityNodes = entityNodes.filter(n => n.status === 'fulfilled').map(n => n.value)
+        dispatch('createNodes', {objects: entityNodes, callTime}).then(nodes => {
           dispatch('getRelationsForObjects', nodes.map(n => n.entity)).then(entityEdges => {
             nodes.forEach((node, i) => {
               const relations = entityEdges[i].value || []
