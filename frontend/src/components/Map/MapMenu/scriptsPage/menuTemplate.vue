@@ -3,8 +3,8 @@
       v-model="selected"
       :search-input.sync="search"
       :items="templates"
-      :label="inputLabel"
-      :rules="[!!search.length, !!analystsListLength]"
+      :placeholder="inputLabel"
+      :rules="rules"
       :hide-details="!errorMessage.length"
       :error-messages="errorMessage"
       dense
@@ -16,6 +16,8 @@
       item-text="title"
       item-color="teal"
   >
+    <template v-slot:label>
+    </template>
     <template v-slot:append>
       <v-menu offset-x z-index="10001" max-height="50%" close-on-content-click>
         <template v-slot:activator="{ on, value }">
@@ -95,13 +97,16 @@ export default {
   computed: {
     selected: {
       get: function () {
-        return this.selectedTemplate
+        return this.selectedTemplate.title.length ? this.selectedTemplate : null
       },
       set: function (template) {
         if(template.hasOwnProperty('id')) {
           this.get(template.id)
         }
       }
+    },
+    rules: function () {
+      return [this.search ? !!this.search.length : false, !!this.analystsListLength]
     },
     inputLabel: function () {
       return this.analystsListLength ? 'Введите название шаблона' : 'Шаблон'
