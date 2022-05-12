@@ -144,6 +144,8 @@ def get_object_record_by_id_http(object_id, rec_id, group_id=0, triggers=None):
     @return: словарь в формате {object_id, rec_id, params:[{id,values:[{value,date},...,{}],},...,{}]}
     """
     response = io_get_obj(group_id, object_id, [], [rec_id], 500, '', {})
+    if len(response) == 0:
+        return None
     temp = [(int(item['key_id']), item['val'], int(item['sec'])) for item in response]
     params = []
     for item in temp:
