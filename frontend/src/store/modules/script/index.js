@@ -43,6 +43,14 @@ export default {
     SCRIPT_GET_ITEM_LEGEND_COLOR:     state => ind => state.selectedTemplate.activeAnalysts[ind][MAP_ITEM._LEGEND_COLOR_] ?? [],
     SCRIPT_GET_ITEM_REFRESH:          state => ind => state.selectedTemplate.activeAnalysts[ind].refresh,
     SCRIPT_GET_ITEM_SEL:              state =>        JSON.stringify(state.selectedFC),
+    SCRIPT_GET_ITEM_FIND_ACTIVE:      state => active_script_id => {
+      for(let ind=0; ind<state.selectedTemplate.activeAnalysts.length; ind++) {
+        if (state.selectedTemplate.activeAnalysts[ind].refresh == active_script_id) {
+          return state.selectedTemplate.activeAnalysts[ind]
+        }
+      }
+      return undefined
+    },
   },
 
   mutations: {
@@ -128,7 +136,7 @@ export default {
     // state.selectedFC
     //
     // установить/убрать выделение объекта на карте
-    SCRIPT_MUT_SEL_SWITCH: (state, param)   => {    // param.obj_id, param.rec_id
+    SCRIPT_MUT_SEL_SWITCH: (state, param)   => {    // param.active_script_id, param.obj_id, param.rec_id
       let ind_exist = undefined;
       for (let ind in state.selectedFC) {
         if ((state.selectedFC[ind].rec_id == param?.rec_id) && (state.selectedFC[ind].obj_id == param?.obj_id)) {
@@ -140,8 +148,9 @@ export default {
         state.selectedFC.splice(ind_exist, 1);
       } else {
         state.selectedFC.push({
-          obj_id: param?.obj_id,
-          rec_id: param?.rec_id,
+          active_script_id: param?.active_script_id,
+          obj_id:           param?.obj_id,
+          rec_id:           param?.rec_id,
         });
       }
     },

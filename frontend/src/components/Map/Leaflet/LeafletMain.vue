@@ -221,10 +221,12 @@ export default {
       'MAP_GET_EDIT',
 
       'SCRIPT_GET',
+      'SCRIPT_GET_ITEM',
       'SCRIPT_GET_ITEM_COLOR',
       'SCRIPT_GET_ITEM_FC_STYLE_LINE',
       'SCRIPT_GET_ITEM_FC_STYLE_POLYGON',
       'SCRIPT_GET_ITEM_SEL',
+      'SCRIPT_GET_ITEM_FIND_ACTIVE',
     ]),
 
     // FeatureCollection РЕДАКТИРУЕМЫХ объектов
@@ -243,7 +245,8 @@ export default {
       'SCRIPT_ACT_SEL_CLEAR',
       'addNotification',
       'setNavigationDrawerStatus',
-      'setActiveTool'
+      'setActiveTool',
+      'changeSelectedTreeViewItem',
     ]),
 
 
@@ -329,12 +332,17 @@ export default {
             // реакция выделения только на объекты из БД
             if ((!e.target.feature.obj_id) || (!e.target.feature.rec_id)) return;
             L.DomEvent.stopPropagation(e);
+            // выделить элемент на карте
             let dat = {
-              obj_id: e.target.feature.obj_id,
-              rec_id: e.target.feature.rec_id,
-              ctrl:   e.originalEvent.ctrlKey,
+              active_script_id: self.SCRIPT_GET_ITEM(map_ind).refresh,  // в качестве id экзеспляра скрипта используем TS
+              obj_id:           e.target.feature.obj_id,
+              rec_id:           e.target.feature.rec_id,
+              ctrl:             e.originalEvent.ctrlKey,
             };
             self.SCRIPT_ACT_SEL_SET(dat);
+            // выделить скрипт
+            let sel_script = self.SCRIPT_GET_ITEM_FIND_ACTIVE(dat.active_script_id)
+            self.changeSelectedTreeViewItem(sel_script);
           });
 
           // подсказка
@@ -408,6 +416,7 @@ export default {
 
     on_map_click(e) {
       this.SCRIPT_ACT_SEL_CLEAR();
+      this.changeSelectedTreeViewItem();
     },
 
     on_map_dblclick(e) {
