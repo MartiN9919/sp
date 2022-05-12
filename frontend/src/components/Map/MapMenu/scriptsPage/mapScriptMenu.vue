@@ -14,11 +14,12 @@
         <menuTemplate
           :templates="templatesList"
           :selectedTemplate="selectedTemplate"
-          @getTemplate="getSelectedTemplate({ params: { template_id: $event } })"
+          @get="getSelectedTemplate"
+          @create="createTemplate"
+          @put="putTemplate"
+          @save="saveTemplate"
+          @remove="deleteSelectedTemplate"
           @changeTitle="changeSelectedTemplateTitle"
-          @deleteTemplate="deleteSelectedTemplate"
-          @saveTemplate="saveTemplate"
-          @createNewTemplate="createTemplate"
           class="px-2 pt-2"
         ></menuTemplate>
         <v-row no-gutters class="overflow-y-auto pa-1 chip-analytics">
@@ -35,7 +36,7 @@
         <v-divider v-if="'id' in selectedItem"></v-divider>
 
         <v-scroll-y-transition mode="out-in">
-          <v-form ref="form" v-if="'id' in selectedItem" class="px-2" onSubmit="return false;">
+          <v-form ref="form" v-if="'id' in selectedItem" :key="selectedItem.key" class="px-2" onSubmit="return false;">
             <custom-tooltip v-for="(v, key) in selectedItem.variables" :key="selectedItem.id + key" :body-text="v.hint" bottom>
               <template v-slot:activator="{ on }">
                 <div v-on="on" class="pt-2">
@@ -135,28 +136,38 @@ export default {
       this.changeSelectedTreeViewItem()
     },
 
-    /** Деактивация активной аналитики (удаление имеющися результатов выполнения скрипта) */
+    /** Деактивация активной аналитики (удаление имеющихся результатов выполнения скрипта) */
     disabledActiveAnalysts () {
       /** Удаление аналитики из списка активных аналитик шаблона */
       this.removeAnalytics(this.selectedItem)
       /** Добавление цвета "пассивной" аналитики */
       this.selectedItem.color = MAP_CONST.COLOR.SCRIPT_OFF
-      /** Удаление имеющися результатов выполнения скрипта */
+      /** Удаление имеющихся результатов выполнения скрипта */
       delete this.selectedItem.result
-      /** Занесение аналитки на шину в переменную selectedTemplate.passiveAnalysts */
+      /** Занесение аналитики на шину в переменную selectedTemplate.passiveAnalysts */
       this.addPassiveAnalysts(this.selectedItem)
     },
 
-    /** Сохранение или пересохранение шаблона без имеющихся результатов */
-    saveTemplate () {
-      /** Создание глубокой копии шаблона */
-      const scriptForRequest = JSON.parse(JSON.stringify(this.selectedTemplate))
+    /** Подготовка шаблона к сохранению/изменению */
+    templatePreparation (title) {
+      /** Присваивание заголовка шаблону */
+      this.changeSelectedTemplateTitle(title)
       /** Удаление имеющихся результатов из активных аналитик шаблона */
-      for (const script of scriptForRequest.activeAnalysts) { delete script.fc }
-      /** Проверка на сохранение, либо пересохранение шаблона */
-      if ('id' in scriptForRequest)
-        this.putSelectedTemplate({ selectedTemplate: scriptForRequest, config: {} })
-      else this.saveSelectedTemplate({ selectedTemplate: scriptForRequest, config: {} })
+      this.selectedTemplate.activeAnalysts.forEach(script => delete script.fc)
+    },
+
+    /** Сохранение шаблона без имеющихся результатов */
+    saveTemplate (title) {
+      this.templatePreparation(title)
+      /** Сохранение шаблона */
+      this.saveSelectedTemplate({selectedTemplate: this.selectedTemplate, config: {}})
+    },
+
+    /** Изменение шаблона без имеющихся результатов */
+    putTemplate (title) {
+      this.templatePreparation(title)
+      /** Изменение шаблона */
+      this.putSelectedTemplate({selectedTemplate: this.selectedTemplate, config: {}})
     },
 
     /** Создание нового шаблона */
