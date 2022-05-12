@@ -24,18 +24,22 @@ class ParserBank:
     DOCUMENTS_PATH = 'файлы'
     SEPARATOR = '|'
 
-    def __init__(self, path: str):
+    def __init__(self, parser_setting: dict):
         """
         Метод инициализации
         @param path: путь к папке с банком данных
         """
-        self.base_path = Path(path)
+        self.base_path = Path(parser_setting['path'])
         files = {x.name: x for x in self.base_path.iterdir()}
-        if all(map(lambda item: item in files, ['Стурктура БД опогк.txt', 'Структура СБД опогк.txt', 'БД', 'СБД'])):
-            self._bank_path = files['Стурктура БД опогк.txt']
+        struct_db_file = parser_setting['struct_db_name']
+        struct_ldb_file = parser_setting['struct_ldb_name']
+        if all(map(lambda item: item in files, [struct_db_file, struct_ldb_file, 'БД', 'СБД'])):
+            self._bank_path = files[struct_db_file]
             self._bank_folder_path = files['БД']
-            self._dictionary_path = files['Структура СБД опогк.txt']
+            self._dictionary_path = files[struct_ldb_file]
             self._dictionary_folder_path = files['СБД']
+            self._encoding = parser_setting['encoding']
+            self.SEPARATOR = parser_setting['separator']
             self._parse_database()
             self._parse_dictionaries()
         else:

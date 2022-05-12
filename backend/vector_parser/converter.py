@@ -1,3 +1,4 @@
+import json
 from copy import copy
 from typing import Dict, List, Tuple
 
@@ -173,12 +174,12 @@ class ConverterBank:
     object_to_create: Dict = {}
     relation_to_create: List = []
 
-    def __init__(self, path: str, bank_path: str, init_type: str = 'exel'):
-        if init_type == 'exel':
-            self._parse_exel(path)
+    def __init__(self, convert_setting: dict):
+        if convert_setting.get('init_type', 'exel') == 'exel':
+            self._parse_exel(convert_setting['convert_path'])
         else:
             raise TypeError
-        self.bank_parser = ParserBank(bank_path)
+        self.bank_parser = ParserBank(convert_setting['parser'])
 
     def _parse_exel(self, path: str):
         work_book = load_workbook(path)
@@ -258,7 +259,8 @@ class ConverterBank:
                 self.relation_to_create.append(temp)
         self.create_deferred_relations(deferred_relations)
 
-
-converter = ConverterBank('/home/pushkin/convert_table OPOGK.xlsx', '/home/pushkin/ТЕСТовый БД в САПФИР')
+CONVERT_SETTING = json.load(open('/home/pushkin/converter_param.json'))
+converter = ConverterBank(CONVERT_SETTING)
 converter.convert()
+
 
