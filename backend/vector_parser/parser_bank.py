@@ -279,7 +279,7 @@ class ParserBank:
             path = Path(self.documents_path)
             if database.file_param and path.is_dir():
                 for item in database.data:
-                    files = [x.name for x in path.iterdir() if x.name.split('.')[0] == str(item)]
+                    files = [x.name for x in path.iterdir() if x.name.split('.')[0].split('_')[0] == str(item)]
                     for file in files:
                         database.data[item]['values'].append({'value': file, 'type': database.file_param})
         for relation in self.relations.values():

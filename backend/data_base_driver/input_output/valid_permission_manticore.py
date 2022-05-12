@@ -98,7 +98,7 @@ def get_enabled_records(object_type, records, group_id, write=False):
     @param write: флаг запись/чтение
     @return: отфильтрованный список словарей записей
     """
-    if object_type not in DAT_SYS_KEY.DUMP.owners.keys():
+    if object_type not in DAT_SYS_KEY.DUMP.owners.keys() or group_id == 1:
         return records
     objects = set([record['rec_id'] for record in records])
     remove_objects = []

@@ -5,16 +5,15 @@ import threading
 import datetime
 
 from core.deploy_settings import MEDIA_ROOT
-from core.projectSettings.decorators import decor_timeit
 from data_base_driver.additional_functions import date_client_to_server, date_time_client_to_server
 from data_base_driver.constants.const_dat import DAT_SYS_KEY
 from data_base_driver.input_output.input_output import io_get_obj
 from data_base_driver.sys_key.get_key_dump import get_key_by_id
 from data_base_driver.sys_key.get_object_info import get_object_new_rec_id
 from objects.record.add_record import add_record
-from objects.record.get_record import get_keys, get_object_record_by_id_http
+from objects.record.get_record import get_keys
 
-@decor_timeit
+
 def find_key_value_http_vector(result, object_id, key_id, value, group_id=0):
     if get_key_by_id(key_id)['type'] == 'date' or get_key_by_id(key_id)['type'] == 'date_time':
         value = str(value).replace('-', '<<')
@@ -24,7 +23,6 @@ def find_key_value_http_vector(result, object_id, key_id, value, group_id=0):
     result[key_id] = [int(item['rec_id']) for index, item in enumerate(response)]
 
 
-@decor_timeit
 def find_duplicate_vector(group_id, object_id, rec_id, params):
     nums = len(list(filter(lambda x: x['obj_id'] == object_id and x['need'], get_keys())))
     new_params = {}
