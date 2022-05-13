@@ -42,6 +42,11 @@ class GlobalSettings {
       subTitle: 'Управление отображением даты связи',
       state: new UserSetting('showGlobalDateRelation', true)
     }
+    this.showGlobalDocRelation = {
+      title: 'Документ установивший связь',
+      subTitle: 'Управление отображением названия документа на основании которого была создана связь',
+      state: new UserSetting('showGlobalDocRelation', true)
+    }
   }
 }
 

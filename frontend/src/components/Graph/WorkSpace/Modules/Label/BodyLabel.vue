@@ -6,6 +6,7 @@
         :key="param.id"
         :param="param"
         :show-date="showDate"
+        :show-doc="showDoc"
         :style="rowStyle"
       />
     </table>
@@ -22,6 +23,7 @@ export default {
     size: Number,
     params: Array,
     showDate: Boolean,
+    showDoc: Boolean
   },
   computed: {
     rowStyle: function () {
