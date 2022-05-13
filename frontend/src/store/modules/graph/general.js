@@ -10,7 +10,7 @@ export default {
     async getObject({getters}, {rec_id, object_id, config = {}}) {
       config.headers = {'set-cookie': getters.cookieTriggers(object_id)}
       return await axios.get('objects/object/', Object.assign(config, {params: {rec_id, object_id}}))
-        .then(r => Promise.resolve(new DataBaseObject(r.data)))
+        .then(r => r.data ? Promise.resolve(new DataBaseObject(r.data)) : Promise.reject(e))
         .catch(e => Promise.reject(e))
     },
     async getRelation({getters}, {from, to, config = {}}) {
