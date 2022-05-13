@@ -25,6 +25,10 @@ export default {
       get: function () { return this.objectCtxMenu.settings.showCreateDate },
       set: function () { this.objectCtxMenu.settings.showCreateDate = !this.objectCtxMenu.settings.showCreateDate }
     },
+    relationDoc: {
+      get: function () { return this.objectCtxMenu.settings.showDoc },
+      set: function () { this.objectCtxMenu.settings.showDoc = !this.objectCtxMenu.settings.showDoc }
+    },
     objectTitle: {
       get: function () { return this.objectCtxMenu.settings.showTitle },
       set: function () { this.objectCtxMenu.settings.showTitle = !this.objectCtxMenu.settings.showTitle }

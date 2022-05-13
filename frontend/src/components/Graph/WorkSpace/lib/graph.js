@@ -268,6 +268,7 @@ class GraphObjectSettings extends GraphElementSettingsBase{
 class GraphRelationSettings extends GraphElementSettingsBase{
   constructor() {
     super()
+    this.showDoc = true
   }
 }
 

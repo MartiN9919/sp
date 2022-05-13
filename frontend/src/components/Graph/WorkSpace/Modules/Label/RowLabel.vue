@@ -2,7 +2,7 @@
   <tr>
     <td>
       <span>{{title}}</span><br>
-      <span v-if="doc" class="teal--text" style="font-size: 0.8em">{{doc}}</span>
+      <span v-if="showDoc && doc" class="teal--text" style="font-size: 0.8em">{{doc}}</span>
     </td>
     <td :class="valueClass" class="column-data">{{value}}</td>
     <td v-if="showDate" class="column-date text-end">{{date}}</td>
@@ -15,6 +15,7 @@ export default {
   props: {
     param: Object,
     showDate: Boolean,
+    showDoc: Boolean
   },
   computed: {
     valueClass: function () {

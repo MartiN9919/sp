@@ -88,6 +88,10 @@ const RelationCtxMenu = [
       {
         title: 'Дата создания связей',
         model: 'relationCreateDate'
+      },
+      {
+        title: 'Документ породивший связь',
+        model: 'relationDoc'
       }
     ],
   }
