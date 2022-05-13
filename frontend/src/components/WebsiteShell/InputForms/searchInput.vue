@@ -18,6 +18,7 @@
       autocomplete="off"
       messages=" "
       class="search-input-form"
+      :menu-props="{closeOnContentClick: true}"
   >
     <template v-slot:message>
       <slot name="message"></slot>
