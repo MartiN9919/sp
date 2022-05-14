@@ -88,9 +88,22 @@ class ConverterRelations:
             new_id_2 = new_object_2['rec_id']
             key_id = self.relations_convert_table.get(f"{self.database_id_1}_{self.database_id_2}", 0)
             date_time = relation.date + ' ' + relation.time
-
-            add_rel(1, self.object_id_1, new_id_1, self.object_id_2, new_id_2, [{'id': key_id, 'value': '', 'date': date_time}])
-
+            try:
+                add_rel(1, self.object_id_1, new_id_1, self.object_id_2, new_id_2, [{'id': key_id, 'value': '', 'date': date_time}])
+            except Exception as e:
+                print('error creating relation')
+                return {
+                    'error': {
+                        f"{self.database_id_1}_{old_id_1}_{self.database_id_2}_{old_id_2}": {
+                            'object_id_1': self.object_id_1,
+                            'rec_id_1': new_id_1,
+                            'object_id_2': self.object_id_2,
+                            'rec_id_2': new_id_2,
+                            'key_id': key_id,
+                            'date': date_time
+                        }
+                    },
+                }
             result: Dict = {
                 'object_id_1': self.object_id_1,
                 'rec_id_1': new_id_1,
@@ -166,7 +179,7 @@ class ConverterParams:
         @param path: путь к папке с файлами
         @return: словарь с информацией о созданных объектах и отложенных связях
         """
-        result: Dict[str, Dict] = {'objects': {}, 'relations': {}}
+        result: Dict[str, Dict] = {'objects': {}, 'relations': {}, 'error': {}}
         if database.id in converters_object_to_relation:
             ConverterParams._add_relations(database.id, database.data, converters_object_to_relation, result)
         if self.object_id == 0 or len(self.params_converter_table) == 0:
@@ -203,6 +216,7 @@ class ConverterParams:
                 new_object[key]['rec_id'] = temp_result['object']
             else:
                 print('some error ', key, ' ', new_object[key])
+                result['error'][key] = new_object[key]
             result['objects'].update(new_object)
         return result
 
@@ -264,10 +278,11 @@ class ConverterBank:
                         'document': row[6].value
                     })
 
-    def create_deferred_relations(self, deferred_relations: dict):
+    def create_deferred_relations(self, deferred_relations: dict, errors: dict) -> None:
         """
         Функция для создания связей Сапфир из отложенных связей
         @param deferred_relations: словарь отложенных связей
+        @param errors: словарь ошибок
         """
         for deferred_relation in deferred_relations.values():
             for key in deferred_relation:
@@ -281,8 +296,20 @@ class ConverterBank:
                 document = deferred_relation[key].get('document')
                 for rec_id_1 in rec_id_1_list:
                     for rec_id_2 in rec_id_2_list:
-                        add_rel(1, object_id_1, rec_id_1, object_id_2, rec_id_2,
-                                [{'id': key_id, 'value': value, 'date': date}], document)
+                        try:
+                            add_rel(1, object_id_1, rec_id_1, object_id_2, rec_id_2,
+                                    [{'id': key_id, 'value': value, 'date': date}], document)
+                        except Exception as e:
+                            errors[f"{object_id_1}_{rec_id_1}_{object_id_2}_{rec_id_2}"] = {
+                                'object_id_1': object_id_1,
+                                'rec_id_1': rec_id_1,
+                                'object_id_2': object_id_2,
+                                'rec_id_2': rec_id_2,
+                                'key_id': key_id,
+                                'value': value,
+                                'datetime': date
+                            }
+                            return
                         self.relation_to_create.append({
                             'object_id_1': object_id_1,
                             'rec_id_1': rec_id_1,
@@ -297,6 +324,7 @@ class ConverterBank:
         """
         Метод для преобразования данных/связей Хроноса в Сапфир
         """
+        errors: dict = {}
         temp_relations: dict = {}
         for database in self.bank_parser.databases:
             converter_params = self.converters_params[database.id]
@@ -304,6 +332,7 @@ class ConverterBank:
                                             self.bank_parser.documents_path)
             self.object_to_create.update(temp['objects'])
             temp_relations.update(temp['relations'])
+            errors.update(temp['error'])
         deferred_relations: dict = {}
         for relation in self.bank_parser.relations.values():
             converter_relation = self.converters_relations.get(f"{relation.object_id_1}_{relation.object_id_2}")
@@ -313,9 +342,11 @@ class ConverterBank:
                                                         deferred_relations)
                 self.converters_relations[f"{relation.object_id_1}_{relation.object_id_2}"] = converter_relation
             temp = converter_relation.convert(relation, self.object_to_create, temp_relations)
-            if len(temp) > 0:
+            if temp.get('error'):
+                errors.update(temp['error'])
+            elif len(temp) > 0:
                 self.relation_to_create.append(temp)
-        self.create_deferred_relations(deferred_relations)
+        self.create_deferred_relations(deferred_relations, errors)
 
 CONVERT_SETTING = json.load(open('/home/pushkin/converter_param.json'))
 converter = ConverterBank(CONVERT_SETTING)
