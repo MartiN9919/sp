@@ -11,6 +11,7 @@ from data_base_driver.additional_functions import date_time_client_to_server, da
 from data_base_driver.constants.const_dat import DAT_SYS_KEY
 from data_base_driver.constants.const_key import SYS_KEY_CONSTANT
 from document_driver.form_parser import get_entities_from_file
+from files.additional_function import get_object_file_dir, get_object_file_path
 from objects.record.find_object import find_duplicate_objects, find_same_objects
 from objects.record.get_record import get_object_record_by_id_http
 from data_base_driver.input_output.input_output import io_set
@@ -111,11 +112,12 @@ def parse_value(param, object, files):
         value = date_time_client_to_server(value)
     if key.get('type') == DAT_SYS_KEY.TYPE_FILE_PHOTO or key.get('type') == DAT_SYS_KEY.TYPE_FILE_ANY:
         rec_id = get_object_new_rec_id(object['object_id']) if object['rec_id'] == 0 else object['rec_id']
-        path = 'files/' + str(object['object_id']) + '/' + str(rec_id) + '/'
+        path = get_object_file_dir(object['object_id'], rec_id)
         if not os.path.exists(MEDIA_ROOT + '/' + path):
             os.makedirs(MEDIA_ROOT + '/' + path, exist_ok=True)
         file = files[value]
-        file_path = default_storage.save(path + file.name, ContentFile(file.read()))
+        file_path = default_storage.save(
+            get_object_file_path(object['object_id'], rec_id, file.name)[1:], ContentFile(file.read()))
         value = file_path.split('/')[-1]
     return [param['id'], value,
             date_time_client_to_server(param.get('date', datetime.datetime.now().strftime("%d.%m.%Y %H:%M")) + ':00')]
