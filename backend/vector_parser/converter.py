@@ -348,8 +348,8 @@ class ConverterBank:
                 self.relation_to_create.append(temp)
         self.create_deferred_relations(deferred_relations, errors)
 
-CONVERT_SETTING = json.load(open('/home/pushkin/converter_param.json'))
-converter = ConverterBank(CONVERT_SETTING)
-converter.convert()
+# CONVERT_SETTING = json.load(open('/home/pushkin/converter_param.json'))
+# converter = ConverterBank(CONVERT_SETTING)
+# converter.convert()
 
 
