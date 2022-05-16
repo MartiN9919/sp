@@ -37,7 +37,7 @@
         <v-divider v-if="'id' in selectedItem"></v-divider>
 
         <v-scroll-y-transition mode="out-in">
-          <v-form ref="form" v-if="'id' in selectedItem" :key="selectedItem.key" class="px-2" onSubmit="return false;">
+          <v-form ref="form" v-if="'id' in selectedItem" :key="selectedItem.refresh" class="px-2" onSubmit="return false;">
             <custom-tooltip v-for="(v, key) in selectedItem.variables" :key="selectedItem.id + key" :body-text="v.hint" bottom>
               <template v-slot:activator="{ on }">
                 <div v-on="on" class="pt-2">
