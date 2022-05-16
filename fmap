@@ -1,0 +1,7 @@
+#!/bin/bash
+# chmod ugo+x fmap
+
+#rm -r -f backend/static/src
+#cp backend/templates/index_dev.html backend/templates/index.html
+cd frontend_map
+npm run serve

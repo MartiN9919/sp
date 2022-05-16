@@ -1,0 +1,18 @@
+.leaflet-centervertical {
+  position: absolute;
+  z-index: 1000;
+  pointer-events: none;
+  top: 50%;
+  transform: translateY(-50%);
+  padding-top: 10px;
+}
+
+.leaflet-centervertical .leaflet-control {
+  margin-bottom: 10px;
+}
+
+.leaflet-centerhorizontal {
+  max-width: calc( 100% - 110px );
+  left: 50%;
+  transform: translate(-50%, 0%);
+}

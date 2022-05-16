@@ -11,12 +11,12 @@ from data_base_driver.constants.const_key import SYS_KEY_CONSTANT
 
 def check_object_permission(group_id, object_type, rec_id, write=False):
     """
-    Функция для получения информации о группах которые имеют доступ к данному объекту
+    Проверка доступа группы к объекту
     @param group_id: идентификатор группы пользователя запросившего объект
     @param object_type: идентификатор типа объекта
     @param rec_id: идентификатор объекта
     @param write: флаг запись/чтение
-    @return: True если для группы пользователя доступ разрешен, в противном случае False
+    @return: True - доступ разрешен
     """
     if object_type not in DAT_SYS_KEY.DUMP.owners.keys():
         return True
