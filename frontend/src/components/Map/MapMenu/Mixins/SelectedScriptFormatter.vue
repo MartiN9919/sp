@@ -13,7 +13,7 @@ export default {
           necessary: variable.necessary
         } // формирование словаря с переменными
       }
-      return { key: Date.now(), id: script.id, name: script.name, variables: variables, hint: script.hint }
+      return { refresh: Date.now(), id: script.id, name: script.name, variables: variables, hint: script.hint }
     }
   }
 }

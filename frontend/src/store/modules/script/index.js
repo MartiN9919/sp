@@ -198,8 +198,9 @@ export default {
           commit('changeSelectedTreeViewItem', {});
           if(!response.data.features.length)
             dispatch('addNotification', {content: 'По вашему запросу ничего не найдено', timeout: 10})
+          return Promise.resolve(response.data)
         })
-        .catch(() => {})
+        .catch(e => Promise.reject(e))
     },
 
 
