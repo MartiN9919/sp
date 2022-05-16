@@ -13,6 +13,7 @@
 .python-version
 
 # Environments
+*env/*
 .env
 .venv
 .pytest_cache
