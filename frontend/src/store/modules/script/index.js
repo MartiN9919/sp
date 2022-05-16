@@ -120,9 +120,9 @@ export default {
         item[MAP_ITEM.COLOR] = color;
       }
 
-      let item_copy = JSON.parse(JSON.stringify(item));        // deep copy
-      item_copy.refresh = new Date().getTime();
-      state.selectedTemplate.activeAnalysts.push(item_copy);
+      // let item_copy = JSON.parse(JSON.stringify(item));        // deep copy
+      item.refresh = new Date().getTime();
+      state.selectedTemplate.activeAnalysts.push(item);
     },
 
     SCRIPT_MUT_ITEM_DEL:   (state, id)    => state.selectedTemplate.activeAnalysts.splice(id, 1),
