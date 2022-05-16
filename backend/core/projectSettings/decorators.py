@@ -11,6 +11,7 @@ from core.settings import MEDIA_ROOT
 from data_base_driver.constants.const_dat import DAT_OWNER
 from data_base_driver.input_output.valid_permission_manticore import check_object_permission
 from data_base_driver.sys_notifications.set_notifications_info import add_notification
+from files.additional_function import convert_file_path
 
 
 def request_wrap(f):
@@ -112,7 +113,7 @@ def request_download(f):
         rec_id = int(path.split('/')[3])
         if not check_object_permission(group_id, object_id, rec_id, False):
             raise Exception(403, 'Нет доступа к файлу')
-        file_path = MEDIA_ROOT + '/' + path
+        file_path = MEDIA_ROOT + '/' + convert_file_path(path)
         if os.path.exists(file_path):
             return f(request, *args, **kwargs)
         else:
