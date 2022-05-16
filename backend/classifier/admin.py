@@ -200,6 +200,10 @@ class ModelKeyAdminObject(admin.ModelAdmin):
     def get_form(self, request, obj=None, change=False, **kwargs):
         form = super().get_form(request, obj, **kwargs)
         if not obj:
-            obj_id = request.GET.get('_changelist_filters', '0=0').split('=')[1]
+            temp = request.GET.get('_changelist_filters', '')
+            if temp.find('obj__id__exact') != -1:
+                obj_id = temp.split('obj__id__exact')[1].split('=')[1]
+            else:
+                obj_id = '0'
             form.base_fields['obj'].initial = int(obj_id)
         return form

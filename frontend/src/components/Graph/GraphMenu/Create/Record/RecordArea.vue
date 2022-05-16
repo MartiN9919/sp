@@ -1,56 +1,60 @@
 <template>
-  <v-expansion-panels v-model="openedPanels" multiple accordion hover focusable tile>
-    <v-expansion-panel v-for="(param, key) in params" :key="key">
-      <record-title
-        :title="param.baseParam.title"
-        :opened="openedPanels.includes(key)"
-        @create="createNewParam(param.baseParam.id)"
-        @keyup.ctrl.enter.native="createNewParam(param.baseParam.id)"
-      />
-      <v-expansion-panel-content class="expansion-panel-content-custom">
-        <v-card tile flat>
-          <v-row
-              v-for="(value, key) in param.new_values" :key="key"
-              @keyup.alt.enter="deleteNewParam(param.baseParam.id, value)"
-              no-gutters
-              class="flex-nowrap"
-          >
-            <record-input
+  <div>
+    <record-body
+        v-for="param in params"
+        :key="param.baseParam.id"
+        v-model="openedPanels"
+        @click="createNewParam"
+    >
+      <template v-slot:title="">
+        {{param.baseParam.title}}
+      </template>
+      <template v-slot:body="">
+        <v-row
+            v-for="(value, key) in param.new_values" :key="key"
+            @keyup.alt.enter="deleteNewParam(param.baseParam.id, value)"
+            no-gutters
+            class="flex-nowrap px-2"
+        >
+          <record-input
               :param="getParam(param, value)"
               :type="param.baseParam.type"
+              :conflict="conflict"
               @deletable="deleteNewParam(param.baseParam.id, value)"
-            ></record-input>
-          </v-row>
-          <old-records
-              :base="param.baseParam"
-              :values="param.values"
-              :title="title"
-              :settings="settings"
-              @addDocToGraph="addDocToGraph"
-          ></old-records>
-        </v-card>
-      </v-expansion-panel-content>
-    </v-expansion-panel>
-  </v-expansion-panels>
+          ></record-input>
+        </v-row>
+        <old-records
+            :base="param.baseParam"
+            :values="param.values"
+            :title="title"
+            :settings="settings"
+            @addDocToGraph="addDocToGraph"
+            class="px-2"
+        ></old-records>
+      </template>
+    </record-body>
+  </div>
 </template>
 
 <script>
-import RecordTitle from "@/components/Graph/GraphMenu/Create/Record/RecordTitle";
+import RecordBody from "@/components/Graph/GraphMenu/Create/Record/RecordBody";
 import RecordInput from "@/components/Graph/GraphMenu/Create/Record/RecordInput";
-import DropDownMenu from "@/components/WebsiteShell/CustomComponents/dropDownMenu";
-import MenuDateTime from "@/components/WebsiteShell/CustomComponents/DateTimePickers/selectDateTime";
 import OldRecords from "@/components/Graph/GraphMenu/Create/Record/OldRecords";
 import _ from 'lodash';
 
 export default {
   name: "RecordArea",
-  components: {OldRecords, RecordInput, RecordTitle, MenuDateTime, DropDownMenu},
+  components: {RecordBody, OldRecords, RecordInput},
   props: {
     settings: Object,
     params: Array,
     title: {
       type: String,
       default: null
+    },
+    conflict: {
+      type: Boolean,
+      default: false
     }
   },
   data: () => ({
@@ -75,19 +79,16 @@ export default {
     },
   },
   mounted() {
-    this.openedPanels = [...Array(this.params.length).keys()]
+    this.openedPanels = this.params.map(p => p.baseParam.id)
   },
   watch: {
-    params: function (value) { this.openedPanels = [...Array(value.length).keys()] }
+    params: function (value) {
+      this.openedPanels = value.map(p => p.baseParam.id)
+    }
   }
 }
 </script>
 
 <style scoped>
-.v-expansion-panel >>> .v-expansion-panel-header {
-  min-height: 35px;
-}
-.expansion-panel-content-custom >>> .v-expansion-panel-content__wrap {
-  padding: 0 8px;
-}
+
 </style>

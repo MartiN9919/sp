@@ -126,12 +126,15 @@ export default class Graph {
       let speed = 0
       let speedNums = 0
       for(let node of tempNodes) {
+        let edges = this.edges
+            .filter(edge => edge.to === node.id || edge.from === node.id)
+            .map(edge => edge.to === node.id ? edge.from : edge.to)
         for (let otherNode of tempNodes) {
           if (otherNode.id !== node.id) {
             // distance(offset) between two nodes
             let x0 = node.x
             let y0 = node.y
-            this.forceMoveNode(node, otherNode, [])
+            this.forceMoveNode(node, otherNode, edges)
             let dx = node.x - x0
             let dy = node.y - y0
             speed += Math.sqrt(dx * dx + dy * dy) / 100
@@ -199,11 +202,7 @@ export default class Graph {
     Math.abs(dx) < 1 ? dx = Math.random() * 20 - 10 : dx
     Math.abs(dy) < 1 ? dy = Math.random() * 20 - 10 : dy
     let offset = Math.sqrt(dx * dx + dy * dy);
-    if (edges.find(edge => edge === otherNode.id)
-        || this.edges.find(edge => {
-              return (edge.to === node.id && edge.from === otherNode.id) ||
-                  (edge.from === node.id && edge.to === otherNode.id)
-            })) {
+    if (edges.find(edge => edge === otherNode.id)) {
       const springForce = 0.25 * Math.log2(offset / 500)
       node.x += dx * springForce
       node.y += dy * springForce
@@ -268,6 +267,7 @@ class GraphObjectSettings extends GraphElementSettingsBase{
 class GraphRelationSettings extends GraphElementSettingsBase{
   constructor() {
     super()
+    this.showDoc = true
   }
 }
 

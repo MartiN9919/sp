@@ -9,7 +9,7 @@ from core.projectSettings.decorators import login_check, request_log, request_ge
 from core.settings import MEDIA_ROOT
 from data_base_driver.sys_reports.check_file_permission import check_file_permission
 from data_base_driver.sys_reports.get_files_info import get_file_path
-from files.additional_function import get_x_accel_response
+from files.additional_function import get_x_accel_response, convert_file_path
 
 mode = os.environ.get('MODE')
 
@@ -24,9 +24,10 @@ def aj_download_open_file(request):
     @return: django file response
     """
     if mode == 'deploy':
-        return get_x_accel_response(request.path.split('download')[1], request.path.split('download')[1].split('/')[-1])
+        path = convert_file_path(request.path.split('download')[1])
+        return get_x_accel_response(path, request.path.split('download')[1].split('/')[-1])
     else:
-        file_path = MEDIA_ROOT + '/' + request.path[request.path.find('download') + 9:]
+        file_path = MEDIA_ROOT + convert_file_path(request.path.split('download')[1])
         return FileResponse(open(file_path, 'rb'), as_attachment=True)
 
 
@@ -39,7 +40,7 @@ def aj_download_condense_image(request):
     @param request: запрос на скачивание
     @return: django file response
     """
-    file_path = MEDIA_ROOT + '/' + request.path.split('condense_image_download')[1]
+    file_path = MEDIA_ROOT + '/' + convert_file_path(request.path.split('condense_image_download')[1])
     original_image = Image.open(file_path)
     width, height = original_image.size
     new_width = 250

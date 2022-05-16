@@ -7,7 +7,6 @@
     @mouseleave="emitHoverEvent('unhover')"
     @click.alt="$emit('setChoosingRelated')"
     @contextmenu.stop="$emit('ctxMenu', [$event, node])"
-    oncontextmenu="return false"
   >
     <v-label v-show="showLabel" :element="node">
       <body-label :size="node.size" :params="getClassifiers" :show-date="showDate"/>
@@ -18,7 +17,7 @@
     </node>
 
     <foreignObject v-if="showTitle" v-bind="titleStyle">
-      <div class="name-text" :style="titleTextStyle">{{title}}</div>
+      <div class="name-text" :style="titleTextStyle" oncontextmenu="return false">{{title}}</div>
     </foreignObject>
     <foreignObject width="0" height="0">
       <description v-model="description" :params="params" :object-id="objectId" :rec-id="recId" :title="title"/>

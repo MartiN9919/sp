@@ -13,6 +13,7 @@
       <v-tab-item v-for="(object, key) in editableObjects" :key="key" eager transition="none">
         <v-form :ref="'form' + key" v-model="valid" onSubmit="return false;" autofocus>
           <record-area
+              conflict
               :params="object.params"
               :title="object.title"
               :settings="{objectId: object.ids.object_id, recId: object.ids.rec_id}"
@@ -58,13 +59,14 @@ export default {
           ),
         },
         {
-          title: this.editableObjects[this.activeTab]?.recId ? 'Сохранить' : 'Создать',
+          title: this.activeTab > 0 ? 'Объединить' : this.editableObjects[this.activeTab]?.recId ? 'Сохранить' : 'Создать',
           action: 'save',
           disabled: !!(
-              this.valid
+              (this.activeTab > 0 && this.valid) ||
+              (this.valid
               && this.editableObjects[this.activeTab]
               && 'form' + this.activeTab in this.$refs
-              && this.$refs['form' + this.activeTab][0]?.inputs?.length
+              && this.$refs['form' + this.activeTab][0]?.inputs?.length)
           )
         },
       ]

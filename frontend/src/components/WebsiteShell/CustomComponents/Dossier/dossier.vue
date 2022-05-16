@@ -1,12 +1,12 @@
 <template>
   <v-col class="pa-0 overflow-auto">
-    <v-row no-gutters v-for="param in photoParams" :key="param.id" v-if="param.values.length">
+    <v-row no-gutters v-for="param in photoParams" :key="`${param.baseParam.id}_${recId}`" v-if="param.values.length">
       <photo-param :param="param" :rec-id="recId" :object-id="objectId"/>
     </v-row>
     <table>
       <dossier-param
         v-for="param in simpleParams"
-        :key="param.id"
+        :key="`${param.baseParam.id}_${recId}`"
         :param="param"
         :rec-id="recId"
         :object-id="objectId"
@@ -37,7 +37,7 @@ export default {
       return this.params.filter(p => p.baseParam.type.title === 'file' && p.baseParam.type.value === 'photo' && p.values.length)
     },
     simpleParams: function () {
-      return this.params.filter(p => p.baseParam.type.title !== 'file'&& p.baseParam.type.value !== 'photo' && p.values.length)
+      return this.params.filter(p => p.baseParam.type.title !== 'file' && p.baseParam.type.value !== 'photo' && p.values.length)
     }
   }
 }

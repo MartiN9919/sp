@@ -16,6 +16,7 @@
         <v-icon
           v-if="$attrs.hasOwnProperty('deletable') && hover"
           @click.stop="$emit('deletable')"
+          @mouseup.stop
           size="24"
           class="action-icon"
         >mdi-delete</v-icon>

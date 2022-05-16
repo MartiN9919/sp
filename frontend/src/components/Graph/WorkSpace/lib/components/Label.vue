@@ -1,6 +1,6 @@
 <template>
   <g>
-    <path :d="getLineCoordinates" class="connector"/>
+    <path :d="getLineCoordinates" class="connector" @contextmenu.prevent=""/>
     <node ref="node" :data="node" @drag="onDrag">
       <slot/>
     </node>

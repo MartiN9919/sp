@@ -5,6 +5,7 @@
     ref="menu"
     :z-index="$attrs['z-index'] || 10001"
     transition="slide-x-reverse-transition"
+    content-class="menu-body"
   >
     <template v-slot:activator="{ on, attrs }">
       <slot name="activator" :on="on" :openMenu="openMenu" :closeMenu="closeMenu" :attrs="attrs"/>
@@ -46,5 +47,8 @@ export default {
 .menu_content {
   display: flex;
   overflow: hidden;
+}
+.menu-body {
+  background-color: white;
 }
 </style>

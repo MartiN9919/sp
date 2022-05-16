@@ -6,11 +6,10 @@
     @mouseleave="emitHoverEvent('unhover')"
     @click.alt="$emit('setChoosingRelated')"
     @contextmenu.stop="$emit('ctxMenu', [$event, edge])"
-    oncontextmenu="return false"
   >
     <edge ref="edge" :edge="edge" :nodes="nodes" :in-hover="inHover" :added="added"/>
     <v-label ref="label" v-show="showLabel" :element="edge">
-      <information-label :size="edge.size" :params="getClassifiers" :show-date="showDate"/>
+      <information-label :size="edge.size" :params="getClassifiers" :show-date="showDate" :show-doc="showDoc"/>
     </v-label>
     <foreignObject width="0" height="0">
       <description v-model="description" :params="params"/>
@@ -40,15 +39,20 @@ export default {
   computed: {
     ...mapGetters(['globalDisplaySettingValue', 'classifiersSettings']),
     showLabel() {
-      let globalState = this.globalDisplaySettingValue('showGlobalTooltipRelation')
-      let classifiersLength = this.getClassifiers.length
-      let localState = this.edge.settings.showTooltip
+      const globalState = this.globalDisplaySettingValue('showGlobalTooltipRelation')
+      const classifiersLength = this.getClassifiers.length
+      const localState = this.edge.settings.showTooltip
       return globalState && classifiersLength && localState
     },
     showDate() {
-      let globalCreateDate = this.globalDisplaySettingValue('showGlobalDateRelation')
-      let localCreateDate = this.edge.settings.showCreateDate
+      const globalCreateDate = this.globalDisplaySettingValue('showGlobalDateRelation')
+      const localCreateDate = this.edge.settings.showCreateDate
       return globalCreateDate && localCreateDate
+    },
+    showDoc() {
+      const globalDoc = this.globalDisplaySettingValue('showGlobalDocRelation')
+      const localDoc = this.edge.settings.showDoc
+      return globalDoc && localDoc
     },
     inHover() {
       return this.edge.state.hover && this.globalDisplaySettingValue('linkHighlighting')

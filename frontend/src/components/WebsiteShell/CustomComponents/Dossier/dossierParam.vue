@@ -10,6 +10,7 @@
         :object-id="objectId"
         :title="title"
         :type="getParamType"
+        :document="value.doc"
       />
       <span v-if="paramsLength > 1" @click="showOldValues = !showOldValues" class="old-values">
         {{ showOldValues ? 'Скрыть' :'Старые значения' }}

@@ -1,5 +1,6 @@
 import CONST from '@/plugins/const'
 import axios from '@/plugins/axiosSettings'
+import _ from 'lodash'
 
 import { MAP_CONST, MAP_ITEM } from '@/components/Map/Leaflet/Lib/Const';
 import { color_random } from '@/components/Map/Leaflet/Lib/LibColor';
@@ -80,7 +81,7 @@ export default {
     },
     saveSelectedTemplate: (state, templateId) => {
       state.selectedTemplate.id = templateId
-      state.templatesList.push(state.selectedTemplate)
+      state.templatesList.push(_.cloneDeep(state.selectedTemplate))
     },
     deleteSelectedTemplate: (state, templateId) => {
       state.selectedTemplate = { title: '', activeAnalysts: [], passiveAnalysts: [] }
@@ -196,7 +197,7 @@ export default {
           commit('SCRIPT_MUT_ITEM_ADD', parameters.request);
           commit('changeSelectedTreeViewItem', {});
           if(!response.data.features.length)
-            dispatch('addNotification', {content: 'По вашему запросу ничего не найдено', timeout: 3})
+            dispatch('addNotification', {content: 'По вашему запросу ничего не найдено', timeout: 10})
         })
         .catch(() => {})
     },
@@ -235,8 +236,8 @@ export default {
           const passiveAnalysts = response.data.passiveAnalysts
           commit('changeSelectedTreeViewItem', {})
           commit('addSelectedTemplate', response.data)
-          for (const script of activeAnalysts) { dispatch('executeMapScript', { request: script, script: script, config: {} }) }
-          for (const script of passiveAnalysts) { commit('addPassiveAnalysts', script) }
+          activeAnalysts.forEach(script => dispatch('executeMapScript', {request: script, config: {}}))
+          passiveAnalysts.forEach(script => commit('addPassiveAnalysts', script) )
         })
         .catch(() => {})
     },

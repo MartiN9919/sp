@@ -1,5 +1,5 @@
 <template>
-  <path :id="`${edge.id}-edge`" :d="path" :class="relationClass" class="edge"/>
+  <path :id="`${edge.id}-edge`" :d="path" :class="relationClass" class="edge" @contextmenu.prevent=""/>
 </template>
 
 <script>
