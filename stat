@@ -1,8 +1,0 @@
-#!/bin/bash
-# chmod ugo+x stat
-
-#rm -r -f backend/static/src
-cd frontend
-npm run build
-#cp ../backend/static/src/vue/dist/index.html ../backend/templates/index.html
-

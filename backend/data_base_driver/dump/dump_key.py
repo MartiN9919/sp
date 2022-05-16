@@ -95,12 +95,12 @@ class DUMP_KEY:
     def get_rec(self, obj_id=None, id=None, name=None, val=None, col=None, only_first=True, visible=True):
         self._refresh_()
         list_key_val = []
-        if obj_id != None:        list_key_val.append((DAT_SYS_KEY.OBJ_ID, obj_id))
-        if id != None:        list_key_val.append((DAT_SYS_KEY.ID, id))
-        if name != None:        list_key_val.append((DAT_SYS_KEY.NAME, name))
+        if obj_id != None:       list_key_val.append((DAT_SYS_KEY.OBJ_ID, obj_id))
+        if id != None:           list_key_val.append((DAT_SYS_KEY.ID, id))
+        if name != None:         list_key_val.append((DAT_SYS_KEY.NAME, name))
         if isinstance(val, str): list_key_val.append((DAT_SYS_KEY.NAME, val))
         if isinstance(val, int): list_key_val.append((DAT_SYS_KEY.ID, val))
-        if col != None:        list_key_val.append((DAT_SYS_KEY.COL, col))
+        if col != None:          list_key_val.append((DAT_SYS_KEY.COL, col))
         rec = dict_filter(list_dict=self.dump, list_key_val=list_key_val, only_first=only_first) \
             if len(list_key_val) > 0 else self.dump
 

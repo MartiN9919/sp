@@ -221,10 +221,13 @@ export default {
       'MAP_GET_EDIT',
 
       'SCRIPT_GET',
+      'SCRIPT_GET_ITEM',
       'SCRIPT_GET_ITEM_COLOR',
       'SCRIPT_GET_ITEM_FC_STYLE_LINE',
       'SCRIPT_GET_ITEM_FC_STYLE_POLYGON',
       'SCRIPT_GET_ITEM_SEL',
+      'SCRIPT_GET_ITEM_FIND_ACTIVE',
+      'selectedTreeViewItem',
     ]),
 
     // FeatureCollection РЕДАКТИРУЕМЫХ объектов
@@ -232,8 +235,26 @@ export default {
       get()    { return this.MAP_GET_EDIT; },
       set(val) { /* this.MAP_ACT_EDIT({data: val}); */ },
     },
+
+    mutatedSelectedTreeViewItem() { return this.selectedTreeViewItem('Map') },
   },
 
+  watch: {
+    // изменение выделения скриптов
+    mutatedSelectedTreeViewItem: {
+      handler: function(val) {
+        this.$nextTick().then(() => {
+          let fc = val?.fc;
+          if (fc != undefined) {
+            // приблизить fc на карте
+            let geojsonGroup = L.geoJSON(fc);
+            this.map.fitBounds(geojsonGroup.getBounds(), { padding: [20, 20] });
+          }
+        });
+      },
+      deep: true,
+    },
+  },
 
   methods: {
     ...mapActions([
@@ -243,7 +264,8 @@ export default {
       'SCRIPT_ACT_SEL_CLEAR',
       'addNotification',
       'setNavigationDrawerStatus',
-      'setActiveTool'
+      'setActiveTool',
+      'changeSelectedTreeViewItem',
     ]),
 
 
@@ -329,12 +351,17 @@ export default {
             // реакция выделения только на объекты из БД
             if ((!e.target.feature.obj_id) || (!e.target.feature.rec_id)) return;
             L.DomEvent.stopPropagation(e);
+            // выделить элемент на карте
             let dat = {
-              obj_id: e.target.feature.obj_id,
-              rec_id: e.target.feature.rec_id,
-              ctrl:   e.originalEvent.ctrlKey,
+              active_script_id: self.SCRIPT_GET_ITEM(map_ind).refresh,  // в качестве id экзеспляра скрипта используем TS
+              obj_id:           e.target.feature.obj_id,
+              rec_id:           e.target.feature.rec_id,
+              ctrl:             e.originalEvent.ctrlKey,
             };
             self.SCRIPT_ACT_SEL_SET(dat);
+            // выделить скрипт
+            let sel_script = self.SCRIPT_GET_ITEM_FIND_ACTIVE(dat.active_script_id)
+            self.changeSelectedTreeViewItem(sel_script);
           });
 
           // подсказка
@@ -408,21 +435,16 @@ export default {
 
     on_map_click(e) {
       this.SCRIPT_ACT_SEL_CLEAR();
+      this.changeSelectedTreeViewItem();
     },
 
     on_map_dblclick(e) {
       this.addNotification({content: e.latlng, });
-      // this.setNavigationDrawerStatus();
-      // this.setActiveTool('dossierPage');
+      console.log(this.getDataAsGeoJSON());
     },
 
     on_edit_ok(e, dat) {
       this.MAP_ACT_EDIT({data: dat});
-    },
-
-    // GET BUTTON
-    btn_get_click(e) {
-      console.log(this.getDataAsGeoJSON());
     },
 
     getDataAsGeoJSON () {
@@ -444,7 +466,6 @@ export default {
 
       return geoJSON;
     },
-
 
   }
 };

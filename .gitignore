@@ -34,6 +34,8 @@ backend/static
 backend/webpack-stats.json
 *migrations/*
 
+TEST/
+
 # git rm --cached -r *migrations/*
 
 
