@@ -158,8 +158,12 @@ export default {
       state.selectedFC = [];
     },
 
+
+    //
+    // state.selectedFC => map
+    //
     // пометить выделенные items (в скриптах)
-    SCRIPT_MAP_SEL_MARK: (state) => {
+    SCRIPT_MUT_SEL_MARK: (state) => {
       // просмотреть все активные скрипты
       let sel_items;
       for (let item_script of state.selectedTemplate.activeAnalysts) {
@@ -202,11 +206,11 @@ export default {
     SCRIPT_ACT_SEL_SET({ commit }, param) {         // param.obj_id, param.rec_id, param.ctrl
       if (!param?.ctrl) { commit('SCRIPT_MUT_SEL_CLEAR'); }
       commit('SCRIPT_MUT_SEL_SWITCH', param);
-      commit('SCRIPT_MAP_SEL_MARK');
+      commit('SCRIPT_MUT_SEL_MARK');
     },
     SCRIPT_ACT_SEL_CLEAR({ commit }) {
       commit('SCRIPT_MUT_SEL_CLEAR');
-      commit('SCRIPT_MAP_SEL_MARK');
+      commit('SCRIPT_MUT_SEL_MARK');
     },
 
     getTemplatesList ({ commit, dispatch }, config = {}) {

@@ -89,7 +89,7 @@ export const MAP_ITEM = {
       },
     },
     STYLE: {                              // стили маркеров и фигур
-      KEY:     'style',
+      KEY:      'style',
       COLORING: 'coloring',               // цвет полигона в зависимости от значения. MAP_CONST.COLOR.COLORING.GREEN_MIN (GREEN_MAX)
     },
   },

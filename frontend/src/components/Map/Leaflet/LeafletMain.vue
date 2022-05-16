@@ -227,6 +227,7 @@ export default {
       'SCRIPT_GET_ITEM_FC_STYLE_POLYGON',
       'SCRIPT_GET_ITEM_SEL',
       'SCRIPT_GET_ITEM_FIND_ACTIVE',
+      'selectedTreeViewItem',
     ]),
 
     // FeatureCollection РЕДАКТИРУЕМЫХ объектов
@@ -234,8 +235,26 @@ export default {
       get()    { return this.MAP_GET_EDIT; },
       set(val) { /* this.MAP_ACT_EDIT({data: val}); */ },
     },
+
+    mutatedSelectedTreeViewItem() { return this.selectedTreeViewItem('Map') },
   },
 
+  watch: {
+    // изменение выделения скриптов
+    mutatedSelectedTreeViewItem: {
+      handler: function(val) {
+        this.$nextTick().then(() => {
+          let fc = val?.fc;
+          if (fc != undefined) {
+            // приблизить fc на карте
+            let geojsonGroup = L.geoJSON(fc);
+            this.map.fitBounds(geojsonGroup.getBounds(), { padding: [20, 20] });
+          }
+        });
+      },
+      deep: true,
+    },
+  },
 
   methods: {
     ...mapActions([
@@ -421,17 +440,11 @@ export default {
 
     on_map_dblclick(e) {
       this.addNotification({content: e.latlng, });
-      // this.setNavigationDrawerStatus();
-      // this.setActiveTool('dossierPage');
+      console.log(this.getDataAsGeoJSON());
     },
 
     on_edit_ok(e, dat) {
       this.MAP_ACT_EDIT({data: dat});
-    },
-
-    // GET BUTTON
-    btn_get_click(e) {
-      console.log(this.getDataAsGeoJSON());
     },
 
     getDataAsGeoJSON () {
@@ -453,7 +466,6 @@ export default {
 
       return geoJSON;
     },
-
 
   }
 };
