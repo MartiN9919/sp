@@ -268,7 +268,7 @@ def aj_geometry_fc(request):
     group_id = DAT_OWNER.DUMP.get_group(user_id=request.user.id)
     if request.method == 'GET':
         try:
-            geometry = feature_collection_by_geometry(group_id, 30, [request.GET['rec_id']], [30301, 30303], {})
+            geometry = feature_collection_by_geometry(group_id, 30, [request.GET['rec_id']], [30303], {})
             return geometry
         except Exception as e:
             raise e
@@ -282,7 +282,6 @@ def aj_geometry_fc(request):
                 location=data.get('location'),
                 name=data.get('name'),
                 parent_id=data.get('parent_id'),
-                icon=data.get('icon'),
             )
             return result
         except Exception as e:

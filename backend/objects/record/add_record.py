@@ -160,7 +160,7 @@ def add_data(user, group_id, object, files=None):
             return {'result': -1}
 
 
-def add_geometry(user, group_id, rec_id, location, name, parent_id, icon):
+def add_geometry(user, group_id, rec_id, location, name, parent_id):
     """
     Функция для добавления геометрии
     @param user: объект пользователя
@@ -180,10 +180,6 @@ def add_geometry(user, group_id, rec_id, location, name, parent_id, icon):
         data.append({'id': 30303, 'value': str(name), 'date': date_time_str})
     if parent_id:
         data.append({'id': 30302, 'value': parent_id, 'date': date_time_str})
-    if icon:
-        temp_value = str(get_item_list_value(int(icon)))
-        value = temp_value[temp_value.index('(') + 1:temp_value.index(')')]
-        data.append({'id': 30301, 'value': str(value), 'date': date_time_str})
     return add_data(user, group_id, {'object_id': 30, 'rec_id': rec_id, 'params': data})
 
 ########################################################################################################################
