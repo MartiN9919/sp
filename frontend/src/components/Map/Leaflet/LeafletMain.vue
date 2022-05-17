@@ -100,6 +100,16 @@
 
 
 <script>
+// НАСТРОЙКА АЛГОРИТМА РАБОТЫ
+
+// ГРУППОВОЕ ВЫДЕЛЕНИЕ
+// true  - на карте одновременно выделяются все результаты выполнения скрипта
+//         при выделении скрипта: карта позиционируется на его результаты
+//                                результаты скрипта выделяются
+// false - на карте выделяется каждый элемент в отдельности
+//         при выделении скрипта: карта только позиционируется на его результаты
+//                                любое выделение на карте сбрасывается
+const  SEL_GROUP = true;
 
 import { mapGetters, mapActions } from 'vuex';
 import { Icon } from 'leaflet';
@@ -146,7 +156,6 @@ import MixMeasure       from '@/components/Map/Leaflet/Mixins/Measure';
 import MixMenu          from '@/components/Map/Leaflet/Mixins/Menu/Menu';
 
 const Description = () => import("@/components/Map/Leaflet/Description");
-
 
 // устранение бага с путями
 icon_ini();
@@ -259,24 +268,20 @@ export default {
             this.map.fitBounds(geojsonGroup.getBounds(), { padding: [20, 20] });
 
             // выделить fc на карте
-            let dat = [];
-            let feature = undefined;
-            for (let ind_fc in fc.features) {
-              feature = fc.features[ind_fc];
-              dat.push({
-                obj_id: feature.obj_id,
-                rec_id: feature.rec_id,
-              });
+            if (SEL_GROUP) {
+              let dat = [];
+              let feature = undefined;
+              for (let ind_fc in fc.features) {
+                feature = fc.features[ind_fc];
+                dat.push({
+                  obj_id: feature.obj_id,
+                  rec_id: feature.rec_id,
+                });
+              }
+              this.SCRIPT_ACT_SEL_SET(dat);
+            } else {
+              this.SCRIPT_ACT_SEL_CLEAR();
             }
-            // let dat = {
-            //   active_script_id: self.SCRIPT_GET_ITEM(map_ind).refresh,  // в качестве id экзеспляра скрипта используем TS
-            //   obj_id:           e.target.feature.obj_id,
-            //   rec_id:           e.target.feature.rec_id,
-            //   ctrl:             e.originalEvent.ctrlKey,
-            // };
-            //this.SCRIPT_ACT_SEL_SET(dat);
-
-
           }
         });
       },
@@ -383,12 +388,12 @@ export default {
 
             // выделить элемент на карте
             let dat = {
-              active_script_id: self.SCRIPT_GET_ITEM(map_ind).refresh,  // в качестве id экзеспляра скрипта используем TS
+              active_script_id: self.SCRIPT_GET_ITEM(map_ind).refresh,  // в качестве id экземпляра скрипта используем TS
               obj_id:           e.target.feature.obj_id,
               rec_id:           e.target.feature.rec_id,
               ctrl:             e.originalEvent.ctrlKey,
             };
-            self.SCRIPT_ACT_SEL_SWITCH(dat);
+            if (!SEL_GROUP) self.SCRIPT_ACT_SEL_SWITCH(dat);            // НЕ ДЛЯ ГРУППОВОГО ВЫДЕЛЕНИЯ
 
             // выделить скрипт в списке
             let sel_script = self.SCRIPT_GET_ITEM_FIND_ACTIVE(dat.active_script_id);
