@@ -156,17 +156,8 @@ export default {
       }
     },
 
-    SCRIPT_MUT_SEL_SET: (state, param)   => {    // [[param.active_script_id, param.obj_id, param.rec_id], ...]
-      state.selectedFC = [];
-      for (let ind in state.selectedFC) {
-        if ((state.selectedFC[ind].rec_id == param?.rec_id) && (state.selectedFC[ind].obj_id == param?.obj_id)) {
-          state.selectedFC.push({
-            active_script_id: param?.active_script_id,
-            obj_id:           param?.obj_id,
-            rec_id:           param?.rec_id,
-          });
-        }
-      }
+    SCRIPT_MUT_SEL_SET: (state, param)   => {     // [[param.active_script_id, param.obj_id, param.rec_id], ...]
+      state.selectedFC = JSON.parse(JSON.stringify(param));
     },
 
     SCRIPT_MUT_SEL_CLEAR: (state) => {
@@ -220,9 +211,13 @@ export default {
 
 
     // добавить/удалить выделение
-    SCRIPT_ACT_SEL_SET({ commit }, param) {         // param.obj_id, param.rec_id, param.ctrl
+    SCRIPT_ACT_SEL_SWITCH({ commit }, param) {         // param.obj_id, param.rec_id, param.ctrl
       if (!param?.ctrl) { commit('SCRIPT_MUT_SEL_CLEAR'); }
       commit('SCRIPT_MUT_SEL_SWITCH', param);
+      commit('SCRIPT_MUT_SEL_MARK');
+    },
+    SCRIPT_ACT_SEL_SET({ commit }, param) {         // [[param.active_script_id, param.obj_id, param.rec_id], ...]
+      commit('SCRIPT_MUT_SEL_SET', param);
       commit('SCRIPT_MUT_SEL_MARK');
     },
     SCRIPT_ACT_SEL_CLEAR({ commit }) {

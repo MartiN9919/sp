@@ -250,14 +250,24 @@ export default {
             let geojsonGroup = L.geoJSON(fc);
             this.map.fitBounds(geojsonGroup.getBounds(), { padding: [20, 20] });
 
-            // // выделить элемент на карте
+            // выделить fc на карте
+            let dat = [];
+            let feature = undefined;
+            for (let ind_fc in fc.features) {
+              feature = fc.features[ind_fc];
+              dat.push({
+                obj_id: feature.obj_id,
+                rec_id: feature.rec_id,
+              });
+            }
             // let dat = {
             //   active_script_id: self.SCRIPT_GET_ITEM(map_ind).refresh,  // в качестве id экзеспляра скрипта используем TS
             //   obj_id:           e.target.feature.obj_id,
             //   rec_id:           e.target.feature.rec_id,
             //   ctrl:             e.originalEvent.ctrlKey,
             // };
-            // self.SCRIPT_ACT_SEL_SET(dat);
+            this.SCRIPT_ACT_SEL_SET(dat);
+
 
           }
         });
@@ -270,6 +280,7 @@ export default {
     ...mapActions([
       'MAP_ACT_ZOOM',
       'MAP_ACT_EDIT',
+      'SCRIPT_ACT_SEL_SWITCH',
       'SCRIPT_ACT_SEL_SET',
       'SCRIPT_ACT_SEL_CLEAR',
       'addNotification',
@@ -368,7 +379,7 @@ export default {
               rec_id:           e.target.feature.rec_id,
               ctrl:             e.originalEvent.ctrlKey,
             };
-            self.SCRIPT_ACT_SEL_SET(dat);
+            self.SCRIPT_ACT_SEL_SWITCH(dat);
             // выделить скрипт в списке
             let sel_script = self.SCRIPT_GET_ITEM_FIND_ACTIVE(dat.active_script_id)
             self.changeSelectedTreeViewItem(sel_script);
