@@ -184,7 +184,6 @@ class DAT_SYS_KEY:
 
     NAME_GEOMETRY_PARENT_ID = 'parent_id'
     NAME_GEOMETRY_NAME = 'name'
-    NAME_GEOMETRY_ICON = 'icon'
     NAME_GEOMETRY_LOCATION = "ST_AsGeoJSON(location) AS location"
 
 

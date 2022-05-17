@@ -23,6 +23,7 @@ from shapely.geometry import Polygon, Point, LineString, MultiPoint
 from docx import Document
 from docx.shared import RGBColor
 from synonyms_manager.get_synonyms import get_synonyms
+from document_driver.classifier_driver import get_exel_document
 from core.deploy_settings import MEDIA_ROOT, DOCUMENT_ROOT
 
 
