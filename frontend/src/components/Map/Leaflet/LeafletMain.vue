@@ -90,6 +90,10 @@
       :items="menu_struct"
     />
 
+    <description
+      :viewDat="view_dat"
+    />
+
   </div>
 </template>
 
@@ -141,6 +145,8 @@ import MixControl       from '@/components/Map/Leaflet/Mixins/Control';
 import MixMeasure       from '@/components/Map/Leaflet/Mixins/Measure';
 import MixMenu          from '@/components/Map/Leaflet/Mixins/Menu/Menu';
 
+const Description = () => import("@/components/Map/Leaflet/Description");
+
 
 // устранение бага с путями
 icon_ini();
@@ -181,6 +187,7 @@ export default {
     ControlRange,
     ControlLegend,
     ControlLogo,
+    Description,
   },
 
 
@@ -192,6 +199,7 @@ export default {
         zoomControl: false,
         zoomSnap:    0.5,
       },
+      view_dat: undefined,        // [obj_id, rec_id] окно просмотра и редактирвания объекта
     };
   },
 
@@ -266,7 +274,7 @@ export default {
             //   rec_id:           e.target.feature.rec_id,
             //   ctrl:             e.originalEvent.ctrlKey,
             // };
-            this.SCRIPT_ACT_SEL_SET(dat);
+            //this.SCRIPT_ACT_SEL_SET(dat);
 
 
           }
@@ -372,6 +380,7 @@ export default {
             // реакция выделения только на объекты из БД
             if ((!e.target.feature.obj_id) || (!e.target.feature.rec_id)) return;
             L.DomEvent.stopPropagation(e);
+
             // выделить элемент на карте
             let dat = {
               active_script_id: self.SCRIPT_GET_ITEM(map_ind).refresh,  // в качестве id экзеспляра скрипта используем TS
@@ -380,9 +389,13 @@ export default {
               ctrl:             e.originalEvent.ctrlKey,
             };
             self.SCRIPT_ACT_SEL_SWITCH(dat);
+
             // выделить скрипт в списке
-            let sel_script = self.SCRIPT_GET_ITEM_FIND_ACTIVE(dat.active_script_id)
+            let sel_script = self.SCRIPT_GET_ITEM_FIND_ACTIVE(dat.active_script_id);
             self.changeSelectedTreeViewItem(sel_script);
+
+            // просмотр и редактирование выделенного объекта
+            self.view_dat = [dat.obj_id, dat.rec_id];
           });
 
           // подсказка

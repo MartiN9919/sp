@@ -18,6 +18,9 @@ import router from "@/router";
 export default {
   name: "Description",
   components: {Dossier, ControlMenu},
+  props: {
+    viewDat: { type: Array, default: () => undefined, },  // [obj_id, rec_id]
+  },
   data: () => ({
     dossier: false,
     selectedItem: null,
@@ -65,11 +68,10 @@ export default {
     },
   },
   watch: {
-    SCRIPT_GET_ITEM_SEL: {
-      handler: function (v) {
-        let value = JSON.parse(v)
-        if (value.length)
-          this.getObject({rec_id: value[0].rec_id, object_id: value[0].obj_id})
+    viewDat: {
+      handler(val) {
+        if (val != undefined)
+          this.getObject({object_id: val[0], rec_id: val[1]})
               .then(r => {
                 this.selectedItem = r
                 this.dossier = true
@@ -79,7 +81,7 @@ export default {
           this.dossier = false
         }
       },
-      immediate: true
+      deep: true,
     },
   },
 }
