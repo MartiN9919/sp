@@ -155,9 +155,24 @@ export default {
         });
       }
     },
+
+    SCRIPT_MUT_SEL_SET: (state, param)   => {    // [[param.active_script_id, param.obj_id, param.rec_id], ...]
+      state.selectedFC = [];
+      for (let ind in state.selectedFC) {
+        if ((state.selectedFC[ind].rec_id == param?.rec_id) && (state.selectedFC[ind].obj_id == param?.obj_id)) {
+          state.selectedFC.push({
+            active_script_id: param?.active_script_id,
+            obj_id:           param?.obj_id,
+            rec_id:           param?.rec_id,
+          });
+        }
+      }
+    },
+
     SCRIPT_MUT_SEL_CLEAR: (state) => {
       state.selectedFC = [];
     },
+
 
 
     //

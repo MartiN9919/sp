@@ -249,6 +249,16 @@ export default {
             // приблизить fc на карте
             let geojsonGroup = L.geoJSON(fc);
             this.map.fitBounds(geojsonGroup.getBounds(), { padding: [20, 20] });
+
+            // // выделить элемент на карте
+            // let dat = {
+            //   active_script_id: self.SCRIPT_GET_ITEM(map_ind).refresh,  // в качестве id экзеспляра скрипта используем TS
+            //   obj_id:           e.target.feature.obj_id,
+            //   rec_id:           e.target.feature.rec_id,
+            //   ctrl:             e.originalEvent.ctrlKey,
+            // };
+            // self.SCRIPT_ACT_SEL_SET(dat);
+
           }
         });
       },
@@ -359,7 +369,7 @@ export default {
               ctrl:             e.originalEvent.ctrlKey,
             };
             self.SCRIPT_ACT_SEL_SET(dat);
-            // выделить скрипт
+            // выделить скрипт в списке
             let sel_script = self.SCRIPT_GET_ITEM_FIND_ACTIVE(dat.active_script_id)
             self.changeSelectedTreeViewItem(sel_script);
           });
