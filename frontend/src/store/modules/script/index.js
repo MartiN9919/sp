@@ -155,9 +155,15 @@ export default {
         });
       }
     },
+
+    SCRIPT_MUT_SEL_SET: (state, param)   => {     // [[param.active_script_id, param.obj_id, param.rec_id], ...]
+      state.selectedFC = JSON.parse(JSON.stringify(param));
+    },
+
     SCRIPT_MUT_SEL_CLEAR: (state) => {
       state.selectedFC = [];
     },
+
 
 
     //
@@ -205,9 +211,13 @@ export default {
 
 
     // добавить/удалить выделение
-    SCRIPT_ACT_SEL_SET({ commit }, param) {         // param.obj_id, param.rec_id, param.ctrl
+    SCRIPT_ACT_SEL_SWITCH({ commit }, param) {         // param.obj_id, param.rec_id, param.ctrl
       if (!param?.ctrl) { commit('SCRIPT_MUT_SEL_CLEAR'); }
       commit('SCRIPT_MUT_SEL_SWITCH', param);
+      commit('SCRIPT_MUT_SEL_MARK');
+    },
+    SCRIPT_ACT_SEL_SET({ commit }, param) {         // [[param.active_script_id, param.obj_id, param.rec_id], ...]
+      commit('SCRIPT_MUT_SEL_SET', param);
       commit('SCRIPT_MUT_SEL_MARK');
     },
     SCRIPT_ACT_SEL_CLEAR({ commit }) {
