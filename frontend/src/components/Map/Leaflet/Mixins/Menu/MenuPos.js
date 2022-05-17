@@ -36,11 +36,19 @@ export default {
 
     // добавить в контекстное меню
     menu_pos_add() {
+      const POS_LOAD = 1;
+      const POS_SAVE = 2;
       let val = {
         icon:     'mdi-border-none-variant',
         title:    'Фрагмент',
         subtitle: 'Позиция и масштаб карты',
         menu:     [
+          {
+            icon:     'mdi-map-marker-multiple', // mdi-select-multiple-marker
+            title:    'Показать все',
+            subtitle: '[Shit+П]',
+            action:   this.action_menu_pos_show_all,
+          },
           {
             icon:  'mdi-upload',
             title: 'Загрузить',
@@ -55,30 +63,36 @@ export default {
       };
 
       for(let ind=0; ind<10; ind++) {
-        val.menu[0].menu.push({
+        val.menu[POS_LOAD].menu.push({
           title:    this.menu_pos_state[ind].value.title,
           subtitle: '['+ind+']',
           slot:     ind,
           action:   this.action_menu_pos_load,
         });
-        val.menu[1].menu.push({
+        val.menu[POS_SAVE].menu.push({
           title:    this.menu_pos_state[ind].value.title,
           subtitle: '[Shift+'+ind+']',
           slot:     ind,
           action:   this.action_menu_pos_save,
         });
         if (ind==1) {
-          val.menu[0].menu.push({ divider: true });
-          val.menu[1].menu.push({ divider: true });
+          val.menu[POS_LOAD].menu.push({ divider: true });
+          val.menu[POS_SAVE].menu.push({ divider: true });
         }
       }
-      val.menu[0].menu.push(val.menu[0].menu.shift());
-      val.menu[1].menu.push(val.menu[1].menu.shift());
+      val.menu[POS_LOAD].menu.push(val.menu[POS_LOAD].menu.shift());
+      val.menu[POS_SAVE].menu.push(val.menu[POS_SAVE].menu.shift());
       return val;
     },
 
     // событие: нажатие клавиши
     menu_pos_key_down(e) {
+      // Показать все [Shift+П]
+      if ((e.originalEvent.shiftKey) && (e.originalEvent.code == 'KeyG')) {
+        this.action_menu_pos_show_all();
+        return;
+      }
+
       // позиция: сохранить / загрузить
       let key_ind = -1;                                  // индекс функциональной клавиши 0, 1, ...
       for(let ind of [...Array(10).keys()]) {
@@ -94,6 +108,14 @@ export default {
     },
 
 
+    // показать все
+    action_menu_pos_show_all() {
+      let fg = new L.FeatureGroup();
+      this.SCRIPT_GET.forEach(function(item){
+        fg.addLayer(L.geoJSON(item.fc));
+      });
+      this.map.fitBounds(fg.getBounds(), { padding: [20, 20] });
+    },
 
     // сохранить
     action_menu_pos_save(item)   { this.menu_pos_save(item.slot); },
