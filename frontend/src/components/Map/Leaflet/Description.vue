@@ -1,7 +1,7 @@
 <template>
   <v-dialog v-model="dossier" scrollable width="40%" overlay-opacity="0">
     <v-card v-if="dossier" tile>
-      <v-card-text class="pa-0">
+      <v-card-text class="pa-0 black--text">
         <dossier :params="params" :rec-id="recId" :object-id="objectId" :title="selectedItem.title"/>
       </v-card-text>
       <control-menu :buttons="controlButtons" @change="editObject" @addToGraph="toGraph"/>
