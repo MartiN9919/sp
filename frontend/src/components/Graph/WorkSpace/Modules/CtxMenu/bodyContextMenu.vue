@@ -66,7 +66,7 @@ export default {
   },
   methods: {
     ...mapActions(['reorderNodes', 'setEditableRelation', 'setNavigationDrawerStatus', 'setActiveTool',
-    'setEditableObject', 'setRootSearchRelationTreeItem', 'getRelationsBtwObjects',
+    'setEditableObject', 'setRootSearchRelationTreeItem', 'getRelationsBtwObjects', 'changeSelectedTreeViewItem',
     'addObjectsToGraph', 'executeMapScript', 'clearGraph', 'deleteSelectedNodes', 'deleteNode']),
     menuShow(event, object=null) {
       this.objectCtxMenu = object
@@ -122,24 +122,24 @@ export default {
       this.getRelationsBtwObjects(this.selectedNodes)
     },
     addGeometryToGraph(){
-      this.$router.push({name: 'Map'}).then(() =>
-        this.executeMapScript({
-          request: {
-            id: 1,
-            name: "Вывод геометрии",
-            variables: {
-              geometry_object: {
-                type: {title: "search", value: null},
-                value: {
-                  title: this.objectCtxMenu.entity.title,
-                  objectId: this.objectCtxMenu.ids.object_id,
-                  recId: this.objectCtxMenu.ids.rec_id
-                }
-              }
+      const script = {
+        id: 1,
+        refresh: Date.now(),
+        name: "Вывод геометрии",
+        variables: {
+          geometry_object: {
+            type: {title: "search", value: null},
+            value: {
+              title: this.objectCtxMenu.entity.title,
+              objectId: this.objectCtxMenu.ids.object_id,
+              recId: this.objectCtxMenu.ids.rec_id
             }
-            },
-          config: {}
-        })
+          }
+        }
+      }
+      this.$router.push({name: 'Map'}).then(() =>
+        this.executeMapScript({request: script, config: {}})
+            .then(() => this.changeSelectedTreeViewItem(script))
       )
     },
     saveGraphInFile() {
