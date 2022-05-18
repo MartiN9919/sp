@@ -112,36 +112,34 @@ export function get_style_data_decor(options, sel=false) {
     if (!(data instanceof Array)) data = [data];                          // к единому формату
 
     data.forEach(function(data_item, data_ind) {
-      // switch data[data_ind].symbol_type {
-      //   case 'marker':
-      //     break;
-      // }
-      // тип: маркер
-      if (data[data_ind].symbol_type == 'marker') {
-        // приоритет цвета декорации над цветом фигуры и цветом скрипта
-        if (data[data_ind].symbol_options.markerOptions.color != undefined) color = data[data_ind].symbol_options.markerOptions.color;
-        let class_str = data[data_ind].symbol_options.markerOptions.icon;
-        if (sel) class_str = class_str + ' ' + MAP_CONST.CLASS.SEL;
-        data[data_ind].symbol_options.markerOptions.icon = icon_get(color, {
-          [MAP_ITEM.FC.FEATURES.PROPERTIES.CLASS]: class_str,
-          ...icon_properties,
-          ...data[data_ind].icon_properties,
-        });
-        data[data_ind].symbol = L.Symbol.marker(data[data_ind].symbol_options);
-      }
+      switch (data[data_ind].symbol_type) {
+        // тип: маркер
+        case 'marker':
+          // приоритет цвета декорации над цветом фигуры и цветом скрипта
+          if (data[data_ind].symbol_options.markerOptions.color != undefined) color = data[data_ind].symbol_options.markerOptions.color;
+          let class_str = data[data_ind].symbol_options.markerOptions.icon;
+          if (sel) class_str = class_str + ' ' + MAP_CONST.CLASS.SEL;
+          data[data_ind].symbol_options.markerOptions.icon = icon_get(color, {
+            [MAP_ITEM.FC.FEATURES.PROPERTIES.CLASS]: class_str,
+            ...icon_properties,
+            ...data[data_ind].icon_properties,
+          });
+          data[data_ind].symbol = L.Symbol.marker(data[data_ind].symbol_options);
+          break;
 
-      // тип: штрих
-      if (data[data_ind].symbol_type == 'dash') {
-        if (data[data_ind].symbol_options.pathOptions.color == '{color}') data[data_ind].symbol_options.pathOptions.color = color;
-        if (sel) data[data_ind].symbol_options.pathOptions.className = MAP_CONST.CLASS.SEL;
-        data[data_ind].symbol = L.Symbol.dash(data[data_ind].symbol_options);
-      }
+        // тип: штрих
+        case 'dash':
+          if (data[data_ind].symbol_options.pathOptions.color == '{color}') data[data_ind].symbol_options.pathOptions.color = color;
+          if (sel) data[data_ind].symbol_options.pathOptions.className = MAP_CONST.CLASS.SEL;
+          data[data_ind].symbol = L.Symbol.dash(data[data_ind].symbol_options);
+          break;
 
-      // тип: стрелка
-      if (data[data_ind].symbol_type == 'arrow') {
-        if (data[data_ind].symbol_options.pathOptions.color == '{color}') data[data_ind].symbol_options.pathOptions.color = color;
-        if (sel) data[data_ind].symbol_options.pathOptions.className = MAP_CONST.CLASS.SEL;
-        data[data_ind].symbol = L.Symbol.arrowHead(data[data_ind].symbol_options);
+        // тип: стрелка
+        case 'arrow':
+          if (data[data_ind].symbol_options.pathOptions.color == '{color}') data[data_ind].symbol_options.pathOptions.color = color;
+          if (sel) data[data_ind].symbol_options.pathOptions.className = MAP_CONST.CLASS.SEL;
+          data[data_ind].symbol = L.Symbol.arrowHead(data[data_ind].symbol_options);
+          break;
       }
 
       // удалить ставшие ненужными записи
