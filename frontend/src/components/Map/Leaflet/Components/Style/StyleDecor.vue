@@ -76,7 +76,9 @@ export default {
         classes_str:     get_feature_class(feature),
         color:           color,
         icon_properties: icon_properties,
-      });
+      },
+      feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._SEL_]
+      );
       if (patterns.length == 0) continue;
 
       // создать декорации

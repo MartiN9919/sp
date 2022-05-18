@@ -92,10 +92,12 @@ export function get_style_data_icon(options) {
  *   classes_str - список классов
  *   color
  *   icon_properties
+ * sel:
+ *   true - устанавливается класс MAP_CONST.CLASS.SEL
  */
-export function get_style_data_decor(options) {
+export function get_style_data_decor(options, sel=false) {
   const classes_str     = options.classes_str;
-  let   color           = options.color ?? MAP_CONST.COLOR.DEFAULT_STYLE_PATH;
+  let   color           = options.color           ?? MAP_CONST.COLOR.DEFAULT_STYLE_PATH;
   const icon_properties = options.icon_properties ?? {};
 
   let ret = [];
@@ -110,12 +112,18 @@ export function get_style_data_decor(options) {
     if (!(data instanceof Array)) data = [data];                          // к единому формату
 
     data.forEach(function(data_item, data_ind) {
+      // switch data[data_ind].symbol_type {
+      //   case 'marker':
+      //     break;
+      // }
       // тип: маркер
       if (data[data_ind].symbol_type == 'marker') {
         // приоритет цвета декорации над цветом фигуры и цветом скрипта
         if (data[data_ind].symbol_options.markerOptions.color != undefined) color = data[data_ind].symbol_options.markerOptions.color;
+        let class_str = data[data_ind].symbol_options.markerOptions.icon;
+        if (sel) class_str = class_str + ' ' + MAP_CONST.CLASS.SEL;
         data[data_ind].symbol_options.markerOptions.icon = icon_get(color, {
-          [MAP_ITEM.FC.FEATURES.PROPERTIES.CLASS   ]: data[data_ind].symbol_options.markerOptions.icon,
+          [MAP_ITEM.FC.FEATURES.PROPERTIES.CLASS]: class_str,
           ...icon_properties,
           ...data[data_ind].icon_properties,
         });
@@ -125,12 +133,14 @@ export function get_style_data_decor(options) {
       // тип: штрих
       if (data[data_ind].symbol_type == 'dash') {
         if (data[data_ind].symbol_options.pathOptions.color == '{color}') data[data_ind].symbol_options.pathOptions.color = color;
+        if (sel) data[data_ind].symbol_options.pathOptions.className = MAP_CONST.CLASS.SEL;
         data[data_ind].symbol = L.Symbol.dash(data[data_ind].symbol_options);
       }
 
       // тип: стрелка
       if (data[data_ind].symbol_type == 'arrow') {
         if (data[data_ind].symbol_options.pathOptions.color == '{color}') data[data_ind].symbol_options.pathOptions.color = color;
+        if (sel) data[data_ind].symbol_options.pathOptions.className = MAP_CONST.CLASS.SEL;
         data[data_ind].symbol = L.Symbol.arrowHead(data[data_ind].symbol_options);
       }
 

@@ -408,6 +408,7 @@ export default {
 
           // класс для стилей линий и полигонов
           let classes_str = get_feature_class(feature);
+
           // коррекция названий классов для избежания повторов из разных скриптов
           classes_str = correct_classes_name(classes_str, map_ind, feature[MAP_ITEM.FC.FEATURES.IND]);
           if ((classes_str != '') && (layer.setStyle)) { layer.setStyle({'className': classes_str, }); }
