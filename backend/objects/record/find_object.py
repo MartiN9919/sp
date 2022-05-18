@@ -26,7 +26,7 @@ def find_reliable_http(object_type, request, actual=False, group_id=0):
             synonyms_list = []
     request = request.split(' ') + synonyms_list
     request = [word.replace('-', '<<') for word in
-               request]  # костыль, в последующем поменяить настройки мантикоры, что бы индексировала '-'
+               request]  # костыль, в последующем поменять настройки мантикоры, что бы индексировала '-'
     result = []
     for word in request:
         word = '@val ' + word if len(word) > 0 else word # искать только по значению

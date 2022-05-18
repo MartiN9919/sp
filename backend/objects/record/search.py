@@ -2,7 +2,7 @@ from data_base_driver.additional_functions import date_time_client_to_server
 from data_base_driver.constants.const_fulltextsearch import FullTextSearch
 from objects.record.find_object import find_reliable_http
 from objects.record.get_record import get_record_title
-from objects.relations.find_rel import find_with_rel_reliable_key, search_rel_with_key_http
+from objects.relations.find_rel import find_with_rel_reliable_key, search_relations_with_key
 
 
 def recursion_search(request, group_id):
@@ -26,7 +26,8 @@ def recursion_search(request, group_id):
                                                       rel.get(FullTextSearch.REL, {}).get(FullTextSearch.REL_VALUE, 0),
                                                       date_time_client_to_server(rel.get(FullTextSearch.REL, {}).get(
                                                           FullTextSearch.DATE_TIME_START)),
-                                                      date_time_client_to_server(rel.get(FullTextSearch.REL, {}).get(FullTextSearch.DATE_TIME_END)),
+                                                      date_time_client_to_server(rel.get(FullTextSearch.REL, {}).get(
+                                                          FullTextSearch.DATE_TIME_END)),
                                                       request.get(FullTextSearch.ACTUAL, False),
                                                       rel.get(FullTextSearch.ACTUAL, False),
                                                       group_id))
@@ -56,7 +57,7 @@ def recursion_search(request, group_id):
             temp_result = set()
             for rec_id in temp.get('rec_ids'):
                 for rec_id_main in main_object_ids:
-                    temp_set = search_rel_with_key_http(rel.get(FullTextSearch.REL, {}).
+                    temp_set = search_relations_with_key(rel.get(FullTextSearch.REL, {}).
                                                         get(FullTextSearch.RELATION_ID, 0),
                                                         request.get(FullTextSearch.OBJECT_ID, None), rec_id_main,
                                                         temp.get(FullTextSearch.OBJECT_ID), rec_id,

@@ -1,10 +1,10 @@
 import datetime
 
-from data_base_driver.additional_functions import get_date_time_from_sec, date_time_client_to_server
+from data_base_driver.additional_functions import date_time_client_to_server
 from data_base_driver.constants.const_dat import DAT_REL
-from data_base_driver.input_output.input_output import io_set, io_get_rel
+from data_base_driver.input_output.input_output import io_set
 from data_base_driver.sys_key.get_key_dump import get_key_by_id
-from objects.relations.get_rel import get_object_relation, get_rel_cascade
+from objects.relations.get_rel import get_relations_cascade
 
 
 def add_rel(group_id, object_1_id, rec_1_id, object_2_id, rec_2_id, params, doc_rec_id=None):
@@ -48,7 +48,7 @@ def add_rel_by_other_object(group_id, object_id, rec_id, other_object_id, other_
     @param other_object_id: идентификатор типа объекта источника связей
     @param other_rec_id: идентификатор объекта источника связей
     """
-    other_object_relations = get_rel_cascade(group_id, other_object_id, other_rec_id, 1)['rels']
+    other_object_relations = get_relations_cascade(group_id, other_object_id, other_rec_id, 1)
     result = []
     for relation_object in other_object_relations:
         for relation in relation_object['relations']:

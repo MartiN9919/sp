@@ -131,9 +131,8 @@ def aj_template(request):
     elif request.method == 'POST':
         group_id = DAT_OWNER.DUMP.get_group(user_id=request.user.id)
         data = json.loads(request.body)
-        id = add_template(group_id, data.get('title', 'Неизвестное имя'), data.get('activeAnalysts', ''),
+        return add_template(group_id, data.get('title', 'Неизвестное имя'), data.get('activeAnalysts', ''),
                           data.get('passiveAnalysts', ''))
-        return id
     elif request.method == 'PUT':
         data = json.loads(request.body)
         try:
