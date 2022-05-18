@@ -50,7 +50,7 @@
               <v-list-item-title>Сохранить</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
-          <v-list-item @click.stop="dialogDeleteStatus = true">
+          <v-list-item @click.stop="remove_dialog">
             <v-list-item-icon>
               <v-icon>mdi-delete-outline</v-icon>
             </v-list-item-icon>
@@ -157,6 +157,13 @@ export default {
         if (this.validate()) {
           this.$emit('save', this.search)
         }
+      }
+    },
+    remove_dialog() {
+      if(this.selected) {
+        this.dialogDeleteStatus = true
+      } else {
+        this.errorMessage = 'Выберите шаблон, который хотите удалить'
       }
     },
     remove () {

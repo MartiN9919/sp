@@ -42,3 +42,21 @@ def get_unique_objects(object_tree: List[dict], path: List[dict] = None) -> dict
             objects.update(get_unique_objects(item['relations'],
                                               [*path, {'object_id': item['object_id'], 'rec_id': item['rec_id']}]))
     return objects
+
+
+def check_in_list(elem: dict, keys: list, items: List[dict]) -> bool:
+    """
+    Функция для проверки наличия словаря в списке словарей по совпадению заданных ключей
+    @param elem: проверяемый словарь
+    @param keys: заданные ключи
+    @param items: список словарей
+    @return: True если есть в списке, False если нет
+    """
+    for item in items:
+        for key in keys:
+            if item.get(key, 0) != elem.get(key, 1):
+                break
+        else:
+            return True
+    return False
+

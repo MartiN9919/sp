@@ -1,12 +1,11 @@
 from multiprocessing import Process, Manager
-from typing import List
 
 from data_base_driver.additional_functions import get_date_time_from_sec, date_time_server_to_client
 from data_base_driver.input_output.input_output import io_get_rel
 from data_base_driver.sys_key.get_key_dump import get_relation_keys
 from data_base_driver.sys_key.get_list import get_item_list_value
 from objects.record.get_record import get_object_record_by_id_http
-from objects.relations.additional_functions import get_unique_objects
+from objects.relations.additional_functions import get_unique_objects, check_in_list
 
 
 def get_related_objects(group_id, object_id, rec_id, keys, values, time_interval, result_object_type=0) -> list:
@@ -33,6 +32,28 @@ def get_related_objects(group_id, object_id, rec_id, keys, values, time_interval
                            'key_id': int(relation['key_id']), 'val': relation['val']})
     result = [dict(s) for s in set(frozenset(d.items()) for d in result)]
     return result
+
+
+def get_relations_cascade(group_id: int, object_id: int, rec_id: int, depth: int, parents: list = None) -> list:
+    """
+    Функция для получения дерева связей объекта на заданную глубину
+    @param group_id: идентификатор группы пользователя
+    @param object_id: идентификатор типа объекта
+    @param rec_id: идентификатор объекта
+    @param depth: глубина построения дерева
+    @param parents: объекты уже встреченные в текущей ветке
+    @return: список связей в формате [{object_id, rec_id, relations:[{},...,{}], relation_types:[{},...,{}]},...,{}]
+    """
+    if depth == 0:
+        return []
+    if not parents:
+        parents = []
+    relations = get_related_objects(group_id, object_id, rec_id, [], [], {})
+    relations = [item for item in relations if not check_in_list(item, ['object_id', 'rec_id'], parents)]
+    for relation in relations:
+        relation['relations'] = get_relations_cascade(group_id, relation['object_id'], relation['rec_id'], depth - 1,
+                                                      [*parents, {'object_id': object_id, 'rec_id': rec_id}])
+    return relations
 
 
 def get_relations_by_object(group_id: int, object_id: int, rec_id: int, parents: list) -> list:
@@ -88,44 +109,6 @@ def get_relations_by_object(group_id: int, object_id: int, rec_id: int, parents:
     return relations
 
 
-def get_relations_cascade(group_id: int, object_id: int, rec_id: int, depth: int, parents: list = None) -> list:
-    """
-    Функция для получения дерева связей объекта на заданную глубину
-    @param group_id: идентификатор группы пользователя
-    @param object_id: идентификатор типа объекта
-    @param rec_id: идентификатор объекта
-    @param depth: глубина построения дерева
-    @param parents: объекты уже встреченные в текущей ветке
-    @return: список связей в формате [{object_id, rec_id, relations:[{},...,{}], relation_types:[{},...,{}]},...,{}]
-    """
-    if depth == 0:
-        return []
-    if not parents:
-        parents = []
-    relations = get_relations_by_object(group_id, object_id, rec_id, parents)
-    for relation in relations:
-        relation['relations'] = get_relations_cascade(group_id, relation['object_id'], relation['rec_id'], depth - 1,
-                                                      [*parents, [object_id, rec_id]])
-    return relations
-
-
-def check_in_list(elem: dict, keys: list, items: List[dict]) -> bool:
-    """
-    Функция для проверки наличия словаря в списке словарей по совпадению заданных ключей
-    @param elem: проверяемый словарь
-    @param keys: заданные ключи
-    @param items: список словарей
-    @return: True если есть в списке, False если нет
-    """
-    for item in items:
-        for key in keys:
-            if item.get(key, 0) != elem.get(key, 1):
-                break
-        else:
-            return True
-    return False
-
-
 def get_object_relations(group_id, object_id, rec_id, objects, is_all=False):
     """
     Функция получения всех связей для объекта, с учетом уже имеющихся объектов
@@ -138,7 +121,7 @@ def get_object_relations(group_id, object_id, rec_id, objects, is_all=False):
     """
     if len(objects) == 0 and not is_all:
         return []
-    result = get_relations_cascade(group_id, object_id, rec_id, 1)
+    result = get_relations_by_object(group_id, object_id, rec_id, [])
     result = [temp for temp in result if check_in_list(temp, ['object_id', 'rec_id'], objects) or is_all]
     return result
 
