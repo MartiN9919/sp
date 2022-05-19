@@ -373,9 +373,11 @@ export default {
       return {
         // для каждого маркера / фигуры
         onEachFeature: function(feature, layer) {
-          // control-легенда: установка onHover
-          // события повторно вызывают this.data_normalize_color
           let self = this;
+
+          // EVENTS
+          // события повторно вызывают this.data_normalize_color
+          // control-легенда: установка onHover
           layer.on('mouseover', function(e) { self.hover_map_ind = map_ind;  self.hover_feature_ind = feature[MAP_ITEM.FC.FEATURES.IND]; });
           layer.on('mouseout',  function(e) {
             if (!e.originalEvent.ctrlKey) self.hover_map_ind = -1;
@@ -409,8 +411,17 @@ export default {
           // класс для стилей линий и полигонов
           let classes_str = get_feature_class(feature);
 
+          // установка MAP_CONST.CLASS.SEL когда нет MAP_CONST.CLASS.HIIDDEN
+          // иначе MAP_CONST.CLASS.SEL устанавливается при формировании декторатора
+          let classes_list = classes_str.trim().replace(/\s+/g, ' ').split(' ');       // убрать лишние пробелы
+          let classes_sel  = feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._SEL_]?' '+MAP_CONST.CLASS.SEL:'';
+          if (classes_list.includes(MAP_CONST.CLASS.HIDDEN)) classes_sel = '';
+
           // коррекция названий классов для избежания повторов из разных скриптов
           classes_str = correct_classes_name(classes_str, map_ind, feature[MAP_ITEM.FC.FEATURES.IND]);
+
+          // записать классы
+          classes_str = classes_str + classes_sel;
           if ((classes_str != '') && (layer.setStyle)) { layer.setStyle({'className': classes_str, }); }
 
           // редактирование запрещено - удалить pm - для уменьшения объема вычислений
@@ -439,7 +450,7 @@ export default {
           let color = feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES.COLOR];
           if (color == undefined) color = self.SCRIPT_GET_ITEM_COLOR(map_ind);
 
-          let classSel = feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._SEL_]?MAP_CONST.CLASS.SEL:'';
+          //let classSel = feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._SEL_]?MAP_CONST.CLASS.SEL:'';
           return {
             weight:      2,
             opacity:     .5,
@@ -447,7 +458,7 @@ export default {
             fillOpacity: .3,
             fillColor:   feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._FILL_COLOR_],    // set in mixin: Color
             fillRule:    'evenodd',
-            className:   classSel,
+            //className:   classSel, // !!! нельзя установить если уже установлено в onEachFeature
             // smoothFactor: 50,
             // noClip:       true,
           };
