@@ -19,7 +19,7 @@ def validate_relation_actual(rel, date_time_start, date_time_end, group_id=0):
     second_start, second_end = get_seconds_from_request_data_time(date_time_start, date_time_end)
     time_interval = {'second_start': second_start, 'second_end': second_end}
     response = io_get_rel(group_id, [int(rel['key_id'])], [int(rel['obj_id_1']), int(rel['rec_id_1'])],
-                                         [int(rel['obj_id_2']), int(rel['rec_id_2'])], [], time_interval, True)
+                          [int(rel['obj_id_2']), int(rel['rec_id_2'])], [], time_interval, True)
     for temp in response:
         if temp['sec'] < second_start or temp['sec'] > second_end or temp['sec'] == rel['sec']:
             continue
@@ -68,47 +68,6 @@ def search_relations_with_key(rel_key, object_id_1, rec_id_1, object_id_2, rec_i
                 result.append({**temp_item, 'rec_id': int(temp['rec_id_1']), 'key_id': int(temp['key_id'])})
         else:
             result.append({**temp_item, 'rec_id': int(temp['rec_id_2']), 'key_id': int(temp['key_id'])})
-    return result
-
-
-def find_with_rel_reliable_key(object_1_type, request_1, object_2_type, request_2, rel_key, list_id, date_time_start,
-                               date_time_end, actual_1=False, actual_2=False, group_id=0):
-    """
-    Функция для поиска записей с учетом связей, проводит надежную сверку по двум запросам, учитывает тип связи
-    @param object_1_type: тип главного объекта для связи
-    @param request_1: запрос по главному объекту
-    @param object_2_type: тип второстепенного объекта для связи
-    @param request_2: запрос по второстепенному объекту
-    @param rel_key: тип связи
-    @param list_id: идентификатор значения списка если есть
-    @param date_time_start: дата и время начала поиска связи
-    @param date_time_end: дата и время конца поиска связи
-    @param actual_1: флаг актуальности поиска для первого объекта
-    @param actual_2: флаг актуальности поиска для второго объекта
-    @param group_id: идентификатор группы пользователя
-    @return: список с идентификаторами подходящих записей
-    """
-    result = []
-    if request_1:
-        if len(request_1) == 0:
-            result1 = [0]
-        else:
-            result1 = find_reliable_http(object_1_type, request_1, actual_1, group_id)
-    else:
-        result1 = [0]
-    if request_2:
-        if len(request_2) == 0:
-            result2 = [0]
-        else:
-            result2 = find_reliable_http(object_2_type, request_2, actual_2, group_id)
-    else:
-        result2 = [0]
-    for item in result1:
-        for item_next in result2:
-            res = search_relations_with_key(rel_key, object_1_type, item, object_2_type, item_next, list_id,
-                                           date_time_start, date_time_end, group_id)
-            if len(res) != 0:
-                result.extend([int(elem['rec_id']) for elem in res])
     return result
 
 

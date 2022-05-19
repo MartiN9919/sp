@@ -1,4 +1,5 @@
 from multiprocessing import Process, Manager
+from typing import List
 
 from data_base_driver.additional_functions import get_date_time_from_sec, date_time_server_to_client
 from data_base_driver.input_output.input_output import io_get_rel
@@ -18,11 +19,11 @@ def get_related_objects(group_id, object_id, rec_id, keys, values, time_interval
     @param values: список идентификаторов значений связей, если любые то пустой список
     @param time_interval: временной интервал установления связи в формате {second_start,second_end}
     @param result_object_type: идентификатор типа результирующего объекта для фильтрации, если любой то 0
-    @return: список словарей в формате [{object_id, rec_id},...,{}]
+    @return: список словарей в формате [{object_id, rec_id, key_id, val},...,{}]
     """
     temp_object = [] if result_object_type == 0 else [result_object_type]
     relations = io_get_rel(group_id, keys, [object_id, rec_id], temp_object, values, time_interval, True)
-    result = []
+    result: List[dict] = []
     for relation in relations:
         if int(relation['obj_id_1']) == object_id and int(relation['rec_id_1']) == rec_id:
             result.append({'object_id': int(relation['obj_id_2']), 'rec_id': int(relation['rec_id_2']),
@@ -56,14 +57,12 @@ def get_relations_cascade(group_id: int, object_id: int, rec_id: int, depth: int
     return relations
 
 
-def get_relations_by_object(group_id: int, object_id: int, rec_id: int, parents: list) -> list:
+def get_relations_by_object(group_id: int, object_id: int, rec_id: int) -> list:
     """
     Вспомогательная функция получения связей с определенной записью таблицы событий-связей,
-    точка входа get_relations_cascade
     @param group_id: идентификатор группы пользователя
     @param object_id: идентификатор или имя типа объекта
     @param rec_id: идентификатор объекта в базе данных
-    @param parents: уже участвующие в линии связи
     @return: список связей [{object_id, rec_id, relation_types},...,{}]
     """
     temp_relations = io_get_rel(group_id, [], [object_id, rec_id], [], [], {}, True)
@@ -71,36 +70,34 @@ def get_relations_by_object(group_id: int, object_id: int, rec_id: int, parents:
     for relation in temp_relations:
         id_str = '1' if relation['obj_id_2'] == object_id and relation['rec_id_2'] == rec_id else '2'
         temp_object_id, temp_rec_id = f"obj_id_{id_str}", f"rec_id_{id_str}"
-        if len([temp for temp in parents if
-                int(temp[0]) == relation[temp_object_id] and temp[1] == relation[temp_rec_id]]) == 0:
-            doc = get_object_record_by_id_http(20, relation['document_id'], group_id, []) \
-                if relation['document_id'] != 0 else None
-            old_relation = [item for item in relations if relation[temp_object_id] == item['object_id'] and
-                            relation[temp_rec_id] == item['rec_id']]
-            if len(old_relation) > 0:
-                temp_relation = [item for item in old_relation[0]['relation_types'] if item['id'] == relation['key_id']]
-                if len(temp_relation) > 0:
-                    temp_relation[0]['values'].append(
-                        {'value': get_item_list_value(int(relation['val'])) if relation['val'] != 0 else '',
-                         'date': get_date_time_from_sec(relation['sec'])[:-3], 'doc': doc})
-                else:
-                    old_relation[0]['relation_types'].append({'id': relation['key_id'], 'values': [
-                        {'value': get_item_list_value(int(relation['val'])) if relation['val'] != 0 else '', 'doc': doc,
-                         'date': get_date_time_from_sec(relation['sec'])[:-3]}]})
+        doc = get_object_record_by_id_http(20, relation['document_id'], group_id, []) \
+            if relation['document_id'] != 0 else None
+        old_relation = [item for item in relations if relation[temp_object_id] == item['object_id'] and
+                        relation[temp_rec_id] == item['rec_id']]
+        if len(old_relation) > 0:
+            temp_relation = [item for item in old_relation[0]['relation_types'] if item['id'] == relation['key_id']]
+            if len(temp_relation) > 0:
+                temp_relation[0]['values'].append(
+                    {'value': get_item_list_value(int(relation['val'])) if relation['val'] != 0 else '',
+                     'date': get_date_time_from_sec(relation['sec'])[:-3], 'doc': doc})
             else:
-                relations.append({
-                    'object_id': relation[temp_object_id],
-                    'rec_id': relation[temp_rec_id],
-                    'relation_types': [{
-                        'id': relation['key_id'],
-                        'values': [{
-                            'value': get_item_list_value(int(relation['val'])) if
-                            relation['val'] != 0 else '',
-                            'date': get_date_time_from_sec(relation['sec'])[:-3],
-                            'doc': doc
-                        }]
+                old_relation[0]['relation_types'].append({'id': relation['key_id'], 'values': [
+                    {'value': get_item_list_value(int(relation['val'])) if relation['val'] != 0 else '', 'doc': doc,
+                     'date': get_date_time_from_sec(relation['sec'])[:-3]}]})
+        else:
+            relations.append({
+                'object_id': relation[temp_object_id],
+                'rec_id': relation[temp_rec_id],
+                'relation_types': [{
+                    'id': relation['key_id'],
+                    'values': [{
+                        'value': get_item_list_value(int(relation['val'])) if
+                        relation['val'] != 0 else '',
+                        'date': get_date_time_from_sec(relation['sec'])[:-3],
+                        'doc': doc
                     }]
-                })
+                }]
+            })
     for relation in relations:
         for relation_type in relation['relation_types']:
             relation_type['values'].sort(key=lambda x: x['date'], reverse=True)
@@ -121,7 +118,7 @@ def get_object_relations(group_id, object_id, rec_id, objects, is_all=False):
     """
     if len(objects) == 0 and not is_all:
         return []
-    result = get_relations_by_object(group_id, object_id, rec_id, [])
+    result = get_relations_by_object(group_id, object_id, rec_id)
     result = [temp for temp in result if check_in_list(temp, ['object_id', 'rec_id'], objects) or is_all]
     return result
 
