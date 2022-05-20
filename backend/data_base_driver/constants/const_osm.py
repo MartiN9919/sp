@@ -11,3 +11,4 @@ class OSM_POLYGON:
     NAME   = 'name'
     TAGS   = 'tags'
     WAY    = 'way'
+

@@ -2,11 +2,13 @@ import json
 import geojson
 import requests
 
-from data_base_driver.constants.const_dat import DAT_SYS_OBJ, DAT_SYS_KEY, DAT_OBJ_ROW
+from data_base_driver.constants.const_dat import DAT_SYS_OBJ, DAT_SYS_KEY, DAT_OBJ_ROW, DAT_OBJ_COL
 from data_base_driver.constants.const_fulltextsearch import FullTextSearch
+from data_base_driver.constants.const_geocoder import Geocoder
 from data_base_driver.constants.const_key import SYS_KEY_CONSTANT
 from data_base_driver.input_output.input_output import io_get_obj, io_get_rel
 from data_base_driver.input_output.input_output_mysql import io_get_obj_mysql_tuple, io_get_rel_mysql_generator
+from data_base_driver.input_output.valid_permission_manticore import check_object_permission
 from data_base_driver.sys_key.get_list import get_item_list_value
 from data_base_driver.sys_key.get_object_info import rel_rec_to_el, el_to_rec_id
 from data_base_driver.additional_functions import get_date_time_from_sec
@@ -184,6 +186,135 @@ def get_geometry_search(group_id, text):
                 temp_geometry['name'] = temp['_source']['name']
         temp_result.append(temp_geometry)
     return build_tree_from_list(temp_result)
+
+
+def get_points_inside_polygon(polygon, points, group_id):
+    """
+    Функция для получения точек лежащих в пределах полигона
+    @param polygon: список точек полигона в формате: [x1, y1, x2, y2, ..., xn, yn]
+    @param points: список идентификаторов точек, для которых осуществляется поиск, если для всех - пустой список
+    @param group_id: идентификатор группы пользователя
+    @return: список идентификаторов подходящих точек
+    """
+    must = [{'equals': {'inside': 1}}]
+    if len(points) > 0:
+        must.append({'in': {DAT_OBJ_COL.ID: [int(rec_id) for rec_id in points]}})
+    else:
+        return []
+    data = json.dumps({
+        'index': DAT_OBJ_COL.table_name('point'),
+        'script_fields': {
+            'inside': {
+                'script': {
+                    'inline': 'CONTAINS(GEOPOLY2D(' + str(polygon)[1:-1] + '), '
+                                                                           'point.coordinates[0], point.coordinates[1])'
+                }
+            }
+        },
+        'query': {
+            'bool': {
+                'must': must
+            }
+        }
+    })
+    response = json.loads(requests.post(FullTextSearch.SEARCH_URL, data=data).text)['hits']['hits']
+    return [item['_source']['rec_id'] for item in response
+            if check_object_permission(group_id, 25, item['_source']['rec_id'], False)]
+
+
+def get_distance_between_point(point1, point2, group_id):
+    """
+    Функция для получения расстояния между 2 точками из базы данных
+    @param point1: идентификатор первой точки
+    @param point2: идентификатор второй точки
+    @param group_id: идентификатор группы пользователя
+    @return: расстояния в километрах
+    """
+    point_1_params = io_get_obj(group_id, 25, [25202, 25203], [point1], 100, '', {})
+    if len(point_1_params) < 2:
+        return 0
+    lat = 0
+    lon = 0
+    for param in point_1_params:
+        if param['key_id'] == 25204:
+            coordinates = json.loads(param[1])
+            lat = coordinates['coordinates'][1]
+            lon = coordinates['coordinates'][0]
+    data = json.dumps({
+        'index': DAT_OBJ_COL.table_name('point'),
+        'query': {
+            'equals': {
+                'rec_id': point2
+            }
+        },
+        'script_fields': {
+            'distance': {
+                'script': {
+                    'inline': 'GEODIST(' + str(lat) + ', ' + str(lon) + ', point.coordinates[1], point.coordinates[0], '
+                                                                        '{in=degrees, out=km})'
+                }
+            }
+        }
+    })
+    response = json.loads(requests.post(FullTextSearch.SEARCH_URL, data=data).text)['hits']['hits']
+    if len(response) == 0:
+        return 0
+    return response[0]['_source']['distance']
+
+
+def get_points_by_distance(lat: float, lon: float, distance: int) -> list:
+    """
+    Функция для получения всех точек на удалении дистанции от заданной
+    @param lat: широта
+    @param lon: долгота
+    @param distance: дистанция
+    @return: список идентификаторов точек
+    """
+    data = json.dumps({
+        'index': DAT_OBJ_COL.table_name('point'),
+        'query': {
+            "range": {
+                'distance': {
+                    'gte': 0,
+                    'lte': float(distance)
+                }
+            }
+        },
+        'script_fields': {
+            'distance': {
+                'script': {
+                    'inline': 'GEODIST(' + str(lat) + ', ' + str(lon) + ', point.coordinates[1], point.coordinates[0], '
+                                                                        '{in=degrees, out=metres})'
+                }
+            }
+        },
+    })
+    response = json.loads(requests.post(FullTextSearch.SEARCH_URL, data=data).text)['hits']['hits']
+    return [item['_source']['rec_id'] for item in response]
+
+
+def get_feature_collection_by_address(address: str) -> dict:
+    """
+    Функция для получения feature collection по адресу
+    @param address: адрес
+    @return: feature collection содержащий геометрии относящиеся к этому адресу
+    """
+    result = requests.get(Geocoder.SEARCH_URL, params={'q': address})
+    return result.json()
+
+
+def get_point_by_address(address: str) -> dict:
+    """
+    Функция для получения  json точки по адресу
+    @param address: адрес
+    @return: json точки если найдена или пустой словарь
+    """
+    feature_collection = get_feature_collection_by_address(address)
+    for feature in feature_collection['features']:
+        if feature['geometry']['type'] == 'Point':
+            return feature['geometry']
+    else:
+        return {}
 
 
 # ОТКЛЮЧЕНО ЗА НЕНАДОБНОСТЬЮ

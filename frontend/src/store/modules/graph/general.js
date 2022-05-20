@@ -24,7 +24,7 @@ export default {
       return await axios.post('objects/object_relation/', params, config)
         .then(r => Promise.resolve(r.data.map(relation => {
           const object = objects.find(o => o.ids.object_id === relation.object_id && o.ids.rec_id === relation.rec_id)
-          return new DataBaseRelation(from, object, relation.relations)
+          return new DataBaseRelation(from, object, relation.relation_types)
         })))
         .catch(e => Promise.reject(e))
     },

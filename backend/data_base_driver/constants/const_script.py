@@ -25,11 +25,11 @@ IMPORTS = \
     "from objects.record.search import search\n" \
     "from data_base_driver.sys_key.get_object_info import obj_list, rel_rec_to_el, el_to_rec_id\n" \
     "from data_base_driver.input_output.io_geo import relations_to_geometry_id, \
-feature_collection_by_geometry, get_geometries\n"\
+feature_collection_by_geometry, get_geometries, get_points_inside_polygon\n"\
     "from data_base_driver.sys_notifications.set_notifications_info import add_notification\n"\
     "from datetime import datetime\n"\
     "from data_base_driver.sys_reports.set_file_info import set_file_status, set_file_path\n"\
-    "from objects.geometry.geometry_analytics import feature_collection_to_manticore_polygon, get_points_inside_polygon, get_line_buffer_polygon, get_distance_between_point_math\n"\
+    "from objects.geometry.geometry_analytics import feature_collection_to_manticore_polygon, get_line_buffer_polygon, get_distance_between_point_math\n"\
     "from data_base_driver.additional_functions import str_to_sec, get_second_range, get_date_time_from_sec, get_document_date_format\n"\
     "from document_driver.word_driver import get_document_from_template, get_dossier_for_object\n"\
     "from shapely.geometry import Polygon, Point, LineString, MultiPoint\n"\
