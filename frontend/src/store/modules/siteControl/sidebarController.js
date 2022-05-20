@@ -6,9 +6,9 @@ export default {
     globalTooltipStatus: new UserSetting('globalTooltipStatus', true),
     globalNotificationStatus: new UserSetting('globalNotificationStatus', true),
     navigationDrawer: {
-      Map: new UserSetting('globalMenuMapStatus', false),
-      Report: new UserSetting('globalMenuGraphStatus', false),
-      Graph: new UserSetting('globalMenuReportStatus', false),
+      Map: new UserSetting('globalMenuMapStatus', true),
+      Report: new UserSetting('globalMenuGraphStatus', true),
+      Graph: new UserSetting('globalMenuReportStatus', true),
     },
     activeTool: {
       Map: null,
