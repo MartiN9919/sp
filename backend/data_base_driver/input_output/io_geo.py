@@ -4,6 +4,7 @@ import requests
 
 from data_base_driver.constants.const_dat import DAT_SYS_OBJ, DAT_SYS_KEY, DAT_OBJ_ROW, DAT_OBJ_COL
 from data_base_driver.constants.const_fulltextsearch import FullTextSearch
+from data_base_driver.constants.const_geocoder import Geocoder
 from data_base_driver.constants.const_key import SYS_KEY_CONSTANT
 from data_base_driver.input_output.input_output import io_get_obj, io_get_rel
 from data_base_driver.input_output.input_output_mysql import io_get_obj_mysql_tuple, io_get_rel_mysql_generator
@@ -290,6 +291,20 @@ def get_points_by_distance(lat: float, lon: float, distance: int) -> list:
     })
     response = json.loads(requests.post(FullTextSearch.SEARCH_URL, data=data).text)['hits']['hits']
     return [item['_source']['rec_id'] for item in response]
+
+
+def get_feature_collection_by_address(address: str) -> dict:
+    result = requests.get(Geocoder.SEARCH_URL, params={'q': address})
+    return result.json()
+
+
+def get_point_by_address(address: str) -> dict:
+    feature_collection = get_feature_collection_by_address(address)
+    for feature in feature_collection['features']:
+        if feature['geometry']['type'] == 'Point':
+            return feature['geometry']
+    else:
+        return {}
 
 
 # ОТКЛЮЧЕНО ЗА НЕНАДОБНОСТЬЮ
