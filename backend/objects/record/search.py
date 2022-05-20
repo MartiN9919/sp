@@ -12,42 +12,39 @@ def recursion_search(group_id: int, request: dict) -> dict:
     @param request: древовидный запрос
     @return: список словарей формате [{object_id, rec_ids},...,{}]
     """
-    result = {'object_id': request[FullTextSearch.OBJECT_ID], 'records': None, 'old': []}
+    result = {'object_id': request[FullTextSearch.OBJECT_ID], 'records': set(), 'old': [], 'pre_old': []}
     for relation in request.get(FullTextSearch.RELATIONS, []):
         main_object_records = [0] if len(request.get(FullTextSearch.REQUEST, '')) == 0 else find_reliable_http(
             request.get(FullTextSearch.OBJECT_ID), request.get(FullTextSearch.REQUEST, ''),
             request.get(FullTextSearch.ACTUAL, False))
-        if len(relation.get(FullTextSearch.RELATIONS, [])) > 0:
+        if len(relation.get(FullTextSearch.RELATIONS, [])) == 0:
+            other_objects_id = relation['object_id']
+            other_objects_records = [0] if len(relation.get(FullTextSearch.REQUEST, '')) == 0 else find_reliable_http(
+                relation.get(FullTextSearch.OBJECT_ID),
+                relation.get(FullTextSearch.REQUEST, ''),
+                relation.get(FullTextSearch.ACTUAL, False))
+        else:
             old_result = recursion_search(group_id, relation)
             other_objects_id = old_result['object_id']
             other_objects_records = old_result['records']
-            result['pre_old'] = old_result['old']
-        else:
-            other_objects_id = relation['object_id']
-            other_objects_records = [0] if len(relation.get(FullTextSearch.REQUEST, '')) == 0 else find_reliable_http(
-               relation.get(FullTextSearch.OBJECT_ID),
-               relation.get(FullTextSearch.REQUEST, ''),
-               relation.get(FullTextSearch.ACTUAL, False))
+            result['pre_old'] += old_result['old']
         result['old'].append({'object_id': other_objects_id, 'records': other_objects_records})
-        temp_result = None
+        temp_result = set()
         for rec_id in other_objects_records:
             for rec_id_main in main_object_records:
-                temp_set = search_relations_with_key(relation.get(FullTextSearch.REL, {}).
-                                                     get(FullTextSearch.RELATION_ID, 0),
-                                                     request.get(FullTextSearch.OBJECT_ID, None), rec_id_main,
-                                                     other_objects_id, rec_id,
-                                                     relation.get(FullTextSearch.REL, {}).
-                                                     get(FullTextSearch.REL_VALUE, 0),
-                                                     date_time_client_to_server(relation.get(FullTextSearch.REL, {}).
-                                                                                get(FullTextSearch.DATE_TIME_START)),
-                                                     date_time_client_to_server(relation.get(FullTextSearch.REL, {}).
-                                                                                get(FullTextSearch.DATE_TIME_END)),
-                                                     group_id)
-                if not temp_result:
+                temp_set = search_relations_with_key(
+                    relation.get(FullTextSearch.REL, {}).get(FullTextSearch.RELATION_ID, 0),
+                    request.get(FullTextSearch.OBJECT_ID, None), rec_id_main,
+                    other_objects_id, rec_id,
+                    relation.get(FullTextSearch.REL, {}).get(FullTextSearch.REL_VALUE, 0),
+                    date_time_client_to_server(relation.get(FullTextSearch.REL, {}).get(FullTextSearch.DATE_TIME_START)),
+                    date_time_client_to_server(relation.get(FullTextSearch.REL, {}).get(FullTextSearch.DATE_TIME_END)),
+                    group_id)
+                if len(temp_result) == 0:
                     temp_result = set([int(item['rec_id']) for item in temp_set])
                 else:
                     temp_result = temp_result.union([int(item['rec_id']) for item in temp_set])
-        if not result.get('records'):
+        if len(result.get('records')) == 0:
             result['records'] = temp_result
         else:
             result['records'].intersection_update(temp_result)
