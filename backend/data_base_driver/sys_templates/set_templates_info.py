@@ -40,8 +40,8 @@ def update_template(id, user_id, title, active_scripts, passive_scripts):
     group_id = DAT_OWNER.DUMP.get_group(user_id=user_id)
     active_scripts = json.dumps(active_scripts, ensure_ascii=False)
     passive_scripts = json.dumps(passive_scripts, ensure_ascii=False)
-    active_scripts = active_scripts.replace('\'', '\\\'')
-    passive_scripts = passive_scripts.replace('\'', '\\\'')
+    active_scripts = active_scripts.replace('\\', '\\\\').replace('\'', '\\\'')
+    passive_scripts = passive_scripts.replace('\\', '\\\\').replace('\'', '\\\'')
     sql = 'SELECT ' + DAT_SYS_TEMPLATES.GROUP_ID + ' FROM ' \
           + DAT_SYS_TEMPLATES.TABLE_SHORT + ' WHERE ' \
           + DAT_SYS_TEMPLATES.ID + ' = ' + str(id)
@@ -55,7 +55,7 @@ def update_template(id, user_id, title, active_scripts, passive_scripts):
           + DAT_SYS_TEMPLATES.PASSIVE_SCRIPTS + ' = \'' + passive_scripts + '\', ' \
           + DAT_SYS_TEMPLATES.TITLE + ' = \'' + title + '\' WHERE ' \
           + DAT_SYS_TEMPLATES.ID + ' = ' + str(id)
-    id = db_sql(sql, read=False)
+    db_sql(sql, read=False)
 
 
 def remove_template(user_id, id):

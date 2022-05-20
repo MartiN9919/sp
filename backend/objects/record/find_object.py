@@ -1,6 +1,9 @@
+import json
+
 from data_base_driver.additional_functions import intercept_sort_list
 from data_base_driver.constants.const_key import SYS_KEY_CONSTANT
 from data_base_driver.input_output.input_output import io_get_obj
+from data_base_driver.input_output.io_geo import get_points_by_distance
 from data_base_driver.sys_key.get_key_dump import get_key_by_id
 from objects.record.get_record import get_object_record_by_id_http, get_keys
 from synonyms_manager.get_synonyms import get_synonyms
@@ -26,7 +29,7 @@ def find_reliable_http(object_type, request, actual=False, group_id=0):
             synonyms_list = []
     request = request.split(' ') + synonyms_list
     request = [word.replace('-', '<<') for word in
-               request]  # костыль, в последующем поменяить настройки мантикоры, что бы индексировала '-'
+               request]  # костыль, в последующем поменять настройки мантикоры, что бы индексировала '-'
     result = []
     for word in request:
         word = '@val ' + word if len(word) > 0 else word # искать только по значению
@@ -92,6 +95,17 @@ def find_key_value_http(object_id, key_id, value, group_id=0):
     return [int(item['rec_id']) for index, item in enumerate(response) if not index in remove_list]
 
 
+def find_point_intersection(params):
+    lat = 0
+    lon = 0
+    for param in params:
+        if param[0] == 25204:
+            coordinates = json.loads(param[1])
+            lat = coordinates['coordinates'][1]
+            lon = coordinates['coordinates'][0]
+    return get_points_by_distance(lat, lon, 50)
+
+
 def find_duplicate_objects(group_id, object_id, rec_id, params):
     """
     Функция для поиска дубликатов объектов при создании/изменении
@@ -101,23 +115,27 @@ def find_duplicate_objects(group_id, object_id, rec_id, params):
     @param params: вносимые/изменяемые параметры
     @return: список идентификаторов объектов с похожими значениями
     """
+    result = []
+    if object_id == 25:
+        result = find_point_intersection(params)
     nums = len(list(filter(lambda x: x['obj_id'] == object_id and x['need'], get_keys())))
     old_object = get_object_record_by_id_http(object_id, rec_id, group_id) if rec_id else {}
     needed_old_params = [param for param in old_object.get('params', []) if
                          get_key_by_id(param['id']).get('need', 0) == 1]
     new_params = {}
     for param in params:
-        if get_key_by_id(param[0])['need']:
+        key = get_key_by_id(param[0])
+        if key['need']:
             new_params[param[0]] = {'value': param[1], 'date': param[2]}
     for param in needed_old_params:
         if param['id'] not in new_params:
             new_params[param['id']] = param['values'][0]
     if nums > len(new_params) or len([item for item in params if get_key_by_id(item[0]).get('need', 0) == 1]) == 0:
-        return []
-    result = set(find_key_value_http(object_id, list(new_params.keys())[0], list(new_params.values())[0]['value'], group_id))
+        return result
+    temp_result = set(find_key_value_http(object_id, list(new_params.keys())[0], list(new_params.values())[0]['value'], group_id))
     for param in list(new_params.keys())[1:]:
-        result.intersection_update(set(find_key_value_http(object_id, param, new_params[param]['value'], group_id)))
-    return list(result)
+        temp_result.intersection_update(set(find_key_value_http(object_id, param, new_params[param]['value'], group_id)))
+    return list(temp_result) + result
 
 
 def find_same_objects(group_id, object_id, params):

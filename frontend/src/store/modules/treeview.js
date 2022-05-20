@@ -60,7 +60,12 @@ export default {
   actions: {
     setScriptSearch: ({commit}, search) => commit('setScriptSearch', search),
 
-    changeSelectedTreeViewItem: ({ commit }, selectedItem = {}) => commit('changeSelectedTreeViewItem', selectedItem),
+    changeSelectedTreeViewItem: ({ commit }, selectedItem = {}) => {
+      if(!selectedItem.hasOwnProperty('refresh')) {
+        selectedItem.refresh = Date.now()
+      }
+      commit('changeSelectedTreeViewItem', selectedItem)
+    },
 
     getTreeViewItemsFromServer ({ commit }, config = {}) {
       return axios.get(CONST.API.SCRIPT.GET_LIST_SCRIPT, config)
