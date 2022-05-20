@@ -82,6 +82,10 @@ export default {
   methods: {
     // обработчик изменения исходных данных
     hm_items_change(items) {
+      // скорректирвать выбранный диапазон
+      this.hm.sel_min = this.hm.limit_min;
+      this.hm.sel_max = this.hm.limit_max;
+
       this.hm_mark_refresh();
       this.hm_stat_refresh();
     },
