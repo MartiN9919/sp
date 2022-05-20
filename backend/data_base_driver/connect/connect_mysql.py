@@ -248,6 +248,7 @@ def db_sql(sql, wait=False, read=True, database=VEC_DATA, connection=-1):
             ret = run(connection, db_opened, db_reconnect)
             isOk = True
         except Exception as e:
+            print(e)
             ret = []
             isOk = not wait
             if (iErr < 10) and wait:
