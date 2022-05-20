@@ -1,7 +1,7 @@
 <template>
   <split-panel shadow-effect>
     <template v-slot:firstPane>
-      <map-script-menu/>
+      <map-script-menu id="map-splitter"/>
     </template>
     <template v-slot:secondPane>
       <LeafletMain/>

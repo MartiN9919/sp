@@ -6,9 +6,9 @@ export default {
     globalTooltipStatus: new UserSetting('globalTooltipStatus', true),
     globalNotificationStatus: new UserSetting('globalNotificationStatus', true),
     navigationDrawer: {
-      Map: false,
-      Report: false,
-      Graph: false,
+      Map: new UserSetting('globalMenuMapStatus', false),
+      Report: new UserSetting('globalMenuGraphStatus', false),
+      Graph: new UserSetting('globalMenuReportStatus', false),
     },
     activeTool: {
       Map: null,
@@ -35,7 +35,7 @@ export default {
     ]
   },
   getters: {
-    navigationDrawerStatus: state => page => state.navigationDrawer[page],
+    navigationDrawerStatus: state => page => state.navigationDrawer[page].value,
     activeTool: state => page => state.activeTool[page],
     toolsMenu: state => page => state.toolsMenu[page],
     globalTooltipStatus: state => state.globalTooltipStatus.value,
@@ -43,7 +43,7 @@ export default {
     appbarTabs: state => state.appbarTabs,
   },
   mutations: {
-    setNavigationDrawerStatus: (state, status) => state.navigationDrawer[router.currentRoute.name] = status,
+    setNavigationDrawerStatus: (state, status) => state.navigationDrawer[router.currentRoute.name].value = status,
     setActiveTool: (state, tool) => state.activeTool[router.currentRoute.name] = tool,
     setGlobalTooltipStatus: (state, status) => state.globalTooltipStatus.value = status,
     setGlobalNotificationStatus: (state, status) => state.globalNotificationStatus.value = status,
