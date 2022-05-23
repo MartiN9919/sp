@@ -284,6 +284,8 @@ export default {
             } else {
               this.SCRIPT_ACT_SEL_CLEAR();
             }
+          } else {
+            this.SCRIPT_ACT_SEL_CLEAR();
           }
         });
       },
@@ -299,8 +301,6 @@ export default {
       'SCRIPT_ACT_SEL_SET',
       'SCRIPT_ACT_SEL_CLEAR',
       'addNotification',
-      'setNavigationDrawerStatus',
-      'setActiveTool',
       'changeSelectedTreeViewItem',
     ]),
 
