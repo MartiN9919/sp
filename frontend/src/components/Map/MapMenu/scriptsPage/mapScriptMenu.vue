@@ -25,13 +25,16 @@
         ></menuTemplate>
         <v-row no-gutters class="overflow-y-auto pa-1 chip-analytics">
           <chipAnalytics
-            v-for="(analytics, id) in selectedTemplate.activeAnalysts.concat(selectedTemplate.passiveAnalysts)"
+            v-for="(analytics, key) in analysts"
             :analytics="analytics"
-            :key="id"
+            :key="analytics.refresh + key"
+            :active="selectedTemplate.activeAnalysts.includes(analytics)"
             :selectedTreeViewItem="selectedItem"
-            @returnSelectAnalytics="setCurrentAnalytics"
+            @disabled="disabledAnalysts"
+            @activate="executeScript"
+            @select="setCurrentAnalytics"
             @changeColor="changeColorActiveAnalysts"
-            @deleteActiveAnalytics="deleteAnalytics"
+            @delete="deleteAnalytics"
           ></chipAnalytics>
         </v-row>
         <v-divider v-if="'id' in selectedItem"></v-divider>
@@ -51,18 +54,6 @@
                 </div>
               </template>
             </custom-tooltip>
-            <div class="py-2 d-flex flex-nowrap flex-row justify-center">
-              <v-btn
-                :disabled="selectedTemplate.passiveAnalysts.includes(selectedItem)"
-                @click="disabledActiveAnalysts()"
-                outlined color="#00796B"
-              >Отключить</v-btn>
-              <v-spacer></v-spacer>
-              <v-btn
-                @click="executeScript(selectedItem)"
-                outlined color="#00796B"
-              >Выполнить</v-btn>
-            </div>
           </v-form>
         </v-scroll-y-transition>
       </div>
@@ -87,7 +78,16 @@ export default {
   name: 'mapScriptMenu',
   mixins: [CreatorTreeView, ExecutorScripts, SelectedScriptFormatter],
   components: {SplitPanel, CustomTooltip, treeView, chipAnalytics, ResponsiveInputForm, menuTemplate},
-  computed: mapGetters(['templatesList', 'selectedTemplate']),
+  computed: {
+    ...mapGetters(['templatesList', 'selectedTemplate']),
+    /**
+     * Список всех скриптов (Активные и деактивированные)
+     * @returns []
+     */
+    analysts: function () {
+      return this.selectedTemplate.activeAnalysts.concat(this.selectedTemplate.passiveAnalysts)
+    }
+  },
   methods: {
     ...mapActions([
       'addPassiveAnalysts', 'changeSelectedTreeViewItem', 'changeSelectedTemplateTitle', 'changeColorActiveAnalysts',
@@ -137,16 +137,16 @@ export default {
       this.changeSelectedTreeViewItem()
     },
 
-    /** Деактивация активной аналитики (удаление имеющихся результатов выполнения скрипта) */
-    disabledActiveAnalysts () {
+    /** Деактивация аналитики (удаление имеющихся результатов выполнения скрипта) */
+    disabledAnalysts (analytics) {
       /** Удаление аналитики из списка активных аналитик шаблона */
-      this.removeAnalytics(this.selectedItem)
+      this.removeAnalytics(analytics)
       /** Добавление цвета "пассивной" аналитики */
-      this.selectedItem.color = MAP_CONST.COLOR.SCRIPT_OFF
+      analytics.color = MAP_CONST.COLOR.SCRIPT_OFF
       /** Удаление имеющихся результатов выполнения скрипта */
-      delete this.selectedItem.result
+      delete analytics.result
       /** Занесение аналитики на шину в переменную selectedTemplate.passiveAnalysts */
-      this.addPassiveAnalysts(this.selectedItem)
+      this.addPassiveAnalysts(analytics)
     },
 
     /** Подготовка шаблона к сохранению/изменению */
