@@ -2,8 +2,9 @@ import CONST from '@/plugins/const'
 import axios from '@/plugins/axiosSettings'
 import _ from 'lodash'
 
-import { MAP_CONST, MAP_ITEM } from '@/components/Map/Leaflet/Lib/Const';
-import { color_random } from '@/components/Map/Leaflet/Lib/LibColor';
+import {MAP_CONST, MAP_ITEM} from '@/components/Map/Leaflet/Lib/Const';
+import {color_random} from '@/components/Map/Leaflet/Lib/LibColor';
+import UserSetting from "@/store/addition";
 
 
 export default {
@@ -29,32 +30,41 @@ export default {
      *   rec_id (str)                                  - id записи
      */
     selectedFC: [],
+    lastTemplate: new UserSetting('lastTemplate', {status: false, id: null})
   },
   getters: {
-    templatesList:                    state =>        state.templatesList,
-    selectedTemplate:                 state =>        state.selectedTemplate,
+    templatesList: state => state.templatesList,
+    selectedTemplate: state => state.selectedTemplate,
 
-    SCRIPT_GET:                       state =>        state.selectedTemplate.activeAnalysts,
-    SCRIPT_GET_ITEM:                  state => ind => state.selectedTemplate.activeAnalysts[ind],
-  //SCRIPT_GET_ITEM_FC_STYLE:         state => ind => state.selectedTemplate.activeAnalysts[ind].fc.style                 ?? {},
-    SCRIPT_GET_ITEM_FC_STYLE_MARKER:  state => ind => state.selectedTemplate.activeAnalysts[ind].fc.style?.marker         ?? {},
-    SCRIPT_GET_ITEM_FC_STYLE_LINE:    state => ind => state.selectedTemplate.activeAnalysts[ind].fc.style?.line           ?? {},
-    SCRIPT_GET_ITEM_FC_STYLE_POLYGON: state => ind => state.selectedTemplate.activeAnalysts[ind].fc.style?.polygon        ?? {},
-    SCRIPT_GET_ITEM_COLOR:            state => ind => state.selectedTemplate.activeAnalysts[ind][MAP_ITEM.COLOR]          ?? MAP_CONST.COLOR.DEFAULT,
-    SCRIPT_GET_ITEM_LEGEND_COLOR:     state => ind => state.selectedTemplate.activeAnalysts[ind][MAP_ITEM._LEGEND_COLOR_] ?? [],
-    SCRIPT_GET_ITEM_REFRESH:          state => ind => state.selectedTemplate.activeAnalysts[ind].refresh,
-    SCRIPT_GET_ITEM_SEL:              state =>        JSON.stringify(state.selectedFC),
-    SCRIPT_GET_ITEM_FIND_ACTIVE:      state => active_script_id => {
-      for(let ind=0; ind<state.selectedTemplate.activeAnalysts.length; ind++) {
+    SCRIPT_GET: state => state.selectedTemplate.activeAnalysts,
+    SCRIPT_GET_ITEM: state => ind => state.selectedTemplate.activeAnalysts[ind],
+    //SCRIPT_GET_ITEM_FC_STYLE:         state => ind => state.selectedTemplate.activeAnalysts[ind].fc.style                 ?? {},
+    SCRIPT_GET_ITEM_FC_STYLE_MARKER: state => ind => state.selectedTemplate.activeAnalysts[ind].fc.style?.marker ?? {},
+    SCRIPT_GET_ITEM_FC_STYLE_LINE: state => ind => state.selectedTemplate.activeAnalysts[ind].fc.style?.line ?? {},
+    SCRIPT_GET_ITEM_FC_STYLE_POLYGON: state => ind => state.selectedTemplate.activeAnalysts[ind].fc.style?.polygon ?? {},
+    SCRIPT_GET_ITEM_COLOR: state => ind => state.selectedTemplate.activeAnalysts[ind][MAP_ITEM.COLOR] ?? MAP_CONST.COLOR.DEFAULT,
+    SCRIPT_GET_ITEM_LEGEND_COLOR: state => ind => state.selectedTemplate.activeAnalysts[ind][MAP_ITEM._LEGEND_COLOR_] ?? [],
+    SCRIPT_GET_ITEM_REFRESH: state => ind => state.selectedTemplate.activeAnalysts[ind].refresh,
+    SCRIPT_GET_ITEM_SEL: state => JSON.stringify(state.selectedFC),
+    SCRIPT_GET_ITEM_FIND_ACTIVE: state => active_script_id => {
+      for (let ind = 0; ind < state.selectedTemplate.activeAnalysts.length; ind++) {
         if (state.selectedTemplate.activeAnalysts[ind].refresh == active_script_id) {
           return state.selectedTemplate.activeAnalysts[ind]
         }
       }
       return undefined
     },
+    lastTemplateStatus: state => state.lastTemplate.value.status,
+    lastTemplateId: state => state.lastTemplate.value.id
   },
 
   mutations: {
+    changeLastTemplateStatus: (state, value) => {
+      state.lastTemplate.value = {status: value, id: state.lastTemplate.value.id}
+    },
+    changeLastTemplateId: (state, id) => {
+      state.lastTemplate.value = {status: state.lastTemplate.value.status, id: id}
+    },
     changeSelectedTemplateTitle: (state, title) => state.selectedTemplate.title = title,
     addPassiveAnalysts: (state, analytics) => state.selectedTemplate.passiveAnalysts.push(analytics),
 
@@ -75,20 +85,23 @@ export default {
     },
     removeAnalytics: (state, analytics) => {
       let checkForAvailability = state.selectedTemplate.passiveAnalysts.indexOf(analytics)
-      if (checkForAvailability !== -1) { state.selectedTemplate.passiveAnalysts.splice(checkForAvailability, 1) }
+      if (checkForAvailability !== -1) {
+        state.selectedTemplate.passiveAnalysts.splice(checkForAvailability, 1)
+      }
       checkForAvailability = state.selectedTemplate.activeAnalysts.indexOf(analytics)
-      if (checkForAvailability !== -1) { state.selectedTemplate.activeAnalysts.splice(checkForAvailability, 1) }
+      if (checkForAvailability !== -1) {
+        state.selectedTemplate.activeAnalysts.splice(checkForAvailability, 1)
+      }
     },
     saveSelectedTemplate: (state, templateId) => {
       state.selectedTemplate.id = templateId
       state.templatesList.push(_.cloneDeep(state.selectedTemplate))
     },
     deleteSelectedTemplate: (state, templateId) => {
-      state.selectedTemplate = { title: '', activeAnalysts: [], passiveAnalysts: [] }
       state.templatesList.splice(state.templatesList.findIndex(
         template => template.id === parseInt(templateId)), 1)
     },
-    createNewTemplate: (state) => state.selectedTemplate = { title: '', activeAnalysts: [], passiveAnalysts: [] },
+    createNewTemplate: (state) => state.selectedTemplate = {title: '', activeAnalysts: [], passiveAnalysts: []},
 
 
     SCRIPT_MUT_ITEM_ADD: (state, item) => {
@@ -96,10 +109,10 @@ export default {
       if ((item[MAP_ITEM.COLOR] === MAP_CONST.COLOR.SCRIPT_OFF) || (item[MAP_ITEM.COLOR] === undefined)) {
         // выбрать очередной цвет из MAP_CONST.COLOR.SCRIPT_BANK
         let color = undefined;
-        for(let ind_bank=0; ind_bank<MAP_CONST.COLOR.SCRIPT_BANK.length; ind_bank++) {
+        for (let ind_bank = 0; ind_bank < MAP_CONST.COLOR.SCRIPT_BANK.length; ind_bank++) {
           let item_bank = MAP_CONST.COLOR.SCRIPT_BANK[ind_bank];
           // item_bank не должен уже быть в активных скриптах
-          for(let ind_script=0; ind_script<state.selectedTemplate.activeAnalysts.length; ind_script++) {
+          for (let ind_script = 0; ind_script < state.selectedTemplate.activeAnalysts.length; ind_script++) {
             let item_script = state.selectedTemplate.activeAnalysts[ind_script];
             // цвет из банка уже присвоен другому скрипту - прервать и взять другой цвет из банка
             if (item_script.color === item_bank) {
@@ -115,7 +128,9 @@ export default {
         }
 
         // все цвета заняты -> случайный цвет
-        if (!color) { color  = color_random(); }
+        if (!color) {
+          color = color_random();
+        }
         // записать найденный цвет
         item[MAP_ITEM.COLOR] = color;
       }
@@ -125,19 +140,18 @@ export default {
       state.selectedTemplate.activeAnalysts.push(item);
     },
 
-    SCRIPT_MUT_ITEM_DEL:   (state, id)    => state.selectedTemplate.activeAnalysts.splice(id, 1),
+    SCRIPT_MUT_ITEM_DEL: (state, id) => state.selectedTemplate.activeAnalysts.splice(id, 1),
     SCRIPT_MUT_ITEM_COLOR: (state, param) => {
       let item = state.selectedTemplate.activeAnalysts[param.ind];
       item[MAP_ITEM.COLOR] = param.color;
     },
 
 
-
     //
     // state.selectedFC
     //
     // установить/убрать выделение объекта на карте
-    SCRIPT_MUT_SEL_SWITCH: (state, param)   => {    // param.active_script_id, param.obj_id, param.rec_id
+    SCRIPT_MUT_SEL_SWITCH: (state, param) => {    // param.active_script_id, param.obj_id, param.rec_id
       let ind_exist = undefined;
       for (let ind in state.selectedFC) {
         if ((state.selectedFC[ind].rec_id == param?.rec_id) && (state.selectedFC[ind].obj_id == param?.obj_id)) {
@@ -150,20 +164,19 @@ export default {
       } else {
         state.selectedFC.push({
           active_script_id: param?.active_script_id,
-          obj_id:           param?.obj_id,
-          rec_id:           param?.rec_id,
+          obj_id: param?.obj_id,
+          rec_id: param?.rec_id,
         });
       }
     },
 
-    SCRIPT_MUT_SEL_SET: (state, param)   => {     // [[param.active_script_id, param.obj_id, param.rec_id], ...]
+    SCRIPT_MUT_SEL_SET: (state, param) => {     // [[param.active_script_id, param.obj_id, param.rec_id], ...]
       state.selectedFC = JSON.parse(JSON.stringify(param));
     },
 
     SCRIPT_MUT_SEL_CLEAR: (state) => {
       state.selectedFC = [];
     },
-
 
 
     //
@@ -176,8 +189,13 @@ export default {
       for (let item_script of state.selectedTemplate.activeAnalysts) {
         for (let item of item_script.fc.features) {
           sel_items = state.selectedFC.find(sel_item => ((item.rec_id == sel_item.rec_id) && (item.obj_id == sel_item.obj_id)));
-          if (sel_items) { item.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._SEL_] = true; }
-          else { if (item.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._SEL_]) { delete item.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._SEL_]; } }
+          if (sel_items) {
+            item.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._SEL_] = true;
+          } else {
+            if (item.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._SEL_]) {
+              delete item.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._SEL_];
+            }
+          }
         }
       }
     },
@@ -185,24 +203,30 @@ export default {
 
 
   actions: {
-    addPassiveAnalysts: ({ commit }, analytics = {}) => commit('addPassiveAnalysts', analytics),
+    changeLastTemplateStatus: ({commit}, value) => commit('changeLastTemplateStatus', value),
+    changeLastTemplateId: ({commit}, id) => commit('changeLastTemplateId', id),
 
-    removeAnalytics: ({ commit }, analytics = {}) => commit('removeAnalytics', analytics),
+    addPassiveAnalysts: ({commit}, analytics = {}) => commit('addPassiveAnalysts', analytics),
 
-    changeColorActiveAnalysts: ({ commit }, parameters = {}) => commit('changeColorActiveAnalysts', parameters),
+    removeAnalytics: ({commit}, analytics = {}) => commit('removeAnalytics', analytics),
 
-    changeSelectedTemplateTitle: ({ commit }, parameters = '') => commit('changeSelectedTemplateTitle', parameters),
+    changeColorActiveAnalysts: ({commit}, parameters = {}) => commit('changeColorActiveAnalysts', parameters),
 
-    createNewTemplate: ({ commit }) => commit('createNewTemplate'),
+    changeSelectedTemplateTitle: ({commit}, parameters = '') => commit('changeSelectedTemplateTitle', parameters),
 
-    executeMapScript ({ commit, dispatch }, parameters = {}) {
+    createNewTemplate: ({commit}) => {
+      commit('createNewTemplate')
+      commit('changeLastTemplateId', null)
+    },
+
+    executeMapScript({commit, dispatch}, parameters = {}) {
       return axios.post(CONST.API.SCRIPT.EXEC_MAP, parameters.request, parameters.config)
         .then(response => {
           commit('removeAnalytics', parameters.request);
           parameters.request.fc = response.data;
           commit('SCRIPT_MUT_ITEM_ADD', parameters.request);
           commit('changeSelectedTreeViewItem', {});
-          if(!response.data.features.length)
+          if (!response.data.features.length)
             dispatch('addNotification', {content: 'По вашему запросу ничего не найдено', timeout: 10})
           return Promise.resolve(response.data)
         })
@@ -211,36 +235,53 @@ export default {
 
 
     // добавить/удалить выделение
-    SCRIPT_ACT_SEL_SWITCH({ commit }, param) {         // param.obj_id, param.rec_id, param.ctrl
-      if (!param?.ctrl) { commit('SCRIPT_MUT_SEL_CLEAR'); }
+    SCRIPT_ACT_SEL_SWITCH({commit}, param) {         // param.obj_id, param.rec_id, param.ctrl
+      if (!param?.ctrl) {
+        commit('SCRIPT_MUT_SEL_CLEAR');
+      }
       commit('SCRIPT_MUT_SEL_SWITCH', param);
       commit('SCRIPT_MUT_SEL_MARK');
     },
-    SCRIPT_ACT_SEL_SET({ commit }, param) {         // [[param.active_script_id, param.obj_id, param.rec_id], ...]
+    SCRIPT_ACT_SEL_SET({commit}, param) {         // [[param.active_script_id, param.obj_id, param.rec_id], ...]
       commit('SCRIPT_MUT_SEL_SET', param);
       commit('SCRIPT_MUT_SEL_MARK');
     },
-    SCRIPT_ACT_SEL_CLEAR({ commit }) {
+    SCRIPT_ACT_SEL_CLEAR({commit}) {
       commit('SCRIPT_MUT_SEL_CLEAR');
       commit('SCRIPT_MUT_SEL_MARK');
     },
 
-    getTemplatesList ({ commit, dispatch }, config = {}) {
+    getTemplatesList({getters, commit, dispatch}, config = {}) {
       return axios.get(CONST.API.SCRIPT.GET_LIST_TEMPLATE, config)
-        .then(response => { { commit('loadTemplatesList', response.data) } })
-        .catch(() => {})
+        .then(response => {
+          commit('loadTemplatesList', response.data)
+          if(getters.lastTemplateStatus && getters.lastTemplateId !== null) {
+            dispatch('getSelectedTemplate', {params: {template_id: getters.lastTemplateId}})
+          } else {
+            dispatch('createNewTemplate')
+          }
+        })
+        .catch(() => {
+        })
     },
-    saveSelectedTemplate ({ state, commit }, parameters = {}) {
+    saveSelectedTemplate({state, commit}, parameters = {}) {
       return axios.post(CONST.API.SCRIPT.GET_TEMPLATE, parameters.selectedTemplate, parameters.config)
-        .then(response => { commit('saveSelectedTemplate', response.data) })
-        .catch(() => {})
+        .then(response => {
+          commit('saveSelectedTemplate', response.data)
+          commit('changeLastTemplateId', response.data)
+        })
+        .catch(() => {
+        })
     },
-    putSelectedTemplate ({ state, commit }, parameters = {}) {
+    putSelectedTemplate({state, commit}, parameters = {}) {
       return axios.put(CONST.API.SCRIPT.GET_TEMPLATE, parameters.selectedTemplate, parameters.config)
-        .then(response => { commit('changeTemplateTitle') })
-        .catch(() => {})
+        .then(response => {
+          commit('changeTemplateTitle')
+        })
+        .catch(() => {
+        })
     },
-    getSelectedTemplate ({ state, commit, dispatch }, config = {}) {
+    getSelectedTemplate({state, commit, dispatch}, config = {}) {
       return axios.get(CONST.API.SCRIPT.GET_TEMPLATE, config)
         .then(response => {
           const activeAnalysts = response.data.activeAnalysts
@@ -248,17 +289,22 @@ export default {
           commit('changeSelectedTreeViewItem', {})
           commit('addSelectedTemplate', response.data)
           activeAnalysts.forEach(script => dispatch('executeMapScript', {request: script, config: {}}))
-          passiveAnalysts.forEach(script => commit('addPassiveAnalysts', script) )
+          passiveAnalysts.forEach(script => commit('addPassiveAnalysts', script))
+          commit('changeLastTemplateId', config.params.template_id)
         })
-        .catch(() => {})
+        .catch(() => {
+          dispatch('changeLastTemplateId', null)
+        })
     },
-    deleteSelectedTemplate ({ commit, dispatch }, config = {}) {
+    deleteSelectedTemplate({commit, dispatch}, config = {}) {
       return axios.delete(CONST.API.SCRIPT.GET_TEMPLATE, config)
         .then(response => {
+          dispatch('createNewTemplate')
           commit('deleteSelectedTemplate', config.params.template_id)
           commit('changeSelectedTreeViewItem', {})
         })
-        .catch(() => {})
+        .catch(() => {
+        })
     }
   },
 }
