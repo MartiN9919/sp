@@ -162,25 +162,26 @@ export default {
       let sel_min   = data.sel_min;
       let sel_max   = data.sel_max;
       let sel_delta = sel_max - sel_min;
-      if (sel_delta==0) return;
 
-      // влево
-      if (pos==0) {
-        if ((sel_min - sel_delta) < data.limit_min) {
-          sel_min = data.limit_min;
-          sel_max = data.limit_min+sel_delta;
+      if (sel_delta > 0) {
+        // влево
+        if (pos==0) {
+          if ((sel_min - sel_delta) < data.limit_min) {
+            sel_min = data.limit_min;
+            sel_max = data.limit_min+sel_delta;
+          } else {
+            sel_min -= sel_delta;
+            sel_max -= sel_delta;
+          }
+        // вправо
         } else {
-          sel_min -= sel_delta;
-          sel_max -= sel_delta;
-        }
-      // вправо
-      } else {
-        if ((sel_max + sel_delta) > data.limit_max) {
-          sel_min = data.limit_max-sel_delta;
-          sel_max = data.limit_max;
-        } else {
-          sel_min += sel_delta;
-          sel_max += sel_delta;
+          if ((sel_max + sel_delta) > data.limit_max) {
+            sel_min = data.limit_max-sel_delta;
+            sel_max = data.limit_max;
+          } else {
+            sel_min += sel_delta;
+            sel_max += sel_delta;
+          }
         }
       }
 

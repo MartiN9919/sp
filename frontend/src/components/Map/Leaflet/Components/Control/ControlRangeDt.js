@@ -103,9 +103,11 @@ export default {
       this.dt.limit_max = datesql_to_ts(dt_limit_max);
 
       // скорректирвать выбранный диапазон
-      let sel_min = ((this.dt.limit_min <= this.dt.sel_min) && ( this.dt.sel_min <= this.dt.limit_max))?this.dt.sel_min:this.dt.limit_min;
-      let sel_max = ((this.dt.limit_min <= this.dt.sel_max) && ( this.dt.sel_max <= this.dt.limit_max))?this.dt.sel_max:this.dt.limit_max;
-      this.dt_prop_sel = [sel_min, sel_max];
+      // отключено: при возможности диапазон не изменяется
+      // let sel_min = ((this.dt.limit_min <= this.dt.sel_min) && ( this.dt.sel_min <= this.dt.limit_max))?this.dt.sel_min:this.dt.limit_min;
+      // let sel_max = ((this.dt.limit_min <= this.dt.sel_max) && ( this.dt.sel_max <= this.dt.limit_max))?this.dt.sel_max:this.dt.limit_max;
+      // this.dt_prop_sel = [sel_min, sel_max];
+      this.dt_prop_sel = [this.dt.limit_min, this.dt.limit_max];
 
       // маркер: обновить
       this.dt_mark_refresh();

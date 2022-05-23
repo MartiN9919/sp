@@ -36,8 +36,8 @@ export default {
 
     // добавить в контекстное меню
     menu_pos_add() {
-      const POS_LOAD = 1;
-      const POS_SAVE = 2;
+      const POS_LOAD = 2;
+      const POS_SAVE = 3;
       let val = {
         icon:     'mdi-border-none-variant',
         title:    'Фрагмент',
@@ -45,10 +45,12 @@ export default {
         menu:     [
           {
             icon:     'mdi-map-marker-multiple', // mdi-select-multiple-marker
-            title:    'Показать все',
+            title:    'Показать все объекты',
             subtitle: '[Shit+П]',
             action:   this.action_menu_pos_show_all,
+            disabled: (this.SCRIPT_GET.length == 0),
           },
+          { divider: true },
           {
             icon:  'mdi-upload',
             title: 'Загрузить',
@@ -114,7 +116,9 @@ export default {
       this.SCRIPT_GET.forEach(function(item){
         fg.addLayer(L.geoJSON(item.fc));
       });
-      this.map.fitBounds(fg.getBounds(), { padding: [20, 20] });
+      if (Object.keys(fg._layers).length > 0) {
+        this.map.fitBounds(fg.getBounds(), { padding: [20, 20] });
+      }
     },
 
     // сохранить
