@@ -39,7 +39,7 @@
               <v-icon>mdi-content-save-edit-outline</v-icon>
             </v-list-item-icon>
             <v-list-item-content>
-              <v-list-item-title>Изменить</v-list-item-title>
+              <v-list-item-title>Сохранить</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
           <v-list-item @click="save">
@@ -47,7 +47,7 @@
               <v-icon>mdi-content-save-outline</v-icon>
             </v-list-item-icon>
             <v-list-item-content>
-              <v-list-item-title>Сохранить</v-list-item-title>
+              <v-list-item-title>Сохранить как</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
           <v-list-item @click.stop="removeDialog">
