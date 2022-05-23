@@ -1,19 +1,32 @@
 <template>
   <custom-tooltip bottom>
     <template v-slot:activator="{ on }">
-      <v-chip
-        @click:close="$emit('deleteActiveAnalytics', analytics)"
-        @click="$emit('returnSelectAnalytics', analytics)"
-        :class="{'pulse': selectedTreeViewItem === analytics}"
-        :color=color :style="pulseAnimation" close
-        outlined v-on="on" class="ma-1"
-      >
-        <p class="text-formatter-for-window-size font-for-color-background mb-0">{{ analytics.name }}</p>
-        <custom-color-picker v-if="analytics.hasOwnProperty('fc')" v-model="color"></custom-color-picker>
-      </v-chip>
+      <v-hover v-slot="{ hover }">
+        <v-chip
+          @click="$emit('select', analytics)"
+          :class="{'pulse': selectedTreeViewItem === analytics}"
+          :color="color" :style="pulseAnimation"
+          outlined v-on="on" class="chip ma-1"
+          close-icon="mdi-delete"
+        >
+          <v-switch @click.stop v-model="status" :color="color" dense></v-switch>
+          <p class="text-formatter-for-window-size font-for-color-background mb-0">{{ analytics.name }}</p>
+          <v-spacer/>
+          <div v-show="hover">
+            <custom-color-picker v-if="analytics.hasOwnProperty('fc')" v-model="color"></custom-color-picker>
+            <v-icon @click="$emit('delete', analytics)" :color="color">mdi-delete</v-icon>
+          </div>
+        </v-chip>
+      </v-hover>
     </template>
     <template v-slot:body>
       <div class="ma-2">
+        <p class="text-formatter-for-window-size text-justify ma-0">
+          {{analytics.name}}
+        </p>
+        <p v-if="analytics.hint" class="text-formatter-for-window-size additional-text text-justify">
+          {{analytics.hint}}
+        </p>
         <table>
           <tr>
             <th>Название переменной</th>
@@ -25,9 +38,6 @@
           </tr>
         </table>
         <v-divider dark class="py-1"></v-divider>
-        <p v-if="analytics.hint"
-           class="text-formatter-for-window-size additional-text text-justify ma-0"
-        >{{analytics.hint}}</p>
       </div>
     </template>
   </custom-tooltip>
@@ -42,11 +52,20 @@ export default {
   name: 'chipAnalytics',
   components: {CustomColorPicker, CustomTooltip},
   props: {
+    active: Boolean,
     analytics: Object,
     selectedTreeViewItem: Object
   },
   computed: {
     ...mapGetters(['baseLists']),
+    status: {
+      get: function () {
+        return this.active
+      },
+      set: function (value) {
+        this.$emit(value ? 'activate' : 'disabled', this.analytics)
+      }
+    },
     pulseAnimation: function () {
       return { '--selected-analytics-color': this.selectedTreeViewItem.color }
     },
@@ -82,6 +101,12 @@ export default {
 </script>
 
 <style scoped>
+.chip {
+  width: 100%;
+}
+.chip >>> .v-chip__content {
+  width: 100%;
+}
 table {
   border-collapse: collapse;
   table-layout: fixed;
