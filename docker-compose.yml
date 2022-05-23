@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  web:
+    restart: always
+    image: saphir2.4
+    volumes:
+      - /devstorage:/devstorage
+    expose:
+      - 8000
+    ports:
+      - "8000:8000"
+  nginx:
+    restart: always
+    image: saphir_nginx
+    volumes:
+      - /devstorage:/devstorage
+    ports:
+      - "80:80"
+    depends_on:
+      - web
