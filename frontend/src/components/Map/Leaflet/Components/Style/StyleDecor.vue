@@ -6,7 +6,7 @@
 <script>
 /*
  *  =====================================================
- *     ДЕКОРАТОР: НАЛОЖЕНИЕ НА ФИГУРУ ОТДЕЛЬНОГО СЛОЯ
+ *     ДЕКОРАТОР: НАЛОЖЕНИЕ ОТДЕЛЬНОГО СЛОЯ
  *  =====================================================
  *
  */
@@ -22,6 +22,7 @@ import { get_style_data_decor } from '@/components/Map/Leaflet/Components/Style/
 
 
 const props = {
+  mapItem: Object,
   fc: {
     type: Object,
     default: () => {},
@@ -40,6 +41,7 @@ const props = {
 export default {
   name: 'LStyleDecor',
   props,
+  emits: [ 'onSel', ],
   data() {
     return {
       ready: true, //false,
@@ -73,25 +75,43 @@ export default {
 
       // patterns на основании classes_str и color
       let patterns = get_style_data_decor({
-        classes_str:     get_feature_class(feature),
-        color:           color,
-        icon_properties: icon_properties,
-      },
-      feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._SEL_]
+          classes_str:     get_feature_class(feature),
+          color:           color,
+          icon_properties: icon_properties,
+        },
+        feature.properties[MAP_ITEM.FC.FEATURES.PROPERTIES._SEL_]
       );
       if (patterns.length == 0) continue;
 
       // создать декорации
       function set_decorator(objects) {
         if (objects.length == 0) return;
-        const layer_decor = L.polylineDecorator(objects, { patterns: patterns, });
+        const layer = L.polylineDecorator(objects, { patterns: patterns, });
 
-        if (self.MAP_GET_HINT) { set_feature_hint(layer_decor, feature.properties, true); }
+        // event: on_click
+        layer.on('click', function(e) {
+          // реакция выделения только на объекты из БД
+          if ((!feature.obj_id) || (!feature.rec_id)) return;
+          L.DomEvent.stopPropagation(e);
 
-        self.decorators.push(layer_decor);
-        L.DomEvent.on(layer_decor, self.$listeners);
-        propsBinder(self, layer_decor, props);
-        self.parent_obj.mapObject.addLayer(layer_decor, !self.visible);
+          // выделить элемент на карте
+          self.$emit('onSel', {
+            active_script_id: self.mapItem.refresh,          // в качестве id экземпляра скрипта используем TS
+            obj_id:           feature.obj_id,
+            rec_id:           feature.rec_id,
+            ctrl:             e.originalEvent.ctrlKey,
+          });
+        }.bind(this));
+
+        if (self.MAP_GET_HINT) { set_feature_hint(layer, feature.properties, true); }
+
+        // редактирование запрещено - удалить pm - для уменьшения объема вычислений
+        if (layer.pm) { delete layer.pm; }
+
+        self.decorators.push(layer);
+        L.DomEvent.on(layer, self.$listeners);
+        propsBinder(self, layer, props);
+        self.parent_obj.mapObject.addLayer(layer, !self.visible);
       }
       set_decorator(l_obj[MAP_CONST.GEOMETRY.TYPE.POLYGON]);
       set_decorator(l_obj[MAP_CONST.GEOMETRY.TYPE.LINE   ]);

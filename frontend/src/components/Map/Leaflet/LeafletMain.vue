@@ -43,8 +43,10 @@
 
         <!-- ДЕКОРАТОР ФИГУР -->
         <l-style-decor
+          :mapItem="map_item"
           :fc="data_normalize(map_ind, map_item)"
           :color="SCRIPT_GET_ITEM_COLOR(map_ind)"
+          @onSel="on_script_sel"
         />
       </l-layer-group>
 
@@ -389,20 +391,12 @@ export default {
             L.DomEvent.stopPropagation(e);
 
             // выделить элемент на карте
-            let dat = {
-              active_script_id: self.SCRIPT_GET_ITEM(map_ind).refresh,  // в качестве id экземпляра скрипта используем TS
+            self.on_script_sel({
+              active_script_id: self.SCRIPT_GET_ITEM(map_ind).refresh,        // в качестве id экземпляра скрипта используем TS
               obj_id:           e.target.feature.obj_id,
               rec_id:           e.target.feature.rec_id,
               ctrl:             e.originalEvent.ctrlKey,
-            };
-            if (!SEL_GROUP) self.SCRIPT_ACT_SEL_SWITCH(dat);            // НЕ ДЛЯ ГРУППОВОГО ВЫДЕЛЕНИЯ
-
-            // выделить скрипт в списке
-            let sel_script = self.SCRIPT_GET_ITEM_FIND_ACTIVE(dat.active_script_id);
-            self.changeSelectedTreeViewItem(sel_script);
-
-            // просмотр и редактирование выделенного объекта
-            self.view_dat = [dat.obj_id, dat.rec_id];
+            });
           });
 
           // подсказка
@@ -496,6 +490,17 @@ export default {
 
     on_edit_ok(e, dat) {
       this.MAP_ACT_EDIT({data: dat});
+    },
+
+    on_script_sel(dat) {
+      if (!SEL_GROUP) this.SCRIPT_ACT_SEL_SWITCH(dat);            // НЕ ДЛЯ ГРУППОВОГО ВЫДЕЛЕНИЯ
+
+      // выделить скрипт в списке
+      let script = this.SCRIPT_GET_ITEM_FIND_ACTIVE(dat.active_script_id);
+      this.changeSelectedTreeViewItem(script);
+
+      // просмотр и редактирование выделенного объекта
+      this.view_dat = [dat.obj_id, dat.rec_id];
     },
 
     getDataAsGeoJSON () {
