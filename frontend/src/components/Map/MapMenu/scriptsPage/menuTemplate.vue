@@ -50,7 +50,7 @@
               <v-list-item-title>Сохранить</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
-          <v-list-item @click.stop="remove_dialog">
+          <v-list-item @click.stop="removeDialog">
             <v-list-item-icon>
               <v-icon>mdi-delete-outline</v-icon>
             </v-list-item-icon>
@@ -70,6 +70,15 @@
               </v-card-actions>
             </v-card>
           </v-dialog>
+          <v-divider/>
+          <v-list-item @click.stop="isSaveLast = !isSaveLast">
+            <v-list-item-content>
+              <v-list-item-title>Запоминать выбор</v-list-item-title>
+            </v-list-item-content>
+            <v-list-item-action>
+              <v-switch v-model="isSaveLast" color="teal" readonly></v-switch>
+            </v-list-item-action>
+          </v-list-item>
         </v-list>
       </v-menu>
     </template>
@@ -103,6 +112,14 @@ export default {
         if(template.hasOwnProperty('id')) {
           this.get(template.id)
         }
+      }
+    },
+    isSaveLast: {
+      get: function () {
+        return this.$store.getters.lastTemplateStatus
+      },
+      set: function (value) {
+        this.$store.dispatch('changeLastTemplateStatus', value)
       }
     },
     rules: function () {
@@ -159,7 +176,7 @@ export default {
         }
       }
     },
-    remove_dialog() {
+    removeDialog() {
       if(this.selected) {
         this.dialogDeleteStatus = true
       } else {

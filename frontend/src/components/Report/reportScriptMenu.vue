@@ -1,5 +1,5 @@
 <template>
-  <split-panel setting-name="Menu">
+  <split-panel id="report-menu-splitter" parent-name="report-splitter" setting-name="Menu">
     <template v-slot:firstPane>
       <v-text-field v-model="search" placeholder="Поиск по скриптам" solo hide-details dense class="px-2 pt-2"/>
       <treeView
