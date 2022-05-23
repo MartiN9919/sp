@@ -14,7 +14,8 @@ from data_base_driver.sys_key.get_list import get_list_by_top_id, get_lists
 from data_base_driver.sys_key.get_object_info import obj_list
 from objects.record.search import search
 from objects.relations.add_rel import add_rel
-from objects.relations.get_rel import get_relations_list, get_objects_relation, get_object_relation, search_relations
+from objects.relations.find_rel import search_relations
+from objects.relations.get_rel import get_relations_list, get_objects_relation, get_object_relations
 
 
 @login_check
@@ -188,7 +189,7 @@ def aj_object_relation(request):
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
-            result = get_object_relation(group_id, int(data.get('object_id')), int(data.get('rec_id')),
+            result = get_object_relations(group_id, int(data.get('object_id')), int(data.get('rec_id')),
                                          data.get('objects'))
             return result
         except Exception as e:

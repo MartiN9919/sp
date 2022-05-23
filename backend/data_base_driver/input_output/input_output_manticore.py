@@ -23,6 +23,7 @@ def io_get_obj_row_manticore(group_id, object_type, keys, ids, ids_max_block, wh
     must = []
     must.append({'range': {DAT_OBJ_ROW.SEC: {'gte': time_interval.get('second_start', 0),
                                              'lte': time_interval.get('second_end', 100000000000)}}})
+    where_dop_row = where_dop_row.replace('/', "\\/").replace('"', '\\"')
     if len(ids) > 0:
         must.append({'in': {DAT_OBJ_ROW.ID: [int(rec_id) for rec_id in ids]}})
     if len(keys) > 0:
@@ -38,8 +39,11 @@ def io_get_obj_row_manticore(group_id, object_type, keys, ids, ids_max_block, wh
         "limit": ids_max_block
     })
     response = requests.post(FullTextSearch.SEARCH_URL, data=data)
-    return get_enabled_records(object_type, [item['_source'] for item in json.loads(response.text)['hits']['hits']],
-                               group_id, False)
+    try:
+        return get_enabled_records(object_type, [item['_source'] for item in json.loads(response.text)['hits']['hits']],
+                                   group_id, False)
+    except:
+        print('manticore_error', where_dop_row)
 
 
 def parse_where_dop(where_dop_row):

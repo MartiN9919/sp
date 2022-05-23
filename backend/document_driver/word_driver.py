@@ -6,7 +6,7 @@ from docxtpl import DocxTemplate, InlineImage
 from core.settings import DOCUMENT_ROOT, TEMPLATE_ROOT, MEDIA_ROOT
 from objects.record.get_record import get_object_record_by_id_http, get_record_title
 from data_base_driver.sys_key.get_key_dump import get_key_by_id
-from objects.relations.get_rel import get_object_relation
+from objects.relations.get_rel import get_object_relations
 
 
 def get_document_from_template(template_name, title, data):
@@ -58,7 +58,7 @@ def get_dossier_for_object(group_id, object_id, rec_id, title):
         else:
             value = param['values'][0]['value']
         table_content.append({'id': param['id'], 'key': get_key_by_id(param['id'])['title'], 'value': value})
-    object_relations = get_object_relation(group_id, object_id, rec_id, [], True)
+    object_relations = get_object_relations(group_id, object_id, rec_id, [], True)
     object_relations.sort(key=lambda x: x['object_id'])
     relations = []
     for related_object in object_relations:
