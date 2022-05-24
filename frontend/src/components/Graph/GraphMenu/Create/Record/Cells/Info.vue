@@ -35,8 +35,6 @@ export default {
       return getDownloadFileLink(this.settings.objectId, this.settings.recId, this.value)
     },
   },
-  methods: {
-  },
 }
 </script>
 
