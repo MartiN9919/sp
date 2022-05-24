@@ -23,39 +23,53 @@
           @changeTitle="changeSelectedTemplateTitle"
           class="px-2 pt-2"
         ></menuTemplate>
-        <v-row no-gutters class="overflow-y-auto pa-1 chip-analytics">
-          <chipAnalytics
-            v-for="(analytics, key) in analysts"
-            :analytics="analytics"
-            :key="analytics.refresh + key"
-            :active="selectedTemplate.activeAnalysts.includes(analytics)"
-            :selectedTreeViewItem="selectedItem"
-            @disabled="disabledAnalysts"
-            @activate="executeScript"
-            @select="setCurrentAnalytics"
-            @changeColor="changeColorActiveAnalysts"
-            @delete="deleteAnalytics"
-          ></chipAnalytics>
-        </v-row>
-        <v-divider v-if="'id' in selectedItem"></v-divider>
 
-        <v-scroll-y-transition mode="out-in">
-          <v-form ref="form" v-if="'id' in selectedItem" :key="selectedItem.refresh" class="px-2" onSubmit="return false;">
-            <custom-tooltip v-for="(v, key) in selectedItem.variables" :key="selectedItem.id + key" :body-text="v.hint" bottom>
-              <template v-slot:activator="{ on }">
-                <div v-on="on" class="pt-2">
-                  <responsive-input-form
-                    v-model="v.value"
-                    :input-type="v.type"
-                    :label="v.title"
-                    :list-rules="v.necessary ? ['notEmpty'] : []"
-                    clearable
-                  ></responsive-input-form>
-                </div>
-              </template>
-            </custom-tooltip>
-          </v-form>
-        </v-scroll-y-transition>
+        <div class="d-flex flex-column overflow-y-hidden h-100">
+          <v-row no-gutters class="pa-1 overflow-y-auto">
+            <chipAnalytics
+              v-for="(analytics, key) in analysts"
+              :analytics="analytics"
+              :key="analytics.refresh + key"
+              :active="selectedTemplate.activeAnalysts.includes(analytics)"
+              :selectedTreeViewItem="selectedItem"
+              @disabled="disabledAnalysts"
+              @activate="executeScript"
+              @select="setCurrentAnalytics"
+              @changeColor="changeColorActiveAnalysts"
+              @delete="deleteAnalytics"
+            ></chipAnalytics>
+          </v-row>
+          <v-divider v-if="'id' in selectedItem"></v-divider>
+
+          <v-scroll-y-transition mode="out-in">
+            <v-form
+                ref="form"
+                v-if="'id' in selectedItem"
+                :key="selectedItem.refresh"
+                class="px-2 overflow-y-auto"
+                onSubmit="return false;"
+            >
+              <custom-tooltip
+                  v-for="(v, key) in selectedItem.variables"
+                  :key="selectedItem.id + key"
+                  :body-text="v.hint"
+                  bottom
+              >
+                <template v-slot:activator="{ on }">
+                  <div v-on="on" class="pt-2">
+                    <responsive-input-form
+                      v-model="v.value"
+                      :input-type="v.type"
+                      :label="v.title"
+                      :list-rules="v.necessary ? ['notEmpty'] : []"
+                      clearable
+                    ></responsive-input-form>
+                  </div>
+                </template>
+              </custom-tooltip>
+            </v-form>
+          </v-scroll-y-transition>
+        </div>
       </div>
     </template>
   </split-panel>
