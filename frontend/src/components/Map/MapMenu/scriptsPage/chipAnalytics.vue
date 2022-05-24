@@ -27,7 +27,7 @@
         <p v-if="analytics.hint" class="text-formatter-for-window-size additional-text text-justify">
           {{analytics.hint}}
         </p>
-        <table>
+        <table v-if="analytics.variables.length">
           <tr>
             <th>Название переменной</th>
             <th>Введенное значение</th>
@@ -37,7 +37,6 @@
             <td>{{ getValue(variable) }}</td>
           </tr>
         </table>
-        <v-divider dark class="py-1"></v-divider>
       </div>
     </template>
   </custom-tooltip>

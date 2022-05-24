@@ -31,7 +31,7 @@
               <v-icon>mdi-filter-variant-plus</v-icon>
             </v-list-item-icon>
             <v-list-item-content>
-              <v-list-item-title>Создать новый</v-list-item-title>
+              <v-list-item-title>Новый</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
           <v-list-item @click="put">
@@ -109,7 +109,7 @@ export default {
         return this.selectedTemplate.title.length ? this.selectedTemplate : null
       },
       set: function (template) {
-        if(template.hasOwnProperty('id')) {
+        if(template && template.hasOwnProperty('id')) {
           this.get(template.id)
         }
       }
