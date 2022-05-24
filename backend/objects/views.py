@@ -1,6 +1,6 @@
 import json
 
-from core.projectSettings.decorators import login_check, request_log, request_wrap, request_get, write_permission, \
+from core.projectSettings.decorators import login_check, request_wrap, request_get, write_permission, \
     request_post
 from data_base_driver.constants.const_dat import DAT_OWNER
 from data_base_driver.constants.const_key import SYS_KEY_CONSTANT
@@ -19,7 +19,6 @@ from objects.relations.get_rel import get_relations_list, get_objects_relation, 
 
 
 @login_check
-@request_log
 @request_wrap
 @request_get
 def aj_object_type_list(request):
@@ -33,7 +32,6 @@ def aj_object_type_list(request):
 
 
 @login_check
-@request_log
 @request_wrap
 @request_get
 def aj_list_icons(request):
@@ -46,7 +44,6 @@ def aj_list_icons(request):
 
 
 @login_check
-@request_log
 @request_wrap
 @request_get
 def aj_lists(request):
@@ -59,7 +56,6 @@ def aj_lists(request):
 
 
 @login_check
-@request_log
 @request_wrap
 @request_get
 def aj_list_classifier(request):
@@ -73,7 +69,6 @@ def aj_list_classifier(request):
 
 
 @login_check
-@request_log
 @request_wrap
 @request_get
 def aj_list_rels(request):
@@ -88,7 +83,6 @@ def aj_list_rels(request):
 
 @login_check
 @write_permission
-@request_log
 @request_wrap
 def aj_object(request):
     """
@@ -134,7 +128,6 @@ def aj_object(request):
 
 
 @login_check
-@request_log
 @request_wrap
 def aj_relation(request):
     """
@@ -162,7 +155,6 @@ def aj_relation(request):
 
 
 @login_check
-@request_log
 @request_wrap
 @request_get
 def aj_objects_relation(request):
@@ -177,7 +169,6 @@ def aj_objects_relation(request):
 
 
 @login_check
-@request_log
 @request_wrap
 def aj_object_relation(request):
     """
@@ -199,7 +190,6 @@ def aj_object_relation(request):
 
 
 @login_check
-@request_log
 @request_wrap
 def aj_search_relations(request):
     """
@@ -219,7 +209,6 @@ def aj_search_relations(request):
 
 
 @login_check
-@request_log
 @request_wrap
 def aj_search_objects(request):
     """
@@ -241,7 +230,6 @@ def aj_search_objects(request):
 
 
 @login_check
-@request_log
 @request_wrap
 @request_get
 def aj_geometry_search(request):
@@ -256,7 +244,6 @@ def aj_geometry_search(request):
 
 
 @login_check
-@request_log
 @request_wrap
 @write_permission
 def aj_geometry_fc(request):
@@ -292,7 +279,6 @@ def aj_geometry_fc(request):
 
 
 @login_check
-@request_log
 @request_wrap
 @request_get
 def aj_groups(request):
@@ -305,7 +291,6 @@ def aj_groups(request):
 
 
 @login_check
-@request_log
 @request_wrap
 @request_get
 def aj_map_tiles(request):
@@ -313,7 +298,6 @@ def aj_map_tiles(request):
 
 
 @login_check
-@request_log
 @request_wrap
 @request_get
 def aj_osm_search(request):
@@ -329,7 +313,6 @@ def aj_osm_search(request):
 
 
 @login_check
-@request_log
 @request_wrap
 @request_get
 def aj_osm_fc(request):
@@ -342,7 +325,6 @@ def aj_osm_fc(request):
 
 
 @login_check
-@request_log
 @request_wrap
 @request_post
 def aj_load_from_form(request):

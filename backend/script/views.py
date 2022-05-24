@@ -4,13 +4,12 @@ import json
 import threading
 
 from core.settings import DOCUMENT_ROOT
-from data_base_driver.additional_functions import date_client_to_server, date_time_client_to_server, \
-    date_time_server_to_client
+from data_base_driver.additional_functions import date_time_server_to_client
 from data_base_driver.script.get_script_info import get_script_title
 from data_base_driver.script.script_execute import execute_script_map
 from data_base_driver.script.script_list import get_script_tree
 from data_base_driver.constants.const_dat import DAT_OWNER
-from core.projectSettings.decorators import request_log, login_check, request_wrap, script_wrap
+from core.projectSettings.decorators import login_check, request_wrap, script_wrap
 from data_base_driver.sys_reports.get_files_info import get_reports
 from data_base_driver.sys_reports.set_file_info import add_file
 from data_base_driver.sys_templates.get_template_info import get_templates_list, get_template
@@ -20,7 +19,6 @@ from script.additional_functions import parse_variables
 
 
 @login_check
-@request_log
 @request_wrap
 def aj_script_list(request):
     """
@@ -34,7 +32,6 @@ def aj_script_list(request):
 
 
 @login_check
-@request_log
 @request_wrap
 def aj_trigger_list(request):
     """
@@ -46,7 +43,6 @@ def aj_trigger_list(request):
 
 
 @login_check
-@request_log
 @request_wrap
 @script_wrap
 def aj_script_execute_map(request):
@@ -65,7 +61,6 @@ def aj_script_execute_map(request):
 
 
 @login_check
-@request_log
 @request_wrap
 @script_wrap
 def aj_script_execute_report(request):
@@ -103,7 +98,6 @@ def aj_script_execute_report(request):
 
 
 @login_check
-@request_log
 @request_wrap
 def aj_templates_list(request):
     """
@@ -115,7 +109,6 @@ def aj_templates_list(request):
 
 
 @login_check
-@request_log
 @request_wrap
 def aj_template(request):
     """

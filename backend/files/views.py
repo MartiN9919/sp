@@ -5,7 +5,7 @@ from django.http import JsonResponse
 from django.http import FileResponse
 from PIL import Image
 
-from core.projectSettings.decorators import login_check, request_log, request_get, request_download
+from core.projectSettings.decorators import login_check, request_get, request_download
 from core.settings import MEDIA_ROOT
 from data_base_driver.sys_reports.check_file_permission import check_file_permission
 from data_base_driver.sys_reports.get_files_info import get_file_path
@@ -15,7 +15,6 @@ mode = os.environ.get('MODE')
 
 
 @login_check
-@request_log
 @request_download
 def aj_download_open_file(request):
     """
@@ -32,7 +31,6 @@ def aj_download_open_file(request):
 
 
 @login_check
-@request_log
 @request_download
 def aj_download_condense_image(request):
     """
@@ -53,7 +51,6 @@ def aj_download_condense_image(request):
 
 
 @login_check
-@request_log
 @request_get
 def aj_download_report(request):
     """
