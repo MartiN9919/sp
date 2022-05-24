@@ -174,7 +174,7 @@ def aj_object_relation(request):
     """
     Функция обработки запроса получения связей объекта
     @param request: идентификаторы объекта и список объектов с которыми возможна связь
-    @return: спсиок связей
+    @return: список связей
     """
     group_id = DAT_OWNER.DUMP.get_group(user_id=request.user.id)
     if request.method == 'POST':
