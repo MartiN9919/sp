@@ -91,9 +91,11 @@ class TGParser():
                 if (msg.fwd_from != None):
                     content = 'Репост: '+content
                     if msg.fwd_from != None:
-                        if msg.fwd_from.channel_id != None:
-                            author_id   = str(msg.fwd_from.channel_id)
-                            author_name = obj_name(self.tg.getName(msg.fwd_from.channel_id))
+                        if msg.fwd_from.from_id != None:
+                            val = msg.fwd_from.from_id.channel_id
+                            if val != None:
+                                author_id   = str(val)
+                                author_name = obj_name(self.tg.getName(val))
 
                 # запись в rel
                 relRec = {

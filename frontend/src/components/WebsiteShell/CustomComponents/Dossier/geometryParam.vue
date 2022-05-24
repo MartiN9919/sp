@@ -1,28 +1,23 @@
 <template>
   <div>
     <v-dialog class="dialog" width="60%" style="z-index: 100001">
-      <template v-slot:activator="{ on: on_dialog, attrs: attrs_dialog }">
+      <v-tooltip slot="activator" right open-delay="200" close-delay="400" transition="scroll-x-transition">
+        <span slot="activator" class="teal--text">
+          <slot/>
+        </span>
 
-        <v-tooltip right open-delay="200" close-delay="400" transition="scroll-x-transition">
-          <template v-slot:activator="{ on: on_tooltip, attrs: attrs_tooltip }">
-            <span v-bind="{...attrs_dialog, ...attrs_tooltip}" v-on="{...on_dialog, ...on_tooltip}" class="teal--text">
-              <slot/>
-            </span>
-          </template>
+        <!--
+          tooltip content
+          позиционирование карты EditorPreview производится ТОЛЬКО на видимом окне
+        -->
+        <span>
+          <EditorPreview
+            :id="0"
+            :funGetFC="funGetFC"
+          />
+        </span>
 
-          <!--
-            tooltip content
-            позиционирование карты EditorPreview производится ТОЛЬКО на видимом окне
-          -->
-          <span>
-            <EditorPreview
-              :id="0"
-              :funGetFC="funGetFC"
-            />
-          </span>
-
-        </v-tooltip>
-      </template>
+      </v-tooltip>
 
       <!-- dialog content -->
       <v-card>

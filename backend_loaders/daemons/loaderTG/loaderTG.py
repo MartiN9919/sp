@@ -60,6 +60,7 @@ class LoaderTG():
         logger.info('START!')
         try:
             self.tg = TGRandom(owner=self.VAR_OWNER, worker=DAEMON_INI.WORKER, varName='connect')
+            print(self.tg)
             if self.tg == None: raise ValueError('LoaderTG.__init__: error ini telegram api')
             self.tg.client.session.save_entities = True                                             # сохранять локально input entites
 

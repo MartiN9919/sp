@@ -21,7 +21,7 @@
 
 # !!!!!!!! УСТАНОВКА НА СЕРВЕРЕ
 # запустить с терминала, получить код, ввести код, записать код в БД
-# перенести файл usernamesession в корневой каталог
+# перенести файл username.session в корневой каталог
 # запустить в режиме демона
 
 
@@ -73,16 +73,16 @@ def TGRandom(owner='loaderTG', worker='', varName='connect'):
 #    api_hash = '2e91b30aafd0db3d51e7db558259ac08'
 #    phone    = '+375259529767'
 #    code     = 58486
-#    host     = '192.168.30.100'    - не обязательно
-#    port     = 3128                - не обязательно
+#    host     = '192.168.30.100'    ## не обязательно
+#    port     = 3128                ## не обязательно
 #####################################################
 class TG_BD:
-      TABLE      = 'entities'
-      ID         = 'id'
-      HASH       = 'hash'
-      USERNAME   = 'username'
-      PHONE      = 'phone'
-      NAME       = 'name'
+    TABLE      = 'entities'
+    ID         = 'id'
+    HASH       = 'hash'
+    USERNAME   = 'username'
+    PHONE      = 'phone'
+    NAME       = 'name'
 
 class TG():
     recMaxCount  = 50                       # сколько читать с канала сообщений, 100
@@ -106,11 +106,13 @@ class TG():
             logger.info('authorize for phone: '+param['phone'])
             try:
                 self.client.send_code_request(param['phone'])
-                self.client.sign_in(param['phone'], input('Enter code ['+param['phone']+'] (and change BD): ')) #param['code'])
+                param['code'] = input('Enter code ['+param['phone']+'] (and change BD): ')
+                self.client.sign_in(param['phone'], param['code'])
+                print('Change BD.var/loaderTG/connect and restart app')
             except BaseException as e:
                 logger.error(str(e))
+            finally:
                 raise
-            #finally: self.sleep()
 
 
     #####################################################
