@@ -24,6 +24,7 @@ backend/static/
 backend/script/user_scripts
 backend/script/user_triggers
 backend_ml/env/
+backend_loaders/files/
 venv/
 ENV/
 env.bak/

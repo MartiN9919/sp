@@ -131,14 +131,17 @@ class TGParser():
 
                 # скачать файлы
                 if advanced:
-                    fPhotoBig, fPhotoSmall = self.tg.getPhoto(author_id=author_id, api_obj  =obj)                                      # скачать фото пользователя/группы
-                    fMedia                 = self.tg.getMedia(author_id=author_id, api_media=msg.media, max_size=self.mediaMaxSize)    # скачать медиа-файл
+                    fPhoto = self.tg.getPhoto(author_id=author_id, api_obj  =obj)                                      # скачать фото пользователя/группы
+                    # fPhotoBig, fPhotoSmall = self.tg.getPhoto(author_id=author_id, api_obj  =obj)                                      # скачать фото пользователя/группы
+                    fMedia = self.tg.getMedia(author_id=author_id, api_media=msg.media, max_size=self.mediaMaxSize)    # скачать медиа-файл
 
                     # запись в file (только регистрация), поэтому source не указывать !!!
-                    if fPhotoBig   != '': self.bios["wFile"].recAdd(host=HOST.TG, path=filePrefDel(fPhotoBig),   arc_crc='',              unit_id=arcRec[ARC.AUTHOR_ID])
-                    if fPhotoSmall != '': self.bios["wFile"].recAdd(host=HOST.TG, path=filePrefDel(fPhotoSmall), arc_crc='',              unit_id=arcRec[ARC.AUTHOR_ID])
+                    if fPhoto != '': self.bios["wFile"].recAdd(host=HOST.TG, path=filePrefDel(fPhoto), arc_crc='', unit_id=arcRec[ARC.AUTHOR_ID])
+                    # if fPhotoBig   != '': self.bios["wFile"].recAdd(host=HOST.TG, path=filePrefDel(fPhotoBig),   arc_crc='',              unit_id=arcRec[ARC.AUTHOR_ID])
+                    # if fPhotoSmall != '': self.bios["wFile"].recAdd(host=HOST.TG, path=filePrefDel(fPhotoSmall), arc_crc='',              unit_id=arcRec[ARC.AUTHOR_ID])
                     if fMedia      != '': self.bios["wFile"].recAdd(host=HOST.TG, path=filePrefDel(fMedia),      arc_crc=arcRec[ARC.CRC], unit_id=arcRec[ARC.AUTHOR_ID])
-                    retFile += ((1 if fPhotoBig!='' else 0)+(1 if fPhotoSmall!='' else 0)+(1 if fMedia!='' else 0))
+                    retFile += ((1 if fPhoto!='' else 0)+(1 if fMedia!='' else 0))
+                    # retFile += ((1 if fPhotoBig!='' else 0)+(1 if fPhotoSmall!='' else 0)+(1 if fMedia!='' else 0))
 
         gc.collect()
         logger.debug('Channel messages: '+str(retMsg)+'/'+str(retRel)+'/'+str(retFile))

@@ -108,7 +108,7 @@ class TG():
                 self.client.send_code_request(param['phone'])
                 param['code'] = input('Enter code ['+param['phone']+'] (and change BD): ')
                 self.client.sign_in(param['phone'], param['code'])
-                print('Change BD.var/loaderTG/connect and restart app')
+                print('Change [BD.var/loaderTG/connect/code] and restart app')
             except BaseException as e:
                 logger.error(str(e))
             finally:
@@ -222,14 +222,14 @@ class TG():
     #####################################################
     # ЧИТАТЬ ОБЪЕКТ ИЗ API
     #####################################################
-    # entity - id | 'name' | 't.me/name' | 'https://telegram.org/name'
+    # entity - id | 'name' | 't.me/name' | 'https://telegram.org/name' | '+34xxxxxxxxx' | 'telegram.me/joinchat/AAAAAEkk2WdoDrB4-Q8-gg'
     # return - Channel, User
     #####################################################
     def getGlobalEntity(self, entity):
         try:     obj = self.client.get_entity(entity)
         except:  obj = None
         finally:
-            for _ in range(0, 5): self.sleep()                                      # требуется увеличенная задержка из-за бана
+            for _ in range(3, 8): self.sleep()                                      # увеличенная задержка из-за бана
         return   obj
 
     #####################################################
@@ -471,28 +471,36 @@ class TG():
     # Имя файла = 'obj_'+local_id.jpg
     #####################################################
     def getPhoto(self, author_id, api_obj):
-        funCalbackBig   = lambda file: self.client.download_profile_photo(entity=api_obj, file=file, download_big=True )
-        funCalbackSmall = lambda file: self.client.download_profile_photo(entity=api_obj, file=file, download_big=False)
+        funCalback = lambda file: self.client.download_profile_photo(entity=api_obj, file=file)
+        # funCalbackBig   = lambda file: self.client.download_profile_photo(entity=api_obj, file=file, download_big=True )
+        # funCalbackSmall = lambda file: self.client.download_profile_photo(entity=api_obj, file=file, download_big=False)
 
-        retNone = '', ''                                                                                            # инициализация
+        retNone = '' #, ''                                                                                            # инициализация
         if isinstance(api_obj, User):
             if not isinstance(api_obj.photo, UserProfilePhoto): return retNone
         elif isinstance(api_obj, Channel):
             if not isinstance(api_obj.photo, ChatPhoto): return retNone
         else: return retNone
 
-        fFile      = 'obj_'+str(api_obj.photo.photo_big.local_id)                                                   # загрузить большое фото
-        fPathBig   = self.getPathShort(author_id, fFile+'.jpg')
-        if not self.downloadFile(fPath=DAEMON_INI.FILE_BASE+fPathBig, fun=funCalbackBig): return retNone
+        print(api_obj.photo)
+        fFile = 'obj_'+str(api_obj.photo.photo_id)
+        fPath = self.getPathShort(author_id, fFile+'.jpg')
+        if not self.downloadFile(fPath=DAEMON_INI.FILE_BASE+fPath, fun=funCalback): return retNone
+        print('+')
+        return fPath
 
-        fFile      = 'obj_'+str(api_obj.photo.photo_small.local_id)                                                 # загрузить малое фото
-        fPathSmall = self.getPathShort(author_id, fFile+'.jpg')
-        if not self.downloadFile(fPath=DAEMON_INI.FILE_BASE+fPathSmall, fun=funCalbackSmall): return retNone
+        # fFile      = 'obj_'+str(api_obj.photo.photo_big.local_id)                                                   # загрузить большое фото
+        # fPathBig   = self.getPathShort(author_id, fFile+'.jpg')
+        # if not self.downloadFile(fPath=DAEMON_INI.FILE_BASE+fPathBig, fun=funCalbackBig): return retNone
 
-        fPathSmall2 = self.getPathShort(author_id, self.fileIcon)
-        os.rename(DAEMON_INI.FILE_BASE+fPathSmall, DAEMON_INI.FILE_BASE+fPathSmall2)                                # фото на иконку
+        # fFile      = 'obj_'+str(api_obj.photo.photo_small.local_id)                                                 # загрузить малое фото
+        # fPathSmall = self.getPathShort(author_id, fFile+'.jpg')
+        # if not self.downloadFile(fPath=DAEMON_INI.FILE_BASE+fPathSmall, fun=funCalbackSmall): return retNone
 
-        return fPathBig, fPathSmall2
+        # fPathSmall2 = self.getPathShort(author_id, self.fileIcon)
+        # os.rename(DAEMON_INI.FILE_BASE+fPathSmall, DAEMON_INI.FILE_BASE+fPathSmall2)                                # фото на иконку
+
+        # return fPathBig, fPathSmall2
 
 
 

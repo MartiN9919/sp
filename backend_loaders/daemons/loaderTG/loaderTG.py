@@ -15,7 +15,6 @@
 # для запуска без демона
 from   daemonIni     import DAEMON_INI
 
-print(__name__)
 if __name__ == "__main__":
     import sys
     sys.path.append('.')  #/home/web/prog/atlas/')
