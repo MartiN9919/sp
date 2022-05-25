@@ -46,7 +46,7 @@
                 ref="form"
                 v-if="'id' in selectedItem"
                 :key="selectedItem.refresh"
-                class="px-2 overflow-y-auto"
+                class="px-2 py-1 overflow-y-auto"
                 onSubmit="return false;"
             >
               <custom-tooltip
@@ -56,7 +56,7 @@
                   bottom
               >
                 <template v-slot:activator="{ on }">
-                  <div v-on="on" class="pt-2">
+                  <div v-on="on" class="pt-1">
                     <responsive-input-form
                       v-model="v.value"
                       :input-type="v.type"
