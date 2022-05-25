@@ -1,15 +1,14 @@
-from core.projectSettings.decorators import login_check, request_log, request_wrap
+from core.projectSettings.decorators import login_check, request_wrap
 from data_base_driver.sys_notifications.get_notifications_info import get_notifications_by_user, \
     get_notifications_list_by_offset
 from data_base_driver.sys_notifications.set_notifications_info import set_read
 
 
 @login_check
-@request_log
 @request_wrap
 def aj_notifications_list(request):
     """
-    Функция для обработки запроса на получение списка триггеров
+    Функция для обработки запроса на получение списка оповещений
     @param request: GET запрос на получение списка триггеров
     @return: список триггеров в формате JSON
     """
@@ -18,7 +17,6 @@ def aj_notifications_list(request):
 
 
 @login_check
-@request_log
 @request_wrap
 def aj_set_read(request, notification_id):
     """
@@ -31,11 +29,10 @@ def aj_set_read(request, notification_id):
 
 
 @login_check
-@request_log
 @request_wrap
 def aj_notifications_sorted_list(request):
     """
-    Функция для обработки Get запроса на получение ранжированного списока оповещений
+    Функция для обработки Get запроса на получение ранжированного списка оповещений
     @param request: Get запрос
     @return: json содержащий список оповещений по заданным параметрам и общее их количество
     """

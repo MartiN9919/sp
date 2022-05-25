@@ -2,6 +2,7 @@ import datetime
 import json
 import os
 import threading
+from typing import List
 
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
@@ -224,7 +225,7 @@ def add_data_from_form(user, group_id, form, meta=None):
 
     # сериализация объектов и связей
     relations = entities['rel']
-    objects = []
+    objects: List[dict] = []
     for item in entities['obj']:
         if len(item.get('param', [])) == 0:
             continue

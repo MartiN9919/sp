@@ -141,48 +141,6 @@ def write_permission(f):
     return wrap
 
 
-logger = logging.getLogger(PROJECT_LOG_REQUESTS)
-
-
-def request_log(function):
-    """
-    Функция обертка для логирования запросов
-    @param function: оборачиваемая функция обработки запроса
-    @return: результат выполнения функции с обработкой лога
-    """
-
-    def _inner(request, *args, **kwargs):
-        try:
-            body_string = str(request.body.decode("utf-8"))
-            if len(body_string) != 0 and json.loads(request.body).get('password'):
-                body = json.loads(request.body)
-                body['password'] = '***'
-                body_string = str(body)
-
-            logger.info(
-                str(request.user) + '.' +
-                str(request.user.id) + '|' +
-                request.META.get('REMOTE_ADDR') + ':' +
-                str(request.META.get('REMOTE_PORT')) + '|' +
-                request.method + ':' +
-                request.path + '|' +
-                body_string
-            )
-        except:
-            logger.info(
-                str(request.user) + '.' +
-                str(request.user.id) + '|' +
-                request.META.get('REMOTE_ADDR') + ':' +
-                str(request.META.get('REMOTE_PORT')) + '|' +
-                request.method + ':' +
-                request.path + '|' +
-                request.POST.get('data', '')
-            )
-        return function(request, *args, **kwargs)
-
-    return _inner
-
-
 def decor_timeit(method):
     """
     Функция обертка для замера времени выполнения

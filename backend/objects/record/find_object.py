@@ -151,7 +151,8 @@ def find_same_objects(group_id, object_id, params):
             find_key_value_http(object_id, list(new_params.keys())[0], list(new_params.values())[0]['value'], group_id))
         if len(list(new_params.keys())) > 1:
             for param in list(new_params.keys())[1:]:
-                result.intersection_update(set(find_key_value_http(object_id, param, new_params[param]['value'], group_id)))
+                result.intersection_update(set(find_key_value_http(object_id, param, new_params[param]['value'],
+                                                                   group_id)))
         return list(result)
 
 
