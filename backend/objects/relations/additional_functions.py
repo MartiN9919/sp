@@ -26,21 +26,38 @@ def get_seconds_from_request_data_time(date_time_start, date_time_end):
     return seconds_1, seconds_2
 
 
-def get_unique_objects(object_tree: List[dict], path: List[dict] = None) -> dict:
+def get_unique_objects(object_tree: List[dict]) -> dict:
     """
     Функция для фильтрации дерева объектов с занесением всех уникальных объектов в objects
     @param object_tree: дерево объектов построенное при поиске связей
-    @param path: путь к объекту
     """
+    objects = {}
+    for item in object_tree:
+        objects[f"{item['object_id']}_{item['rec_id']}"] = {'object_id': item['object_id'], 'rec_id': item['rec_id']}
+        if len(item.get('relations', [])) != 0:
+            objects.update(get_unique_objects(item['relations']))
+    return objects
+
+
+def get_path_to_object(object_tree: List[dict], path: List[dict] = None) -> dict:
     objects = {}
     if path is None:
         path = []
     for item in object_tree:
-        objects[f"{item['object_id']}_{item['rec_id']}"] = {'object_id': item['object_id'],
-                                                            'rec_id': item['rec_id'], 'path': path}
+        objects[f"{item['object_id']}_{item['rec_id']}"] = \
+            [[*path, {'object_id': item['object_id'], 'rec_id': item['rec_id']}]]
         if len(item.get('relations', [])) != 0:
-            objects.update(get_unique_objects(item['relations'],
-                                              [*path, {'object_id': item['object_id'], 'rec_id': item['rec_id']}]))
+            temp_objects = get_path_to_object(
+                item['relations'], [*path, {'object_id': item['object_id'], 'rec_id': item['rec_id']}])
+            for temp_object in temp_objects:
+                if not objects.get(temp_object):
+                    objects[temp_object] = temp_objects[temp_object]
+                else:
+                    for elem in temp_objects[temp_object]:
+                        if len(elem) < len(objects[temp_object][0]):
+                            objects[temp_object] = [elem]
+                        elif len(elem) == len(objects[temp_object][0]):
+                            objects[temp_object].append(elem)
     return objects
 
 
@@ -59,4 +76,3 @@ def check_in_list(elem: dict, keys: list, items: List[dict]) -> bool:
         else:
             return True
     return False
-
