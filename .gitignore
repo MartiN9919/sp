@@ -4,9 +4,11 @@
 *$py.class
 
 #__init__.py
-*.log.*
+#*.log.*
+log/
 *.log
-*.pid
+#*.pid
+pid/
 *.pyc
 
 # pyenv
