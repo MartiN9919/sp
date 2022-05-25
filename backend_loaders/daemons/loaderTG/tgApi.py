@@ -229,7 +229,7 @@ class TG():
         try:     obj = self.client.get_entity(entity)
         except:  obj = None
         finally:
-            for _ in range(3, 8): self.sleep()                                      # увеличенная задержка из-за бана
+            for _ in range(3, 7): self.sleep()                                      # увеличенная задержка из-за бана (0, 5) - бан
         return   obj
 
     #####################################################
@@ -482,11 +482,9 @@ class TG():
             if not isinstance(api_obj.photo, ChatPhoto): return retNone
         else: return retNone
 
-        print(api_obj.photo)
         fFile = 'obj_'+str(api_obj.photo.photo_id)
         fPath = self.getPathShort(author_id, fFile+'.jpg')
         if not self.downloadFile(fPath=DAEMON_INI.FILE_BASE+fPath, fun=funCalback): return retNone
-        print('+')
         return fPath
 
         # fFile      = 'obj_'+str(api_obj.photo.photo_big.local_id)                                                   # загрузить большое фото

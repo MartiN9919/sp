@@ -42,7 +42,7 @@ def parserSiteRSS(bios, rec, min_timestamp):
 
     #####################################################
     ret = 0
-    logger.info('Start: '+rec[GetNodSite.HOST])
+    logger.debug('Start: '+rec[GetNodSite.HOST])
 
     try:
         feed = feedparser.parse(rec[GetNodSite.URL])
