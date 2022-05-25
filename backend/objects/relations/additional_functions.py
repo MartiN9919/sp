@@ -30,6 +30,7 @@ def get_unique_objects(object_tree: List[dict]) -> dict:
     """
     Функция для фильтрации дерева объектов с занесением всех уникальных объектов в objects
     @param object_tree: дерево объектов построенное при поиске связей
+    @return: словарь в формате {'object_id_rec_id': {object_id, rec_id}}
     """
     objects = {}
     for item in object_tree:
@@ -59,11 +60,7 @@ def get_path_to_object(object_tree: List[dict], path: List[dict] = None) -> dict
                 if not objects.get(temp_object):
                     objects[temp_object] = temp_objects[temp_object]
                 else:
-                    for elem in temp_objects[temp_object]:
-                        if len(elem) < len(objects[temp_object][0]):
-                            objects[temp_object] = [elem]
-                        elif len(elem) == len(objects[temp_object][0]):
-                            objects[temp_object].append(elem)
+                    objects[temp_object] += temp_objects[temp_object]
     return objects
 
 

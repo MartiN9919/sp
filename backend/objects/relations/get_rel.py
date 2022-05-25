@@ -162,19 +162,14 @@ def get_objects_relation(group_id, object_id_1, rec_id_1, object_id_2, rec_id_2,
     temp_result = []
     for object_1 in objects_1:
         if objects_2.get(object_1):
-            for path in objects_1[object_1] + objects_2[object_1]:
-                for item in path:
-                    temp_result.append(item)
-    temp_result = [dict(s) for s in set(frozenset(d.items()) for d in temp_result)]
-    result = [item for item in temp_result if len(
-        get_object_relations(
-            group_id,
-            item['object_id'],
-            item['rec_id'],
-            [*temp_result,
-             {'object_id': object_id_1, 'rec_id': rec_id_1},
-             {'object_id': object_id_2, 'rec_id': rec_id_2}]
-        )) > 1]
+            for path_1 in objects_1[object_1]:
+                for path_2 in objects_2[object_1]:
+                    path = path_1 + list(reversed(path_2[:-1]))
+                    if {'object_id': object_id_1, 'rec_id': rec_id_1} not in path and \
+                            {'object_id': object_id_2, 'rec_id': rec_id_2} not in path \
+                            and len([dict(s) for s in set(frozenset(d.items()) for d in path)]) == len(path):
+                        temp_result += path
+    result = [dict(s) for s in set(frozenset(d.items()) for d in temp_result)]
     return result
 
 
