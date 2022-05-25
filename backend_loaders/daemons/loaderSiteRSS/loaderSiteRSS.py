@@ -9,7 +9,7 @@ def start():
 
 # запуск без демона
 if __name__ == "__main__":
-    import fun.funSys
-    fun.funSys.setLogger(DAEMON_INI.FILE_LOG)
+    import lib.funSys
+    lib.funSys.setLogger(DAEMON_INI.FILE_LOG)
 
     start()
