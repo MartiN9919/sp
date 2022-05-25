@@ -14,13 +14,15 @@
 
 # для запуска без демона
 from   daemonIni     import DAEMON_INI
-#if __name__ == "__main__":
-import sys
-sys.path.append('.')  #/home/web/prog/atlas/')
-sys.path.append('../../')
 
-import lib.funSys
-lib.funSys.setLogger(DAEMON_INI.FILE_LOG)
+print(__name__)
+if __name__ == "__main__":
+    import sys
+    sys.path.append('.')  #/home/web/prog/atlas/')
+    sys.path.append('../../')
+
+    import lib.funSys
+    lib.funSys.setLogger(DAEMON_INI.FILE_LOG)
 
 
 

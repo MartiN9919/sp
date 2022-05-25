@@ -264,7 +264,7 @@ class LOADER_NOD:
       TS_CORRECT     = 'ts_correct'
       WORKER         = 'worker'
       ENABLED        = 'enabled'
-      VIP            = 'vip'
+      VIP            = 'vip'                    # признак присоединения к каналу, требующему подписки
       DESCRIPT       = 'descript'
       REFRESH        = 'refresh'
 
