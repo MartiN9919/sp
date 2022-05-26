@@ -1,21 +1,24 @@
 # Byte-compiled / optimized / DLL files
-*__pycache__/*
+__pycache__/
 *.py[cod]
 *$py.class
 
-#__init__.py
-*.log.*
+log/
 *.log
-*.pid
+pid/
+
 *.pyc
 
 # pyenv
 .python-version
 
 # Environments
-*env/*
-.env
+env/
+env.bak/
 .venv
+venv/
+venv.bak/
+
 .pytest_cache
 .idea
 backend/log/
@@ -24,10 +27,7 @@ backend/static/
 backend/script/user_scripts
 backend/script/user_triggers
 backend_ml/env/
-venv/
-ENV/
-env.bak/
-venv.bak/
+backend_loaders/files/
 
 frontend/webpack-stats.json
 frontend/package-lock.json
@@ -36,6 +36,8 @@ backend/webpack-stats.json
 *migrations/*
 
 TEST/
+#__init__.py
+
 
 # git rm --cached -r *migrations/*
 
