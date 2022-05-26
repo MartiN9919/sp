@@ -13,10 +13,10 @@
     </template>
 
     <slot name="body">
-      <div v-if="isDescription" class="subtitle-1">
-        {{description || 'Описание отсутствует'}}
+      <div class="subtitle-1">
+        {{description}}
       </div>
-      <v-divider v-if="isDescription && value" dark/>
+      <v-divider v-if="description && value" dark/>
       <component :is="component.tag"  v-bind="component.attrs"/>
     </slot>
   </v-tooltip>
@@ -36,10 +36,6 @@ export default {
     description: {
       type: String,
       default: ''
-    },
-    isDescription: {
-      type: Boolean,
-      default: false,
     },
     value: {
       default: null

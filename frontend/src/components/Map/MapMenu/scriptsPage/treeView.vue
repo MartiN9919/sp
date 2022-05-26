@@ -4,7 +4,7 @@
     return-object open-on-click activatable dense active-class="" color=""
   >
     <template v-slot:label="{ item, open }">
-      <custom-tooltip :description="item.hint" is-description bottom>
+      <custom-tooltip :description="item.hint" bottom>
         <template v-slot:activator="{ on }">
           <div v-on="on">
             <v-icon :id="iconId(item.id)" :color="colorIcon(item)">{{ typeIcon(item, open) }}</v-icon>
