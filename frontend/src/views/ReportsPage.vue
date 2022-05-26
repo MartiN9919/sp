@@ -12,10 +12,10 @@
 <script>
 import SplitPanel from "@/components/WebsiteShell/CustomComponents/splitPanel"
 import reportsList from '@/components/Report/reportsList'
-const  reportScriptMenu= () => import('@/components/Report/reportScriptMenu')
+const reportScriptMenu = () => import('@/components/Report/reportScriptMenu')
 
 export default {
-  name: 'Reports',
+  name: 'Report',
   components: { SplitPanel, reportScriptMenu, reportsList},
 }
 </script>

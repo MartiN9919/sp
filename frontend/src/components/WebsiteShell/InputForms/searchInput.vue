@@ -4,7 +4,8 @@
       v-model="value"
       :search-input.sync="searchString"
       no-filter
-      @keydown.enter="search"
+      @focus="focus = true"
+      @blur="focus = false"
       v-bind="$attrs"
       :items="findObjects"
       :class="bodyInputClasses"
@@ -32,7 +33,7 @@
             size="24"
             class="action-icon"
         >mdi-delete</v-icon>
-        <v-icon v-else-if="searchString" @click="search" @mouseup.stop>mdi-magnify</v-icon>
+        <v-icon v-else-if="searchString || focus" @click="search" @mouseup.stop>mdi-magnify</v-icon>
         <v-icon v-else-if="$attrs['type-load']">{{baseObject(selectorObject).icon}}</v-icon>
         <drop-down-menu v-else min-width="auto" max-height="30%" z-index="100000" offset-y close-on-click>
           <template v-slot:activator="{ on }">
@@ -80,7 +81,8 @@ name: "searchInput",
   data: () => ({
     selectorObject: null,
     searchString: '',
-    findObjects: []
+    findObjects: [],
+    focus: false
   }),
   computed: {
   ...mapGetters(['baseObject', 'baseObjects']),

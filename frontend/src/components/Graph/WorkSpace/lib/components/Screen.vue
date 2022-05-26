@@ -1,5 +1,5 @@
 <template>
-  <svg class="screen" ref="screen" @mousedown.ctrl="startDrawFrame">
+  <svg class="screen" ref="screen" @mousedown.ctrl="startDrawFrame" @contextmenu.prevent="">
     <g id="screen">
       <slot/>
     </g>

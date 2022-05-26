@@ -13,11 +13,13 @@
     </template>
 
     <slot name="body">
-      <div class="subtitle-1">
-        {{description}}
+      <div v-if="description || value" class="pa-2">
+        <div class="subtitle-1">
+          {{description}}
+        </div>
+        <v-divider v-if="description && value" dark/>
+        <component :is="component.tag"  v-bind="component.attrs"/>
       </div>
-      <v-divider v-if="description && value" dark/>
-      <component :is="component.tag"  v-bind="component.attrs"/>
     </slot>
   </v-tooltip>
 </template>
@@ -134,5 +136,6 @@ export default {
 <style scoped>
 .v-tooltip__content.menuable__content__active {
   opacity: 1 !important;
+  padding: 0;
 }
 </style>
