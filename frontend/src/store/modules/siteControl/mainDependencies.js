@@ -81,15 +81,16 @@ export default {
 }
 
 class BaseInstanceToObject {
-  constructor(id, title) {
+  constructor(id, title, hint) {
     this.id = id
     this.title = title
+    this.hint = hint
   }
 }
 
 class BaseObject extends BaseInstanceToObject {
   constructor(baseObject) {
-    super(baseObject.id, baseObject.title)
+    super(baseObject.id, baseObject.title, baseObject.descriptor)
     this.name = baseObject.name
     this.rels = baseObject.rels
     this.titleSingle = baseObject.title_single
@@ -99,7 +100,7 @@ class BaseObject extends BaseInstanceToObject {
 
 class BaseClassifier extends BaseInstanceToObject {
   constructor(baseClassifier) {
-    super(baseClassifier.id, baseClassifier.title)
+    super(baseClassifier.id, baseClassifier.title, baseClassifier.hint)
     this.objectId = baseClassifier.obj_id
     this.name = baseClassifier.name
     this.type = baseClassifier.type
@@ -109,10 +110,9 @@ class BaseClassifier extends BaseInstanceToObject {
 
 class BaseRelation extends BaseInstanceToObject {
   constructor(baseRelation) {
-    super(baseRelation.id, baseRelation.title)
+    super(baseRelation.id, baseRelation.title, baseRelation.hint)
     this.f_id = baseRelation.object_id_1
     this.s_id = baseRelation.object_id_2
-    this.hint = baseRelation.hint
     this.type = baseRelation.type
   }
 }

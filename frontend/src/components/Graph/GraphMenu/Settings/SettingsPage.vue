@@ -9,11 +9,6 @@
     >
       <component :is="setting.component"/>
     </setting-block>
-<!--    <trigger-settings :triggers="getTriggers" @setTrigger="setTrigger">-->
-<!--      <v-list-item class="px-2">-->
-<!--        <selector-object v-model="idTriggerSettings" start-object/>-->
-<!--      </v-list-item>-->
-<!--    </trigger-settings>-->
   </div>
 </template>
 

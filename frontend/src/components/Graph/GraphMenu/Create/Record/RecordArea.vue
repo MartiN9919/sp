@@ -18,7 +18,7 @@
         >
           <record-input
               :param="getParam(param, value)"
-              :type="param.baseParam.type"
+              :base="param.baseParam"
               :conflict="conflict"
               @deletable="deleteNewParam(param.baseParam.id, value)"
           ></record-input>
