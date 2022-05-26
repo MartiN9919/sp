@@ -7,7 +7,7 @@ from typing import List
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 
-from core.settings import MEDIA_ROOT
+from core.projectSettings.constant import MEDIA_ROOT
 from data_base_driver.additional_functions import date_time_client_to_server, date_client_to_server
 from data_base_driver.constants.const_dat import DAT_SYS_KEY
 from data_base_driver.constants.const_key import SYS_KEY_CONSTANT

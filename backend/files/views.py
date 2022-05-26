@@ -6,7 +6,7 @@ from django.http import FileResponse
 from PIL import Image
 
 from core.projectSettings.decorators import login_check, request_get, request_download
-from core.settings import MEDIA_ROOT
+from core.projectSettings.constant import MEDIA_ROOT
 from data_base_driver.sys_reports.check_file_permission import check_file_permission
 from data_base_driver.sys_reports.get_files_info import get_file_path
 from files.additional_function import get_x_accel_response, convert_file_path

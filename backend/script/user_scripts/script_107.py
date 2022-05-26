@@ -24,7 +24,7 @@ from docx import Document
 from docx.shared import RGBColor
 from synonyms_manager.get_synonyms import get_synonyms
 from document_driver.classifier_driver import get_exel_document
-from core.deploy_settings import MEDIA_ROOT, DOCUMENT_ROOT
+from core.projectSettings.constant import MEDIA_ROOT, DOCUMENT_ROOT
 
 
 
