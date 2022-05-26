@@ -9,7 +9,7 @@
           outlined v-on="on" class="chip ma-1"
           close-icon="mdi-delete"
         >
-          <v-switch v-model="status" :color="color" dense></v-switch>
+          <v-switch @click.stop="status = !status" :input-value="status" :color="color" dense readonly></v-switch>
           <p class="text-formatter-for-window-size font-for-color-background mb-0">{{ analytics.name }}</p>
           <v-spacer/>
           <div v-show="hover">
