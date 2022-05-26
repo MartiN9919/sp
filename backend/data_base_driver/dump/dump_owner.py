@@ -2,7 +2,7 @@ import threading
 import time
 from data_base_driver.constants.const_dat import DAT_OWNER_USERS, DAT_OWNER_GROUPS, DAT_OWNER_BASE, DAT_OWNER_REGIONS, \
     DAT_OWNER_LINES
-from data_base_driver.connect.connect_mysql import DB_sql
+from data_base_driver.connect.connect_mysql import db_sql
 from data_base_driver.dump.transform_functions import tuple_to_dict_many, dict_filter
 
 
@@ -28,10 +28,8 @@ class DUMP_OWNER:
     def _refresh_(self, force=False):
         if not force and (self.refreshTime > time.time()): return
         with self._lock:
-            db = DB_sql()
-
             # USERS
-            dat = db.execute(
+            dat = db_sql(
                 sql=
                 "SELECT " +
                 DAT_OWNER_USERS.ID + "," +
@@ -49,7 +47,7 @@ class DUMP_OWNER:
             ])
 
             # GROUPS
-            dat = db.execute(
+            dat = db_sql(
                 sql=
                 "SELECT " +
                 DAT_OWNER_GROUPS.ID + "," +
@@ -71,7 +69,7 @@ class DUMP_OWNER:
             ])
 
             # REGIONS (TEMP)
-            dat = db.execute(
+            dat = db_sql(
                 sql=
                 "SELECT " +
                 DAT_OWNER_REGIONS.ID + "," +
@@ -87,7 +85,7 @@ class DUMP_OWNER:
             ])
 
             # LINES (TEMP)
-            dat = db.execute(
+            dat = db_sql(
                 sql=
                 "SELECT " +
                 DAT_OWNER_LINES.ID + "," +
