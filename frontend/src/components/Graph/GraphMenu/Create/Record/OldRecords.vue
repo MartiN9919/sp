@@ -60,7 +60,6 @@ table {
   cursor: default;
 }
 table >>> span, table >>> a {
-  color: #555555;
   font-size: 0.8em;
   text-decoration: none;
 }

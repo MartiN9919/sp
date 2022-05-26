@@ -9,7 +9,6 @@
               :description="param.hint"
               :type="param.type"
               :value="param.value"
-              is-description
               nudge-right="20"
               right
           >

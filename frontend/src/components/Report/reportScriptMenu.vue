@@ -23,7 +23,6 @@
               :description="v.hint"
               :value="v.value"
               :type="v.type"
-              is-description
               nudge-right="20"
               right
           >
