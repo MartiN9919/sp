@@ -14,4 +14,4 @@ class RET_ERROR:
     MSG_RECORD = 'Fail record'
 
 
-DEPLOY_SETTING = json.load(open('/devstorage/config.json'))
+DEPLOY_SETTING = json.load(open('/deploy_storage/config.json'))

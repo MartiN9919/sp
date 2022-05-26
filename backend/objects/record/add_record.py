@@ -2,11 +2,12 @@ import datetime
 import json
 import os
 import threading
+from typing import List
 
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 
-from core.settings import MEDIA_ROOT
+from core.projectSettings.constant import MEDIA_ROOT
 from data_base_driver.additional_functions import date_time_client_to_server, date_client_to_server
 from data_base_driver.constants.const_dat import DAT_SYS_KEY
 from data_base_driver.constants.const_key import SYS_KEY_CONSTANT
@@ -224,7 +225,7 @@ def add_data_from_form(user, group_id, form, meta=None):
 
     # сериализация объектов и связей
     relations = entities['rel']
-    objects = []
+    objects: List[dict] = []
     for item in entities['obj']:
         if len(item.get('param', [])) == 0:
             continue

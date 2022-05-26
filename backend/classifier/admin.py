@@ -76,6 +76,7 @@ class SpeciesFilterRel(RelatedFieldListFilter):
 class Rel(ModelKey):
     def save(self, *args, **kwargs):
         self.obj_id = 1
+        self.priority = 100
         super().save(*args, **kwargs)
 
     class Meta:

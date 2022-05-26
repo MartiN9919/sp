@@ -46,7 +46,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            '/devstorage/static/src/vue/dist/'
+            '/deploy_storage/static/src/vue/dist/'
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -95,11 +95,7 @@ USE_TZ = False
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
-    "/devstorage/static",
+    "/deploy_storage/static",
 ]
-
-MEDIA_ROOT = '/devstorage/saphir_data'
-DOCUMENT_ROOT = '/devstorage/saphir_documents/'
-TEMPLATE_ROOT = '/devstorage/saphir_documents/template/'
 
 # SESSION_EXPIRE_AT_BROWSER_CLOSE = True

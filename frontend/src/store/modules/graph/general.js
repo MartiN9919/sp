@@ -16,7 +16,7 @@ export default {
     async getRelation({getters}, {from, to, config = {}}) {
       const params = Object.assign(from.ids, {objects: [to.ids]})
       return await axios.post('objects/object_relation/', params, config)
-        .then(r => Promise.resolve(new DataBaseRelation(from, to, r.data[0].relations)))
+        .then(r => Promise.resolve(new DataBaseRelation(from, to, r.data[0].relation_types)))
         .catch(e => Promise.reject(e))
     },
     async getRelations({getters}, {from, objects, config = {}}) {

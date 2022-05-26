@@ -1,10 +1,12 @@
+from data_base_driver.additional_functions import date_client_to_server, date_time_server_to_client
 from data_base_driver.constants.const_dat import DAT_SYS_NOTIFY, DAT_OWNER_USERS
 from data_base_driver.connect.connect_mysql import db_sql
 
 
 def get_alert_json(alert):
-    return {'id_alert': alert[0], 'from': alert[1], 'content': alert[2], 'date_time': alert[3].isoformat(sep=' '),
-            'status': alert[4], 'file': alert[5], 'geometry': alert[6]}
+    return {'id_alert': alert[0], 'from': alert[1], 'content': alert[2],
+            'date_time': date_time_server_to_client(alert[3].isoformat(sep=' ')), 'status': alert[4], 'file': alert[5],
+            'geometry': alert[6]}
 
 
 def get_notifications_by_user(user_id, previous_list):
@@ -46,6 +48,7 @@ def get_notifications_list_by_offset(user_id, length, offset, date, notification
         order = False
     where_list = []
     if date:
+        date = date_client_to_server(date)
         where_list.append(DAT_SYS_NOTIFY.DATE_TIME + ' BETWEEN \'' + str(date) + ' 00:00:00\' AND \'' + str(date) + ' 23:59:59\'')
     if notification_type:
         where_list.append('`' + DAT_SYS_NOTIFY.TYPE + '` = \'' + notification_type + '\'')

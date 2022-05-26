@@ -40,6 +40,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'core.projectSettings.middleware.logging_middleware'
 ]
 
 ROOT_URLCONF = 'core.urls'
@@ -100,7 +101,4 @@ STATIC_ROOT = 'var/static_root'
 STATICFILES_DIRS = [
     "static",
 ]
-MEDIA_ROOT = '/devstorage/saphir_data'
-DOCUMENT_ROOT = '/devstorage/saphir_documents/'
-TEMPLATE_ROOT = '/devstorage/saphir_documents/template/'
 
