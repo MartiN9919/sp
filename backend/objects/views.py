@@ -11,7 +11,7 @@ from data_base_driver.osm.osm_lib import osm_search, osm_fc
 from objects.record.add_record import add_data, add_geometry, add_data_from_form
 from objects.record.get_record import get_keys
 from data_base_driver.sys_key.get_list import get_list_by_top_id, get_lists
-from data_base_driver.sys_key.get_object_info import obj_list
+from data_base_driver.sys_key.get_object_info import objects_list
 from objects.record.search import search
 from objects.relations.add_rel import add_rel
 from objects.relations.find_rel import search_relations
@@ -28,7 +28,7 @@ def aj_object_type_list(request):
     @return: json содержащих информации по ключу data в формате:
     [{id, name, title, title_single, icon, descript},...{}]
     """
-    return obj_list()
+    return objects_list()
 
 
 @login_check
@@ -240,7 +240,7 @@ def aj_geometry_search(request):
     @return:  json дерево в формате: [{id,name,icon,child:[{},{},...,{}]},{},...,{}]
     """
     group_id = DAT_OWNER.DUMP.get_group(user_id=request.user.id)
-    return get_geometry_search(group_id=group_id, text=request.GET.get('text', ''))
+    return get_geometry_search(text=request.GET.get('text', ''))
 
 
 @login_check

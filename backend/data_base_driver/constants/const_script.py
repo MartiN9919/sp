@@ -23,7 +23,7 @@ IMPORTS = \
     "from objects.record.get_record import get_object_param_by_key\n" \
     "from data_base_driver.input_output.input_output import io_set, io_get_obj_mysql_tuple, io_get_rel_mysql_tuple, io_get_rel, io_get_obj\n" \
     "from objects.record.search import search\n" \
-    "from data_base_driver.sys_key.get_object_info import obj_list, rel_rec_to_el, el_to_rec_id\n" \
+    "from data_base_driver.sys_key.get_object_info import objects_list\n" \
     "from data_base_driver.input_output.io_geo import relations_to_geometry_id, \
 feature_collection_by_geometry, get_geometries, get_points_inside_polygon\n"\
     "from data_base_driver.sys_notifications.set_notifications_info import add_notification\n"\
@@ -46,10 +46,8 @@ ENABLED_FUNCTIONS = [
     'io_get_obj_mysql_tuple',
     'io_get_rel_mysql_tuple',
     'io_get_geometry_tree',
-    'obj_list',
+    'objects_list',
     'key_list',
-    'rel_rec_to_el',
-    'el_to_rec_id',
     'int',
     'set',
     'str',

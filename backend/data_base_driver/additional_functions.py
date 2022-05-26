@@ -1,6 +1,7 @@
 import datetime
 
-from data_base_driver.sys_key.get_key_dump import get_key_by_name, get_obj_id
+from data_base_driver.sys_key.get_object_info import get_object_id
+from data_base_driver.sys_key.get_key_info import get_key_by_name
 
 
 def get_document_date_format(date):
@@ -46,21 +47,6 @@ def get_date_time_from_sec(sec, client=False):
     days = sec // 86400
     sec = sec % 86400
     return get_date_from_days_sec(days, sec, client)
-
-
-def get_sorted_list(items):
-    """
-    Функция для сортировки списка по количеству вхождений элемента
-    @param items: список с числовыми элементами
-    @return: список отсортированный в порядке количества вхождений элементов
-    """
-    counter = {}
-    for item in items:
-        try:
-            counter[item] += 1
-        except KeyError:
-            counter[item] = 1
-    return [item[0] for item in sorted(counter.items(), key=lambda x: x[1], reverse=True)]
 
 
 def date_time_to_sec(date_time):
@@ -159,7 +145,7 @@ def io_set_wrap(function):
     """
     def wrap(group_id, obj, data):
         try:
-            obj = get_obj_id(obj) if isinstance(obj, str) and not (obj.isdigit()) else int(obj)
+            obj = get_object_id(obj) if isinstance(obj, str) and not (obj.isdigit()) else int(obj)
             if obj != 1:
                 data = [(get_id_by_key(item[0]), item[1], item[2]) if item[0] != 'id' else (item[0], item[1])
                         for item in data]
@@ -181,7 +167,7 @@ def io_get_object_wrap(function):
     def wrap(group_id, object, keys, ids, ids_max_block, where_dop_row, time_interval):
         try:
             keys = [get_id_by_key(item) for item in keys]
-            object = get_obj_id(object) if isinstance(object, str) and not (object.isdigit()) else int(object)
+            object = get_object_id(object) if isinstance(object, str) and not (object.isdigit()) else int(object)
             return function(group_id, object, keys, ids, ids_max_block, where_dop_row, time_interval)
         except Exception as e:
             raise e
@@ -199,10 +185,10 @@ def io_get_rel_wrap(function):
         try:
             keys = [get_id_by_key(item) for item in keys]
             if obj_rel_1 and len(obj_rel_1) > 0:
-                obj_rel_1[0] = get_obj_id(obj_rel_1[0]) if isinstance(obj_rel_1[0], str) and not (
+                obj_rel_1[0] = get_object_id(obj_rel_1[0]) if isinstance(obj_rel_1[0], str) and not (
                     obj_rel_1[0].isdigit()) else int(obj_rel_1[0])
             if obj_rel_2 and len(obj_rel_2) > 0:
-                obj_rel_2[0] = get_obj_id(obj_rel_2[0]) if isinstance(obj_rel_2[0], str) and not (
+                obj_rel_2[0] = get_object_id(obj_rel_2[0]) if isinstance(obj_rel_2[0], str) and not (
                     obj_rel_2[0].isdigit()) else int(obj_rel_2[0])
             return function(group_id, keys, obj_rel_1, obj_rel_2, val, time_interval, is_unique, rec_id)
         except Exception as e:

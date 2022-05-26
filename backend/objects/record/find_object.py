@@ -4,7 +4,7 @@ from data_base_driver.additional_functions import intercept_sort_list
 from data_base_driver.constants.const_key import SYS_KEY_CONSTANT
 from data_base_driver.input_output.input_output import io_get_obj
 from data_base_driver.input_output.io_geo import get_points_by_distance
-from data_base_driver.sys_key.get_key_dump import get_key_by_id
+from data_base_driver.sys_key.get_key_info import get_key_by_id
 from objects.record.get_record import get_object_record_by_id_http, get_keys
 from synonyms_manager.get_synonyms import get_synonyms
 

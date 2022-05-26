@@ -2,7 +2,7 @@ from openpyxl import Workbook
 
 from core.projectSettings.constant import DOCUMENT_ROOT
 from data_base_driver.sys_key.get_list import get_lists
-from data_base_driver.sys_key.get_object_info import obj_list
+from data_base_driver.sys_key.get_object_info import objects_list
 from document_driver.exel_driver import reorder_work_sheet, merge_column_by_same_value
 from objects.record.get_record import get_keys_blank
 from objects.relations.get_rel import get_relations_list
@@ -13,7 +13,7 @@ def make_objects_sheet(sheet):
     Функция для формирования листа объектов
     @param sheet: пустой лист
     """
-    objects = obj_list()
+    objects = objects_list()
     sheet.append(['id', 'title_single', 'title'])
     for row in [[item['id'], item['title_single'], item['title']] for item in objects]:
         sheet.append(row)
@@ -40,7 +40,7 @@ def make_relation_sheet(sheet):
     Функция для формирования листа связей
     @param sheet: пустой лист
     """
-    objects = obj_list()
+    objects = objects_list()
     objects.append({'id': 1})  # костыль, так как в списке объектов нет связи
     relations = [item for item in get_relations_list() if not item['blocked_blank']]
     all_relations = []

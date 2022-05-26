@@ -8,7 +8,7 @@ from core.projectSettings.constant import MEDIA_ROOT
 from data_base_driver.additional_functions import date_client_to_server, date_time_client_to_server
 from data_base_driver.constants.const_dat import DAT_SYS_KEY
 from data_base_driver.input_output.input_output import io_get_obj
-from data_base_driver.sys_key.get_key_dump import get_key_by_id
+from data_base_driver.sys_key.get_key_info import get_key_by_id
 from data_base_driver.sys_key.get_object_info import get_object_new_rec_id
 from objects.record.add_record import add_record
 from objects.record.get_record import get_keys

@@ -3,7 +3,7 @@ from data_base_driver.constants.const_dat import DAT_SYS_FILES
 from datetime import datetime
 
 
-def add_file(path, user_id, params, date_auto_remove=datetime.now(), status='in_progress'):
+def add_report(path, user_id, params, date_auto_remove=datetime.now(), status='in_progress'):
     """
     Функция для добавления информации о файле в базу данных
     @param path: путь к файлу, из него так же будет получено имя

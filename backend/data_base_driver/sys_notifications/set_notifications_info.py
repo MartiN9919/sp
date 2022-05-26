@@ -3,8 +3,7 @@ from data_base_driver.constants.const_dat import DAT_SYS_NOTIFY
 from datetime import datetime
 
 
-def add_notification(to_id, type, content, date_time=datetime.now(), from_id='NULL', file_id='NULL', geometry='NULL',
-                     test_mode=None):
+def add_notification(to_id, type, content, date_time=datetime.now(), from_id='NULL', file_id='NULL', geometry='NULL'):
     """
     Функция для добавления оповещения в базу данных
     @param from_id: идентификационный номер отправителя, по стандарту NULL

@@ -28,10 +28,10 @@ def add_template(group_id, title, active_scripts, passive_scripts):
     return db_sql(sql, read=False)[0]
 
 
-def update_template(id, user_id, title, active_scripts, passive_scripts):
+def update_template(template_id, user_id, title, active_scripts, passive_scripts):
     """
     Функция для изменения шаблона в базе данных
-    @param id: идентификационный номер шаблона в базе данных
+    @param template_id: идентификационный номер шаблона в базе данных
     @param user_id: идентификационный номер пользователя
     @param title: новое название шаблона
     @param active_scripts: новый json с активными скриптами
@@ -44,7 +44,7 @@ def update_template(id, user_id, title, active_scripts, passive_scripts):
     passive_scripts = passive_scripts.replace('\\', '\\\\').replace('\'', '\\\'')
     sql = 'SELECT ' + DAT_SYS_TEMPLATES.GROUP_ID + ' FROM ' \
           + DAT_SYS_TEMPLATES.TABLE_SHORT + ' WHERE ' \
-          + DAT_SYS_TEMPLATES.ID + ' = ' + str(id)
+          + DAT_SYS_TEMPLATES.ID + ' = ' + str(template_id)
     template = db_sql(sql)
     if len(template) != 1:
         raise ('шаблон не найден')
@@ -54,20 +54,20 @@ def update_template(id, user_id, title, active_scripts, passive_scripts):
           + DAT_SYS_TEMPLATES.ACTIVE_SCRIPTS + ' = \'' + active_scripts + '\', ' \
           + DAT_SYS_TEMPLATES.PASSIVE_SCRIPTS + ' = \'' + passive_scripts + '\', ' \
           + DAT_SYS_TEMPLATES.TITLE + ' = \'' + title + '\' WHERE ' \
-          + DAT_SYS_TEMPLATES.ID + ' = ' + str(id)
+          + DAT_SYS_TEMPLATES.ID + ' = ' + str(template_id)
     db_sql(sql, read=False)
 
 
-def remove_template(user_id, id):
+def remove_template(user_id, template_id):
     """
     Функция для удаления шаблона из базы данных
     @param user_id: идентификационный номер пользователя, для проверки уровня доступа
-    @param id: идентификационный номер шаблона
+    @param template_id: идентификационный номер шаблона
     """
     group_id = DAT_OWNER.DUMP.get_group(user_id=user_id)
     sql = 'SELECT ' + DAT_SYS_TEMPLATES.GROUP_ID + ' FROM ' \
           + DAT_SYS_TEMPLATES.TABLE_SHORT + ' WHERE ' \
-          + DAT_SYS_TEMPLATES.ID + ' = ' + str(id)
+          + DAT_SYS_TEMPLATES.ID + ' = ' + str(template_id)
     template = db_sql(sql)
     if len(template) != 1:
         raise ('No such template')
@@ -75,7 +75,7 @@ def remove_template(user_id, id):
         raise ('access dinied')
     sql = 'DELETE FROM ' + DAT_SYS_TEMPLATES.TABLE_SHORT \
           + ' WHERE ' + DAT_SYS_TEMPLATES.ID \
-          + ' = ' + str(id)
+          + ' = ' + str(template_id)
     db_sql(sql, read=False)
 
 

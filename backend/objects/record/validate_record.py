@@ -1,7 +1,7 @@
 import re
 
 from data_base_driver.constants.const_dat import DAT_SYS_PHONE_NUMBER_FORMAT
-from data_base_driver.sys_key.get_key_dump import get_key_by_id
+from data_base_driver.sys_key.get_key_info import get_key_by_id
 
 
 def remove_special_chars(word):

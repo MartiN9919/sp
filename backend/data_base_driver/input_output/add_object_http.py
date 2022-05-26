@@ -2,25 +2,7 @@ import datetime
 import json
 import requests
 from data_base_driver.constants.const_fulltextsearch import FullTextSearch
-from data_base_driver.sys_key.get_key_dump import get_key_by_id
-
-TEST_MODE = False
-
-
-def on_test_mode_manticore():
-    """
-    Функция для включения тестового режима базы данных, без записи в мантикору
-    """
-    global TEST_MODE
-    TEST_MODE = True
-
-
-def off_test_mode_manticore():
-    """
-    Функция для выключения тестового режима базы данных, разрешение записи в мантикору
-    """
-    global TEST_MODE
-    TEST_MODE = False
+from data_base_driver.sys_key.get_key_info import get_key_by_id
 
 
 def add_row_record_http(index_title, id, date_time, key_id, val):
@@ -33,8 +15,6 @@ def add_row_record_http(index_title, id, date_time, key_id, val):
     @param val: вносимое значение
     @return: True в случае успешного добавления, False в случае ошибки
     """
-    if TEST_MODE:
-        return False
     if get_key_by_id(key_id)['type'] == 'checkbox':
         val = 1 if val == 'True' else 0
     date_time = datetime.datetime.strptime(date_time, "%Y-%m-%d %H:%M:%S")
@@ -63,8 +43,6 @@ def add_col_record_http(index_title, id, params):
     @param params: параметры для записи
     @return: если добавление прошло успешно True, если нет False
     """
-    if TEST_MODE:
-        return False
     doc = {}
     for param in params:
         param_list = param.split('=')
@@ -99,8 +77,6 @@ def update_col_record_http(index_title, id, params):
     @param params: параметры для записи
     @return: если добавление прошло успешно True, если нет False
     """
-    if TEST_MODE:
-        return False
     doc = {}
     for param in params:
         param_list = param.split('=')
@@ -138,8 +114,6 @@ def add_relation_http(rec_id, date_time, key_id, obj_id_1, rec_id_1, obj_id_2, r
     @param document_id: идентификатор документа основания связи
     @return: True в случае успешного добавления, False в случае ошибки
     """
-    if TEST_MODE:
-        return False
     date_time = datetime.datetime.strptime(date_time, "%Y-%m-%d %H:%M:%S")
     days = date_time.date().toordinal() + 365
     seconds = date_time.time().second + date_time.time().minute * 60 + date_time.time().hour * 3600 + days * 86400
