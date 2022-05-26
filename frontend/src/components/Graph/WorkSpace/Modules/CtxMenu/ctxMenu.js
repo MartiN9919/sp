@@ -2,46 +2,32 @@ import _ from 'lodash'
 
 const ObjectCtxMenu = [
   {
-    icon: 'mdi-folder-edit-outline',
-    title: 'Изменить / Удалить',
-    subtitle: 'Базовые операции над объектом',
-    menu: [
-      {
-        icon: 'mdi-pencil',
-        title: 'Изменить',
-        subtitle: 'Редактировать данный объект',
-        action: 'setChangeObject',
-        disabled: false
-      },
-      {
-        icon: 'mdi-delete',
-        title: 'Удалить',
-        subtitle: 'Удалить объект с графа',
-        action: 'deleteObject',
-        disabled: false
-      }
-    ]
+    icon: 'mdi-pencil',
+    title: 'Изменить',
+    subtitle: 'Редактировать данный объект',
+    action: 'setChangeObject',
+    disabled: false
   },
   {
-    icon: 'mdi-dots-grid',
-    title: 'Дополнительное',
-    subtitle: 'Дополнительные операции над объектом',
-    menu: [
-      {
-        icon: 'mdi-link-variant',
-        title: 'Поиск связей',
-        subtitle: 'Поиск связей для данного объекта',
-        action: 'setSearchRelation',
-        disabled: false
-      },
-      {
-        icon: 'mdi-map-plus',
-        title: 'Вывести геометрию/точку на карту',
-        subtitle: 'Вывести выбранную геометрию/точку на карту',
-        action: 'addGeometryToGraph',
-        disabled: true
-      },
-    ]
+    icon: 'mdi-delete',
+    title: 'Удалить',
+    subtitle: 'Удалить объект с графа',
+    action: 'deleteObject',
+    disabled: false
+  },
+  {
+    icon: 'mdi-link-variant',
+    title: 'Найти связи',
+    subtitle: 'Поиск связей для данного объекта',
+    action: 'setSearchRelation',
+    disabled: false
+  },
+  {
+    icon: 'mdi-map-plus',
+    title: 'Вывести геометрию/точку на карту',
+    subtitle: 'Вывести выбранную геометрию/точку на карту',
+    action: 'addGeometryToGraph',
+    disabled: true
   },
   {
     icon: 'mdi-cog-outline',
@@ -187,7 +173,7 @@ const SpaceCtxMenu = [
 
 function getObjectCtxMenu(geometryToGraph) {
   let objectCtxMenu = _.cloneDeep(ObjectCtxMenu)
-  objectCtxMenu[1].menu[1].disabled = !geometryToGraph
+  objectCtxMenu[3].disabled = !geometryToGraph
   return objectCtxMenu
 }
 
