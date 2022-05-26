@@ -1,6 +1,6 @@
 import os
 
-from data_base_driver.constants.const_admin import DEPLOY_SETTING
+from core.projectSettings.constant import DEPLOY_SETTING
 
 mode = os.environ.get('MODE')
 

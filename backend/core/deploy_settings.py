@@ -1,6 +1,6 @@
 from pathlib import Path
 from data_base_driver.constants.connect_db import VEC_DATA
-from data_base_driver.constants.const_admin import DEPLOY_SETTING
+from core.projectSettings.constant import DEPLOY_SETTING
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 

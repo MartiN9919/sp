@@ -13,5 +13,3 @@ class RET_ERROR:
     MSG_PARAM  = 'Wrong parameters'
     MSG_RECORD = 'Fail record'
 
-
-DEPLOY_SETTING = json.load(open('/deploy_storage/config.json'))
