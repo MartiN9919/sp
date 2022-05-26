@@ -37,7 +37,7 @@ feature_collection_by_geometry, get_geometries, get_points_inside_polygon\n"\
     "from docx.shared import RGBColor\n"\
     "from synonyms_manager.get_synonyms import get_synonyms\n"\
     "from document_driver.classifier_driver import get_exel_document\n"\
-    "from core.deploy_settings import MEDIA_ROOT, DOCUMENT_ROOT\n\n"
+    "from core.projectSettings.constant import MEDIA_ROOT, DOCUMENT_ROOT\n\n"
 
 
 

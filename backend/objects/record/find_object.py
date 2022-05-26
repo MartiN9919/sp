@@ -28,8 +28,7 @@ def find_reliable_http(object_type, request, actual=False, group_id=0):
         except TypeError:
             synonyms_list = []
     request = request.split(' ') + synonyms_list
-    request = [word.replace('-', '<<') for word in
-               request]  # костыль, в последующем поменять настройки мантикоры, что бы индексировала '-'
+    request = [word.replace('-', '<<') for word in request]  # костыль, в последующем поменять настройки мантикоры, что бы индексировала '-'
     result = []
     for word in request:
         word = '@val ' + word if len(word) > 0 else word # искать только по значению
@@ -46,7 +45,7 @@ def find_reliable_http(object_type, request, actual=False, group_id=0):
                     else:
                         if item[2] < temp_item['sec']:
                             remove_list.append(item)
-        fetchall = [item[0] for item in fetchall if not item in remove_list]
+        fetchall = [item[0] for item in fetchall if item not in remove_list]
         result.append(list(dict.fromkeys(fetchall)))
     if object_type != SYS_KEY_CONSTANT.FILE_ID:
         return intercept_sort_list(result)

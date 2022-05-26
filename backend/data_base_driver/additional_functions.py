@@ -105,17 +105,17 @@ def intercept_sort_list(elements):
     for elem in elements[0]:
         temp = {'elem': elem, 'pos': []}
         for item in elements:
-            if not elem in item:
+            if elem not in item:
                 temp['pos'] = []
                 break
             else:
                 temp['pos'].append(item.index(elem))
         if len(temp['pos']) > 0:
-            temp['midle'] = sum(temp['pos']) / len(temp['pos'])
+            temp['middle'] = sum(temp['pos']) / len(temp['pos'])
             temp_list.append(temp)
         else:
             continue
-    temp_list.sort(key=lambda x: x['midle'])
+    temp_list.sort(key=lambda x: x['middle'])
     return [temp['elem'] for temp in temp_list]
 
 

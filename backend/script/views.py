@@ -3,7 +3,7 @@ import importlib
 import json
 import threading
 
-from core.settings import DOCUMENT_ROOT
+from core.projectSettings.constant import DOCUMENT_ROOT
 from data_base_driver.additional_functions import date_time_server_to_client
 from data_base_driver.script.get_script_info import get_script_title
 from data_base_driver.script.script_execute import execute_script_map

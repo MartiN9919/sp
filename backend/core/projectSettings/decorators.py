@@ -6,8 +6,9 @@ import logging
 import traceback
 
 from django.http import JsonResponse
-from core.projectSettings.logging_settings import PROJECT_LOG_REQUESTS, PROJECT_LOG_SCRIPT_ERROR
-from core.settings import MEDIA_ROOT
+from core.projectSettings.logging_settings import PROJECT_LOG_SCRIPT_ERROR
+from core.projectSettings.constant import MEDIA_ROOT
+
 from data_base_driver.constants.const_dat import DAT_OWNER
 from data_base_driver.input_output.valid_permission_manticore import check_object_permission
 from data_base_driver.sys_notifications.set_notifications_info import add_notification

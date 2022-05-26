@@ -160,7 +160,7 @@ def aj_relation(request):
 def aj_objects_relation(request):
     """
     Функция обработки запроса на получение связей между 2 объектами
-    @param request: запрос содержащий идентфификаторы 2-х объектов
+    @param request: запрос содержащий идентификаторы 2-х объектов
     @return: список объектов через которые могут быть связаны 2 начальных объекта
     """
     group_id = DAT_OWNER.DUMP.get_group(user_id=request.user.id)

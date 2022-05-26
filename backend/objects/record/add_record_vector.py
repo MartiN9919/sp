@@ -4,7 +4,7 @@ import shutil
 import threading
 import datetime
 
-from core.deploy_settings import MEDIA_ROOT
+from core.projectSettings.constant import MEDIA_ROOT
 from data_base_driver.additional_functions import date_client_to_server, date_time_client_to_server
 from data_base_driver.constants.const_dat import DAT_SYS_KEY
 from data_base_driver.input_output.input_output import io_get_obj
