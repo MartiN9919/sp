@@ -21,7 +21,7 @@
 
 # !!!!!!!! УСТАНОВКА НА СЕРВЕРЕ
 # запустить с терминала, получить код, ввести код, записать код в БД
-# перенести файл usernamesession в корневой каталог
+# перенести файл username.session в корневой каталог
 # запустить в режиме демона
 
 
@@ -73,16 +73,16 @@ def TGRandom(owner='loaderTG', worker='', varName='connect'):
 #    api_hash = '2e91b30aafd0db3d51e7db558259ac08'
 #    phone    = '+375259529767'
 #    code     = 58486
-#    host     = '192.168.30.100'    - не обязательно
-#    port     = 3128                - не обязательно
+#    host     = '192.168.30.100'    ## не обязательно
+#    port     = 3128                ## не обязательно
 #####################################################
 class TG_BD:
-      TABLE      = 'entities'
-      ID         = 'id'
-      HASH       = 'hash'
-      USERNAME   = 'username'
-      PHONE      = 'phone'
-      NAME       = 'name'
+    TABLE      = 'entities'
+    ID         = 'id'
+    HASH       = 'hash'
+    USERNAME   = 'username'
+    PHONE      = 'phone'
+    NAME       = 'name'
 
 class TG():
     recMaxCount  = 50                       # сколько читать с канала сообщений, 100
@@ -106,11 +106,13 @@ class TG():
             logger.info('authorize for phone: '+param['phone'])
             try:
                 self.client.send_code_request(param['phone'])
-                self.client.sign_in(param['phone'], input('Enter code ['+param['phone']+'] (and change BD): ')) #param['code'])
+                param['code'] = input('Enter code ['+param['phone']+'] (and change BD): ')
+                self.client.sign_in(param['phone'], param['code'])
+                print('Change [BD.var/loaderTG/connect/code] and restart app')
             except BaseException as e:
                 logger.error(str(e))
+            finally:
                 raise
-            #finally: self.sleep()
 
 
     #####################################################
@@ -220,14 +222,14 @@ class TG():
     #####################################################
     # ЧИТАТЬ ОБЪЕКТ ИЗ API
     #####################################################
-    # entity - id | 'name' | 't.me/name' | 'https://telegram.org/name'
+    # entity - id | 'name' | 't.me/name' | 'https://telegram.org/name' | '+34xxxxxxxxx' | 'telegram.me/joinchat/AAAAAEkk2WdoDrB4-Q8-gg'
     # return - Channel, User
     #####################################################
     def getGlobalEntity(self, entity):
         try:     obj = self.client.get_entity(entity)
         except:  obj = None
         finally:
-            for _ in range(0, 5): self.sleep()                                      # требуется увеличенная задержка из-за бана
+            for _ in range(3, 7): self.sleep()                                      # увеличенная задержка из-за бана (0, 5) - бан
         return   obj
 
     #####################################################
@@ -469,28 +471,34 @@ class TG():
     # Имя файла = 'obj_'+local_id.jpg
     #####################################################
     def getPhoto(self, author_id, api_obj):
-        funCalbackBig   = lambda file: self.client.download_profile_photo(entity=api_obj, file=file, download_big=True )
-        funCalbackSmall = lambda file: self.client.download_profile_photo(entity=api_obj, file=file, download_big=False)
+        funCalback = lambda file: self.client.download_profile_photo(entity=api_obj, file=file)
+        # funCalbackBig   = lambda file: self.client.download_profile_photo(entity=api_obj, file=file, download_big=True )
+        # funCalbackSmall = lambda file: self.client.download_profile_photo(entity=api_obj, file=file, download_big=False)
 
-        retNone = '', ''                                                                                            # инициализация
+        retNone = '' #, ''                                                                                            # инициализация
         if isinstance(api_obj, User):
             if not isinstance(api_obj.photo, UserProfilePhoto): return retNone
         elif isinstance(api_obj, Channel):
             if not isinstance(api_obj.photo, ChatPhoto): return retNone
         else: return retNone
 
-        fFile      = 'obj_'+str(api_obj.photo.photo_big.local_id)                                                   # загрузить большое фото
-        fPathBig   = self.getPathShort(author_id, fFile+'.jpg')
-        if not self.downloadFile(fPath=DAEMON_INI.FILE_BASE+fPathBig, fun=funCalbackBig): return retNone
+        fFile = 'obj_'+str(api_obj.photo.photo_id)
+        fPath = self.getPathShort(author_id, fFile+'.jpg')
+        if not self.downloadFile(fPath=DAEMON_INI.FILE_BASE+fPath, fun=funCalback): return retNone
+        return fPath
 
-        fFile      = 'obj_'+str(api_obj.photo.photo_small.local_id)                                                 # загрузить малое фото
-        fPathSmall = self.getPathShort(author_id, fFile+'.jpg')
-        if not self.downloadFile(fPath=DAEMON_INI.FILE_BASE+fPathSmall, fun=funCalbackSmall): return retNone
+        # fFile      = 'obj_'+str(api_obj.photo.photo_big.local_id)                                                   # загрузить большое фото
+        # fPathBig   = self.getPathShort(author_id, fFile+'.jpg')
+        # if not self.downloadFile(fPath=DAEMON_INI.FILE_BASE+fPathBig, fun=funCalbackBig): return retNone
 
-        fPathSmall2 = self.getPathShort(author_id, self.fileIcon)
-        os.rename(DAEMON_INI.FILE_BASE+fPathSmall, DAEMON_INI.FILE_BASE+fPathSmall2)                                # фото на иконку
+        # fFile      = 'obj_'+str(api_obj.photo.photo_small.local_id)                                                 # загрузить малое фото
+        # fPathSmall = self.getPathShort(author_id, fFile+'.jpg')
+        # if not self.downloadFile(fPath=DAEMON_INI.FILE_BASE+fPathSmall, fun=funCalbackSmall): return retNone
 
-        return fPathBig, fPathSmall2
+        # fPathSmall2 = self.getPathShort(author_id, self.fileIcon)
+        # os.rename(DAEMON_INI.FILE_BASE+fPathSmall, DAEMON_INI.FILE_BASE+fPathSmall2)                                # фото на иконку
+
+        # return fPathBig, fPathSmall2
 
 
 

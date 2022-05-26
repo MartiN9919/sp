@@ -187,17 +187,31 @@ def nodValGet():
 #   VAR
 #==================================================================================
 def varGet(owner, worker, name, valEmpty=None):
-        sql = "SELECT "+ VAR.VALUE + " "+ \
-              "FROM "  + VAR.TABLE + " "+ \
-              "WHERE " + \
-                  VAR.ENABLED + "=1 AND "+ \
-                  VAR.OWNER   + "='" + owner  +"' AND "+ \
-                  VAR.WORKER  + "='" + worker +"' AND "+ \
-                  VAR.NAME    + "='" + name +"';"
+        sql = \
+            "SELECT "+ VAR.VALUE + " "+ \
+            "FROM "  + VAR.TABLE + " "+ \
+            "WHERE " + \
+                VAR.ENABLED + "=1 AND "+ \
+                VAR.OWNER   + "='" + owner  +"' AND "+ \
+                VAR.WORKER  + "='" + worker +"' AND "+ \
+                VAR.NAME    + "='" + name +"';"
         val = bdSQL(sql, True, True)
         if len(val) != 1: return valEmpty
         else: return val[0][0]
 
+
+# def varSet(owner, worker, name, val):
+#         sql = \
+#             "UPDATE IGNORE " + \
+#                 VAR.TABLE + " " + \
+#             "SET " + \
+#                 VAR.VALUE + "=" + val + ", " + \
+#             "WHERE " + \
+#                 VAR.ENABLED + "=1 AND "+ \
+#                 VAR.OWNER   + "='" + owner  +"' AND "+ \
+#                 VAR.WORKER  + "='" + worker +"' AND "+ \
+#                 VAR.NAME    + "='" + name +"';"
+#         bdSQL(sql, True, False)
 
 
 #==================================================================================
