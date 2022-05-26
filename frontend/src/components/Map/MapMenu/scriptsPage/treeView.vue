@@ -4,7 +4,7 @@
     return-object open-on-click activatable dense active-class="" color=""
   >
     <template v-slot:label="{ item, open }">
-      <custom-tooltip :body-text="item.hint" bottom>
+      <custom-tooltip :description="item.hint" is-description bottom>
         <template v-slot:activator="{ on }">
           <div v-on="on">
             <v-icon :id="iconId(item.id)" :color="colorIcon(item)">{{ typeIcon(item, open) }}</v-icon>
@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import CustomTooltip from "@/components/WebsiteShell/CustomComponents/customTooltip"
+import CustomTooltip from "@/components/WebsiteShell/CustomComponents/Tooltip/customTooltip"
 import _ from 'lodash'
 
 function sleep (time) {

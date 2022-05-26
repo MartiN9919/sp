@@ -2,16 +2,27 @@
   <tr>
     <td class="text-h6">{{param.baseParam.title}}</td>
     <td class="text-end">
-      <dossier-value
-        v-for="(value, index) in values"
-        :key="index"
-        :value="value"
-        :rec-id="recId"
-        :object-id="objectId"
-        :title="title"
-        :type="getParamType"
-        :document="value.doc"
-      />
+      <custom-tooltip
+          v-for="(value, index) in values"
+          :key="index"
+          :value="value.value"
+          :type="getParamType"
+          nudge-right="20"
+          right
+      >
+        <template v-slot:activator="{ on }">
+          <div v-on="on">
+            <dossier-value
+              :value="value"
+              :rec-id="recId"
+              :object-id="objectId"
+              :title="title"
+              :type="getParamType"
+              :document="value.doc"
+            />
+          </div>
+        </template>
+      </custom-tooltip>
       <span v-if="paramsLength > 1" @click="showOldValues = !showOldValues" class="old-values">
         {{ showOldValues ? 'Скрыть' :'Старые значения' }}
       </span>
@@ -23,10 +34,11 @@
 import GeometryParam from "@/components/WebsiteShell/CustomComponents/Dossier/geometryParam"
 import FileParam from "@/components/WebsiteShell/CustomComponents/Dossier/fileParam"
 import DossierValue from "@/components/WebsiteShell/CustomComponents/Dossier/dossierValue";
+import CustomTooltip from "@/components/WebsiteShell/CustomComponents/Tooltip/customTooltip";
 
 export default {
   name: "dossierParam",
-  components: {DossierValue, FileParam, GeometryParam},
+  components: {CustomTooltip, DossierValue, FileParam, GeometryParam},
   props: {
     param: Object,
     recId: Number,

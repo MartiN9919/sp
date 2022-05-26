@@ -28,8 +28,8 @@
           <v-row no-gutters class="pa-1 overflow-y-auto">
             <chipAnalytics
               v-for="(analytics, key) in analysts"
-              :analytics="analytics"
               :key="analytics.refresh + key"
+              :analytics="analytics"
               :active="selectedTemplate.activeAnalysts.includes(analytics)"
               :selectedTreeViewItem="selectedItem"
               @disabled="disabledAnalysts"
@@ -42,21 +42,23 @@
           <v-divider v-if="'id' in selectedItem"></v-divider>
 
           <v-scroll-y-transition mode="out-in">
-            <v-form
-                ref="form"
-                v-if="'id' in selectedItem"
+            <div
+                v-if="selectedItem.hasOwnProperty('id')"
                 :key="selectedItem.refresh"
-                class="px-2 py-1 overflow-y-auto"
-                onSubmit="return false;"
+                class="px-2 pb-1 overflow-y-auto"
             >
               <custom-tooltip
                   v-for="(v, key) in selectedItem.variables"
                   :key="selectedItem.id + key"
-                  :body-text="v.hint"
-                  bottom
+                  :description="v.hint"
+                  :value="v.value"
+                  :type="v.type"
+                  is-description
+                  nudge-right="20"
+                  right
               >
                 <template v-slot:activator="{ on }">
-                  <div v-on="on" class="pt-1">
+                  <div v-on="on" class="pt-2">
                     <responsive-input-form
                       v-model="v.value"
                       :input-type="v.type"
@@ -67,7 +69,7 @@
                   </div>
                 </template>
               </custom-tooltip>
-            </v-form>
+            </div>
           </v-scroll-y-transition>
         </div>
       </div>
@@ -83,7 +85,7 @@ import CreatorTreeView from '@/components/Map/MapMenu/Mixins/CreatorTreeView'
 import ExecutorScripts from '@/components/Map/MapMenu/Mixins/ExecutorScripts'
 import SelectedScriptFormatter from '@/components/Map/MapMenu/Mixins/SelectedScriptFormatter'
 import ResponsiveInputForm from '@/components/WebsiteShell/CustomComponents/responsiveInputForm'
-import CustomTooltip from "@/components/WebsiteShell/CustomComponents/customTooltip"
+import CustomTooltip from "@/components/WebsiteShell/CustomComponents/Tooltip/customTooltip"
 import SplitPanel from "@/components/WebsiteShell/CustomComponents/splitPanel"
 import { MAP_CONST } from '@/components/Map/Leaflet/Lib/Const'
 import { mapActions, mapGetters } from 'vuex'

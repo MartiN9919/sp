@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import CustomTooltip from "@/components/WebsiteShell/CustomComponents/customTooltip"
+import CustomTooltip from "@/components/WebsiteShell/CustomComponents/Tooltip/customTooltip"
 import {mapGetters} from "vuex"
 
 export default {

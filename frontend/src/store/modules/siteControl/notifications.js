@@ -101,9 +101,9 @@ class Notification {
 
   getDateTimeNow() {
     let m = new Date();
-    return m.getFullYear() + "-" +
+    return ("0" + m.getDate()).slice(-2) + "-" +
       ("0" + (m.getMonth()+1)).slice(-2) + "-" +
-      ("0" + m.getDate()).slice(-2) + " " +
+      m.getFullYear() + " " +
       ("0" + m.getHours()).slice(-2) + ":" +
       ("0" + m.getMinutes()).slice(-2) + ":" +
       ("0" + m.getSeconds()).slice(-2)

@@ -4,9 +4,9 @@
       v-model="value"
       :search-input.sync="searchString"
       no-filter
-      @keyup.enter="search"
+      @keydown.enter="search"
       v-bind="$attrs"
-      :items="findObjects || []"
+      :items="findObjects"
       :class="bodyInputClasses"
       :placeholder="$attrs.placeholder || 'Выберите объект'"
       dense
@@ -93,6 +93,7 @@ name: "searchInput",
   methods: {
     ...mapActions(['simpleFindObject']),
     search() {
+      console.log('search')
       this.simpleFindObject({objectId: this.selectorObject, searchRequest: this.searchString})
       .then(response => {
         this.findObjects = response.data.map(i => {
