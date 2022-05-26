@@ -5,14 +5,14 @@ services:
     restart: always
     image: saphir2.4
     volumes:
-      - /devstorage:/devstorage
+      - /deploy_storage:/deploy_storage
     expose:
       - 8000
   nginx:
     restart: always
     image: saphir_nginx
     volumes:
-      - /devstorage:/devstorage
+      - /deploy_storage:/deploy_storage
     ports:
       - "80:80"
       - "443:443"

@@ -3,7 +3,7 @@ import re
 from docx import Document
 from docxtpl import DocxTemplate, InlineImage
 
-from core.settings import DOCUMENT_ROOT, TEMPLATE_ROOT, MEDIA_ROOT
+from core.projectSettings.constant import DOCUMENT_ROOT, TEMPLATE_ROOT, MEDIA_ROOT
 from objects.record.get_record import get_object_record_by_id_http, get_record_title
 from data_base_driver.sys_key.get_key_dump import get_key_by_id
 from objects.relations.get_rel import get_object_relations
