@@ -1,9 +1,8 @@
-from core.projectSettings.decorators import request_log, login_check, request_wrap
+from core.projectSettings.decorators import login_check, request_wrap
 from data_base_driver.sys_reports.get_files_info import get_reports, check_progress
 
 
 @login_check
-@request_log
 @request_wrap
 def aj_reports_list(request):
     """
@@ -19,7 +18,6 @@ def aj_reports_list(request):
 
 
 @login_check
-@request_log
 @request_wrap
 def aj_check_progress(request):
     in_progress_list = [int(item) for item in request.GET.getlist('list[]')]

@@ -2,7 +2,7 @@
   <v-row no-gutters class="menu">
     <v-list :color="$CONST.APP.COLOR_OBJ" :width="$CONST.APP.TOOL_MENU.WIDTH" height="100%" dark dense>
       <v-list-item-group v-model="activeItem">
-        <custom-tooltip v-for="tool in items" :key="tool.name" :body-text="tool.description" right>
+        <custom-tooltip v-for="tool in items" :key="tool.name" :description="tool.description" right>
           <template v-slot:activator="{ on }">
             <v-list-item v-on="on" :value="tool.name">
               <v-list-item-content>
@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import CustomTooltip from "@/components/WebsiteShell/CustomComponents/customTooltip"
+import CustomTooltip from "@/components/WebsiteShell/CustomComponents/Tooltip/customTooltip"
 import {mapActions, mapGetters} from "vuex"
 import router from '@/router'
 

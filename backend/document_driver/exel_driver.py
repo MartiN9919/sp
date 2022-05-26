@@ -3,7 +3,7 @@ import re
 from openpyxl import load_workbook
 from openpyxl.styles import Alignment
 
-from core.settings import DOCUMENT_ROOT, TEMPLATE_ROOT
+from core.projectSettings.constant import DOCUMENT_ROOT, TEMPLATE_ROOT
 
 
 def insert_list(works_sheet, mode, start_cell, data):

@@ -4,9 +4,11 @@
       <custom-tooltip
           v-for="(item, key) in values"
           :key="key"
-          :body-text="item.value"
+          :value="item.value"
+          :type="typeRecord"
           :settings="settings"
-          bottom
+          nudge-right="20"
+          right
       >
         <template v-slot:activator="{ on }">
           <tr v-on="on">
@@ -22,7 +24,7 @@
 
 <script>
 import GeometryParam from "@/components/WebsiteShell/CustomComponents/Dossier/geometryParam";
-import CustomTooltip from "@/components/WebsiteShell/CustomComponents/customTooltip";
+import CustomTooltip from "@/components/WebsiteShell/CustomComponents/Tooltip/customTooltip";
 import Info from "@/components/Graph/GraphMenu/Create/Record/Cells/Info";
 import Document from "@/components/Graph/GraphMenu/Create/Record/Cells/Document";
 import Date from "@/components/Graph/GraphMenu/Create/Record/Cells/Date";
@@ -58,7 +60,6 @@ table {
   cursor: default;
 }
 table >>> span, table >>> a {
-  color: #555555;
   font-size: 0.8em;
   text-decoration: none;
 }

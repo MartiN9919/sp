@@ -1,6 +1,6 @@
 FROM python:3.8
 ENV MODE='deploy'
-RUN mkdir /devstorage
+RUN mkdir /deploy_storage
 RUN mkdir /log
 RUN mkdir /web_django
 WORKDIR /web_django

@@ -1,6 +1,6 @@
 <template>
   <td class="text-break col-info">
-    <a tabindex="-1" v-if="isFile" :href="downloadLink">{{ value }}</a>
+    <a tabindex="-1" v-if="isFile" :href="downloadLink" class="teal--text">{{ value }}</a>
     <geometry-param v-else-if="isGeometry" :value="value" :title="title">
       {{ geometryTextValue }}
     </geometry-param>

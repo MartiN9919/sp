@@ -11,31 +11,42 @@
     </template>
 
     <template v-slot:secondPane>
-      <v-divider></v-divider>
       <v-scroll-y-transition mode="out-in">
-        <v-form ref="form" v-if="'id' in selectedItem" :key="selectedItem.refresh" class="px-2" onSubmit="return false;">
-          <custom-tooltip v-for="v in selectedItem.variables" :key="v.id" :body-text="v.hint" bottom>
+        <div
+            v-if="selectedItem.hasOwnProperty('id')"
+            :key="selectedItem.refresh"
+            class="px-2 pb-1 overflow-y-auto h-100"
+        >
+          <custom-tooltip
+              v-for="(v, key) in selectedItem.variables"
+              :key="selectedItem.id + key"
+              :description="v.hint"
+              :value="v.value"
+              :type="v.type"
+              nudge-right="20"
+              right
+          >
             <template v-slot:activator="{ on }">
               <div v-on="on" class="pt-2">
                 <responsive-input-form
-                  v-model="v.value"
-                  :input-type="v.type"
-                  :label="v.title"
-                  :list-rules="v.necessary ? ['notEmpty'] : []"
-                  clearable
+                    v-model="v.value"
+                    :input-type="v.type"
+                    :label="v.title"
+                    :list-rules="v.necessary ? ['notEmpty'] : []"
+                    clearable
                 ></responsive-input-form>
               </div>
             </template>
           </custom-tooltip>
           <div class="py-2 d-flex flex-nowrap flex-row justify-center">
             <v-btn
-              @click="executeScript(selectedItem)"
-              outlined color="#00796B"
+                @click="executeScript(selectedItem)"
+                outlined color="#00796B"
             >Выполнить
             </v-btn>
           </div>
-        </v-form>
-        </v-scroll-y-transition>
+        </div>
+      </v-scroll-y-transition>
     </template>
   </split-panel>
 </template>
@@ -48,7 +59,7 @@ import CreatorTreeView from '@/components/Map/MapMenu/Mixins/CreatorTreeView'
 import ExecutorScripts from '@/components/Map/MapMenu/Mixins/ExecutorScripts'
 import SelectedScriptFormatter from '@/components/Map/MapMenu/Mixins/SelectedScriptFormatter'
 import SplitPanel from "@/components/WebsiteShell/CustomComponents/splitPanel"
-import CustomTooltip from "@/components/WebsiteShell/CustomComponents/customTooltip"
+import CustomTooltip from "@/components/WebsiteShell/CustomComponents/Tooltip/customTooltip"
 
 export default {
   name: 'reportScriptMenu',

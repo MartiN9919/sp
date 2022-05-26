@@ -1,35 +1,47 @@
 <template>
-  <responsive-input-form
-    v-model="param.value"
-    :inputType="type"
-    :listRules="['notEmpty']"
-    :readonly="readOnly"
-    deletable
-    class="pt-1"
-    :class="inputClass"
-    @deletable="$emit('deletable')"
+  <custom-tooltip
+      :description="base.hint"
+      :value="param.value"
+      :type="base.type"
+      nudge-right="20"
+      right
   >
-    <template v-slot:message>
-      <drop-down-menu
-        max-width="300"
-        min-width="300"
-        nudge-left="300"
-        offset-x
-        offset-y
-        eager
-        :close-on-content-click="false"
-      >
-        <template v-slot:activator="{ on }">
-          <div v-on="on" class="v-messages text-no-wrap selector-date-time">
-            {{param.date}}
-          </div>
-        </template>
-        <template v-slot:body>
-          <select-date-time v-model="param.date"/>
-        </template>
-      </drop-down-menu>
+    <template v-slot:activator="{ on }">
+      <div v-on="on" class="w-100">
+        <responsive-input-form
+          v-model="param.value"
+          :inputType="base.type"
+          :listRules="['notEmpty']"
+          :readonly="readOnly"
+          deletable
+          class="pt-1"
+          :class="inputClass"
+          @deletable="$emit('deletable')"
+        >
+          <template v-slot:message>
+            <drop-down-menu
+              max-width="300"
+              min-width="300"
+              nudge-left="300"
+              offset-x
+              offset-y
+              eager
+              :close-on-content-click="false"
+            >
+              <template v-slot:activator="{ on }">
+                <div v-on="on" class="v-messages text-no-wrap selector-date-time">
+                  {{param.date}}
+                </div>
+              </template>
+              <template v-slot:body>
+                <select-date-time v-model="param.date"/>
+              </template>
+            </drop-down-menu>
+          </template>
+        </responsive-input-form>
+      </div>
     </template>
-  </responsive-input-form>
+  </custom-tooltip>
 </template>
 
 <script>
@@ -37,13 +49,14 @@ import ResponsiveInputForm from "@/components/WebsiteShell/CustomComponents/resp
 import DropDownMenu from "@/components/WebsiteShell/CustomComponents/dropDownMenu"
 import SelectDateTime from "@/components/WebsiteShell/CustomComponents/DateTimePickers/selectDateTime"
 import {mapGetters} from "vuex";
+import CustomTooltip from "@/components/WebsiteShell/CustomComponents/Tooltip/customTooltip";
 
 export default {
   name: "RecordInput",
-  components: {DropDownMenu, SelectDateTime, ResponsiveInputForm},
+  components: {CustomTooltip, DropDownMenu, SelectDateTime, ResponsiveInputForm},
   props: {
     param: Object,
-    type: Object,
+    base: Object,
     conflict: Boolean
   },
   computed: {

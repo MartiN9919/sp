@@ -1,6 +1,6 @@
 import os
 
-from core.deploy_settings import DEPLOY_SETTING
+from core.projectSettings.constant import DEPLOY_SETTING
 
 mode = os.environ.get('MODE')
 
