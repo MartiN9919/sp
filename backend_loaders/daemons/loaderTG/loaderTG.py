@@ -14,13 +14,14 @@
 
 # для запуска без демона
 from   daemonIni     import DAEMON_INI
-#if __name__ == "__main__":
-import sys
-sys.path.append('.')  #/home/web/prog/atlas/')
-sys.path.append('../../')
 
-import lib.funSys
-lib.funSys.setLogger(DAEMON_INI.FILE_LOG)
+if __name__ == "__main__":
+    import sys
+    sys.path.append('.')  #/home/web/prog/atlas/')
+    sys.path.append('../../')
+
+    import lib.funSys
+    lib.funSys.setLogger(DAEMON_INI.FILE_LOG)
 
 
 
@@ -60,6 +61,7 @@ class LoaderTG():
         logger.info('START!')
         try:
             self.tg = TGRandom(owner=self.VAR_OWNER, worker=DAEMON_INI.WORKER, varName='connect')
+            print(self.tg)
             if self.tg == None: raise ValueError('LoaderTG.__init__: error ini telegram api')
             self.tg.client.session.save_entities = True                                             # сохранять локально input entites
 

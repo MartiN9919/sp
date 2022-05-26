@@ -1,13 +1,13 @@
 class BD:
-      HOST         = '192.168.30.108' #'10.0.2.2' '192.168.30.108'
+      HOST         = '200.200.200.233'
       PORT         = 3306
-      USER         = 'root'
-      PASSWORD     = 'protokol13'
-      DB           = 'atlas'
+      USER         = 'dev'
+      PASSWORD     = '1'
+      DB           = 'vec_load'
       CHARSET      = 'utf8'
 
 class SPHINX:
-      HOST         = '192.168.30.109' #'10.0.2.2'  '192.168.30.109'
+      HOST         = '200.200.200.235'
       PORT         = 9306
       CHARSET      = 'utf8'
 
@@ -105,7 +105,7 @@ class ARC_DYNAMIC:
 # REL
 ###############################################################################
 class REL:
-      TABLE        = 'atlas.rel'
+      TABLE        = BD.DB+'.rel'
 
       ID           = 'id'
       CRC          = 'crc'
@@ -264,7 +264,7 @@ class LOADER_NOD:
       TS_CORRECT     = 'ts_correct'
       WORKER         = 'worker'
       ENABLED        = 'enabled'
-      VIP            = 'vip'
+      VIP            = 'vip'                    # признак присоединения к каналу, требующему подписки
       DESCRIPT       = 'descript'
       REFRESH        = 'refresh'
 
@@ -482,7 +482,7 @@ class BOT_TYPE:
 # REPORTS
 ###############################################################################
 class REP:
-      TABLE          = 'atlas.rep'
+      TABLE          = BD.DB+'.rep'
 
       ID             = 'id'
       REP_TYPE_ID    = 'rep_type_id'
@@ -491,7 +491,7 @@ class REP:
 
 
 class REP_TYPE:
-      TABLE          = 'atlas.rep_type'
+      TABLE          = BD.DB+'.rep_type'
 
       ID             = 'id'
       WORKER         = 'worker'
@@ -655,7 +655,7 @@ class ML_BOT:
 
 
 class ML_BOT_TYPE:
-      TABLE          = 'atlas.ml_bot_type'
+      TABLE          = BD.DB+'.ml_bot_type'
 
       ID             = 'id'
       NAM            = 'nam'
