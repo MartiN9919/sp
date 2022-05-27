@@ -1,9 +1,8 @@
 <template>
   <v-hover v-slot="{ hover }">
     <v-list-item
-        @mouseup="select"
-        @keyup.alt.enter="change"
-        @keyup.ctrl.enter="select"
+        @click.exact="select"
+        @keyup.ctrl.enter="change"
         link
         class="px-0 py-1"
     >
@@ -14,7 +13,7 @@
         {{object.title}}
       </v-list-item-subtitle>
       <v-list-item-action v-show="hover" class="flex-row ma-0 action-buttons">
-        <v-btn icon @click="change" tabindex="-1">
+        <v-btn icon @click.stop="change" tabindex="-1">
           <v-icon>mdi-pencil-outline</v-icon>
         </v-btn>
       </v-list-item-action>
