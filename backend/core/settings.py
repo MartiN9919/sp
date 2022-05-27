@@ -1,12 +1,12 @@
 from pathlib import Path
+from django.middleware.csrf import rotate_token
+
 from data_base_driver.constants.connect_db import VEC_DATA
+
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = '^7t+b0=(7#x)$7hqca+=9h1q+n40bwf*70gnxh$h#r($p!b=2e'
-
-from django.middleware.csrf import rotate_token
-
 
 DEBUG = True
 

@@ -1,15 +1,7 @@
 import datetime
 
-from data_base_driver.sys_key.get_key_dump import get_key_by_name, get_obj_id
-
-
-def get_document_date_format(date):
-    """
-    Функция для преобразования строки даты из формата 2020-01-01 в 01.01.2020
-    @param date: строка содержащая дату в формате 2020-01-01
-    @return: строка содержащая дату в формате 01.01.2020
-    """
-    return '.'.join(reversed(date.split('-')))
+from data_base_driver.sys_key.get_object_info import get_object_id
+from data_base_driver.sys_key.get_key_info import get_key_by_name
 
 
 def get_date_from_days_sec(days, sec, client=False):
@@ -48,21 +40,6 @@ def get_date_time_from_sec(sec, client=False):
     return get_date_from_days_sec(days, sec, client)
 
 
-def get_sorted_list(items):
-    """
-    Функция для сортировки списка по количеству вхождений элемента
-    @param items: список с числовыми элементами
-    @return: список отсортированный в порядке количества вхождений элементов
-    """
-    counter = {}
-    for item in items:
-        try:
-            counter[item] += 1
-        except KeyError:
-            counter[item] = 1
-    return [item[0] for item in sorted(counter.items(), key=lambda x: x[1], reverse=True)]
-
-
 def date_time_to_sec(date_time):
     """
     Функция для преобразования даты и времени в секунды
@@ -78,7 +55,7 @@ def str_to_sec(date_time_str):
 
 
 def date_client_to_server(date_str):
-    return '-'.join(list(reversed(date_str.split('.')))) if date_str else None
+    return '-'.join(reversed(date_str.split('.'))) if date_str else None
 
 
 def date_time_client_to_server(date_time_str):
@@ -86,37 +63,11 @@ def date_time_client_to_server(date_time_str):
 
 
 def date_server_to_client(date_str):
-    return '.'.join(list(reversed(date_str.split('-')))) if date_str else None
+    return '.'.join(reversed(date_str.split('-'))) if date_str else None
 
 
 def date_time_server_to_client(date_time_str, sep=' '):
     return date_server_to_client(date_time_str.split(' ')[0]) + sep + date_time_str.split(' ')[1] if date_time_str else None
-
-
-def intercept_sort_list(elements):
-    """
-    Функция для пересечения списков с сохранением сортировки
-    @param elements: список содержащий списки целых чисел
-    @return: список целых чисел встреченных во всех начальных списков с сохранением их сортировки
-    """
-    if len(elements) == 1:
-        return elements[0]
-    temp_list = []
-    for elem in elements[0]:
-        temp = {'elem': elem, 'pos': []}
-        for item in elements:
-            if elem not in item:
-                temp['pos'] = []
-                break
-            else:
-                temp['pos'].append(item.index(elem))
-        if len(temp['pos']) > 0:
-            temp['middle'] = sum(temp['pos']) / len(temp['pos'])
-            temp_list.append(temp)
-        else:
-            continue
-    temp_list.sort(key=lambda x: x['middle'])
-    return [temp['elem'] for temp in temp_list]
 
 
 def push_dict(dictionary, key, value):
@@ -159,7 +110,7 @@ def io_set_wrap(function):
     """
     def wrap(group_id, obj, data):
         try:
-            obj = get_obj_id(obj) if isinstance(obj, str) and not (obj.isdigit()) else int(obj)
+            obj = get_object_id(obj) if isinstance(obj, str) and not (obj.isdigit()) else int(obj)
             if obj != 1:
                 data = [(get_id_by_key(item[0]), item[1], item[2]) if item[0] != 'id' else (item[0], item[1])
                         for item in data]
@@ -169,8 +120,6 @@ def io_set_wrap(function):
         except Exception as e:
             raise e
 
-    wrap.__doc__ = function.__doc__
-    wrap.__name__ = function.__name__
     return wrap
 
 
@@ -181,13 +130,11 @@ def io_get_object_wrap(function):
     def wrap(group_id, object, keys, ids, ids_max_block, where_dop_row, time_interval):
         try:
             keys = [get_id_by_key(item) for item in keys]
-            object = get_obj_id(object) if isinstance(object, str) and not (object.isdigit()) else int(object)
+            object = get_object_id(object) if isinstance(object, str) and not (object.isdigit()) else int(object)
             return function(group_id, object, keys, ids, ids_max_block, where_dop_row, time_interval)
         except Exception as e:
             raise e
 
-    wrap.__doc__ = function.__doc__
-    wrap.__name__ = function.__name__
     return wrap
 
 
@@ -199,17 +146,15 @@ def io_get_rel_wrap(function):
         try:
             keys = [get_id_by_key(item) for item in keys]
             if obj_rel_1 and len(obj_rel_1) > 0:
-                obj_rel_1[0] = get_obj_id(obj_rel_1[0]) if isinstance(obj_rel_1[0], str) and not (
+                obj_rel_1[0] = get_object_id(obj_rel_1[0]) if isinstance(obj_rel_1[0], str) and not (
                     obj_rel_1[0].isdigit()) else int(obj_rel_1[0])
             if obj_rel_2 and len(obj_rel_2) > 0:
-                obj_rel_2[0] = get_obj_id(obj_rel_2[0]) if isinstance(obj_rel_2[0], str) and not (
+                obj_rel_2[0] = get_object_id(obj_rel_2[0]) if isinstance(obj_rel_2[0], str) and not (
                     obj_rel_2[0].isdigit()) else int(obj_rel_2[0])
             return function(group_id, keys, obj_rel_1, obj_rel_2, val, time_interval, is_unique, rec_id)
         except Exception as e:
             raise e
 
-    wrap.__doc__ = function.__doc__
-    wrap.__name__ = function.__name__
     return wrap
 
 

@@ -16,7 +16,7 @@ from files.additional_function import get_object_file_dir, get_object_file_path
 from objects.record.find_object import find_duplicate_objects, find_same_objects
 from objects.record.get_record import get_object_record_by_id_http
 from data_base_driver.input_output.input_output import io_set
-from data_base_driver.sys_key.get_key_dump import get_key_by_id
+from data_base_driver.sys_key.get_key_info import get_key_by_id
 from data_base_driver.sys_key.get_list import get_item_list_value
 from data_base_driver.sys_key.get_object_info import get_object_new_rec_id
 from document_driver.document_reader import get_document_text

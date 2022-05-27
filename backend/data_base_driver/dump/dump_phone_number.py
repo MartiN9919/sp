@@ -1,7 +1,7 @@
 import threading
 import time
 
-from data_base_driver.connect.connect_mysql import DB_sql
+from data_base_driver.connect.connect_mysql import db_sql
 from data_base_driver.constants.const_dat import DAT_SYS_PHONE_NUMBER_FORMAT
 from data_base_driver.dump.transform_functions import tuple_to_dict_many
 
@@ -17,8 +17,7 @@ class DUMP_PHONE_NUMBER_FORMAT:
     def _refresh_(self, force=False):
         if not force and (self.refreshTime > time.time()): return
         with self._lock:
-            db = DB_sql()
-            dat = db.execute(
+            dat = db_sql(
                 sql=
                 "SELECT " +
                 DAT_SYS_PHONE_NUMBER_FORMAT.ID + ", " +

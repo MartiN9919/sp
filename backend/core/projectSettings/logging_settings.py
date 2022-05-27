@@ -1,47 +1,49 @@
 import os
+
+from core.projectSettings.constant import LOG_ROOT
 from core.settings import BASE_DIR
 import logging.handlers
 
 
-LOG_DIR = '/log/' if os.path.exists('/log/') else str(BASE_DIR)+'/log/'
+LOG_DIR = LOG_ROOT if os.path.exists(LOG_ROOT) else str(BASE_DIR)+'/log/'
 
-PROJECT_LOG_MAIN     = 'MAIN'              # логгер главный
-PROJECT_LOG_USERS    = 'USERS'             # логгер пользователи
+PROJECT_LOG_MAIN = 'MAIN'              # логгер главный
+PROJECT_LOG_USERS = 'USERS'             # логгер пользователи
 PROJECT_LOG_REQUESTS = 'REQUESTS'          # логгер запросы
 PROJECT_LOG_SCRIPT_ERROR = 'SCRIPT_ERROR'          # логгер запросы
 
-if not os.path.exists(LOG_DIR): os.makedirs(LOG_DIR)
+if not os.path.exists(LOG_DIR):
+    os.makedirs(LOG_DIR)
 
 PROJECT_ID = 'saphir'
 
-logger = {}
 
-handler = logging.handlers.TimedRotatingFileHandler(LOG_DIR+PROJECT_ID+'.log', when='midnight', interval=1, backupCount=5)
-handler.setFormatter(logging.Formatter(fmt='%(asctime)s %(levelname)s %(module)s:%(lineno)d %(message)s', datefmt='%Y-%m-%d, %H:%M:%S'))  # %Y-%m-%d
-handler.setLevel(logging.INFO)
-logger['root'] = logging.getLogger()
-logger['root'].setLevel(logging.INFO)
-logger['root'].addHandler(handler)
+root_handler = logging.handlers.TimedRotatingFileHandler(LOG_DIR+PROJECT_ID+'_other_error.log', when='midnight', interval=1, backupCount=5)
+root_handler.setFormatter(logging.Formatter(fmt='%(asctime)s %(levelname)s %(module)s:%(lineno)d %(message)s', datefmt='%Y-%m-%d, %H:%M:%S'))  # %Y-%m-%d
+root_handler.setLevel(logging.WARNING)
+root_logger = logging.getLogger()
+root_logger.setLevel(logging.WARNING)
+root_logger.addHandler(root_handler)
 
-handler = logging.handlers.TimedRotatingFileHandler(LOG_DIR+PROJECT_ID+'_main.log', when='midnight', interval=1, backupCount=10)
-handler.setFormatter(logging.Formatter(fmt='%(asctime)s %(levelname)s %(module)s:%(lineno)d %(message)s', datefmt='%Y-%m-%d, %H:%M:%S'))  # %Y-%m-%d
-handler.setLevel(logging.INFO)
-logger['main'] = logging.getLogger(PROJECT_LOG_MAIN)
-logger['main'].setLevel(logging.INFO)
-logger['main'].addHandler(handler)
+main_handler = logging.handlers.TimedRotatingFileHandler(LOG_DIR+PROJECT_ID+'_main.log', when='midnight', interval=1, backupCount=10)
+main_handler.setFormatter(logging.Formatter(fmt='%(asctime)s %(levelname)s %(module)s:%(lineno)d %(message)s', datefmt='%Y-%m-%d, %H:%M:%S'))  # %Y-%m-%d
+main_handler.setLevel(logging.INFO)
+main_logger = logging.getLogger(PROJECT_LOG_MAIN)
+main_logger.setLevel(logging.INFO)
+main_logger.addHandler(main_handler)
 
-handler = logging.handlers.TimedRotatingFileHandler(LOG_DIR+PROJECT_ID+'_requests.log', when='midnight', interval=1, backupCount=30)
-handler.setFormatter(logging.Formatter(fmt='%(asctime)s %(message)s', datefmt='%Y-%m-%d, %H:%M:%S'))  # %Y-%m-%d
-handler.setLevel(logging.INFO)
-logger['requests'] = logging.getLogger(PROJECT_LOG_REQUESTS)
-logger['requests'].setLevel(logging.INFO)
-logger['requests'].addHandler(handler)
+request_handler = logging.handlers.TimedRotatingFileHandler(LOG_DIR+PROJECT_ID+'_requests.log', when='midnight', interval=1, backupCount=30)
+request_handler.setFormatter(logging.Formatter(fmt='%(asctime)s %(message)s', datefmt='%Y-%m-%d, %H:%M:%S'))  # %Y-%m-%d
+request_handler.setLevel(logging.INFO)
+request_logger = logging.getLogger(PROJECT_LOG_REQUESTS)
+request_logger.setLevel(logging.INFO)
+request_logger.addHandler(request_handler)
 
-handler = logging.handlers.TimedRotatingFileHandler(LOG_DIR+PROJECT_ID+'_script_error.log', when='midnight', interval=1, backupCount=30)
-handler.setFormatter(logging.Formatter(fmt='%(asctime)s %(message)s', datefmt='%Y-%m-%d, %H:%M:%S'))  # %Y-%m-%d
-handler.setLevel(logging.INFO)
-logger['script_error'] = logging.getLogger(PROJECT_LOG_SCRIPT_ERROR)
-logger['script_error'].setLevel(logging.INFO)
-logger['script_error'].addHandler(handler)
+script_handler = logging.handlers.TimedRotatingFileHandler(LOG_DIR+PROJECT_ID+'_script_error.log', when='midnight', interval=1, backupCount=30)
+script_handler.setFormatter(logging.Formatter(fmt='%(asctime)s %(message)s', datefmt='%Y-%m-%d, %H:%M:%S'))  # %Y-%m-%d
+script_handler.setLevel(logging.INFO)
+script_error_logger = logging.getLogger(PROJECT_LOG_SCRIPT_ERROR)
+script_error_logger.setLevel(logging.INFO)
+script_error_logger.addHandler(script_handler)
 
-logger['main'].info('Start')
+main_logger.info('Start')

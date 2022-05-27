@@ -3,15 +3,14 @@ import json
 from core.projectSettings.decorators import login_check, request_wrap, request_get, write_permission, \
     request_post
 from data_base_driver.constants.const_dat import DAT_OWNER
-from data_base_driver.constants.const_key import SYS_KEY_CONSTANT
 from data_base_driver.constants.const_map_tiles import MAP_TILES
 from objects.record.get_record import get_object_record_by_id_http
 from data_base_driver.input_output.io_geo import get_geometry_search, feature_collection_by_geometry
 from data_base_driver.osm.osm_lib import osm_search, osm_fc
 from objects.record.add_record import add_data, add_geometry, add_data_from_form
 from objects.record.get_record import get_keys
-from data_base_driver.sys_key.get_list import get_list_by_top_id, get_lists
-from data_base_driver.sys_key.get_object_info import obj_list
+from data_base_driver.sys_key.get_list import get_lists
+from data_base_driver.sys_key.get_object_info import objects_list
 from objects.record.search import search
 from objects.relations.add_rel import add_rel
 from objects.relations.find_rel import search_relations
@@ -28,19 +27,7 @@ def aj_object_type_list(request):
     @return: json содержащих информации по ключу data в формате:
     [{id, name, title, title_single, icon, descript},...{}]
     """
-    return obj_list()
-
-
-@login_check
-@request_wrap
-@request_get
-def aj_list_icons(request):
-    """
-    Функция для обработки запроса на получения списка иконок
-    @param request: GET запрос на получение списка иконок
-    @return: JSON со списком иконок
-    """
-    return get_list_by_top_id(SYS_KEY_CONSTANT.LIST_ICONS_ID)
+    return objects_list()
 
 
 @login_check
@@ -71,7 +58,7 @@ def aj_list_classifier(request):
 @login_check
 @request_wrap
 @request_get
-def aj_list_rels(request):
+def aj_list_relations(request):
     """
     Функция API для получения списка связей между двумя объектами
     @param request: запрос на получение списка, может быть только GET и должен содержать в url object_1_id и object_2_id
@@ -239,8 +226,7 @@ def aj_geometry_search(request):
     @param request: text - поисковая строка
     @return:  json дерево в формате: [{id,name,icon,child:[{},{},...,{}]},{},...,{}]
     """
-    group_id = DAT_OWNER.DUMP.get_group(user_id=request.user.id)
-    return get_geometry_search(group_id=group_id, text=request.GET.get('text', ''))
+    return get_geometry_search(text=request.GET.get('text', ''))
 
 
 @login_check

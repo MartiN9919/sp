@@ -11,10 +11,12 @@ def osm_search(text, geometry=False):
     """
     Поиск osm-записей
     @param text: поисковая строка
+    @param geometry: флаг включения в результат координат
     @return: json [{id,name,address,},...]
     """
     data = text.strip()
-    if data == '': return []
+    if data == '':
+        return []
     data = json.dumps({
         'index': 'osm_polygon',
         'query': {'query_string': data, },

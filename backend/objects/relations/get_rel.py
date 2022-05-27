@@ -1,9 +1,8 @@
 from multiprocessing import Process, Manager
-from typing import List
 
 from data_base_driver.additional_functions import get_date_time_from_sec, date_time_server_to_client
 from data_base_driver.input_output.input_output import io_get_rel
-from data_base_driver.sys_key.get_key_dump import get_relation_keys
+from data_base_driver.sys_key.get_object_info import get_relations
 from data_base_driver.sys_key.get_list import get_item_list_value
 from objects.record.get_record import get_object_record_by_id_http
 from objects.relations.additional_functions import check_in_list, get_path_to_object
@@ -179,7 +178,7 @@ def get_relations_list():
     @return: список в формате [{id,title,hint,list},...,{}]
     """
     result = []
-    for item in get_relation_keys():
+    for item in get_relations():
         list_id = None
         if item.get('list_id'):
             relation_type = {'title': 'list', 'value': item.get('list_id')}

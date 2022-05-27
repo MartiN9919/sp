@@ -83,8 +83,7 @@ def script_list(parent_id, group_id, script_type):
                 "variables": variables_result,
                 "hint": row[3],
             })
-    response_with_scripts = sorted(response_with_scripts, key=lambda k: k['name'].lower())
-    response_with_scripts.sort(key=sort_by_type)
+    response_with_scripts = sorted(sorted(response_with_scripts, key=lambda k: k['name'].lower()), key=sort_by_type)
     return response_with_scripts
 
 

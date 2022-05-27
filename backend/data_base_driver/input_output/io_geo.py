@@ -2,38 +2,38 @@ import json
 import geojson
 import requests
 
-from data_base_driver.constants.const_dat import DAT_SYS_OBJ, DAT_SYS_KEY, DAT_OBJ_ROW, DAT_OBJ_COL
+from data_base_driver.constants.const_dat import DAT_SYS_KEY, DAT_OBJ_ROW, DAT_OBJ_COL
 from data_base_driver.constants.const_fulltextsearch import FullTextSearch
 from data_base_driver.constants.const_geocoder import Geocoder
 from data_base_driver.constants.const_key import SYS_KEY_CONSTANT
 from data_base_driver.input_output.input_output import io_get_obj, io_get_rel
-from data_base_driver.input_output.input_output_mysql import io_get_obj_mysql_tuple, io_get_rel_mysql_generator
 from data_base_driver.input_output.valid_permission_manticore import check_object_permission
 from data_base_driver.sys_key.get_list import get_item_list_value
-from data_base_driver.sys_key.get_object_info import rel_rec_to_el, el_to_rec_id
 from data_base_driver.additional_functions import get_date_time_from_sec
-from data_base_driver.sys_key.get_key_dump import get_key_by_id
+from data_base_driver.sys_key.get_key_info import get_key_by_id
 
 
-def feature_collection_by_geometry(group_id, object_type, rec_id, keys, time_interval):
+def feature_collection_by_geometry(group_id, object_id, rec_id, keys, time_interval):
     """
     Функция для получения feature collection в формате geojson для конкретных экземпляров геометрий
     @param group_id: идентификатор группы пользователя
-    @param object_type: идентификатор типа объекта (25 - точка, 30 - геометрия)
+    @param object_id: идентификатор типа объекта (25 - точка, 30 - геометрия)
     @param rec_id: список идентификаторов объектов
     @param keys: список идентификаторов ключей классификатора которые необходимо вынести в properties
     @param time_interval: интервал времени в который должны были быть созданы искомые записи
     @return: feature collection содержащая информацию о искомых геометриях
     """
     from data_base_driver.sys_key.get_list import get_item_list_value
-    if object_type == SYS_KEY_CONSTANT.POINT_ID:
+    if object_id == SYS_KEY_CONSTANT.POINT_ID:
         keys += [SYS_KEY_CONSTANT.POINT_CLASSIFIER_ID, SYS_KEY_CONSTANT.POINT_TYPE_CLASSIFIER_ID,
                  SYS_KEY_CONSTANT.BORDER_POINT]
-    elif object_type == SYS_KEY_CONSTANT.GEOMETRY_ID:
+    elif object_id == SYS_KEY_CONSTANT.GEOMETRY_ID:
         keys += [SYS_KEY_CONSTANT.GEOMETRY_CLASSIFIER_ID, SYS_KEY_CONSTANT.GEOMETRY_TYPE_CLASSIFIER_ID]
+    else:
+        raise Exception(1, 'Неверный тип объекта')
     if len(rec_id) == 0:
         return geojson.FeatureCollection(features=[])
-    records = io_get_obj(group_id, object_type, keys, rec_id, 1000, '', time_interval)
+    records = io_get_obj(group_id, object_id, keys, rec_id, 1000, '', time_interval)
     objects = {}
     for record in records:
         if not objects.get(record[DAT_OBJ_ROW.ID]):
@@ -76,21 +76,21 @@ def feature_collection_by_geometry(group_id, object_type, rec_id, keys, time_int
                                                                   DAT_OBJ_ROW.VAL: record[DAT_OBJ_ROW.VAL],
                                                                   DAT_OBJ_ROW.SEC: record[DAT_OBJ_ROW.SEC]})
     temp = []
-    for object in objects:
-        if objects[object].get('geometry'):
-            geometry = json.loads(objects[object].get('geometry')[0]['val'])
+    for item in objects:
+        if objects[item].get('geometry'):
+            geometry = json.loads(objects[item].get('geometry')[0]['val'])
             params = {'hint': ''}
-            for param in objects[object].get('params', []):
+            for param in objects[item].get('params', []):
                 params[get_key_by_id(param[DAT_OBJ_ROW.KEY_ID])[DAT_SYS_KEY.NAME]] = \
                     [param[DAT_OBJ_ROW.VAL], get_date_time_from_sec(param[DAT_OBJ_ROW.SEC])]
                 params['hint'] += param[DAT_OBJ_ROW.VAL]
-            if objects[object].get('type'):
-                params['class'] = objects[object]['type'][0]['val']
-            if objects[object].get('text'):
-                params['text'] = objects[object]['text'][0]['val']
+            if objects[item].get('type'):
+                params['class'] = objects[item]['type'][0]['val']
+            if objects[item].get('text'):
+                params['text'] = objects[item]['text'][0]['val']
             feature = geojson.Feature(geometry=geometry, properties=params)
-            feature['rec_id'] = object
-            feature['obj_id'] = object_type
+            feature['rec_id'] = item
+            feature['obj_id'] = object_id
             temp.append(feature)
     return geojson.FeatureCollection(temp)
 
@@ -99,27 +99,27 @@ def get_geometries(group_id, rec_id):
     return feature_collection_by_geometry(group_id, 30, [rec_id], [], {})['features'][0]['geometry']['geometries']
 
 
-def relations_to_geometry_id(group_id, geometry_type, object_type, rec_id, keys_relation, time_interval):
+def relations_to_geometry_id(group_id, geometry_type, object_id, rec_id, keys_relation, time_interval):
     """
     Функция для преобразования связей в идентификаторы геометрий
     @param group_id: идентификатор группы пользователя
     @param geometry_type: идентификатор типа геометрии (25 - точка, 30 - геометрия)
-    @param object_type: идентификатор связи объекта связь с которым мы ищем, если с любым то 0
+    @param object_id: идентификатор связи объекта связь с которым мы ищем, если с любым то 0
     @param rec_id: идентификатор объекта, если не известен то 0
     @param keys_relation: список идентификаторов типов связей между геометрией и объектом
     @param time_interval: временной интервал установления связи в секундах
-    @return: список идентифкаторов наденных геометрических объектов
+    @return: список идентификаторов найденных геометрических объектов
     """
-    if object_type == 0:
-        object = []
+    if object_id == 0:
+        searched_object = []
     elif rec_id == 0:
-        object = [object_type]
+        searched_object = [object_id]
     else:
-        object = [object_type, rec_id]
-    relations = io_get_rel(group_id, keys_relation, object, [geometry_type, ], [], time_interval, True)
+        searched_object = [object_id, rec_id]
+    relations = io_get_rel(group_id, keys_relation, searched_object, [geometry_type, ], [], time_interval, True)
     objects = [(int(item['obj_id_1']), int(item['rec_id_1'])) for item in relations] + \
               [(int(item['obj_id_2']), int(item['rec_id_2'])) for item in relations]
-    geo_ids = el_to_rec_id(obj=geometry_type, els=objects)
+    geo_ids = [item[1] for item in objects if item[0] == geometry_type]
     return geo_ids
 
 
@@ -145,10 +145,10 @@ def build_tree_from_list(geometry_list):
     return root
 
 
-def get_geometry_search(group_id, text):
+def get_geometry_search(text):
     """
     Функция для получения дерева геометрий, отфильтрованного по text
-    @param group_id: идентификатор группы пользователя
+    @param text: текст запроса поиска
     @return: дерево геометрий
     """
     data = json.dumps({
@@ -305,7 +305,7 @@ def get_feature_collection_by_address(address: str) -> dict:
 
 def get_point_by_address(address: str) -> dict:
     """
-    Функция для получения  json точки по адресу
+    Функция для получения json точки по адресу
     @param address: адрес
     @return: json точки если найдена или пустой словарь
     """
@@ -315,121 +315,3 @@ def get_point_by_address(address: str) -> dict:
             return feature['geometry']
     else:
         return {}
-
-
-# ОТКЛЮЧЕНО ЗА НЕНАДОБНОСТЬЮ
-# ###########################################
-# # POINT_FC, СВЯЗАННЫЕ ПО keys_rel
-# ###########################################
-# # IN
-# #     obj_name        гео-объект                          'point' или 'geometry' или id
-# #     group_id        id группы пользователя
-# #     keys_rel        name or id: ('ngg_tmc', 1)
-# #     keys_obj        ('address',)
-# #
-# # OUT
-# #     FeatureCollection (id, properties = { 'address':, }, geometry)
-# def io_get_geometry_tree_layer2(group_id, parent_id, write=True, ):
-#     """
-#     Функция для получения одного уровня дерева геометрий по идентификатору родителя
-#     @param group_id: идентификатор группы пользователя
-#     @param parent_id: идентификатор родителя
-#     @param write: флаг записи
-#     @return: список кортежей с информацией о отдельных геометриях
-#     """
-#     return tuple(IO(group_id=group_id).get_geometry_tree(
-#         parent_id=parent_id,
-#         write=write,
-#     ))
-
-
-def rel_to_geo_fc(obj, group_id, keys_rel, keys_obj, where_dop=[]):
-    obj_id = DAT_SYS_OBJ.DUMP.to_id(val=obj)
-
-    # записи rel
-    rel_recs = io_get_rel_mysql_generator(
-        group_id=group_id,
-        keys=keys_rel,
-        obj_rel_1=(obj_id,),  # (DAT_SYS_OBJ.NAME_POINT,),
-        where_dop=where_dop,
-    )
-
-    # уникальные связанные объекты (obj_id, rec_id)
-    # {(25, 34), (20, 1), (25, 33)}
-    els = rel_rec_to_el(rel_recs=rel_recs)
-
-    # оставить только geo_ids id: [34, 33, ...]
-    geo_ids = el_to_rec_id(obj=obj_id, els=els)
-
-    # результат в FC
-    return geo_id_to_fc(obj=obj_id, group_id=group_id, geo_ids=geo_ids, keys=keys_obj)
-
-
-###########################################
-# IN
-#     obj_id          id гео-объекта
-#     group_id        id группы пользователя
-#     geo_ids         id записей гео-объектов (33, 34)
-#     keys:           ключи из SYS_KEY, location не указывать, т.к. задается автоматически
-#
-# OUT ITEM
-#     id:         ...,
-#     properties: { 'key_name_0':' (val, Null), 'key_name_N': (val, dat), ...}    все ключи в properties
-#     geometry:   ...
-###########################################
-def geo_id_to_fc(obj, group_id, geo_ids, keys):
-    REC_ID = 0
-    REC_KEY = 1
-    REC_VAL = 2
-    REC_DAT = 3
-
-    FC_OBJ_ID = 'obj_id'
-    FC_REC_ID = 'rec_id'
-    FC_PROPERTIES = 'properties'
-    FC_GEOMETRY = 'geometry'
-
-    obj_id = DAT_SYS_OBJ.DUMP.to_id(val=obj)
-    obj_name = DAT_SYS_OBJ.DUMP.to_name(val=obj)
-    if obj_name == DAT_SYS_OBJ.NAME_POINT:
-        keys = (DAT_SYS_KEY.NAME_POINT_LOCATION,) + tuple(keys)
-    elif obj_name == DAT_SYS_OBJ.NAME_GEOMETRY:
-        keys = (DAT_SYS_KEY.NAME_GEOMETRY_LOCATION,) + tuple(keys)
-    else:
-        raise Exception('Unknow obj [' + obj + ']')
-
-    # читать записи obj.id
-    # recs = ((42, 30303, 'Тест 41'), (42, 81, '-1', None), (42, 'location', '{"type": "GeometryCollection", "geometries": [{"type": "Polygon", "coordinates": []}]}'), ... )
-    recs = io_get_obj_mysql_tuple(
-        group_id=group_id,
-        obj=obj_id,
-        keys=keys,
-        ids=geo_ids,
-    ) if len(geo_ids) > 0 else []
-
-    # группировка по id в словарь d {id1: {id: id1, ...}, ...}
-    d = {}
-    for rec in recs:
-        id = rec[REC_ID]
-        # d_item: прочитать
-        # d_item = d.get(id, {FC_REC_ID: str(id), FC_PROPERTIES: {}, })
-        d_item = d.get(id, {FC_REC_ID: id, FC_PROPERTIES: {}, })
-        d_item[FC_OBJ_ID] = obj_id
-
-        # запомнить ключ в d_item
-        if rec[1] == 'location':
-            # исключение в FC_GEOMETRY
-            d_item[FC_GEOMETRY] = json.loads(rec[REC_VAL])
-            # остальное в FC_PROPERTIES
-        else:
-            key_name = DAT_SYS_KEY.DUMP.to_name(obj_id=obj_id, val=rec[REC_KEY])
-            d_item[FC_PROPERTIES][key_name] = (rec[REC_VAL], (None if len(rec) <= 3 else rec[REC_DAT]))
-
-        # d_item: запомнить
-        d[id] = d_item
-
-    # словарь d в FeatureCollection
-    features = []
-    for d_key in d:
-        feature = geojson.Feature(**d[d_key])
-        features.append(feature)
-    return geojson.FeatureCollection(features)

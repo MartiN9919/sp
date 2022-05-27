@@ -17,7 +17,7 @@ class PgSqlConnection(BaseConnection):
         self.busy = False
 
 
-class SingletonPgsql(metaclass=SingletonMeta):
+class PgSqlConnectionPool(metaclass=SingletonMeta):
     def __init__(self, n, database=OSM):
         self.connections_list = [PgSqlConnection(database) for i in range(n)]
         self._lock = threading.Lock()
@@ -31,69 +31,66 @@ class SingletonPgsql(metaclass=SingletonMeta):
                 if free_connection[0].get_connection().closed != 0:
                     free_connection[0] = PgSqlConnection(OSM)
                 return free_connection[0]
-            except:
+            except IndexError as e:
                 print('not free connection')
                 return False
-
-    def reconnect(self, database):
-        for connection in self.connections_list:
-            connection.set_connection(database)
+            except Exception as e:
+                free_connection[0].free_connection()
+                return False
 
 
 def connect_to_data_base(database=OSM):
     while True:
-        connection = SingletonPgsql(n=5, database=database).get_connection()
+        connection = PgSqlConnectionPool(n=5, database=database).get_connection()
         if connection:
             return connection
         else:
             time.sleep(0.1)
 
 
-def db_connect(database=OSM, dataOnServer=False):
-    return connect_to_data_base(database)
-
-
-def db_pg_sql(sql, wait=False, read=True, database=OSM, connection=-1):
-    def run(connection_pg_sql, dbOpened, dbReconnect):
-        if ((not dbOpened) or dbReconnect):
-            connection_pg_sql = db_connect(database=database)
-        connection = connection_pg_sql.get_connection()
+def db_pg_sql(sql, wait=False, read=True, database=OSM, connection=None):
+    def run(connection_pg_sql, is_open, is_reconnect):
+        if not is_open or is_reconnect:
+            connection_pg_sql = connect_to_data_base(database=database)
+        query_connection = connection_pg_sql.get_connection()
         if read:
             try:
-                cursor = connection.cursor()
+                cursor = query_connection.cursor()
                 cursor.execute(sql)
-                ret = cursor.fetchall()
+                query_result = cursor.fetchall()
                 cursor.close()
+            except Exception as e:
                 connection_pg_sql.free_connection()
-            except:
-                connection_pg_sql.free_connection()
+                raise e
         else:
-            connection.autocommit(True)
-            connection.query(sql)
-            ret = []
-        return ret
+            query_connection.autocommit(True)
+            query_connection.query(sql)
+            query_result = []
+        if not is_open:
+            connection_pg_sql.free_connection()
+        return query_result
 
     if sql == '':
         return []
-    dbOpened = not (connection == -1)
-    dbReconnect = False
-    iErr = 0
+    database_open = not (connection is None)
+    data_base_reconnect = False
+    error_count = 0
     while True:
         try:
-            ret = run(connection, dbOpened, dbReconnect)
-            isOk = True
-            # logger.debug("OK "+sql[:130])
+            result = run(connection, database_open, data_base_reconnect)
+            is_ok = True
         except Exception as e:
-            ret = []
-            isOk = not wait
-            if (iErr < 10) and wait:
-                iErr += 1
+            result = []
+            is_ok = not wait
+            if (error_count < 10) and wait:
+                error_count += 1
             else:
                 return ['error']
-        if isOk: break
-        dbReconnect = True
+        if is_ok:
+            break
+        data_base_reconnect = True
         time.sleep(3.0)
-    return ret
+    return result
 
 
 

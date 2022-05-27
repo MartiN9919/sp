@@ -1,4 +1,5 @@
 from pathlib import Path
+
 from data_base_driver.constants.connect_db import VEC_DATA
 from core.projectSettings.constant import DEPLOY_SETTING
 
@@ -6,7 +7,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = DEPLOY_SETTING['secret_key']
 
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = DEPLOY_SETTING['allowed_hosts']
 
@@ -60,7 +61,6 @@ TEMPLATES = [
     },
 ]
 
-
 WSGI_APPLICATION = 'core.wsgi.application'
 
 DATABASES = {
@@ -93,9 +93,5 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = False
 
-STATIC_URL = '/static/'
-STATICFILES_DIRS = [
-    "/deploy_storage/static",
-]
 
 # SESSION_EXPIRE_AT_BROWSER_CLOSE = True

@@ -3,7 +3,7 @@ import datetime
 from data_base_driver.additional_functions import date_time_client_to_server
 from data_base_driver.constants.const_dat import DAT_REL
 from data_base_driver.input_output.input_output import io_set
-from data_base_driver.sys_key.get_key_dump import get_key_by_id
+from data_base_driver.sys_key.get_key_info import get_key_by_id
 from objects.relations.get_rel import get_relations_cascade
 
 

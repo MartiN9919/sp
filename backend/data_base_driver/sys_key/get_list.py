@@ -6,20 +6,20 @@ def get_groups_list():
     return [{'id': item['id'], 'value': item['title']} for item in DAT_OWNER.DUMP.get_groups_list()]
 
 
-def get_list_by_top_id(id):
+def get_list_by_top_id(list_id):
     """
     Функция для получения списка по его идентификационному номеру из таблицы sys_list_top
-    @param id: идентификационный номер из таблицы sys_list_top
+    @param list_id: идентификационный номер из таблицы sys_list_top
     @return: список словаре в формате [{'id':id1,'value':value1},{},...,{}]
     """
-    if id == 53:
+    if list_id == 53:
         return get_groups_list()
     sql = 'SELECT ' + DAT_SYS_LIST_DOP.ID + ', ' \
           + DAT_SYS_LIST_DOP.VAL + ' FROM ' \
           + DAT_SYS_LIST_DOP.TABLE + ' WHERE ' \
-          + DAT_SYS_LIST_DOP.KEY_ID + ' = ' + str(id)
-    return [{'id': item[0], 'value': item[1]} for item in db_sql(sql)] + ([{'id': 0, 'value': 'Корень'}] if id == 48 \
-        else [])
+          + DAT_SYS_LIST_DOP.KEY_ID + ' = ' + str(list_id)
+    return [{'list_id': item[0], 'value': item[1]} for item in db_sql(sql)] + \
+           ([{'list_id': 0, 'value': 'Корень'}] if list_id == 48 else [])
 
 
 def get_list_by_name(name):
@@ -35,13 +35,13 @@ def get_list_by_name(name):
     return get_list_by_top_id(top_list_id)
 
 
-def get_item_list_value(id):
+def get_item_list_value(item_id):
     """
     Функция для получения значения листа по его идентификатору
-    @param id: идентификатор значения
+    @param item_id: идентификатор значения
     @return: значение листа в строковом формате
     """
-    return DAT_SYS_LIST_DOP.DUMP.get_item_by_id(int(id))
+    return DAT_SYS_LIST_DOP.DUMP.get_item_by_id(int(item_id))
 
 
 def get_lists():

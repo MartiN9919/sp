@@ -5,7 +5,7 @@ from objects import views
 urlpatterns = [
     url(r'^get_list_obj', views.aj_object_type_list),
     url(r'^get_list_key_obj', views.aj_list_classifier),
-    url(r'^get_list_key_rel', views.aj_list_rels),
+    url(r'^get_list_key_rel', views.aj_list_relations),
     url(r'^get_lists', views.aj_lists),
     url(r'^get_tiles', views.aj_map_tiles),
     url(r'^objects_relation', views.aj_objects_relation),

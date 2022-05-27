@@ -2,7 +2,7 @@ import json
 
 from data_base_driver.additional_functions import date_time_server_to_client
 from data_base_driver.connect.connect_mysql import db_sql
-from data_base_driver.constants.const_dat import DAT_SYS_FILES, DAT_OWNER
+from data_base_driver.constants.const_dat import DAT_SYS_FILES
 
 
 def get_list_files(user_id, length, offset):
@@ -15,14 +15,12 @@ def get_list_files(user_id, length, offset):
           + DAT_SYS_FILES.USER_ID + ' = ' + str(user_id) + ' ORDER BY ' \
           + DAT_SYS_FILES.DATE_AUTO_REMOVE + ' DESC LIMIT ' \
           + str(length) + ' OFFSET ' + str((offset - 1) * length) + ';'
-    return [
-        {
+    return [{
             'id': file[0],
             'name': file[1],
             'date': date_time_server_to_client(file[2].replace(microsecond=0, tzinfo=None).isoformat(sep=' ')),
             'status': file[3], 'params': json.loads(file[4])
-        } for file in db_sql(sql)
-    ]
+    } for file in db_sql(sql)]
 
 
 def get_total_reports(user_id):

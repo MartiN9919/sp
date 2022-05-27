@@ -33,7 +33,7 @@ def get_notifications_by_user(user_id, previous_list):
 
 def get_notifications_list_by_offset(user_id, length, offset, date, notification_type, order='up'):
     """
-    Функция для ранжироввнного получения оповещений
+    Функция для ранжированного получения оповещений
     @param user_id: идентификатор пользователя, которому предназначены оповещения
     @param length: количество оповещений на странице
     @param offset: номер страницы

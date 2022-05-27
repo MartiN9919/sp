@@ -6,7 +6,7 @@ def check_file_permission(file_id, user_id):
     """
     Функция для проверки доступа пользователя к файлу
     @param file_id: идентификационный номер файла
-    @param group_id: идентификационный группы пользователя
+    @param user_id: идентификатор пользователя
     @return: True если у данного пользователя есть доступ к файлу, False если такого доступа нет
     """
     sql = 'SELECT ' + DAT_SYS_FILES.USER_ID + ' FROM ' \

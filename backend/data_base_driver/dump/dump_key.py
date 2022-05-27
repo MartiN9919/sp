@@ -1,7 +1,7 @@
 import threading
 import time
 from data_base_driver.constants.const_dat import DAT_SYS_OBJ, DAT_SYS_KEY
-from data_base_driver.connect.connect_mysql import DB_sql
+from data_base_driver.connect.connect_mysql import db_sql
 from data_base_driver.dump.transform_functions import tuple_to_dict_many, dict_filter
 
 
@@ -21,7 +21,6 @@ class DUMP_KEY:
     def _refresh_(self, force=False):
         if not force and (self.refreshTime > time.time()): return
         with self._lock:
-            db = DB_sql()
             sql = "SELECT " + \
                   DAT_SYS_KEY.ID + "," + \
                   DAT_SYS_KEY.OBJ_ID + "," + \
@@ -43,10 +42,7 @@ class DUMP_KEY:
                   "ORDER BY " + \
                   DAT_SYS_KEY.COL + " DESC, " + \
                   DAT_SYS_KEY.NEED + " DESC;"
-            dat = db.execute(sql=sql,
-                             wait=True,
-                             read=True
-                             )
+            dat = db_sql(sql=sql, wait=True, read=True)
             dat = dat + ((0, 0, 0, 0, 'text', None, 'any', 'Примечание', 'Дополнительная информация об объекте', '', 0, 0, 200, 1, 1),
                          (1, 0, 0, 0, 'file_any', None, 'file_any', 'Файловое примечание', 'Дополнительные файлы характеризующие объект', '', 0, 0, 200, 1, 1))
             self.dump = tuple_to_dict_many(dat, [

@@ -6,12 +6,12 @@ import threading
 from core.projectSettings.constant import DOCUMENT_ROOT
 from data_base_driver.additional_functions import date_time_server_to_client
 from data_base_driver.script.get_script_info import get_script_title
-from data_base_driver.script.script_execute import execute_script_map
+from script.additional_functions import execute_script_map
 from data_base_driver.script.script_list import get_script_tree
 from data_base_driver.constants.const_dat import DAT_OWNER
 from core.projectSettings.decorators import login_check, request_wrap, script_wrap
 from data_base_driver.sys_reports.get_files_info import get_reports
-from data_base_driver.sys_reports.set_file_info import add_file
+from data_base_driver.sys_reports.set_file_info import add_report
 from data_base_driver.sys_templates.get_template_info import get_templates_list, get_template
 from data_base_driver.sys_templates.set_templates_info import add_template, remove_template, update_template
 from data_base_driver.trigger.trigger_list import get_triggers_list
@@ -77,16 +77,17 @@ def aj_script_execute_report(request):
     try:
         my_module = importlib.import_module('script.user_scripts.' + method_name)
         date_time = datetime.datetime.now()
-        file_id = add_file(path=DOCUMENT_ROOT + title,
-                           user_id=request.user.id,
-                           params=json.dumps(data, ensure_ascii=False),
-                           date_auto_remove=date_time,
-                           )
+        report_id = add_report(path=DOCUMENT_ROOT + title,
+                               user_id=request.user.id,
+                               params=json.dumps(data, ensure_ascii=False),
+                               date_auto_remove=date_time,
+                               )
         script_function = getattr(my_module, method_name)
         lock = threading.Lock()
         with lock:
             thread = threading.Thread(target=script_function,
-                                      args=(parse_variables(data.get('variables')), group_id, file_id, request.user.id, title, lock))
+                                      args=(parse_variables(data.get('variables')), group_id, report_id,
+                                            request.user.id, title, lock))
             thread.start()
             return get_reports(
                 request.user.id,

@@ -109,7 +109,7 @@ class ModelListDop(models.Model):
         if not self.key_id:
             ModelList.save(self.key)
         self.fl = 0  # костыль, потом изменить
-        if self.id == None:
+        if not self.id:
             try:
                 self.save()
             except Exception as e:

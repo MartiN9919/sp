@@ -1,6 +1,5 @@
 import datetime
-from data_base_driver.connect.connect_manticore import db_shinxql
-from data_base_driver.connect.connect_mysql import db_sql, db_connect
+from data_base_driver.connect.connect_mysql import db_sql, connect_to_data_base
 from data_base_driver.constants.const_dat import DAT_SYS_ID, DAT_OBJ_ROW
 from data_base_driver.input_output.add_object_http import add_row_record_http, add_relation_http, add_col_record_http, \
     update_col_record_http
@@ -13,7 +12,7 @@ DEBUG = False
 ###########################################
 class IO_LIB_SQL():
     def __init__(self):
-        self.connection = db_connect()
+        self.connection = connect_to_data_base()
 
 
     def __del__(self):
@@ -152,7 +151,3 @@ class IO_LIB_SQL():
         if DEBUG: print('\n' + sql)
         return db_sql(sql=sql, wait=not DEBUG, read=read, connection=self.connection)
 
-
-    def __shinxql_exec__(self, sql, read):
-        if DEBUG: print('\n' + sql)
-        return db_shinxql(sql=sql, wait=not DEBUG, read=read)
