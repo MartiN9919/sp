@@ -29,6 +29,17 @@
 		"INSERT_URL": "http://xxx.xxx.xxx.xxx:pppp/insert",
 		"UPDATE_URL": "http://xxx.xxx.xxx.xxx:pppp/update"
 	},
+	"geocoder":
+	{
+		"SEARCH_URL": "http://xxx.xxx.xxx.xxx:pppp/api"
+	},
+	"synonyms":
+	{
+		"host": "xxx.xxx.xxx.xxx",
+		"port": 5000,
+		"count": 10,
+		"size": 1024
+	},
 	"tiles":
 	[
 		{
