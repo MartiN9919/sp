@@ -17,7 +17,7 @@ from data_base_driver.sys_notifications.set_notifications_info import add_notifi
 from datetime import datetime
 from data_base_driver.sys_reports.set_file_info import set_file_status, set_file_path
 from objects.geometry.geometry_analytics import feature_collection_to_manticore_polygon, get_line_buffer_polygon, get_distance_between_point_math
-from data_base_driver.additional_functions import str_to_sec, get_second_range, get_date_time_from_sec, get_document_date_format
+from data_base_driver.additional_functions import str_to_sec, get_second_range, get_date_time_from_sec, date_server_to_client
 from document_driver.word_driver import get_document_from_template, get_dossier_for_object
 from shapely.geometry import Polygon, Point, LineString, MultiPoint
 from docx import Document
@@ -88,8 +88,8 @@ def script_48(request, group_id, file_id, user_id, title, lock):
 		    result_country.append(key)
 		    result_nums.append(str(result[key]))
 		path = get_xlsx_document_from_template('template.xlsx', title, {'COUNTRY': result_country, 'NUMS': result_nums,
-		                                                                'START': [get_document_date_format(date_start)],
-		                                                                'END': [get_document_date_format(date_end)]})
+		                                                                'START': [date_server_to_client(date_start)],
+		                                                                'END': [date_server_to_client(date_end)]})
 		set_file_path(file_id, path)
 		set_file_status(file_id, 'done')
 	except BaseException:

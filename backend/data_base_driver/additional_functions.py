@@ -4,15 +4,6 @@ from data_base_driver.sys_key.get_object_info import get_object_id
 from data_base_driver.sys_key.get_key_info import get_key_by_name
 
 
-def get_document_date_format(date):
-    """
-    Функция для преобразования строки даты из формата 2020-01-01 в 01.01.2020
-    @param date: строка содержащая дату в формате 2020-01-01
-    @return: строка содержащая дату в формате 01.01.2020
-    """
-    return '.'.join(reversed(date.split('-')))
-
-
 def get_date_from_days_sec(days, sec, client=False):
     """
     Функция для получения даты и времени в строковом формате из дней с рождества христова и секунд с начала дня
@@ -64,7 +55,7 @@ def str_to_sec(date_time_str):
 
 
 def date_client_to_server(date_str):
-    return '-'.join(list(reversed(date_str.split('.')))) if date_str else None
+    return '-'.join(reversed(date_str.split('.'))) if date_str else None
 
 
 def date_time_client_to_server(date_time_str):
@@ -72,37 +63,11 @@ def date_time_client_to_server(date_time_str):
 
 
 def date_server_to_client(date_str):
-    return '.'.join(list(reversed(date_str.split('-')))) if date_str else None
+    return '.'.join(reversed(date_str.split('-'))) if date_str else None
 
 
 def date_time_server_to_client(date_time_str, sep=' '):
     return date_server_to_client(date_time_str.split(' ')[0]) + sep + date_time_str.split(' ')[1] if date_time_str else None
-
-
-def intercept_sort_list(elements):
-    """
-    Функция для пересечения списков с сохранением сортировки
-    @param elements: список содержащий списки целых чисел
-    @return: список целых чисел встреченных во всех начальных списков с сохранением их сортировки
-    """
-    if len(elements) == 1:
-        return elements[0]
-    temp_list = []
-    for elem in elements[0]:
-        temp = {'elem': elem, 'pos': []}
-        for item in elements:
-            if elem not in item:
-                temp['pos'] = []
-                break
-            else:
-                temp['pos'].append(item.index(elem))
-        if len(temp['pos']) > 0:
-            temp['middle'] = sum(temp['pos']) / len(temp['pos'])
-            temp_list.append(temp)
-        else:
-            continue
-    temp_list.sort(key=lambda x: x['middle'])
-    return [temp['elem'] for temp in temp_list]
 
 
 def push_dict(dictionary, key, value):
@@ -155,8 +120,6 @@ def io_set_wrap(function):
         except Exception as e:
             raise e
 
-    wrap.__doc__ = function.__doc__
-    wrap.__name__ = function.__name__
     return wrap
 
 
@@ -172,8 +135,6 @@ def io_get_object_wrap(function):
         except Exception as e:
             raise e
 
-    wrap.__doc__ = function.__doc__
-    wrap.__name__ = function.__name__
     return wrap
 
 
@@ -194,8 +155,6 @@ def io_get_rel_wrap(function):
         except Exception as e:
             raise e
 
-    wrap.__doc__ = function.__doc__
-    wrap.__name__ = function.__name__
     return wrap
 
 

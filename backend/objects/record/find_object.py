@@ -1,12 +1,37 @@
 import json
 
-from data_base_driver.additional_functions import intercept_sort_list
 from data_base_driver.constants.const_key import SYS_KEY_CONSTANT
 from data_base_driver.input_output.input_output import io_get_obj
 from data_base_driver.input_output.io_geo import get_points_by_distance
 from data_base_driver.sys_key.get_key_info import get_key_by_id
 from objects.record.get_record import get_object_record_by_id_http, get_keys
 from synonyms_manager.get_synonyms import get_synonyms
+
+
+def intercept_sort_list(elements):
+    """
+    Функция для пересечения списков с сохранением сортировки
+    @param elements: список содержащий списки целых чисел
+    @return: список целых чисел встреченных во всех начальных списков с сохранением их сортировки
+    """
+    if len(elements) == 1:
+        return elements[0]
+    temp_list = []
+    for elem in elements[0]:
+        temp = {'elem': elem, 'pos': []}
+        for item in elements:
+            if elem not in item:
+                temp['pos'] = []
+                break
+            else:
+                temp['pos'].append(item.index(elem))
+        if len(temp['pos']) > 0:
+            temp['middle'] = sum(temp['pos']) / len(temp['pos'])
+            temp_list.append(temp)
+        else:
+            continue
+    temp_list.sort(key=lambda x: x['middle'])
+    return [temp['elem'] for temp in temp_list]
 
 
 def find_reliable_http(object_type, request, actual=False, group_id=0):

@@ -11,15 +11,9 @@ def login_user(request):
     """
     Создание сеанса пользователя
     """
-    # если пользователь уже залогинен, чего не может быть, но все же возвращаем положительный результат аутентификации
     if request.user.is_authenticated:
         return {}
-
-    body_unicode = request.body.decode('utf-8')
-    body = json.loads(body_unicode)
-
-    # обработка входа в систему
-
+    body = json.loads(request.body)
     username = body['username']
     password = body['password']
     user = auth.authenticate(request, username=username, password=password)
@@ -28,7 +22,6 @@ def login_user(request):
         return {}
     else:
         raise Exception(400, 'Неправильный логин или пароль')
-
 
 
 @login_check
