@@ -28,7 +28,8 @@ class DUMP_OBJ:
                 DAT_SYS_OBJ.TITLE + ", " +
                 DAT_SYS_OBJ.TITLE_SINGLE + ", " +
                 DAT_SYS_OBJ.ICON + ", " +
-                DAT_SYS_OBJ.DESCRIPT + " " +
+                DAT_SYS_OBJ.DESCRIPT + ", " +
+                DAT_SYS_OBJ.PRIORITY + " " +
                 "FROM " +
                 DAT_SYS_OBJ.TABLE_SHORT + ";",
                 wait=True,
@@ -41,6 +42,7 @@ class DUMP_OBJ:
                 DAT_SYS_OBJ.TITLE_SINGLE,
                 DAT_SYS_OBJ.ICON,
                 DAT_SYS_OBJ.DESCRIPT,
+                DAT_SYS_OBJ.PRIORITY,
             ])
 
             # актуальность дампа

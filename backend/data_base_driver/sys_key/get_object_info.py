@@ -9,7 +9,7 @@ def objects_list():
     Функция для получения списка объектов
     @return: список объектов
     """
-    temp_list = [item for item in sorted(copy.deepcopy(DAT_SYS_OBJ.DUMP.get_all()), key=lambda x: x[DAT_SYS_OBJ.TITLE])
+    temp_list = [item for item in sorted(copy.deepcopy(DAT_SYS_OBJ.DUMP.get_all()), key=lambda x: x[DAT_SYS_OBJ.PRIORITY])
             if item.get('id') != 1]
     keys = DAT_SYS_KEY.DUMP.get_rec(obj_id=1, only_first=False)
     for temp in temp_list:

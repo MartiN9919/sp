@@ -81,6 +81,7 @@ class DAT_SYS_OBJ:
     TITLE_SINGLE = 'title_single'
     ICON = 'icon'
     DESCRIPT = 'descript'
+    PRIORITY = 'priority'
 
     ID_REL = 1
     ID_FREE = 10
