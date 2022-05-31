@@ -16,12 +16,14 @@ class ModelObjectAdmin(admin.ModelAdmin):
         DAT_SYS_OBJ.TITLE,
         DAT_SYS_OBJ.TITLE_SINGLE,
         DAT_SYS_OBJ.NAME,
-        DAT_SYS_OBJ.DESCRIPT
+        DAT_SYS_OBJ.DESCRIPT,
+        DAT_SYS_OBJ.PRIORITY
     )
     fieldsets = (
         ("Имя Объекта", {'fields': ((DAT_SYS_OBJ.TITLE, DAT_SYS_OBJ.TITLE_SINGLE,),)}),
         ('Транслитерация объекта', {'fields': (DAT_SYS_OBJ.NAME,)}),
         ('Пометки', {'fields': (DAT_SYS_OBJ.DESCRIPT,)}),
+        ('Приоритет', {'fields': (DAT_SYS_OBJ.PRIORITY,)}),
     )
     ordering = [DAT_SYS_OBJ.TITLE]
 

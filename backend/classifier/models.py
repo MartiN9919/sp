@@ -29,6 +29,10 @@ class ModelObject(models.Model):
         blank=True,
         null=True,
     )
+    priority = models.IntegerField(
+        verbose_name='Приоритет',
+        help_text=' Приоритет при именовании',
+    )
 
     def __str__(self):
         return self.title
