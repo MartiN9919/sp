@@ -10,7 +10,7 @@
     no-data-text="Не найдено"
     autocomplete="off"
     messages=" "
-    item-value="id"
+    item-value="list_id"
     color="teal"
     item-color="teal"
     dense
@@ -63,7 +63,9 @@ export default {
           return this.items.find(item => item.id === this.inputString)
         }
       },
-      set: function (value) { this.$emit('changeInputString', value) }
+      set: function (value) {
+        this.$emit('changeInputString', value)
+      }
     }
   },
   mounted() {
