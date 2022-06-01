@@ -5,7 +5,7 @@ import treeview from "@/store/modules/treeview"
 import script from "@/store/modules/script"
 import map from "@/store/modules/map"
 import report from "@/store/modules/report"
-import graph from "@/store/modules/graph/settings"
+import graph from "@/store/modules/graph"
 import _ from 'lodash'
 
 Vue.use(Vuex)
