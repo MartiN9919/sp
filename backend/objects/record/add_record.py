@@ -27,7 +27,7 @@ from objects.relations.add_rel import add_rel_by_other_object, add_rel
 
 def add_record(group_id, object_id, object_info):
     """
-    функция для добавления объекта в базу данных
+    Функция для добавления объекта в базу данных
     @param group_id: идентификационный номер группы пользователя
     @param object_id: идентификационный номер типа объекта
     @param object_info: информация об объекте в формате [[key:value],[],...,[]]
