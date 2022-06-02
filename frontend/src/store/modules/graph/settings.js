@@ -58,7 +58,10 @@ export default {
   getters: {
     classifiersSettings: state => state.classifiersSettings.value,
     globalDisplaySettings: state => state.globalDisplaySettings,
-    globalDisplaySettingValue: state => identifier => state.globalDisplaySettings[identifier].state.value
+    globalDisplaySettingValue: state => identifier => {
+      console.log('globalDisplaySettingValue', state.globalDisplaySettings, identifier)
+      return state.globalDisplaySettings[identifier].state.value
+    }
   },
   mutations: {
     changeGlobalSettingState: (state, {id, value}) => state.globalDisplaySettings[id].state.value = value,
@@ -67,12 +70,5 @@ export default {
   actions: {
     changeGlobalSettingState({ commit }, payload) { commit('changeGlobalSettingState', payload) },
     setClassifiersSettings({ getters, commit }, id) { commit('setClassifiersSettings', id) }
-  },
-  modules: {
-    general,
-    entity,
-    element,
-    timeline,
-    searchTree,
-  },
+  }
 }
