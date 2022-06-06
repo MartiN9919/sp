@@ -138,7 +138,7 @@ def get_objects_process(group_id, object_id, rec_id, depth, value):
     value[f"{object_id}_{rec_id}"] = get_path_to_object(relations)
 
 
-def get_objects_relation(group_id, object_id_1, rec_id_1, object_id_2, rec_id_2, depth=3):
+def get_objects_relation(group_id, object_id_1, rec_id_1, object_id_2, rec_id_2, depth=3, count=None, only_short=False):
     """
     Функция для получения связей между двумя объектами
     @param group_id: идентификатор группы пользователя
@@ -147,6 +147,8 @@ def get_objects_relation(group_id, object_id_1, rec_id_1, object_id_2, rec_id_2,
     @param object_id_2: идентификатор типа второго объекта
     @param rec_id_2: идентификатор второго объекта
     @param depth: глубина поиска связей
+    @param count: количество ограничивающее вывод
+    @param only_short: Вывод только самых коротких связей
     @return: список связей в формате [{key_id, val, sec},...,{}]
     """
     value = Manager().dict()
@@ -156,8 +158,8 @@ def get_objects_relation(group_id, object_id_1, rec_id_1, object_id_2, rec_id_2,
     process_2.start()
     process_1.join()
     process_2.join()
-    objects_1 = value[str(object_id_1) + '_' + str(rec_id_1)]
-    objects_2 = value[str(object_id_2) + '_' + str(rec_id_2)]
+    objects_1 = value[f"{object_id_1}_{rec_id_1}"]
+    objects_2 = value[f"{object_id_2}_{rec_id_2}"]
     temp_result = []
     for object_1 in objects_1:
         if objects_2.get(object_1):
@@ -167,9 +169,25 @@ def get_objects_relation(group_id, object_id_1, rec_id_1, object_id_2, rec_id_2,
                     if {'object_id': object_id_1, 'rec_id': rec_id_1} not in path and \
                             {'object_id': object_id_2, 'rec_id': rec_id_2} not in path \
                             and len([dict(s) for s in set(frozenset(d.items()) for d in path)]) == len(path):
-                        temp_result += path
-    result = [dict(s) for s in set(frozenset(d.items()) for d in temp_result)]
-    return result
+                        temp_result.append(path)
+    min_length = min(map(lambda x: len(x), temp_result))
+    temp_result = sorted(temp_result, key=lambda x: len(x))
+    if only_short:
+        temp_result = [item for item in temp_result if len(item) == min_length]
+    result = set()
+    if count:
+        for temp in temp_result:
+            temp = [tuple(item.items()) for item in temp]
+            difference = set(temp).difference(result)
+            if len(difference) > count:
+                break
+            else:
+                count -= len(difference)
+                result.update(set(temp))
+        return [dict(item) for item in result]
+    else:
+        result = [item for sublist in temp_result for item in sublist]
+        return [dict(s) for s in set(frozenset(d.items()) for d in result)]
 
 
 def get_relations_list():
@@ -189,3 +207,4 @@ def get_relations_list():
                        'type': relation_type, 'object_id_1': item['rel_obj_1_id'], 'object_id_2': item['rel_obj_2_id'],
                        'blocked_blank': item['blocked_blank']})
     return result
+

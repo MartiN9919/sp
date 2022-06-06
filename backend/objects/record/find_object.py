@@ -34,10 +34,41 @@ def intercept_sort_list(elements):
     return [temp['elem'] for temp in temp_list]
 
 
-def find_reliable_http(object_type, request, actual=False, group_id=0):
+def check_actual(fetchall, group_id, object_id):
+    remove_list = []
+    for item in fetchall:
+        temp_word = '@key_id ' + str(item[1])
+        temp = io_get_obj(group_id, object_id, [], [item[0]], 500, temp_word, {})
+        for temp_item in temp:
+            if item[2] == temp_item['sec']:
+                continue
+            else:
+                if item[2] < temp_item['sec']:
+                    remove_list.append(item)
+    return remove_list
+
+
+def get_search_result(group_id, request, request_type, object_id, actual):
+    result = []
+    for param in request:
+        if request_type == 'simple':
+            word = f"@val {param}" if len(param) > 0 else param  # искать только по значению
+        elif request_type == 'advanced':
+            word = f"@key_id {param['key_id']} @val {param['value']}"
+        else:
+            return []
+        temp_result = io_get_obj(group_id, object_id, [], [], 500, word, {})
+        fetchall = [(int(item['rec_id']), int(item['key_id']), int(item['sec'])) for item in temp_result]
+        remove_list = check_actual(fetchall, group_id, object_id) if actual else []
+        fetchall = [item[0] for item in fetchall if item not in remove_list]
+        result.append(list(set(fetchall)))
+    return result
+
+
+def find_reliable_http(object_id, request, actual=False, group_id=0):
     """
     Функция для поиска значений в таблице object, возвращает результат только при полном совпадении
-    @param object_type: тип объекта по которым идет поиск
+    @param object_id: тип объекта по которым идет поиск
     @param request: искомые параметры
     @param actual: флаг актуальности искомого параметра, если True то учитываются только записи актуальные для объекта
     на данный момент
@@ -47,35 +78,23 @@ def find_reliable_http(object_type, request, actual=False, group_id=0):
     if not request:
         request = ''
     synonyms_list = []
-    if object_type == SYS_KEY_CONSTANT.FILE_ID:
+    if object_id == SYS_KEY_CONSTANT.FILE_ID:
         try:
             synonyms_list = get_synonyms(request)
         except TypeError:
             synonyms_list = []
     request = request.split(' ') + synonyms_list
     request = [word.replace('-', '<<') for word in request]  # костыль, в последующем поменять настройки мантикоры, что бы индексировала '-'
-    result = []
-    for word in request:
-        word = '@val ' + word if len(word) > 0 else word # искать только по значению
-        temp_result = io_get_obj(group_id, object_type, [], [], 500, word, {})
-        fetchall = [(int(item['rec_id']), int(item['key_id']), int(item['sec'])) for item in temp_result]
-        remove_list = []
-        if actual:
-            for item in fetchall:
-                temp_word = '@key_id ' + str(item[1])
-                temp = io_get_obj(group_id, object_type, [], [item[0]], 500, temp_word, {})
-                for temp_item in temp:
-                    if item[2] == temp_item['sec']:
-                        continue
-                    else:
-                        if item[2] < temp_item['sec']:
-                            remove_list.append(item)
-        fetchall = [item[0] for item in fetchall if item not in remove_list]
-        result.append(list(dict.fromkeys(fetchall)))
-    if object_type != SYS_KEY_CONSTANT.FILE_ID:
+    result = get_search_result(group_id, request, 'simple', object_id, actual)
+    if object_id != SYS_KEY_CONSTANT.FILE_ID:
         return intercept_sort_list(result)
     else:
         return [item for sublist in result for item in sublist]
+
+
+def find_advanced(group_id, object_id, request, actual=False):
+    result = get_search_result(group_id, request, 'advanced', object_id, actual)
+    return intercept_sort_list(result)
 
 
 def find_unreliable_http(object_type, request, group_id=0):
@@ -116,7 +135,7 @@ def find_key_value_http(object_id, key_id, value, group_id=0):
             else:
                 if item['sec'] < temp_item['sec'] and item['val'] != temp_item['val']:
                     remove_list.append(index)
-    return [int(item['rec_id']) for index, item in enumerate(response) if not index in remove_list]
+    return [int(item['rec_id']) for index, item in enumerate(response) if index not in remove_list]
 
 
 def find_point_intersection(params):

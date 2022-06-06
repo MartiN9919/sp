@@ -5,6 +5,26 @@ import element from "@/store/modules/graph/element"
 import timeline from "@/store/modules/graph/timeline"
 import searchTree from "@/store/modules/graph/searchTree"
 
+class SearchSettings {
+  constructor() {
+    this.searchDeep = {
+      title: 'Глубина поиска',
+      subTitle: 'Глубина, на которую будет осуществляться поиск',
+      state: new UserSetting('searchDeep', null)
+    }
+    this.searchCount = {
+      title: 'Максимальное количество объектов',
+      subTitle: 'Максимальное количество объектов, которые вернет поиск',
+      state: new UserSetting('searchCount', null)
+    }
+    this.searchShort = {
+      title: 'Короткие пути',
+      subTitle: 'Выводить только кротчайшие пути между объектами',
+      state: new UserSetting('searchShort', false)
+    }
+  }
+}
+
 class GlobalSettings {
   constructor() {
     this.linkHighlighting = {
@@ -53,7 +73,8 @@ class GlobalSettings {
 export default {
   state: {
     classifiersSettings: new UserSetting('classifiersSettings', []),
-    globalDisplaySettings: new GlobalSettings()
+    globalDisplaySettings: new GlobalSettings(),
+    searchSettings: new SearchSettings()
   },
   getters: {
     classifiersSettings: state => state.classifiersSettings.value,
@@ -61,14 +82,21 @@ export default {
     globalDisplaySettingValue: state => identifier => {
       console.log('globalDisplaySettingValue', state.globalDisplaySettings, identifier)
       return state.globalDisplaySettings[identifier].state.value
+    },
+    searchSettings: state => state.searchSettings,
+    searchSettingsValue: state => identifier => {
+      console.log('globalDisplaySettingValue', state.searchSettings, identifier)
+      return state.searchSettings[identifier].state.value
     }
   },
   mutations: {
     changeGlobalSettingState: (state, {id, value}) => state.globalDisplaySettings[id].state.value = value,
+    changeSearchSettingsState: (state, {id, value}) => state.searchSettings[id].state.value = value,
     setClassifiersSettings: (state, classifierId) => state.classifiersSettings.switch(classifierId)
   },
   actions: {
     changeGlobalSettingState({ commit }, payload) { commit('changeGlobalSettingState', payload) },
+    changeSearchSettingsState({ commit }, payload) { commit('changeSearchSettingsState', payload) },
     setClassifiersSettings({ getters, commit }, id) { commit('setClassifiersSettings', id) }
   }
 }
