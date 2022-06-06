@@ -10,7 +10,7 @@
     no-data-text="Не найдено"
     autocomplete="off"
     messages=" "
-    item-value="list_id"
+    item-value="id"
     color="teal"
     item-color="teal"
     dense

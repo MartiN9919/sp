@@ -1,14 +1,12 @@
 <template>
-  <item-settings v-model="state" :title="title" :sub-title="subTitle">
-    <v-switch disabled v-model="state" color="teal"/>
-  </item-settings>
+  <item-settings v-model="state" :title="title" :sub-title="subTitle"/>
 </template>
 
 <script>
 import ItemSettings from "@/components/Graph/GraphMenu/Settings/Modules/ItemSettings"
 
 export default {
-  name: "ItemGlobalSettings",
+  name: "ItemSearchSettings",
   components: {ItemSettings},
   model: {
     prop: 'value',

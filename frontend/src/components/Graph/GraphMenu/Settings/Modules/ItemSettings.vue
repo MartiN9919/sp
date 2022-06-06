@@ -9,7 +9,7 @@
       </v-list-item-subtitle>
     </v-list-item-content>
     <v-list-item-action class="my-auto ml-2">
-      <v-switch disabled v-model="value" color="teal"/>
+      <slot/>
     </v-list-item-action>
   </v-list-item>
 </template>
@@ -24,7 +24,7 @@ export default {
   props: {
     title: String,
     subTitle: String,
-    value: Boolean
+    value: [Boolean, Number]
   },
   computed: {
     state: {
