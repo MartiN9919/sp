@@ -1,21 +1,18 @@
 import UserSetting from "@/store/addition"
-import general from "@/store/modules/graph/general"
-import entity from "@/store/modules/graph/entity"
-import element from "@/store/modules/graph/element"
-import timeline from "@/store/modules/graph/timeline"
-import searchTree from "@/store/modules/graph/searchTree"
 
 class SearchSettings {
   constructor() {
     this.searchDeep = {
       title: 'Глубина поиска',
       subTitle: 'Глубина, на которую будет осуществляться поиск',
-      state: new UserSetting('searchDeep', null)
+      state: new UserSetting('searchDeep', ''),
+      props: {mask: '#'}
     }
     this.searchCount = {
       title: 'Максимальное количество объектов',
       subTitle: 'Максимальное количество объектов, которые вернет поиск',
-      state: new UserSetting('searchCount', null)
+      state: new UserSetting('searchCount', ''),
+      props: {mask: '###'}
     }
     this.searchShort = {
       title: 'Короткие пути',
@@ -79,15 +76,9 @@ export default {
   getters: {
     classifiersSettings: state => state.classifiersSettings.value,
     globalDisplaySettings: state => state.globalDisplaySettings,
-    globalDisplaySettingValue: state => identifier => {
-      console.log('globalDisplaySettingValue', state.globalDisplaySettings, identifier)
-      return state.globalDisplaySettings[identifier].state.value
-    },
+    globalDisplaySettingValue: state => identifier => state.globalDisplaySettings[identifier].state.value,
     searchSettings: state => state.searchSettings,
-    searchSettingsValue: state => identifier => {
-      console.log('globalDisplaySettingValue', state.searchSettings, identifier)
-      return state.searchSettings[identifier].state.value
-    }
+    searchSettingsValue: state => identifier => state.searchSettings[identifier].state.value
   },
   mutations: {
     changeGlobalSettingState: (state, {id, value}) => state.globalDisplaySettings[id].state.value = value,

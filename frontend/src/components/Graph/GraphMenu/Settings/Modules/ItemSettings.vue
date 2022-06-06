@@ -24,8 +24,11 @@ export default {
   props: {
     title: String,
     subTitle: String,
-    value: [Boolean, Number]
+    value: Boolean
   },
+  data: () => ({
+    ripple: { class: 'teal--text' }
+  }),
   computed: {
     state: {
       get: function () {
@@ -34,9 +37,6 @@ export default {
       set: function (value) {
         this.$emit('changeValue', value)
       }
-    },
-    ripple: function () {
-      return { class: 'teal--text' }
     }
   }
 }

@@ -1,5 +1,7 @@
 <template>
-  <item-settings v-model="state" :title="title"/>
+  <item-settings v-model="state" :title="title">
+    <v-switch disabled v-model="state" color="teal"/>
+  </item-settings>
 </template>
 
 <script>
