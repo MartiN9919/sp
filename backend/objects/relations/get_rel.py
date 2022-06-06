@@ -138,7 +138,7 @@ def get_objects_process(group_id, object_id, rec_id, depth, value):
     value[f"{object_id}_{rec_id}"] = get_path_to_object(relations)
 
 
-def get_objects_relation(group_id, object_id_1, rec_id_1, object_id_2, rec_id_2, depth=3, count=None, only_short=False):
+def get_objects_relation(group_id, object_id_1, rec_id_1, object_id_2, rec_id_2, depth=6, count=None, only_short=False):
     """
     Функция для получения связей между двумя объектами
     @param group_id: идентификатор группы пользователя
@@ -151,9 +151,11 @@ def get_objects_relation(group_id, object_id_1, rec_id_1, object_id_2, rec_id_2,
     @param only_short: Вывод только самых коротких связей
     @return: список связей в формате [{key_id, val, sec},...,{}]
     """
+    depth_1 = depth // 2
+    depth_2 = depth - depth_1
     value = Manager().dict()
-    process_1 = Process(target=get_objects_process, args=(group_id, object_id_1, rec_id_1, depth, value))
-    process_2 = Process(target=get_objects_process, args=(group_id, object_id_2, rec_id_2, depth, value))
+    process_1 = Process(target=get_objects_process, args=(group_id, object_id_1, rec_id_1, depth_1, value))
+    process_2 = Process(target=get_objects_process, args=(group_id, object_id_2, rec_id_2, depth_2, value))
     process_1.start()
     process_2.start()
     process_1.join()

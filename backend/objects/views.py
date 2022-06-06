@@ -152,7 +152,10 @@ def aj_objects_relation(request):
     """
     group_id = DAT_OWNER.DUMP.get_group(user_id=request.user.id)
     return get_objects_relation(group_id, int(request.GET['object_id_1']), int(request.GET['rec_id_1']),
-                                int(request.GET['object_id_2']), int(request.GET['rec_id_2']))
+                                int(request.GET['object_id_2']), int(request.GET['rec_id_2']),
+                                int(request.GET['search_deep'] if len(request.GET['search_deep']) else 6),
+                                int(request.GET['search_count']) if len(request.GET['search_count']) else None,
+                                True if request.GET['search_short'] == 'true' else False)
 
 
 @login_check
