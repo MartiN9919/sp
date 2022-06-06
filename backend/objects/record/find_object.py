@@ -48,24 +48,21 @@ def check_actual(fetchall, group_id, object_id):
     return remove_list
 
 
-def get_search_result(group_id, request, request_type, object_id, actual):
-    result = []
-    for param in request:
-        if request_type == 'simple':
-            word = f"@val {param}" if len(param) > 0 else param  # искать только по значению
-        elif request_type == 'advanced':
-            word = f"@key_id {param['key_id']} @val {param['value']}"
-        else:
-            return []
-        temp_result = io_get_obj(group_id, object_id, [], [], 500, word, {})
-        fetchall = [(int(item['rec_id']), int(item['key_id']), int(item['sec'])) for item in temp_result]
-        remove_list = check_actual(fetchall, group_id, object_id) if actual else []
-        fetchall = [item[0] for item in fetchall if item not in remove_list]
-        result.append(list(set(fetchall)))
-    return result
+def get_search_result(group_id, word, object_id, actual):
+    temp_result = io_get_obj(group_id, object_id, [], [], 500, word, {})
+    fetchall = [(int(item['rec_id']), int(item['key_id']), int(item['sec'])) for item in temp_result]
+    remove_list = check_actual(fetchall, group_id, object_id) if actual else []
+    return [item[0] for item in fetchall if item not in remove_list]
 
 
 def find_reliable_http(object_id, request, actual=False, group_id=0):
+    if isinstance(request, str):
+        return find_text(group_id, object_id, request, actual)
+    elif isinstance(request, list):
+        return find_advanced(group_id, object_id, request, actual)
+
+
+def find_text(group_id, object_id, request, actual=False):
     """
     Функция для поиска значений в таблице object, возвращает результат только при полном совпадении
     @param object_id: тип объекта по которым идет поиск
@@ -85,7 +82,10 @@ def find_reliable_http(object_id, request, actual=False, group_id=0):
             synonyms_list = []
     request = request.split(' ') + synonyms_list
     request = [word.replace('-', '<<') for word in request]  # костыль, в последующем поменять настройки мантикоры, что бы индексировала '-'
-    result = get_search_result(group_id, request, 'simple', object_id, actual)
+    result = []
+    for param in request:
+        word = f"@val {param}" if len(param) > 0 else param  # искать только по значению
+        result.append(list(set(get_search_result(group_id, word, object_id, actual))))
     if object_id != SYS_KEY_CONSTANT.FILE_ID:
         return intercept_sort_list(result)
     else:
@@ -93,7 +93,19 @@ def find_reliable_http(object_id, request, actual=False, group_id=0):
 
 
 def find_advanced(group_id, object_id, request, actual=False):
-    result = get_search_result(group_id, request, 'advanced', object_id, actual)
+    keys = {}
+    result = []
+    for param in request:
+        if keys.get(param['key_id']) is None:
+            keys[param['key_id']] = []
+        keys[param['key_id']].append(param['value'])
+    for key in keys:
+        or_result = set()
+        for value in keys[key]:
+            word = f"@key_id {key} @val {value}"
+            fetchall = get_search_result(group_id, word, object_id, actual)
+            or_result.update(set(fetchall))
+        result.append(list(or_result))
     return intercept_sort_list(result)
 
 
