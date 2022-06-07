@@ -136,7 +136,8 @@ def find_key_value_http(object_id, key_id, value, group_id=0):
     else:
         value = str(value)
     response = io_get_obj(group_id, object_id, [], [], 500, '@key_id ' + str(key_id) + ' @val ' + value, {})
-    response = [item for item in response if item['val'].lower() == value.lower()]
+    if get_key_by_id(key_id)['type'] != 'date' and get_key_by_id(key_id)['type'] != 'date_time':
+        response = [item for item in response if item['val'].lower() == value.lower()]
     remove_list = []
     for index, item in enumerate(response):
         temp_word = '@key_id ' + str(key_id)
