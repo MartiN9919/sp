@@ -104,7 +104,7 @@ export default {
       this.selectedEditableObject = this.selectedEditableObject
     },
     createNewParam(event) {
-      this.addNewParamEditableObject({id: event, position: this.activeTab})
+      this.addNewParamEditableObject({id: event.id, value: event.value, position: this.activeTab})
     },
     deleteNewParam(event) {
       this.deleteNewParamEditableObject({param: event.param, id: event.id, position: this.activeTab})

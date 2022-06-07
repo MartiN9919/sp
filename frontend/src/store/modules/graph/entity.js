@@ -19,14 +19,14 @@ export default {
   },
   mutations: {
     setEditableRelation: (state, {relation, document}) => state.editableRelation = {relation, document},
-    addNewParamEditableRelation: (state, id) => state.editableRelation.relation.addParam(id),
+    addNewParamEditableRelation: (state, {id, value}) => state.editableRelation.relation.addParam(id, value),
     deleteNewParamEditableRelation: (state, {id, param}) => state.editableRelation.relation.deleteParam(id, param),
 
     setEditableObjects: (state, object) => state.editableObjects = [object],
     resetEditableObjects: (state) => state.editableObjects = [state.editableObjects[0]],
     addEditableObjects: (state, object) => state.editableObjects.push(object),
     clearEditableObjects: (state, object) => state.editableObjects = null,
-    addNewParamEditableObject: (state, {id, position}) => state.editableObjects[position].addParam(id),
+    addNewParamEditableObject: (state, {id, value, position}) => state.editableObjects[position].addParam(id, value),
     deleteNewParamEditableObject: (state, {id, param, position}) => state.editableObjects[position].deleteParam(id, param),
 
     setFormFile: (state, file) => state.formFile = file,
@@ -50,8 +50,8 @@ export default {
         commit('setEditableRelation', {relation: new DataBaseRelation(...relation), document})
       }
     },
-    addNewParamEditableRelation({commit}, relationId) {
-      commit('addNewParamEditableRelation', relationId)
+    addNewParamEditableRelation({commit}, relation) {
+      commit('addNewParamEditableRelation', relation)
     },
     deleteNewParamEditableRelation({commit}, playLoad) {
       commit('deleteNewParamEditableRelation', playLoad)

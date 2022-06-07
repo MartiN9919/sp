@@ -1,7 +1,7 @@
 <template>
   <custom-tooltip
       :description="base.hint"
-      :value="param.value"
+      :value="value"
       :type="base.type"
       nudge-right="20"
       right
@@ -9,7 +9,7 @@
     <template v-slot:activator="{ on }">
       <div v-on="on" class="w-100">
         <responsive-input-form
-          v-model="param.value"
+          v-model="value"
           :inputType="base.type"
           :listRules="['notEmpty']"
           :readonly="readOnly"
@@ -60,7 +60,7 @@ export default {
     conflict: Boolean
   },
   computed: {
-    ...mapGetters(['editableObjects']),
+    ...mapGetters(['editableObjects', 'baseList', 'baseLists']),
     readOnly: function () {
       if(this.conflict && this.editableObjects.length > 1) {
         return !!this.editableObjects[0].params.find(p => p.values.find(v => v === this.param))
@@ -69,9 +69,37 @@ export default {
         return false
       }
     },
+    value: {
+      get: function () {
+        return this.param.value
+      },
+      set: function (value) {
+        this.setDepend(value)
+        this.param.value = value
+      }
+    },
     inputClass: function () {
       return this.readOnly ? 'readOnly' : ''
     }
+  },
+  methods: {
+    setDepend(value) {
+      if(this.base.type.title === 'list') {
+        const findValue = this.baseList(this.base.type.value).values.find(v => v.id === value)
+        if(findValue && findValue.parent_id) {
+          this.$emit('depend',{
+            parent: findValue.parent_id,
+            list: Object.entries(this.baseLists)
+                .find(([id, list]) => list.values
+                    .find(v => v.id === findValue.parent_id)
+                )
+          })
+        }
+      }
+    }
+  },
+  mounted() {
+    this.setDepend(this.param.value)
   }
 }
 </script>
