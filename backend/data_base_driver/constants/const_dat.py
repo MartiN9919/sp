@@ -318,6 +318,7 @@ class DAT_SYS_LIST_DOP:
     LIST_ID = 'list_id'
     VAL = 'val'
     PARENT_ID = 'parent_id'
+    PARENT = 'parent'
     DUMP = None
 
 
