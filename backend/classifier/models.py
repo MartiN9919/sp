@@ -134,7 +134,7 @@ class ModelListDop(models.Model):
         @param args: стандартный параметр
         @param kwargs: стандартный параметр
         """
-        if len(ModelListDop.objects.filter(key=self.key).filter(val=self.val)) > 0 and self.fl == 0:
+        if len(ModelListDop.objects.filter(key=self.key).filter(val=self.val).filter(parent=self.parent)) > 0 and self.fl == 0:
             raise ValidationError('в данном списке уже есть такой элемент')
         else:
             self.fl = 1

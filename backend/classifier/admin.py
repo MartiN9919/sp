@@ -4,7 +4,8 @@ from django.core.exceptions import ValidationError
 from django.db.models import Q
 from classifier.models import ModelKey, ModelObject, ModelList, ModelListDop, ModelPhoneNumberFormat
 from data_base_driver.constants.const_admin import PROJECT_TITLE_ADMIN
-from data_base_driver.constants.const_dat import DAT_SYS_KEY, DAT_SYS_OBJ, DAT_SYS_LIST_TOP, DAT_SYS_PHONE_NUMBER_FORMAT
+from data_base_driver.constants.const_dat import DAT_SYS_KEY, DAT_SYS_OBJ, DAT_SYS_LIST_TOP, \
+    DAT_SYS_PHONE_NUMBER_FORMAT, DAT_SYS_LIST_DOP
 
 admin.site.site_header = PROJECT_TITLE_ADMIN
 
@@ -28,7 +29,25 @@ class ModelObjectAdmin(admin.ModelAdmin):
     ordering = [DAT_SYS_OBJ.TITLE]
 
 
+@admin.register(ModelListDop)
+class ModelListAdmin(admin.ModelAdmin):
+    search_fields = [DAT_SYS_LIST_DOP.VAL]
+    ordering = [DAT_SYS_LIST_DOP.ID]
+    list_per_page = 20
+
+    def get_model_perms(self, request):
+        """
+        Костыль для скрытия сквозных значений списков
+        """
+        return {}
+
+
 class ModelListDopAdmin(admin.TabularInline):
+    search_fields = [DAT_SYS_LIST_DOP.VAL]
+    autocomplete_fields = (DAT_SYS_LIST_DOP.PARENT,)
+    fieldsets = (
+        (None, {'fields': ((DAT_SYS_LIST_DOP.VAL, DAT_SYS_LIST_DOP.PARENT),)}),
+    )
     model = ModelListDop
 
 
