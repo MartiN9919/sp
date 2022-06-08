@@ -82,13 +82,19 @@ class SpeciesFilterRel(RelatedFieldListFilter):
         arbitrary species"""
 
         if len(args) == 3:
+            self.object_id_1 = args[0].get('rel_obj_1__id__exact', None)
+            self.object_id_2 = args[0].get('rel_obj_2__id__exact', None)
             self.value = args[0].get('rel_obj_1__id__exact', None)
             if not self.value:
                 self.value = args[0].get('rel_obj_2__id__exact', None)
         super(SpeciesFilterRel, self).__init__(field, request, *args, **kwargs)
 
     def queryset(self, request, queryset):
-        if self.value:
+        if self.object_id_1 and self.object_id_2:
+            return queryset.filter((Q(rel_obj_1_id=int(self.object_id_1)) & Q(rel_obj_2_id=int(self.object_id_2))) |
+                                   (Q(rel_obj_1_id=int(self.object_id_2)) & Q(rel_obj_2_id=int(self.object_id_1))),
+                                   obj_id=1)
+        elif self.value:
             return queryset.filter(Q(rel_obj_1_id=int(self.value)) | Q(rel_obj_2_id=int(self.value)), obj_id=1)
         else:
             return queryset.filter(obj_id=1)
@@ -224,7 +230,7 @@ class ModelKeyAdminObject(admin.ModelAdmin):
         if not obj:
             temp = request.GET.get('_changelist_filters', '')
             if temp.find('obj__id__exact') != -1:
-                obj_id = temp.split('obj__id__exact')[1].split('=')[1]
+                obj_id = temp.split('obj__id__exact')[1].split('=')[1].split('&')[0]
             else:
                 obj_id = '0'
             form.base_fields['obj'].initial = int(obj_id)
