@@ -204,6 +204,7 @@ class ModelKeyAdminObject(admin.ModelAdmin):
         DAT_SYS_KEY.OBJ,
         DAT_SYS_KEY.PRIORITY,
         DAT_SYS_KEY.TYPE_VAL,
+        DAT_SYS_KEY.LIST,
         DAT_SYS_KEY.NEED,
         DAT_SYS_KEY.DESCRIPT,
     )
