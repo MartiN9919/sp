@@ -12,7 +12,7 @@ def recursion_search(group_id: int, request: dict) -> dict:
     @param request: древовидный запрос
     @return: список словарей формате [{object_id, rec_ids},...,{}]
     """
-    result = {'object_id': request[FullTextSearch.OBJECT_ID], 'records': set(), 'old': [], 'pre_old': []}
+    result = {'object_id': request[FullTextSearch.OBJECT_ID], 'records': None, 'old': [], 'pre_old': []}
     for relation in request.get(FullTextSearch.RELATIONS, []):
         main_object_records = [0] if len(request.get(FullTextSearch.REQUEST, '')) == 0 else find_reliable_http(
             request.get(FullTextSearch.OBJECT_ID), request.get(FullTextSearch.REQUEST, ''),
@@ -44,7 +44,7 @@ def recursion_search(group_id: int, request: dict) -> dict:
                     temp_result = set([int(item['rec_id']) for item in temp_set])
                 else:
                     temp_result = temp_result.union([int(item['rec_id']) for item in temp_set])
-        if len(result.get('records')) == 0:
+        if result.get('records') is None:
             result['records'] = temp_result
         else:
             result['records'].intersection_update(temp_result)
