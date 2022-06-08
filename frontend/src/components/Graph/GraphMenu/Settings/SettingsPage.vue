@@ -17,11 +17,12 @@ import SettingBlock from "@/components/Graph/GraphMenu/Settings/Modules/SettingB
 import ListGlobalSettings from "@/components/Graph/GraphMenu/Settings/Global/ListGlobalSettings"
 import ListClassifierSettings from "@/components/Graph/GraphMenu/Settings/Classifier/ListClassifierSettings"
 import ListTriggerSettings from "@/components/Graph/GraphMenu/Settings/Trigger/ListTriggerSettings"
+import ListSearchSettings from "@/components/Graph/GraphMenu/Settings/Search/ListSearchSettings"
 import {mapActions, mapGetters} from "vuex"
 
 export default {
   name: "SettingsPage",
-  components: {SettingBlock, ListTriggerSettings, ListClassifierSettings, ListGlobalSettings},
+  components: {SettingBlock, ListTriggerSettings, ListClassifierSettings, ListGlobalSettings, ListSearchSettings},
   data: () => ({
     listSettings: [
       {
@@ -29,6 +30,12 @@ export default {
         title: 'Общие настройки графа',
         subTitle: 'Настройка отображения связей и объектов на графе',
         component: ListGlobalSettings,
+      },
+      {
+        icon: 'mdi-link',
+        title: 'Настройки поиска',
+        subTitle: 'Настройка дополнительных условий задаваемых при поиске',
+        component: ListSearchSettings,
       },
       {
         icon: 'mdi-text-box-outline',

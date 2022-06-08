@@ -46,7 +46,10 @@ export default {
           object_id_1: objects[0].ids.object_id,
           object_id_2: objects[1].ids.object_id,
           rec_id_1: objects[0].ids.rec_id,
-          rec_id_2: objects[1].ids.rec_id
+          rec_id_2: objects[1].ids.rec_id,
+          search_deep: getters.searchSettingsValue('searchDeep'),
+          search_count: getters.searchSettingsValue('searchCount'),
+          search_short: getters.searchSettingsValue('searchShort')
         }
       return await axios.get('objects/objects_relation/', config)
         .then(response => {

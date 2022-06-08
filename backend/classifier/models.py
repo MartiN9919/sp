@@ -1,7 +1,7 @@
 from django.core.exceptions import ValidationError
 from django.db import models
 from data_base_driver.constants.const_dat import DAT_SYS_OBJ, DAT_SYS_LIST_TOP, DAT_SYS_KEY, DAT_SYS_LIST_DOP, \
-     DAT_SYS_PHONE_NUMBER_FORMAT
+    DAT_SYS_PHONE_NUMBER_FORMAT
 
 
 class ModelObject(models.Model):
@@ -105,6 +105,15 @@ class ModelListDop(models.Model):
         ModelList,
         on_delete=models.CASCADE,
     )
+    parent = models.ForeignKey(
+        'ModelListDop',
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+    )
+
+    def __str__(self):
+        return self.val
 
     def clean(self):
         """
@@ -125,7 +134,7 @@ class ModelListDop(models.Model):
         @param args: стандартный параметр
         @param kwargs: стандартный параметр
         """
-        if len(ModelListDop.objects.filter(key=self.key).filter(val=self.val)) > 0 and self.fl == 0:
+        if len(ModelListDop.objects.filter(key=self.key).filter(val=self.val).filter(parent=self.parent)) > 0 and self.fl == 0:
             raise ValidationError('в данном списке уже есть такой элемент')
         else:
             self.fl = 1

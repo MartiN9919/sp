@@ -99,7 +99,7 @@ const SpaceCtxMenu = [
       {
         icon: 'mdi-account-search-outline',
         title: 'Найти связи',
-        subtitle: 'Найти все связи между выбранными объектами',
+        subtitle: 'Найти связи между выбранными объектами',
         action: 'findRelations',
         disabled: true
       },

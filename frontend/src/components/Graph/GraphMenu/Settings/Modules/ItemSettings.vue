@@ -9,7 +9,7 @@
       </v-list-item-subtitle>
     </v-list-item-content>
     <v-list-item-action class="my-auto ml-2">
-      <v-switch disabled v-model="value" color="teal"/>
+      <slot/>
     </v-list-item-action>
   </v-list-item>
 </template>
@@ -26,6 +26,9 @@ export default {
     subTitle: String,
     value: Boolean
   },
+  data: () => ({
+    ripple: { class: 'teal--text' }
+  }),
   computed: {
     state: {
       get: function () {
@@ -34,9 +37,6 @@ export default {
       set: function (value) {
         this.$emit('changeValue', value)
       }
-    },
-    ripple: function () {
-      return { class: 'teal--text' }
     }
   }
 }

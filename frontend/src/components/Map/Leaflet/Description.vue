@@ -4,7 +4,7 @@
       <v-card-text class="pa-0 black--text">
         <dossier :params="params" :rec-id="recId" :object-id="objectId" :title="selectedItem.title"/>
       </v-card-text>
-      <control-menu :buttons="controlButtons" @change="editObject" @addToGraph="toGraph"/>
+      <control-menu :buttons="controlButtons" @change="editObject" @addToGraph="showObject"/>
     </v-card>
   </v-dialog>
 </template>
@@ -54,17 +54,32 @@ export default {
   },
   methods: {
     ...mapActions(['getObject', 'setEditableObject', 'addObjectToGraph']),
-    editObject() {
-      router.push({name: 'Graph'}).then(() => this.setEditableObject(this.payload))
-    },
     toGraph() {
-      router.push({name: 'Graph'}).then(() => this.addObjectToGraph({
-        object: this.payload,
-        action: {
-          name: 'addGeometryToGraph',
-          payload: this.payload.title
+      return new Promise(function(resolve, reject) {
+        if (router.history.current.name === 'Graph') {
+          resolve()
+        } else {
+          router.push({name: 'Graph'}).then(() => resolve()).catch(() => reject())
         }
-      }))
+      })
+    },
+    editObject() {
+      this.toGraph().then(() => {
+        this.setEditableObject(this.payload)
+        this.dossier = false
+      })
+    },
+    showObject() {
+      this.toGraph().then(() => {
+        this.addObjectToGraph({
+          object: this.payload,
+          action: {
+            name: 'addGeometryToGraph',
+            payload: this.payload.title
+          }
+        })
+        this.dossier = false
+      })
     },
   },
   watch: {

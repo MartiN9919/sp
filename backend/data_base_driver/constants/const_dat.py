@@ -317,6 +317,8 @@ class DAT_SYS_LIST_DOP:
     KEY_ID = 'key_id'
     LIST_ID = 'list_id'
     VAL = 'val'
+    PARENT_ID = 'parent_id'
+    PARENT = 'parent'
     DUMP = None
 
 

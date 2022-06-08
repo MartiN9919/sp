@@ -1,7 +1,9 @@
 <template>
   <v-card class="ma-2">
     <v-list class="pt-0">
-      <item-settings v-model="state" :title="trigger.title" :sub-title="trigger.subTitle"/>
+      <item-settings v-model="state" :title="trigger.title" :sub-title="trigger.subTitle">
+        <v-switch disabled v-model="state" color="teal"/>
+      </item-settings>
       <v-divider v-if="trigger.variables.length" class="pb-2"/>
       <v-form :ref="'form' + trigger.id" onSubmit="return false;">
         <v-list-item v-for="param in trigger.variables" :key="param.name">

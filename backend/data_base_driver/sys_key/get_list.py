@@ -15,11 +15,12 @@ def get_list_by_top_id(list_id):
     if list_id == 53:
         return get_groups_list()
     sql = 'SELECT ' + DAT_SYS_LIST_DOP.ID + ', ' \
-          + DAT_SYS_LIST_DOP.VAL + ' FROM ' \
+          + DAT_SYS_LIST_DOP.VAL + ', ' \
+          + DAT_SYS_LIST_DOP.PARENT_ID + ' FROM ' \
           + DAT_SYS_LIST_DOP.TABLE + ' WHERE ' \
           + DAT_SYS_LIST_DOP.KEY_ID + ' = ' + str(list_id)
-    return [{'list_id': item[0], 'value': item[1]} for item in db_sql(sql)] + \
-           ([{'list_id': 0, 'value': 'Корень'}] if list_id == 48 else [])
+    return [{'id': item[0], 'value': item[1], 'parent_id': item[2]} for item in db_sql(sql)] + \
+           ([{'id': 0, 'value': 'Корень'}] if list_id == 48 else [])
 
 
 def get_list_by_name(name):
