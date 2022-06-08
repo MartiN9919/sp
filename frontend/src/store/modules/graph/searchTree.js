@@ -97,6 +97,14 @@ export class SearchTreeRootItem {
     this.fields = store.getters.baseClassifiers(id).map(c => new ParamObject(c))
   }
 
+  get fieldInformation() {
+    return this.fields.map(f => {
+      if(f.new_values.length) {
+        return [f.baseParam.title, f.new_values.map(v => v.value)].join(': ')
+      }
+    }).join(' ')
+  }
+
   get information() {
     return ''
   }
