@@ -66,7 +66,7 @@ export default {
   },
   methods: {
     ...mapActions(['reorderNodes', 'setEditableRelation', 'setNavigationDrawerStatus', 'setActiveTool',
-    'setEditableObject', 'setRootSearchRelationTreeItem', 'getRelationsBtwObjects', 'changeSelectedTreeViewItem',
+    'setEditableObject', 'setRootSearchRelation', 'getRelationsBtwObjects', 'changeSelectedTreeViewItem',
     'addObjectsToGraph', 'executeMapScript', 'clearGraph', 'deleteSelectedNodes', 'deleteNode']),
     menuShow(event, object=null) {
       this.objectCtxMenu = object
@@ -76,7 +76,7 @@ export default {
       this.reorderNodes(this.selectedNodes)
     },
     setSearchRelation() {
-      this.setRootSearchRelationTreeItem(this.objectCtxMenu.entity)
+      this.setRootSearchRelation(this.objectCtxMenu.entity)
       this.setNavigationDrawerStatus(true)
       this.setActiveTool('SearchRelationPage')
     },

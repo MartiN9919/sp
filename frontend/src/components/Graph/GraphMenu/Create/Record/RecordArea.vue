@@ -4,7 +4,7 @@
         v-for="param in params"
         :key="param.baseParam.id"
         v-model="openedPanels"
-        @click="createNewParam"
+        @click="param.add()"
     >
       <template v-slot:title="">
         {{param.baseParam.title}}
@@ -12,7 +12,7 @@
       <template v-slot:body="">
         <v-row
             v-for="(value, key) in param.new_values" :key="key"
-            @keyup.alt.enter="deleteNewParam(param.baseParam.id, value)"
+            @keyup.alt.enter="param.remove(value)"
             no-gutters
             class="flex-nowrap px-2"
         >
@@ -20,7 +20,7 @@
               :param="getParam(param, value)"
               :base="param.baseParam"
               :conflict="conflict"
-              @deletable="deleteNewParam(param.baseParam.id, value)"
+              @deletable="param.remove(value)"
               @depend="createDependParam"
           ></record-input>
         </v-row>
@@ -72,19 +72,13 @@ export default {
     addDocToGraph(doc) {
       this.$emit('addDocumentToGraph', doc)
     },
-    createNewParam(id, value=null) {
-      this.$emit('createNewParam', {id, value})
-    },
     createDependParam(payload) {
       const findParam = this.params.find(p =>
           p.baseParam.type.title === 'list' && p.baseParam.type.value === parseInt(payload.list[0])
       )
       if(findParam && !findParam.new_values.length) {
-        this.createNewParam(findParam.baseParam.id, payload.parent)
+        findParam.add(payload.parent)
       }
-    },
-    deleteNewParam(id, param) {
-      this.$emit('deleteNewParam', { id: id, param: param })
     },
   },
   mounted() {
