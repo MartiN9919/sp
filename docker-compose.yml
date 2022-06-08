@@ -3,18 +3,17 @@ version: '3.3'
 services:
   web:
     restart: always
-    image: saphir2.4
+    image: saphir_3
     volumes:
       - /deploy_storage:/deploy_storage
     expose:
-      - 8000
+      - 9000
   nginx:
     restart: always
-    image: saphir_nginx
+    image: saphir_3_nginx
     volumes:
       - /deploy_storage:/deploy_storage
     ports:
-      - "80:80"
-      - "443:443"
+      - "7000:7000"
     depends_on:
       - web
