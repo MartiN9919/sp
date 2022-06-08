@@ -96,9 +96,9 @@ def find_advanced(group_id, object_id, request, actual=False):
     keys = {}
     result = []
     for param in request:
-        if keys.get(param['key_id']) is None:
-            keys[param['key_id']] = []
-        keys[param['key_id']].append(param['value'])
+        if keys.get(param['id']) is None:
+            keys[param['id']] = []
+        keys[param['id']].append(param['value'])
     for key in keys:
         or_result = set()
         for value in keys[key]:

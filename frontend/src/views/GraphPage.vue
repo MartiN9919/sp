@@ -2,7 +2,7 @@
   <split-panel shadow-effect>
     <template v-slot:firstPane>
       <tools-menu>
-        <component :is="changeComponent()"/>
+        <component :is="changeComponent"/>
       </tools-menu>
     </template>
     <template v-slot:secondPane>
@@ -37,10 +37,9 @@ export default {
     SettingsPage,
     TimeLinePage
   },
-  computed: mapGetters(['activeTool']),
-  methods: {
-    ...mapActions(['setRootSearchTreeItem']),
-    changeComponent() {
+  computed: {
+    ...mapGetters(['activeTool']),
+    changeComponent: function () {
       switch (this.activeTool(router.currentRoute.name)) {
         case 'SearchObjectPage':
           return 'SearchObjectPage'
@@ -59,8 +58,9 @@ export default {
       }
     }
   },
+  methods: mapActions(['setRootSearch']),
   mounted() {
-    this.setRootSearchTreeItem({})
+    this.setRootSearch()
   }
 }
 </script>

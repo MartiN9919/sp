@@ -4,7 +4,7 @@
       <relation-header :objects="editableObjects"/>
       <v-card flat v-if="!editableObjects.length">
         <v-card-subtitle class="text-center text-no-wrap">
-          Выбирете на графе объекты для создания связи
+          Выберите на графе объекты для создания связи
         </v-card-subtitle>
       </v-card>
     </template>
@@ -12,8 +12,6 @@
       <v-form ref="form" v-model="valid" class="overflow-y-auto" onSubmit="return false;">
         <record-area
           :params="editableRelation.relation.params"
-          @createNewParam="createNewParam"
-          @deleteNewParam="deleteNewParam"
           @addDocumentToGraph="addDocumentToGraph"
         />
       </v-form>
@@ -63,18 +61,10 @@ export default {
   },
   methods: {
     ...mapActions([
-      'addNewParamEditableRelation',
-      'deleteNewParamEditableRelation',
       'saveEditableRelation',
       'addObjectToGraph',
       'clearSelectedNodes',
     ]),
-    createNewParam(event) {
-      this.addNewParamEditableRelation(event)
-    },
-    deleteNewParam(event) {
-      this.deleteNewParamEditableRelation({param: event.param, id: event.id})
-    },
     createRelation() {
       this.saveEditableRelation().then(() => { this.clearSelectedNodes() })
     },
