@@ -89,12 +89,12 @@ export default {
     },
     listRelations: function () {
       let relations = this.baseRelations({ f_id: this.objectId, s_id: this.selectedObjectId })
-      let defaultRelations = [{ id: 0, title: 'Без связи' }]
+      let defaultRelations = [{ id: 0, title: 'Все связи' }]
       return Array.isArray(relations) ? defaultRelations.concat(relations) : defaultRelations
     },
     listRelationItems: function () {
       let relationObject = this.listRelations.find(relation => relation.id === this.selectedRelationId)
-      let defaultRelationList = [{ id: 0, value: 'Не выбрано' }]
+      let defaultRelationList = [{ id: 0, value: 'Все значения' }]
       if(relationObject && relationObject.hasOwnProperty('type') && relationObject.type.value) {
         return defaultRelationList.concat(this.baseList(relationObject.type.value).values)
       }

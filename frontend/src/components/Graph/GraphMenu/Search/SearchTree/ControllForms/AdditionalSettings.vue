@@ -6,18 +6,20 @@
       </v-card-actions>
     </template>
     <v-card>
-      <v-card-title>
-        Настройки связи
-      </v-card-title>
-      <v-card-subtitle>
-        Расширенные настройки связи поля с вышестоящим
-      </v-card-subtitle>
-      <v-card-text>
-        <boolean-input v-model="object.actual" label="Поиск только по актуальным значениям"/>
-        <date-input v-model="object.relDateTimeStart" :dropdown="false" clearable label="начала"/>
-        <date-input v-model="object.relDateTimeEnd" :dropdown="false" clearable label="конца"/>
-      </v-card-text>
-      <v-divider/>
+      <template v-if="relationSetting">
+        <v-card-title>
+          Настройки связи
+        </v-card-title>
+        <v-card-subtitle>
+          Расширенные настройки связи поля с вышестоящим
+        </v-card-subtitle>
+        <v-card-text>
+          <boolean-input v-model="object.actual" label="Поиск только по актуальным значениям"/>
+          <date-input v-model="object.relDateTimeStart" :dropdown="false" clearable label="начала"/>
+          <date-input v-model="object.relDateTimeEnd" :dropdown="false" clearable label="конца"/>
+        </v-card-text>
+        <v-divider/>
+      </template>
       <v-card-title>
         Настройка полей
       </v-card-title>
