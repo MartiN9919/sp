@@ -17,7 +17,7 @@ export default {
   name: "BtnCreate",
   components: {DropDownMenu, FormCreate},
   props: {
-    objectId: Number,
+    objectId: Number
   },
 }
 </script>

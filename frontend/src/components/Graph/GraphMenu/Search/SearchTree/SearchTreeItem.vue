@@ -36,13 +36,7 @@ export default {
   computed: {
     model: {
       get: function () {
-        if(this.relation) {
-          if(this.base) {
-            return this.item.title
-          }
-        } else {
-          return this.item.request
-        }
+        return this.item.request
       },
       set(value) {
         this.item.request = value

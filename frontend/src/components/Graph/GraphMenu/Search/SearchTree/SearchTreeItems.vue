@@ -39,14 +39,14 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['setRootSearchTreeItem', 'changeSearchTreeItem', 'addSearchTreeItem', 'removeSearchTreeItem']),
+    ...mapActions(['setRootSearch', 'changeSearchTreeItem', 'addSearchTreeItem', 'removeSearchTreeItem']),
     create(item, newItem) {
       this.addSearchTreeItem({rootItem: item, newItem: newItem})
       this.openItems.push(item)
     },
     change(item, newItem) {
       if(item === this.items[0])
-        this.setRootSearchTreeItem({id: newItem.object_id, actual: newItem.actual})
+        this.setRootSearch(newItem)
       else this.changeSearchTreeItem({rootItem: item, newItem: newItem})
     },
     remove(removeItem) {

@@ -1,10 +1,10 @@
 <template>
   <div class="message-text-style v-messages">
-    <span>{{item.getInformation()}}</span>
+    <span>{{item.information}}</span>
     <span class="text-no-wrap">
       Актуальность:
-      <v-icon size="15" :color="item.getInformationActual().color">
-        {{item.getInformationActual().icon}}
+      <v-icon size="15" :color="item.informationActual.color">
+        {{item.informationActual.icon}}
       </v-icon>
     </span>
   </div>
