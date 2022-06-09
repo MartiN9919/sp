@@ -5,6 +5,7 @@ from django.http import JsonResponse
 from django.http import FileResponse
 from PIL import Image
 
+from classifier.models import Manual
 from core.projectSettings.decorators import login_check, request_get, request_download
 from core.projectSettings.constant import MEDIA_ROOT
 from data_base_driver.sys_reports.check_file_permission import check_file_permission
@@ -69,4 +70,21 @@ def aj_download_report(request):
         else:
             return FileResponse(open(path, 'rb'), as_attachment=True)
     else:
+        return JsonResponse({}, status=404)
+
+
+@login_check
+@request_get
+def aj_get_manuals(request):
+    return JsonResponse({'data': [{'id': item.id, 'name': item.file.name.split('/')[-1]}
+                                  for item in Manual.objects.all()]}, status=200)
+
+
+@login_check
+@request_get
+def aj_get_manual(request, manual_id):
+    try:
+        manual = Manual.objects.get(id=manual_id).file.path
+        return FileResponse(open(manual, 'rb'), as_attachment=True)
+    except IndexError:
         return JsonResponse({}, status=404)

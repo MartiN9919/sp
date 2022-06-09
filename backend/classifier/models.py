@@ -1,5 +1,10 @@
+import os
+
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.dispatch import receiver
+
+from core.projectSettings.constant import MANUAL_ROOT
 from data_base_driver.constants.const_dat import DAT_SYS_OBJ, DAT_SYS_LIST_TOP, DAT_SYS_KEY, DAT_SYS_LIST_DOP, \
     DAT_SYS_PHONE_NUMBER_FORMAT
 
@@ -264,7 +269,7 @@ class ModelKey(models.Model):
         max_length=20,
         verbose_name='Режим отображения',
         choices=DAT_SYS_KEY.VISIBLE_LIST,
-        help_text='Как будет отображаться данный классификатор в заоголовках',
+        help_text='Как будет отображаться данный классификатор в заголовках',
         default='all'
     )
     blocked_blank = models.BooleanField(
@@ -299,3 +304,38 @@ class ModelKey(models.Model):
         db_table = DAT_SYS_KEY.TABLE_SHORT
         verbose_name = "Классификатор"
         verbose_name_plural = "Классификаторы"
+
+
+class Manual(models.Model):
+    file = models.FileField(upload_to=MANUAL_ROOT)
+
+    def __str__(self):
+        return self.file.name.split('/')[1]
+
+    class Meta:
+        verbose_name = "Инструкцию"
+        verbose_name_plural = "Инструкция"
+
+
+@receiver(models.signals.post_delete, sender=Manual)
+def auto_delete_file_on_delete(sender, instance, **kwargs):
+    if instance.file:
+        if os.path.isfile(instance.file.path):
+            os.remove(instance.file.path)
+
+
+@receiver(models.signals.pre_save, sender=Manual)
+def auto_delete_file_on_change(sender, instance, **kwargs):
+    if not instance.pk:
+        return False
+
+    try:
+        old_file = Manual.objects.get(pk=instance.pk).file
+    except Manual.DoesNotExist:
+        return False
+
+    new_file = instance.file
+    if not old_file == new_file:
+        if os.path.isfile(old_file.path):
+            os.remove(old_file.path)
+
