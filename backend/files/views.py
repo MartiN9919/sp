@@ -6,7 +6,7 @@ from django.http import FileResponse
 from PIL import Image
 
 from classifier.models import Manual
-from core.projectSettings.decorators import login_check, request_get, request_download
+from core.projectSettings.decorators import login_check, request_get, request_download, request_wrap
 from core.projectSettings.constant import MEDIA_ROOT
 from data_base_driver.sys_reports.check_file_permission import check_file_permission
 from data_base_driver.sys_reports.get_files_info import get_file_path
@@ -75,10 +75,10 @@ def aj_download_report(request):
 
 @login_check
 @request_get
+@request_wrap
 def aj_get_manuals(request):
-    data = [{'id': item.id, 'title': item.title, 'update': item.update_datetime.strftime("%d-%m-%Y %H:%M")} for item
+    return [{'id': item.id, 'title': item.title, 'update': item.update_datetime.strftime("%d-%m-%Y, %H:%M:%S")} for item
             in Manual.objects.all()]
-    return JsonResponse(data, status=200, safe=False)
 
 
 @login_check

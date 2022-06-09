@@ -156,6 +156,7 @@ class DAT_SYS_KEY:
     TYPE_FILE_PHOTO = 'file_photo'
     TYPE_FILE_ANY = 'file_any'
     TYPE_SEARCH = 'search'
+    TYPE_PERIOD = 'period'
 
     VISIBLE_NONE = 'none'
     VISIBLE_ONLY_VALUE = 'only_value'
@@ -173,6 +174,7 @@ class DAT_SYS_KEY:
         (TYPE_GEOMETRY_POINT, 'Точка'),
         (TYPE_FILE_PHOTO, 'Файл-фотография'),
         (TYPE_FILE_ANY, 'Файл-любой тип'),
+        (TYPE_PERIOD, 'Период времени')
     )
 
     VISIBLE_LIST = (
@@ -224,7 +226,8 @@ class DAT_SYS_SCRIPT_VARIABLE:
         (DAT_SYS_KEY.TYPE_GEOMETRY_POINT, 'Точка'),
         (DAT_SYS_KEY.TYPE_FILE_ANY, 'Файл-любой тип'),
         (DAT_SYS_KEY.TYPE_SEARCH, 'Поиск объекта'),
-        (TYPE_LIST, 'Список')
+        (TYPE_LIST, 'Список'),
+        (DAT_SYS_KEY.TYPE_PERIOD, 'Период')
     )
 
 

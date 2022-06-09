@@ -311,9 +311,18 @@ fs = FileSystemStorage(location=MANUAL_ROOT)
 
 
 class Manual(models.Model):
-    title = models.CharField(max_length=255)
-    file = models.FileField(storage=fs)
-    update_datetime = models.DateTimeField(auto_now=True)
+    title = models.CharField(
+        max_length=255,
+        verbose_name='Название',
+    )
+    file = models.FileField(
+        storage=fs,
+        verbose_name='Файл',
+    )
+    update_datetime = models.DateTimeField(
+        auto_now=True,
+        verbose_name='Время последнего обновления',
+    )
 
     def __str__(self):
         return self.file.name

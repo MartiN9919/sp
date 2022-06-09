@@ -1,6 +1,7 @@
 from pathlib import Path
 from django.middleware.csrf import rotate_token
 
+from core.projectSettings.constant import MEDIA_ROOT
 from data_base_driver.constants.connect_db import VEC_DATA
 
 
@@ -101,4 +102,3 @@ STATIC_ROOT = 'var/static_root'
 STATICFILES_DIRS = [
     "static",
 ]
-
