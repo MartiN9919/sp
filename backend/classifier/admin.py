@@ -2,10 +2,10 @@ from django.contrib import admin
 from django.contrib.admin import RelatedFieldListFilter
 from django.core.exceptions import ValidationError
 from django.db.models import Q
-from classifier.models import ModelKey, ModelObject, ModelList, ModelListDop, ModelPhoneNumberFormat
+from classifier.models import ModelKey, ModelObject, ModelList, ModelListDop, ModelPhoneNumberFormat, Manual
 from data_base_driver.constants.const_admin import PROJECT_TITLE_ADMIN
 from data_base_driver.constants.const_dat import DAT_SYS_KEY, DAT_SYS_OBJ, DAT_SYS_LIST_TOP, \
-    DAT_SYS_PHONE_NUMBER_FORMAT, DAT_SYS_LIST_DOP
+    DAT_SYS_PHONE_NUMBER_FORMAT, DAT_SYS_LIST_DOP, DAT_SYS_MANUAL
 
 admin.site.site_header = PROJECT_TITLE_ADMIN
 
@@ -235,3 +235,17 @@ class ModelKeyAdminObject(admin.ModelAdmin):
                 obj_id = '0'
             form.base_fields['obj'].initial = int(obj_id)
         return form
+
+
+@admin.register(Manual)
+class ModelManual(admin.ModelAdmin):
+    list_display = (
+        DAT_SYS_MANUAL.TITLE,
+        DAT_SYS_MANUAL.UPDATE_DATETIME,
+    )
+    fieldsets = (
+        (None, {'fields': (DAT_SYS_MANUAL.TITLE, DAT_SYS_MANUAL.FILE, )}),
+    )
+    ordering = (DAT_SYS_MANUAL.TITLE,)
+
+
