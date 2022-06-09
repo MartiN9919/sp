@@ -39,6 +39,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'core.projectSettings.middleware.logging_middleware'
 ]
 
 ROOT_URLCONF = 'core.urls'
@@ -94,4 +95,5 @@ USE_L10N = True
 USE_TZ = False
 
 STATIC_URL = '/static/'
+
 # SESSION_EXPIRE_AT_BROWSER_CLOSE = True

@@ -2,9 +2,10 @@ from django.contrib import admin
 from django.contrib.admin import RelatedFieldListFilter
 from django.core.exceptions import ValidationError
 from django.db.models import Q
-from classifier.models import ModelKey, ModelObject, ModelList, ModelListDop, ModelPhoneNumberFormat
+from classifier.models import ModelKey, ModelObject, ModelList, ModelListDop, ModelPhoneNumberFormat, Manual
 from data_base_driver.constants.const_admin import PROJECT_TITLE_ADMIN
-from data_base_driver.constants.const_dat import DAT_SYS_KEY, DAT_SYS_OBJ, DAT_SYS_LIST_TOP, DAT_SYS_PHONE_NUMBER_FORMAT
+from data_base_driver.constants.const_dat import DAT_SYS_KEY, DAT_SYS_OBJ, DAT_SYS_LIST_TOP, \
+    DAT_SYS_PHONE_NUMBER_FORMAT, DAT_SYS_LIST_DOP, DAT_SYS_MANUAL
 
 admin.site.site_header = PROJECT_TITLE_ADMIN
 
@@ -28,7 +29,25 @@ class ModelObjectAdmin(admin.ModelAdmin):
     ordering = [DAT_SYS_OBJ.TITLE]
 
 
+@admin.register(ModelListDop)
+class ModelListAdmin(admin.ModelAdmin):
+    search_fields = [DAT_SYS_LIST_DOP.VAL]
+    ordering = [DAT_SYS_LIST_DOP.ID]
+    list_per_page = 20
+
+    def get_model_perms(self, request):
+        """
+        Костыль для скрытия сквозных значений списков
+        """
+        return {}
+
+
 class ModelListDopAdmin(admin.TabularInline):
+    search_fields = [DAT_SYS_LIST_DOP.VAL]
+    autocomplete_fields = (DAT_SYS_LIST_DOP.PARENT,)
+    fieldsets = (
+        (None, {'fields': ((DAT_SYS_LIST_DOP.VAL, DAT_SYS_LIST_DOP.PARENT),)}),
+    )
     model = ModelListDop
 
 
@@ -63,13 +82,19 @@ class SpeciesFilterRel(RelatedFieldListFilter):
         arbitrary species"""
 
         if len(args) == 3:
+            self.object_id_1 = args[0].get('rel_obj_1__id__exact', None)
+            self.object_id_2 = args[0].get('rel_obj_2__id__exact', None)
             self.value = args[0].get('rel_obj_1__id__exact', None)
             if not self.value:
                 self.value = args[0].get('rel_obj_2__id__exact', None)
         super(SpeciesFilterRel, self).__init__(field, request, *args, **kwargs)
 
     def queryset(self, request, queryset):
-        if self.value:
+        if self.object_id_1 and self.object_id_2:
+            return queryset.filter((Q(rel_obj_1_id=int(self.object_id_1)) & Q(rel_obj_2_id=int(self.object_id_2))) |
+                                   (Q(rel_obj_1_id=int(self.object_id_2)) & Q(rel_obj_2_id=int(self.object_id_1))),
+                                   obj_id=1)
+        elif self.value:
             return queryset.filter(Q(rel_obj_1_id=int(self.value)) | Q(rel_obj_2_id=int(self.value)), obj_id=1)
         else:
             return queryset.filter(obj_id=1)
@@ -205,8 +230,22 @@ class ModelKeyAdminObject(admin.ModelAdmin):
         if not obj:
             temp = request.GET.get('_changelist_filters', '')
             if temp.find('obj__id__exact') != -1:
-                obj_id = temp.split('obj__id__exact')[1].split('=')[1]
+                obj_id = temp.split('obj__id__exact')[1].split('=')[1].split('&')[0]
             else:
                 obj_id = '0'
             form.base_fields['obj'].initial = int(obj_id)
         return form
+
+
+@admin.register(Manual)
+class ModelManual(admin.ModelAdmin):
+    list_display = (
+        DAT_SYS_MANUAL.TITLE,
+        DAT_SYS_MANUAL.UPDATE_DATETIME,
+    )
+    fieldsets = (
+        (None, {'fields': (DAT_SYS_MANUAL.TITLE, DAT_SYS_MANUAL.FILE, )}),
+    )
+    ordering = (DAT_SYS_MANUAL.TITLE,)
+
+

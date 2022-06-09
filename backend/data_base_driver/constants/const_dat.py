@@ -55,6 +55,14 @@ class DAT_SYS_TRIGGER:
     HINT = 'hint'
 
 
+class DAT_SYS_MANUAL:
+    TABLE_SHORT = 'classifier_manual'
+    TABLE = VEC_DATA['NAME'] + '.' + TABLE_SHORT
+    ID = 'id'
+    TITLE = 'title'
+    FILE = 'file'
+    UPDATE_DATETIME = 'update_datetime'
+
 ##################################################################################
 # DAT_SYS_ID
 ##################################################################################
@@ -318,6 +326,7 @@ class DAT_SYS_LIST_DOP:
     LIST_ID = 'list_id'
     VAL = 'val'
     PARENT_ID = 'parent_id'
+    PARENT = 'parent'
     DUMP = None
 
 

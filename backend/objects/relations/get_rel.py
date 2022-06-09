@@ -151,6 +151,8 @@ def get_objects_relation(group_id, object_id_1, rec_id_1, object_id_2, rec_id_2,
     @param only_short: Вывод только самых коротких связей
     @return: список связей в формате [{key_id, val, sec},...,{}]
     """
+    if depth == 1:
+        return []
     depth_1 = depth // 2
     depth_2 = depth - depth_1
     value = Manager().dict()
@@ -172,7 +174,7 @@ def get_objects_relation(group_id, object_id_1, rec_id_1, object_id_2, rec_id_2,
                             {'object_id': object_id_2, 'rec_id': rec_id_2} not in path \
                             and len([dict(s) for s in set(frozenset(d.items()) for d in path)]) == len(path):
                         temp_result.append(path)
-    min_length = min(map(lambda x: len(x), temp_result))
+    min_length = min(map(lambda x: len(x), temp_result)) if len(temp_result) else 0
     temp_result = sorted(temp_result, key=lambda x: len(x))
     if only_short:
         temp_result = [item for item in temp_result if len(item) == min_length]
