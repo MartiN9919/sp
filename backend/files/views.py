@@ -43,7 +43,7 @@ def aj_download_condense_image(request):
     original_image = Image.open(file_path)
     width, height = original_image.size
     new_width = 250
-    new_height = height/(width/new_width)
+    new_height = height / (width / new_width)
     resized_image = original_image.resize((int(new_width), int(new_height)))
     temp_file = TemporaryFile()
     resized_image.save(temp_file, "png")
@@ -76,9 +76,9 @@ def aj_download_report(request):
 @login_check
 @request_get
 def aj_get_manuals(request):
-    return JsonResponse({'data': [{'id': item.id, 'title': item.title,
-                                   'update': item.update_datetime.strftime("%d-%m-%Y, %H:%M:%S")}
-                                  for item in Manual.objects.all()]}, status=200)
+    data = [{'id': item.id, 'title': item.title, 'update': item.update_datetime.strftime("%d-%m-%Y, %H:%M:%S")} for item
+            in Manual.objects.all()]
+    return JsonResponse(data, status=200, safe=False)
 
 
 @login_check
