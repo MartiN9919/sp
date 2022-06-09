@@ -76,7 +76,7 @@ def aj_download_report(request):
 @login_check
 @request_get
 def aj_get_manuals(request):
-    data = [{'id': item.id, 'title': item.title, 'update': item.update_datetime.strftime("%d-%m-%Y, %H:%M:%S")} for item
+    data = [{'id': item.id, 'title': item.title, 'update': item.update_datetime.strftime("%d-%m-%Y %H:%M")} for item
             in Manual.objects.all()]
     return JsonResponse(data, status=200, safe=False)
 
