@@ -76,6 +76,9 @@ export default {
           Object.entries(r.data).forEach(([k, v]) => { v.map(t => commit('addTrigger', new Trigger(k, t))) })
         })
     },
+    async getManuals() {
+      return await axios.get('files/manuals/')
+    },
     setTriggerState({ commit }, payload) { commit('setTriggerState', payload) },
   }
 }
