@@ -3,7 +3,7 @@ version: '3.3'
 services:
   web:
     restart: always
-    image: saphir2.4
+    image: saphir_2
     volumes:
       - /deploy_storage:/deploy_storage
     expose:

@@ -10,6 +10,7 @@
       <div v-on="on" class="w-100">
         <responsive-input-form
           v-model="value"
+          v-bind="$attrs"
           :inputType="base.type"
           :listRules="['notEmpty']"
           :readonly="readOnly"
@@ -27,6 +28,7 @@
               offset-y
               eager
               :close-on-content-click="false"
+              z-index="10004"
             >
               <template v-slot:activator="{ on }">
                 <div v-on="on" class="v-messages text-no-wrap selector-date-time">
@@ -34,7 +36,8 @@
                 </div>
               </template>
               <template v-slot:body>
-                <select-date-time v-model="param.date"/>
+                <select-period v-if="search" v-model="param.date"/>
+                <select-date-time v-else v-model="param.date"/>
               </template>
             </drop-down-menu>
           </template>
@@ -50,14 +53,16 @@ import DropDownMenu from "@/components/WebsiteShell/CustomComponents/dropDownMen
 import SelectDateTime from "@/components/WebsiteShell/CustomComponents/DateTimePickers/selectDateTime"
 import {mapGetters} from "vuex";
 import CustomTooltip from "@/components/WebsiteShell/CustomComponents/Tooltip/customTooltip";
+import SelectPeriod from "@/components/WebsiteShell/CustomComponents/DateTimePickers/selectPeriod";
 
 export default {
   name: "RecordInput",
-  components: {CustomTooltip, DropDownMenu, SelectDateTime, ResponsiveInputForm},
+  components: {SelectPeriod, CustomTooltip, DropDownMenu, SelectDateTime, ResponsiveInputForm},
   props: {
     param: Object,
     base: Object,
-    conflict: Boolean
+    conflict: Boolean,
+    search: Boolean
   },
   computed: {
     ...mapGetters(['editableObjects', 'baseList', 'baseLists']),

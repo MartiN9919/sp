@@ -5,7 +5,8 @@ from django.http import JsonResponse
 from django.http import FileResponse
 from PIL import Image
 
-from core.projectSettings.decorators import login_check, request_get, request_download
+from classifier.models import Manual
+from core.projectSettings.decorators import login_check, request_get, request_download, request_wrap
 from core.projectSettings.constant import MEDIA_ROOT
 from data_base_driver.sys_reports.check_file_permission import check_file_permission
 from data_base_driver.sys_reports.get_files_info import get_file_path
@@ -42,7 +43,7 @@ def aj_download_condense_image(request):
     original_image = Image.open(file_path)
     width, height = original_image.size
     new_width = 250
-    new_height = height/(width/new_width)
+    new_height = height / (width / new_width)
     resized_image = original_image.resize((int(new_width), int(new_height)))
     temp_file = TemporaryFile()
     resized_image.save(temp_file, "png")
@@ -69,4 +70,22 @@ def aj_download_report(request):
         else:
             return FileResponse(open(path, 'rb'), as_attachment=True)
     else:
+        return JsonResponse({}, status=404)
+
+
+@login_check
+@request_get
+@request_wrap
+def aj_get_manuals(request):
+    return [{'id': item.id, 'title': item.title, 'update': item.update_datetime.strftime("%d-%m-%Y, %H:%M:%S")} for item
+            in Manual.objects.all()]
+
+
+@login_check
+@request_get
+def aj_get_manual(request, manual_id):
+    try:
+        manual = Manual.objects.get(id=manual_id).file.path
+        return FileResponse(open(manual, 'rb'), as_attachment=True)
+    except IndexError:
         return JsonResponse({}, status=404)

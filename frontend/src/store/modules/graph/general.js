@@ -10,7 +10,7 @@ export default {
     async getObject({getters}, {rec_id, object_id, config = {}}) {
       config.headers = {'set-cookie': getters.cookieTriggers(object_id)}
       return await axios.get('objects/object/', Object.assign(config, {params: {rec_id, object_id}}))
-        .then(r => r.data ? Promise.resolve(new DataBaseObject(r.data)) : Promise.reject(e))
+        .then(r => r.data ? Promise.resolve(new DataBaseObject(r.data)) : Promise.reject(r))
         .catch(e => Promise.reject(e))
     },
     async getRelation({getters}, {from, to, config = {}}) {
@@ -71,15 +71,6 @@ export default {
 class BaseDbObject {
   constructor(getter, baseObjects, params) {
     this.params = baseObjects.map(p => new ParamObject(getter(p.id), params.find(n => n.id === p.id)?.values))
-  }
-
-  addParam(id, value=null, date=null) {
-    this.params.find(param => param.baseParam.id === id).new_values.push(new ValueParam(value, date))
-  }
-
-  deleteParam(id, param) {
-    let foundParam = this.params.find(param => param.baseParam.id === id)
-    foundParam.new_values.splice(foundParam.new_values.findIndex(par => par === param), 1)
   }
 }
 
@@ -184,14 +175,6 @@ export class DataBaseObject extends BaseDbObject {
     return formData
   }
 
-  addNewValues(params) {
-    params.forEach(param => {
-      param.values.forEach(v => {
-        this.addParam(param.id, v.value, v.date)
-      })
-    })
-  }
-
   concatParams(concatObject) {
     for(let param of concatObject.params) {
       let findParam = this.params.find(p => p.baseParam.id === param.baseParam.id)
@@ -200,25 +183,45 @@ export class DataBaseObject extends BaseDbObject {
   }
 }
 
-class ParamObject {
+export class ParamObject {
   constructor(baseParam, values=[], newValues=[]) {
     this.baseParam = baseParam
     this.new_values = newValues
     this.values = values.map(v => new ValueParam(v.value, v.date, v.doc))
   }
+
+  add({value = null, date = null, doc = null, period = false}) {
+    this.new_values.push(new ValueParam(value, date, doc, period))
+  }
+
+  remove(param) {
+    this.new_values.splice(this.new_values.findIndex(par => par === param), 1)
+  }
+
+  get requestStructure() {
+    return this.new_values.map(v => {
+      return {id: this.baseParam.id, value: v.value, date: v.date}
+    })
+  }
 }
 
 class ValueParam {
-  constructor(value=null, date=null, doc=null) {
+  constructor(value=null, date=null, doc=null, period=false) {
     this.value = value
-    this.date = date || this.getDateTime()
+    this.date = date || (period ? this.period : this.dateTime)
     this.doc = doc
   }
 
-  getDateTime() {
+  get dateTime() {
     let dateTime = new Date()
     let time = dateTime.toLocaleTimeString('ru-RU').split(':')
     let date = dateTime.toLocaleDateString('ru-RU')
     return date + ' ' + time[0] + ':' + time[1]
+  }
+
+  get period() {
+    const dateStart = new Date('01.01.1900').toLocaleDateString('ru-RU')
+    const dateEnd = new Date().toLocaleDateString('ru-RU')
+    return `${dateStart}-${dateEnd}`
   }
 }

@@ -13,7 +13,7 @@
       />
       <form-change
         v-else-if="status && !parent"
-        :object-settings="{ object_id: item.object.id, actual: item.actual }"
+        :item="item"
         @confirm="$emit('change', $event)"
         @cancel="closeMenu()"
       />
@@ -25,12 +25,13 @@
 import FormChange from "@/components/Graph/GraphMenu/Search/SearchTree/ControllForms/FormChange"
 import FormCreate from "@/components/Graph/GraphMenu/Search/SearchTree/ControllForms/FormCreate"
 import DropDownMenu from "@/components/WebsiteShell/CustomComponents/dropDownMenu"
+import {SearchTreeRootItem} from "@/store/modules/graph/searchTree"
 
 export default {
   name: "BtnChange",
   components: {DropDownMenu, FormCreate, FormChange},
   props: {
-    item: Object,
+    item: SearchTreeRootItem,
     parent: {
       type: Object,
       default: () => null

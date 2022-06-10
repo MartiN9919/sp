@@ -65,6 +65,9 @@ export default {
       const interval = setInterval(() => getNotifications(), 10000)
       commit('setNotificationInterval', interval)
     },
+    async getNotificationList({}, params) {
+      return await axios.get('notifications/sorted_list/', {params})
+    },
     setReadNotification: ({commit}, {notification, config = {}}) => {
       if (notification.id_notification)
         axios.get(`notifications/${notification.id_notification}/`, config)

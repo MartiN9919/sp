@@ -1,6 +1,6 @@
 <template>
   <v-card flat>
-    <v-card-text>
+    <v-card-text v-if="newObject">
       <selector-input
         v-model="selectedObjectId"
         :items="filteredObjects"
@@ -19,58 +19,23 @@
         :disabled="listRelationItems.length === 1"
         item-text="value"
       />
-      <v-list-group eager color="teal" class="context-settings pt-3" append-icon="">
-        <template v-slot:activator>
-          <v-list-item-title>Дополнительные настройки</v-list-item-title>
-        </template>
-        <v-form ref="form" lazy-validation onSubmit="return false;">
-          <v-list-item>
-            <boolean-input
-              v-model="newObject.actual"
-              label="Поиск только по актуальным значениям"
-            />
-          </v-list-item>
-          <v-list-item>
-            <date-input
-              v-model="newObject.relDateTimeStart"
-              :dropdown="false"
-              clearable
-              label="начала"
-            />
-          </v-list-item>
-          <v-list-item>
-            <date-input
-              v-model="newObject.relDateTimeEnd"
-              :dropdown="false"
-              clearable
-              label="конца"
-            />
-          </v-list-item>
-        </v-form>
-      </v-list-group>
     </v-card-text>
-    <v-divider></v-divider>
-    <v-card-actions class="justify-space-between">
-      <v-btn
-        v-for="(button, key) in actionButtons" :key="key"
-        @click="buttonHandler(button.action)"
-        outlined color="teal" width="40%"
-      >
-        {{ button.title }}
-      </v-btn>
-    </v-card-actions>
+    <additional-settings v-if="newObject" :object="newObject" relation-setting/>
+    <control-menu :buttons="buttons" @confirm="confirm" @cancel="cancel"/>
   </v-card>
 </template>
 
 <script>
+import AdditionalSettings from "@/components/Graph/GraphMenu/Search/SearchTree/ControllForms/AdditionalSettings"
 import SelectorInput from "@/components/WebsiteShell/InputForms/selectorInput"
-import BooleanInput from "@/components/WebsiteShell/InputForms/booleanInput"
-import dateInput from "@/components/WebsiteShell/InputForms/dateInput"
+import ControlMenu from "@/components/Graph/GraphMenu/Create/Modules/ControlMenu"
+import {SearchTreeItem} from "@/store/modules/graph/searchTree"
 import {mapGetters} from "vuex"
+import _ from 'lodash'
 
 export default {
   name: "FormCreate",
-  components: {SelectorInput, BooleanInput, dateInput},
+  components: {ControlMenu, AdditionalSettings, SelectorInput},
   props: {
     objectId: Number,
     changeObject: {
@@ -79,33 +44,26 @@ export default {
     }
   },
   data: () => ({
-    actionButtons: [
-      { action: 'cancel', title: 'Отмена' },
-      { action: 'confirm', title: 'Готово' },
+    buttons: [
+      {action: 'cancel', title: 'Отмена', disabled: true},
+      {action: 'confirm', title: 'Готово', disabled: true},
     ],
-    newObject: {
-      id: null,
-      actual: false,
-      relId: null,
-      relValue: null,
-      relDateTimeStart: null,
-      relDateTimeEnd: null
-    },
+    newObject: null,
   }),
   computed: {
     ...mapGetters(['baseObjects', 'baseRelations', 'baseList']),
     selectedObjectId: {
       get: function () {
-        return this.newObject.id
+        return this.newObject?.objectId
       },
       set: function (id) {
-        this.newObject.id = id
+        this.newObject.objectId = id
         this.selectedRelationId = this.listRelations[0].id
       },
     },
     selectedRelationId: {
       get: function () {
-        return this.newObject.relId
+        return this.newObject?.relId
       },
       set: function (id) {
         this.newObject.relId = id
@@ -114,13 +72,13 @@ export default {
     },
     selectedRelationItemId: {
       get: function () {
-        return this.newObject.relValue
+        return this.newObject?.relValue
       },
       set: function (id) {
         this.newObject.relValue = id
       },
     },
-    filteredObjects () {
+    filteredObjects: function () {
       let listObjects = []
       for (let item of this.baseObjects) {
         if (item.rels.includes(this.objectId)) {
@@ -129,14 +87,14 @@ export default {
       }
       return listObjects
     },
-    listRelations () {
+    listRelations: function () {
       let relations = this.baseRelations({ f_id: this.objectId, s_id: this.selectedObjectId })
-      let defaultRelations = [{ id: 0, title: 'Без связи' }]
+      let defaultRelations = [{ id: 0, title: 'Все связи' }]
       return Array.isArray(relations) ? defaultRelations.concat(relations) : defaultRelations
     },
     listRelationItems: function () {
       let relationObject = this.listRelations.find(relation => relation.id === this.selectedRelationId)
-      let defaultRelationList = [{ id: 0, value: 'Не выбрано' }]
+      let defaultRelationList = [{ id: 0, value: 'Все значения' }]
       if(relationObject && relationObject.hasOwnProperty('type') && relationObject.type.value) {
         return defaultRelationList.concat(this.baseList(relationObject.type.value).values)
       }
@@ -150,27 +108,22 @@ export default {
     }
   },
   methods: {
-    buttonHandler(event) {
-      if (event === 'confirm') {
-        this.$emit('confirm', this.newObject)
-      }
-      this.$emit('cancel')
+    confirm() {
+      this.$emit('confirm', this.newObject)
+      this.cancel()
     },
+    cancel() {
+      this.$emit('cancel')
+    }
   },
   created() {
-    if(this.changeObject) {
-      this.selectedObjectId =  this.changeObject.object.id
-      this.selectedRelationId = this.changeObject.rel?.id | 0
-      this.selectedRelationItemId = this.changeObject.relValue
-      this.newObject.actual = this.changeObject.actual
-      this.newObject.relDateTimeStart = this.changeObject.relDateTimeStart
-      this.newObject.relDateTimeEnd = this.changeObject.relDateTimeEnd
-    }
-    else {
-      this.selectedObjectId =  this.filteredObjects[0].id
-      this.selectedRelationId = this.listRelations[0].id
-      this.selectedRelationItemId = this.listRelationItems[0].id
-    }
+    this.newObject = this.changeObject ?
+        _.cloneDeep(this.changeObject)
+        : new SearchTreeItem({
+          id: this.filteredObjects[0].id,
+          rel: this.listRelations[0].id,
+          relValue: this.listRelationItems[0].id
+        })
   },
 }
 </script>

@@ -1,84 +1,50 @@
 <template>
   <v-card flat>
-    <v-card-text>
-      <selector-input
-        v-model="objectId"
-        :items="baseObjects"
-        :label="selectorTitle"
-        item-text="titleSingle"
-      />
-      <boolean-input
-        v-model="objectActual"
-        :label="booleanTitle"
-        class="pt-4"
-      />
+    <v-card-text v-if="copyItem">
+      <selector-input v-if="!item.recId" v-model="copyItem.objectId" :items="baseObjects" :label="selectorTitle" item-text="titleSingle"/>
+      <boolean-input v-model="copyItem.actual" :label="booleanTitle" class="pt-4"/>
     </v-card-text>
-    <v-divider/>
-    <v-card-actions class="justify-space-between">
-      <v-btn
-        v-for="(button, key) in actionButtons"
-        :key="key"
-        @click="buttonHandler(button.action)"
-        outlined color="teal" width="40%"
-      >
-        {{ button.title }}
-      </v-btn>
-    </v-card-actions>
+    <additional-settings v-if="copyItem" :object="copyItem"/>
+    <control-menu :buttons="buttons" @confirm="confirm" @cancel="cancel"/>
   </v-card>
 </template>
 
 <script>
 import SelectorInput from "@/components/WebsiteShell/InputForms/selectorInput"
 import BooleanInput from "@/components/WebsiteShell/InputForms/booleanInput"
+import ControlMenu from "@/components/Graph/GraphMenu/Create/Modules/ControlMenu"
+import {SearchTreeRootItem} from "@/store/modules/graph/searchTree"
 import {mapGetters} from "vuex"
 import _ from "lodash"
+import AdditionalSettings from "@/components/Graph/GraphMenu/Search/SearchTree/ControllForms/AdditionalSettings";
 
 export default {
   name: "FormChange",
-  components: {SelectorInput, BooleanInput},
+  components: {AdditionalSettings, ControlMenu, SelectorInput, BooleanInput},
   props: {
-    objectSettings: Object,
+    item: SearchTreeRootItem,
   },
   data: () => ({
-    newSettingsObject: null,
+    copyItem: null,
     booleanTitle: 'Поиск только по актуальным значениям',
     selectorTitle: 'Выбор типа объекта',
-    actionButtons: [
-      { action: 'cancel', title: 'Отмена' },
-      { action: 'confirm', title: 'Готово' },
+    buttons: [
+      {action: 'cancel', title: 'Отмена', disabled: true},
+      {action: 'confirm', title: 'Готово', disabled: true},
     ],
   }),
-  computed: {
-    ...mapGetters(['baseObjects']),
-    objectId: {
-      get: function () {
-        return this.newSettingsObject ? this.newSettingsObject.object_id : null
-      },
-      set: function (newObjectId) {
-        this.newSettingsObject.object_id = newObjectId
-      },
+  computed: mapGetters(['baseObjects']),
+  methods: {
+    confirm() {
+      this.$emit('confirm', this.copyItem)
+      this.cancel()
     },
-    objectActual: {
-      get: function () {
-        return this.newSettingsObject ? this.newSettingsObject.actual : null
-      },
-      set: function (newObjectActual) {
-        if(this.newSettingsObject) {
-          this.newSettingsObject.actual = newObjectActual
-        }
-      },
+    cancel() {
+      this.$emit('cancel')
     }
   },
-  methods: {
-    buttonHandler(event) {
-      if (event === 'confirm') {
-        this.$emit('confirm', this.newSettingsObject)
-      }
-      this.$emit('cancel')
-    },
-  },
   mounted() {
-    this.newSettingsObject = _.clone(this.objectSettings)
+    this.copyItem = _.cloneDeep(this.item)
   },
 }
 </script>

@@ -86,11 +86,10 @@
 <script>
 import DropDownMenu from "@/components/WebsiteShell/CustomComponents/dropDownMenu"
 import SelectDate from "@/components/WebsiteShell/CustomComponents/DateTimePickers/selectDate"
-import axios from "@/plugins/axiosSettings"
-import {mapGetters} from "vuex"
+import {mapGetters, mapActions} from "vuex"
 
 export default {
-  name: "listNotifications",
+  name: "NotificationList",
   components: {SelectDate, DropDownMenu},
   data: () => ({
     headers: [
@@ -120,6 +119,7 @@ export default {
   }),
   computed: mapGetters(['notificationType']),
   methods: {
+    ...mapActions(['getNotificationList']),
     getDataFromApi () {
       this.loading = true
       let params = {size: this.options.itemsPerPage, offset: this.options.page}
@@ -129,7 +129,7 @@ export default {
         Object.assign(params, {type: this.extraOptions.groupStatus})
       if (!!this.extraOptions.groupDate)
         Object.assign(params, {date: this.extraOptions.groupDate})
-      axios.get('notifications/sorted_list/', {params}).then(response => {
+      this.getNotificationList(params).then(response => {
         this.desserts = response.data.list
         this.totalDesserts = response.data.total
         this.loading = false

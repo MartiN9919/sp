@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from data_base_driver.constants.connect_db import VEC_DATA
-from core.projectSettings.constant import DEPLOY_SETTING
+from core.projectSettings.constant import DEPLOY_SETTING, MEDIA_ROOT
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -39,6 +39,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'core.projectSettings.middleware.logging_middleware'
 ]
 
 ROOT_URLCONF = 'core.urls'
@@ -94,4 +95,6 @@ USE_L10N = True
 USE_TZ = False
 
 STATIC_URL = '/static/'
+
+
 # SESSION_EXPIRE_AT_BROWSER_CLOSE = True
