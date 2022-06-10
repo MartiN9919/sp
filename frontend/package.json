@@ -30,7 +30,7 @@
     "webpack-bundle-tracker": "^0.4.3"
   },
   "devDependencies": {
-    "@mdi/font": "^5.9.55",
+    "@mdi/font": "6.7.96",
     "@vue/cli-plugin-babel": "~4.5.0",
     "@vue/cli-plugin-router": "~4.5.0",
     "@vue/cli-plugin-vuex": "~4.5.0",
