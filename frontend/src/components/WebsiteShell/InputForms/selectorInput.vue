@@ -4,13 +4,14 @@
     v-bind="$attrs"
     :items="items"
     :item-text="itemText"
+    :item-value="itemValue"
     :class="bodyInputClasses"
     :menu-props="{ offsetY: true, zIndex: 1000001 }"
+    :placeholder="$attrs.placeholder || 'Выберите значение'"
     class="customCombobox"
     no-data-text="Не найдено"
     autocomplete="off"
     messages=" "
-    item-value="id"
     color="teal"
     item-color="teal"
     dense
@@ -47,6 +48,14 @@ export default {
   model: { prop: 'inputString', event: 'changeInputString'},
   props: {
     inputString: [Number, String],
+    itemValue: {
+      type: String,
+      default: 'id'
+    },
+    itemText: {
+      type: String,
+      default: 'value'
+    }
   },
   computed: {
     ...mapGetters(['baseList', 'userInformation']),
@@ -54,11 +63,10 @@ export default {
     items: function() {
       return this.$attrs['type-load'] ? this.baseList(this.$attrs['type-load']).values : this.$attrs.items
     },
-    itemText: function () { return this.$attrs['item-text'] || 'value'},
     value: {
       get: function () {
         if (typeof this.inputString === 'string') {
-          return this.items.find(v => v.value === this.inputString).id
+          return this.items.find(v => v.value === this.inputString)[this.itemValue]
         } else {
           return this.items.find(item => item.id === this.inputString)
         }

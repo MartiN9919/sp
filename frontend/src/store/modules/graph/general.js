@@ -190,8 +190,8 @@ export class ParamObject {
     this.values = values.map(v => new ValueParam(v.value, v.date, v.doc))
   }
 
-  add(value=null, date=null) {
-    this.new_values.push(new ValueParam(value, date))
+  add({value = null, date = null, doc = null, period = false}) {
+    this.new_values.push(new ValueParam(value, date, doc, period))
   }
 
   remove(param) {
@@ -206,9 +206,9 @@ export class ParamObject {
 }
 
 class ValueParam {
-  constructor(value=null, date=null, doc=null) {
+  constructor(value=null, date=null, doc=null, period=false) {
     this.value = value
-    this.date = date || this.dateTime
+    this.date = date || (period ? this.period : this.dateTime)
     this.doc = doc
   }
 
@@ -217,5 +217,11 @@ class ValueParam {
     let time = dateTime.toLocaleTimeString('ru-RU').split(':')
     let date = dateTime.toLocaleDateString('ru-RU')
     return date + ' ' + time[0] + ':' + time[1]
+  }
+
+  get period() {
+    const dateStart = new Date('01.01.1900').toLocaleDateString('ru-RU')
+    const dateEnd = new Date().toLocaleDateString('ru-RU')
+    return `${dateStart}-${dateEnd}`
   }
 }

@@ -2,7 +2,9 @@
   <split-panel shadow-effect>
     <template v-slot:firstPane>
       <tools-menu>
-        <component :is="changeComponent"/>
+        <keep-alive>
+          <component :is="changeComponent"/>
+        </keep-alive>
       </tools-menu>
     </template>
     <template v-slot:secondPane>
