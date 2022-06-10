@@ -160,7 +160,6 @@ export class SearchTreeRootItem {
       if(c.type.title === 'file') {
         c.type.title = 'text'
       }
-      console.log(c.type.title)
       if(c.type.title === 'geometry') {
 
         c.type.value = 'polygon'

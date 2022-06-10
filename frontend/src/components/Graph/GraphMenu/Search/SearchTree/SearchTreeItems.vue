@@ -6,7 +6,7 @@
         <search-tree-item :item="item" :base="item === items[0]" @find="find" :relation="!!item.recId" class="pb-2">
           <div v-show="hover">
             <btn-create :object-id="item.object.id" @create="create(item, $event)"/>
-            <btn-change :item="item" :parent="findParent(item)" @change="change(item, $event)"/>
+            <btn-change v-if="!item.recId" :item="item" :parent="findParent(item)" @change="change(item, $event)"/>
             <btn-remove v-if="item !== items[0]" @remove="remove(item)"/>
           </div>
         </search-tree-item>
