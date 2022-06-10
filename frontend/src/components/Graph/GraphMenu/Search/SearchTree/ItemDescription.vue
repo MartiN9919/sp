@@ -22,8 +22,8 @@
     <div class="message-text-style">
       <span class="text-no-wrap">
         Актуальность:
-        <v-icon size="15" :color="item.informationActual.color">
-          {{item.informationActual.icon}}
+        <v-icon size="15" :color="item.actualInformation.color">
+          {{item.actualInformation.icon}}
         </v-icon>
       </span>
       <span>{{item.information}}</span>

@@ -19,8 +19,10 @@ export default {
   },
   mutations: {
     setRootSearch: (state, root) => {
-      root.rels = []
-      state.searchObject.value = root.objectId
+      if(state.searchObject.value !== root.objectId) {
+        state.searchObject.value = root.objectId
+        root.rels = []
+      }
       state.searchTreeGraph = root
     },
     setRootSearchRelation: (state, root) => state.searchRelationTreeGraph = root,
@@ -85,7 +87,7 @@ export class SearchTreeRootItem {
     this.recId = recId
     this.request = request
     this.rels = []
-    this.fields = store.getters.baseClassifiers(id).map(c => new ParamObject(c))
+    this.fields = this.initFields()
   }
 
   get objectId() {
@@ -94,27 +96,42 @@ export class SearchTreeRootItem {
 
   set objectId(id) {
     this.object = store.getters.baseObject(id)
-    this.fields = store.getters.baseClassifiers(id).map(c => new ParamObject(c))
+    this.fields = this.initFields()
+  }
+
+  get isFields() {
+    for(const field of this.fields) {
+      if(field.new_values.length) {
+        return true
+      }
+    }
+    return false
+  }
+
+  get isAdditionalSettings() {
+    return this.isFields || this.relDateTimeStart || this.relDateTimeEnd
   }
 
   get fieldInformation() {
-    return this.fields.map(f => {
+    let info = ''
+    this.fields.forEach(f => {
       if(f.new_values.length) {
-        return [f.baseParam.title, f.new_values.map(v => v.value)].join(': ')
+        info += [f.baseParam.title, f.new_values.map(v => v.value).filter(v => v && v.length).join(', ')].join(': ') + '; '
       }
-    }).join(' ')
+    })
+    return info
   }
 
   get information() {
     return ''
   }
 
-  get informationActual() {
+  get actualInformation() {
     return this.actualIcon.find(i => i.status === this.actual)
   }
 
   get baseTree() {
-    const fields = this.fields.map(f => f.requestStructure).flat()
+    const fields = this.fields.map(f => f.requestStructure).filter(f => f.length).flat()
     return {
       actual: this.actual,
       object_id: this.objectId,
@@ -133,6 +150,32 @@ export class SearchTreeRootItem {
 
   get getTree() {
     return Object.assign(this.baseTree, this.extraTree)
+  }
+
+  initFields() {
+    return store.getters.baseClassifiers(this.objectId).map(c => {
+      if(c.type.title === 'date') {
+        c.type.value = 'period'
+      }
+      if(c.type.title === 'file') {
+        c.type.title = 'text'
+      }
+      console.log(c.type.title)
+      if(c.type.title === 'geometry') {
+
+        c.type.value = 'polygon'
+      }
+      return new ParamObject(c)
+    })
+  }
+
+  cleanAdditionalSettings() {
+    this.fields = this.initFields()
+    this.actual = true
+    if(this.relDateTimeStart || this.relDateTimeEnd) {
+      this.relDateTimeStart = null
+      this.relDateTimeEnd = null
+    }
   }
 }
 

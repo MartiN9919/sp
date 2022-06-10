@@ -1,8 +1,13 @@
 <template>
-  <v-dialog width="40%">
+  <v-dialog v-model="dialog" persistent @click:outside="close" width="40%">
     <template v-slot:activator="{ on, attrs }">
       <v-card-actions>
-        <v-btn v-on="on" v-bind="attrs" outlined color="teal" width="100%">Дополнительные настройки</v-btn>
+        <v-btn v-on="on" v-bind="attrs" outlined color="teal" width="100%">
+          Дополнительные настройки
+          <v-btn v-if="object.isAdditionalSettings" @click.stop="clean" icon color="error">
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+        </v-btn>
       </v-card-actions>
     </template>
     <v-card>
@@ -27,7 +32,9 @@
         Указать явные поля, по которым осуществлять поиск
       </v-card-subtitle>
       <v-card-text>
-        <record-area :params="object.fields"/>
+        <v-form ref="form" v-model="valid" onSubmit="return false;" autofocus>
+          <record-area :params="object.fields" item-value="value" search/>
+        </v-form>
       </v-card-text>
     </v-card>
   </v-dialog>
@@ -44,6 +51,20 @@ export default {
   props: {
     object: Object,
     relationSetting: Boolean
+  },
+  data: () => ({
+    dialog: false,
+    valid: true
+  }),
+  methods: {
+    clean() {
+      this.object.cleanAdditionalSettings()
+    },
+    close() {
+      if (this.valid) {
+        this.dialog = false
+      }
+    }
   }
 }
 </script>

@@ -4,7 +4,7 @@
         v-for="param in params"
         :key="param.baseParam.id"
         v-model="openedPanels"
-        @click="param.add()"
+        @click="param.add({period: search})"
     >
       <template v-slot:title="">
         {{param.baseParam.title}}
@@ -17,11 +17,13 @@
             class="flex-nowrap px-2"
         >
           <record-input
+              v-bind="$attrs"
               :param="getParam(param, value)"
               :base="param.baseParam"
               :conflict="conflict"
               @deletable="param.remove(value)"
               @depend="createDependParam"
+              :search="search"
           ></record-input>
         </v-row>
         <old-records
@@ -56,7 +58,8 @@ export default {
     conflict: {
       type: Boolean,
       default: false
-    }
+    },
+    search: Boolean
   },
   data: () => ({
     openedPanels: []
@@ -77,7 +80,7 @@ export default {
           p.baseParam.type.title === 'list' && p.baseParam.type.value === parseInt(payload.list[0])
       )
       if(findParam && !findParam.new_values.length) {
-        findParam.add(payload.parent)
+        findParam.add({value: payload.parent})
       }
     },
   },
