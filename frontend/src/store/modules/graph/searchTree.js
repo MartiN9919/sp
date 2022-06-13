@@ -2,6 +2,7 @@ import {ParamObject} from "@/store/modules/graph/general"
 import UserSetting from "@/store/addition"
 import axios from '@/plugins/axiosSettings'
 import store from '@/store'
+import _ from 'lodash'
 
 
 export default {
@@ -154,6 +155,7 @@ export class SearchTreeRootItem {
 
   initFields() {
     return store.getters.baseClassifiers(this.objectId).map(c => {
+      c = _.cloneDeep(c)
       if(c.type.title === 'date') {
         c.type.value = 'period'
       }
