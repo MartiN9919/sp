@@ -5,10 +5,10 @@
     </template>
     <v-card>
       <v-card-title>
-        Инструкции
+        Руководство пользователя
       </v-card-title>
       <v-card-subtitle>
-        Список всех инструкций
+        Рекомендации, руководства, методики
       </v-card-subtitle>
       <v-divider/>
       <v-card-text>

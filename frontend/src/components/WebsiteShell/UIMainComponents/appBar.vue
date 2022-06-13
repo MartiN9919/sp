@@ -74,8 +74,8 @@
             <v-list-item link v-on="on" v-ripple="{ class: 'teal--text' }">
               <v-list-item-icon><v-icon left>mdi-file-document-outline</v-icon></v-list-item-icon>
               <v-list-item-content>
-                <v-list-item-title>Инструкции</v-list-item-title>
-                <v-list-item-subtitle>Список всех инструкций</v-list-item-subtitle>
+                <v-list-item-title>Руководство пользователя</v-list-item-title>
+                <v-list-item-subtitle>Рекомендации, руководства, методики</v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
           </manual-list>
