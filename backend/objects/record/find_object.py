@@ -1,9 +1,12 @@
 import json
 
+from data_base_driver.additional_functions import date_client_to_server
 from data_base_driver.constants.const_key import SYS_KEY_CONSTANT
 from data_base_driver.input_output.input_output import io_get_obj
+from data_base_driver.input_output.input_output_mysql import io_get_obj_mysql_tuple
 from data_base_driver.input_output.io_geo import get_points_by_distance
 from data_base_driver.sys_key.get_key_info import get_key_by_id
+from data_base_driver.sys_key.get_list import get_item_list_value
 from objects.record.get_record import get_object_record_by_id_http, get_keys
 from synonyms_manager.get_synonyms import get_synonyms
 
@@ -56,7 +59,7 @@ def get_search_result(group_id, word, object_id, actual):
 
 
 def find_reliable_http(object_id, request, actual=False, group_id=0):
-    if isinstance(request, str):
+    if isinstance(request, str) or request is None:
         return find_text(group_id, object_id, request, actual)
     elif isinstance(request, list):
         return find_advanced(group_id, object_id, request, actual)
@@ -81,7 +84,8 @@ def find_text(group_id, object_id, request, actual=False):
         except TypeError:
             synonyms_list = []
     request = request.split(' ') + synonyms_list
-    request = [word.replace('-', '<<') for word in request]  # костыль, в последующем поменять настройки мантикоры, что бы индексировала '-'
+    request = [word.replace('-', '<<') for word in
+               request]  # костыль, в последующем поменять настройки мантикоры, что бы индексировала '-'
     result = []
     for param in request:
         word = f"@val {param}" if len(param) > 0 else param  # искать только по значению
@@ -100,13 +104,42 @@ def find_advanced(group_id, object_id, request, actual=False):
             keys[param['id']] = []
         keys[param['id']].append(param['value'])
     for key in keys:
-        or_result = set()
-        for value in keys[key]:
-            word = f"@key_id {key} @val {value}"
-            fetchall = get_search_result(group_id, word, object_id, actual)
-            or_result.update(set(fetchall))
-        result.append(list(or_result))
+        result.append(find_by_type(group_id, object_id, key, keys[key], actual))
     return intercept_sort_list(result)
+
+
+def find_by_type(group_id, object_id, key, values, actual):
+    key_info = get_key_by_id(key)
+    key_type = key_info['type'] if key_info['list_id'] is None else 'list'
+    if key_type == 'date':
+        return advanced_find_date(group_id, object_id, key, values, actual)
+    elif key_type == 'geometry':
+        pass
+    elif key_type == 'geometry_point':
+        pass
+    else:
+        return advanced_find_text(group_id, object_id, key, values, actual)
+
+
+def advanced_find_date(group_id, object_id, key, values, actual):
+    result = set()
+    for value in values:
+        date_start = date_client_to_server(value.split('-')[0])
+        date_end = date_client_to_server(value.split('-')[1])
+        where_dop = [f"val > '{date_start}'", f"val < '{date_end}'"]
+        temp_result = io_get_obj_mysql_tuple(group_id, object_id, [key], [], None, where_dop)
+        temp_result = [item[0] for item in temp_result]
+        result.update(set(temp_result))
+    return list(result)
+
+
+def advanced_find_text(group_id, object_id, key, values, actual):
+    result = set()
+    for value in values:
+        word = f"@key_id {key} @val {value}"
+        fetchall = get_search_result(group_id, word, object_id, actual)
+        result.update(set(fetchall))
+    return list(result)
 
 
 def find_unreliable_http(object_type, request, group_id=0):
@@ -188,9 +221,11 @@ def find_duplicate_objects(group_id, object_id, rec_id, params):
             new_params[param['id']] = param['values'][0]
     if nums > len(new_params) or len([item for item in params if get_key_by_id(item[0]).get('need', 0) == 1]) == 0:
         return result
-    temp_result = set(find_key_value_http(object_id, list(new_params.keys())[0], list(new_params.values())[0]['value'], group_id))
+    temp_result = set(
+        find_key_value_http(object_id, list(new_params.keys())[0], list(new_params.values())[0]['value'], group_id))
     for param in list(new_params.keys())[1:]:
-        temp_result.intersection_update(set(find_key_value_http(object_id, param, new_params[param]['value'], group_id)))
+        temp_result.intersection_update(
+            set(find_key_value_http(object_id, param, new_params[param]['value'], group_id)))
     return list(temp_result) + result
 
 
@@ -210,9 +245,3 @@ def find_same_objects(group_id, object_id, params):
                 result.intersection_update(set(find_key_value_http(object_id, param, new_params[param]['value'],
                                                                    group_id)))
         return list(result)
-
-
-
-
-
-

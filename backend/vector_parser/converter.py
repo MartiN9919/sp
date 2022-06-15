@@ -5,7 +5,7 @@ from typing import Dict, List, Tuple
 from openpyxl import load_workbook
 
 from data_bank import Database, Relation
-from objects.record.add_record_vector import add_data_vector
+from objects.record.add_record_vector import add_data_vector, duplicates_reports
 from objects.relations.add_rel import add_rel
 from parser_bank import ParserBank
 
@@ -91,7 +91,7 @@ class ConverterRelations:
             try:
                 add_rel(1, self.object_id_1, new_id_1, self.object_id_2, new_id_2, [{'id': key_id, 'value': '', 'date': date_time}])
             except Exception as e:
-                print('error creating relation')
+                print(f"error creating relation {self.database_id_1}_{old_id_1}_{self.database_id_2}_{old_id_2}")
                 return {
                     'error': {
                         f"{self.database_id_1}_{old_id_1}_{self.database_id_2}_{old_id_2}": {
@@ -186,7 +186,7 @@ class ConverterParams:
             return result
         for database_object_id in database.data:
             key = f"{self.database_id}_{database_object_id}"
-            new_object = {key: {'rec_id': 0, 'object_id': self.object_id, 'params': []}}
+            new_object = {key: {'old_id': key, 'rec_id': 0, 'object_id': self.object_id, 'params': []}}
             database_object_params = database.data[database_object_id]['values']
             database_object_datetime = database.data[database_object_id]['date'] + ' ' + \
                                        database.data[database_object_id]['time']
@@ -348,8 +348,14 @@ class ConverterBank:
                 self.relation_to_create.append(temp)
         self.create_deferred_relations(deferred_relations, errors)
 
-# CONVERT_SETTING = json.load(open('/home/pushkin/converter_param.json'))
-# converter = ConverterBank(CONVERT_SETTING)
-# converter.convert()
 
+CONVERT_SETTING = json.loads(open('/deploy_storage/converter_param.json').read().encode().decode('utf-8-sig'))
+converter = ConverterBank(CONVERT_SETTING)
+print('start_converting')
+converter.convert()
+
+report_file = open("/deploy_storage/report.txt", "w")
+for report in duplicates_reports:
+    report_file.write(report)
+report_file.close()
 

@@ -10,6 +10,7 @@ from data_base_driver.constants.const_dat import DAT_SYS_KEY
 from data_base_driver.input_output.input_output import io_get_obj
 from data_base_driver.sys_key.get_key_info import get_key_by_id
 from data_base_driver.sys_key.get_object_info import get_object_new_rec_id
+from files.additional_function import get_object_file_path
 from objects.record.add_record import add_record
 from objects.record.get_record import get_keys
 
@@ -70,13 +71,15 @@ def set_file(rec_id: int, object_id: int, data: list, files_path: str):
         key = get_key_by_id(item[0])
         if key.get('type') == DAT_SYS_KEY.TYPE_FILE_PHOTO or key.get('type') == DAT_SYS_KEY.TYPE_FILE_ANY:
             rec_id = get_object_new_rec_id(object_id) if rec_id == 0 else rec_id
-            target_path = 'files/' + str(object_id) + '/' + str(rec_id) + '/'
+            target_path = get_object_file_path(object_id, rec_id, item[1])
             if not os.path.exists(MEDIA_ROOT + '/' + target_path):
                 os.makedirs(MEDIA_ROOT + '/' + target_path, exist_ok=True)
-            shutil.copyfile(files_path + '/' + item[1], MEDIA_ROOT + '/' + target_path + item[1])
+            path = shutil.copyfile(files_path + '/' + item[1], MEDIA_ROOT + '/' + target_path)
+            print(f"new file path {path}")
 
 
 lock = threading.Lock()
+duplicates_reports = []
 
 
 def add_data_vector(group_id, object, files_path):
@@ -91,6 +94,9 @@ def add_data_vector(group_id, object, files_path):
         data = [parse_value_vector(param) for param in object['params']]
         duplicates = find_duplicate_vector(group_id, object.get('object_id'), object.get('rec_id'), data)
         if len(duplicates) > 0:
+            report = f"same object: {object.get('object_id')}_{duplicates[0]} vector_object: {object['old_id']}"
+            print(report)
+            duplicates_reports.append(report)
             object['rec_id'] = duplicates[0]
             data = [item for item in data if get_key_by_id(item[0])['need'] != 1]
         set_file(object.get('rec_id', 0), object.get('object_id'), data, files_path)
