@@ -28,7 +28,7 @@ INSTALLED_APPS = [
     'classifier',
     'data_base_driver',
     'official_documents',
-    'notifications',
+    'admin_control',
     'objects',
     'files',
 ]

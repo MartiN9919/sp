@@ -56,7 +56,7 @@ class IO_ORG_SQL():
         if data_pars.obj_id != DAT_SYS_OBJ.ID_REL:
             # rec_id НЕ известно
             if not data_pars.rec_id:
-                # создать rec_id и вставить ОДНОЙ опрацией без проверки на повторы
+                # создать rec_id и вставить ОДНОЙ операцией без проверки на повторы
                 data_pars.rec_id = self.io_sql.obj_rec_id_new(obj_id=data_pars.obj_id)
 
                 # надо вернуть с учетом обработки после комита
