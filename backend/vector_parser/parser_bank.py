@@ -24,7 +24,8 @@ class ParserBank:
     BASE_PARAMS_SEPARATOR = 'База  :'
     DATABASE_FOLDER = 'БД'
     DICTIONARIES_FOLDER = 'СБД'
-    DOCUMENTS_PATH = 'файлы'
+    DOCUMENTS_PATH = 'Файлы'
+    STRUCT_SEPARATOR = '|'
     SEPARATOR = '|'
 
     def __init__(self, parser_setting: dict):
@@ -43,10 +44,12 @@ class ParserBank:
             self._dictionary_folder_path = files['СБД']
             self._encoding = parser_setting['encoding']
             self.SEPARATOR = parser_setting['separator']
+            self.LAST_SEPARATOR = self.SEPARATOR[:-1]
             self._date_id = parser_setting['date_id']
             self._time_id = parser_setting['time_id']
             self._parse_database()
             self._parse_dictionaries()
+            self.files = Path(self.documents_path).iterdir() if Path(self.documents_path).is_dir() else []
         else:
             raise Exception
         self.parse_dictionaries_data() # запуск парсера словарей
@@ -69,7 +72,7 @@ class ParserBank:
         @param datatype: тип базы (таблицы): словарь или обычная таблица
         """
         for line in lines:
-            params = line.split(ParserBank.SEPARATOR)
+            params = line.split(ParserBank.STRUCT_SEPARATOR)
             if params[0].isdigit():
                 databases.append(datatype(id=int(params[0]), name=params[1], short_name=params[2]))
 
@@ -112,7 +115,7 @@ class ParserBank:
         """
         result = [] # пустой список для накопления результата
         for line in lines: # идем по строкам
-            params = line.split(ParserBank.SEPARATOR) # получением список параметров, разбив строку по разделителю
+            params = line.split(ParserBank.STRUCT_SEPARATOR) # получением список параметров, разбив строку по разделителю
             if params[0].isdigit(): # если первый параметр число начинаем обработку
                 link_str = params[6].replace('\n', '') # убираем у последнего параметра \n
                 result.append(Param(
@@ -171,14 +174,14 @@ class ParserBank:
                 with open(dict_path, encoding=self._encoding) as main_file, open(dict_sub_path,
                                                                                  encoding=self._encoding) as sub_file: # открываем основной и побочные файлы
                     for line, sub_line in zip(main_file, sub_file): # построчно считываем открытые файлы
-                        params = line.split(ParserBank.SEPARATOR) # получаем параметры с основного файла
-                        sub_params = sub_line.split(ParserBank.SEPARATOR) # получаем параметры с побочного файла
+                        params = line.split(self.SEPARATOR) # получаем параметры с основного файла
+                        sub_params = sub_line.split(self.SEPARATOR) # получаем параметры с побочного файла
                         if params[0].isdigit(): # если первый параметр число (идентификатор) записываем
                             dictionary.data[params[1].replace('\n', '')] = sub_params[1].replace('\n', '')
             else: # если словарь имеет одиночный тип хранения
                 with open(dict_path, encoding=self._encoding) as main_file:  # открываем основной файл
                     for line in main_file: # построчно считываем открытый файл
-                        params = line.split(ParserBank.SEPARATOR) # получаем параметры с основного файла
+                        params = line.split(self.SEPARATOR) # получаем параметры с основного файла
                         if params[0].isdigit(): # если первый параметр число (идентификатор) записываем
                             dictionary.data[params[1].replace('\n', '')] = params[2].replace('\n', '')
 
@@ -263,9 +266,10 @@ class ParserBank:
         for line in file: # итерируем по строкам файла
             if len(line.replace('\n', '')) == 0: # если пустая строка переходим на следующую итерацию
                 continue
-            temp = [param.replace('\n', '') for param in line.split(ParserBank.SEPARATOR)] # получаем список параметров из строки
+            temp = [param.replace('\n', '') for param in line.split(self.SEPARATOR)] # получаем список параметров из строки
             if len(temp_params) == len(params_type) and temp[0].isdigit(): # если количество параметров в предыдущей итерации равно общему количеству и первый актуальный параметр число (идентификатор)
                 params = copy.deepcopy(temp_params)
+                params = [item.replace(self.LAST_SEPARATOR, '') for item in params]
                 self._parse_database_data(params, params_type, database_id, bank_data) # парсим параметры
                 temp_params = temp # обновляем накопитель
                 continue # переход к следующей итерации
@@ -310,18 +314,21 @@ class ParserBank:
                 path_params = file_path.name.split('_')
                 sub_data = int(path_params[1].split('.')[0]) if len(path_params) > 1 else 0 # получаем идентификатор связи/словаря если имеется
                 with open(file_path, encoding=self._encoding) as file: # открываем файл на чтение
-                    first_line_params = [param.replace('\n', '') for param in file.readline().split(ParserBank.SEPARATOR)] # считываем типы параметров
+                    first_line_params = [param.replace('\n', '').replace(self.LAST_SEPARATOR, '')
+                                         for param in file.readline().split(self.SEPARATOR)] # считываем типы параметров
                     if sub_data: # если связь/словарь
                         params_type = ParserBank._parse_sub_data_params(sub_data, database.params)
                     else: # если обычный параметр
                         params_type = ParserBank._parse_data_params(first_line_params, database.params)
                     self._parse_database_file(file, database.id, params_type, database.data) # парсим данные
-            path = Path(self.documents_path) # полуаем путь к файлам
+            path = Path(self.documents_path) # получаем путь к файлам
+            print('file_start')
             if database.file_param and path.is_dir(): # если у данной базы (таблицы) есть файловые параметры
                 for item in database.data: # идем циклом по объектам
-                    files = [x.name for x in path.iterdir() if x.name.split('.')[0].split('_')[0] == str(item)] # находим файлы данного объекта (id_name)
+                    files = [x.name for x in self.files if x.name.split('_')[0] == str(item)] # находим файлы данного объекта (id_name)
                     for file in files: # найденные файлы записываем как параметры
                         database.data[item]['values'].append({'value': file, 'type': database.file_param})
+            print('file_end')
         for relation in self.relations.values(): # идем циклом по связям
             database_object = self.get_database_by_id(relation.object_id_1).data[relation.rec_id_1] # получаем певый связанный объект и его дату/время
             date_1 = database_object['date']

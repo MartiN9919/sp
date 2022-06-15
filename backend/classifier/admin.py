@@ -2,10 +2,11 @@ from django.contrib import admin
 from django.contrib.admin import RelatedFieldListFilter
 from django.core.exceptions import ValidationError
 from django.db.models import Q
-from classifier.models import ModelKey, ModelObject, ModelList, ModelListDop, ModelPhoneNumberFormat, Manual
+
+from classifier.models import ModelKey, ModelObject, ModelList, ModelListDop, ModelPhoneNumberFormat
 from data_base_driver.constants.const_admin import PROJECT_TITLE_ADMIN
 from data_base_driver.constants.const_dat import DAT_SYS_KEY, DAT_SYS_OBJ, DAT_SYS_LIST_TOP, \
-    DAT_SYS_PHONE_NUMBER_FORMAT, DAT_SYS_LIST_DOP, DAT_SYS_MANUAL
+    DAT_SYS_PHONE_NUMBER_FORMAT, DAT_SYS_LIST_DOP
 
 admin.site.site_header = PROJECT_TITLE_ADMIN
 
@@ -69,7 +70,7 @@ class ModelPhoneNumberFormatAdmin(admin.ModelAdmin):
                     DAT_SYS_PHONE_NUMBER_FORMAT.LENGTH,)
     fieldsets = (
         (None, {'fields': ((DAT_SYS_PHONE_NUMBER_FORMAT.COUNTRY, DAT_SYS_PHONE_NUMBER_FORMAT.COUNTRY_CODE,
-                    DAT_SYS_PHONE_NUMBER_FORMAT.LENGTH,),)}),
+                            DAT_SYS_PHONE_NUMBER_FORMAT.LENGTH,),)}),
     )
     ordering = (DAT_SYS_PHONE_NUMBER_FORMAT.COUNTRY,)
 
@@ -130,7 +131,7 @@ class ModelKeyAdminRel(admin.ModelAdmin):
     readonly_fields = (DAT_SYS_KEY.ID,)
     fieldsets = (
         ("Идентификатор", {'fields': (DAT_SYS_KEY.ID,)}),
-        ("Название связи", {'fields': ((DAT_SYS_KEY.TITLE, DAT_SYS_KEY.NAME,), )}),
+        ("Название связи", {'fields': ((DAT_SYS_KEY.TITLE, DAT_SYS_KEY.NAME,),)}),
         ("Основные настройки связи", {'fields': (DAT_SYS_KEY.LIST,), }),
         ("Описания для связи", {'fields': ((DAT_SYS_KEY.HINT,),), }),
         ("Поля для связи между объектами", {'fields': ((DAT_SYS_KEY.REL_OBJ_1, DAT_SYS_KEY.REL_OBJ_2,),), }),
@@ -215,8 +216,8 @@ class ModelKeyAdminObject(admin.ModelAdmin):
     readonly_fields = (DAT_SYS_KEY.ID,)
     fieldsets = (
         ("Идентификатор", {'fields': (DAT_SYS_KEY.ID,)}),
-        ("Название классификатора", {'fields': ((DAT_SYS_KEY.TITLE, DAT_SYS_KEY.NAME,), (DAT_SYS_KEY.PRIORITY, ),)}),
-        ("Основные настройки классификатора", {'fields': (DAT_SYS_KEY.OBJ, DAT_SYS_KEY.TYPE_VAL, DAT_SYS_KEY.LIST, ), }),
+        ("Название классификатора", {'fields': ((DAT_SYS_KEY.TITLE, DAT_SYS_KEY.NAME,), (DAT_SYS_KEY.PRIORITY,),)}),
+        ("Основные настройки классификатора", {'fields': (DAT_SYS_KEY.OBJ, DAT_SYS_KEY.TYPE_VAL, DAT_SYS_KEY.LIST,), }),
         ("Описания для классификатора", {'fields': ((DAT_SYS_KEY.HINT,),), }),
         (None, {'fields': ((DAT_SYS_KEY.NEED, DAT_SYS_KEY.VISIBLE, DAT_SYS_KEY.BLOCKED_IN_BLANK),), }),
         ("Дополнительная информация", {'fields': (DAT_SYS_KEY.DESCRIPT,), }),
@@ -235,17 +236,3 @@ class ModelKeyAdminObject(admin.ModelAdmin):
                 obj_id = '0'
             form.base_fields['obj'].initial = int(obj_id)
         return form
-
-
-@admin.register(Manual)
-class ModelManual(admin.ModelAdmin):
-    list_display = (
-        DAT_SYS_MANUAL.TITLE,
-        DAT_SYS_MANUAL.UPDATE_DATETIME,
-    )
-    fieldsets = (
-        (None, {'fields': (DAT_SYS_MANUAL.TITLE, DAT_SYS_MANUAL.FILE, )}),
-    )
-    ordering = (DAT_SYS_MANUAL.TITLE,)
-
-

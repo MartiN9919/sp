@@ -1,6 +1,6 @@
 from django.contrib import admin
-from notifications.models import ModelNotification
-from data_base_driver.constants.const_dat import DAT_SYS_NOTIFY
+from admin_control.models import ModelNotification, Manual
+from data_base_driver.constants.const_dat import DAT_SYS_NOTIFY, DAT_SYS_MANUAL
 
 
 @admin.register(ModelNotification)
@@ -34,3 +34,15 @@ class ModelNotificationAdmin(admin.ModelAdmin):
     @admin.display(description='Кому')
     def return_to_user(self, object):
         return object.to_user
+
+
+@admin.register(Manual)
+class ModelManual(admin.ModelAdmin):
+    list_display = (
+        DAT_SYS_MANUAL.TITLE,
+        DAT_SYS_MANUAL.UPDATE_DATETIME,
+    )
+    fieldsets = (
+        (None, {'fields': (DAT_SYS_MANUAL.TITLE, DAT_SYS_MANUAL.FILE,)}),
+    )
+    ordering = (DAT_SYS_MANUAL.TITLE,)

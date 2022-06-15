@@ -1,5 +1,5 @@
 from django.urls import path
-from notifications import views
+from admin_control import views
 
 urlpatterns = [
     path('sorted_list/', views.aj_notifications_sorted_list),
