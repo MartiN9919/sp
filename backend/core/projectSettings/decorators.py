@@ -96,16 +96,16 @@ def request_download(f):
         path = request.path.split('download')[1]
         path_start_directory = path.split('/')[1]
         if path_start_directory != 'files':
-            raise Exception(403, 'Нет доступа к файлу')
+            return JsonResponse({'status': 'Нет доступа к файлу'}, status=403)
         object_id = int(path.split('/')[2])
         rec_id = int(path.split('/')[3])
         if not check_object_permission(group_id, object_id, rec_id, False):
-            raise Exception(403, 'Нет доступа к файлу')
-        file_path = MEDIA_ROOT + '/' + convert_file_path(path)
+            return JsonResponse({'status': 'Нет доступа к файлу'}, status=403)
+        file_path = MEDIA_ROOT + convert_file_path(path)
         if os.path.exists(file_path):
             return f(request, *args, **kwargs)
         else:
-            raise Exception(404, 'Файл не найден')
+            return JsonResponse({'status': 'Файл не найден'}, status=404)
 
     return wrap
 
