@@ -69,12 +69,13 @@ def parse_value_vector(param):
 def set_file(rec_id: int, object_id: int, data: list, files_path: str):
     for item in data:
         key = get_key_by_id(item[0])
-        if key.get('type') == DAT_SYS_KEY.TYPE_FILE_PHOTO or key.get('type') == DAT_SYS_KEY.TYPE_FILE_ANY:
+        if key.get('type') == DAT_SYS_KEY.TYPE_FILE_PHOTO or key.get('type') == DAT_SYS_KEY.TYPE_FILE_ANY or key.get('id') == 1:
             rec_id = get_object_new_rec_id(object_id) if rec_id == 0 else rec_id
             target_path = get_object_file_path(object_id, rec_id, item[1])
-            if not os.path.exists(MEDIA_ROOT + '/' + target_path):
-                os.makedirs(MEDIA_ROOT + '/' + target_path, exist_ok=True)
-            path = shutil.copyfile(files_path + '/' + item[1], MEDIA_ROOT + '/' + target_path)
+            target_dir = '/'.join(target_path.split('/')[:-1])
+            if not os.path.exists(MEDIA_ROOT + target_dir):
+                os.makedirs(MEDIA_ROOT + target_dir, exist_ok=True)
+            path = shutil.copyfile(files_path + '/' + item[1], MEDIA_ROOT + target_path)
             print(f"new file path {path}")
 
 
@@ -107,4 +108,3 @@ def add_data_vector(group_id, object, files_path):
             return {'object': result}
         else:
             return {'result': -1}
-
