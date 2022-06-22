@@ -65,7 +65,7 @@ export default {
       return axios.post('objects/search_relations', state.searchRelationTreeGraph.getTree, config)
         .then(response => dispatch('addObjectsToGraph', {
           payload: response.data,
-          action: {name: 'findRelationsOnServer', payload: state.searchRelationTreeGraph.title}
+          action: {name: 'findRelationsOnServer', payload: state.searchRelationTreeGraph.request}
         }))
         .catch(error => {  })
     },

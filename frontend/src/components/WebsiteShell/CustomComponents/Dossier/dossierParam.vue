@@ -2,24 +2,10 @@
   <tr>
     <td class="text-h6">{{param.baseParam.title}}</td>
     <td class="text-end">
-      <custom-tooltip
-          v-for="(value, index) in values"
-          :key="index"
-          :value="value.value"
-          :type="getParamType"
-          nudge-right="20"
-          right
-      >
+      <custom-tooltip v-for="(v, key) in values" :key="key" :value="v.value" :type="type" nudge-right="20" right>
         <template v-slot:activator="{ on }">
           <div v-on="on">
-            <dossier-value
-              :value="value"
-              :rec-id="recId"
-              :object-id="objectId"
-              :title="title"
-              :type="getParamType"
-              :document="value.doc"
-            />
+            <dossier-value :value="v" :title="title" :base="param.baseParam" :rec-id="recId" :document="v.doc"/>
           </div>
         </template>
       </custom-tooltip>
@@ -58,7 +44,7 @@ export default {
     values: function () {
       return this.param.values.slice(0, this.showOldValues ? this.paramsLength : 1)
     },
-    getParamType: function () {
+    type: function () {
       return this.param.baseParam.type
     },
   },

@@ -227,7 +227,7 @@ export default {
           commit('SCRIPT_MUT_ITEM_ADD', parameters.request);
           commit('changeSelectedTreeViewItem', {});
           if (!response.data.features.length)
-            dispatch('addNotification', {content: 'По вашему запросу ничего не найдено', timeout: 10})
+            dispatch('addNotification', {content: 'По вашему запросу ничего не найдено', timeout: 20})
           return Promise.resolve(response.data)
         })
         .catch(e => Promise.reject(e))

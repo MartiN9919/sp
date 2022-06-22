@@ -32,7 +32,11 @@ export default {
           return 'Точка'
         }
       } else {
-        return this.param.values[0].value
+        if (this.param.values[0].value.length > 255) {
+          return this.param.values[0].value.slice(0, 255) + '...'
+        } else {
+          return this.param.values[0].value
+        }
       }
     },
     date: function () {

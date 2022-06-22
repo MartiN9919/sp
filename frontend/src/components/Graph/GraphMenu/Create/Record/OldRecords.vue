@@ -6,13 +6,13 @@
           :key="key"
           :value="item.value"
           :type="typeRecord"
-          :settings="settings"
+          :settings="{recId: recId, objectId: base.objectId}"
           nudge-right="20"
           right
       >
         <template v-slot:activator="{ on }">
           <tr v-on="on">
-            <info :value="item.value" :title="title" :type-record="typeRecord" :settings="settings"/>
+            <info :base="base" :value="item.value" :date="item.date" :title="title" :rec-id="recId" :type="typeRecord"/>
             <document :doc="item.doc" @addToGraph="addDocToGraph"/>
             <date :date="item.date"/>
           </tr>
@@ -36,7 +36,7 @@ export default {
     values: Array,
     base: Object,
     title: String,
-    settings: Object
+    recId: Number,
   },
   components: {Date, Document, Info, CustomTooltip, GeometryParam},
   computed: {
@@ -60,7 +60,7 @@ table {
   cursor: default;
 }
 table >>> span, table >>> a {
-  font-size: 0.8em;
+  font-size: 13px;
   text-decoration: none;
 }
 </style>
