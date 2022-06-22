@@ -20,6 +20,10 @@
         item-text="value"
       />
     </v-card-text>
+    <template v-else>
+      <v-card-title>Невозможно создать объект</v-card-title>
+      <v-card-subtitle>Данный тип объектов не может содержать дочерние</v-card-subtitle>
+    </template>
     <additional-settings v-if="newObject" :object="newObject" relation-setting/>
     <control-menu :buttons="buttons" @confirm="confirm" @cancel="cancel"/>
   </v-card>
@@ -44,14 +48,16 @@ export default {
     }
   },
   data: () => ({
-    buttons: [
-      {action: 'cancel', title: 'Отмена', disabled: true},
-      {action: 'confirm', title: 'Готово', disabled: true},
-    ],
     newObject: null,
   }),
   computed: {
     ...mapGetters(['baseObjects', 'baseRelations', 'baseList']),
+    buttons: function () {
+      return [
+        {action: 'cancel', title: 'Отмена', disabled: true},
+        {action: 'confirm', title: 'Готово', disabled: this.newObject},
+      ]
+    },
     selectedObjectId: {
       get: function () {
         return this.newObject?.objectId
@@ -117,13 +123,15 @@ export default {
     }
   },
   created() {
-    this.newObject = this.changeObject ?
-        _.cloneDeep(this.changeObject)
-        : new SearchTreeItem({
-          id: this.filteredObjects[0].id,
-          rel: this.listRelations[0].id,
-          relValue: this.listRelationItems[0].id
-        })
+    if(this.changeObject) {
+      this.newObject = _.cloneDeep(this.changeObject)
+    } else if(this.filteredObjects.length) {
+      this.newObject = new SearchTreeItem({
+        id: this.filteredObjects[0].id,
+        rel: this.listRelations[0].id,
+        relValue: this.listRelationItems[0].id
+      })
+    }
   },
 }
 </script>

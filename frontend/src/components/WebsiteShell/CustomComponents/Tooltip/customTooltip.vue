@@ -63,7 +63,8 @@ export default {
       return {tag: 'textViewer', attrs: {value: this.value ? 'Да' : 'Нет'}}
     },
     text: function () {
-      return {tag: 'textViewer', attrs: {value: this.value}}
+      const result = this.value && this.value.length > 255 ? this.value.slice(0, 255) + '...' : this.value
+      return {tag: 'textViewer', attrs: {value: result}}
     },
     unknown: function () {
       return {tag: 'textViewer', attrs: {value: 'Создана'}}

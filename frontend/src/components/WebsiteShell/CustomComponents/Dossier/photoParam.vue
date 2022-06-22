@@ -19,7 +19,11 @@
                         <v-img v-on="on" :src="getFile(v.value)" class="cursor-pointer"></v-img>
                       </v-col>
                     </template>
-                    <v-img :src="getFile(v.value)"></v-img>
+                    <v-img>
+                      <template v-slot:default>
+                        <img :src="getFile(v.value)" alt="picture"/>
+                      </template>
+                    </v-img>
                   </v-dialog>
                 </v-row>
               </v-container>
@@ -32,7 +36,11 @@
         <template v-slot:activator="{ on, attrs }">
           <v-carousel-item contain class="grey darken-4" v-on="on" :src="getFile(v.value)"></v-carousel-item>
         </template>
-        <v-img :src="getFile(v.value)"></v-img>
+        <v-img>
+          <template v-slot:default>
+            <img :src="getFile(v.value)" alt="picture"/>
+          </template>
+        </v-img>
       </v-dialog>
     </v-carousel>
   </v-hover>

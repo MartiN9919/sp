@@ -1,12 +1,6 @@
 <template>
   <div class="py-1">
-    <geometry-param v-if="isGeometry" :value="getValue" :title="title">
-      {{ getGeometryTextValue }}
-    </geometry-param>
-    <file-param v-else-if="isFile" :value="getValue" :rec-id="recId" :object-id="objectId" class="text-wrap tile--text">
-      {{ getTextValue }}
-    </file-param>
-    <div v-else class="text-wrap black--text">{{getTextValue}}</div>
+    <info-param :value="getValue" :title="title" :date="getDate" :base="base" :rec-id="recId"/>
     <div style="font-size: 10px; font-style: italic">
       <span v-if="document" @click="addDocumentToGraph" class="cursor-pointer teal--text">{{document.title}}</span><br>
       <span>{{getDate}}</span>
@@ -15,42 +9,28 @@
 </template>
 
 <script>
-import GeometryParam from "@/components/WebsiteShell/CustomComponents/Dossier/geometryParam"
-import FileParam from "@/components/WebsiteShell/CustomComponents/Dossier/fileParam"
-import {mapActions} from "vuex";
+import InfoParam from "@/components/WebsiteShell/CustomComponents/Dossier/infoParam"
+import {mapActions} from "vuex"
 
 export default {
   name: "dossierValue",
-  components: {FileParam, GeometryParam},
+  components: {InfoParam},
   props: {
     value: Object,
-    recId: Number,
-    objectId: Number,
     title: {
       type: String,
       default: null
     },
-    type: Object,
+    recId: Number,
+    base: Object,
     document: Object
   },
   computed: {
     getValue: function () {
       return this.value.value
     },
-    isGeometry: function () {
-      return this.type.title === 'geometry'
-    },
-    isFile: function () {
-      return this.type.title === 'file' && this.type.value === 'any'
-    },
-    getTextValue: function () {
-      return this.getValue.length > 255 ? this.getValue.slice(0, 255) + '...' : this.value.value
-    },
     getDate: function () {
       return this.value.date
-    },
-    getGeometryTextValue: function () {
-      return this.type.value === 'polygon' ? 'Геометрия' : 'Точка'
     },
   },
   methods: {

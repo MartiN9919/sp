@@ -11,8 +11,8 @@ export default {
       Graph: new UserSetting('globalMenuReportStatus', true),
     },
     activeTool: {
-      Map: null,
-      Graph: null,
+      Map: 'scriptsPage',
+      Graph: 'SearchObjectPage',
     },
     toolsMenu: {
       Map: [

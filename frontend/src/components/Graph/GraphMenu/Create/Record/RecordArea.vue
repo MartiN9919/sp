@@ -30,7 +30,7 @@
             :base="param.baseParam"
             :values="param.values"
             :title="title"
-            :settings="settings"
+            :rec-id="recId"
             @addDocToGraph="addDocToGraph"
             class="px-2"
         ></old-records>
@@ -49,7 +49,6 @@ export default {
   name: "RecordArea",
   components: {RecordBody, OldRecords, RecordInput},
   props: {
-    settings: Object,
     params: Array,
     title: {
       type: String,
@@ -59,6 +58,7 @@ export default {
       type: Boolean,
       default: false
     },
+    recId: Number,
     search: Boolean
   },
   data: () => ({

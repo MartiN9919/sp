@@ -1,7 +1,7 @@
 <template>
   <v-card hover :max-width="size" oncontextmenu="return false">
     <table class="table">
-      <row
+      <row-label
         v-for="param in params"
         :key="param.id"
         :param="param"
@@ -14,11 +14,11 @@
 </template>
 
 <script>
-import Row from "@/components/Graph/WorkSpace/Modules/Label/RowLabel"
+import RowLabel from "@/components/Graph/WorkSpace/Modules/Label/RowLabel"
 
 export default {
   name: "BodyLabel",
-  components: {Row},
+  components: {RowLabel},
   props: {
     size: Number,
     params: Array,

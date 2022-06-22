@@ -1,39 +1,22 @@
 <template>
   <td class="text-break col-info">
-    <a tabindex="-1" v-if="isFile" :href="downloadLink" class="teal--text">{{ value }}</a>
-    <geometry-param v-else-if="isGeometry" :value="value" :title="title">
-      {{ geometryTextValue }}
-    </geometry-param>
-    <span v-else>{{ value ? value : 'Создана' }}</span>
+    <info-param :value="value" :title="title" :date="date" :base="base" :rec-id="recId"/>
   </td>
 </template>
 
 <script>
-import GeometryParam from "@/components/WebsiteShell/CustomComponents/Dossier/geometryParam";
-import {getDownloadFileLink} from '@/plugins/axiosSettings'
+import InfoParam from "@/components/WebsiteShell/CustomComponents/Dossier/infoParam"
 
 export default {
   name: "Info",
-  components: {GeometryParam},
+  components: {InfoParam},
   props: {
     value: String,
     title: String,
-    typeRecord: Object,
-    settings: Object
-  },
-  computed: {
-    geometryTextValue: function () {
-      return this.typeRecord.value === 'polygon' ? 'Геометрия' : 'Точка'
-    },
-    isFile: function () {
-      return this.typeRecord.title === 'file'
-    },
-    isGeometry: function () {
-      return this.typeRecord.title === 'geometry'
-    },
-    downloadLink: function () {
-      return getDownloadFileLink(this.settings.objectId, this.settings.recId, this.value)
-    },
+    date: String,
+    recId: Number,
+    base: Object,
+    type: Object,
   },
 }
 </script>

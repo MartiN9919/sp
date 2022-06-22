@@ -16,7 +16,7 @@
               conflict
               :params="object.params"
               :title="object.title"
-              :settings="{objectId: object.ids.object_id, recId: object.ids.rec_id}"
+              :rec-id="object.ids.rec_id"
           />
         </v-form>
       </v-tab-item>
