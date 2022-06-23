@@ -8,8 +8,12 @@ from data_base_driver.constants.const_dat import DAT_SYS_SCRIPT, DAT_SYS_TRIGGER
 admin.site.site_header = PROJECT_TITLE_ADMIN
 
 
-class ModelScriptVariableAdmin(admin.TabularInline):
+class ModelScriptVariableAdmin(admin.StackedInline):
     model = ModelScriptVariable
+
+    fieldsets = (
+        (None, {'fields': (('name', 'title', 'hint'),('type', 'list', 'obj'), ('necessary',))}),
+    )
 
 
 class ModelScriptForm(forms.ModelForm):

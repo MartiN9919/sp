@@ -41,13 +41,9 @@ def check_actual(fetchall, group_id, object_id):
     remove_list = []
     for item in fetchall:
         temp_word = '@key_id ' + str(item[1])
-        temp = io_get_obj(group_id, object_id, [], [item[0]], 500, temp_word, {})
-        for temp_item in temp:
-            if item[2] == temp_item['sec']:
-                continue
-            else:
-                if item[2] < temp_item['sec']:
-                    remove_list.append(item)
+        temp = io_get_obj(group_id, object_id, [], [item[0]], 500, temp_word, {'second_start': item[2] + 1})
+        if len(temp) > 0:
+            remove_list.append(item)
     return remove_list
 
 

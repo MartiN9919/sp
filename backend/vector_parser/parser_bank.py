@@ -49,7 +49,7 @@ class ParserBank:
             self._time_id = parser_setting['time_id']
             self._parse_database()
             self._parse_dictionaries()
-            self.files = Path(self.documents_path).iterdir() if Path(self.documents_path).is_dir() else []
+            self.files = list(Path(self.documents_path).iterdir() if Path(self.documents_path).is_dir() else [])
         else:
             raise Exception
         self.parse_dictionaries_data() # запуск парсера словарей
@@ -183,7 +183,8 @@ class ParserBank:
                     for line in main_file: # построчно считываем открытый файл
                         params = line.split(self.SEPARATOR) # получаем параметры с основного файла
                         if params[0].isdigit(): # если первый параметр число (идентификатор) записываем
-                            dictionary.data[params[1].replace('\n', '')] = params[2].replace('\n', '')
+                            dictionary.data[params[1].replace('\n', '')] = \
+                                params[2].replace('\n', '').replace(self.LAST_SEPARATOR, '')
 
     @staticmethod
     def _parse_data_params(params: List[str], database_params: List[Param]) -> dict:
@@ -322,13 +323,11 @@ class ParserBank:
                         params_type = ParserBank._parse_data_params(first_line_params, database.params)
                     self._parse_database_file(file, database.id, params_type, database.data) # парсим данные
             path = Path(self.documents_path) # получаем путь к файлам
-            print('file_start')
             if database.file_param and path.is_dir(): # если у данной базы (таблицы) есть файловые параметры
                 for item in database.data: # идем циклом по объектам
                     files = [x.name for x in self.files if x.name.split('_')[0] == str(item)] # находим файлы данного объекта (id_name)
                     for file in files: # найденные файлы записываем как параметры
                         database.data[item]['values'].append({'value': file, 'type': database.file_param})
-            print('file_end')
         for relation in self.relations.values(): # идем циклом по связям
             database_object = self.get_database_by_id(relation.object_id_1).data[relation.rec_id_1] # получаем певый связанный объект и его дату/время
             date_1 = database_object['date']
