@@ -20,15 +20,22 @@ class ModelObject(models.Model):
         verbose_name='Имя объекта ед.ч.',
     )
     name = models.CharField(
-        max_length=25,
+        max_length=15,
         verbose_name='Имя латиницей',
+        blank=True,
+        null=True,
     )
     descript = models.TextField(
-        max_length=1024,
+        max_length=255,
         verbose_name='Дополнительные пометки',
         help_text='Дополнительная информация о объекте',
         blank=True,
         null=True,
+    )
+    icon = models.CharField(
+        max_length=255,
+        verbose_name='Иконка',
+        help_text='Отображаемая иконка',
     )
     priority = models.IntegerField(
         verbose_name='Приоритет',
@@ -114,7 +121,7 @@ class ModelListDop(models.Model):
     )
 
     def __str__(self):
-        return self.val
+        return ''
 
     def clean(self):
         """
@@ -167,6 +174,9 @@ class ModelPhoneNumberFormat(models.Model):
         verbose_name='Длинна номера',
         help_text='С учетом кода страны',
     )
+
+    def __str__(self):
+        return f'+{self.country_code}{"*" * (self.length - len(str(self.country_code)))} ({self.country})'
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
@@ -301,3 +311,38 @@ class ModelKey(models.Model):
         db_table = DAT_SYS_KEY.TABLE_SHORT
         verbose_name = "Классификатор"
         verbose_name_plural = "Классификаторы"
+
+
+class ObjectKey(ModelKey):
+    """
+    Прокси модель для классификаторов.
+    """
+    def clean(self):
+        try:
+            self.save()
+        except Exception as e:
+            raise e
+
+    def save(self, *args, **kwargs):
+        if self.obj_id == 1:
+            raise ValidationError('в данной форме нельзя добавлять связи')
+        super().save(*args, **kwargs)
+
+    class Meta:
+        verbose_name = "Классификатор объекта"
+        verbose_name_plural = "Классификатор объекта"
+        proxy = True
+
+
+class Rel(ModelKey):
+    """
+    Прокси модель для связей.
+    """
+    def save(self, *args, **kwargs):
+        self.obj_id = 1
+        super().save(*args, **kwargs)
+
+    class Meta:
+        verbose_name = "Классификатор связь"
+        verbose_name_plural = "Классификатор связь"
+        proxy = True
