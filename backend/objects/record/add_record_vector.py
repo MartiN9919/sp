@@ -15,13 +15,13 @@ from objects.record.add_record import add_record
 from objects.record.get_record import get_keys
 
 
-def find_key_value_http_vector(result, object_id, key_id, value, group_id=0):
+def find_key_value_http_vector(object_id, key_id, value, group_id=0):
     if get_key_by_id(key_id)['type'] == 'date' or get_key_by_id(key_id)['type'] == 'date_time':
         value = str(value).replace('-', '<<')
     else:
         value = str(value)
     response = io_get_obj(group_id, object_id, [], [], 500, '@key_id ' + str(key_id) + ' @val ' + value, {})
-    result[key_id] = [int(item['rec_id']) for index, item in enumerate(response)]
+    return [int(item['rec_id']) for index, item in enumerate(response)]
 
 
 def find_duplicate_vector(group_id, object_id, rec_id, params):
@@ -33,17 +33,11 @@ def find_duplicate_vector(group_id, object_id, rec_id, params):
             new_params[param[0]] = {'value': param[1], 'date': param[2]}
     if nums > len(new_params) or len([item for item in params if item[0] > 1 and get_key_by_id(item[0]).get('need',0) == 1]) == 0:  # костыль для вектора
         return []
-    manager = multiprocessing.Manager()
-    return_dict = manager.dict()
-    tasks = []
-    for task in new_params:
-        temp_task = multiprocessing.Process(target=find_key_value_http_vector, args=(return_dict, object_id, task, new_params[task]['value'], group_id))
-        tasks.append(temp_task)
-        temp_task.start()
-    for task in tasks:
-        task.join()
-    result = set(list(return_dict.values())[0])
-    for item in return_dict.values()[1:]:
+    values = [find_key_value_http_vector(object_id, param, new_params[param]['value'], group_id) for param in new_params]
+    if len(values) == 0:
+        return []
+    result = set(values[0])
+    for item in values[1:]:
         result.intersection_update(set(item))
     return list(result)
 
@@ -62,6 +56,8 @@ def parse_value_vector(param):
         value = date_client_to_server(value)
     if key.get('type') == DAT_SYS_KEY.TYPE_DATATIME:
         value = date_time_client_to_server(value)
+    if key.get('type') == DAT_SYS_KEY.TYPE_STR or key.get('type') == DAT_SYS_KEY.TYPE_STR_ENG:
+        value = value.replace('\\', '\\\\')
     return [param['id'], value,
             date_time_client_to_server(param.get('date', datetime.datetime.now().strftime("%d.%m.%Y %H:%M")) + ':00')]
 

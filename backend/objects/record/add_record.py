@@ -52,7 +52,7 @@ def additional_processing(user, object, data):
     if object.get('object_id') == SYS_KEY_CONSTANT.FILE_ID:
         if len([item for item in data if item[0] == SYS_KEY_CONSTANT.FILE_CLASSIFIER_ID]):
             rec_id = get_object_new_rec_id(object['object_id']) if object['rec_id'] == 0 else object['rec_id']
-            path = MEDIA_ROOT + '/files/' + str(object['object_id']) + '/' + str(rec_id) + '/' + \
+            path = MEDIA_ROOT + get_object_file_dir(object['object_id'], rec_id) + '/' + \
                    [item for item in data if item[0] == SYS_KEY_CONSTANT.FILE_CLASSIFIER_ID][0][1]
             text = get_document_text(path)
             if text:

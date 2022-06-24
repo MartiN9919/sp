@@ -42,8 +42,11 @@ def io_get_obj_row_manticore(group_id, object_type, keys, ids, ids_max_block, wh
     try:
         return get_enabled_records(object_type, [item['_source'] for item in json.loads(response.text)['hits']['hits']],
                                    group_id, False)
-    except:
-        print('manticore_error', where_dop_row)
+    except Exception as e:
+        error_log = f"manticore error {e}, request: {where_dop_row}, must: {must}, status: {response.status_code}, " \
+                    f"result: {response.text}"
+        print(error_log)
+        return []
 
 
 def parse_where_dop(where_dop_row):
