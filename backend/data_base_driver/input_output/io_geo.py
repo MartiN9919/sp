@@ -2,6 +2,7 @@ import json
 import geojson
 import requests
 
+from data_base_driver.connect.connect_mysql import db_sql
 from data_base_driver.constants.const_dat import DAT_SYS_KEY, DAT_OBJ_ROW, DAT_OBJ_COL
 from data_base_driver.constants.const_fulltextsearch import FullTextSearch
 from data_base_driver.constants.const_geocoder import Geocoder
@@ -188,6 +189,11 @@ def get_geometry_search(text):
     return build_tree_from_list(temp_result)
 
 
+def get_all_geometries_id():
+    result = db_sql(sql='SELECT rec_id from obj_geometry_col GROUP BY rec_id ;')
+    return [item[0] for item in result]
+
+
 def get_points_inside_polygon(polygon, points, group_id):
     """
     Функция для получения точек лежащих в пределах полигона
@@ -199,14 +205,12 @@ def get_points_inside_polygon(polygon, points, group_id):
     must = [{'equals': {'inside': 1}}]
     if len(points) > 0:
         must.append({'in': {DAT_OBJ_COL.ID: [int(rec_id) for rec_id in points]}})
-    else:
-        return []
     data = json.dumps({
         'index': DAT_OBJ_COL.table_name('point'),
         'script_fields': {
             'inside': {
                 'script': {
-                    'inline': 'CONTAINS(GEOPOLY2D(' + str(polygon)[1:-1] + '), '
+                    'inline': 'CONTAINS(GEOPOLY2D(' + str(polygon)[2:-2] + '), '
                                                                            'point.coordinates[0], point.coordinates[1])'
                 }
             }
