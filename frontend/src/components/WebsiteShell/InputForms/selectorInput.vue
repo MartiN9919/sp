@@ -47,7 +47,7 @@ export default {
   name: "selectorInput",
   model: { prop: 'inputString', event: 'changeInputString'},
   props: {
-    inputString: [Number, String],
+    inputString: [Number, String, Array],
     itemValue: {
       type: String,
       default: 'id'
@@ -67,6 +67,8 @@ export default {
       get: function () {
         if (typeof this.inputString === 'string') {
           return this.items.find(v => v.value === this.inputString)[this.itemValue]
+        } else if(this.inputString instanceof Array) {
+          return this.items.filter(item => this.inputString.includes(item.id))
         } else {
           return this.items.find(item => item.id === this.inputString)
         }

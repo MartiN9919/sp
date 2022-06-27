@@ -1,7 +1,7 @@
 <template>
   <v-card flat>
     <v-card-text v-if="copyItem">
-      <selector-input v-model="copyItem.objectId" :items="baseObjects" :label="selectorTitle" item-text="titleSingle"/>
+      <selector-input v-model="copyItem.objectId" :items="baseObjects" :label="selectorTitle" multiple item-text="titleSingle"/>
       <boolean-input v-model="copyItem.actual" :label="booleanTitle" class="pt-4"/>
     </v-card-text>
     <additional-settings v-if="copyItem" :object="copyItem"/>

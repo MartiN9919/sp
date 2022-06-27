@@ -6,7 +6,7 @@
     <template v-slot:body="{ status, closeMenu }">
       <form-create
         v-if="status && !!parent"
-        :object-id="parent.object.id"
+        :object-id="parent.objectId[0]"
         :change-object="item"
         @confirm="$emit('change', $event)"
         @cancel="closeMenu()"

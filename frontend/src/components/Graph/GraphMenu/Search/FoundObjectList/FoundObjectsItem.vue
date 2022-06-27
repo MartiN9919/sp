@@ -7,11 +7,10 @@
         class="px-0 py-1"
     >
       <v-list-item-icon class="mx-1 my-0">
-        <trigger-information :active-triggers="object.triggers"/>
+        <v-icon>mdi-person</v-icon>
+<!--        <trigger-information :active-triggers="object.triggers"/>-->
       </v-list-item-icon>
-      <v-list-item-subtitle class="text-pre-wrap mx-1 text-info">
-        {{object.title}}
-      </v-list-item-subtitle>
+      <v-list-item-subtitle class="text-pre-wrap mx-1 text-info">{{object.title}}</v-list-item-subtitle>
       <v-list-item-action v-show="hover" class="flex-row ma-0 action-buttons">
         <v-btn icon @click.stop="select" tabindex="-1">
           <v-icon>mdi-plus</v-icon>

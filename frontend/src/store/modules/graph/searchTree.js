@@ -7,7 +7,7 @@ import _ from 'lodash'
 
 export default {
   state: {
-    searchObject: new UserSetting('defaultSearchObject', 0),
+    searchObject: new UserSetting('defaultSearchObject', []),
     searchTreeGraph: null,
     searchRelationTreeGraph: null,
     foundObjects: null,
@@ -37,7 +37,7 @@ export default {
   actions: {
     setRootSearch({getters, commit}, root=null) {
       commit('setRootSearch',
-        root || new SearchTreeRootItem({id: getters.searchObject || getters.baseObjects[0].id})
+        root || new SearchTreeRootItem({ids: getters.searchObject || [getters.baseObjects[0].id]})
       )
     },
     setRootSearchRelation({getters, commit}, {base, title, recId}) {
@@ -56,7 +56,7 @@ export default {
     },
 
     findObjectsOnServer({ getters, commit }, config={}) {
-      config.headers = {'set-cookie': getters.cookieTriggers(getters.searchTreeGraph.object.id)}
+      config.headers = {'set-cookie': getters.searchTreeGraph.objects.map(object => getters.cookieTriggers(object.id))}
       return axios.post('objects/search', getters.searchTreeGraph.getTree, config)
         .then(response => commit('setFoundObjects', response.data))
         .catch(error => {  })
@@ -76,34 +76,59 @@ export default {
   }
 }
 
-export class SearchTreeRootItem {
-  actualIcon = [
-    {icon: 'mdi-check', color: 'green', status: true},
-    {icon: 'mdi-close', color: 'red', status: false}
-  ]
+const actual = [
+  {icon: 'mdi-check', color: 'green', status: true},
+  {icon: 'mdi-close', color: 'red', status: false}
+]
 
-  constructor({id, actual = true, recId = null, request = ''}) {
-    this.object = store.getters.baseObject(id)
+
+class SearchTreeItem {
+  actualIcon = actual
+
+  constructor(actual = true, recId = null, request = '') {
     this.actual = actual
     this.recId = recId
     this.request = request
+    this.rels = []
+  }
+
+  switchField(field) {
+    if (field.type.title === 'date') {
+      field.type.value = 'period'
+    }
+    if (field.type.title === 'file') {
+      field.type.title = 'text'
+    }
+    if (field.type.title === 'geometry') {
+      field.type.value = 'polygon'
+    }
+    return new ParamObject(field)
+  }
+}
+
+export class SearchTreeRootItem extends SearchTreeItem{
+  constructor({ids, actual = true, recId = null, request = ''}) {
+    super(actual, recId, request)
+    this.objects = ids.map(id => store.getters.baseObject(id))
     this.rels = []
     this.fields = this.initFields()
   }
 
   get objectId() {
-    return this.object.id
+    return this.objects.map(object => object.id)
   }
 
-  set objectId(id) {
-    this.object = store.getters.baseObject(id)
+  set objectId(ids) {
+    this.objects = ids.map(id => store.getters.baseObject(id))
     this.fields = this.initFields()
   }
 
   get isFields() {
-    for(const field of this.fields) {
-      if(field.new_values.length) {
-        return true
+    if(this.fields) {
+      for (const field of this.fields) {
+        if (field.new_values.length) {
+          return true
+        }
       }
     }
     return false
@@ -115,11 +140,13 @@ export class SearchTreeRootItem {
 
   get fieldInformation() {
     let info = ''
-    this.fields.forEach(f => {
-      if(f.new_values.length) {
-        info += [f.baseParam.title, f.new_values.map(v => v.value).filter(v => v && v.length).join(', ')].join(': ') + '; '
-      }
-    })
+    if(this.fields) {
+      this.fields.forEach(f => {
+        if(f.new_values.length) {
+          info += [f.baseParam.title, f.new_values.map(v => v.value).filter(v => v && v.length).join(', ')].join(': ') + '; '
+        }
+      })
+    }
     return info
   }
 
@@ -132,7 +159,7 @@ export class SearchTreeRootItem {
   }
 
   get baseTree() {
-    const fields = this.fields.map(f => f.requestStructure).filter(f => f.length).flat()
+    const fields = this.fields ? this.fields.map(f => f.requestStructure).filter(f => f.length).flat() : []
     return {
       actual: this.actual,
       object_id: this.objectId,
@@ -154,20 +181,11 @@ export class SearchTreeRootItem {
   }
 
   initFields() {
-    return store.getters.baseClassifiers(this.objectId).map(c => {
-      c = _.cloneDeep(c)
-      if(c.type.title === 'date') {
-        c.type.value = 'period'
-      }
-      if(c.type.title === 'file') {
-        c.type.title = 'text'
-      }
-      if(c.type.title === 'geometry') {
-
-        c.type.value = 'polygon'
-      }
-      return new ParamObject(c)
-    })
+    if(this.objectId.length === 1) {
+      return store.getters.baseClassifiers(this.objectId).map(c => this.switchField(_.cloneDeep(c)))
+    } else {
+      return null
+    }
   }
 
   cleanAdditionalSettings() {
@@ -180,9 +198,9 @@ export class SearchTreeRootItem {
   }
 }
 
-export class SearchTreeItem extends SearchTreeRootItem {
+export class SearchTreeChildItem extends SearchTreeRootItem {
   constructor(item) {
-    super({id: item.id, actual: item.actual, recId: item.recId, request: item.request})
+    super({ids: item.ids, actual: item.actual, recId: item.recId, request: item.request})
     this.relId = store.getters.baseRelation(item.rel)
     this.relValue = item.relValue
     this.relDateTimeStart = item.relDateTimeStart
