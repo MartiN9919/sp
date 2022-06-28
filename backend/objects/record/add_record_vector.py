@@ -54,7 +54,10 @@ def parse_value_vector(param):
     if key.get('type') == DAT_SYS_KEY.TYPE_DATA:
         value = date_client_to_server(value)
     if key.get('type') == DAT_SYS_KEY.TYPE_DATATIME:
-        value = date_time_client_to_server(value)
+        try:
+            value = date_time_client_to_server(value)
+        except IndexError:
+            value = date_time_client_to_server(value + ' 00:00')
     if key.get('type') == DAT_SYS_KEY.TYPE_STR or key.get('type') == DAT_SYS_KEY.TYPE_STR_ENG:
         value = value.replace('\\', '\\\\')
     return [param['id'], value,
