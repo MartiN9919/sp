@@ -1,5 +1,5 @@
 <template>
-  <drop-down-menu min-width="350" left :close-on-content-click="false">
+  <drop-down-menu min-width="350" left :close-on-content-click="false" :close-on-click="false">
     <template v-slot:activator="{ on }">
       <v-icon v-on="on" tabindex="-1">mdi-plus</v-icon>
     </template>

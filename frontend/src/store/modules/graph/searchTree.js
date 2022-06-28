@@ -56,10 +56,14 @@ export default {
     },
 
     findObjectsOnServer({ getters, commit }, config={}) {
-      config.headers = {'set-cookie': getters.searchTreeGraph.base.map(object => getters.cookieTriggers(object.id))}
+      let triggers = {}
+      for(const object of getters.searchTreeGraph.base) {
+        triggers[object.id] = getters.cookieTriggers(object.id)
+      }
+      config.headers = {'set-cookie': JSON.stringify(triggers)}
       return axios.post('objects/search', getters.searchTreeGraph.getTree, config)
-        .then(response => commit('setFoundObjects', response.data))
-        .catch(error => {  })
+      .then(response => commit('setFoundObjects', response.data))
+      .catch(error => {  })
     },
     findRelationsOnServer({ dispatch, state }, config={}) {
       return axios.post('objects/search_relations', state.searchRelationTreeGraph.getTree, config)
