@@ -1,5 +1,4 @@
 <template>
-  <v-hover v-slot="{ hover }">
     <v-list-item
         @click.exact="showDescription"
         @keyup.ctrl.enter="change"
@@ -7,22 +6,12 @@
         class="px-0 py-1"
     >
       <v-list-item-icon class="mx-1 my-0">
-        <trigger-information :active-triggers="object.triggers"/>
+        <v-icon>{{$store.getters.baseObject(object.object_id).icon}}</v-icon>
+<!--        <trigger-information :active-triggers="object.triggers"/>-->
       </v-list-item-icon>
-      <v-list-item-subtitle class="text-pre-wrap mx-1 text-info">
-        {{object.title}}
-      </v-list-item-subtitle>
-      <v-list-item-action v-show="hover" class="flex-row ma-0 action-buttons">
-        <v-btn icon @click.stop="select" tabindex="-1">
-          <v-icon>mdi-plus</v-icon>
-        </v-btn>
-        <v-btn icon @click.stop="change" tabindex="-1">
-          <v-icon>mdi-pencil-outline</v-icon>
-        </v-btn>
-      </v-list-item-action>
+      <v-list-item-subtitle class="text-pre-wrap mx-1 text-info">{{object.title}}</v-list-item-subtitle>
       <description :viewDat="description"/>
     </v-list-item>
-  </v-hover>
 </template>
 
 <script>

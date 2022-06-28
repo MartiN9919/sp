@@ -7,7 +7,7 @@ import _ from 'lodash'
 
 export default {
   state: {
-    searchObject: new UserSetting('defaultSearchObject', 0),
+    searchObject: new UserSetting('defaultSearchObject', []),
     searchTreeGraph: null,
     searchRelationTreeGraph: null,
     foundObjects: null,
@@ -20,8 +20,8 @@ export default {
   },
   mutations: {
     setRootSearch: (state, root) => {
-      if(state.searchObject.value !== root.objectId) {
-        state.searchObject.value = root.objectId
+      if(state.searchObject.value !== root.baseId) {
+        state.searchObject.value = root.baseId
         root.rels = []
       }
       state.searchTreeGraph = root
@@ -37,12 +37,12 @@ export default {
   actions: {
     setRootSearch({getters, commit}, root=null) {
       commit('setRootSearch',
-        root || new SearchTreeRootItem({id: getters.searchObject || getters.baseObjects[0].id})
+        root || new SearchTreeMain({base: getters.searchObject || [getters.baseObjects[0].id]})
       )
     },
     setRootSearchRelation({getters, commit}, {base, title, recId}) {
       commit('setRootSearchRelation',
-        new SearchTreeRootItem({id: base.id, recId, request: title})
+        new SearchTreeMain({base: base.id, recId, request: title})
       )
     },
     addSearchTreeItem({ getters, commit }, {rootItem, newItem}) {
@@ -56,10 +56,14 @@ export default {
     },
 
     findObjectsOnServer({ getters, commit }, config={}) {
-      config.headers = {'set-cookie': getters.cookieTriggers(getters.searchTreeGraph.object.id)}
+      let triggers = {}
+      for(const object of getters.searchTreeGraph.base) {
+        triggers[object.id] = getters.cookieTriggers(object.id)
+      }
+      config.headers = {'set-cookie': JSON.stringify(triggers)}
       return axios.post('objects/search', getters.searchTreeGraph.getTree, config)
-        .then(response => commit('setFoundObjects', response.data))
-        .catch(error => {  })
+      .then(response => commit('setFoundObjects', response.data))
+      .catch(error => {  })
     },
     findRelationsOnServer({ dispatch, state }, config={}) {
       return axios.post('objects/search_relations', state.searchRelationTreeGraph.getTree, config)
@@ -76,69 +80,133 @@ export default {
   }
 }
 
-export class SearchTreeRootItem {
-  actualIcon = [
-    {icon: 'mdi-check', color: 'green', status: true},
-    {icon: 'mdi-close', color: 'red', status: false}
-  ]
+const actual = [
+  {icon: 'mdi-check', color: 'green', status: true},
+  {icon: 'mdi-close', color: 'red', status: false}
+]
 
-  constructor({id, actual = true, recId = null, request = ''}) {
-    this.object = store.getters.baseObject(id)
-    this.actual = actual
-    this.recId = recId
+export class SearchTreeBase {
+  actualIcon = actual
+
+  constructor(base, request='', actual=true) {
+    this.base = this._generateBase(base)
+    this.fields = this._generateFields(base)
     this.request = request
+    this.actual = actual
     this.rels = []
-    this.fields = this.initFields()
   }
 
-  get objectId() {
-    return this.object.id
+  get baseId() {
+    return this.base
   }
 
-  set objectId(id) {
-    this.object = store.getters.baseObject(id)
-    this.fields = this.initFields()
+  set baseId(base) {
+    this.base = this._generateBase(base)
+    this.fields = this._generateFields()
   }
 
-  get isFields() {
-    for(const field of this.fields) {
-      if(field.new_values.length) {
-        return true
-      }
+  _generateBase(base) {
+    return []
+  }
+
+  _generateFields(base) {
+    return []
+  }
+
+  switchField(field) {
+    if (field.type.title === 'date') {
+      field.type.value = 'period'
     }
-    return false
+    if (field.type.title === 'file') {
+      field.type.title = 'text'
+    }
+    if (field.type.title === 'geometry') {
+      field.type.value = 'polygon'
+    }
+    return new ParamObject(field)
   }
 
-  get isAdditionalSettings() {
-    return this.isFields || this.relDateTimeStart || this.relDateTimeEnd
+  get getTree() {
+    return Object.assign(this.baseTree, this.extraTree)
   }
 
-  get fieldInformation() {
-    let info = ''
-    this.fields.forEach(f => {
-      if(f.new_values.length) {
-        info += [f.baseParam.title, f.new_values.map(v => v.value).filter(v => v && v.length).join(', ')].join(': ') + '; '
-      }
-    })
-    return info
-  }
-
-  get information() {
-    return ''
-  }
-
-  get actualInformation() {
-    return this.actualIcon.find(i => i.status === this.actual)
+  get extraTree() {
+    return {}
   }
 
   get baseTree() {
     const fields = this.fields.map(f => f.requestStructure).filter(f => f.length).flat()
     return {
       actual: this.actual,
-      object_id: this.objectId,
       request: fields.length ? fields : this.request,
       rels: this.rels.map(r => r.getTree)
     }
+  }
+
+  get fieldInformation() {
+    let info = ''
+    if(this.fields) {
+      this.fields.forEach(f => {
+        if(f.new_values.length) {
+          info += [
+            f.baseParam.title,
+            f.new_values.map(v => v.value).filter(v => v && v.length).join(', ')
+          ].join(': ') + '; '
+        }
+      })
+    }
+    return info
+  }
+
+  get actualInformation() {
+    return this.actualIcon.find(i => i.status === this.actual)
+  }
+
+  get isFields() {
+    if(this.fields) {
+      for (const field of this.fields) {
+        if (field.new_values.length) {
+          return true
+        }
+      }
+    }
+    return false
+  }
+
+  get isAdditionalSettings() {
+    return this.isFields
+  }
+
+  cleanAdditionalSettings() {
+    this.fields = this._generateFields()
+    this.actual = true
+  }
+}
+
+export class SearchTreeMain extends SearchTreeBase {
+  constructor({base, request = '', actual = true, recId = null}) {
+    super(base, request, actual)
+    this.recId = recId
+  }
+
+  _generateBase(base) {
+    return base.map(id => store.getters.baseObject(id))
+  }
+
+  _generateFields() {
+    if(this.base.length === 1) {
+      return store.getters.baseClassifiers(this.base[0].id).map(c => this.switchField(_.cloneDeep(c)))
+    } else {
+      return []
+    }
+  }
+
+  get baseId() {
+    return this.base.map(object => object.id)
+  }
+
+  set baseId(base) {
+    super.baseId = base
   }
 
   get extraTree() {
@@ -149,44 +217,38 @@ export class SearchTreeRootItem {
     }
   }
 
-  get getTree() {
-    return Object.assign(this.baseTree, this.extraTree)
+  get baseTree() {
+    return Object.assign(super.baseTree, {object_id: this.base.map(base => base.id)})
   }
 
-  initFields() {
-    return store.getters.baseClassifiers(this.objectId).map(c => {
-      c = _.cloneDeep(c)
-      if(c.type.title === 'date') {
-        c.type.value = 'period'
-      }
-      if(c.type.title === 'file') {
-        c.type.title = 'text'
-      }
-      if(c.type.title === 'geometry') {
-
-        c.type.value = 'polygon'
-      }
-      return new ParamObject(c)
-    })
-  }
-
-  cleanAdditionalSettings() {
-    this.fields = this.initFields()
-    this.actual = true
-    if(this.relDateTimeStart || this.relDateTimeEnd) {
-      this.relDateTimeStart = null
-      this.relDateTimeEnd = null
-    }
+  get information() {
+    return ''
   }
 }
 
-export class SearchTreeItem extends SearchTreeRootItem {
-  constructor(item) {
-    super({id: item.id, actual: item.actual, recId: item.recId, request: item.request})
-    this.relId = store.getters.baseRelation(item.rel)
-    this.relValue = item.relValue
-    this.relDateTimeStart = item.relDateTimeStart
-    this.relDateTimeEnd = item.relDateTimeEnd
+export class SearchTreeChild extends SearchTreeBase {
+  constructor({base, request, actual, rel, relValue, relDateTimeStart, relDateTimeEnd}) {
+    super(base, request, actual)
+    this.relId = store.getters.baseRelation(rel)
+    this.relValue = relValue
+    this.relDateTimeStart = relDateTimeStart
+    this.relDateTimeEnd = relDateTimeEnd
+  }
+
+  _generateBase(base) {
+    return store.getters.baseObject(base)
+  }
+
+  _generateFields() {
+    return store.getters.baseClassifiers(this.base.id).map(c => this.switchField(_.cloneDeep(c)))
+  }
+
+  get baseId() {
+    return this.base.id
+  }
+
+  set baseId(base) {
+    super.baseId = base
   }
 
   get relId() {
@@ -197,22 +259,44 @@ export class SearchTreeItem extends SearchTreeRootItem {
     this.rel = store.getters.baseRelation(id)
   }
 
+  get extraTree() {
+    return {rel: {
+        id: this.rel?.id || 0,
+        value: this.relValue || 0,
+        date_time_start: this.relDateTimeStart,
+        date_time_end: this.relDateTimeEnd
+      }}
+  }
+
+  get baseTree() {
+    return Object.assign(super.baseTree, {object_id: this.base.id})
+  }
+
   get information() {
     let message = ''
-    if (this.rel) message += this.rel.title
-    if (this.relValue) message += ` ('${store.getters.baseList(this.rel.type.value).values.find(i => i.id === this.relValue).value}')`
-    if (this.relDateTimeStart) message += ` c ${this.relDateTimeStart}`
-    if (this.relDateTimeEnd) message += ` по ${this.relDateTimeEnd}`
+    if (this.rel) {
+      message += this.rel.title
+    }
+    if (this.relValue) {
+      message += ` ('${store.getters.baseList(this.rel.type.value).values.find(i => i.id === this.relValue).value}')`
+    }
+    if (this.relDateTimeStart) {
+      message += ` c ${this.relDateTimeStart}`
+    }
+    if (this.relDateTimeEnd) {
+      message += ` по ${this.relDateTimeEnd}`
+    }
     return message
   }
 
-  get extraTree() {
-    return {rel: {
-      id: this.rel?.id || 0,
-      value: this.relValue || 0,
-      date_time_start: this.relDateTimeStart,
-      date_time_end: this.relDateTimeEnd
-    }}
+  get isAdditionalSettings() {
+    return super.isAdditionalSettings || this.relDateTimeStart || this.relDateTimeEnd
+  }
+
+  cleanAdditionalSettings() {
+    super.cleanAdditionalSettings()
+    this.relDateTimeStart = null
+    this.relDateTimeEnd = null
   }
 
   change(newItem) {

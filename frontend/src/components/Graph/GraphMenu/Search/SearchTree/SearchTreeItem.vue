@@ -1,7 +1,6 @@
 <template>
   <v-text-field
     v-model="model"
-    :prepend-inner-icon="item.object.icon"
     flat
     dense
     outlined
@@ -9,6 +8,7 @@
     color="teal"
     autocomplete="off"
     :readonly="readOnly"
+    :prepend-inner-icon="icon"
     @keyup.enter="$emit('find')"
   >
     <template v-slot:append-outer="">
@@ -41,6 +41,16 @@ export default {
       set(value) {
         this.item.request = value
       }
+    },
+    icon: function () {
+      if(this.item.baseId.length === 1) {
+        return this.item.base[0].icon
+      } else if (this.item.baseId.length > 9) {
+        return 'mdi-numeric-9-plus-box-multiple'
+      } else {
+        return `mdi-numeric-${this.item.baseId.length}-box-multiple`
+      }
+
     },
     readOnly: function () {
       return (this.relation && this.base) || this.item.isFields

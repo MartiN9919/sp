@@ -8,7 +8,7 @@ export default {
   mutations: {},
   actions: {
     async getObject({getters}, {rec_id, object_id, config = {}}) {
-      config.headers = {'set-cookie': getters.cookieTriggers(object_id)}
+      config.headers = {'set-cookie': JSON.stringify(getters.cookieTriggers(object_id))}
       return await axios.get('objects/object/', Object.assign(config, {params: {rec_id, object_id}}))
         .then(r => r.data ? Promise.resolve(new DataBaseObject(r.data)) : Promise.reject(r))
         .catch(e => Promise.reject(e))

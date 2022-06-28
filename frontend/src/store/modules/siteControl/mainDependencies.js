@@ -23,7 +23,7 @@ export default {
     triggers: state => state.triggers,
     objectTriggers: state => objectId => state.triggers.filter(trigger => trigger.objectId === objectId),
     cookieTriggers: state => id =>
-      JSON.stringify(state.triggers
+      state.triggers
         .filter(trigger => trigger.objectId === id && trigger.state)
         .map(trigger => Object.assign({
           id: trigger.id,
@@ -31,7 +31,7 @@ export default {
             result[item.name] = item.value
             return result;
           }, {})
-        }))
+        })
       )
   },
   mutations: {
