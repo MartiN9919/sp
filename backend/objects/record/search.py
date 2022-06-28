@@ -58,7 +58,7 @@ def recursion_search(group_id: int, request: dict) -> dict:
 def search_many_objects(group_id, object_ids, request, triggers, actual):
     result = []
     for object_id in object_ids:
-        result += [get_record_title(object_id, item, group_id, triggers=triggers) for
+        result += [get_record_title(object_id, item, group_id, triggers=triggers[str(object_id)]) for
                    item in find_reliable_http(object_id, request, actual, group_id)]
     return result
 
@@ -80,10 +80,10 @@ def search(request, group_id, triggers):
     else:
         request[FullTextSearch.OBJECT_ID] = base_object_list[0]
     if len(request.get(FullTextSearch.RELATIONS, None)) != 0:
-        return [get_record_title(request.get(FullTextSearch.OBJECT_ID, None), item, group_id, triggers=triggers) for
+        return [get_record_title(request.get(FullTextSearch.OBJECT_ID, None), item, group_id, triggers=triggers[str(request[FullTextSearch.OBJECT_ID])]) for
                 item in recursion_search(group_id, request)['records']]
     else:
-        return [get_record_title(request.get(FullTextSearch.OBJECT_ID, None), item, group_id, triggers=triggers) for
+        return [get_record_title(request.get(FullTextSearch.OBJECT_ID, None), item, group_id, triggers=triggers[str(request[FullTextSearch.OBJECT_ID])]) for
                 item in find_reliable_http(request.get(FullTextSearch.OBJECT_ID, None),
                                            request.get(FullTextSearch.REQUEST, ''),
                                            request.get(FullTextSearch.ACTUAL, False),

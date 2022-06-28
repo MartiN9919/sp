@@ -32,7 +32,7 @@ export default {
       eng: {
         icon: 'mdi-alpha-e',
         placeholder: 'Введите необходимое значение на английском',
-        rule: /^[A-Za-z0-9]+$/,
+        rule: /^[A-Z a-z0-9]+$/,
       },
       ru: {
         icon: 'mdi-alpha-r',

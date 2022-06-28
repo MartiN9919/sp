@@ -9,7 +9,6 @@
     :menu-props="{ offsetY: true, zIndex: 1000001 }"
     :placeholder="$attrs.placeholder || 'Выберите значение'"
     class="customCombobox"
-    no-data-text="Не найдено"
     autocomplete="off"
     messages=" "
     color="teal"
@@ -47,7 +46,7 @@ export default {
   name: "selectorInput",
   model: { prop: 'inputString', event: 'changeInputString'},
   props: {
-    inputString: [Number, String],
+    inputString: [Number, String, Array],
     itemValue: {
       type: String,
       default: 'id'
@@ -67,6 +66,8 @@ export default {
       get: function () {
         if (typeof this.inputString === 'string') {
           return this.items.find(v => v.value === this.inputString)[this.itemValue]
+        } else if(this.inputString instanceof Array) {
+          return this.items.filter(item => this.inputString.includes(item.id))
         } else {
           return this.items.find(item => item.id === this.inputString)
         }
