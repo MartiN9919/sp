@@ -2,7 +2,7 @@ import json
 
 import requests
 
-from data_base_driver.constants.const_dat import DAT_SYS_KEY, DAT_OBJ_ROW, DAT_OBJ_COL, DAT_REL
+from data_base_driver.constants.const_dat import DAT_SYS_KEY, DAT_OBJ_ROW, DAT_OBJ_COL, DAT_REL, DAT_SYS_OBJ
 from data_base_driver.constants.const_fulltextsearch import FullTextSearch
 from data_base_driver.input_output.valid_permission_manticore import get_enabled_records, check_relation_permission
 
@@ -19,7 +19,8 @@ def io_get_obj_row_manticore(group_id, object_type, keys, ids, ids_max_block, wh
     @param time_interval: временной интервал записи в формате словаря с ключами second_start и second_end
     @return: список словарей в формате [{rec_id,sec,key_id,val},{},...,{}]
     """
-    index = 'obj_' + FullTextSearch.TABLES[object_type] + '_row'
+    object_data = DAT_SYS_OBJ.DUMP.get_rec(id=object_type)
+    index = 'obj_' + object_data['name'] + '_row'
     must = []
     must.append({'range': {DAT_OBJ_ROW.SEC: {'gte': time_interval.get('second_start', 0),
                                              'lte': time_interval.get('second_end', 100000000000)}}})
@@ -42,8 +43,11 @@ def io_get_obj_row_manticore(group_id, object_type, keys, ids, ids_max_block, wh
     try:
         return get_enabled_records(object_type, [item['_source'] for item in json.loads(response.text)['hits']['hits']],
                                    group_id, False)
-    except:
-        print('manticore_error', where_dop_row)
+    except Exception as e:
+        error_log = f"manticore error {e}, request: {where_dop_row}, must: {must}, status: {response.status_code}, " \
+                    f"result: {response.text}"
+        print(error_log)
+        return []
 
 
 def parse_where_dop(where_dop_row):

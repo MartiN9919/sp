@@ -1,6 +1,7 @@
 from django.core.exceptions import ValidationError
 from django.db import models
 
+from classifier.additional_functions import transliterate
 from data_base_driver.constants.const_dat import DAT_SYS_OBJ, DAT_SYS_LIST_TOP, DAT_SYS_KEY, DAT_SYS_LIST_DOP, \
     DAT_SYS_PHONE_NUMBER_FORMAT
 
@@ -45,6 +46,11 @@ class ModelObject(models.Model):
     def __str__(self):
         return self.title
 
+    def save(self, *args, **kwargs):
+        if not self.id:
+            self.name = transliterate(self.title_single)
+        super().save(*args, **kwargs)
+
     class Meta:
         managed = False
         verbose_name = "Объект"
@@ -86,6 +92,7 @@ class ModelList(models.Model):
         @param args: стандартный параметр
         @param kwargs: стандартный параметр
         """
+        self.name = transliterate(self.title)
         if len(ModelList.objects.filter(title=self.title)) != 0 and self.fl == 0 and not self.id:
             raise ValidationError('список с таким именем уже существует')
         else:
@@ -296,6 +303,8 @@ class ModelKey(models.Model):
         """
         if not self.priority and self.obj_id != 1:
             return
+        if not self.id:
+            self.name = transliterate(self.title)
         if self.obj_id == 1:
             if self.rel_obj_1_id > self.rel_obj_2_id:
                 temp_id = self.rel_obj_1_id

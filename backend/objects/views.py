@@ -81,7 +81,7 @@ def aj_object(request):
     {rec_id, obj_id, params:[{id,val},...,{}]} если объект новый rec_id не задается
     """
     group_id = DAT_OWNER.DUMP.get_group(user_id=request.user.id)
-    triggers = json.loads(request.headers.get('Set-Cookie'))
+    triggers = json.loads(request.headers.get('Set-Cookie', '[]'))
     if request.method == 'GET':
         try:
             return get_object_record_by_id_http(object_id=int(request.GET['object_id']),
