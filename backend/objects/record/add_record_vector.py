@@ -1,4 +1,3 @@
-import multiprocessing
 import os
 import shutil
 import threading
@@ -12,7 +11,7 @@ from data_base_driver.sys_key.get_key_info import get_key_by_id
 from data_base_driver.sys_key.get_object_info import get_object_new_rec_id
 from files.additional_function import get_object_file_path
 from objects.record.add_record import add_record
-from objects.record.get_record import get_keys
+from objects.record.get_record import get_keys, get_object_record_by_id_http
 
 
 def find_key_value_http_vector(object_id, key_id, value, group_id=0):
@@ -95,7 +94,15 @@ def add_data_vector(group_id, object, files_path):
             print(report)
             duplicates_reports.append(report)
             object['rec_id'] = duplicates[0]
-            data = [item for item in data if get_key_by_id(item[0])['need'] != 1]
+            old_object = get_object_record_by_id_http(object['object_id'], duplicates[0], group_id)
+            old_object_params = old_object['params']
+            new_data = []
+            for item in data:
+                old_param = old_object_params.get([item[0]])
+                if old_param and get_key_by_id(item[0])['need'] != 1:
+                    if item[1] not in [value['value'] for value in old_param['values']]:
+                        new_data.append(item)
+            data = new_data
         set_file(object.get('rec_id', 0), object.get('object_id'), data, files_path)
         if object.get('rec_id', 0) != 0:  # проверка на внесение новой записи
             data.append(['id', object.get('rec_id')])
