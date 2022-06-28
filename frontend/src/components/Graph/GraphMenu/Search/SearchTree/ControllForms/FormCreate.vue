@@ -33,7 +33,7 @@
 import AdditionalSettings from "@/components/Graph/GraphMenu/Search/SearchTree/ControllForms/AdditionalSettings"
 import SelectorInput from "@/components/WebsiteShell/InputForms/selectorInput"
 import ControlMenu from "@/components/Graph/GraphMenu/Create/Modules/ControlMenu"
-import {SearchTreeChildItem} from "@/store/modules/graph/searchTree"
+import {SearchTreeChild} from "@/store/modules/graph/searchTree"
 import {mapGetters} from "vuex"
 import _ from 'lodash'
 
@@ -43,7 +43,7 @@ export default {
   props: {
     objectId: Number,
     changeObject: {
-      type: Object,
+      type: SearchTreeChild,
       default: () => null
     }
   },
@@ -60,10 +60,10 @@ export default {
     },
     selectedObjectId: {
       get: function () {
-        return this.newObject?.objectId[0]
+        return this.newObject?.baseId
       },
       set: function (id) {
-        this.newObject.objectId = [id]
+        this.newObject.baseId = id
         this.selectedRelationId = this.listRelations[0].id
       },
     },
@@ -126,8 +126,8 @@ export default {
     if(this.changeObject) {
       this.newObject = _.cloneDeep(this.changeObject)
     } else if(this.filteredObjects.length) {
-      this.newObject = new SearchTreeChildItem({
-        ids: [this.filteredObjects[0].id],
+      this.newObject = new SearchTreeChild({
+        base: this.filteredObjects[0].id,
         rel: this.listRelations[0].id,
         relValue: this.listRelationItems[0].id
       })

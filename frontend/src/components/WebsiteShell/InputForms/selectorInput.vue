@@ -9,7 +9,6 @@
     :menu-props="{ offsetY: true, zIndex: 1000001 }"
     :placeholder="$attrs.placeholder || 'Выберите значение'"
     class="customCombobox"
-    no-data-text="Не найдено"
     autocomplete="off"
     messages=" "
     color="teal"

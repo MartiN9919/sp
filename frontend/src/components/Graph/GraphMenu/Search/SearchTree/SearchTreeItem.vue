@@ -1,7 +1,6 @@
 <template>
   <v-text-field
     v-model="model"
-    :prepend-inner-icon="item.objects.length === 1 ? item.objects[0].icon : ''"
     flat
     dense
     outlined
