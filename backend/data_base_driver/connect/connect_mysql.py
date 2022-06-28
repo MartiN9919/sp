@@ -2,6 +2,7 @@ import threading
 
 import MySQLdb, MySQLdb.cursors
 import time
+
 from data_base_driver.connect.base_conection import SingletonMeta, BaseConnection
 from data_base_driver.constants.connect_db import VEC_DATA
 
@@ -122,7 +123,7 @@ def db_sql(sql, wait=False, read=True, database=VEC_DATA, connection=None):
             result = run(connection, database_open, database_reconnect)
             is_ok = True
         except Exception as e:
-            print(e)
+            print(f"mysql error {sql}, error: {e}")
             result = []
             is_ok = not wait
             if (error_count < 10) and wait:
