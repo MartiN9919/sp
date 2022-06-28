@@ -95,7 +95,6 @@ name: "searchInput",
   methods: {
     ...mapActions(['simpleFindObject']),
     search() {
-      console.log('search')
       this.simpleFindObject({objectId: this.selectorObject, searchRequest: this.searchString})
       .then(response => {
         this.findObjects = response.data.map(i => {

@@ -8,7 +8,7 @@
     hide-details
     color="teal"
     autocomplete="off"
-    :readonly="relation && base"
+    :readonly="readOnly"
     @keyup.enter="$emit('find')"
   >
     <template v-slot:append-outer="">
@@ -36,17 +36,14 @@ export default {
   computed: {
     model: {
       get: function () {
-        if(this.relation) {
-          if(this.base) {
-            return this.item.title
-          }
-        } else {
-          return this.item.request
-        }
+        return this.item.fieldInformation || this.item.request
       },
       set(value) {
         this.item.request = value
       }
+    },
+    readOnly: function () {
+      return (this.relation && this.base) || this.item.isFields
     }
   }
 }

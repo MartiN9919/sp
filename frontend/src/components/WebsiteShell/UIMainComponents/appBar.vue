@@ -61,7 +61,7 @@
           </v-list-item>
 
           <v-subheader>Действия над системой</v-subheader>
-          <list-notifications v-slot:default="{on}">
+          <notification-list v-slot:default="{on}">
             <v-list-item link v-on="on" v-ripple="{ class: 'teal--text' }">
               <v-list-item-icon><v-icon left>mdi-history</v-icon></v-list-item-icon>
               <v-list-item-content>
@@ -69,7 +69,16 @@
                 <v-list-item-subtitle>Список всех ваших уведомлений</v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
-          </list-notifications>
+          </notification-list>
+          <manual-list v-slot:default="{on}">
+            <v-list-item link v-on="on" v-ripple="{ class: 'teal--text' }">
+              <v-list-item-icon><v-icon left>mdi-file-document-outline</v-icon></v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title>Руководство пользователя</v-list-item-title>
+                <v-list-item-subtitle>Рекомендации, руководства, методики</v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
+          </manual-list>
           <v-list-item v-if="isAdmin || isStaff" href="/admin/" link v-ripple="{ class: 'teal--text' }">
             <v-list-item-icon><v-icon left>mdi-account-cog-outline</v-icon></v-list-item-icon>
             <v-list-item-content>
@@ -88,13 +97,14 @@
 </template>
 
 <script>
-import ListNotifications from "@/components/WebsiteShell/UIMainComponents/listNotifications"
+import NotificationList from "@/components/WebsiteShell/UIMainComponents/NotificationList"
 import { mapActions, mapGetters } from 'vuex'
 import router from "@/router"
+import ManualList from "@/components/WebsiteShell/UIMainComponents/ManualList";
 
 export default {
   name: 'appBar',
-  components: {ListNotifications},
+  components: {ManualList, NotificationList},
   data: () => ({
     status: {
       admin: 'Администратор',

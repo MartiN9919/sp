@@ -106,4 +106,7 @@ export default {
 .dialog {
   z-index: 100001;
 }
+>>> .v-dialog {
+  max-height: 60% !important;
+}
 </style>

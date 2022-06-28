@@ -4,7 +4,7 @@ import geopandas
 
 from objects.geometry.geometry_transformations import get_polygon_from_lines
 from objects.relations.get_rel import get_related_objects
-from data_base_driver.sys_key.get_key_info import get_key_by_id
+from data_base_driver.sys_key.get_key_dump import get_key_by_id
 from data_base_driver.sys_key.get_list import get_item_list_value
 from document_driver.exel_driver import get_xlsx_document_from_template
 from objects.record.get_record import get_object_record_by_id_http, get_record_title
@@ -43,6 +43,7 @@ def script_80(request, group_id):
 		search_test11 = request.get('search_test11',{}).get('value',[])
 		search_test12 = request.get('search_test12',{}).get('value',[])
 		search_test13 = request.get('search_test13',{}).get('value',[])
+		search_test14 = request.get('search_test14',{}).get('value',[])
 		
 	except Exception as e:
 		raise e

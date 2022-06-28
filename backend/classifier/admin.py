@@ -1,8 +1,8 @@
 from django.contrib import admin
 from django.contrib.admin import RelatedFieldListFilter
-from django.core.exceptions import ValidationError
 from django.db.models import Q
-from classifier.models import ModelKey, ModelObject, ModelList, ModelListDop, ModelPhoneNumberFormat
+
+from classifier.models import ModelObject, ModelList, ModelListDop, ModelPhoneNumberFormat, ObjectKey, Rel
 from data_base_driver.constants.const_admin import PROJECT_TITLE_ADMIN
 from data_base_driver.constants.const_dat import DAT_SYS_KEY, DAT_SYS_OBJ, DAT_SYS_LIST_TOP, \
     DAT_SYS_PHONE_NUMBER_FORMAT, DAT_SYS_LIST_DOP
@@ -12,21 +12,31 @@ admin.site.site_header = PROJECT_TITLE_ADMIN
 
 @admin.register(ModelObject)
 class ModelObjectAdmin(admin.ModelAdmin):
+
     list_display = (
         DAT_SYS_OBJ.ID,
         DAT_SYS_OBJ.TITLE,
-        DAT_SYS_OBJ.TITLE_SINGLE,
         DAT_SYS_OBJ.NAME,
-        DAT_SYS_OBJ.DESCRIPT,
         DAT_SYS_OBJ.PRIORITY
     )
+    list_display_links = (DAT_SYS_OBJ.TITLE,)
+    readonly_fields = (DAT_SYS_OBJ.ID, DAT_SYS_OBJ.NAME)
     fieldsets = (
-        ("Имя Объекта", {'fields': ((DAT_SYS_OBJ.TITLE, DAT_SYS_OBJ.TITLE_SINGLE,),)}),
-        ('Транслитерация объекта', {'fields': (DAT_SYS_OBJ.NAME,)}),
-        ('Пометки', {'fields': (DAT_SYS_OBJ.DESCRIPT,)}),
-        ('Приоритет', {'fields': (DAT_SYS_OBJ.PRIORITY,)}),
+        ('Идентификатор', {'fields': ((DAT_SYS_OBJ.ID, DAT_SYS_OBJ.NAME),)}),
+        ("Имя Объекта", {'fields': ((DAT_SYS_OBJ.TITLE, DAT_SYS_OBJ.TITLE_SINGLE),)}),
+        ('Описание объекта', {'fields': ((DAT_SYS_OBJ.PRIORITY, DAT_SYS_OBJ.ICON),)}),
+        ('Информация для администраторов', {
+            'classes': ('collapse',),
+            'fields': (DAT_SYS_OBJ.DESCRIPT,)
+        })
     )
-    ordering = [DAT_SYS_OBJ.TITLE]
+    ordering = [DAT_SYS_OBJ.PRIORITY]
+
+    def has_delete_permission(self, request, obj=None):
+        """
+        Отключение возможности удаления объектов
+        """
+        return False
 
 
 @admin.register(ModelListDop)
@@ -45,18 +55,24 @@ class ModelListAdmin(admin.ModelAdmin):
 class ModelListDopAdmin(admin.TabularInline):
     search_fields = [DAT_SYS_LIST_DOP.VAL]
     autocomplete_fields = (DAT_SYS_LIST_DOP.PARENT,)
+    readonly_fields = (DAT_SYS_LIST_DOP.ID, )
     fieldsets = (
-        (None, {'fields': ((DAT_SYS_LIST_DOP.VAL, DAT_SYS_LIST_DOP.PARENT),)}),
+        (None, {'fields': ((DAT_SYS_LIST_DOP.ID, DAT_SYS_LIST_DOP.VAL, DAT_SYS_LIST_DOP.PARENT),)}),
     )
     model = ModelListDop
 
 
 @admin.register(ModelList)
 class ModelListAdmin(admin.ModelAdmin):
-    search_fields = (DAT_SYS_KEY.TITLE,)
-    list_display = (DAT_SYS_LIST_TOP.TITLE, DAT_SYS_LIST_TOP.NAME)
+    list_display = (DAT_SYS_LIST_TOP.ID, DAT_SYS_LIST_TOP.TITLE, DAT_SYS_LIST_TOP.NAME)
+    list_display_links = (DAT_SYS_LIST_TOP.TITLE,)
+    search_fields = (DAT_SYS_LIST_TOP.TITLE,)
+    readonly_fields = (DAT_SYS_LIST_TOP.ID, DAT_SYS_LIST_TOP.NAME)
     fieldsets = (
-        (None, {'fields': ((DAT_SYS_LIST_TOP.TITLE, DAT_SYS_LIST_TOP.NAME,),)}),
+        ("Идентификатор", {
+            'fields': ((DAT_SYS_LIST_TOP.ID, DAT_SYS_LIST_TOP.NAME),)
+        }),
+        (None, {'fields': (DAT_SYS_LIST_TOP.TITLE,)}),
     )
     ordering = (DAT_SYS_LIST_TOP.TITLE,)
     inlines = [ModelListDopAdmin]
@@ -69,7 +85,7 @@ class ModelPhoneNumberFormatAdmin(admin.ModelAdmin):
                     DAT_SYS_PHONE_NUMBER_FORMAT.LENGTH,)
     fieldsets = (
         (None, {'fields': ((DAT_SYS_PHONE_NUMBER_FORMAT.COUNTRY, DAT_SYS_PHONE_NUMBER_FORMAT.COUNTRY_CODE,
-                    DAT_SYS_PHONE_NUMBER_FORMAT.LENGTH,),)}),
+                            DAT_SYS_PHONE_NUMBER_FORMAT.LENGTH,),)}),
     )
     ordering = (DAT_SYS_PHONE_NUMBER_FORMAT.COUNTRY,)
 
@@ -100,42 +116,43 @@ class SpeciesFilterRel(RelatedFieldListFilter):
             return queryset.filter(obj_id=1)
 
 
-class Rel(ModelKey):
-    def save(self, *args, **kwargs):
-        self.obj_id = 1
-        self.priority = 100
-        super().save(*args, **kwargs)
-
-    class Meta:
-        verbose_name = "Классификатор связь"
-        verbose_name_plural = "Классификатор связь"
-        proxy = True
-
-
 @admin.register(Rel)
 class ModelKeyAdminRel(admin.ModelAdmin):
     list_display = (
-        DAT_SYS_KEY.TITLE,
         DAT_SYS_KEY.ID,
+        DAT_SYS_KEY.TITLE,
         DAT_SYS_KEY.REL_OBJ_1,
         DAT_SYS_KEY.REL_OBJ_2,
         DAT_SYS_KEY.COL,
         DAT_SYS_KEY.NEED,
         DAT_SYS_KEY.DESCRIPT,
     )
+    list_display_links = (DAT_SYS_KEY.TITLE,)
     search_fields = [DAT_SYS_KEY.TITLE, ]
     ordering = (DAT_SYS_KEY.OBJ, DAT_SYS_KEY.TITLE,)
 
     autocomplete_fields = (DAT_SYS_KEY.LIST,)
-    readonly_fields = (DAT_SYS_KEY.ID,)
+    readonly_fields = (DAT_SYS_KEY.ID, DAT_SYS_KEY.NAME)
     fieldsets = (
-        ("Идентификатор", {'fields': (DAT_SYS_KEY.ID,)}),
-        ("Название связи", {'fields': ((DAT_SYS_KEY.TITLE, DAT_SYS_KEY.NAME,), )}),
-        ("Основные настройки связи", {'fields': (DAT_SYS_KEY.LIST,), }),
-        ("Описания для связи", {'fields': ((DAT_SYS_KEY.HINT,),), }),
-        ("Поля для связи между объектами", {'fields': ((DAT_SYS_KEY.REL_OBJ_1, DAT_SYS_KEY.REL_OBJ_2,),), }),
-        (None, {'fields': ((DAT_SYS_KEY.BLOCKED_IN_BLANK),), }),
-        ("Дополнительная информация", {'fields': (DAT_SYS_KEY.DESCRIPT,), }),
+        ("Идентификатор", {
+            'fields': ((DAT_SYS_KEY.ID, DAT_SYS_KEY.NAME),)
+        }),
+        ("Основные настройки", {
+            'fields': (
+                DAT_SYS_KEY.TITLE, (DAT_SYS_KEY.REL_OBJ_1, DAT_SYS_KEY.REL_OBJ_2), DAT_SYS_KEY.LIST, DAT_SYS_KEY.NEED,
+            ),
+        }),
+        ("Отображение", {
+            'fields': (DAT_SYS_KEY.PRIORITY, DAT_SYS_KEY.BLOCKED_IN_BLANK),
+        }),
+        ('Информация для пользователей', {
+            'classes': ('collapse',),
+            'fields': (DAT_SYS_KEY.HINT,)
+        }),
+        ('Информация для администраторов', {
+            'classes': ('collapse',),
+            'fields': (DAT_SYS_KEY.DESCRIPT,)
+        })
     )
 
     list_filter = ((DAT_SYS_KEY.REL_OBJ_1, SpeciesFilterRel),
@@ -177,30 +194,11 @@ class SpeciesFilterClassifier(RelatedFieldListFilter):
             return queryset.filter(~Q(obj_id=1))
 
 
-class ObjectKey(ModelKey):
-
-    def clean(self):
-        try:
-            self.save()
-        except Exception as e:
-            raise e
-
-    def save(self, *args, **kwargs):
-        if self.obj_id == 1:
-            raise ValidationError('в данной форме нельзя добавлять связи')
-        super().save(*args, **kwargs)
-
-    class Meta:
-        verbose_name = "Классификатор объекта"
-        verbose_name_plural = "Классификатор объекта"
-        proxy = True
-
-
 @admin.register(ObjectKey)
 class ModelKeyAdminObject(admin.ModelAdmin):
     list_display = (
-        DAT_SYS_KEY.TITLE,
         DAT_SYS_KEY.ID,
+        DAT_SYS_KEY.TITLE,
         DAT_SYS_KEY.OBJ,
         DAT_SYS_KEY.PRIORITY,
         DAT_SYS_KEY.TYPE_VAL,
@@ -208,19 +206,36 @@ class ModelKeyAdminObject(admin.ModelAdmin):
         DAT_SYS_KEY.NEED,
         DAT_SYS_KEY.DESCRIPT,
     )
+    list_display_links = (DAT_SYS_KEY.TITLE,)
     search_fields = [DAT_SYS_KEY.TITLE, ]
 
     ordering = (DAT_SYS_KEY.OBJ, DAT_SYS_KEY.PRIORITY, DAT_SYS_KEY.TITLE,)
 
     autocomplete_fields = (DAT_SYS_KEY.LIST,)
-    readonly_fields = (DAT_SYS_KEY.ID,)
+    readonly_fields = (DAT_SYS_KEY.ID,DAT_SYS_KEY.NAME)
     fieldsets = (
-        ("Идентификатор", {'fields': (DAT_SYS_KEY.ID,)}),
-        ("Название классификатора", {'fields': ((DAT_SYS_KEY.TITLE, DAT_SYS_KEY.NAME,), (DAT_SYS_KEY.PRIORITY, ),)}),
-        ("Основные настройки классификатора", {'fields': (DAT_SYS_KEY.OBJ, DAT_SYS_KEY.TYPE_VAL, DAT_SYS_KEY.LIST, ), }),
-        ("Описания для классификатора", {'fields': ((DAT_SYS_KEY.HINT,),), }),
-        (None, {'fields': ((DAT_SYS_KEY.NEED, DAT_SYS_KEY.VISIBLE, DAT_SYS_KEY.BLOCKED_IN_BLANK),), }),
-        ("Дополнительная информация", {'fields': (DAT_SYS_KEY.DESCRIPT,), }),
+        ("Идентификатор", {
+            'fields': ((DAT_SYS_KEY.ID, DAT_SYS_KEY.NAME),)
+        }),
+        ("Основные настройки", {
+            'fields': (
+                DAT_SYS_KEY.TITLE, DAT_SYS_KEY.OBJ, DAT_SYS_KEY.NEED,
+            ),
+        }),
+        ("Тип", {
+            'fields': (DAT_SYS_KEY.TYPE_VAL, DAT_SYS_KEY.LIST,)
+        }),
+        ("Отображение", {
+            'fields': (DAT_SYS_KEY.PRIORITY, DAT_SYS_KEY.VISIBLE, DAT_SYS_KEY.BLOCKED_IN_BLANK),
+        }),
+        ('Информация для пользователей', {
+            'classes': ('collapse',),
+            'fields': (DAT_SYS_KEY.HINT,)
+        }),
+        ('Информация для администраторов', {
+            'classes': ('collapse',),
+            'fields': (DAT_SYS_KEY.DESCRIPT,)
+        })
     )
 
     list_filter = ((DAT_SYS_KEY.OBJ, SpeciesFilterClassifier),)

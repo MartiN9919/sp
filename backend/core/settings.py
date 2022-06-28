@@ -1,6 +1,9 @@
 from pathlib import Path
+
+from django.contrib import admin
 from django.middleware.csrf import rotate_token
 
+from core.projectSettings.constant import MEDIA_ROOT
 from data_base_driver.constants.connect_db import VEC_DATA
 
 
@@ -27,10 +30,11 @@ INSTALLED_APPS = [
     'classifier',
     'data_base_driver',
     'official_documents',
-    'notifications',
+    'admin_control',
     'objects',
     'files',
 ]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -101,4 +105,3 @@ STATIC_ROOT = 'var/static_root'
 STATICFILES_DIRS = [
     "static",
 ]
-

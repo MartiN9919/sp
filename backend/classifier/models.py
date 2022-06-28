@@ -1,5 +1,7 @@
 from django.core.exceptions import ValidationError
 from django.db import models
+
+from classifier.additional_functions import transliterate
 from data_base_driver.constants.const_dat import DAT_SYS_OBJ, DAT_SYS_LIST_TOP, DAT_SYS_KEY, DAT_SYS_LIST_DOP, \
     DAT_SYS_PHONE_NUMBER_FORMAT
 
@@ -19,15 +21,22 @@ class ModelObject(models.Model):
         verbose_name='Имя объекта ед.ч.',
     )
     name = models.CharField(
-        max_length=25,
+        max_length=15,
         verbose_name='Имя латиницей',
+        blank=True,
+        null=True,
     )
     descript = models.TextField(
-        max_length=1024,
+        max_length=255,
         verbose_name='Дополнительные пометки',
         help_text='Дополнительная информация о объекте',
         blank=True,
         null=True,
+    )
+    icon = models.CharField(
+        max_length=255,
+        verbose_name='Иконка',
+        help_text='Отображаемая иконка',
     )
     priority = models.IntegerField(
         verbose_name='Приоритет',
@@ -36,6 +45,11 @@ class ModelObject(models.Model):
 
     def __str__(self):
         return self.title
+
+    def save(self, *args, **kwargs):
+        if not self.id:
+            self.name = transliterate(self.title_single)
+        super().save(*args, **kwargs)
 
     class Meta:
         managed = False
@@ -78,6 +92,7 @@ class ModelList(models.Model):
         @param args: стандартный параметр
         @param kwargs: стандартный параметр
         """
+        self.name = transliterate(self.title)
         if len(ModelList.objects.filter(title=self.title)) != 0 and self.fl == 0 and not self.id:
             raise ValidationError('список с таким именем уже существует')
         else:
@@ -113,7 +128,7 @@ class ModelListDop(models.Model):
     )
 
     def __str__(self):
-        return self.val
+        return ''
 
     def clean(self):
         """
@@ -134,7 +149,8 @@ class ModelListDop(models.Model):
         @param args: стандартный параметр
         @param kwargs: стандартный параметр
         """
-        if len(ModelListDop.objects.filter(key=self.key).filter(val=self.val).filter(parent=self.parent)) > 0 and self.fl == 0:
+        if len(ModelListDop.objects.filter(key=self.key).filter(val=self.val).filter(
+                parent=self.parent)) > 0 and self.fl == 0:
             raise ValidationError('в данном списке уже есть такой элемент')
         else:
             self.fl = 1
@@ -166,6 +182,9 @@ class ModelPhoneNumberFormat(models.Model):
         help_text='С учетом кода страны',
     )
 
+    def __str__(self):
+        return f'+{self.country_code}{"*" * (self.length - len(str(self.country_code)))} ({self.country})'
+
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         DAT_SYS_PHONE_NUMBER_FORMAT.DUMP.update()
@@ -173,8 +192,8 @@ class ModelPhoneNumberFormat(models.Model):
     class Meta:
         managed = False
         db_table = DAT_SYS_PHONE_NUMBER_FORMAT.TABLE_SHORT
-        verbose_name = "Формат телефонный номеров"
-        verbose_name_plural = "Формат телефонный номеров"
+        verbose_name = "Формат телефонного номера"
+        verbose_name_plural = "Формат телефонных номеров"
 
 
 class ModelKey(models.Model):
@@ -264,7 +283,7 @@ class ModelKey(models.Model):
         max_length=20,
         verbose_name='Режим отображения',
         choices=DAT_SYS_KEY.VISIBLE_LIST,
-        help_text='Как будет отображаться данный классификатор в заоголовках',
+        help_text='Как будет отображаться данный классификатор в заголовках',
         default='all'
     )
     blocked_blank = models.BooleanField(
@@ -284,6 +303,8 @@ class ModelKey(models.Model):
         """
         if not self.priority and self.obj_id != 1:
             return
+        if not self.id:
+            self.name = transliterate(self.title)
         if self.obj_id == 1:
             if self.rel_obj_1_id > self.rel_obj_2_id:
                 temp_id = self.rel_obj_1_id
@@ -299,3 +320,38 @@ class ModelKey(models.Model):
         db_table = DAT_SYS_KEY.TABLE_SHORT
         verbose_name = "Классификатор"
         verbose_name_plural = "Классификаторы"
+
+
+class ObjectKey(ModelKey):
+    """
+    Прокси модель для классификаторов.
+    """
+    def clean(self):
+        try:
+            self.save()
+        except Exception as e:
+            raise e
+
+    def save(self, *args, **kwargs):
+        if self.obj_id == 1:
+            raise ValidationError('в данной форме нельзя добавлять связи')
+        super().save(*args, **kwargs)
+
+    class Meta:
+        verbose_name = "Классификатор объекта"
+        verbose_name_plural = "Классификатор объекта"
+        proxy = True
+
+
+class Rel(ModelKey):
+    """
+    Прокси модель для связей.
+    """
+    def save(self, *args, **kwargs):
+        self.obj_id = 1
+        super().save(*args, **kwargs)
+
+    class Meta:
+        verbose_name = "Классификатор связь"
+        verbose_name_plural = "Классификатор связь"
+        proxy = True

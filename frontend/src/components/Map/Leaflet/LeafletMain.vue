@@ -480,7 +480,7 @@ export default {
 
     on_map_click(e) {
       this.SCRIPT_ACT_SEL_CLEAR();
-      this.changeSelectedTreeViewItem();
+      // this.changeSelectedTreeViewItem(); Вызывало отключение скрипта при обычном клике на карте
     },
 
     on_map_dblclick(e) {

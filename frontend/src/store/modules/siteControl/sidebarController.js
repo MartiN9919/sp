@@ -11,8 +11,8 @@ export default {
       Graph: new UserSetting('globalMenuReportStatus', true),
     },
     activeTool: {
-      Map: null,
-      Graph: null,
+      Map: 'scriptsPage',
+      Graph: 'SearchObjectPage',
     },
     toolsMenu: {
       Map: [
@@ -29,9 +29,9 @@ export default {
       ]
     },
     appbarTabs: [
-      { title: 'Карта', route: 'map', icon: 'mdi-map-search-outline' },
-      { title: 'Граф', route: 'graph', icon: 'mdi-graph-outline' },
-      { title: 'Отчеты', route: 'report', icon: 'mdi-file-document-multiple-outline' }
+      { title: 'Картография', route: 'map', icon: 'mdi-map-search-outline' },
+      { title: 'Графическое отображение', route: 'graph', icon: 'mdi-graph-outline' },
+      { title: 'Раздел отчетов', route: 'report', icon: 'mdi-file-document-multiple-outline' }
     ]
   },
   getters: {

@@ -1,12 +1,12 @@
 <template>
-  <v-treeview :items="items" :open="openItems" item-children="rels" return-object class="search-tree pb-2">
+  <v-treeview :items="items" :open="openItems" item-children="rels" return-object class="search-tree">
     <template v-slot:label="{ item }">
       <item-description :item="item"/>
       <v-hover v-slot="{ hover }">
-        <search-tree-item :item="item" :base="item === items[0]" @find="find" :relation="!!item.recId">
+        <search-tree-item :item="item" :base="item === items[0]" @find="find" :relation="!!item.recId" class="pb-2">
           <div v-show="hover">
             <btn-create :object-id="item.object.id" @create="create(item, $event)"/>
-            <btn-change :item="item" :parent="findParent(item)" @change="change(item, $event)"/>
+            <btn-change v-if="!item.recId" :item="item" :parent="findParent(item)" @change="change(item, $event)"/>
             <btn-remove v-if="item !== items[0]" @remove="remove(item)"/>
           </div>
         </search-tree-item>
@@ -39,14 +39,14 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['setRootSearchTreeItem', 'changeSearchTreeItem', 'addSearchTreeItem', 'removeSearchTreeItem']),
+    ...mapActions(['setRootSearch', 'changeSearchTreeItem', 'addSearchTreeItem', 'removeSearchTreeItem']),
     create(item, newItem) {
       this.addSearchTreeItem({rootItem: item, newItem: newItem})
       this.openItems.push(item)
     },
     change(item, newItem) {
       if(item === this.items[0])
-        this.setRootSearchTreeItem({id: newItem.object_id, actual: newItem.actual})
+        this.setRootSearch(newItem)
       else this.changeSearchTreeItem({rootItem: item, newItem: newItem})
     },
     remove(removeItem) {

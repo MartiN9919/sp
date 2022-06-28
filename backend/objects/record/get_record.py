@@ -102,10 +102,16 @@ def get_record_photo(params):
     @param params: список параметров объекта
     @return: название файла фотографии или None если фото нет
     """
+    photo_keys = []
     for param in params:
-        if param['id'] in SYS_KEY_CONSTANT.PHOTO_CLASSIFIER_LIST:
-            return param['values'][0]['value']
-    return None
+        key = get_key_by_id(param['id'])
+        if key['type'] == 'file_photo':
+            photo_keys.append({'priority': key['priority'], 'value': param['values'][0]['value']})
+    photo_keys.sort(key=lambda x: x['priority'], reverse=True)
+    if len(photo_keys):
+        return photo_keys[0]['value']
+    else:
+        return None
 
 
 def get_value_by_key(key, value):

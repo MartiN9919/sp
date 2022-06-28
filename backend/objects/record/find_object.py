@@ -1,9 +1,15 @@
 import json
 
+from shapely.geometry import Polygon, LineString
+
+from data_base_driver.additional_functions import date_client_to_server, str_to_sec
 from data_base_driver.constants.const_key import SYS_KEY_CONSTANT
 from data_base_driver.input_output.input_output import io_get_obj
-from data_base_driver.input_output.io_geo import get_points_by_distance
+from data_base_driver.input_output.input_output_mysql import io_get_obj_mysql_tuple
+from data_base_driver.input_output.io_geo import get_points_by_distance, get_points_inside_polygon, \
+     feature_collection_by_geometry, get_all_geometries_id
 from data_base_driver.sys_key.get_key_info import get_key_by_id
+from objects.geometry.geometry_analytics import feature_collection_to_manticore_polygon
 from objects.record.get_record import get_object_record_by_id_http, get_keys
 from synonyms_manager.get_synonyms import get_synonyms
 
@@ -34,29 +40,43 @@ def intercept_sort_list(elements):
     return [temp['elem'] for temp in temp_list]
 
 
-def check_actual(fetchall, group_id, object_id):
-    remove_list = []
+def filter_actual(group_id,  object_id, fetchall):
+    result = []
     for item in fetchall:
         temp_word = '@key_id ' + str(item[1])
-        temp = io_get_obj(group_id, object_id, [], [item[0]], 500, temp_word, {})
-        for temp_item in temp:
-            if item[2] == temp_item['sec']:
-                continue
-            else:
-                if item[2] < temp_item['sec']:
-                    remove_list.append(item)
-    return remove_list
+        temp = io_get_obj(group_id, object_id, [], [item[0]], 500, temp_word, {'second_start': item[2] + 1})
+        if len(temp) == 0:
+            result.append(item)
+    return result
 
 
-def get_search_result(group_id, word, object_id, actual):
+def filter_date_range(group_id, object_id, items, date_range):
+    second_start = str_to_sec(date_client_to_server(date_range.split('-')[0]) + ' 00:00:00')
+    second_end = str_to_sec(date_client_to_server(date_range.split('-')[1]) + ' 00:00:00')
+    result = []
+    for item in items:
+        if second_start < item[2] < second_end:
+            result.append(item)
+        elif item[2] < second_end:
+            temp_word = '@key_id ' + str(item[1])
+            temp = io_get_obj(group_id, object_id, [], [item[0]], 500, temp_word, {'second_start': item[2] + 1,
+                                                                                   'second_end': second_start})
+            if len(temp) == 0:
+                result.append(item)
+    return result
+
+
+def get_search_result(group_id, word, object_id, actual, date_range=None):
     temp_result = io_get_obj(group_id, object_id, [], [], 500, word, {})
     fetchall = [(int(item['rec_id']), int(item['key_id']), int(item['sec'])) for item in temp_result]
-    remove_list = check_actual(fetchall, group_id, object_id) if actual else []
-    return [item[0] for item in fetchall if item not in remove_list]
+    fetchall = filter_actual(group_id, object_id, fetchall) if actual else fetchall
+    if date_range:
+        fetchall = filter_date_range(group_id, object_id, fetchall, date_range)
+    return [item[0] for item in fetchall]
 
 
 def find_reliable_http(object_id, request, actual=False, group_id=0):
-    if isinstance(request, str):
+    if isinstance(request, str) or request is None:
         return find_text(group_id, object_id, request, actual)
     elif isinstance(request, list):
         return find_advanced(group_id, object_id, request, actual)
@@ -81,7 +101,8 @@ def find_text(group_id, object_id, request, actual=False):
         except TypeError:
             synonyms_list = []
     request = request.split(' ') + synonyms_list
-    request = [word.replace('-', '<<') for word in request]  # костыль, в последующем поменять настройки мантикоры, что бы индексировала '-'
+    request = [word.replace('-', '<<') for word in
+               request]  # костыль, в последующем поменять настройки мантикоры, что бы индексировала '-'
     result = []
     for param in request:
         word = f"@val {param}" if len(param) > 0 else param  # искать только по значению
@@ -96,17 +117,76 @@ def find_advanced(group_id, object_id, request, actual=False):
     keys = {}
     result = []
     for param in request:
-        if keys.get(param['key_id']) is None:
-            keys[param['key_id']] = []
-        keys[param['key_id']].append(param['value'])
+        if keys.get(param['id']) is None:
+            keys[param['id']] = []
+        keys[param['id']].append({'value': param['value'], 'range': param['date']})
     for key in keys:
-        or_result = set()
-        for value in keys[key]:
-            word = f"@key_id {key} @val {value}"
-            fetchall = get_search_result(group_id, word, object_id, actual)
-            or_result.update(set(fetchall))
-        result.append(list(or_result))
+        result.append(find_by_type(group_id, object_id, key, keys[key], actual))
     return intercept_sort_list(result)
+
+
+def find_by_type(group_id, object_id, key, values, actual):
+    key_info = get_key_by_id(key)
+    key_type = key_info['type'] if key_info['list_id'] is None else 'list'
+    if key_type == 'date':
+        return find_date_advanced(group_id, object_id, key, values, actual)
+    elif key_type == 'geometry':
+        return find_geometry_advanced(group_id, values, actual)
+    elif key_type == 'geometry_point':
+        return find_point_advanced(group_id, values, actual)
+    else:
+        return find_text_advanced(group_id, object_id, key, values, actual)
+
+
+def find_text_advanced(group_id, object_id, key, values, actual):
+    result = set()
+    for value in values:
+        word = f"@key_id {key} @val {value['value']}"
+        fetchall = get_search_result(group_id, word, object_id, actual, value['range'])
+        result.update(set(fetchall))
+    return list(result)
+
+
+def find_date_advanced(group_id, object_id, key, values, actual):
+    result = set()
+    for value in values:
+        date_start = date_client_to_server(value['value'].split('-')[0])
+        date_end = date_client_to_server(value['value'].split('-')[1])
+        where_dop = [f"val > '{date_start}'", f"val < '{date_end}'"]
+        temp_result = io_get_obj_mysql_tuple(group_id, object_id, [key], [], None, where_dop)
+        temp_result = [[item[0], item[1], str_to_sec(item[3])] for item in temp_result]
+        temp_result = filter_actual(group_id, object_id, temp_result) if actual else temp_result
+        temp_result = filter_date_range(group_id, object_id, temp_result, value['range'])
+        result.update(set([item[0] for item in temp_result]))
+    return list(result)
+
+
+def find_point_advanced(group_id, values, actual):
+    result = set()
+    for value in values:
+        polygon = feature_collection_to_manticore_polygon(value['value'])
+        fetchall = get_points_inside_polygon(polygon['in_polygon'], [], group_id)
+        result.update(set(fetchall))
+    return list(result)
+
+
+def find_geometry_advanced(group_id, values, actual):
+    result = set()
+    for value in values:
+        geometries = get_all_geometries_id()
+        fc_polygons = feature_collection_by_geometry(group_id, 30, geometries, [], {})
+        polygon = Polygon(value['value']['features'][0]['geometry']['coordinates'][0])
+        fetchall = []
+        for feature in fc_polygons['features']:
+            geometry = feature['geometry']['geometries'][0]
+            if geometry['type'] == 'Polygon':
+                if polygon.intersects(Polygon(geometry['coordinates'][0])):
+                    fetchall.append(feature['rec_id'])
+            elif geometry['type'] == 'LineString':
+                if polygon.intersects(LineString(geometry['coordinates'])):
+                    fetchall.append(feature['rec_id'])
+        result.update(set(fetchall))
+    return list(result)
 
 
 def find_unreliable_http(object_type, request, group_id=0):
@@ -188,9 +268,11 @@ def find_duplicate_objects(group_id, object_id, rec_id, params):
             new_params[param['id']] = param['values'][0]
     if nums > len(new_params) or len([item for item in params if get_key_by_id(item[0]).get('need', 0) == 1]) == 0:
         return result
-    temp_result = set(find_key_value_http(object_id, list(new_params.keys())[0], list(new_params.values())[0]['value'], group_id))
+    temp_result = set(
+        find_key_value_http(object_id, list(new_params.keys())[0], list(new_params.values())[0]['value'], group_id))
     for param in list(new_params.keys())[1:]:
-        temp_result.intersection_update(set(find_key_value_http(object_id, param, new_params[param]['value'], group_id)))
+        temp_result.intersection_update(
+            set(find_key_value_http(object_id, param, new_params[param]['value'], group_id)))
     return list(temp_result) + result
 
 
@@ -210,9 +292,3 @@ def find_same_objects(group_id, object_id, params):
                 result.intersection_update(set(find_key_value_http(object_id, param, new_params[param]['value'],
                                                                    group_id)))
         return list(result)
-
-
-
-
-
-

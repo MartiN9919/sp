@@ -5,7 +5,7 @@ from typing import Dict, List, Tuple
 from openpyxl import load_workbook
 
 from data_bank import Database, Relation
-from objects.record.add_record_vector import add_data_vector
+from objects.record.add_record_vector import add_data_vector, duplicates_reports
 from objects.relations.add_rel import add_rel
 from parser_bank import ParserBank
 
@@ -91,7 +91,7 @@ class ConverterRelations:
             try:
                 add_rel(1, self.object_id_1, new_id_1, self.object_id_2, new_id_2, [{'id': key_id, 'value': '', 'date': date_time}])
             except Exception as e:
-                print('error creating relation')
+                print(f"error creating relation {self.database_id_1}_{old_id_1}_{self.database_id_2}_{old_id_2}")
                 return {
                     'error': {
                         f"{self.database_id_1}_{old_id_1}_{self.database_id_2}_{old_id_2}": {
@@ -186,7 +186,7 @@ class ConverterParams:
             return result
         for database_object_id in database.data:
             key = f"{self.database_id}_{database_object_id}"
-            new_object = {key: {'rec_id': 0, 'object_id': self.object_id, 'params': []}}
+            new_object = {key: {'old_id': key, 'rec_id': 0, 'object_id': self.object_id, 'params': []}}
             database_object_params = database.data[database_object_id]['values']
             database_object_datetime = database.data[database_object_id]['date'] + ' ' + \
                                        database.data[database_object_id]['time']
@@ -278,6 +278,41 @@ class ConverterBank:
                         'document': row[6].value
                     })
 
+    def create_deferred_relation(self, deferred_relation, key, errors):
+        key_list = key.split('_')
+        key_id, value = int(key_list[0]), int(key_list[1])
+        date = deferred_relation[key]['date']
+        object_id_1 = deferred_relation[key]['object_id_1']
+        object_id_2 = deferred_relation[key]['object_id_2']
+        rec_id_1_list = deferred_relation[key]['rec_id_1']
+        rec_id_2_list = deferred_relation[key]['rec_id_2']
+        document = deferred_relation[key].get('document')
+        for rec_id_1 in rec_id_1_list:
+            for rec_id_2 in rec_id_2_list:
+                try:
+                    add_rel(1, object_id_1, rec_id_1, object_id_2, rec_id_2,
+                            [{'id': key_id, 'value': value, 'date': date}], document)
+                except Exception as e:
+                    errors[f"{object_id_1}_{rec_id_1}_{object_id_2}_{rec_id_2}"] = {
+                        'object_id_1': object_id_1,
+                        'rec_id_1': rec_id_1,
+                        'object_id_2': object_id_2,
+                        'rec_id_2': rec_id_2,
+                        'key_id': key_id,
+                        'value': value,
+                        'datetime': date
+                    }
+                    raise e
+                self.relation_to_create.append({
+                    'object_id_1': object_id_1,
+                    'rec_id_1': rec_id_1,
+                    'object_id_2': object_id_2,
+                    'rec_id_2': rec_id_2,
+                    'key_id': key_id,
+                    'value': value,
+                    'datetime': date
+                })
+
     def create_deferred_relations(self, deferred_relations: dict, errors: dict) -> None:
         """
         Функция для создания связей Сапфир из отложенных связей
@@ -286,39 +321,11 @@ class ConverterBank:
         """
         for deferred_relation in deferred_relations.values():
             for key in deferred_relation:
-                key_list = key.split('_')
-                key_id, value = int(key_list[0]), int(key_list[1])
-                date = deferred_relation[key]['date']
-                object_id_1 = deferred_relation[key]['object_id_1']
-                object_id_2 = deferred_relation[key]['object_id_2']
-                rec_id_1_list = deferred_relation[key]['rec_id_1']
-                rec_id_2_list = deferred_relation[key]['rec_id_2']
-                document = deferred_relation[key].get('document')
-                for rec_id_1 in rec_id_1_list:
-                    for rec_id_2 in rec_id_2_list:
-                        try:
-                            add_rel(1, object_id_1, rec_id_1, object_id_2, rec_id_2,
-                                    [{'id': key_id, 'value': value, 'date': date}], document)
-                        except Exception as e:
-                            errors[f"{object_id_1}_{rec_id_1}_{object_id_2}_{rec_id_2}"] = {
-                                'object_id_1': object_id_1,
-                                'rec_id_1': rec_id_1,
-                                'object_id_2': object_id_2,
-                                'rec_id_2': rec_id_2,
-                                'key_id': key_id,
-                                'value': value,
-                                'datetime': date
-                            }
-                            return
-                        self.relation_to_create.append({
-                            'object_id_1': object_id_1,
-                            'rec_id_1': rec_id_1,
-                            'object_id_2': object_id_2,
-                            'rec_id_2': rec_id_2,
-                            'key_id': key_id,
-                            'value': value,
-                            'datetime': date
-                        })
+                try:
+                    self.create_deferred_relation(deferred_relation, key, errors)
+                except:
+                    print(f"error create deferred relation {key}")
+                    continue
 
     def convert(self):
         """
@@ -327,6 +334,8 @@ class ConverterBank:
         errors: dict = {}
         temp_relations: dict = {}
         for database in self.bank_parser.databases:
+            if self.converters_params.get(database.id) is None:
+                continue
             converter_params = self.converters_params[database.id]
             temp = converter_params.convert(database, self.converters_object_to_relation,
                                             self.bank_parser.documents_path)
@@ -346,10 +355,19 @@ class ConverterBank:
                 errors.update(temp['error'])
             elif len(temp) > 0:
                 self.relation_to_create.append(temp)
-        self.create_deferred_relations(deferred_relations, errors)
+        try:
+            self.create_deferred_relations(deferred_relations, errors)
+        except Exception as e:
+            print('error creating deferred relations')
 
-# CONVERT_SETTING = json.load(open('/home/pushkin/converter_param.json'))
-# converter = ConverterBank(CONVERT_SETTING)
-# converter.convert()
 
+CONVERT_SETTING = json.loads(open('/deploy_storage/converter_param.json').read().encode().decode('utf-8-sig'))
+converter = ConverterBank(CONVERT_SETTING)
+print('start_converting')
+converter.convert()
+
+report_file = open("/deploy_storage/report.txt", "w")
+for report in duplicates_reports:
+    report_file.write(report)
+report_file.close()
 

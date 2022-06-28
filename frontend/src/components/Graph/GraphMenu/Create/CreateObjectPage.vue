@@ -16,9 +16,7 @@
               conflict
               :params="object.params"
               :title="object.title"
-              :settings="{objectId: object.ids.object_id, recId: object.ids.rec_id}"
-              @createNewParam="createNewParam"
-              @deleteNewParam="deleteNewParam"
+              :rec-id="object.ids.rec_id"
           />
         </v-form>
       </v-tab-item>
@@ -82,8 +80,6 @@ export default {
   },
   methods: {
     ...mapActions([
-      'addNewParamEditableObject',
-      'deleteNewParamEditableObject',
       'saveEditableObject',
       'setEditableObject',
       'addEditableObjects',
@@ -102,12 +98,6 @@ export default {
     },
     recreateObject() {
       this.selectedEditableObject = this.selectedEditableObject
-    },
-    createNewParam(event) {
-      this.addNewParamEditableObject({id: event.id, value: event.value, position: this.activeTab})
-    },
-    deleteNewParam(event) {
-      this.deleteNewParamEditableObject({param: event.param, id: event.id, position: this.activeTab})
     },
     getFormFile() {
       const saveFormFile = this.saveFormFile

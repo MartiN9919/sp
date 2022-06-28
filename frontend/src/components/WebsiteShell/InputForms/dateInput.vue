@@ -44,6 +44,7 @@ import BodyInputForm from "@/components/WebsiteShell/CustomComponents/bodyInputF
 import DropDownMenu from "@/components/WebsiteShell/CustomComponents/dropDownMenu"
 const SelectDate = () => import("@/components/WebsiteShell/CustomComponents/DateTimePickers/selectDate")
 const SelectDateTime = () => import("@/components/WebsiteShell/CustomComponents/DateTimePickers/selectDateTime")
+const SelectPeriod = () => import("@/components/WebsiteShell/CustomComponents/DateTimePickers/selectPeriod")
 import { facade } from 'vue-input-facade'
 
 const dateProps = {
@@ -62,10 +63,18 @@ const dateTimeProps = {
   facade: '##.##.#### ##:##',
 }
 
+const periodProps = {
+  component: 'SelectPeriod',
+  icon: 'mdi-calendar-range-outline',
+  basePlaceholder: 'Выберете необходимый период',
+  errorMessage: 'Введите все значения',
+  facade: '##.##.####-##.##.####',
+}
+
 export default {
   name: "dateInput",
   directives: { facade },
-  components: {BodyInputForm, DropDownMenu, SelectDate, SelectDateTime},
+  components: {BodyInputForm, DropDownMenu, SelectDate, SelectDateTime, SelectPeriod},
   model: { prop: 'inputString', event: 'changeInputString'},
   props: {
     inputString: String,
@@ -85,6 +94,8 @@ export default {
           return dateProps
         case 'datetime':
           return dateTimeProps
+        case 'period':
+          return periodProps
         default:
           return dateTimeProps
       }

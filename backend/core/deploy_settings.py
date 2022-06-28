@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from data_base_driver.constants.connect_db import VEC_DATA
-from core.projectSettings.constant import DEPLOY_SETTING
+from core.projectSettings.constant import DEPLOY_SETTING, MEDIA_ROOT
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -26,7 +26,7 @@ INSTALLED_APPS = [
     'classifier',
     'data_base_driver',
     'official_documents',
-    'notifications',
+    'admin_control',
     'objects',
     'files',
 ]
@@ -95,5 +95,6 @@ USE_L10N = True
 USE_TZ = False
 
 STATIC_URL = '/static/'
+
 
 # SESSION_EXPIRE_AT_BROWSER_CLOSE = True

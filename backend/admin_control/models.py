@@ -1,7 +1,13 @@
+import os
+
+from django.core.files.storage import FileSystemStorage
 from django.db import models
+from django.dispatch import receiver
+
 from authentication.models import ModelCustomUser
+from core.projectSettings.constant import MANUAL_ROOT
 from official_documents.models import ModelOfficialDocument
-from data_base_driver.constants.const_dat import DAT_SYS_NOTIFY
+from data_base_driver.constants.const_dat import DAT_SYS_NOTIFY, DAT_SYS_MANUAL
 from datetime import datetime
 
 
@@ -52,7 +58,7 @@ class ModelNotification(models.Model):
     def __str__(self):
         return self.type
 
-    def save(self,  *args, **kwargs):
+    def save(self, *args, **kwargs):
         self.date_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         return super(ModelNotification, self).save(*args, **kwargs)
 
@@ -61,3 +67,52 @@ class ModelNotification(models.Model):
         db_table = DAT_SYS_NOTIFY.TABLE_SHORT
         verbose_name = "Уведомление"
         verbose_name_plural = "Уведомления"
+
+
+fs = FileSystemStorage(location=MANUAL_ROOT)
+
+
+class Manual(models.Model):
+    title = models.CharField(
+        max_length=255,
+        verbose_name='Название',
+    )
+    file = models.FileField(
+        storage=fs,
+        verbose_name='Файл',
+    )
+    update_datetime = models.DateTimeField(
+        auto_now=True,
+        verbose_name='Время последнего обновления',
+    )
+
+    def __str__(self):
+        return self.file.name
+
+    class Meta:
+        db_table = DAT_SYS_MANUAL.TABLE_SHORT
+        verbose_name = "Инструкцию"
+        verbose_name_plural = "Инструкция"
+
+
+@receiver(models.signals.post_delete, sender=Manual)
+def auto_delete_file_on_delete(sender, instance, **kwargs):
+    if instance.file:
+        if os.path.isfile(instance.file.path):
+            os.remove(instance.file.path)
+
+
+@receiver(models.signals.pre_save, sender=Manual)
+def auto_delete_file_on_change(sender, instance, **kwargs):
+    if not instance.pk:
+        return False
+
+    try:
+        old_file = Manual.objects.get(pk=instance.pk).file
+    except Manual.DoesNotExist:
+        return False
+
+    new_file = instance.file
+    if not old_file == new_file:
+        if os.path.isfile(old_file.path):
+            os.remove(old_file.path)

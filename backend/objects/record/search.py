@@ -12,7 +12,7 @@ def recursion_search(group_id: int, request: dict) -> dict:
     @param request: древовидный запрос
     @return: список словарей формате [{object_id, rec_ids},...,{}]
     """
-    result = {'object_id': request[FullTextSearch.OBJECT_ID], 'records': set(), 'old': [], 'pre_old': []}
+    result = {'object_id': request[FullTextSearch.OBJECT_ID], 'records': None, 'old': [], 'pre_old': []}
     for relation in request.get(FullTextSearch.RELATIONS, []):
         main_object_records = [0] if len(request.get(FullTextSearch.REQUEST, '')) == 0 else find_reliable_http(
             request.get(FullTextSearch.OBJECT_ID), request.get(FullTextSearch.REQUEST, ''),
@@ -37,20 +37,29 @@ def recursion_search(group_id: int, request: dict) -> dict:
                     request.get(FullTextSearch.OBJECT_ID, None), rec_id_main,
                     other_objects_id, rec_id,
                     relation.get(FullTextSearch.REL, {}).get(FullTextSearch.REL_VALUE, 0),
-                    date_time_client_to_server(relation.get(FullTextSearch.REL, {}).get(FullTextSearch.DATE_TIME_START)),
+                    date_time_client_to_server(
+                        relation.get(FullTextSearch.REL, {}).get(FullTextSearch.DATE_TIME_START)),
                     date_time_client_to_server(relation.get(FullTextSearch.REL, {}).get(FullTextSearch.DATE_TIME_END)),
                     group_id)
                 if len(temp_result) == 0:
                     temp_result = set([int(item['rec_id']) for item in temp_set])
                 else:
                     temp_result = temp_result.union([int(item['rec_id']) for item in temp_set])
-        if len(result.get('records')) == 0:
+        if result.get('records') is None:
             result['records'] = temp_result
         else:
             result['records'].intersection_update(temp_result)
     for temp in result.get('pre_old', []):
         if temp['object_id'] == result['object_id']:
             result['records'] = result['records'].difference(temp['records'])
+    return result
+
+
+def search_many_objects(group_id, object_ids, request, triggers, actual):
+    result = []
+    for object_id in object_ids:
+        result += [get_record_title(object_id, item, group_id, triggers=triggers) for
+                   item in find_reliable_http(object_id, request, actual, group_id)]
     return result
 
 
@@ -62,6 +71,14 @@ def search(request, group_id, triggers):
     @param triggers: установленные пользователем триггеры
     @return: список найденных объектов в формате [{object_id, rec_id, params:[{id,val},...,{}]},...,{}]
     """
+    base_object_list = request.get(FullTextSearch.OBJECT_ID, [])
+    if len(base_object_list) == 0:
+        return []
+    if len(base_object_list) > 1:
+        return search_many_objects(group_id, base_object_list, request.get(FullTextSearch.REQUEST, ''), triggers,
+                                   request.get(FullTextSearch.ACTUAL, False))
+    else:
+        request[FullTextSearch.OBJECT_ID] = base_object_list[0]
     if len(request.get(FullTextSearch.RELATIONS, None)) != 0:
         return [get_record_title(request.get(FullTextSearch.OBJECT_ID, None), item, group_id, triggers=triggers) for
                 item in recursion_search(group_id, request)['records']]

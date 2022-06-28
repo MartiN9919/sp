@@ -16,7 +16,7 @@ urlpatterns = [
     path('api/reports/', include('official_documents.urls')),
     path('api/objects/', include('objects.urls')),
     path('api/files/', include('files.urls')),
-    path('api/notifications/', include('notifications.urls')),
+    path('api/notifications/', include('admin_control.urls')),
 ]
 
 if not mode == 'deploy':

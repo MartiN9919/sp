@@ -4,7 +4,7 @@
         v-for="param in params"
         :key="param.baseParam.id"
         v-model="openedPanels"
-        @click="createNewParam"
+        @click="param.add({period: search})"
     >
       <template v-slot:title="">
         {{param.baseParam.title}}
@@ -12,23 +12,25 @@
       <template v-slot:body="">
         <v-row
             v-for="(value, key) in param.new_values" :key="key"
-            @keyup.alt.enter="deleteNewParam(param.baseParam.id, value)"
+            @keyup.alt.enter="param.remove(value)"
             no-gutters
             class="flex-nowrap px-2"
         >
           <record-input
+              v-bind="$attrs"
               :param="getParam(param, value)"
               :base="param.baseParam"
               :conflict="conflict"
-              @deletable="deleteNewParam(param.baseParam.id, value)"
+              @deletable="param.remove(value)"
               @depend="createDependParam"
+              :search="search"
           ></record-input>
         </v-row>
         <old-records
             :base="param.baseParam"
             :values="param.values"
             :title="title"
-            :settings="settings"
+            :rec-id="recId"
             @addDocToGraph="addDocToGraph"
             class="px-2"
         ></old-records>
@@ -47,7 +49,6 @@ export default {
   name: "RecordArea",
   components: {RecordBody, OldRecords, RecordInput},
   props: {
-    settings: Object,
     params: Array,
     title: {
       type: String,
@@ -56,7 +57,9 @@ export default {
     conflict: {
       type: Boolean,
       default: false
-    }
+    },
+    recId: Number,
+    search: Boolean
   },
   data: () => ({
     openedPanels: []
@@ -72,19 +75,13 @@ export default {
     addDocToGraph(doc) {
       this.$emit('addDocumentToGraph', doc)
     },
-    createNewParam(id, value=null) {
-      this.$emit('createNewParam', {id, value})
-    },
     createDependParam(payload) {
       const findParam = this.params.find(p =>
           p.baseParam.type.title === 'list' && p.baseParam.type.value === parseInt(payload.list[0])
       )
       if(findParam && !findParam.new_values.length) {
-        this.createNewParam(findParam.baseParam.id, payload.parent)
+        findParam.add({value: payload.parent})
       }
-    },
-    deleteNewParam(id, param) {
-      this.$emit('deleteNewParam', { id: id, param: param })
     },
   },
   mounted() {
