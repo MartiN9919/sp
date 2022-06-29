@@ -3,7 +3,6 @@ import json
 from shapely.geometry import Polygon, LineString
 
 from data_base_driver.additional_functions import date_client_to_server, str_to_sec
-from data_base_driver.constants.const_key import SYS_KEY_CONSTANT
 from data_base_driver.input_output.input_output import io_get_obj
 from data_base_driver.input_output.input_output_mysql import io_get_obj_mysql_tuple
 from data_base_driver.input_output.io_geo import get_points_by_distance, get_points_inside_polygon, \
@@ -11,7 +10,6 @@ from data_base_driver.input_output.io_geo import get_points_by_distance, get_poi
 from data_base_driver.sys_key.get_key_info import get_key_by_id
 from objects.geometry.geometry_analytics import feature_collection_to_manticore_polygon
 from objects.record.get_record import get_object_record_by_id_http, get_keys
-from synonyms_manager.get_synonyms import get_synonyms
 
 
 def intercept_sort_list(elements):
@@ -38,6 +36,16 @@ def intercept_sort_list(elements):
             continue
     temp_list.sort(key=lambda x: x['middle'])
     return [temp['elem'] for temp in temp_list]
+
+
+def sort_result(fetchall):
+    temp = {}
+    for item in fetchall:
+        if temp.get(item[0]) is None:
+            temp[item[0]] = 0
+        temp[item[0]] += item[1]
+    result = sorted(tuple(temp.items()), key=lambda x: x[1])
+    return list(result)
 
 
 def filter_actual(group_id,  object_id, fetchall):
@@ -68,11 +76,11 @@ def filter_date_range(group_id, object_id, items, date_range):
 
 def get_search_result(group_id, word, object_id, actual, date_range=None):
     temp_result = io_get_obj(group_id, object_id, [], [], 500, word, {})
-    fetchall = [(int(item['rec_id']), int(item['key_id']), int(item['sec'])) for item in temp_result]
+    fetchall = [(int(item['rec_id']), int(item['key_id']), int(item['sec']), item['score']) for item in temp_result]
     fetchall = filter_actual(group_id, object_id, fetchall) if actual else fetchall
     if date_range:
         fetchall = filter_date_range(group_id, object_id, fetchall, date_range)
-    return [item[0] for item in fetchall]
+    return [{'rec_id': item[0], 'object_id': object_id, 'score': item[3]} for item in fetchall]
 
 
 def find_reliable_http(object_id, request, actual=False, group_id=0):
@@ -82,7 +90,7 @@ def find_reliable_http(object_id, request, actual=False, group_id=0):
         return find_advanced(group_id, object_id, request, actual)
 
 
-def find_text(group_id, object_id, request, actual=False):
+def find_text(group_id, object_id, request, actual=False, score=False):
     """
     Функция для поиска значений в таблице object, возвращает результат только при полном совпадении
     @param object_id: тип объекта по которым идет поиск
@@ -90,27 +98,25 @@ def find_text(group_id, object_id, request, actual=False):
     @param actual: флаг актуальности искомого параметра, если True то учитываются только записи актуальные для объекта
     на данный момент
     @param group_id: идентификатор группы пользователя
-    @return: список id объектов с искомыми параметрами, если не найдено, то пустой список
+    @param score: возвращать ли баллы совпадения
+    @return: список id объектов с искомыми параметрами, если score False, в противном случае список кортежей с
+    идентификаторами и балами совпадения
     """
     if not request:
         request = ''
-    synonyms_list = []
-    if object_id == SYS_KEY_CONSTANT.FILE_ID:
-        try:
-            synonyms_list = get_synonyms(request)
-        except TypeError:
-            synonyms_list = []
-    request = request.split(' ') + synonyms_list
-    request = [word.replace('-', '<<') for word in
-               request]  # костыль, в последующем поменять настройки мантикоры, что бы индексировала '-'
+    request = request.split(' ')
+    request = [word.replace('-', '<<') for word in request]  # костыль, в последующем поменять настройки мантикоры, что бы индексировала '-'
     result = []
     for param in request:
         word = f"@val {param}" if len(param) > 0 else param  # искать только по значению
-        result.append(list(set(get_search_result(group_id, word, object_id, actual))))
-    if object_id != SYS_KEY_CONSTANT.FILE_ID:
-        return intercept_sort_list(result)
+        if score:
+            result += [(item['rec_id'], item['score']) for item in get_search_result(group_id, word, object_id, actual)]
+        else:
+            result.append(list(set([item['rec_id'] for item in get_search_result(group_id, word, object_id, actual)])))
+    if score:
+        return sort_result(result)
     else:
-        return [item for sublist in result for item in sublist]
+        return intercept_sort_list(result)
 
 
 def find_advanced(group_id, object_id, request, actual=False):
@@ -143,7 +149,7 @@ def find_text_advanced(group_id, object_id, key, values, actual):
     for value in values:
         word = f"@key_id {key} @val {value['value']}"
         fetchall = get_search_result(group_id, word, object_id, actual, value['range'])
-        result.update(set(fetchall))
+        result.update(set([item['rec_id'] for item in fetchall]))
     return list(result)
 
 

@@ -41,8 +41,8 @@ def io_get_obj_row_manticore(group_id, object_type, keys, ids, ids_max_block, wh
     })
     response = requests.post(FullTextSearch.SEARCH_URL, data=data)
     try:
-        return get_enabled_records(object_type, [item['_source'] for item in json.loads(response.text)['hits']['hits']],
-                                   group_id, False)
+        return get_enabled_records(object_type, [{**item['_source'], 'score': item['_score']}
+                                                 for item in json.loads(response.text)['hits']['hits']], group_id, False)
     except Exception as e:
         error_log = f"manticore error {e}, request: {where_dop_row}, must: {must}, status: {response.status_code}, " \
                     f"result: {response.text}"
@@ -111,7 +111,8 @@ def io_get_obj_col_manticore(group_id, object_type, keys, ids, ids_max_block, wh
                 result.append({DAT_OBJ_ROW.ID: int(params['rec_id']),
                                DAT_OBJ_ROW.SEC: params['sec'],
                                DAT_OBJ_ROW.KEY_ID: key['id'],
-                               DAT_OBJ_ROW.VAL: value})
+                               DAT_OBJ_ROW.VAL: value,
+                               'score': item['_score']})
     if key_request:
         result = [item for item in result if item[DAT_OBJ_ROW.ID] == key_request]
     return get_enabled_records(object_type, result, group_id, False)
