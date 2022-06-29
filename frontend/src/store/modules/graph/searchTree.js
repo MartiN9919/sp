@@ -42,7 +42,7 @@ export default {
     },
     setRootSearchRelation({getters, commit}, {base, title, recId}) {
       commit('setRootSearchRelation',
-        new SearchTreeMain({base: base.id, recId, request: title})
+        new SearchTreeMain({base: [base.id], recId, request: title})
       )
     },
     addSearchTreeItem({ getters, commit }, {rootItem, newItem}) {
@@ -66,7 +66,9 @@ export default {
       .catch(error => {  })
     },
     findRelationsOnServer({ dispatch, state }, config={}) {
-      return axios.post('objects/search_relations', state.searchRelationTreeGraph.getTree, config)
+      let tree = state.searchRelationTreeGraph.getTree
+      tree.object_id = tree.object_id[0]
+      return axios.post('objects/search_relations', tree, config)
         .then(response => dispatch('addObjectsToGraph', {
           payload: response.data,
           action: {name: 'findRelationsOnServer', payload: state.searchRelationTreeGraph.request}

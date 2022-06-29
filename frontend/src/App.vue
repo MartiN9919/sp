@@ -1,5 +1,5 @@
 <template>
-  <v-app id="app" class="select-off"> <!--  oncontextmenu="return false" -->
+  <v-app id="app"> <!--  oncontextmenu="return false" -->
     <router-view name="appbar"/>  <!--  Меню навигации  -->
     <v-main id="main">
       <v-progress-linear indeterminate absolute color="red" height="2" :active="loadStatus"/>

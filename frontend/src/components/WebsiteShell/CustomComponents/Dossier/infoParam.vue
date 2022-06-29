@@ -3,7 +3,7 @@
   <geometry-param v-else-if="isGeometry" :value="value" :title="title">
     {{ geometryTextValue }}
   </geometry-param>
-  <span v-else>
+  <span v-else class="word-wrap">
       {{ text }}
       <v-dialog width="40%" scrollable>
         <template v-slot:activator="{ on, attrs }">
@@ -21,7 +21,10 @@
               </template>
             </v-text-field>
           </v-card-actions>
-          <v-card-text id="full-text" v-html="fullText" class="text-justify">
+          <v-card-text id="full-text" class="text-justify overflow-x-hidden">
+            <v-lazy v-for="(text, key) in fullText" :key="key" :options="{threshold: .25}" transition="fade-transition">
+              <div v-html="text"></div>
+            </v-lazy>
           </v-card-text>
         </v-card>
       </v-dialog>
@@ -60,17 +63,21 @@ export default {
       return [...this.value.matchAll(new RegExp(this.search, 'gi'))].map(a => a.index)
     },
     fullText: function () {
-      return this.value.replaceAll(
-          new RegExp(this.search,"gi"),
-          (match, key) => {
-            const id = `search-${key}`
-            const style = `background-color: ${key === this.positions[this.position]
-                ? 'rgba(255,42,74,0.75)'
-                : 'rgba(255,245,42,0.75)'
-            }`
-            return `<span id="${id}" style="${style}">${match}</span>`;
-          }
-      )
+      if(this.search.length > 0) {
+        return this.value.replaceAll(
+            new RegExp(this.search,"gi"),
+            (match, key) => {
+              const id = `search-${key}`
+              const style = `background-color: ${key === this.positions[this.position]
+                  ? 'rgba(255,42,74,0.75)'
+                  : 'rgba(255,245,42,0.75)'
+              }`
+              return `<span id="${id}" style="${style}">${match}</span>`;
+            }
+        ).split('\n').filter(s => s.length)
+      } else {
+        return this.value.split('\n').filter(s => s.length)
+      }
     },
     suffix: function () {
       if(this.position !== null) {
@@ -144,7 +151,7 @@ export default {
 .icon:hover {
   color: teal;
 }
-.select-text {
-
+.word-wrap {
+  word-wrap: anywhere;
 }
 </style>
