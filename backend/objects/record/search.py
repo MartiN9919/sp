@@ -1,6 +1,6 @@
 from data_base_driver.additional_functions import date_time_client_to_server
 from data_base_driver.constants.const_fulltextsearch import FullTextSearch
-from objects.record.find_object import find_reliable_http
+from objects.record.find_object import find_reliable_http, find_text
 from objects.record.get_record import get_record_title
 from objects.relations.find_rel import search_relations_with_key
 
@@ -58,9 +58,10 @@ def recursion_search(group_id: int, request: dict) -> dict:
 def search_many_objects(group_id, object_ids, request, triggers, actual):
     result = []
     for object_id in object_ids:
-        result += [get_record_title(object_id, item, group_id, triggers=triggers[str(object_id)]) for
-                   item in find_reliable_http(object_id, request, actual, group_id)]
-    return result
+        result += [{'rec_id': item[0], 'score': item[1], 'object_id': object_id}
+                   for item in find_text(group_id, object_id, request, actual, score=True)]
+    return [get_record_title(item['object_id'], item['rec_id'], group_id, triggers=triggers[str(item['object_id'])])
+            for item in sorted(result, key=lambda x: x['score'], reverse=True)]
 
 
 def search(request, group_id, triggers):
