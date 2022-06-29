@@ -96,7 +96,7 @@ class IO_LIB_SQL():
                                 int(equ[0].split('=')[1]),
                                 equ[3].split('=')[1].replace('\'', ''),
                                 equ[1].split('=')[1],
-                                equ[2].split('=')[1].replace('\'', '')
+                                equ[2][equ[2].find('=') + 1:].replace('\'', '')
                                 )
         else:
             if not add_relation_http(int(equ[8].split('=')[1]),
@@ -150,4 +150,3 @@ class IO_LIB_SQL():
     def __sql_exec__(self, sql, read):
         if DEBUG: print('\n' + sql)
         return db_sql(sql=sql, wait=not DEBUG, read=read, connection=self.connection)
-
