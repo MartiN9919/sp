@@ -4,7 +4,7 @@
       <selector-input v-model="copyItem.baseId" :items="baseObjects" :label="selectorTitle" multiple item-text="titleSingle"/>
       <boolean-input v-model="copyItem.actual" :label="booleanTitle" class="pt-4"/>
     </v-card-text>
-    <additional-settings v-if="copyItem" :object="copyItem"/>
+    <additional-settings v-if="copyItem" :object="copyItem" :disabled="copyItem.baseId.length > 1"/>
     <control-menu :buttons="buttons" @confirm="confirm" @cancel="cancel"/>
   </v-card>
 </template>

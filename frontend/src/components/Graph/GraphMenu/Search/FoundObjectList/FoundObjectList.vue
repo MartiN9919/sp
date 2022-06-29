@@ -1,15 +1,34 @@
 <template>
   <v-list class="py-0" v-if="foundObjects">
-    <v-list-item class="title-table">
-      <v-list-item-subtitle class="text-title-table">
-        Найдено объектов: {{foundObjects.length}}
-      </v-list-item-subtitle>
-    </v-list-item>
+    <custom-tooltip right>
+      <template v-slot:activator="{ on }">
+        <v-list-item v-on="on" class="title-table">
+          <v-list-item-subtitle class="text-title-table align-center">
+            Найдено объектов: {{foundObjects.length}}
+          </v-list-item-subtitle>
+        </v-list-item>
+      </template>
+      <template v-slot:body>
+        <v-card dark>
+          <v-list dense color="teal darken-2">
+            <v-list-item v-for="(objects, title) in combination" :key="title">
+              <v-list-item-title>{{ title }}: {{ objects.length }}</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-card>
+      </template>
+    </custom-tooltip>
     <div class="body-table">
-      <found-object-item
-          v-for="object in foundObjects"
-          :key="object.rel_id"
-          :object="object"
+      <found-object-group
+          v-if="searchGroup"
+          v-for="(objects, title) in combination"
+          :key="title"
+          :objects="objects"
+          :title="title"
+      />
+      <found-object-group
+          v-else
+          :objects="foundObjects"
       />
     </div>
   </v-list>
@@ -18,11 +37,30 @@
 <script>
 import FoundObjectItem from "@/components/Graph/GraphMenu/Search/FoundObjectList/FoundObjectsItem"
 import {mapGetters} from "vuex"
+import CustomTooltip from "@/components/WebsiteShell/CustomComponents/Tooltip/customTooltip";
+import FoundObjectGroup from "@/components/Graph/GraphMenu/Search/FoundObjectList/FoundObjectGroup";
 
 export default {
   name: "FoundObjectList",
-  components: {FoundObjectItem},
-  computed: mapGetters(['foundObjects'])
+  components: {FoundObjectGroup, CustomTooltip, FoundObjectItem},
+  computed: {
+    ...mapGetters(['foundObjects', 'baseObject', 'searchSettingsValue']),
+    searchGroup: function () {
+      return this.searchSettingsValue('searchGroup')
+    },
+    combination: function () {
+      let comb = {}
+      for(const object of this.foundObjects) {
+        let base = this.baseObject(object.object_id).title
+        if(comb.hasOwnProperty(base)) {
+          comb[base].push(object)
+        } else {
+          comb[base] = [object]
+        }
+      }
+      return comb
+    }
+  }
 }
 </script>
 

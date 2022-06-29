@@ -1,17 +1,23 @@
 <template>
+  <v-lazy :options="{threshold: .5}" min-height="36" transition="fade-transition">
     <v-list-item
         @click.exact="showDescription"
         @keyup.ctrl.enter="change"
         link
         class="px-0 py-1"
     >
-      <v-list-item-icon class="mx-1 my-0">
-        <v-icon>{{$store.getters.baseObject(object.object_id).icon}}</v-icon>
-<!--        <trigger-information :active-triggers="object.triggers"/>-->
+      <v-list-item-icon class="mx-1 my-0 align-self-center">
+        <v-badge overlap bottom offset-y="18" offset-x="20" color="rgba(0, 0, 0, 0)" class="badge">
+          <template v-slot:badge>
+            <trigger-information :active-triggers="object.triggers" size="20px"/>
+          </template>
+          <v-icon>{{$store.getters.baseObject(object.object_id).icon}}</v-icon>
+        </v-badge>
       </v-list-item-icon>
       <v-list-item-subtitle class="text-pre-wrap mx-1 text-info">{{object.title}}</v-list-item-subtitle>
       <description :viewDat="description"/>
     </v-list-item>
+  </v-lazy>
 </template>
 
 <script>
@@ -59,8 +65,5 @@ export default {
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
-}
-.action-buttons {
-  min-width: auto;
 }
 </style>

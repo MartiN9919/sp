@@ -106,7 +106,7 @@ export default {
         {
           headers: {
             'Content-Type': 'multipart/form-data',
-            'set-cookie': getters.cookieTriggers(getters.editableObjects[positionObject].ids.object_id)
+            'set-cookie': JSON.stringify(getters.cookieTriggers(getters.editableObjects[positionObject].ids.object_id))
           }
         }
       )

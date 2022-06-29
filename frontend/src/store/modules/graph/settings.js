@@ -2,6 +2,16 @@ import UserSetting from "@/store/addition"
 
 class SearchSettings {
   constructor() {
+    this.searchGroup = {
+      title: 'Группировка',
+      subTitle: 'Группировать результаты поиска по типу объекта',
+      state: new UserSetting('searchGroup', false)
+    }
+    this.searchShort = {
+      title: 'Короткие пути',
+      subTitle: 'Выводить только кротчайшие пути между объектами',
+      state: new UserSetting('searchShort', false)
+    }
     this.searchDeep = {
       title: 'Глубина поиска',
       subTitle: 'Глубина, на которую будет осуществляться поиск',
@@ -13,11 +23,6 @@ class SearchSettings {
       subTitle: 'Максимальное количество объектов, которые вернет поиск',
       state: new UserSetting('searchCount', ''),
       props: {mask: '###'}
-    }
-    this.searchShort = {
-      title: 'Короткие пути',
-      subTitle: 'Выводить только кротчайшие пути между объектами',
-      state: new UserSetting('searchShort', false)
     }
   }
 }
