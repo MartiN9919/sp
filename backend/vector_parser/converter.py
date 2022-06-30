@@ -225,15 +225,15 @@ class ConverterBank:
         else:
             self.converters_params[row0] = ConverterParams(row0, row1, copy(params_convert_dict))
 
-        relations = work_book['relations']
-        for row in relations.iter_rows():
-            if isinstance(row[0].value, int):
-                data_base_id_1 = row[0].value
-                data_base_id_2 = row[1].value
-                key_id = row[2].value
-                if data_base_id_2 < data_base_id_1:
-                    data_base_id_1, data_base_id_2 = data_base_id_2, data_base_id_1
-                self.converter_relations_table[f"{data_base_id_1}_{data_base_id_2}"] = key_id
+        # relations = work_book['relations']
+        # for row in relations.iter_rows():
+        #     if isinstance(row[0].value, int):
+        #         data_base_id_1 = row[0].value
+        #         data_base_id_2 = row[1].value
+        #         key_id = row[2].value
+        #         if data_base_id_2 < data_base_id_1:
+        #             data_base_id_1, data_base_id_2 = data_base_id_2, data_base_id_1
+        #         self.converter_relations_table[f"{data_base_id_1}_{data_base_id_2}"] = key_id
 
     def convert(self):
         """

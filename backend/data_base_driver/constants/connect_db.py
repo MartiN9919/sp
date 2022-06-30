@@ -11,7 +11,7 @@ mode = os.environ.get('MODE')
 VEC_DATA = DEPLOY_SETTING['data_base'] if mode == 'deploy' else {
     'HOST': '200.200.200.233',
     'PORT': '3306',
-    'NAME': 'vec_3_data',
+    'NAME': 'smorgon',
     'USER': 'dev',
     'PASSWORD': '1',
     'CHARSET': 'utf8',
