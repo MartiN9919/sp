@@ -19,17 +19,10 @@
       </template>
     </custom-tooltip>
     <div class="body-table">
-      <found-object-group
-          v-if="searchGroup"
-          v-for="(objects, title) in combination"
-          :key="title"
-          :objects="objects"
-          :title="title"
-      />
-      <found-object-group
-          v-else
-          :objects="foundObjects"
-      />
+      <template v-if="searchGroup">
+        <found-object-group v-for="(objects, title) in combination" :key="title" :objects="objects" :title="title"/>
+      </template>
+      <found-object-group v-else :objects="foundObjects"/>
     </div>
   </v-list>
 </template>
