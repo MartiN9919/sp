@@ -54,7 +54,10 @@ def parse_value_vector(param):
     if key.get('type') == DAT_SYS_KEY.TYPE_DATA:
         value = date_client_to_server(value)
     if key.get('type') == DAT_SYS_KEY.TYPE_DATATIME:
-        value = date_time_client_to_server(value)
+        try:
+            value = date_time_client_to_server(value)
+        except IndexError:
+            value = date_time_client_to_server(value + ' 00:00')
     if key.get('type') == DAT_SYS_KEY.TYPE_STR or key.get('type') == DAT_SYS_KEY.TYPE_STR_ENG:
         value = value.replace('\\', '\\\\')
     return [param['id'], value,
@@ -94,15 +97,16 @@ def add_data_vector(group_id, object, files_path):
             print(report)
             duplicates_reports.append(report)
             object['rec_id'] = duplicates[0]
-            old_object = get_object_record_by_id_http(object['object_id'], duplicates[0], group_id)
-            old_object_params = old_object['params']
-            new_data = []
-            for item in data:
-                old_param = old_object_params.get([item[0]])
-                if old_param and get_key_by_id(item[0])['need'] != 1:
-                    if item[1] not in [value['value'] for value in old_param['values']]:
-                        new_data.append(item)
-            data = new_data
+            # old_object = get_object_record_by_id_http(object['object_id'], duplicates[0], group_id)
+            # old_object_params = old_object['params']
+            # new_data = []
+            # for item in data:
+            #     old_param = old_object_params.get([item[0]])
+            #     if old_param and get_key_by_id(item[0])['need'] != 1:
+            #         if item[1] not in [value['value'] for value in old_param['values']]:
+            #             new_data.append(item)
+            # data = new_data
+            data = [item for item in data if get_key_by_id(item[0])['need'] != 1]
         set_file(object.get('rec_id', 0), object.get('object_id'), data, files_path)
         if object.get('rec_id', 0) != 0:  # проверка на внесение новой записи
             data.append(['id', object.get('rec_id')])

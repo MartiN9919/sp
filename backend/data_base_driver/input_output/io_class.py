@@ -65,6 +65,7 @@ class IO():
             return True, int(data_pars.rec_id) if data_pars.rec_id else data_pars.rec_id
         except Exception as e:
             # logging.getLogger(settings.PROJECT_LOG_MAIN).error(str(e))
+            print(e)
             return False, str(e)
 
     # ГЕНЕРАТОР

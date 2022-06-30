@@ -72,14 +72,14 @@ def search(request, group_id, triggers):
     @param triggers: установленные пользователем триггеры
     @return: список найденных объектов в формате [{object_id, rec_id, params:[{id,val},...,{}]},...,{}]
     """
-    base_object_list = request.get(FullTextSearch.OBJECT_ID, [])
-    if len(base_object_list) == 0:
-        return []
-    if len(base_object_list) > 1:
-        return search_many_objects(group_id, base_object_list, request.get(FullTextSearch.REQUEST, ''), triggers,
-                                   request.get(FullTextSearch.ACTUAL, False))
-    else:
-        request[FullTextSearch.OBJECT_ID] = base_object_list[0]
+    # base_object_list = request.get(FullTextSearch.OBJECT_ID, [])
+    # if len(base_object_list) == 0:
+    #     return []
+    # if len(base_object_list) > 1:
+    #     return search_many_objects(group_id, base_object_list, request.get(FullTextSearch.REQUEST, ''), triggers,
+    #                                request.get(FullTextSearch.ACTUAL, False))
+    # else:
+    #     request[FullTextSearch.OBJECT_ID] = base_object_list[0]
     if len(request.get(FullTextSearch.RELATIONS, None)) != 0:
         return [get_record_title(request.get(FullTextSearch.OBJECT_ID, None), item, group_id, triggers=triggers[str(request[FullTextSearch.OBJECT_ID])]) for
                 item in recursion_search(group_id, request)['records']]
