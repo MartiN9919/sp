@@ -270,6 +270,6 @@ converter.convert()
 
 report_file = open("/deploy_storage/report.txt", "w")
 for report in duplicates_reports:
-    report_file.write(report)
+    report_file.write(report + '\n')
 report_file.close()
 

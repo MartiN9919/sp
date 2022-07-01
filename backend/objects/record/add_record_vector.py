@@ -101,8 +101,9 @@ def add_data_vector(group_id, object, files_path):
             old_object_params = old_object['params']
             new_data = []
             for item in data:
-                old_param = old_object_params.get([item[0]])
-                if old_param and get_key_by_id(item[0])['need'] != 1:
+                old_params = [elem for elem in old_object_params if item[0] == elem['id']]
+                if len(old_params) > 0 and get_key_by_id(item[0])['need'] != 1:
+                    old_param = old_params[0]
                     if item[1] not in [value['value'] for value in old_param['values']]:
                         new_data.append(item)
             data = new_data
