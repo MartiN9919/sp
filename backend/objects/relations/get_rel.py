@@ -207,7 +207,7 @@ def get_relations_list():
             relation_type = {'title': 'list', 'value': item.get('list_id')}
             list_id = item.get('list_id')
         else:
-            relation_type = {'title': 'unknown', 'value': None}
+            relation_type = {'title': 'unknown', 'value': 'default'}
         result.append({'id': item['id'], 'title': item['title'], 'hint': item['hint'], 'list': list_id,
                        'type': relation_type, 'object_id_1': item['rel_obj_1_id'], 'object_id_2': item['rel_obj_2_id'],
                        'blocked_blank': item['blocked_blank']})

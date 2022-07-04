@@ -34,7 +34,6 @@ def validate_phone_number(phone_number):
     @param phone_number: телефонный номер
     @return: True - если формат допустимый, False - если нет
     """
-
     phone_number_format = DAT_SYS_PHONE_NUMBER_FORMAT.DUMP.get_all()
     phone_number = remove_special_chars(phone_number)[1:] if isinstance(phone_number, str) else str(phone_number)
     for format in phone_number_format:

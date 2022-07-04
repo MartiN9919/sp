@@ -2,7 +2,8 @@ from django.contrib import admin
 from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin
 from django.utils.translation import gettext_lazy as _
-from data_base_driver.constants.const_dat import DAT_OWNER_LINES, DAT_OWNER_REGIONS, DAT_OWNER_GROUPS, DAT_OWNER_USERS
+from data_base_driver.constants.const_dat import DAT_OWNER_LINES, DAT_OWNER_REGIONS, DAT_OWNER_GROUPS, DAT_OWNER_USERS, \
+    DAT_OWNER_BASE
 from .models import ModelCustomUser, ModelOwnerGroups, ModelOwnerLines, ModelOwnerRegions
 
 admin.site.unregister(Group)
@@ -11,19 +12,31 @@ admin.site.unregister(Group)
 @admin.register(ModelOwnerLines)
 class ModelOwnerLinesAdmin(admin.ModelAdmin):
     list_display = (
+        DAT_OWNER_BASE.ID,
         DAT_OWNER_LINES.TITLE,
         DAT_OWNER_LINES.PARENT_ID,
     )
     list_per_page = 20
+    readonly_fields = [DAT_OWNER_BASE.ID,]
+    fieldsets = (
+        (None, {'fields': (DAT_OWNER_BASE.ID, )}),
+        (None, {'fields': (DAT_OWNER_LINES.TITLE, DAT_OWNER_LINES.PARENT_ID,)})
+    )
 
 
 @admin.register(ModelOwnerRegions)
 class ModelOwnerRegionsAdmin(admin.ModelAdmin):
     list_display = (
+        DAT_OWNER_BASE.ID,
         DAT_OWNER_REGIONS.TITLE,
         DAT_OWNER_REGIONS.PARENT_ID,
     )
     list_per_page = 20
+    readonly_fields = [DAT_OWNER_BASE.ID,]
+    fieldsets = (
+        (None, {'fields': (DAT_OWNER_BASE.ID,)}),
+        (None, {'fields': (DAT_OWNER_REGIONS.TITLE, DAT_OWNER_REGIONS.PARENT_ID,)})
+    )
 
 
 @admin.register(ModelOwnerGroups)

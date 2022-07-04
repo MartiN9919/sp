@@ -89,3 +89,4 @@ def search(request, group_id, triggers):
                                            request.get(FullTextSearch.REQUEST, ''),
                                            request.get(FullTextSearch.ACTUAL, False),
                                            group_id)]
+
