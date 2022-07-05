@@ -63,7 +63,7 @@ def parse_where_dop(where_dop_row):
         return None
 
 
-def io_get_obj_col_manticore(group_id, object_type, keys, ids, ids_max_block, where_dop):
+def io_get_obj_col_manticore(group_id, object_type, keys, ids, ids_max_block, where_dop, time_interval):
     """
     Функция для получения информации о объекте из col индексов мантикоры в формате списка словарей
     @param group_id: идентификатор группы пользователя
@@ -72,6 +72,7 @@ def io_get_obj_col_manticore(group_id, object_type, keys, ids, ids_max_block, wh
     @param ids: список содержащий идентификаторы объектов
     @param ids_max_block: максимальное количество записей в ответе
     @param where_dop: строка вставляемая в match часть запроса manticore
+    @param time_interval: временной интервал записи в формате словаря с ключами second_start и second_end
     @return: список словарей в формате [{rec_id,sec,key_id,val},{},...,{}]
     """
     if where_dop.find('@val') != -1:
@@ -88,6 +89,8 @@ def io_get_obj_col_manticore(group_id, object_type, keys, ids, ids_max_block, wh
     must = []
     if len(ids) > 0:
         must.append({'in': {DAT_OBJ_COL.ID: [int(rec_id) for rec_id in ids]}})
+    must.append({'range': {DAT_OBJ_ROW.SEC: {'gte': time_interval.get('second_start', 0),
+                                             'lte': time_interval.get('second_end', 100000000000)}}})
     data = json.dumps({
         'index': index,
         'query': {
@@ -132,9 +135,10 @@ def io_get_obj_manticore_dict(group_id, object_type, keys, ids, ids_max_block, w
     """
     row_records = io_get_obj_row_manticore(group_id, object_type, keys, ids, ids_max_block, where_dop_row,
                                            time_interval)
-    if len(where_dop_row) > 0:
+    if len(where_dop_row) > 0 and len(ids) == 0:
         ids = [item[DAT_OBJ_ROW.ID] for item in row_records]
-    col_records = io_get_obj_col_manticore(group_id, object_type, keys, ids, ids_max_block, where_dop_row) # исправить where dop row
+    col_records = io_get_obj_col_manticore(group_id, object_type, keys, ids, ids_max_block, where_dop_row,
+                                           time_interval) # исправить where dop row
     result = row_records + col_records
     return result
 

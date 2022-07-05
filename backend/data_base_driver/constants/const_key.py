@@ -55,10 +55,10 @@ class SYS_KEY_CONSTANT:
 
     NOT_VALUE_TRANSFER_LIST = [
         30302,
-        10000,
-        10001,
-        10002,
-        10003,
+        45000,
+        45001,
+        45002,
+        45003,
         15000,
         15001,
         15002,
@@ -66,7 +66,8 @@ class SYS_KEY_CONSTANT:
         20001,
         20002,
         20003,
-        20004
+        20004,
+
     ]
 
     LIST_ICONS_ID = 49
