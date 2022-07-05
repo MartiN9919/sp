@@ -138,7 +138,7 @@ def get_objects_process(group_id, object_id, rec_id, depth, value):
     value[f"{object_id}_{rec_id}"] = get_path_to_object(relations)
 
 
-def get_objects_relation(group_id, object_id_1, rec_id_1, object_id_2, rec_id_2, depth=6, count=None, only_short=False):
+def get_objects_relation(group_id, object_id_1, rec_id_1, object_id_2, rec_id_2, depth=5, count=None, only_short=False):
     """
     Функция для получения связей между двумя объектами
     @param group_id: идентификатор группы пользователя
@@ -151,6 +151,7 @@ def get_objects_relation(group_id, object_id_1, rec_id_1, object_id_2, rec_id_2,
     @param only_short: Вывод только самых коротких связей
     @return: список связей в формате [{key_id, val, sec},...,{}]
     """
+    depth += 1
     if depth == 1:
         return []
     depth_1 = depth // 2
@@ -206,7 +207,7 @@ def get_relations_list():
             relation_type = {'title': 'list', 'value': item.get('list_id')}
             list_id = item.get('list_id')
         else:
-            relation_type = {'title': 'unknown', 'value': None}
+            relation_type = {'title': 'unknown', 'value': 'default'}
         result.append({'id': item['id'], 'title': item['title'], 'hint': item['hint'], 'list': list_id,
                        'type': relation_type, 'object_id_1': item['rel_obj_1_id'], 'object_id_2': item['rel_obj_2_id'],
                        'blocked_blank': item['blocked_blank']})

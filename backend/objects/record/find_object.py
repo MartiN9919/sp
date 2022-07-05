@@ -4,7 +4,7 @@ from shapely.geometry import Polygon, LineString
 
 from data_base_driver.additional_functions import date_client_to_server, str_to_sec
 from data_base_driver.input_output.input_output import io_get_obj
-from data_base_driver.input_output.input_output_mysql import io_get_obj_mysql_tuple
+from data_base_driver.input_output.input_output_mysql import io_get_obj_mysql_tuple, get_total_objects
 from data_base_driver.input_output.io_geo import get_points_by_distance, get_points_inside_polygon, \
      feature_collection_by_geometry, get_all_geometries_id
 from data_base_driver.sys_key.get_key_info import get_key_by_id
@@ -102,8 +102,11 @@ def find_text(group_id, object_id, request, actual=False, score=False):
     @return: список id объектов с искомыми параметрами, если score False, в противном случае список кортежей с
     идентификаторами и балами совпадения
     """
-    if not request:
-        request = ''
+    if request is None or len(request) == 0:
+        if score:
+            return get_total_objects(group_id, object_id)['objects']
+        else:
+            return [item[0] for item in get_total_objects(group_id, object_id)['objects']]
     request = request.split(' ')
     request = [word.replace('-', '<<') for word in request]  # костыль, в последующем поменять настройки мантикоры, что бы индексировала '-'
     result = []

@@ -16,56 +16,21 @@ class ConverterRelations:
     object_id_1: int # идентификатор первого объекта
     object_id_2: int # идентификатор второго объекта
     relations_convert_table: Dict # таблица преобразования связей (не используется)
-    deferred_relations: Dict[str, Dict[str, Dict[str, list]]] # отложенные связи
 
     def __init__(self, database_id_1: int, database_id_2: int, objects_convert_table: dict,
-                 relations_convert_table: dict, deferred_relations: dict):
+                 relations_convert_table: dict):
         """
         Конструктор с параметрами
         @param database_id_1: идентификатор первой базы данных (таблицы)
         @param database_id_2: идентификатор второй базы данных (таблицы)
         @param objects_convert_table: таблица преобразования объектов (старые идентификаторы в новые)
         @param relations_convert_table: таблица преобразования связей (не используется)
-        @param deferred_relations: отложенные связи
         """
         self.database_id_1 = database_id_1
         self.database_id_2 = database_id_2
         self.object_id_1 = objects_convert_table[database_id_1]
         self.object_id_2 = objects_convert_table[database_id_2]
         self.relations_convert_table = relations_convert_table
-        self.deferred_relations = deferred_relations
-
-    def create_deferred_relation(self, obj_1: str, obj_2: str, convert_table: dict, objects: dict, relation: Relation) -> None:
-        """
-        Метод для создания отложенной связи (преобразования 2-х связей в одну именованную)
-        @param obj_1: идентификатор первого объекта
-        @param obj_2: идентификатор второго объекта
-        @param convert_table: таблица преобразования связей
-        @param objects: таблица соответствия старых-новых объектов
-        @param relation: преобразуемая связь
-        """
-        if obj_1 in convert_table:
-            obj, database_id, rec_id = obj_1, self.database_id_2, relation.rec_id_2
-        else:
-            obj, database_id, rec_id = obj_2, self.database_id_1, relation.rec_id_1
-        if not self.deferred_relations.get(obj):
-            self.deferred_relations[obj] = {}
-        for convert_relation in convert_table[obj]:
-            key = f"{convert_relation['key_id']}_{convert_relation['value']}"
-            if not self.deferred_relations[obj].get(key):
-                self.deferred_relations[obj][key] = {
-                    'rec_id_1': [],
-                    'rec_id_2': [],
-                    'date': convert_relation['date']
-                }
-            if convert_relation['rel_id_1'] == database_id:
-                self.deferred_relations[obj][key]['rec_id_1'].append(objects[f"{database_id}_{rec_id}"]['rec_id'])
-                self.deferred_relations[obj][key]['object_id_1'] = objects[f"{database_id}_{rec_id}"]['object_id']
-            elif convert_relation['rel_id_2'] == database_id:
-                self.deferred_relations[obj][key]['rec_id_2'].append(objects[f"{database_id}_{rec_id}"]['rec_id'])
-                self.deferred_relations[obj][key]['object_id_2'] = objects[f"{database_id}_{rec_id}"]['object_id']
-            if convert_relation['document'] == database_id:
-                self.deferred_relations[obj][key]['document'] = objects[f"{database_id}_{rec_id}"]['rec_id']
 
     def convert(self, relation: Relation, objects: Dict, convert_table: dict) -> dict:
         """
@@ -77,8 +42,6 @@ class ConverterRelations:
         """
         obj_1 = f"{self.database_id_1}_{relation.rec_id_1}"
         obj_2 = f"{self.database_id_2}_{relation.rec_id_2}"
-        if obj_1 in convert_table or obj_2 in convert_table:
-            self.create_deferred_relation(obj_1, obj_2, convert_table, objects, relation)
         old_id_1 = relation.rec_id_1
         old_id_2 = relation.rec_id_2
         new_object_1 = objects.get(f"{self.database_id_1}_{old_id_1}")
@@ -253,9 +216,6 @@ class ConverterBank:
         for row in objects.iter_rows():
             if isinstance(row[0].value, int):
                 self.converter_objects_table[row[0].value] = row[1].value
-                if row[2].value and row[2].value == 1:
-                    if not self.converters_object_to_relation.get(row[0].value):
-                        self.converters_object_to_relation[row[0].value] = []
                 if row0:
                     self.converters_params[row0] = ConverterParams(row0, row1, copy(params_convert_dict))
                     params_convert_dict = {}
@@ -264,68 +224,16 @@ class ConverterBank:
                 params_convert_dict[row[2].value] = (row[3].value, row[4].value)
         else:
             self.converters_params[row0] = ConverterParams(row0, row1, copy(params_convert_dict))
-        if len(self.converters_object_to_relation) > 0:
-            relations = work_book['relations']
-            for row in relations.iter_rows():
-                if isinstance(row[0].value, int):
-                    data_base_id = row[0].value
-                    self.converters_object_to_relation[data_base_id].append({
-                        'rel_id_1': row[1].value,
-                        'rel_id_2': row[2].value,
-                        'key_id': row[3].value,
-                        'value': row[4].value if row[4].value else '',
-                        'date': row[5].value,
-                        'document': row[6].value
-                    })
 
-    def create_deferred_relation(self, deferred_relation, key, errors):
-        key_list = key.split('_')
-        key_id, value = int(key_list[0]), int(key_list[1])
-        date = deferred_relation[key]['date']
-        object_id_1 = deferred_relation[key]['object_id_1']
-        object_id_2 = deferred_relation[key]['object_id_2']
-        rec_id_1_list = deferred_relation[key]['rec_id_1']
-        rec_id_2_list = deferred_relation[key]['rec_id_2']
-        document = deferred_relation[key].get('document')
-        for rec_id_1 in rec_id_1_list:
-            for rec_id_2 in rec_id_2_list:
-                try:
-                    add_rel(1, object_id_1, rec_id_1, object_id_2, rec_id_2,
-                            [{'id': key_id, 'value': value, 'date': date}], document)
-                except Exception as e:
-                    errors[f"{object_id_1}_{rec_id_1}_{object_id_2}_{rec_id_2}"] = {
-                        'object_id_1': object_id_1,
-                        'rec_id_1': rec_id_1,
-                        'object_id_2': object_id_2,
-                        'rec_id_2': rec_id_2,
-                        'key_id': key_id,
-                        'value': value,
-                        'datetime': date
-                    }
-                    raise e
-                self.relation_to_create.append({
-                    'object_id_1': object_id_1,
-                    'rec_id_1': rec_id_1,
-                    'object_id_2': object_id_2,
-                    'rec_id_2': rec_id_2,
-                    'key_id': key_id,
-                    'value': value,
-                    'datetime': date
-                })
-
-    def create_deferred_relations(self, deferred_relations: dict, errors: dict) -> None:
-        """
-        Функция для создания связей Сапфир из отложенных связей
-        @param deferred_relations: словарь отложенных связей
-        @param errors: словарь ошибок
-        """
-        for deferred_relation in deferred_relations.values():
-            for key in deferred_relation:
-                try:
-                    self.create_deferred_relation(deferred_relation, key, errors)
-                except:
-                    print(f"error create deferred relation {key}")
-                    continue
+        # relations = work_book['relations']
+        # for row in relations.iter_rows():
+        #     if isinstance(row[0].value, int):
+        #         data_base_id_1 = row[0].value
+        #         data_base_id_2 = row[1].value
+        #         key_id = row[2].value
+        #         if data_base_id_2 < data_base_id_1:
+        #             data_base_id_1, data_base_id_2 = data_base_id_2, data_base_id_1
+        #         self.converter_relations_table[f"{data_base_id_1}_{data_base_id_2}"] = key_id
 
     def convert(self):
         """
@@ -342,23 +250,17 @@ class ConverterBank:
             self.object_to_create.update(temp['objects'])
             temp_relations.update(temp['relations'])
             errors.update(temp['error'])
-        deferred_relations: dict = {}
         for relation in self.bank_parser.relations.values():
             converter_relation = self.converters_relations.get(f"{relation.object_id_1}_{relation.object_id_2}")
             if not converter_relation:
                 converter_relation = ConverterRelations(relation.object_id_1, relation.object_id_2,
-                                                        self.converter_objects_table, self.converter_relations_table,
-                                                        deferred_relations)
+                                                        self.converter_objects_table, self.converter_relations_table)
                 self.converters_relations[f"{relation.object_id_1}_{relation.object_id_2}"] = converter_relation
             temp = converter_relation.convert(relation, self.object_to_create, temp_relations)
             if temp.get('error'):
                 errors.update(temp['error'])
             elif len(temp) > 0:
                 self.relation_to_create.append(temp)
-        try:
-            self.create_deferred_relations(deferred_relations, errors)
-        except Exception as e:
-            print('error creating deferred relations')
 
 
 CONVERT_SETTING = json.loads(open('/deploy_storage/converter_param.json').read().encode().decode('utf-8-sig'))
@@ -368,6 +270,6 @@ converter.convert()
 
 report_file = open("/deploy_storage/report.txt", "w")
 for report in duplicates_reports:
-    report_file.write(report)
+    report_file.write(report + '\n')
 report_file.close()
 

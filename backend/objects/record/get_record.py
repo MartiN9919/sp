@@ -64,10 +64,10 @@ def get_permission_params(params, object_id):
                   keys_validation_tuple[2]: [],
                   keys_validation_tuple[3]: []}
     for param in params:
-        if int(param['key_id']) in keys_validation_tuple[:3]:
-            permission[int(param['key_id'])].append({
-                'group_id': int(param['val']),
-                'data_time': get_date_time_from_sec(param['sec'])
+        if int(param[0]) in keys_validation_tuple[:3]:
+            permission[int(param[0])].append({
+                'group_id': int(param[1]),
+                'data_time': get_date_time_from_sec(param[2])
             })
     return permission
 
@@ -140,6 +140,47 @@ def get_value_by_key(key, value):
     return value
 
 
+def get_object_info(object_id, rec_id, fetchall, group_id=0, triggers=None, title_mod=False):
+    params = []
+    for item in fetchall:
+        value = get_value_by_key(int(item[0]), item[1])
+        keys = [key for key in params if key['id'] == int(item[0])]
+        if len(keys) > 0:
+            keys[0]['values'].append({'value': value, 'date': get_date_time_from_sec(item[2])[:-3]})
+        else:
+            params.append(
+                {'id': int(item[0]), 'values': [{'value': value, 'date': get_date_time_from_sec(item[2])[:-3]}]})
+    for item in params:
+        item['values'].sort(key=lambda x: x['date'], reverse=True)
+        for value in item['values']:
+            value['date'] = date_time_server_to_client(value['date'])
+    params.sort(key=lambda x: x['id'])
+    permission = get_permission_params(fetchall, object_id)
+    if triggers:
+        triggers = check_triggers(triggers, group_id, object_id, rec_id)
+    else:
+        triggers = []
+    title = get_record_title(object_id, rec_id, group_id,
+                             {'object_id': object_id, 'rec_id': rec_id, 'params': params, 'permission': permission,
+                              'triggers': None}, 1 if not title_mod else 3)
+    photo = get_record_photo(params)
+    return {'object_id': object_id, 'rec_id': rec_id, 'params': params, 'permission': permission,
+            'title': title['title'] if not title_mod else title, 'triggers': triggers, 'photo': photo}
+
+
+def get_objects_records(group_id, object_id, rec_ids, triggers=None, title=False):
+    response = io_get_obj(group_id, object_id, [], rec_ids, 20000, '', {})
+    objects = {}
+    for item in response:
+        if objects.get(item['rec_id']) is None:
+            objects[item['rec_id']] = []
+        objects[item['rec_id']].append((int(item['key_id']), item['val'], int(item['sec'])))
+    result = {}
+    for rec_id in objects:
+        result[rec_id] = get_object_info(object_id, rec_id, objects[rec_id], group_id, triggers, title)
+    return result
+
+
 def get_object_record_by_id_http(object_id, rec_id, group_id=0, triggers=None):
     """
     Функция для получения информации о объекте по его типу и идентификатору записи
@@ -153,31 +194,7 @@ def get_object_record_by_id_http(object_id, rec_id, group_id=0, triggers=None):
     if len(response) == 0:
         return None
     temp = [(int(item['key_id']), item['val'], int(item['sec'])) for item in response]
-    params = []
-    for item in temp:
-        value = get_value_by_key(int(item[0]), item[1])
-        keys = [key for key in params if key['id'] == int(item[0])]
-        if len(keys) > 0:
-            for key in keys:
-                key['values'].append({'value': value, 'date': get_date_time_from_sec(item[2])[:-3]})
-            continue
-        params.append({'id': int(item[0]), 'values': [{'value': value, 'date': get_date_time_from_sec(item[2])[:-3]}]})
-    for item in params:
-        item['values'].sort(key=lambda x: x['date'], reverse=True)
-        for value in item['values']:
-            value['date'] = date_time_server_to_client(value['date'])
-    params.sort(key=lambda x: x['id'])
-    permission = get_permission_params(response, object_id)
-    if triggers:
-        triggers = check_triggers(triggers, group_id, object_id, rec_id)
-    else:
-        triggers = []
-    title = get_record_title(object_id, rec_id, group_id,
-                             {'object_id': object_id, 'rec_id': rec_id, 'params': params, 'permission': permission,
-                              'triggers': None}, 1)
-    photo = get_record_photo(params)
-    return {'object_id': object_id, 'rec_id': rec_id, 'params': params, 'permission': permission,
-            'title': title['title'], 'triggers': triggers, 'photo': photo}
+    return get_object_info(object_id, rec_id, temp, group_id, triggers)
 
 
 def get_keys():
