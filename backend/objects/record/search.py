@@ -1,7 +1,10 @@
+from multiprocessing import Manager, Process
+
 from data_base_driver.additional_functions import date_time_client_to_server
+from data_base_driver.constants.const_dat import DAT_SYS_OBJ
 from data_base_driver.constants.const_fulltextsearch import FullTextSearch
 from objects.record.find_object import find_reliable_http, find_text
-from objects.record.get_record import get_record_title
+from objects.record.get_record import get_objects_records
 from objects.relations.find_rel import search_relations_with_key
 
 
@@ -55,13 +58,29 @@ def recursion_search(group_id: int, request: dict) -> dict:
     return result
 
 
+def process_function(result, group_id, object_id, request, actual, triggers):
+    objects = find_text(group_id, object_id, request, actual, score=True)
+    rec_ids = [item[0] for item in objects]
+    records = get_objects_records(group_id, object_id, rec_ids, triggers, True)
+    result[object_id] = [
+        {'rec_id': item[0], 'score': item[1], 'object_id': object_id, 'title': records[item[0]]['title']}
+        for item in objects]
+
+
 def search_many_objects(group_id, object_ids, request, triggers, actual):
     result = []
+    proces_list = []
+    temp_result = Manager().dict()
     for object_id in object_ids:
-        result += [{'rec_id': item[0], 'score': item[1], 'object_id': object_id}
-                   for item in find_text(group_id, object_id, request, actual, score=True)]
-    return [get_record_title(item['object_id'], item['rec_id'], group_id, triggers=triggers[str(item['object_id'])])
-            for item in sorted(result, key=lambda x: x['score'], reverse=True)]
+        process = Process(target=process_function,
+                          args=(temp_result, group_id, object_id, request, actual, triggers.get(object_id, [])))
+        proces_list.append(process)
+        process.start()
+    for process in proces_list:
+        process.join()
+    for value in temp_result.values():
+        result += value
+    return [item['title'] for item in sorted(result, key=lambda x: x['score'], reverse=True)]
 
 
 def search(request, group_id, triggers):
@@ -74,19 +93,19 @@ def search(request, group_id, triggers):
     """
     base_object_list = request.get(FullTextSearch.OBJECT_ID, [])
     if len(base_object_list) == 0:
-        return []
+        base_object_list = [int(item['id']) for item in DAT_SYS_OBJ.DUMP.get_all() if item['id'] > 1]
     if len(base_object_list) > 1:
         return search_many_objects(group_id, base_object_list, request.get(FullTextSearch.REQUEST, ''), triggers,
                                    request.get(FullTextSearch.ACTUAL, False))
     else:
         request[FullTextSearch.OBJECT_ID] = base_object_list[0]
+    triggers = triggers[str(request[FullTextSearch.OBJECT_ID])]
     if len(request.get(FullTextSearch.RELATIONS, None)) != 0:
-        return [get_record_title(request.get(FullTextSearch.OBJECT_ID, None), item, group_id, triggers=triggers[str(request[FullTextSearch.OBJECT_ID])]) for
-                item in recursion_search(group_id, request)['records']]
+        rec_ids = recursion_search(group_id, request)['records']
     else:
-        return [get_record_title(request.get(FullTextSearch.OBJECT_ID, None), item, group_id, triggers=triggers[str(request[FullTextSearch.OBJECT_ID])]) for
-                item in find_reliable_http(request.get(FullTextSearch.OBJECT_ID, None),
-                                           request.get(FullTextSearch.REQUEST, ''),
-                                           request.get(FullTextSearch.ACTUAL, False),
-                                           group_id)]
-
+        rec_ids = find_reliable_http(request.get(FullTextSearch.OBJECT_ID, None),
+                                     request.get(FullTextSearch.REQUEST, ''),
+                                     request.get(FullTextSearch.ACTUAL, False),
+                                     group_id)
+    objects = get_objects_records(group_id, request.get(FullTextSearch.OBJECT_ID, None), rec_ids, triggers, True)
+    return [objects[rec_id]['title'] for rec_id in rec_ids]
