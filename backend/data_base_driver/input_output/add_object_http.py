@@ -5,11 +5,11 @@ from data_base_driver.constants.const_fulltextsearch import FullTextSearch
 from data_base_driver.sys_key.get_key_info import get_key_by_id
 
 
-def add_row_record_http(index_title, id, date_time, key_id, val):
+def add_row_record_http(index_title, rec_id, date_time, key_id, val):
     """
     Функция для добавления записи в manticore
     @param index_title: название индекса (таблицы)
-    @param id: идентификатор добавляемой записи
+    @param rec_id: идентификатор добавляемой записи
     @param date_time: строка содержащая дату и время добавления
     @param key_id: идентификатор ключа классификатора
     @param val: вносимое значение
@@ -23,7 +23,7 @@ def add_row_record_http(index_title, id, date_time, key_id, val):
     data = json.dumps({'index': index_title,
                        'id': 0,
                        'doc': {
-                           'rec_id': int(id),
+                           'rec_id': int(rec_id),
                            'sec': seconds,
                            'key_id': str(key_id),
                            'val': str(val)
@@ -35,11 +35,11 @@ def add_row_record_http(index_title, id, date_time, key_id, val):
         return True
 
 
-def add_col_record_http(index_title, id, params):
+def add_col_record_http(index_title, rec_id, params):
     """
     Функция для добавления записи в col index мантикоры
     @param index_title: название таблицы
-    @param id: идентификатор записи
+    @param rec_id: идентификатор записи
     @param params: параметры для записи
     @return: если добавление прошло успешно True, если нет False
     """
@@ -57,7 +57,7 @@ def add_col_record_http(index_title, id, params):
         else:
             value = param_list[1].replace('\'', '')
         doc[key] = value
-    doc['rec_id'] = id
+    doc['rec_id'] = rec_id
     data = json.dumps({'index': index_title,
                        'id': 0,
                        'doc': doc
@@ -69,11 +69,11 @@ def add_col_record_http(index_title, id, params):
         return True
 
 
-def update_col_record_http(index_title, id, params):
+def update_col_record_http(index_title, rec_id, params):
     """
     Функция для изменения записи в col index мантикоры
     @param index_title: название таблицы
-    @param id: идентификатор записи
+    @param rec_id: идентификатор записи
     @param params: параметры для записи
     @return: если добавление прошло успешно True, если нет False
     """
@@ -88,7 +88,7 @@ def update_col_record_http(index_title, id, params):
         else:
             value = param_list[1]
         doc[key] = value
-    rec_id = int(id)
+    rec_id = int(rec_id)
     data = json.dumps({'index': index_title,
                        'doc': doc,
                        'equals': {'rec_id': rec_id}

@@ -6,7 +6,7 @@ from data_base_driver.additional_functions import date_client_to_server, str_to_
 from data_base_driver.input_output.input_output import io_get_obj
 from data_base_driver.input_output.input_output_mysql import io_get_obj_mysql_tuple, get_total_objects
 from data_base_driver.input_output.io_geo import get_points_by_distance, get_points_inside_polygon, \
-     feature_collection_by_geometry, get_all_geometries_id
+     feature_collection_by_geometry
 from data_base_driver.sys_key.get_key_info import get_key_by_id
 from objects.geometry.geometry_analytics import feature_collection_to_manticore_polygon
 from objects.record.get_record import get_object_record_by_id_http, get_keys
@@ -182,7 +182,7 @@ def find_point_advanced(group_id, values, actual):
 def find_geometry_advanced(group_id, values, actual):
     result = set()
     for value in values:
-        geometries = get_all_geometries_id()
+        geometries = [item[0] for item in get_total_objects(group_id, 30)['objects']]
         fc_polygons = feature_collection_by_geometry(group_id, 30, geometries, [], {})
         polygon = Polygon(value['value']['features'][0]['geometry']['coordinates'][0])
         fetchall = []

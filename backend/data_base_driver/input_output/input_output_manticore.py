@@ -37,7 +37,8 @@ def io_get_obj_row_manticore(group_id, object_type, keys, ids, ids_max_block, wh
                 'must': must
             }
         },
-        "limit": ids_max_block
+        'limit': ids_max_block,
+        'max_matches': ids_max_block
     })
     response = requests.post(FullTextSearch.SEARCH_URL, data=data)
     try:
@@ -99,7 +100,8 @@ def io_get_obj_col_manticore(group_id, object_type, keys, ids, ids_max_block, wh
                 'must': must
             }
         },
-        'limit': ids_max_block
+        'limit': ids_max_block,
+        'max_matches': ids_max_block
     })
     response = json.loads(requests.post(FullTextSearch.SEARCH_URL, data=data).text)['hits']['hits']
     result = []

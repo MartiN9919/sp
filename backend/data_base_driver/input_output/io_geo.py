@@ -189,11 +189,6 @@ def get_geometry_search(text):
     return build_tree_from_list(temp_result)
 
 
-def get_all_geometries_id():
-    result = db_sql(sql='SELECT rec_id from obj_geometry_col GROUP BY rec_id ;')
-    return [item[0] for item in result]
-
-
 def get_points_inside_polygon(polygon, points, group_id):
     """
     Функция для получения точек лежащих в пределах полигона

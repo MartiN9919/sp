@@ -18,35 +18,13 @@ def get_title(params, title_len=3):
     title_list = []
     for param in params:
         key = get_key_by_id(param['id'])
-        if key['priority']:
-            title_list.append({'title': key['title'],
-                               'priority': key['priority'],
-                               'value': param['values'][0]['value'],
-                               'visible': key['visible']})
-    title_list.sort(key=lambda x: x['priority'])
-    if len(title_list) > title_len:
-        title = ', '.join(
-            str(str(title['title'] + ': ' + title['value']) if title['visible'] == 'all' else title['value']) for title
-            in title_list[:title_len] if title['visible'] != 'none')
-        return title
-    if len(title_list) == 0:
-        title = ', '.join(str(str(get_key_by_id(param['id'])['title'] + ': ' + param['values'][0]['value']) if
-                              get_key_by_id(param['id'])['visible'] == 'all' else param['values'][0]['value']) for param
-                          in params[:title_len] if get_key_by_id(param['id'])['visible'] != 'none')
-        return title
-    else:
-        title = ', '.join(
-            str(str(title['title'] + ': ' + title['value']) if title['visible'] == 'all' else title['value']) for title
-            in title_list if title['visible'] != 'none')
-    if len(title_list) < title_len:
-        sub_title = ', '.join(str(str(get_key_by_id(param['id'])['title'] + ': ' + param['values'][0]['value']) if
-                                  get_key_by_id(param['id'])['visible'] == 'all' else param['values'][0]['value']) for
-                              param in [param for param in params if
-                                        not get_key_by_id(param['id'])['priority'] and get_key_by_id(param['id'])[
-                                            'visible'] != 'none'][:(title_len - len(title_list))])
-        if len(sub_title) > 0:
-            title += ', ' + sub_title
-    return title
+        title_list.append({'title': key['title'],
+                           'priority': key['priority'],
+                           'value': param['values'][0]['value'],
+                           'visible': key['visible']})
+    title_list = [str(item['title'] + ': ' + item['value']) if item['visible'] == 'all' else item['value']
+                  for item in sorted(title_list, key=lambda x: x['priority']) if item['visible'] != 'none']
+    return ', '.join(title_list[:title_len])
 
 
 def get_permission_params(params, object_id):
@@ -83,7 +61,7 @@ def get_record_title(object_id, rec_id, group_id=0, record=None, length=3, trigg
     @param triggers: проверять ли триггеры у указанных объектов
     @return: словарь в формате {object_id, rec_id, title},...,{}]}
     """
-    if not record:
+    if record is None:
         record = get_object_record_by_id_http(object_id, rec_id, group_id, triggers=triggers)
     if len(list(record['permission'].keys())) > 0:
         write_groups = [item['group_id'] for item in record['permission'][list(record['permission'].keys())[0]]]
@@ -242,7 +220,7 @@ def get_object_param_by_key(group_id, object_id, rec_id, key_id):
     @param object_id: идентификатор типа объекта
     @param rec_id: идентификатор объекта
     @param key_id: идентификатор искомого параметра
-    @return: наиболее актуальное значение искомого параметра если он есть, если нет -  None
+    @return: наиболее актуальное значение искомого параметра если он есть, если нет - None
     """
     object_params = get_object_record_by_id_http(object_id, rec_id, group_id, None)['params']
     object_param_list = [item for item in object_params if item['id'] == key_id]
