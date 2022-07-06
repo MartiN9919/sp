@@ -58,28 +58,15 @@ def recursion_search(group_id: int, request: dict) -> dict:
     return result
 
 
-def process_function(result, group_id, object_id, request, actual, triggers):
-    objects = find_text(group_id, object_id, request, actual, score=True)
-    rec_ids = [item[0] for item in objects]
-    records = get_objects_records(group_id, object_id, rec_ids, triggers, True)
-    result[object_id] = [
-        {'rec_id': item[0], 'score': item[1], 'object_id': object_id, 'title': records[item[0]]['title']}
-        for item in objects]
-
-
 def search_many_objects(group_id, object_ids, request, triggers, actual):
     result = []
-    proces_list = []
-    temp_result = Manager().dict()
     for object_id in object_ids:
-        process = Process(target=process_function,
-                          args=(temp_result, group_id, object_id, request, actual, triggers.get(object_id, [])))
-        proces_list.append(process)
-        process.start()
-    for process in proces_list:
-        process.join()
-    for value in temp_result.values():
-        result += value
+        objects = find_text(group_id, object_id, request, actual, score=True)
+        rec_ids = [item[0] for item in objects]
+        records = get_objects_records(group_id, object_id, rec_ids, triggers, True)
+        result += [
+            {'rec_id': item[0], 'score': item[1], 'object_id': object_id, 'title': records[item[0]]['title']}
+            for item in objects]
     return [item['title'] for item in sorted(result, key=lambda x: x['score'], reverse=True)]
 
 
