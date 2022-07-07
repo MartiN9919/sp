@@ -61,9 +61,10 @@ def recursion_search(group_id: int, request: dict) -> dict:
 def search_many_objects(group_id, object_ids, request, triggers, actual):
     result = []
     for object_id in object_ids:
+        trigger = triggers.get(str(object_id), [])
         objects = find_text(group_id, object_id, request, actual, score=True)
         rec_ids = [item[0] for item in objects]
-        records = get_objects_records(group_id, object_id, rec_ids, triggers, True)
+        records = get_objects_records(group_id, object_id, rec_ids, trigger, True)
         result += [
             {'rec_id': item[0], 'score': item[1], 'object_id': object_id, 'title': records[item[0]]['title']}
             for item in objects]
