@@ -59,8 +59,8 @@ def filter_actual(group_id,  object_id, fetchall):
 
 
 def filter_date_range(group_id, object_id, items, date_range):
-    second_start = str_to_sec(date_client_to_server(date_range.split('-')[0]) + ' 00:00:00')
-    second_end = str_to_sec(date_client_to_server(date_range.split('-')[1]) + ' 00:00:00')
+    second_start = str_to_sec(date_client_to_server(date_range.split('-')[0]) + ' 23:59:59')
+    second_end = str_to_sec(date_client_to_server(date_range.split('-')[1]) + ' 23:59:59')
     result = []
     for item in items:
         if second_start < item[2] < second_end:
@@ -137,7 +137,7 @@ def find_advanced(group_id, object_id, request, actual=False):
 def find_by_type(group_id, object_id, key, values, actual):
     key_info = get_key_by_id(key)
     key_type = key_info['type'] if key_info['list_id'] is None else 'list'
-    if key_type == 'date':
+    if key_type == 'date' or key_type == 'datetime':
         return find_date_advanced(group_id, object_id, key, values, actual)
     elif key_type == 'geometry':
         return find_geometry_advanced(group_id, values, actual)
