@@ -48,6 +48,21 @@ def sort_result(fetchall):
     return list(result)
 
 
+def get_intercept_items(items):
+    result = []
+    for i in items[0]:
+        temp_item = [i[0], i[1]]
+        for j in items[1:]:
+            temp = [item for item in j if item[0] == i[0]]
+            if len(temp):
+                temp_item[1] += temp[0][1]
+            else:
+                break
+        else:
+            result.append(temp_item)
+    return result
+
+
 def filter_actual(group_id,  object_id, fetchall):
     result = []
     for item in fetchall:
@@ -113,11 +128,12 @@ def find_text(group_id, object_id, request, actual=False, score=False):
     for param in request:
         word = f"@val {param}" if len(param) > 0 else param  # искать только по значению
         if score:
-            result += [(item['rec_id'], item['score']) for item in get_search_result(group_id, word, object_id, actual)]
+            temp = sort_result(list((item['rec_id'], item['score']) for item in get_search_result(group_id, word, object_id, actual)))
+            result.append(temp)
         else:
             result.append(list(set([item['rec_id'] for item in get_search_result(group_id, word, object_id, actual)])))
     if score:
-        return sort_result(result)
+        return get_intercept_items(result)
     else:
         return intercept_sort_list(result)
 
@@ -301,3 +317,4 @@ def find_same_objects(group_id, object_id, params):
                 result.intersection_update(set(find_key_value_http(object_id, param, new_params[param]['value'],
                                                                    group_id)))
         return list(result)
+
