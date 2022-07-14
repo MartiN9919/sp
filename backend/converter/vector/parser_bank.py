@@ -3,10 +3,11 @@ import datetime
 from pathlib import Path
 from typing import List, Dict, Tuple
 
-from data_bank import Bank, Param, Database, Dictionary, Relation
+from converter.base.base_parser import BaseParser
+from converter.vector.data_bank import Bank, Param, Database, Dictionary, Relation
 
 
-class ParserBank:
+class ParserBank(BaseParser):
     base_path: Path
     _bank_path: Path # путь к файлу структуры БД
     _dictionary_path: Path # путь к файлу структуры словарей
