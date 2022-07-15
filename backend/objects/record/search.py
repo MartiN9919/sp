@@ -1,5 +1,3 @@
-from multiprocessing import Manager, Process
-
 from data_base_driver.additional_functions import date_time_client_to_server
 from data_base_driver.constants.const_dat import DAT_SYS_OBJ
 from data_base_driver.constants.const_fulltextsearch import FullTextSearch

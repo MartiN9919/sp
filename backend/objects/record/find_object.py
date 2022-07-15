@@ -6,7 +6,7 @@ from data_base_driver.additional_functions import date_client_to_server, str_to_
 from data_base_driver.input_output.input_output import io_get_obj
 from data_base_driver.input_output.input_output_mysql import io_get_obj_mysql_tuple, get_total_objects
 from data_base_driver.input_output.io_geo import get_points_by_distance, get_points_inside_polygon, \
-     feature_collection_by_geometry
+    feature_collection_by_geometry
 from data_base_driver.sys_key.get_key_info import get_key_by_id
 from objects.geometry.geometry_analytics import feature_collection_to_manticore_polygon
 from objects.record.get_record import get_object_record_by_id_http, get_keys
@@ -51,19 +51,13 @@ def sort_result(fetchall):
 def get_intercept_items(items):
     result = []
     for i in items[0]:
-        temp_item = [i[0], i[1]]
-        for j in items[1:]:
-            temp = [item for item in j if item[0] == i[0]]
-            if len(temp):
-                temp_item[1] += temp[0][1]
-            else:
-                break
-        else:
-            result.append(temp_item)
+        temp_list = [[k for k in j if k[0] == i[0]] for j in items]
+        if all(temp_list):
+            result.append((i[0], sum(j[0][1] for j in temp_list)))
     return result
 
 
-def filter_actual(group_id,  object_id, fetchall):
+def filter_actual(group_id, object_id, fetchall):
     result = []
     for item in fetchall:
         temp_word = '@key_id ' + str(item[1])
@@ -123,12 +117,14 @@ def find_text(group_id, object_id, request, actual=False, score=False):
         else:
             return [item[0] for item in get_total_objects(group_id, object_id)['objects']]
     request = request.split(' ')
-    request = [word.replace('-', '<<') for word in request]  # костыль, в последующем поменять настройки мантикоры, что бы индексировала '-'
+    request = [word.replace('-', '<<') for word in
+               request]  # костыль, в последующем поменять настройки мантикоры, что бы индексировала '-'
     result = []
     for param in request:
         word = f"@val {param}" if len(param) > 0 else param  # искать только по значению
         if score:
-            temp = sort_result(list((item['rec_id'], item['score']) for item in get_search_result(group_id, word, object_id, actual)))
+            temp = sort_result(
+                list((item['rec_id'], item['score']) for item in get_search_result(group_id, word, object_id, actual)))
             result.append(temp)
         else:
             result.append(list(set([item['rec_id'] for item in get_search_result(group_id, word, object_id, actual)])))
