@@ -85,7 +85,7 @@ def search(request, group_id, triggers):
                                    request.get(FullTextSearch.ACTUAL, False))
     else:
         request[FullTextSearch.OBJECT_ID] = base_object_list[0]
-    triggers = triggers[str(request[FullTextSearch.OBJECT_ID])]
+    triggers = triggers.get(str(request[FullTextSearch.OBJECT_ID]), [])
     if len(request.get(FullTextSearch.RELATIONS, None)) != 0:
         rec_ids = recursion_search(group_id, request)['records']
     else:
