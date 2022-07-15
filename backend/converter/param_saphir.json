@@ -1,0 +1,18 @@
+{
+  "converter_type" : "saphir",
+  "init_type": "exel",
+  "convert_path": "/home/pushkin/convert_table_abiad.xlsx",
+  "parser":
+  {
+    "file_path": "",
+    "database":
+    {
+        "HOST": "200.200.200.233",
+        "PORT": "3306",
+        "NAME": "vec_3_data",
+        "USER": "dev",
+        "PASSWORD": "1",
+        "CHARSET": "utf8"
+    }
+  }
+}

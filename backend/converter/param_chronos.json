@@ -1,4 +1,5 @@
 {
+  "converter_type" : "chronos",
   "init_type": "exel",
   "convert_path": "/home/pushkin/convert_table OPOGK.xlsx",
   "parser":
