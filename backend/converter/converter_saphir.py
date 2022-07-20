@@ -7,7 +7,7 @@ from openpyxl import load_workbook
 from converter.base.base_object import BaseTable, BaseRelation
 from converter.base.base_parser import BaseParser
 from converter.saphir.saphir_parser import SaphirParser
-from objects.record.add_record_vector import add_data_vector
+from objects.record.add_record_vector import add_data_vector, duplicates_reports
 from objects.relations.add_rel import add_rel
 from vector.parser_bank import ParserBank
 
@@ -242,15 +242,17 @@ class ConverterBank:
                 errors.update(temp['error'])
             elif len(temp) > 0:
                 self.relation_to_create.append(temp)
+        with open('/deploy_storage/object_convert.json', 'w') as file:
+            json.dump(self.object_to_create, file)
 
 
-CONVERT_SETTING = json.loads(open('param_saphir.json').read().encode().decode('utf-8-sig'))
+CONVERT_SETTING = json.loads(open('/deploy_storage/param_saphir.json').read().encode().decode('utf-8-sig'))
 converter = ConverterBank(CONVERT_SETTING)
 print('start_converting')
 converter.convert()
-#
-# report_file = open("/deploy_storage/report.txt", "w")
-# for report in duplicates_reports:
-#     report_file.write(report + '\n')
-# report_file.close()
+
+report_file = open("/deploy_storage/report.txt", "w")
+for report in duplicates_reports:
+    report_file.write(report + '\n')
+report_file.close()
 

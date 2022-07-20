@@ -1,7 +1,7 @@
-import os
 import shutil
 import threading
 import datetime
+from pathlib import Path
 
 from core.projectSettings.constant import MEDIA_ROOT
 from data_base_driver.additional_functions import date_client_to_server, date_time_client_to_server
@@ -45,8 +45,6 @@ def parse_value_vector(param):
     """
     Функция для приведения некоторых параметров в правильному виду
     @param param: параметр заносимый в базу данных
-    @param object: объект для которого создается новая запись
-    @param files: файлы которые возможно несет в себе запись
     @return: список содержащий информацию о параметре в формате  [id, val, datetime]
     """
     value = param['value']
@@ -71,8 +69,7 @@ def set_file(rec_id: int, object_id: int, data: list, files_path: str):
             rec_id = get_object_new_rec_id(object_id) if rec_id == 0 else rec_id
             target_path = get_object_file_path(object_id, rec_id, item[1])
             target_dir = '/'.join(target_path.split('/')[:-1])
-            if not os.path.exists(MEDIA_ROOT + target_dir):
-                os.makedirs(MEDIA_ROOT + target_dir, exist_ok=True)
+            Path(MEDIA_ROOT + target_dir).mkdir(parents=True, exist_ok=True)
             path = shutil.copyfile(files_path + '/' + item[1], MEDIA_ROOT + target_path)
             print(f"new file path {path}")
 
