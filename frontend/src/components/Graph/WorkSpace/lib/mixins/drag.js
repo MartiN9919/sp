@@ -2,7 +2,6 @@
  * Adds drag behavior to Vue component
  * @drag event emmited
  */
-import drag from "vnodes/src/mixins/drag";
 let moved = false
 
 export default {

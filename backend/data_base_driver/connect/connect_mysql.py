@@ -126,7 +126,7 @@ def db_sql(sql, wait=False, read=True, database=VEC_DATA, connection=None):
             print(f"mysql error {sql}, error: {e}")
             result = []
             is_ok = not wait
-            if (error_count < 10) and wait:
+            if (error_count < 1) and wait:
                 error_count += 1  # ошибка + 1
             else:
                 return ['error']  # обнулить счетчик ошибок

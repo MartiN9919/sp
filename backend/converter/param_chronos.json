@@ -1,0 +1,15 @@
+{
+  "converter_type" : "chronos",
+  "init_type": "exel",
+  "convert_path": "/home/pushkin/convert_table OPOGK.xlsx",
+  "parser":
+  {
+    "path": "/home/pushkin/opogk_vector",
+    "struct_db_name": "Структура БД.txt",
+    "struct_ldb_name": "Структура СБД.txt",
+    "encoding": "windows-1251",
+    "separator": "|",
+    "date_id": 603,
+    "time_id": 604
+  }
+}

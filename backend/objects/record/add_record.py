@@ -42,7 +42,7 @@ def add_record(group_id, object_id, object_info):
         return -1
 
 
-def additional_processing(user, object, data):
+def additional_processing(object, data):
     """
     Функция для дополнительной обработки входящих параметров с учетом особенностей системы
     @param user: объект пользователя
@@ -76,23 +76,9 @@ def additional_processing(user, object, data):
         if fl == 0:
             data.append([SYS_KEY_CONSTANT.PHONE_NUMBER_COUNTRY_ID, country,
                          datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")])
-    # костыль для добавления геометрических объектов, придумать как переделать------------------------------------------
-    if object.get('object_id') == SYS_KEY_CONSTANT.POINT_ID:
-        point = [item for item in data if item[0] == SYS_KEY_CONSTANT.POINT_CLASSIFIER_ID]
-        if len(point) > 0:
-            point[0][1] = json.dumps(point[0][1]['features'][0]['geometry'])
-    if object.get('object_id') == SYS_KEY_CONSTANT.GEOMETRY_ID:
-        if not validate_geometry_permission(user):
-            raise Exception(2, 'Нет прав на изменение геометрии')
-        location = [item for item in data if item[0] == SYS_KEY_CONSTANT.GEOMETRY_CLASSIFIER_ID]
-        if len(location) > 0:
-            geometry = {"type": "GeometryCollection", "geometries": []}
-            for feature in location[0][1]['features']:
-                geometry['geometries'].append(feature['geometry'])
-            location[0][1] = json.dumps(geometry)
 
 
-def parse_value(param, object, files):
+def parse_value(param, object, files, user):
     """
     Функция для приведения некоторых параметров в правильному виду
     @param param: параметр заносимый в базу данных
@@ -102,6 +88,15 @@ def parse_value(param, object, files):
     """
     value = param['value']
     key = get_key_by_id(param['id'])
+    if key.get('type') == DAT_SYS_KEY.TYPE_GEOMETRY:
+        if not validate_geometry_permission(user):
+            raise Exception(2, 'Нет прав на изменение геометрии')
+        geometry = {"type": "GeometryCollection", "geometries": []}
+        for feature in value['features']:
+            geometry['geometries'].append(feature['geometry'])
+        value = json.dumps(geometry)
+    if key.get('type') == DAT_SYS_KEY.TYPE_GEOMETRY_POINT:
+        value = json.dumps(value['features'][0]['geometry'])
     if key.get('list_id') != 0 and key['id'] not in SYS_KEY_CONSTANT.NOT_VALUE_TRANSFER_LIST and \
             key['id'] not in SYS_KEY_CONSTANT.GEOMETRY_TRANSFER_LIST and key.get('list_id') != None:
         value = str(get_item_list_value(value))
@@ -137,11 +132,10 @@ def add_data(user, group_id, object, files=None):
     @return: идентификатор нового/измененного объекта в базе данных
     """
     with lock:
-        try:
-            data = [parse_value(param, object, files) for param in object['params'] if validate_record(param)]
-        except Exception as e:
-            raise e
-        additional_processing(user, object, data)
+        if len(object['params']) == 0:  # проверка на пустой запрос
+            return {'object': object.get('rec_id', 0)}
+        data = [parse_value(param, object, files, user) for param in object['params'] if validate_record(param)]
+        additional_processing(object, data)
         if not object.get('force', False):  # проверка на дублирование
             duplicates = find_duplicate_objects(group_id, object.get('object_id'), object.get('rec_id'), data)
             if len(duplicates) > 0:
@@ -150,8 +144,6 @@ def add_data(user, group_id, object, files=None):
         if object.get('rec_id_old') and object.get('rec_id_old', 0) != 0:  # действия при слиянии объектов
             add_rel_by_other_object(group_id, object.get('object_id', 0), object.get('rec_id', 0),
                                     object.get('object_id', 0), object.get('rec_id_old', 0))
-        if len(data) == 0:  # проверка на пустой запрос
-            return {'object': object.get('rec_id', 0)}
         if object.get('rec_id', 0) != 0:  # проверка на внесение новой записи
             data.append(['id', object.get('rec_id')])
         result = add_record(group_id=group_id, object_id=object.get('object_id'), object_info=data)
@@ -170,7 +162,6 @@ def add_geometry(user, group_id, rec_id, location, name, parent_id):
     @param location: feature collection содержащая информацию о вносимой геометрии
     @param name: имя новой геометрии
     @param parent_id: идентификатор родительской папки
-    @param icon: название иконки геометрии
     @return: словарь содержащий информацию о геометрии
     """
     date_time_str = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")

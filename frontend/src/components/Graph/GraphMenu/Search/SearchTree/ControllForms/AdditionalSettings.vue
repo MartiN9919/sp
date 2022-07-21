@@ -10,7 +10,7 @@
         </v-btn>
       </v-card-actions>
     </template>
-    <v-card>
+    <v-card v-if="dialog">
       <template v-if="relationSetting">
         <v-card-title>
           Настройки связи
@@ -18,11 +18,11 @@
         <v-card-subtitle>
           Расширенные настройки связи поля с вышестоящим
         </v-card-subtitle>
-        <v-card-text>
+        <div class="px-6 pb-5">
           <boolean-input v-model="copyObject.actual" label="Поиск только по актуальным значениям"/>
           <date-input v-model="copyObject.relDateTimeStart" :dropdown="false" clearable label="начала"/>
           <date-input v-model="copyObject.relDateTimeEnd" :dropdown="false" clearable label="конца"/>
-        </v-card-text>
+        </div>
         <v-divider/>
       </template>
       <v-card-title>

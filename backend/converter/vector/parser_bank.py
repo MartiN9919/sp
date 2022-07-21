@@ -3,10 +3,11 @@ import datetime
 from pathlib import Path
 from typing import List, Dict, Tuple
 
-from data_bank import Bank, Param, Database, Dictionary, Relation
+from converter.base.base_parser import BaseParser
+from converter.vector.data_bank import Bank, Param, Database, Dictionary, Relation
 
 
-class ParserBank:
+class ParserBank(BaseParser):
     base_path: Path
     _bank_path: Path # путь к файлу структуры БД
     _dictionary_path: Path # путь к файлу структуры словарей
@@ -268,7 +269,7 @@ class ParserBank:
             if len(line.replace('\n', '')) == 0: # если пустая строка переходим на следующую итерацию
                 continue
             temp = [param.replace('\n', '') for param in line.split(self.SEPARATOR)] # получаем список параметров из строки
-            if len(temp_params) == len(params_type) and temp[0].isdigit(): # если количество параметров в предыдущей итерации равно общему количеству и первый актуальный параметр число (идентификатор)
+            if len(temp_params) == len(params_type) and temp[0].isdigit() and line.find(self.SEPARATOR) != -1: # если количество параметров в предыдущей итерации равно общему количеству и первый актуальный параметр число (идентификатор)
                 params = copy.deepcopy(temp_params)
                 params = [item.replace(self.LAST_SEPARATOR, '') for item in params]
                 self._parse_database_data(params, params_type, database_id, bank_data) # парсим параметры

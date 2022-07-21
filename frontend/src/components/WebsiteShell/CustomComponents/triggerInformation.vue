@@ -25,9 +25,15 @@ export default {
   },
   computed: {
     ...mapGetters(['triggers']),
-    showTriggers: function () { return this.triggers.filter(trigger => this.activeTriggers.includes(trigger.id)) },
-    tooltipStyle: function () { return {fontSize: this.size, color: 'red'} },
-    tooltipClass: function () { return "mdi mdi-alert-outline" },
+    showTriggers: function () {
+      return this.triggers.filter(trigger => this.activeTriggers && this.activeTriggers.includes(trigger.id))
+    },
+    tooltipStyle: function () {
+      return {fontSize: this.size, color: 'red'}
+    },
+    tooltipClass: function () {
+      return "mdi mdi-alert-outline"
+    },
   }
 }
 </script>
