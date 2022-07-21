@@ -43,6 +43,9 @@ export default {
       }
     },
     icon: function () {
+      if(!Array.isArray(this.item.base)) {
+        return this.item.base.icon
+      }
       if(this.item.baseId.length === 1) {
         return this.item.base[0].icon
       } else if (this.item.baseId.length > 9) {

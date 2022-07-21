@@ -188,4 +188,4 @@ def parse_type(key_type, list_id=None, object_id=None):
         return {'title': 'file', 'value': 'photo'}
     elif key_type == 'period':
         return {'title': 'date', 'value': 'period'}
-    return {'title': key_type, 'value': None}
+    return {'title': key_type, 'value': 'default'}
