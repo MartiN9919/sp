@@ -35,12 +35,13 @@ class ConverterRelations:
         self.relations_convert_table = relations_convert_table
 
 
-    def convert(self, relation: BaseRelation, objects: Dict, key_id: int) -> dict:
+    def convert(self, relation: BaseRelation, objects: Dict, key_id: int, value='') -> dict:
         """
         Метод для конвертирования связи Хроноса в связи Сапфира
         @param relation: связи Хроноса
         @param objects: словарь соответствия объектов
-        @param convert_table: таблица формирования отложенных связей
+        @param key_id: идентификатор связи
+        @param value: значение связи
         @return: словарь с информацией о созданной связи
         """
         if self.object_id_1 is None or self.object_id_2 is None:
@@ -54,7 +55,7 @@ class ConverterRelations:
             new_id_2 = new_object_2['rec_id']
             date_time = relation.date + ' ' + relation.time
             try:
-                add_rel(1, self.object_id_1, new_id_1, self.object_id_2, new_id_2, [{'id': key_id, 'value': '', 'date': date_time}])
+                add_rel(1, self.object_id_1, new_id_1, self.object_id_2, new_id_2, [{'id': key_id, 'value': value, 'date': date_time}])
             except Exception as e:
                 print(f"error creating relation {self.database_id_1}_{old_id_1}_{self.database_id_2}_{old_id_2}")
                 return {
@@ -147,7 +148,7 @@ class ConverterParams:
             else:
                 print('some error ', key, ' ', new_object[key])
                 result['error'][key] = new_object[key]
-            result['objects'].update(new_object)
+            result['objects'].update({key: {'rec_id': new_object[key]['rec_id']}})
         return result
 
 
@@ -155,7 +156,7 @@ class ConverterBank:
     converter_type: str
     bank_parser: BaseParser
     converter_objects_table: Dict[int, int] = {}  # словарь соответствия объектов
-    converter_relations_table: Dict[str, int] = {}  # словарь соответствия связей ('о1_о2') -> (key_id)
+    converter_relations_table: Dict = {}  # словарь соответствия связей ('о1_о2') -> (key_id)
     converters_params: Dict[int, ConverterParams] = {}  # словарь соответсия параметров объекта (o.id) -> ConverterParams
     converters_relations: Dict[str, ConverterRelations] = {}
     object_to_create: Dict = {} # накопитель результата созданных объектов
@@ -195,7 +196,6 @@ class ConverterBank:
                 params_convert_dict[row[2].value] = (row[3].value, row[4].value)
         else:
             self.converters_params[row0] = ConverterParams(row0, row1, copy(params_convert_dict))
-
         relations = work_book['relations']
         if self.converter_type == 'chronos':
             for row in relations.iter_rows():
@@ -207,13 +207,19 @@ class ConverterBank:
                         data_base_id_1, data_base_id_2 = data_base_id_2, data_base_id_1
                     self.converter_relations_table[f"{data_base_id_1}_{data_base_id_2}"] = key_id
         elif self.converter_type == 'saphir':
+            key_id_1, key_id_2, values = 0, 0, {}
             for row in relations.iter_rows():
                 if isinstance(row[0].value, int):
+                    if key_id_1 != 0:
+                        self.converter_relations_table[key_id_1] = {'key_id': key_id_2, 'values': values}
                     key_id_1 = row[0].value
-                    value_1 = row[1].value
                     key_id_2 = row[2].value
-                    value_2 = row[3].value
-                    self.converter_relations_table[key_id_1] = key_id_2
+                    values = {}
+                if isinstance(row[1].value, int):
+                    values[row[1].value] = row[3].value
+            else:
+                self.converter_relations_table[key_id_1] = {'key_id': key_id_2, 'values': values}
+
 
     def convert(self):
         """
@@ -233,11 +239,15 @@ class ConverterBank:
                 converter_relation = ConverterRelations(relation.object_id_1, relation.object_id_2,
                                                         self.converter_objects_table, self.converter_relations_table)
                 self.converters_relations[f"{relation.object_id_1}_{relation.object_id_2}"] = converter_relation
+            key_id = 0
+            value = ''
             if self.converter_type == 'chronos':
                 key_id = self.converter_relations_table.get(f"{relation.object_id_1}_{relation.object_id_2}", 0)
             elif self.converter_type == 'saphir':
-                key_id = self.converter_relations_table.get(relation.key_id, 0)
-            temp = converter_relation.convert(relation, self.object_to_create, key_id)
+                relation_info = self.converter_relations_table.get(relation.key_id, {'key_id': 0, 'values': {}})
+                key_id = relation_info['key_id']
+                value = relation_info['values'].get(relation.value, 0)
+            temp = converter_relation.convert(relation, self.object_to_create, key_id, value)
             if temp.get('error'):
                 errors.update(temp['error'])
             elif len(temp) > 0:
@@ -246,13 +256,13 @@ class ConverterBank:
             json.dump(self.object_to_create, file)
 
 
-CONVERT_SETTING = json.loads(open('/deploy_storage/param_saphir.json').read().encode().decode('utf-8-sig'))
+CONVERT_SETTING = json.loads(open('param_saphir.json').read().encode().decode('utf-8-sig'))
 converter = ConverterBank(CONVERT_SETTING)
 print('start_converting')
-converter.convert()
-
-report_file = open("/deploy_storage/report.txt", "w")
-for report in duplicates_reports:
-    report_file.write(report + '\n')
-report_file.close()
+# converter.convert()
+#
+# report_file = open("/deploy_storage/report.txt", "w")
+# for report in duplicates_reports:
+#     report_file.write(report + '\n')
+# report_file.close()
 
