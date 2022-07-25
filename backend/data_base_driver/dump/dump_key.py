@@ -43,10 +43,6 @@ class DUMP_KEY:
                   DAT_SYS_KEY.COL + " DESC, " + \
                   DAT_SYS_KEY.NEED + " DESC;"
             dat = db_sql(sql=sql, wait=True, read=True)
-            dat = dat + ((0, 0, 0, 0, 'text', None, 'any', 'Примечание', 'Дополнительная информация об объекте', '',
-                          0, 0, 200, 1, 1),
-                         (1, 0, 0, 0, 'file_any', None, 'file_any', 'Файловое примечание',
-                          'Дополнительные файлы характеризующие объект', '', 0, 0, 200, 1, 1))
             self.dump = tuple_to_dict_many(dat, [
                 DAT_SYS_KEY.ID,
                 DAT_SYS_KEY.OBJ_ID,

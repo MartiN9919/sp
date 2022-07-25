@@ -99,11 +99,12 @@ def get_value_by_key(key, value):
     @param value: значение классификатора
     @return: значение для пользователя
     """
-    if get_key_by_id(key)['type'] == 'checkbox':
+    key_type = get_key_by_id(key)['type']
+    if key_type == 'checkbox':
         value = 'Да' if value == '1' else 'Нет'
-    if get_key_by_id(key)['type'] == 'date':
+    if key_type == 'date':
         value = date_server_to_client(value)
-    if get_key_by_id(key)['type'] == 'datetime':
+    if key_type == 'datetime':
         value = date_time_server_to_client(value)
     if key == SYS_KEY_CONSTANT.PARENT_ID_CLASSIFIER_ID:
         if int(value) == 0:
@@ -121,7 +122,10 @@ def get_value_by_key(key, value):
 def get_object_info(object_id, rec_id, fetchall, group_id=0, triggers=None, title_mod=False):
     params = []
     for item in fetchall:
-        value = get_value_by_key(int(item[0]), item[1])
+        try:
+            value = get_value_by_key(int(item[0]), item[1])
+        except IndexError:
+            continue
         keys = [key for key in params if key['id'] == int(item[0])]
         if len(keys) > 0:
             keys[0]['values'].append({'value': value, 'date': get_date_time_from_sec(item[2])[:-3]})
