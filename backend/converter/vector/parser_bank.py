@@ -330,10 +330,13 @@ class ParserBank(BaseParser):
                     for file in files: # найденные файлы записываем как параметры
                         database.data[item]['values'].append({'value': file, 'type': database.file_param})
         for relation in self.relations.values(): # идем циклом по связям
-            database_object = self.get_database_by_id(relation.object_id_1).data[relation.rec_id_1] # получаем певый связанный объект и его дату/время
-            date_1 = database_object['date']
-            time_1 = database_object['time']
-            database_object = self.get_database_by_id(relation.object_id_2).data[relation.rec_id_2] # получаем второй связанный объект и его дату/время
-            date_2 = database_object['date']
-            time_2 = database_object['time']
-            relation.date, relation.time = self._get_older_datetime(date_1, time_1, date_2, time_2) # присваиваем связи более позднюю пару даты/времени
+            try:
+                database_object = self.get_database_by_id(relation.object_id_1).data[relation.rec_id_1] # получаем певый связанный объект и его дату/время
+                date_1 = database_object['date']
+                time_1 = database_object['time']
+                database_object = self.get_database_by_id(relation.object_id_2).data[relation.rec_id_2] # получаем второй связанный объект и его дату/время
+                date_2 = database_object['date']
+                time_2 = database_object['time']
+                relation.date, relation.time = self._get_older_datetime(date_1, time_1, date_2, time_2) # присваиваем связи более позднюю пару даты/времени
+            except:
+                continue

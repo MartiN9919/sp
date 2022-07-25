@@ -87,7 +87,7 @@ def add_data_vector(group_id, object, files_path):
     @return: идентификатор нового/измененного объекта в базе данных
     """
     with lock:
-        data = [parse_value_vector(param) for param in object['params']]
+        data = [parse_value_vector(param) for param in object['params'] if param['id'] not in (0, 1)]
         duplicates = find_duplicate_vector(group_id, object.get('object_id'), object.get('rec_id'), data)
         if len(duplicates) > 0:
             report = f"same object: {object.get('object_id')}_{duplicates[0]} vector_object: {object['old_id']}"

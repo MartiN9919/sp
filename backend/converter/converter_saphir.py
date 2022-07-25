@@ -90,19 +90,25 @@ class ConverterRelations:
 class ConverterParams:
     database_id: int # идентификатор базы данных (таблицы)
     object_id: int # идентификатор объекта Сапфир
+    default_key: int
+    default_file_key: int
     params_converter_table: Dict[int, Tuple[
         int, int]]  # таблица соответствия старого id и нового id с возможным порядком следования (например ФИО)
 
-    def __init__(self, database_id: int, object_id: int, params_convert_dict: dict):
+    def __init__(self, database_id: int, object_id: int, params_convert_dict: dict, default_key: int, default_file_key: int):
         """
         Конструктор с параметрами
         @param database_id: идентификатор базы данных (таблицы)
         @param object_id: идентификатор объекта Сапфир
         @param params_convert_dict: таблица соответствия старого id и нового id с возможным порядком следования (например ФИО)
+        @param default_key: стандартный классификатор
+        @param default_file_key: стандартный файловый классификатор
         """
         self.database_id = database_id
         self.object_id = object_id
         self.params_converter_table = params_convert_dict
+        self.default_key = default_key
+        self.default_file_key = default_file_key
 
     def convert(self, database: BaseTable, path: str) -> Dict:
         """
@@ -123,9 +129,10 @@ class ConverterParams:
             temp_params = {}
             for param in database_object_params:
                 new_param_info = self.params_converter_table.get(param['type'].id, (0, 0))
-                if new_param_info[0] == 0 and param['type'].param_type == 'Ф':
-                    new_param_info = (1, 0)
-                elif new_param_info[0] == 0:
+                if new_param_info[0] == 0 and param['type'].param_type == 'Ф' and self.default_file_key:
+                    new_param_info = (self.default_file_key, 0)
+                elif new_param_info[0] == 0 and self.default_key:
+                    new_param_info = (self.default_key, new_param_info[1])
                     param['value'] = param['type'].name + ': ' + param['value']
                 if new_param_info[1]:
                     if not temp_params.get(new_param_info[0]):
@@ -184,18 +191,22 @@ class ConverterBank:
         """
         work_book = load_workbook(path)
         objects = work_book['objects']
-        params_convert_dict, row0, row1 = {}, 0, 0
+        params_convert_dict, row0, row1, row2, row3 = {}, 0, 0, 0, 0
         for row in objects.iter_rows():
             if isinstance(row[0].value, int):
                 self.converter_objects_table[row[0].value] = row[1].value
+                default_key = row[2].value if isinstance(row[2].value, int) else 0
+                default_file_key = row[3].value if isinstance(row[3].value, int) else 0
                 if row0:
-                    self.converters_params[row0] = ConverterParams(row0, row1, copy(params_convert_dict))
+                    self.converters_params[row0] = ConverterParams(row0, row1, copy(params_convert_dict), default_key, default_file_key)
                     params_convert_dict = {}
-                row0, row1 = row[0].value, row[1].value
+                row0, row1, row2, row3 = row[0].value, row[1].value, row[2].value, row[3].value
             elif isinstance(row[2].value, int):
                 params_convert_dict[row[2].value] = (row[3].value, row[4].value)
         else:
-            self.converters_params[row0] = ConverterParams(row0, row1, copy(params_convert_dict))
+            default_key = row2 if isinstance(row2, int) else 0
+            default_file_key = row3 if isinstance(row3, int) else 0
+            self.converters_params[row0] = ConverterParams(row0, row1, copy(params_convert_dict), default_key, default_file_key)
         relations = work_book['relations']
         if self.converter_type == 'chronos':
             for row in relations.iter_rows():
@@ -259,10 +270,10 @@ class ConverterBank:
 CONVERT_SETTING = json.loads(open('param_saphir.json').read().encode().decode('utf-8-sig'))
 converter = ConverterBank(CONVERT_SETTING)
 print('start_converting')
-# converter.convert()
-#
-# report_file = open("/deploy_storage/report.txt", "w")
-# for report in duplicates_reports:
-#     report_file.write(report + '\n')
-# report_file.close()
+converter.convert()
+
+report_file = open("/deploy_storage/report.txt", "w")
+for report in duplicates_reports:
+    report_file.write(report + '\n')
+report_file.close()
 
