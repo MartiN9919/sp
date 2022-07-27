@@ -101,7 +101,7 @@ export default {
     listRelationItems: function () {
       let relationObject = this.listRelations.find(relation => relation.id === this.selectedRelationId)
       let defaultRelationList = [{ id: 0, value: 'Все значения' }]
-      if(relationObject && relationObject.hasOwnProperty('type') && relationObject.type.value) {
+      if(relationObject && relationObject.hasOwnProperty('type') && relationObject.type.value !== 'default') {
         return defaultRelationList.concat(this.baseList(relationObject.type.value).values)
       }
       return defaultRelationList
