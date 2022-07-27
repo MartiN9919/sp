@@ -315,7 +315,7 @@ class ParserBank(BaseParser):
             for file_path in files: # идем циклом по файлам
                 path_params = file_path.name.split('_')
                 sub_data = int(path_params[1].split('.')[0]) if len(path_params) > 1 else 0 # получаем идентификатор связи/словаря если имеется
-                with open(file_path, encoding=self._encoding) as file: # открываем файл на чтение
+                with open(file_path, encoding=self._encoding, errors='ignore') as file: # открываем файл на чтение
                     first_line_params = [param.replace('\n', '').replace(self.LAST_SEPARATOR, '')
                                          for param in file.readline().split(self.SEPARATOR)] # считываем типы параметров
                     if sub_data: # если связь/словарь
