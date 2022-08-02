@@ -57,7 +57,7 @@ export default {
 
     findObjectsOnServer({ getters, commit }, config={}) {
       let triggers = {}
-      for(const object of getters.searchTreeGraph.base) {
+      for(const object of getters.searchTreeGraph.base.length ? getters.searchTreeGraph.base : getters.baseObjects) {
         triggers[object.id] = getters.cookieTriggers(object.id)
       }
       config.headers = {'set-cookie': JSON.stringify(triggers)}

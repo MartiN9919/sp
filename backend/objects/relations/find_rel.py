@@ -60,10 +60,16 @@ def search_relations_with_key(rel_key, object_id_1, rec_id_1, object_id_2, rec_i
                     result.append({**temp_item, 'rec_id': int(temp['rec_id_1']), 'key_id': int(temp['key_id'])})
                     result.append({**temp_item, 'rec_id': int(temp['rec_id_2']), 'key_id': int(temp['key_id'])})
                 else:
-                    if rec_id_2 == int(temp['rec_id_1']):
-                        result.append({**temp_item, 'rec_id': int(temp['rec_id_2']), 'key_id': int(temp['key_id'])})
+                    if rec_id_2 == 0:
+                        if rec_id_2 == 0 and rec_id_1 == int(temp['rec_id_1']):
+                            result.append({**temp_item, 'rec_id': int(temp['rec_id_1']), 'key_id': int(temp['key_id'])})
+                        else:
+                            result.append({**temp_item, 'rec_id': int(temp['rec_id_2']), 'key_id': int(temp['key_id'])})
                     else:
-                        result.append({**temp_item, 'rec_id': int(temp['rec_id_1']), 'key_id': int(temp['key_id'])})
+                        if rec_id_2 == int(temp['rec_id_1']):
+                            result.append({**temp_item, 'rec_id': int(temp['rec_id_2']), 'key_id': int(temp['key_id'])})
+                        else:
+                            result.append({**temp_item, 'rec_id': int(temp['rec_id_1']), 'key_id': int(temp['key_id'])})
             else:
                 result.append({**temp_item, 'rec_id': int(temp['rec_id_1']), 'key_id': int(temp['key_id'])})
         else:
