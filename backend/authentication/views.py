@@ -49,6 +49,3 @@ def authorization(request):
         'write': request.user.is_write,
         'group_id': {'list_id': 53, 'id': request.user.owner_groups.id}
     }
-
-
-

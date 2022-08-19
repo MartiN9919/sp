@@ -28,3 +28,4 @@ def get_trigger_variables(script_id):
         + DAT_SYS_TRIGGER_VARIABLE.TABLE + ' WHERE '\
         + DAT_SYS_TRIGGER_VARIABLE.SCRIPT_ID + ' = ' + str(script_id)
     return connect_mysql.db_sql(sql)
+

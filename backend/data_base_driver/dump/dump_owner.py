@@ -120,6 +120,7 @@ class DUMP_OWNER:
                                               self.dump_groups)))
                 # индекс группы принимается при его упоминании И в индесе регионов И в индексе линий ОДНОВРЕМЕННО
                 item_group[DAT_OWNER_GROUPS.GROUPS_ID] = list(set(group_regions) & set(group_lines))
+
             # словарь словарей по id
             self.dump_groups = {item[DAT_OWNER_GROUPS.ID]: {
                 DAT_OWNER_GROUPS.GROUPS_ID: item[DAT_OWNER_GROUPS.GROUPS_ID],

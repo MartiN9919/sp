@@ -2,7 +2,7 @@ from data_base_driver.constants.connect_db import VEC_DATA
 
 
 ##################################################################################
-# DAT_SYS_SCRIPT
+ #DAT_SYS_SCRIPT
 ##################################################################################
 
 
@@ -280,6 +280,9 @@ class DAT_OWNER_GROUPS:
     TABLE_SHORT = 'owner_groups'
     TABLE = VEC_DATA['NAME'] + '.' + TABLE_SHORT
     ID = 'id'
+    NODE_ID = 'node_id'
+    READ_ONLY = 'read_only'
+    PARENT_ID = 'parent_id'
     OWNER_REGIONS_ID = 'owner_regions_id'  # не доступно в dump
     OWNER_LINES_ID = 'owner_lines_id'  # не доступно в dump
     TITLE = 'title'

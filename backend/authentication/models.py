@@ -13,6 +13,7 @@ class ModelOwnerRegions(models.Model):
     """
     Класс для описания модели линии доступа по региону
     """
+
     parent_id = models.IntegerField(
         verbose_name='Родительский объект',
     )
@@ -65,6 +66,23 @@ class ModelOwnerGroups(models.Model):
     """
     Класс для описания модели группы доступа
     """
+    node_id = models.CharField(
+        max_length=255,
+        verbose_name='ID - Узла',
+        null=True,
+
+    )
+    parent_id = models.CharField(
+
+        max_length=255,
+        verbose_name='ID - Родителя',
+        null=True,
+
+    )
+    read_only = models.BooleanField(
+        db_index=True,
+
+    )
     owner_regions = models.ForeignKey(
         ModelOwnerRegions,
         on_delete=models.CASCADE,
@@ -87,7 +105,6 @@ class ModelOwnerGroups(models.Model):
         null=True,
         blank=True,
     )
-
     def __str__(self):
         return self.title
 
@@ -147,7 +164,6 @@ class ModelCustomUser(AbstractBaseUser, PermissionsMixin):
     )
 
     objects = CustomUserManager()
-
     USERNAME_FIELD = DAT_OWNER_USERS.USERNAME
     REQUIRED_FIELDS = [DAT_OWNER_USERS.LAST_NAME, DAT_OWNER_USERS.FIRST_NAME, DAT_OWNER_USERS.OWNER_GROUPS_ID]
 

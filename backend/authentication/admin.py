@@ -17,7 +17,7 @@ class ModelOwnerLinesAdmin(admin.ModelAdmin):
         DAT_OWNER_LINES.PARENT_ID,
     )
     list_per_page = 20
-    readonly_fields = [DAT_OWNER_BASE.ID,]
+    readonly_fields = [DAT_OWNER_BASE.ID]
     fieldsets = (
         (None, {'fields': (DAT_OWNER_BASE.ID, )}),
         (None, {'fields': (DAT_OWNER_LINES.TITLE, DAT_OWNER_LINES.PARENT_ID,)})
@@ -42,11 +42,15 @@ class ModelOwnerRegionsAdmin(admin.ModelAdmin):
 @admin.register(ModelOwnerGroups)
 class ModelOwnerGroupsAdmin(admin.ModelAdmin):
     list_display = (
+        DAT_OWNER_GROUPS.NODE_ID,
+        DAT_OWNER_GROUPS.PARENT_ID,
+        DAT_OWNER_GROUPS.READ_ONLY,
         DAT_OWNER_GROUPS.TITLE,
         DAT_OWNER_GROUPS.OWNER_REGIONS,
         DAT_OWNER_GROUPS.OWNER_LINES,
         DAT_OWNER_GROUPS.DESCRIPT,
     )
+    
     list_per_page = 20
 
 
