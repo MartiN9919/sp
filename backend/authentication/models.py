@@ -6,7 +6,7 @@ from django.utils.translation import gettext_lazy as _
 
 from authentication.managers import CustomUserManager
 from data_base_driver.constants.const_dat import DAT_OWNER_GROUPS, DAT_OWNER_LINES, DAT_OWNER_REGIONS, DAT_OWNER_USERS, \
-    DAT_OWNER
+    DAT_OWNER_GROUPS_REL, DAT_OWNER
 
 
 class ModelOwnerRegions(models.Model):
@@ -117,6 +117,41 @@ class ModelOwnerGroups(models.Model):
         db_table = DAT_OWNER_GROUPS.TABLE_SHORT
         verbose_name = "Группа"
         verbose_name_plural = "Группы"
+
+
+class ModelOwnerGroupsRel(models.Model):
+    """
+    Класс для описания модели группы доступа
+    """
+
+    node_id = models.CharField(
+        max_length= 255,
+        null=True,
+        blank=True,
+        verbose_name='Группа',
+    )
+    parent_id = models.ForeignKey(
+        ModelOwnerGroups,
+        db_column ='parent_id',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        verbose_name='Главная группа',
+    )
+
+    read_only = models.BooleanField(
+        db_index=True,
+    )
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        DAT_OWNER.DUMP.update()
+
+    class Meta:
+        managed = False
+        db_table = DAT_OWNER_GROUPS_REL.TABLE_SHORT
+        verbose_name = "Группы"
+        verbose_name_plural = "Группы связей"
 
 
 class ModelCustomUser(AbstractBaseUser, PermissionsMixin):

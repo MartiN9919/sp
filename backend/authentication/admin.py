@@ -3,8 +3,8 @@ from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin
 from django.utils.translation import gettext_lazy as _
 from data_base_driver.constants.const_dat import DAT_OWNER_LINES, DAT_OWNER_REGIONS, DAT_OWNER_GROUPS, DAT_OWNER_USERS, \
-    DAT_OWNER_BASE
-from .models import ModelCustomUser, ModelOwnerGroups, ModelOwnerLines, ModelOwnerRegions
+    DAT_OWNER_BASE,DAT_OWNER_GROUPS_REL
+from .models import ModelCustomUser, ModelOwnerGroups, ModelOwnerLines, ModelOwnerRegions,ModelOwnerGroupsRel
 
 admin.site.unregister(Group)
 
@@ -50,8 +50,20 @@ class ModelOwnerGroupsAdmin(admin.ModelAdmin):
         DAT_OWNER_GROUPS.OWNER_LINES,
         DAT_OWNER_GROUPS.DESCRIPT,
     )
-    
+
     list_per_page = 20
+
+
+
+@admin.register(ModelOwnerGroupsRel)
+class ModelOwnerGroupsRelAdmin(admin.ModelAdmin):
+    list_display = (
+        DAT_OWNER_GROUPS_REL.NODE_ID,
+        DAT_OWNER_GROUPS_REL.PARENT_ID,
+        DAT_OWNER_GROUPS_REL.READ_ONLY,
+
+    )
+    list_editable = ('parent_id','read_only',)
 
 
 @admin.register(ModelCustomUser)

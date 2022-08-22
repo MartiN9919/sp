@@ -295,6 +295,14 @@ class DAT_OWNER_GROUPS:
     LINES_ID = 'lines_id'  # доступно только в dump
     ID_ADMIN = 1
 
+class DAT_OWNER_GROUPS_REL:
+    TABLE_SHORT = 'onwer_groups_rel'
+    TABLE = VEC_DATA['NAME'] + '.' + TABLE_SHORT
+    ID = 'id'
+    NODE_ID = 'node_id'
+    PARENT_ID = 'parent_id'
+    READ_ONLY = 'read_only'
+
 
 class DAT_OWNER_BASE:
     ID = 'id'
