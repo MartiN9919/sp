@@ -281,15 +281,11 @@ class DAT_OWNER_GROUPS:
     TABLE = VEC_DATA['NAME'] + '.' + TABLE_SHORT
     ID = 'id'
     NODE_ID = 'node_id'
-    READ_ONLY = 'read_only'
     PARENT_ID = 'parent_id'
     OWNER_REGIONS_ID = 'owner_regions_id'  # не доступно в dump
     OWNER_LINES_ID = 'owner_lines_id'  # не доступно в dump
     TITLE = 'title'
     DESCRIPT = 'descript'
-    OWNER_REGIONS = 'owner_regions'
-    OWNER_LINES = 'owner_lines'
-
     GROUPS_ID = 'groups_id'  # доступно только в dump
     REGIONS_ID = 'regions_id'  # доступно только в dump
     LINES_ID = 'lines_id'  # доступно только в dump
@@ -302,6 +298,7 @@ class DAT_OWNER_GROUPS_REL:
     NODE_ID = 'node_id'
     PARENT_ID = 'parent_id'
     READ_ONLY = 'read_only'
+    DESCRIPT = 'descript'
 
 
 class DAT_OWNER_BASE:

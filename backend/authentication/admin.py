@@ -42,15 +42,10 @@ class ModelOwnerRegionsAdmin(admin.ModelAdmin):
 @admin.register(ModelOwnerGroups)
 class ModelOwnerGroupsAdmin(admin.ModelAdmin):
     list_display = (
-        DAT_OWNER_GROUPS.NODE_ID,
-        DAT_OWNER_GROUPS.PARENT_ID,
-        DAT_OWNER_GROUPS.READ_ONLY,
         DAT_OWNER_GROUPS.TITLE,
-        DAT_OWNER_GROUPS.OWNER_REGIONS,
-        DAT_OWNER_GROUPS.OWNER_LINES,
         DAT_OWNER_GROUPS.DESCRIPT,
     )
-
+    list_editable = ('descript',)
     list_per_page = 20
 
 
@@ -61,9 +56,12 @@ class ModelOwnerGroupsRelAdmin(admin.ModelAdmin):
         DAT_OWNER_GROUPS_REL.NODE_ID,
         DAT_OWNER_GROUPS_REL.PARENT_ID,
         DAT_OWNER_GROUPS_REL.READ_ONLY,
+        DAT_OWNER_GROUPS_REL.DESCRIPT,
 
     )
-    list_editable = ('parent_id','read_only',)
+    list_editable = ('parent_id','read_only','descript')
+    search_fields = ['parent_id__parent_id','descript',]
+    list_filter = ('read_only','parent_id',)
 
 
 @admin.register(ModelCustomUser)

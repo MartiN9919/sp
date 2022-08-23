@@ -79,22 +79,6 @@ class ModelOwnerGroups(models.Model):
         null=True,
 
     )
-    read_only = models.BooleanField(
-        db_index=True,
-
-    )
-    owner_regions = models.ForeignKey(
-        ModelOwnerRegions,
-        on_delete=models.CASCADE,
-        verbose_name='Регион',
-        help_text='Указывает на регион, к которому относится группа.',
-    )
-    owner_lines = models.ForeignKey(
-        ModelOwnerLines,
-        on_delete=models.CASCADE,
-        verbose_name='Линия',
-        help_text='Указывает на линию, к которой относится группа.',
-    )
     title = models.CharField(
         max_length=255,
         verbose_name='Название группы',
@@ -105,6 +89,7 @@ class ModelOwnerGroups(models.Model):
         null=True,
         blank=True,
     )
+
     def __str__(self):
         return self.title
 
@@ -113,6 +98,7 @@ class ModelOwnerGroups(models.Model):
         DAT_OWNER.DUMP.update()
 
     class Meta:
+
         managed = False
         db_table = DAT_OWNER_GROUPS.TABLE_SHORT
         verbose_name = "Группа"
@@ -123,34 +109,44 @@ class ModelOwnerGroupsRel(models.Model):
     """
     Класс для описания модели группы доступа
     """
-
-    node_id = models.CharField(
-        max_length= 255,
-        null=True,
-        blank=True,
+    node_id = models.ForeignKey(
+        ModelOwnerGroups,
+        db_column='node_id',
+        related_name='person2',
+        on_delete=models.CASCADE,
         verbose_name='Группа',
     )
+
     parent_id = models.ForeignKey(
         ModelOwnerGroups,
-        db_column ='parent_id',
+        db_column='parent_id',
+        related_name='person2persons',
         on_delete=models.CASCADE,
-        null=True,
-        blank=True,
         verbose_name='Главная группа',
     )
 
     read_only = models.BooleanField(
         db_index=True,
+        verbose_name='Только чтение',
     )
 
+    descript = models.CharField(
+        max_length=255,
+        verbose_name='Дополнительное описание',
+        null=True,
+        blank=True,
+    )
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         DAT_OWNER.DUMP.update()
 
+    def __str__(self):
+        return str(self.node_id) +' > '+ str(self.parent_id)
+
     class Meta:
         managed = False
         db_table = DAT_OWNER_GROUPS_REL.TABLE_SHORT
-        verbose_name = "Группы"
+        verbose_name = "Группу связей"
         verbose_name_plural = "Группы связей"
 
 
