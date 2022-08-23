@@ -10,7 +10,6 @@ from data_base_driver.constants.const_dat import DAT_SYS_SCRIPT, DAT_SYS_TRIGGER
 from data_base_driver.constants.const_script import BASE_PATH_TO_USER_SCRIPTS
 from data_base_driver.constants.const_trigger import BASE_PATH_TO_USER_TRIGGERS
 from data_base_driver.script.script_parsec import parse_text_to_python
-from authentication.models import ModelOwnerLines
 from data_base_driver.trigger.trigger_parser import parse_trigger_text_to_python
 
 
@@ -78,12 +77,7 @@ class ModelScript(models.Model):
         verbose_name='Состояние',
         help_text='Включение/отключение скрипта',
     )
-    owner = models.ForeignKey(
-        ModelOwnerLines,
-        on_delete=models.CASCADE,
-        verbose_name='Группа владельцев',
-        blank=True,
-    )
+
     type = models.CharField(
         max_length=20,
         choices=DAT_SYS_SCRIPT.TYPE_LIST,

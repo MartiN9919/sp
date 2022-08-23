@@ -1,5 +1,4 @@
 from django.db import models
-from authentication.models import ModelOwnerLines, ModelOwnerRegions
 from data_base_driver.constants.const_dat import DAT_SYS_FILES
 
 

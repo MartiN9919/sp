@@ -5,62 +5,8 @@ from django.contrib.auth.models import PermissionsMixin
 from django.utils.translation import gettext_lazy as _
 
 from authentication.managers import CustomUserManager
-from data_base_driver.constants.const_dat import DAT_OWNER_GROUPS, DAT_OWNER_LINES, DAT_OWNER_REGIONS, DAT_OWNER_USERS, \
+from data_base_driver.constants.const_dat import DAT_OWNER_GROUPS,DAT_OWNER_USERS, \
     DAT_OWNER_GROUPS_REL, DAT_OWNER
-
-
-class ModelOwnerRegions(models.Model):
-    """
-    Класс для описания модели линии доступа по региону
-    """
-
-    parent_id = models.IntegerField(
-        verbose_name='Родительский объект',
-    )
-    title = models.CharField(
-        max_length=255,
-        verbose_name='Название региона',
-    )
-
-    def __str__(self):
-        return self.title
-
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-        DAT_OWNER.DUMP.update()
-
-    class Meta:
-        managed = False
-        db_table = DAT_OWNER_REGIONS.TABLE_SHORT
-        verbose_name = "Регион"
-        verbose_name_plural = "Регионы"
-
-
-class ModelOwnerLines(models.Model):
-    """
-    Класс для описания модели линии доступа по направлению деятельности
-    """
-    parent_id = models.IntegerField(
-        verbose_name='Родительский объект',
-    )
-    title = models.CharField(
-        max_length=255,
-        verbose_name='Название линии',
-    )
-
-    def __str__(self):
-        return self.title
-
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-        DAT_OWNER.DUMP.update()
-
-    class Meta:
-        managed = False
-        db_table = DAT_OWNER_LINES.TABLE_SHORT
-        verbose_name = "Линия"
-        verbose_name_plural = "Линии"
-
 
 class ModelOwnerGroups(models.Model):
     """
