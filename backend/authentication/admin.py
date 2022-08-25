@@ -1,10 +1,11 @@
 from django.contrib import admin
-from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin
+from django.contrib.auth.models import Group
 from django.utils.translation import gettext_lazy as _
-from data_base_driver.constants.const_dat import  DAT_OWNER_GROUPS, DAT_OWNER_USERS, \
-    DAT_OWNER_BASE,DAT_OWNER_GROUPS_REL
-from .models import ModelCustomUser, ModelOwnerGroups,ModelOwnerGroupsRel
+
+from data_base_driver.constants.const_dat import DAT_OWNER_GROUPS, DAT_OWNER_USERS, \
+    DAT_OWNER_GROUPS_REL
+from .models import ModelCustomUser, ModelOwnerGroups, ModelOwnerGroupsRel
 
 admin.site.unregister(Group)
 
