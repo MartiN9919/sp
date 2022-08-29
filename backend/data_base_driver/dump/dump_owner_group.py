@@ -125,6 +125,7 @@ class DUMP_OWNER222:
 
             # актуальность дампа
             self.refreshTime = time.time() + self.refreshDelay
+#aemflkmeqkljflkqel;fk
 
     def update(self):
         self.refreshTime = time.time() - 1
