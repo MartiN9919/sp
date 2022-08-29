@@ -25,22 +25,28 @@ class DUMP_OWNER222:
         self._refresh_()
 
     def _refresh_(self, force=False):
-
-        def _rel_(self, id):
-
+        GROUP_RW = 'group_rw'
+        GROUP_RO = 'group_ro'
+        def _rel_( id):
             _groups_rw = set()
             _groups_ro = set()
+
             for rel in self.dump_groups_rel:
                  if rel[DAT_OWNER_GROUPS_REL.PARENT_ID] == id:
-                    if rel[DAT_OWNER_GROUPS_REL.READ_ONLY]:
-                        _groups_ro.add(rel[DAT_OWNER_GROUPS_REL.NODE_ID])
-                    else:
-                        _groups_rw.add(rel[DAT_OWNER_GROUPS_REL.NODE_ID])
-            print(_groups_rw,_groups_ro)
+                     (_groups_rw2, _groups_ro2) = _rel_(rel[DAT_OWNER_GROUPS_REL.NODE_ID])
+                     if rel[DAT_OWNER_GROUPS_REL.READ_ONLY]:
+                        _groups_ro2.add(rel[DAT_OWNER_GROUPS_REL.NODE_ID])
+                        _groups_ro2 = _groups_ro2 | _groups_rw2
+                        _groups_rw2 = set()
+                     else:
+                        _groups_rw2.add(rel[DAT_OWNER_GROUPS_REL.NODE_ID])
+
+                     _groups_rw = _groups_rw | _groups_rw2
+                     _groups_ro = _groups_ro | _groups_ro2
 
 
+            _groups_ro.difference_update(_groups_rw)
 
-                    #(_groups_rw, _groups_ro) = _rel_(self, rel1[DAT_OWNER_GROUPS_REL.NODE_ID])
             return (_groups_rw, _groups_ro)
 
 
@@ -106,7 +112,10 @@ class DUMP_OWNER222:
             ])
 
             for item in self.dump_groups:
-                (groups_rw, groups_ro) =_rel_(self, item[DAT_OWNER_GROUPS.ID])
+                (groups_rw, groups_ro) =_rel_( item[DAT_OWNER_GROUPS.ID])
+
+                ###
+
                 item[GROUP_RW] = groups_rw
                 item[GROUP_RO] = groups_ro
 
