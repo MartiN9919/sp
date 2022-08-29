@@ -60,7 +60,7 @@ class ModelOwnerGroupsRel(models.Model):
         db_column='node_id',
         related_name='person2',
         on_delete=models.CASCADE,
-        verbose_name='Группа',
+        verbose_name='Группа для связи',
     )
 
     parent_id = models.ForeignKey(
@@ -68,7 +68,7 @@ class ModelOwnerGroupsRel(models.Model):
         db_column='parent_id',
         related_name='person2persons',
         on_delete=models.CASCADE,
-        verbose_name='Главная группа',
+        verbose_name='Узел',
     )
 
     read_only = models.BooleanField(

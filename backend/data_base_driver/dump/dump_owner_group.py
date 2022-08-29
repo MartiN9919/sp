@@ -27,6 +27,7 @@ class DUMP_OWNER222:
     def _refresh_(self, force=False):
 
         def _rel_(self, id):
+
             _groups_rw = set()
             _groups_ro = set()
             for rel in self.dump_groups_rel:
@@ -35,7 +36,14 @@ class DUMP_OWNER222:
                         _groups_ro.add(rel[DAT_OWNER_GROUPS_REL.NODE_ID])
                     else:
                         _groups_rw.add(rel[DAT_OWNER_GROUPS_REL.NODE_ID])
+            print(_groups_rw,_groups_ro)
+
+
+
+                    #(_groups_rw, _groups_ro) = _rel_(self, rel1[DAT_OWNER_GROUPS_REL.NODE_ID])
             return (_groups_rw, _groups_ro)
+
+
 
         GROUP_RW = 'group_rw'
         GROUP_RO = 'group_ro'
@@ -101,6 +109,8 @@ class DUMP_OWNER222:
                 (groups_rw, groups_ro) =_rel_(self, item[DAT_OWNER_GROUPS.ID])
                 item[GROUP_RW] = groups_rw
                 item[GROUP_RO] = groups_ro
+
+
 
             print(self.dump_groups)
 
