@@ -52,7 +52,7 @@ def script_list(group_id, parent_id, script_type):
     parent = f" = {parent_id}" if parent_id > 0 else ' is NULL'
     sql = get_script_sql(parent_id=parent, script_type=script_type)
     scripts = db_sql(sql)
-    scripts = list(filter(lambda x: DAT_OWNER.DUMP.valid_line_group(group_id=group_id, line_id=x[-1]), scripts))
+    scripts = list(filter(lambda x: DAT_OWNER.DUMP.valid_line(group_id=group_id, line_id=x[-1]), scripts))
     response_with_scripts = []
     for row in scripts:
         variables = get_script_variables(int(row[0]))

@@ -76,8 +76,10 @@ def valid_group_object(group_id, permit_group, keys_validation_tuple, write=Fals
     if write:
         if not permit_group.get(keys_validation_dict['owner_add_rw'], None):
             return True
-        return DAT_OWNER.DUMP.valid_io_group(group_id=group_id,
-                                             valids_id=permit_group.get(keys_validation_dict['owner_add_rw'], []))
+        return DAT_OWNER.DUMP.valid_group_rw(
+            group_id=group_id,
+            valids_id=permit_group.get(keys_validation_dict['owner_add_rw'], [])
+        )
     else:
         if not permit_group.get(keys_validation_dict['owner_add_ro_limit'], None) and \
                 not permit_group.get(keys_validation_dict['owner_add_ro'], None) and \
@@ -85,8 +87,10 @@ def valid_group_object(group_id, permit_group, keys_validation_tuple, write=Fals
             return True
         read_groups = permit_group.get(keys_validation_dict['owner_add_ro'], []) + permit_group.get(
             keys_validation_dict['owner_add_ro_limit'], []) + permit_group.get(keys_validation_dict['owner_add_rw'], [])
-        return DAT_OWNER.DUMP.valid_io_group(group_id=group_id,
-                                             valids_id=read_groups)
+        return DAT_OWNER.DUMP.valid_group_ro(
+            group_id=group_id,
+            valids_id=read_groups
+        )
 
 
 def get_enabled_records(object_type, records, group_id, write=False):

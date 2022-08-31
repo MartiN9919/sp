@@ -276,7 +276,7 @@ def aj_groups(request):
     @param request: GET запрос без параметров
     @return: список групп пользователей
     """
-    return DAT_OWNER.DUMP.get_groups_list()
+    return DAT_OWNER.DUMP.get_groups()
 
 
 @login_check

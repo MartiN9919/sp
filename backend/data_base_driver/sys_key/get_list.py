@@ -3,7 +3,7 @@ from data_base_driver.connect.connect_mysql import db_sql
 
 
 def get_groups_list():
-    return [{'id': item['id'], 'value': item['title']} for item in DAT_OWNER.DUMP.get_groups_list()]
+    return [{'id': item['id'], 'value': item['title']} for item in DAT_OWNER.DUMP.get_groups()]
 
 
 def get_list_by_top_id(list_id):

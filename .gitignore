@@ -2,25 +2,22 @@
 __pycache__/
 *.py[cod]
 *$py.class
+*.pyc
+*.log
+*.log.*
 
 log/
-*.log
 pid/
-
-*.pyc
-
-# pyenv
-.python-version
-
-# Environments
 env/
 env.bak/
 .venv
 venv/
 venv.bak/
 
+.python-version
 .pytest_cache
 .idea
+.ipynb_checkpoints
 backend/log/
 backend/env/
 backend/static/
@@ -33,12 +30,13 @@ frontend/webpack-stats.json
 frontend/package-lock.json
 backend/static
 backend/webpack-stats.json
-*migrations/*
+migrations/
 
 TEST/
 #__init__.py
 
 
 # git rm --cached -r *migrations/*
+# git check-ignore -v -- backend_loaders/daemons/loaderTG/env/
 
 

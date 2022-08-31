@@ -1,4 +1,0 @@
-#!/bin/bash
-# chmod ugo+x 236
-
-ssh dev@200.200.200.236
