@@ -29,7 +29,7 @@ def tuple_to_dict_many(src_tuple, desc_keys):
 # результат: список найденных записей
 ##################################################################################
 def dict_filter(list_dict, list_key_val, only_first=False):
-    list_key_val_standart = list_key_val if isinstance(list_key_val[0], (list, tuple)) else (list_key_val,)  # list_key_val к виду (())
+    list_key_val_standart = list_key_val if isinstance(list_key_val[0], (list, tuple, set)) else (list_key_val,)  # list_key_val к виду (())
     ret = []
     for dict_item in list_dict:
         # подходит ли очередная запись

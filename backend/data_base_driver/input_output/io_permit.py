@@ -97,14 +97,14 @@ class IO_PERMIT():
         if DEBUG: print('\nwrite:', write, '/ group_id:', group_id, '/ rec_id:', rec_id)
 
         # проверка: чтение/запись
-        ret = DAT_OWNER.DUMP.valid_io_group(group_id=group_id, valids_id=groups_rw)
+        ret = DAT_OWNER.DUMP.valid_group_rw(group_id=group_id, valids_id=groups_rw)
         if DEBUG: print('valid rw:', groups_rw, ret)
 
         # проверка: только чтение
         if not write:
             # чтение можеть быть разрешено ИЛИ в ro, ИЛИ в rw
             if not ret:
-                ret = DAT_OWNER.DUMP.valid_io_group(group_id=group_id, valids_id=groups_ro)
+                ret = DAT_OWNER.DUMP.valid_group_ro(group_id=group_id, valids_id=groups_ro)
                 if DEBUG: print('valid ro:', groups_ro, ret)
 
         if DEBUG: print('ret:', ret)
