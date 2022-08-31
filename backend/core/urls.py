@@ -18,7 +18,7 @@ urlpatterns = [
     path('api/files/', include('files.urls')),
     path('api/notifications/', include('admin_control.urls')),
 ]
-
+#asdmlkafmlmf;as
 if not mode == 'deploy':
     urlpatterns += [re_path(r'^(?!.*admin)', TemplateView.as_view(template_name='index.html'), name='index')] + \
                    static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
