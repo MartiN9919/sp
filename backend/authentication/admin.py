@@ -12,10 +12,13 @@ admin.site.unregister(Group)
 @admin.register(ModelOwnerGroups)
 class ModelOwnerGroupsAdmin(admin.ModelAdmin):
     list_display = (
+        DAT_OWNER_GROUPS.ID,
         DAT_OWNER_GROUPS.TITLE,
+        DAT_OWNER_GROUPS.OWNER_LINES_ID,
         DAT_OWNER_GROUPS.DESCRIPT,
     )
-    list_editable = ('descript',)
+    list_editable = ('descript','title','owner_lines_id',)
+
     list_per_page = 20
 
 
@@ -23,16 +26,15 @@ class ModelOwnerGroupsAdmin(admin.ModelAdmin):
 @admin.register(ModelOwnerGroupsRel)
 class ModelOwnerGroupsRelAdmin(admin.ModelAdmin):
     list_display = (
+        DAT_OWNER_GROUPS_REL.ID,
         DAT_OWNER_GROUPS_REL.NODE_ID,
         DAT_OWNER_GROUPS_REL.PARENT_ID,
         DAT_OWNER_GROUPS_REL.READ_ONLY,
         DAT_OWNER_GROUPS_REL.DESCRIPT,
 
-    )
-    list_editable = ('parent_id','read_only','descript')
-    search_fields = ['parent_id__parent_id','descript',]
-    list_filter = ('read_only','parent_id',)
 
+    )
+    list_editable = ('parent_id','read_only','descript','node_id')
 
 @admin.register(ModelCustomUser)
 class ModelCustomUserAdmin(UserAdmin):
