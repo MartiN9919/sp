@@ -279,7 +279,6 @@ class DAT_OWNER_USERS:
 class DAT_OWNER_GROUPS:
     TABLE_SHORT = 'owner_groups'
     TABLE = VEC_DATA['NAME'] + '.' + TABLE_SHORT
-    ID_ADMIN = 1
     ID = 'id'
     TITLE = 'title'
     # не доступно в dump
@@ -289,13 +288,6 @@ class DAT_OWNER_GROUPS:
     GROUPS_RW = 'groups_rw'
     GROUPS_RO = 'groups_ro'
     LINES = 'lines'
-    # DEL
-    NODE_ID = 'node_id'
-    PARENT_ID = 'parent_id'
-    OWNER_REGIONS_ID = 'owner_regions_id'  # не доступно в dump
-    GROUPS_ID = 'groups_id'  # УДАЛИТЬ доступно только в dump
-    LINES_ID = 'lines_id'  # доступно только в dump
-    REGIONS_ID = 'regions_id'  # доступно только в dump
 
 
 class DAT_OWNER_GROUPS_REL:
@@ -312,11 +304,6 @@ class DAT_OWNER_BASE:
     ID = 'id'
     PARENT_ID = 'parent_id'
     TITLE = 'title'
-
-
-class DAT_OWNER_REGIONS(DAT_OWNER_BASE):
-    TABLE_SHORT = 'owner_regions'
-    TABLE = VEC_DATA['NAME'] + '.' + TABLE_SHORT
 
 
 class DAT_OWNER_LINES(DAT_OWNER_BASE):
