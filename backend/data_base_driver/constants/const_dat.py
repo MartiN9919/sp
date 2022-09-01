@@ -284,6 +284,7 @@ class DAT_OWNER_GROUPS:
     TITLE = 'title'
     # не доступно в dump
     OWNER_LINES_ID = 'owner_lines_id'
+    OWNER_LINES_TITLE = 'owner_lines_title1'
     DESCRIPT = 'descript'
     # доступно только в dump
     GROUPS_RW = 'groups_rw'
@@ -321,6 +322,9 @@ class DAT_OWNER_REGIONS(DAT_OWNER_BASE):
 
 class DAT_OWNER_LINES(DAT_OWNER_BASE):
     TABLE_SHORT = 'owner_lines'
+    TITLE = 'title1'
+    ID='id'
+    PARENT_ID = 'parent_id'
     TABLE = VEC_DATA['NAME'] + '.' + TABLE_SHORT
 
 

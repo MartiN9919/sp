@@ -101,7 +101,8 @@ class DUMP_OWNER:
                 sql=
                 "SELECT " +
                 DAT_OWNER_LINES.ID + "," +
-                DAT_OWNER_LINES.PARENT_ID + " " +
+                DAT_OWNER_LINES.PARENT_ID + "," +
+                DAT_OWNER_LINES.TITLE + " " +
                 "FROM " +
                 DAT_OWNER_LINES.TABLE,
                 wait=True,
@@ -110,6 +111,7 @@ class DUMP_OWNER:
             self.dump_lines = tuple_to_dict_many(dat, [
                 DAT_OWNER_LINES.ID,
                 DAT_OWNER_LINES.PARENT_ID,
+                DAT_OWNER_LINES.TITLE
             ])
 
             # GROUPS
