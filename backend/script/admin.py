@@ -38,13 +38,13 @@ class ModelScriptAdmin(admin.ModelAdmin):
     form = ModelScriptForm
     search_fields = (DAT_SYS_SCRIPT.TITLE,)
     list_display = (
-        'get_parent',
-        DAT_SYS_SCRIPT.TITLE,
         DAT_SYS_SCRIPT.ID,
+        DAT_SYS_SCRIPT.TITLE,
         DAT_SYS_SCRIPT.DESCRIPT,
-        'get_owner',
-        DAT_SYS_SCRIPT.ENEBLED,
+        'field_name_parent',
+        'field_name_owner',
         DAT_SYS_SCRIPT.TYPE,
+        DAT_SYS_SCRIPT.ENEBLED,
     )
 
     ordering = (
@@ -72,41 +72,37 @@ class ModelScriptAdmin(admin.ModelAdmin):
 
     fieldsets = (
         (None,
-         {'fields':
-             (
-                 DAT_SYS_SCRIPT.ID,
-                 DAT_SYS_SCRIPT.TITLE,
-                 DAT_SYS_SCRIPT.HINT,
-                 (
-                     DAT_SYS_SCRIPT.PARENT_ID,
-                     DAT_SYS_SCRIPT.ICON,
-                 ),
-                 DAT_SYS_SCRIPT.CONTENT,
-                 DAT_SYS_SCRIPT.DESCRIPT,
-                 (
-                     DAT_SYS_SCRIPT.OWNER_LINE,
-                     DAT_SYS_SCRIPT.ENEBLED,
-                     DAT_SYS_SCRIPT.TYPE,
-                 )
-             )
-         }),
+        {'fields':
+            (
+                DAT_SYS_SCRIPT.ID,
+                DAT_SYS_SCRIPT.TITLE,
+                DAT_SYS_SCRIPT.HINT,
+                (
+                    DAT_SYS_SCRIPT.PARENT_ID,
+                    DAT_SYS_SCRIPT.ICON,
+                ),
+                DAT_SYS_SCRIPT.CONTENT,
+                DAT_SYS_SCRIPT.DESCRIPT,
+                (
+                    DAT_SYS_SCRIPT.OWNER_LINE,
+                    DAT_SYS_SCRIPT.ENEBLED,
+                    DAT_SYS_SCRIPT.TYPE,
+                )
+            )
+        }),
     )
     inlines = [ModelScriptVariableAdmin]
 
     list_per_page = 20
 
-    @admin.display(description='Группа владельцев')
-    def get_owner(self, obj):
-        """
-        Функция, взвращающая тип пользователя
-        """
+    @admin.display(description='Линия')
+    def field_name_owner(self, obj):
+        """Линия скрипта"""
         return obj.owner
 
-    @admin.display(description='Родительский id')
-    def get_parent(self, obj):
-        """
-        Функция, взвращающая родительскую папку
-        """
+    @admin.display(description='Папка')
+    def field_name_parent(self, obj):
+        """Родительская папка"""
         return obj.parent
 
 
@@ -153,15 +149,15 @@ class ModelTriggerAdmin(admin.ModelAdmin):
 
     fieldsets = (
         (None,
-         {'fields':
-             (
-                 DAT_SYS_TRIGGER.OBJECT,
-                 DAT_SYS_TRIGGER.TITLE,
-                 DAT_SYS_TRIGGER.CONTENT,
-                 DAT_SYS_TRIGGER.HINT,
-             )
-         }
-         ),
+        {'fields':
+            (
+                DAT_SYS_TRIGGER.OBJECT,
+                DAT_SYS_TRIGGER.TITLE,
+                DAT_SYS_TRIGGER.CONTENT,
+                DAT_SYS_TRIGGER.HINT,
+            )
+        }
+        ),
     )
 
     inlines = [ModelTriggerVariableAdmin]

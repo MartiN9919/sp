@@ -256,10 +256,6 @@ class DAT_OWNER:
     DUMP = None  # заполняется в lib.db.const.const_dat - КОПИЯ ТАБЛИЦ В ПАМЯТИ
 
 
-class DAT_OWNER2:
-    DUMP = None  # заполняется в lib.db.const.const_dat - КОПИЯ ТАБЛИЦ В ПАМЯТИ
-
-
 class DAT_OWNER_USERS:
     TABLE_SHORT = 'authentication_modelcustomuser'
     TABLE = VEC_DATA['NAME'] + '.' + TABLE_SHORT
@@ -288,6 +284,7 @@ class DAT_OWNER_GROUPS:
     TITLE = 'title'
     # не доступно в dump
     OWNER_LINES_ID = 'owner_lines_id'
+    OWNER_LINES_TITLE = 'owner_lines_title1'
     DESCRIPT = 'descript'
     # доступно только в dump
     GROUPS_RW = 'groups_rw'
@@ -325,6 +322,9 @@ class DAT_OWNER_REGIONS(DAT_OWNER_BASE):
 
 class DAT_OWNER_LINES(DAT_OWNER_BASE):
     TABLE_SHORT = 'owner_lines'
+    TITLE = 'title1'
+    ID='id'
+    PARENT_ID = 'parent_id'
     TABLE = VEC_DATA['NAME'] + '.' + TABLE_SHORT
 
 
@@ -471,8 +471,7 @@ class DAT_SYS_SCRIPT_RESULT:
 ##################################################################################
 from data_base_driver.dump.dump_obj import DUMP_OBJ
 from data_base_driver.dump.dump_key import DUMP_KEY
-from data_base_driver.dump.dump_owner import DUMP_OWNER
-from data_base_driver.dump.dump_owner_group import DUMP_OWNER222
+from data_base_driver.dump.dump_owner_group import DUMP_OWNER
 from data_base_driver.dump.dump_list import DUMP_LIST
 from data_base_driver.dump.dump_phone_number import DUMP_PHONE_NUMBER_FORMAT
 
@@ -481,8 +480,3 @@ DAT_SYS_KEY.DUMP = DUMP_KEY()
 DAT_OWNER.DUMP = DUMP_OWNER()
 DAT_SYS_PHONE_NUMBER_FORMAT.DUMP = DUMP_PHONE_NUMBER_FORMAT()
 DAT_SYS_LIST_DOP.DUMP = DUMP_LIST()
-
-
-DAT_OWNER2.DUMP = DUMP_OWNER222()
-s = DAT_OWNER2.DUMP.get_group(4)
-

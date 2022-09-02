@@ -220,7 +220,7 @@ class DUMP_OWNER222:
 
 
     def get_groups(self):
-        """получить список групп {group_id, title}"""
+        """получить список групп {'id': int, 'title': str}"""
         return [{
             DAT_OWNER_GROUPS.ID: group,
             DAT_OWNER_GROUPS.TITLE: self.dump_groups[group][DAT_OWNER_GROUPS.TITLE],
