@@ -301,18 +301,12 @@ class DAT_OWNER_GROUPS_REL:
     DESCRIPT = 'descript'
 
 
-class DAT_OWNER_BASE:
+class DAT_OWNER_LINES:
+    TABLE_SHORT = 'owner_lines'
+    TABLE = VEC_DATA['NAME'] + '.' + TABLE_SHORT
     ID = 'id'
     PARENT_ID = 'parent_id'
     TITLE = 'title'
-
-
-class DAT_OWNER_LINES(DAT_OWNER_BASE):
-    TABLE_SHORT = 'owner_lines'
-    TITLE = 'title1'
-    ID='id'
-    PARENT_ID = 'parent_id'
-    TABLE = VEC_DATA['NAME'] + '.' + TABLE_SHORT
 
 
 ##################################################################################
