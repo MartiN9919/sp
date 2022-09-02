@@ -11,13 +11,8 @@ from data_base_driver.dump.transform_functions import tuple_to_dict_many, dict_f
 # DAT_OWNER_GROUPS.DUMP
 ##################################################################################
 
-def db_sql_dump_owner(sql: str, wait: bool = True, read: bool = True):
-    return db_sql(sql=sql, wait=wait, read=read)
-
-
-class DUMP_OWNER:
-    def __init__(self, refreshDelay=60 * 15, fun_sql=db_sql_dump_owner):  # refreshDelay - время хранения кэша, в секундах
-        self.fun_sql = fun_sql
+class DUMP_OWNER222:
+    def __init__(self, refreshDelay=60 * 15):  # refreshDelay - время хранения кэша, в секундах
         self.dump_users = None
         self.dump_groups = None
         self.dump_lines = None
@@ -79,7 +74,7 @@ class DUMP_OWNER:
         if not force and (self.refreshTime > time.time()): return
         with self._lock:
             # USERS
-            dat = self.fun_sql(
+            dat = db_sql(
                 sql=
                 "SELECT " +
                 DAT_OWNER_USERS.ID + "," +
@@ -97,12 +92,11 @@ class DUMP_OWNER:
             ])
 
             # LINES (TEMP)
-            dat = self.fun_sql(
+            dat = db_sql(
                 sql=
                 "SELECT " +
                 DAT_OWNER_LINES.ID + "," +
-                DAT_OWNER_LINES.PARENT_ID + "," +
-                DAT_OWNER_LINES.TITLE + " " +
+                DAT_OWNER_LINES.PARENT_ID + " " +
                 "FROM " +
                 DAT_OWNER_LINES.TABLE,
                 wait=True,
@@ -111,11 +105,10 @@ class DUMP_OWNER:
             self.dump_lines = tuple_to_dict_many(dat, [
                 DAT_OWNER_LINES.ID,
                 DAT_OWNER_LINES.PARENT_ID,
-                DAT_OWNER_LINES.TITLE
             ])
 
             # GROUPS
-            dat = self.fun_sql(
+            dat = db_sql(
                 sql=
                 "SELECT " +
                 DAT_OWNER_GROUPS.ID + "," +
@@ -133,7 +126,7 @@ class DUMP_OWNER:
             ])
 
             # GROUPS_REL (TEMP)
-            dat = self.fun_sql(
+            dat = db_sql(
                 sql=
                 "SELECT " +
                 DAT_OWNER_GROUPS_REL.NODE_ID + "," +
@@ -227,8 +220,8 @@ class DUMP_OWNER:
 
 
     def get_groups(self):
-        """получить список групп {group_id, title}"""
+        """получить список групп {'id': int, 'title': str}"""
         return [{
-            DAT_OWNER_GROUPS.ID: group[DAT_OWNER_GROUPS.ID],
-            DAT_OWNER_GROUPS.TITLE: group[DAT_OWNER_GROUPS.TITLE],
+            DAT_OWNER_GROUPS.ID: group,
+            DAT_OWNER_GROUPS.TITLE: self.dump_groups[group][DAT_OWNER_GROUPS.TITLE],
         } for group in self.dump_groups]

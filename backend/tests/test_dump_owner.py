@@ -6,8 +6,6 @@ sys.path.append(BASE_DIR+'/')
 print(BASE_DIR)
 
 import data_base_driver.constants.const_dat as dat
-#import data_base_driver.dump.dump_owner_group
-#from data_base_driver.dump.dump_owner_group import DUMP_OWNER
 import pytest
 
 print(dat.DAT_OWNER.DUMP.get_groups())
