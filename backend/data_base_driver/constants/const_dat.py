@@ -279,6 +279,7 @@ class DAT_OWNER_USERS:
 class DAT_OWNER_GROUPS:
     TABLE_SHORT = 'owner_groups'
     TABLE = VEC_DATA['NAME'] + '.' + TABLE_SHORT
+    ID_ADMIN = 1
     ID = 'id'
     TITLE = 'title'
     # не доступно в dump
@@ -289,6 +290,13 @@ class DAT_OWNER_GROUPS:
     GROUPS_RW = 'groups_rw'
     GROUPS_RO = 'groups_ro'
     LINES = 'lines'
+    # DEL
+    NODE_ID = 'node_id'
+    PARENT_ID = 'parent_id'
+    OWNER_REGIONS_ID = 'owner_regions_id'  # не доступно в dump
+    GROUPS_ID = 'groups_id'  # УДАЛИТЬ доступно только в dump
+    LINES_ID = 'lines_id'  # доступно только в dump
+    REGIONS_ID = 'regions_id'  # доступно только в dump
 
 
 class DAT_OWNER_GROUPS_REL:
@@ -301,12 +309,23 @@ class DAT_OWNER_GROUPS_REL:
     DESCRIPT = 'descript'
 
 
-class DAT_OWNER_LINES:
-    TABLE_SHORT = 'owner_lines'
-    TABLE = VEC_DATA['NAME'] + '.' + TABLE_SHORT
+class DAT_OWNER_BASE:
     ID = 'id'
     PARENT_ID = 'parent_id'
     TITLE = 'title'
+
+
+class DAT_OWNER_REGIONS(DAT_OWNER_BASE):
+    TABLE_SHORT = 'owner_regions'
+    TABLE = VEC_DATA['NAME'] + '.' + TABLE_SHORT
+
+
+class DAT_OWNER_LINES(DAT_OWNER_BASE):
+    TABLE_SHORT = 'owner_lines'
+    TITLE = 'title1'
+    ID='id'
+    PARENT_ID = 'parent_id'
+    TABLE = VEC_DATA['NAME'] + '.' + TABLE_SHORT
 
 
 ##################################################################################
@@ -452,12 +471,12 @@ class DAT_SYS_SCRIPT_RESULT:
 ##################################################################################
 from data_base_driver.dump.dump_obj import DUMP_OBJ
 from data_base_driver.dump.dump_key import DUMP_KEY
-from data_base_driver.dump.dump_owner_group import DUMP_OWNER
+from data_base_driver.dump.dump_owner_group import DUMP_OWNER222
 from data_base_driver.dump.dump_list import DUMP_LIST
 from data_base_driver.dump.dump_phone_number import DUMP_PHONE_NUMBER_FORMAT
 
 DAT_SYS_OBJ.DUMP = DUMP_OBJ()
 DAT_SYS_KEY.DUMP = DUMP_KEY()
-DAT_OWNER.DUMP = DUMP_OWNER()
+DAT_OWNER.DUMP = DUMP_OWNER222()
 DAT_SYS_PHONE_NUMBER_FORMAT.DUMP = DUMP_PHONE_NUMBER_FORMAT()
 DAT_SYS_LIST_DOP.DUMP = DUMP_LIST()

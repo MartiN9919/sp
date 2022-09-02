@@ -57,11 +57,13 @@ class ModelOwnerGroups(models.Model):
         null=True,
         blank=True,
     )
-    owner_lines_id = models.CharField(
+    owner_lines_id = models.ForeignKey(
+        ModelOwnerLines,
         max_length=255,
+        db_column='owner_lines_id',
         verbose_name='Линия',
-        null=True,
-        blank=True,
+        on_delete = models.CASCADE,
+
     )
     def __str__(self):
         return self.title

@@ -231,6 +231,6 @@ class DUMP_OWNER:
     def get_groups(self):
         """получить список групп {'id': int, 'title': str}"""
         return [{
-            DAT_OWNER_GROUPS.ID: group[DAT_OWNER_GROUPS.ID],
-            DAT_OWNER_GROUPS.TITLE: group[DAT_OWNER_GROUPS.TITLE],
+            DAT_OWNER_GROUPS.ID: group,
+            DAT_OWNER_GROUPS.TITLE: self.dump_groups[group][DAT_OWNER_GROUPS.TITLE],
         } for group in self.dump_groups]

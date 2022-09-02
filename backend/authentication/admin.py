@@ -18,6 +18,7 @@ class ModelOwnerGroupsAdmin(admin.ModelAdmin):
         DAT_OWNER_GROUPS.DESCRIPT,
     )
     list_editable = ('descript','title','owner_lines_id',)
+    list_filter = (DAT_OWNER_GROUPS.OWNER_LINES_ID,)
 
     list_per_page = 20
 
@@ -35,6 +36,7 @@ class ModelOwnerGroupsRelAdmin(admin.ModelAdmin):
 
     )
     list_editable = ('parent_id','read_only','descript','node_id')
+    list_filter = (DAT_OWNER_GROUPS_REL.READ_ONLY,)
 
 @admin.register(ModelCustomUser)
 class ModelCustomUserAdmin(UserAdmin):
