@@ -2,31 +2,40 @@
 import os
 import sys
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path.append(BASE_DIR+'/../')
+sys.path.append(BASE_DIR+'/')
+print(BASE_DIR)
 
-
-from dump_owner_group import DUMP_OWNER222
+import data_base_driver.constants.const_dat as dat
 import pytest
 
-D = DUMP_OWNER222()
-s = D.get_group(4)
-print(
-    D.valid_group(
-        group_id=22,
-        valids_id=[33]
-    )
-)
+print(dat.DAT_OWNER.DUMP.get_groups())
 
-print(
-    D.valid_line(
-        group_id=23,
-        line_id=3
-    )
-)
+# def fun_sql(sql: str, wait: bool = True, read: bool = True):
+#     return []
+
+# D = DUMP_OWNER(fun_sql=fun_sql)
+
+# s = D.get_groups()
+# print(s)
+
+# s = D.get_group(4)
+# print(
+#     D.valid_group(
+#         group_id=22,
+#         valids_id=[33]
+#     )
+# )
+
+# print(
+#     D.valid_line(
+#         group_id=23,
+#         line_id=3
+#     )
+# )
 
 
-def test2():
-    assert 8 == 8
+# def test2():
+#     assert 8 == 8
 
 
 # # @pytest.mark.parametrize(

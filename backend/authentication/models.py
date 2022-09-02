@@ -6,23 +6,45 @@ from django.utils.translation import gettext_lazy as _
 
 from authentication.managers import CustomUserManager
 from data_base_driver.constants.const_dat import DAT_OWNER_GROUPS,DAT_OWNER_USERS, \
-    DAT_OWNER_GROUPS_REL, DAT_OWNER
+    DAT_OWNER_GROUPS_REL, DAT_OWNER_LINES, DAT_OWNER
+
+
+class ModelOwnerLines(models.Model):
+    """
+    Класс для описания модели линии доступа по направлению деятельности
+    """
+    parent_id = models.IntegerField(
+        verbose_name='Родитель',
+    )
+    title = models.CharField(
+        max_length=255,
+        verbose_name='Название',
+    )
+
+    def __str__(self):
+        return self.title
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        DAT_OWNER.DUMP.update()
+
+    class Meta:
+        managed = False
+        db_table = DAT_OWNER_LINES.TABLE_SHORT
+        verbose_name = "Линия"
+        verbose_name_plural = "Линии"
+
 
 class ModelOwnerGroups(models.Model):
     """
     Класс для описания модели группы доступа
     """
-    node_id = models.CharField(
+    id = models.CharField(
         max_length=255,
-        verbose_name='ID - Узла',
-        null=True,
-
-    )
-    parent_id = models.CharField(
-
-        max_length=255,
-        verbose_name='ID - Родителя',
-        null=True,
+        verbose_name='ID',
+        primary_key=True,
+        editable = False,
+        blank=False,
 
     )
     title = models.CharField(
@@ -35,7 +57,12 @@ class ModelOwnerGroups(models.Model):
         null=True,
         blank=True,
     )
-
+    owner_lines_id = models.CharField(
+        max_length=255,
+        verbose_name='Линия',
+        null=True,
+        blank=True,
+    )
     def __str__(self):
         return self.title
 
@@ -82,6 +109,7 @@ class ModelOwnerGroupsRel(models.Model):
         null=True,
         blank=True,
     )
+
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         DAT_OWNER.DUMP.update()

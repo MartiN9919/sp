@@ -35,7 +35,7 @@ def aj_object_type_list(request):
 @request_get
 def aj_lists(request):
     """
-    Функция бля обработки запроса на получение всех списков
+    Функция для обработки запроса на получение всех списков
     @param request: GET запрос на получение всех списков
     @return: json в формате: {id:{name,title,hint,values}, ..., id_n:{}}
     """

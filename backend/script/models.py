@@ -11,7 +11,7 @@ from data_base_driver.constants.const_script import BASE_PATH_TO_USER_SCRIPTS
 from data_base_driver.constants.const_trigger import BASE_PATH_TO_USER_TRIGGERS
 from data_base_driver.script.script_parsec import parse_text_to_python
 from data_base_driver.trigger.trigger_parser import parse_trigger_text_to_python
-
+from authentication.models import ModelOwnerLines
 
 class ModelScript(models.Model):
     """
@@ -28,7 +28,7 @@ class ModelScript(models.Model):
 
     parent = models.ForeignKey(
         to='self',
-        verbose_name='Родительский id',
+        verbose_name='Папка',
         limit_choices_to=or_condition,
         on_delete=models.CASCADE,
         blank=True,
@@ -36,35 +36,35 @@ class ModelScript(models.Model):
     )
     title = models.CharField(
         max_length=50,
-        verbose_name='Название Скрипта',
-        help_text='Данное название будет отображаться в меню выбора анализа',
+        verbose_name='Название',
+        help_text='Отображаемое название скрипта',
         unique=True,
     )
     icon = models.CharField(
         max_length=25,
         verbose_name='Иконка',
         choices=DAT_SYS_SCRIPT.ICON_CHOICES,
-        help_text='Данная иконка будет отображаться в меню выбора анализа',
+        help_text='Иконка устанавливается только для папки',
         blank=True,
         null=True,
         default=None,
     )
     hint = models.CharField(
         max_length=255,
-        verbose_name='Всплывающая подсказка',
-        help_text='Ввод текста подсказки, которая будет отображаться в меню выбора анализа',
+        verbose_name='Подсказка',
+        help_text='Всплывающая подсказка',
         blank=True,
         default='',
     )
     content = models.TextField(
-        verbose_name='Текст скрипта',
-        help_text='Поле ввода скрипта',
+        verbose_name='Скрипт',
+        help_text='Текст скрипта',
         blank=True,
         default='',
     )
     descript = models.TextField(
-        verbose_name='Описание объекта',
-        help_text='Введите описание данного объекта',
+        verbose_name='Описание',
+        help_text='Описание скрипта',
     )
     variables = models.TextField(
         verbose_name='Переменные',
@@ -74,14 +74,19 @@ class ModelScript(models.Model):
     )
     enabled = models.BooleanField(
         default=True,
-        verbose_name='Состояние',
+        verbose_name='Вкл',
         help_text='Включение/отключение скрипта',
     )
-
+    owner = models.ForeignKey(
+        ModelOwnerLines,
+        on_delete=models.CASCADE,
+        verbose_name='Линия',
+        blank=True,
+    )
     type = models.CharField(
         max_length=20,
         choices=DAT_SYS_SCRIPT.TYPE_LIST,
-        verbose_name='Тип скрипта',
+        verbose_name='Тип',
     )
 
     def __str__(self):
@@ -135,23 +140,23 @@ class ModelScriptVariable(models.Model):
     name = models.CharField(
         max_length=100,
         verbose_name='Название переменной',
-        help_text='Данное название будет использоваться в теле скрипта',
+        help_text='Будет использоваться в теле скрипта',
     )
     title = models.CharField(
         max_length=255,
         verbose_name='Имя переменной',
-        help_text='Данное имя будет отображаться пользователю',
+        help_text='Будет отображаться пользователю',
     )
     hint = models.CharField(
         max_length=255,
-        verbose_name='Всплывающая подсказка',
-        help_text='Данная подсказка будет отображаться пользователю',
+        verbose_name='Подсказка',
+        help_text='Будет отображаться пользователю',
     )
     type = models.CharField(
         max_length=25,
         verbose_name='Тип переменной',
         choices=DAT_SYS_SCRIPT_VARIABLE.TYPE_VARIABLE_LIST,
-        help_text='К какому типу будет относиться переменная',
+        help_text='',
         default='text',
     )
     list = models.ForeignKey(
@@ -212,7 +217,7 @@ class ModelTrigger(models.Model):
     title = models.CharField(
         max_length=50,
         verbose_name='Название Триггера',
-        help_text='Данное название будет отображаться в меню настройки триггеров',
+        help_text='Будет отображаться в меню настройки триггеров',
         unique=True,
     )
     content = models.TextField(
@@ -264,17 +269,17 @@ class ModelTriggerVariable(models.Model):
     name = models.CharField(
         max_length=100,
         verbose_name='Название переменной',
-        help_text='Данное название будет использоваться в теле триггера',
+        help_text='Будет использоваться в теле триггера',
     )
     title = models.CharField(
         max_length=255,
         verbose_name='Имя переменной',
-        help_text='Данное имя будет отображаться пользователю',
+        help_text='Будет отображаться пользователю',
     )
     hint = models.CharField(
         max_length=255,
         verbose_name='Всплывающая подсказка',
-        help_text='Данная подсказка будет отображаться пользователю',
+        help_text='Будет отображаться пользователю',
     )
     type = models.CharField(
         max_length=25,
