@@ -1,12 +1,12 @@
 import threading
 import time
-from typing import List
+from typing import List, Dict
 from data_base_driver.constants.const_dat import DAT_OWNER_USERS, DAT_OWNER_GROUPS, \
     DAT_OWNER_LINES, DAT_OWNER_GROUPS_REL
 from data_base_driver.connect.connect_mysql import db_sql
 from data_base_driver.dump.transform_functions import tuple_to_dict_many, dict_filter
 
-def __db_sql__(table_name: str):
+def __db_sql__(table_name: str) -> List[Dict]:
     # USERS
     if table_name == DAT_OWNER_USERS.TABLE:
         dat = db_sql(
