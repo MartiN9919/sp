@@ -6,13 +6,87 @@ from data_base_driver.constants.const_dat import DAT_OWNER_USERS, DAT_OWNER_GROU
 from data_base_driver.connect.connect_mysql import db_sql
 from data_base_driver.dump.transform_functions import tuple_to_dict_many, dict_filter
 
+def __db_sql__(table_name: str):
+    # USERS
+    if table_name == DAT_OWNER_USERS.TABLE:
+        dat = db_sql(
+            sql=
+            "SELECT " +
+                DAT_OWNER_USERS.ID + "," +
+                DAT_OWNER_USERS.OWNER_GROUPS_ID + " " +
+                "FROM " +
+                DAT_OWNER_USERS.TABLE + " " +
+                "WHERE " +
+                DAT_OWNER_USERS.ENABLED + "=1",
+            wait=True,
+            read=True
+        )
+        return tuple_to_dict_many(dat, [
+            DAT_OWNER_USERS.ID,
+            DAT_OWNER_USERS.OWNER_GROUPS_ID,
+        ])
 
-##################################################################################
-# DAT_OWNER_GROUPS.DUMP
-##################################################################################
+    # LINES (TEMP)
+    if table_name == DAT_OWNER_LINES.TABLE:
+        dat = db_sql(
+            sql=
+                "SELECT " +
+                DAT_OWNER_LINES.ID + "," +
+                DAT_OWNER_LINES.PARENT_ID + " " +
+                "FROM " +
+                DAT_OWNER_LINES.TABLE,
+            wait=True,
+            read=True
+        )
+        return tuple_to_dict_many(dat, [
+            DAT_OWNER_LINES.ID,
+            DAT_OWNER_LINES.PARENT_ID,
+        ])
 
-class DUMP_OWNER222:
-    def __init__(self, refreshDelay=60 * 15):  # refreshDelay - время хранения кэша, в секундах
+    # GROUPS
+    if table_name == DAT_OWNER_GROUPS.TABLE:
+        dat = db_sql(
+            sql=
+                "SELECT " +
+                DAT_OWNER_GROUPS.ID + "," +
+                DAT_OWNER_GROUPS.OWNER_LINES_ID + "," +
+                DAT_OWNER_GROUPS.TITLE + " " +
+                "FROM " +
+                DAT_OWNER_GROUPS.TABLE,
+            wait=True,
+            read=True
+        )
+        return tuple_to_dict_many(dat, [
+            DAT_OWNER_GROUPS.ID,
+            DAT_OWNER_GROUPS.OWNER_LINES_ID,
+            DAT_OWNER_GROUPS.TITLE,
+        ])
+
+    # GROUPS_REL (TEMP)
+    if table_name == DAT_OWNER_GROUPS_REL.TABLE:
+        dat = db_sql(
+            sql=
+                "SELECT " +
+                DAT_OWNER_GROUPS_REL.NODE_ID + "," +
+                DAT_OWNER_GROUPS_REL.PARENT_ID + "," +
+                DAT_OWNER_GROUPS_REL.READ_ONLY + " " +
+                "FROM " +
+                DAT_OWNER_GROUPS_REL.TABLE,
+            wait=True,
+            read=True
+        )
+        return tuple_to_dict_many(dat, [
+            DAT_OWNER_GROUPS_REL.NODE_ID,
+            DAT_OWNER_GROUPS_REL.PARENT_ID,
+            DAT_OWNER_GROUPS_REL.READ_ONLY,
+        ])
+
+    raise ValueError(f"Error table name {table_name}")
+
+
+class DUMP_OWNER:
+    def __init__(self, refreshDelay=60 * 15, fun_sql=__db_sql__):  # refreshDelay - время хранения кэша, в секундах
+        self.fun_sql = fun_sql
         self.dump_users = None
         self.dump_groups = None
         self.dump_lines = None
@@ -73,75 +147,10 @@ class DUMP_OWNER222:
 
         if not force and (self.refreshTime > time.time()): return
         with self._lock:
-            # USERS
-            dat = db_sql(
-                sql=
-                "SELECT " +
-                DAT_OWNER_USERS.ID + "," +
-                DAT_OWNER_USERS.OWNER_GROUPS_ID + " " +
-                "FROM " +
-                DAT_OWNER_USERS.TABLE_SHORT + " " +
-                "WHERE " +
-                DAT_OWNER_USERS.ENABLED + "=1",
-                wait=True,
-                read=True
-            )
-            self.dump_users = tuple_to_dict_many(dat, [
-                DAT_OWNER_USERS.ID,
-                DAT_OWNER_USERS.OWNER_GROUPS_ID,
-            ])
-
-            # LINES (TEMP)
-            dat = db_sql(
-                sql=
-                "SELECT " +
-                DAT_OWNER_LINES.ID + "," +
-                DAT_OWNER_LINES.PARENT_ID + " " +
-                "FROM " +
-                DAT_OWNER_LINES.TABLE,
-                wait=True,
-                read=True
-            )
-            self.dump_lines = tuple_to_dict_many(dat, [
-                DAT_OWNER_LINES.ID,
-                DAT_OWNER_LINES.PARENT_ID,
-            ])
-
-            # GROUPS
-            dat = db_sql(
-                sql=
-                "SELECT " +
-                DAT_OWNER_GROUPS.ID + "," +
-                DAT_OWNER_GROUPS.OWNER_LINES_ID + "," +
-                DAT_OWNER_GROUPS.TITLE + " " +
-                "FROM " +
-                DAT_OWNER_GROUPS.TABLE,
-                wait=True,
-                read=True
-            )
-            self.dump_groups = tuple_to_dict_many(dat, [
-                DAT_OWNER_GROUPS.ID,
-                DAT_OWNER_GROUPS.OWNER_LINES_ID,
-                DAT_OWNER_GROUPS.TITLE,
-            ])
-
-            # GROUPS_REL (TEMP)
-            dat = db_sql(
-                sql=
-                "SELECT " +
-                DAT_OWNER_GROUPS_REL.NODE_ID + "," +
-                DAT_OWNER_GROUPS_REL.PARENT_ID + "," +
-                DAT_OWNER_GROUPS_REL.READ_ONLY + " " +
-                "FROM " +
-                DAT_OWNER_GROUPS_REL.TABLE,
-                wait=True,
-                read=True
-            )
-            self.dump_rel = tuple_to_dict_many(dat, [
-                DAT_OWNER_GROUPS_REL.NODE_ID,
-                DAT_OWNER_GROUPS_REL.PARENT_ID,
-                DAT_OWNER_GROUPS_REL.READ_ONLY,
-            ])
+            self.dump_users = __db_sql__(DAT_OWNER_USERS.TABLE)
+            self.dump_lines = __db_sql__(DAT_OWNER_LINES.TABLE) # TEMP
+            self.dump_groups = __db_sql__(DAT_OWNER_GROUPS.TABLE)
+            self.dump_rel = __db_sql__(DAT_OWNER_GROUPS_REL.TABLE) # TEMP
 
             # построить dump_lines.LINES
             for item in self.dump_lines:

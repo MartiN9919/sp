@@ -8,12 +8,12 @@ print(BASE_DIR)
 import data_base_driver.constants.const_dat as dat
 import pytest
 
-print(dat.DAT_OWNER.DUMP.get_groups())
 
 # def fun_sql(sql: str, wait: bool = True, read: bool = True):
 #     return []
 
-# D = DUMP_OWNER(fun_sql=fun_sql)
+D = dat.DUMP_OWNER()
+
 
 # s = D.get_groups()
 # print(s)
