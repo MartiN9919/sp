@@ -7,30 +7,45 @@ print(BASE_DIR)
 
 from typing import List, Dict
 import data_base_driver.constants.const_dat as dat
+from data_base_driver.dump.transform_functions import tuple_to_dict_many
+
 import pytest
 
 
 def db_sql_mock(table_name: str) -> List[Dict]:
     # USERS
     if table_name == dat.DAT_OWNER_USERS.TABLE:
-        dat = ()
-        return tuple_to_dict_many(dat, [
+        val = ()
+        return tuple_to_dict_many(val, [
             dat.DAT_OWNER_USERS.ID,
             dat.DAT_OWNER_USERS.OWNER_GROUPS_ID,
         ])
 
     # LINES (TEMP)
     if table_name == dat.DAT_OWNER_LINES.TABLE:
-        dat = ()
-        return tuple_to_dict_many(dat, [
+        val = (
+            (1, 0),
+            (2, 1),
+            (3, 30),
+            (4, 2),
+            (5, 2),
+            (30, 2),
+        )
+        return tuple_to_dict_many(val, [
             dat.DAT_OWNER_LINES.ID,
             dat.DAT_OWNER_LINES.PARENT_ID,
         ])
 
     # GROUPS
     if table_name == dat.DAT_OWNER_GROUPS.TABLE:
-        dat = ()
-        return tuple_to_dict_many(dat, [
+        val = (
+            (1, 1, 'Admin'),
+            (22, 2, 'GPK A'),
+            (23, 3, 'GPK O'),
+            (24, 4, 'GPK I'),
+            (25, 5, 'GPK D'),
+        )
+        return tuple_to_dict_many(val, [
             dat.DAT_OWNER_GROUPS.ID,
             dat.DAT_OWNER_GROUPS.OWNER_LINES_ID,
             dat.DAT_OWNER_GROUPS.TITLE,
@@ -38,13 +53,13 @@ def db_sql_mock(table_name: str) -> List[Dict]:
 
     # GROUPS_REL (TEMP)
     if table_name == dat.DAT_OWNER_GROUPS_REL.TABLE:
-        dat = ()
-        return tuple_to_dict_many(dat, [
+        val = ()
+        return tuple_to_dict_many(val, [
             dat.DAT_OWNER_GROUPS_REL.NODE_ID,
             dat.DAT_OWNER_GROUPS_REL.PARENT_ID,
             dat.DAT_OWNER_GROUPS_REL.READ_ONLY,
         ])
-        
+
 
     raise ValueError(f"Error table name {table_name}")
 
@@ -53,7 +68,7 @@ def db_sql_mock(table_name: str) -> List[Dict]:
 #     return []
 
 D = dat.DUMP_OWNER(fun_sql = db_sql_mock)
-
+print(D)
 
 # s = D.get_groups()
 # print(s)
