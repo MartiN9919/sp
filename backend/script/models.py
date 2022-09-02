@@ -44,7 +44,7 @@ class ModelScript(models.Model):
         max_length=25,
         verbose_name='Иконка',
         choices=DAT_SYS_SCRIPT.ICON_CHOICES,
-        help_text='Иконка устанавливается только для папки',
+        help_text='Устанавливается только для папки',
         blank=True,
         null=True,
         default=None,
@@ -68,14 +68,14 @@ class ModelScript(models.Model):
     )
     variables = models.TextField(
         verbose_name='Переменные',
-        help_text='Введите переменные формата (name variables):(type variables)',
+        help_text='Формат (name variables):(type variables)',
         blank=True,
         default='',
     )
     enabled = models.BooleanField(
         default=True,
         verbose_name='Вкл',
-        help_text='Включение/отключение скрипта',
+        help_text='Доступность скрипта',
     )
     owner = models.ForeignKey(
         ModelOwnerLines,
