@@ -147,10 +147,10 @@ class DUMP_OWNER:
 
         if not force and (self.refreshTime > time.time()): return
         with self._lock:
-            self.dump_users = __db_sql__(DAT_OWNER_USERS.TABLE)
-            self.dump_lines = __db_sql__(DAT_OWNER_LINES.TABLE) # TEMP
-            self.dump_groups = __db_sql__(DAT_OWNER_GROUPS.TABLE)
-            self.dump_rel = __db_sql__(DAT_OWNER_GROUPS_REL.TABLE) # TEMP
+            self.dump_users = self.fun_sql(DAT_OWNER_USERS.TABLE)
+            self.dump_lines = self.fun_sql(DAT_OWNER_LINES.TABLE) # TEMP
+            self.dump_groups = self.fun_sql(DAT_OWNER_GROUPS.TABLE)
+            self.dump_rel = self.fun_sql(DAT_OWNER_GROUPS_REL.TABLE) # TEMP
 
             # построить dump_lines.LINES
             for item in self.dump_lines:
