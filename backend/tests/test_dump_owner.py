@@ -44,6 +44,7 @@ def db_sql_mock(table_name: str) -> List[Dict]:
             (23, 3, 'GPK O'),
             (24, 4, 'GPK I'),
             (25, 5, 'GPK D'),
+            (44, 4, 'Sm I'),
         )
         return tuple_to_dict_many(val, [
             dat.DAT_OWNER_GROUPS.ID,
@@ -53,7 +54,12 @@ def db_sql_mock(table_name: str) -> List[Dict]:
 
     # GROUPS_REL (TEMP)
     if table_name == dat.DAT_OWNER_GROUPS_REL.TABLE:
-        val = ()
+        val = (
+            (22, 1, 1),
+            (23, 22, 0),
+            (23, 1, 0),
+            (44, 23, 1),
+        )
         return tuple_to_dict_many(val, [
             dat.DAT_OWNER_GROUPS_REL.NODE_ID,
             dat.DAT_OWNER_GROUPS_REL.PARENT_ID,
